@@ -1,0 +1,4 @@
+TYPE_OBJECT - тип объекта
+
+id - id
+name - название

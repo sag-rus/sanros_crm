@@ -1,0 +1,5 @@
+STATUS_SAN - таблица статусов санатория
+
+name - название статуса
+name_menu
+desc_status

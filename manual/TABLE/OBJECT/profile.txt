@@ -1,0 +1,6 @@
+PROFILE - профиль лечения
+
+id
+name - название
+photo
+description - описание

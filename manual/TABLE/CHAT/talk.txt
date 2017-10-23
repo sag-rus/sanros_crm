@@ -1,0 +1,7 @@
+TALK - таблица бесед с клиентом
+
+id - id
+client - id клиента
+category - id категории
+type - тип (turist - турист, agency - агентство, object - объект)
+id_reck - id заявки

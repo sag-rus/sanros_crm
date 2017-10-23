@@ -1,0 +1,6 @@
+SESSION_AGENCY - таблица сессий агентств
+
+id - id
+login - логин
+id_session - id сессии
+date - дата авторизации

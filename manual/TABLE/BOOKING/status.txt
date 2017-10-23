@@ -1,0 +1,7 @@
+STATUS - таблица статусов заявки
+
+id - id
+name - название
+name_menu - название 
+desc_status  - описание
+name_filter - название в отчетах

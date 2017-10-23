@@ -1,0 +1,5 @@
+METHODS - методы лечения
+
+id
+name - название
+description - описание

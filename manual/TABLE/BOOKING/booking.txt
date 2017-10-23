@@ -1,0 +1,10 @@
+BOOKING - бронирование из квоты
+
+bid - номер заявки
+created - дата создания
+status - статус (new - новая, modified - измененная, cancelled - аннулирования)
+update_bid - статус изменения (1 - изменена, 0 - не изменена)
+confirm - подтверждена (Travelline)
+id_travelline - номер бронирования в системе (Travelline)
+from_booking - способ бронирования
+booking_object - id заявки с модуля бронирования для санаториев

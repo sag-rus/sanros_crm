@@ -1,0 +1,13 @@
+#Folders
+temp
+cache/
+images
+image
+
+#Files
+config.*
+kill.txt
+time.txt
+cache.*
+core/sync/file
+core/sync/file/*

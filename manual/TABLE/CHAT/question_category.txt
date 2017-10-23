@@ -1,0 +1,4 @@
+question_category - типы вопросов
+
+id - id
+name - название

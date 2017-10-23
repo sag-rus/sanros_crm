@@ -1,0 +1,1180 @@
+<?php
+
+function show_modal_new_object(){
+?>
+<div class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+				<h4 class="modal-title">Добавить новый объект</h4>
+			</div>
+			<div class="modal-body form-horizontal new-object">
+				<div class="form-group">
+					<div class="col-sm-12">
+						<div class="alert alert-info"><i class="fa fa-info-circle"></i> Укажите название объекта, а также место (в скобках), где он расположен</div>
+					</div>
+				</div>
+				<div class="form-group form-group-margin">
+					<label class="col-sm-4 control-label">Название</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" id="new_object" />
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success btn-sm" onclick="save_new_object()"><i class="fa fa-check"></i> Сохранить новый объект</button>
+			</div>
+		</div>
+	</div>
+</div>
+<?php
+}
+
+function save_new_object($connect){
+	$name = $_POST["name"];
+	$connect->query("INSERT INTO object(name) VALUES (?s)", $name);
+	return $connect->insertId();
+}
+
+function show_modal_new_room($connect){
+	$id = $_POST["id"];
+	$object = $connect->getOne("SELECT name FROM object WHERE id=?i", $id);
+?>
+<div class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+				<h4 class="modal-title">Добавить новую категорию номера</h4>
+			</div>
+			<div class="modal-body form-horizontal new-room">
+				<div class="form-group">
+					<label class="col-sm-4 control-label">Объект</label>
+					<div class="col-sm-8">
+						<div class="well well-sm"><?php echo $object; ?></div>
+					</div>
+				</div>
+				<div class="form-group form-group-margin">
+					<label class="col-sm-4 control-label">Номер</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control new-room-object" />
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success btn-sm" onclick="save_room_to_new_object('<?php echo $id; ?>')"><i class="fa fa-check"></i> Сохранить новый объект</button>
+			</div>
+		</div>
+	</div>
+</div>
+<?php
+}
+
+
+function save_new_room_object($connect){
+	$object = $_POST["object"];
+	$room = $_POST["room"];
+	$connect->query("INSERT INTO room(name, id_obj) VALUES (?s, ?i)", $room, $object);
+}
+
+function objects_menu(){
+	global $id_rights;
+	ob_start();
+?>
+	<ul class="nav nav-tabs nav-justified menu-object">
+		<li class="li-object" onclick="search_object()"><a><i class="fa fa-home"></i> Объекты</a></li>
+		<li class="li-no-price" onclick="find_object_no_price()"><a><i class="fa fa-warning"></i> Нет цен</a></li>
+		<li class="li-reservation" onclick="search_object_reservation()"><a><i class="fa fa-calendar"></i> Блоки мест</a></li>
+		<li class="li-search-reservation" onclick="show_form_search_engine_reservation()"><a><i class="fa fa-search-plus"></i> Поиск</a></li>
+		<li class="li-promo" onclick="menu_all_promotions()"><a><i class="fa fa-star"></i> Акции</a></li>
+		<li class="li-rating" onclick="view_all_rating()"><a><i class="fa fa-comments-o"></i> Отзывы</a></li>
+	<?php if($id_rights > 3){ ?>
+		<li class="li-commission" onclick="view_all_commission_object()"><a><i class="fa fa-percent"></i> Вознаграждение</a></li>
+	<?php } ?>
+	</ul>
+	<div class="data-object" style="padding-top: 10px"></div>
+	<div class="clearfix"></div>
+<?php
+	$html = ob_get_clean();
+	return $html;
+}
+
+function search_object_reservation($connect){
+	$data = $connect->getAll("SELECT room.id_obj FROM room, object_room WHERE object_room.id_category=room.id GROUP BY room.id_obj");
+	foreach($data as $row){
+		$id = $row["id_obj"];
+		if(check_free_place_object($connect, $id)){
+			$row = $connect->getRow("SELECT name, type FROM object WHERE id=?i", $id);
+			$image = get_object_image($connect, $id);
+			$address = get_object_address($connect, $id);
+			$type = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]);
+	?>
+	<div class="col-sm-6">
+		<div class="well well-sm">
+			<div class="form-group form-group-bottom">
+				<div class="col-sm-2">
+					<img src="<?php echo $image; ?>" class="img-thumbnail" />
+				</div>
+				<div class="col-sm-10">
+					<?php echo $type." ".$row["name"]; ?>
+					<address><i class="fa fa-map-marker"></i> <?php echo $address; ?></address>
+					<button class="btn btn-info btn-xs" onclick="view_calendar_rooms('<?php echo $id; ?>')">Выбрать <i class="fa fa-angle-double-right"></i></button>
+				</div>
+			</div>
+		<div class="clearfix"></div>
+		</div>
+	</div>
+	<?php
+		}
+	}
+}
+
+function show_head_page_object($connect){
+	$first = array();
+	$func = "";
+	$data = $connect->getAll("SELECT id, name FROM object ORDER BY name");
+	foreach($data as $row){
+		$short_name = $row["name"];
+		$id = $row["id"];
+		$first[$id] = mb_strtoupper(mb_substr($short_name, 0, 1, "UTF-8"), "UTF-8");
+	}
+	$first = array_unique($first);
+	$first_symbol = array("latin" => "", "rus" => "");
+	$isRus = 0;
+	foreach($first as $symbol){
+		$symbol_up = str_replace(" ", "&nbsp", strToUpper($symbol));
+		if($isRus == 0){
+			$pattern = '/[а-яА-Я]+/';
+			preg_match($pattern, $symbol, $matches);
+			if(sizeof($matches) > 0)
+				$isRus = 1;
+		}
+		if($isRus == 0)
+			$first_symbol["latin"].= "<li onclick='find_object(\"".$symbol."\")'><a>".$symbol_up."</a></li>";
+		else
+			$first_symbol["rus"].= "<li onclick='find_object(\"".$symbol."\")'><a>".$symbol_up."</a></li>";
+	}
+	$end_price = json_decode($connect->getOne("SELECT value FROM constant WHERE name='end-price-object'"), TRUE);
+?>
+	<?php if($end_price){ ?>
+	<div class="alert alert-warning" style="margin-bottom: 10px">
+		<strong>Заканчиваются цены:</strong>
+		<?php foreach($end_price as $object){ ?>
+		<a onclick="view_object('<?php echo $object; ?>')" class="alert-link"><?php echo get_object($connect, $object); ?></a>
+ 		<?php } ?>
+	<?php } ?>
+	</div>
+	<div class="input-group">
+		<span class="input-group-addon"><i class="fa fa-search"></i></span>
+		<input type="text" id="object" class="form-control" placeholder="Название объекта" onkeyup="find_klient(event, 'object', 'object', 'view_object')" />
+	</div>
+	<div>
+		<ul class="pagination pagination-sm">
+			<?php echo $first_symbol["latin"]; ?>
+		<br /><br />
+			<?php echo $first_symbol["rus"]; ?>
+		</ul>
+	</div>
+	<div class="form-horizontal">
+		<div class="well-sm alert-info">Регионы России</div>
+		<div class="div-region">
+	<?php
+		$data = $connect->getAll("SELECT id, name FROM region WHERE active=0 AND id_country=1 ORDER BY name");
+		foreach($data as $row){
+			$id_reg = $row["id"];
+	?>
+			<div class="col-sm-4 well well-sm region-<?php echo $id_reg; ?> pointer" onclick="find_object_by_region('<?php echo $id_reg; ?>')">
+				<?php echo $row["name"]; ?>
+			</div>
+	<?php } ?>
+		</div>
+		<div class="clearfix"></div>
+		<div class="well-sm alert-info">Страны</div>
+		<div class="div-country">
+	<?php
+		$data = $connect->getAll("SELECT id, name FROM country WHERE id=2");
+		foreach($data as $row){
+			$id_country = $row["id"];
+	?>
+			<div class="col-sm-4 well well-sm country-<?php echo $id_country; ?> pointer" onclick="find_object_by_country('<?php echo $id_country; ?>')">
+				<?php echo $row["name"]; ?>
+			</div>
+	<?php } ?>
+		</div>
+	</div>
+	<div class="clearfix"></div>
+	<div class="result-object"></div>
+<?php
+	$html = ob_get_clean();
+	return $html;
+}
+
+function find_object_no_price($connect){
+	$data = array();
+	$no_price_object = json_decode($connect->getOne("SELECT value FROM constant WHERE name='no-price-object'"), TRUE);
+	foreach($no_price_object as $object){
+		$row = $connect->getRow("SELECT name, id_reg FROM object WHERE id=?i", $object);
+		if(!isset($data[$row["id_reg"]]))
+			$data[$row["id_reg"]] = array();
+		$data[$row["id_reg"]][$object] = $row["name"];
+	}
+	foreach($data as $id_region => $objects){
+		$region = $connect->getOne("SELECT name FROM region WHERE id=?i", $id_region);
+?>
+	<div class="panel panel-success">
+		<div class="panel-heading">
+			<?php echo $region; ?>
+		</div>
+		<div class="list-group">
+<?php
+			foreach($objects as $id_object => $object){
+?>
+			<div class="list-group-item list-hover-item" onclick="view_object(<?php echo $id_object; ?>)">
+				<?php echo $object; ?>
+			</div>
+<?php
+			}
+?>
+		</div>
+	</div>
+<?php
+	}
+}
+
+function select_object($connect){
+	global $id_rights;
+	$id = $_POST["id"];
+	$row = $connect->getRow("SELECT id, image, type, name, full_name, telephone, email, fax, address, arrival, leaving, add_one_day, regular_com, up_com, reward, website, note_reward, check_places FROM object WHERE id=?i", $id);
+	$image = "images/object/defaul.jpg";
+	$website = $row["website"];
+	if($row["image"])
+		$image = "data:image/jpg;base64,".$row["image"];
+	$add_day = "днями";
+	if($row["add_one_day"] == 1)
+		$add_day = "сутками";
+	elseif($row["add_one_day"] == 2)
+		$add_day = "неопред.";
+	$object = get_object($connect, $id, "place");
+	$quota = $row["check_places"];
+	$array = json_decode($row["telephone"], TRUE);
+	$telephone = "";
+	foreach($array as $value){
+		if($telephone)
+			$telephone.= "<br />";
+		$telephone.= "<strong>".$value["value"]."</strong> ".$value["note"];
+	}
+	$array = json_decode($row["email"], TRUE);
+	$email = "";
+	foreach($array as $value){
+		if($email)
+			$email.= "<br />";
+		$email.= "<strong>".$value["value"]."</strong> ".$value["note"];
+	}
+	$dogovor_object = select_object_contract($connect, $id);
+	ob_start();
+?>
+<button type="button" class="btn btn-warning btn-xs" onclick="show_prev_page()"><i class="fa fa-angle-double-left"></i> вернуться назад</button>
+<div class="form-horizontal panel panel-primary" style="margin-top: 10px">
+	<div class="panel-heading"><?php echo $object; ?>&nbsp;&nbsp;<i class="fa fa-ellipsis-h pointer" onclick="show_menu_object('<?php echo $id; ?>')" id="object-active"></i></div>
+	<div class="panel-body">
+		<div class="form-group form-group-margin">
+			<div class="col-sm-2 center">
+				<img class="img-thumbnail" src="<?php echo $image; ?>" />
+				<?php if($quota > 0){ ?>
+				<div>
+					<span class="pointer" onclick="show_quota_object_card(<?php echo $id; ?>)" title="Квота мест">
+					<?php if($quota == 1){ ?>
+						<i class="fa fa-text-width fa-4x text-success"></i>
+					<?php } ?>
+					<?php if($quota == 2){ ?>
+						<i class="fa fa-check-square fa-4x text-success"></i>
+					<?php } ?>
+					<?php if($quota == 3){ ?>
+						<i class="fa fa-product-hunt fa-4x text-success"></i>
+					<?php } ?>
+					</span>
+				</div>
+				<?php } ?>
+			</div>
+			<div class="col-sm-10">
+				<div class="form-horizontal list-group">
+					<?php if($telephone){ ?>
+					<div class="list-group-item">
+						<div class="form-group form-group-margin">
+							<label class="col-sm-3 control-label-element">Телефон</label>
+							<div class="col-sm-9">
+								<?php echo $telephone; ?>
+							</div>
+						</div>
+					</div>
+					<?php } ?>
+					<?php if($email){ ?>
+					<div class="list-group-item">
+						<div class="form-group form-group-margin">
+							<label class="col-sm-3 control-label-element">Email</label>
+							<div class="col-sm-9">
+								<?php echo $email; ?>
+							</div>
+						</div>
+					</div>
+					<?php } ?>
+					<div class="list-group-item">
+						<div class="form-group form-group-margin">
+							<label class="col-sm-3 control-label-element">Официальный сайт</label>
+							<div class="col-sm-3">
+								<a href="<?php echo $website; ?>" target="_blank"><?php echo str_replace("http://", "", $website); ?></a>
+							</div>
+							<label class="col-sm-3 control-label-element">Считаем</label>
+							<div class="col-sm-3">
+								<?php echo $add_day; ?>&nbsp;
+							</div>
+						</div>
+					</div>
+					<?php if($row["arrival"]){ ?>
+					<div class="list-group-item">
+						<div class="form-group form-group-margin">
+							<label class="col-sm-3 control-label-element">Заезд</label>
+							<div class="col-sm-3">
+								<?php echo $row["arrival"]; ?>
+							</div>
+							<label class="col-sm-3 control-label-element">Выезд</label>
+							<div class="col-sm-3">
+								<?php echo $row["leaving"]; ?>
+							</div>
+						</div>
+					</div>
+					<?php } ?>
+					<div class="list-group-item">
+
+						<form class="form-inline" data-object-id="<?=$row['id']?>">
+						   <div class="form-group form-group-margin" data-id="">
+					           <div class="col-sm-6">
+				                   <label class="col-sm-6 control-label">Комиссия агентствам</label>
+				                   <div class="col-sm-6 input-group object-<?=$row['id']?>">
+			                           <input type="number" min="0" step="1" class="form-control update regular-value" name="regular_com" value="<?=$row["regular_com"]; ?>" <?=$id_rights <= 3 ? 'disabled' : '' ?> />
+
+				                   <span class="input-group-addon">%</span> 
+				                   </div>
+					           </div>
+					           <div class="col-sm-6">
+				                   <label class="col-sm-6 control-label">Вознаграждение</label>
+				                   <div class="col-sm-6 input-group object-<?=$row['id']?>">
+			                           <input type="number" min="0" step="1" class="form-control update reward-value" name="reward"  value="<?=$row["reward"]; ?>" <?=$id_rights <= 3 ? 'disabled' : '' ?> />
+				                   <span class="input-group-addon">%</span>
+				                   </div>
+					           </div>
+						    </div>
+						</form>
+<!--
+						<div class="form-group form-group-margin">
+							<label class="col-sm-3 control-label-element">Комиссия агентствам</label>
+							<div class="col-sm-3">
+								<?php echo $row["regular_com"]; ?>%
+							</div>
+							<label class="col-sm-3 control-label-element">Вознаграждение</label>
+							<div class="col-sm-3">
+								<?php echo $row["reward"]; ?>%
+							</div>
+						</div>
+-->
+					</div>
+						<?php if($row["note_reward"] != ""){ ?>
+					<div class="list-group-item">
+						<div class="form-group form-group-margin">
+							<label class="col-sm-3 control-label-element">Примечание к вознаграждению</label>
+							<div class="col-sm-9">
+								<?php echo $row["note_reward"]; ?>
+							</div>
+						</div>
+					</div>
+						<?php } ?>
+					<div class="list-group-item">
+						<div class="form-group form-group-margin">
+							<label class="col-sm-3 control-label-element">Договор</label>
+							<div class="col-sm-9">
+								<div class="contracts-object">
+							<?php foreach($dogovor_object as $dogovor){ ?>
+									<div class="contract-object-<?php echo $dogovor['id']; ?>">
+										<?php echo view_object_contract($dogovor); ?>
+									</div>
+							<?php } ?>
+								</div>
+							<?php if($id_rights >= 4){ ?>
+								<div class="pull-right">
+									<button class="btn btn-sm btn-primary" onclick="add_new_contract_object(<?php echo $id; ?>)">Новый договор</button>
+								</div>
+							<?php } ?>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="panel-footer">
+		<div class="btn-group btn-group-justified nav-object">
+			<div class="btn-group">
+				<button type="button" class="btn btn-default desc-object" onclick="view_description_object('<?php echo $id; ?>')"><i class="fa fa-pencil-square-o"></i> Описание</button>
+			</div>
+			<div class="btn-group">
+				<button type="button" class="btn btn-default room-object" onclick="view_object_rooms('<?php echo $id; ?>')"><i class="fa fa-codepen"></i> Номера</button>
+			</div>
+			<div class="btn-group">
+				<button type="button" class="btn btn-default price-object" onclick="view_dates_price_object('<?php echo $id; ?>')"><i class="fa fa-rub"></i></i> Цены</button>
+			</div>
+			<div class="btn-group">
+				<button type="button" class="btn btn-default promo-object" onclick="view_promotions_object('<?php echo $id; ?>')"><i class="fa fa-star"></i> Акции</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="infa_object"></div>
+<?php
+	$html = ob_get_clean();
+	return $html;
+}
+
+function show_menu_object(){
+	global $id_rights;
+	$id = $_POST["id"];
+?>
+	<span onclick="edit_object_info('<?php echo $id; ?>')">Редактировать</span>
+	<span onclick="edit_object_sync_info('<?php echo $id; ?>')">Синхронизация 1С</span>
+<?php
+}
+
+function edit_object($connect){
+	$id = $_POST["id"];
+	$row = $connect->getRow("SELECT name, full_name, type, telephone, email, fax, address, full_name, leaving, arrival, add_one_day, regular_com, up_com, reward, website, note_reward FROM object WHERE id=?i", $id);
+	$select = array(0, 1, 2);
+	$select[$row["add_one_day"]] = " SELECTED ";
+	$add_one_day = "<select class='form-control' id='add_one_day'><option value='0' ".$select[0].">днями</option><option value='1' ".$select[1].">сутками</option><option value='2' ".$select[2].">неопределенно</option></select>";
+	$telephone = json_decode($row["telephone"], TRUE);
+	$email = json_decode($row["email"], TRUE);
+	$row = clear_quotes($row);
+	ob_start();
+?>
+<div class="form-horizontal panel panel-default edit">
+	<div class="panel-heading"><i class="fa fa-pencil"></i> Изменить объект «<?php echo $row["name"]; ?>»</div>
+	<div class="panel-body">
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Полное название</label>
+			<div class="col-sm-9">
+				<input type="text" id="full_name" class="form-control" value="<?php echo $row['full_name']; ?>" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Адрес</label>
+			<div class="col-sm-9">
+				<input type="text" id="address" class="form-control" value="<?php echo $row['address']; ?>" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Официальный сайт</label>
+			<div class="col-sm-9">
+				<input type="text" class="form-control object-website" value="<?php echo $row['website']; ?>" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Примечание к вознаграждению</label>
+			<div class="col-sm-9">
+				<textarea class="form-control object-note-reward"><?php echo $row["note_reward"]; ?></textarea>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Считаем</label>
+			<div class="col-sm-3">
+				<?php echo $add_one_day; ?>
+			</div>
+			<label class="col-sm-3 control-label">Факс</label>
+			<div class="col-sm-3">
+				<input type="text" id="fax" class="form-control" value="<?php echo $row['fax']; ?>" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Заезд</label>
+			<div class="col-sm-3">
+				<input type="text" id="arrival" class="form-control" value="<?php echo $row['arrival']; ?>" />
+			</div>
+			<label class="col-sm-3 control-label">Выезд</label>
+			<div class="col-sm-3">
+				<input type="text" id="leaving" class="form-control" value="<?php echo $row['leaving']; ?>" />
+			</div>
+		</div>
+		<div class="form-group telephone">
+			<div class="col-sm-5">Телефон</div>
+			<div class="col-sm-5">Примечание</div>
+		<?php foreach($telephone as $value){ ?>
+			<div class="object_infa">
+				<div class="col-sm-5">
+					<div class="input-group">
+						<span class="input-group-addon"><i class="fa fa-phone"></i></span>
+						<input type="text" class="form-control value" value="<?php echo $value['value']; ?>" />
+					</div>
+				</div>
+				<div class="col-sm-5">
+					<input type="text" class="form-control note" value="<?php echo $value['note']; ?>" />
+				</div>
+				<div class="col-sm-2">
+					<button class="btn btn-danger btn-xs" onclick="$(this).parent().parent().remove()"><i class="fa fa-times-circle"></i> Удалить</button>
+				</div>
+			</div>
+		<?php } ?>
+			<div class="new object_infa">
+				<div class="col-sm-5">
+					<div class="input-group">
+						<span class="input-group-addon"><i class="fa fa-phone"></i></span>
+						<input type="text" class="form-control value" />
+					</div>
+				</div>
+				<div class="col-sm-5">
+					<input type="text" class="form-control note" />
+				</div>
+				<div class="col-sm-2">
+					<button class="btn btn-success btn-xs" onclick="add_new_contact_object('telephone')"><i class="fa fa-plus-circle"></i> Добавить</button>
+				</div>
+			</div>
+		</div>
+		<div class="form-group email">
+			<div class="col-sm-5">Email</div>
+			<div class="col-sm-5">Примечание</div>
+		<?php foreach($email as $value){ ?>
+			<div class="object_infa">
+				<div class="col-sm-5">
+					<div class="input-group">
+						<span class="input-group-addon">@</span>
+						<input type="text" class="form-control value" value="<?php echo $value['value']; ?>" />
+					</div>
+				</div>
+				<div class="col-sm-5">
+					<input type="text" class="form-control note" value="<?php echo $value['note']; ?>" />
+				</div>
+				<div class="col-sm-2">
+					<button class="btn btn-danger btn-xs" onclick="$(this).parent().parent().remove()"><i class="fa fa-times-circle"></i> Удалить</button>
+				</div>
+			</div>
+		<?php } ?>
+			<div class="new object_infa">
+				<div class="col-sm-5">
+					<div class="input-group">
+						<span class="input-group-addon">@</span>
+						<input type="text" class="form-control value" />
+					</div>
+				</div>
+				<div class="col-sm-5">
+					<input type="text" class="form-control note" />
+				</div>
+				<div class="col-sm-2">
+					<button class="btn btn-success btn-xs" onclick="add_new_contact_object('email')"><i class="fa fa-plus-circle"></i> Добавить</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="panel-footer" style="text-align: right">
+		<button type="button" class="btn btn-success btn-sm" onclick="save_object_info(<?php echo $id; ?>)"><i class="fa fa-check-circle"></i> Сохранить</button>
+		<button type="button" class="btn btn-danger btn-sm" onclick="view_object(<?php echo $id; ?>)"><i class="fa fa-times-circle"></i> Отмена</button>
+	</div>
+</div>
+<?php
+	$html = ob_get_clean();
+	return $html;
+}
+
+function update_object_info($connect){
+	$id = $_POST["id"];
+	$website = $_POST["website"];
+	if(!substr_count($website, "http"))
+		$website = "http://".$website;
+	$connect->query("UPDATE object SET full_name=?s, telephone=?s, email=?s, fax=?s, address=?s, arrival=?s, leaving=?s, add_one_day=?s, note_reward=?s, website=?s WHERE id=?i", $_POST["name"], $_POST["telephone"], $_POST["email"], $_POST["fax"], $_POST["address"], $_POST["arrival"], $_POST["leaving"], $_POST["add_one_day"], $_POST["note_reward"], $website, $id);
+}
+
+function select_name_object($connect){
+	$id = $_POST["id"];
+	return get_object($connect, $id);
+}
+
+function show_review_rating($connect){
+	ob_start();
+?>
+<div class="form-horizontal panel panel-default edit">
+	<div class="panel-body">
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Менеджер</label>
+			<div class="col-sm-9">
+				<?php echo get_managers($connect, "filter"); ?>
+			</div>
+		</div>
+		<div class="form-group form-group-margin">
+			<label class="col-sm-3 control-label">Объект</label>
+			<div class="col-sm-9" id="object_name">
+				<input type="text" class="form-control id-object" id="object" onkeyup="find_klient(event, 'object', 'object', 'use_object')" name="">
+			</div>
+		</div>
+	</div>
+	<div class="panel-footer" style="text-align: right">
+		<button type="button" class="btn btn-primary btn-sm" onclick="search_rating()"><i class="fa fa-search"></i> Найти</button>
+	</div>
+</div>
+<div id="rating-html"></div>
+<?php
+	$html = ob_get_clean();
+	return $html;
+}
+
+function search_rating($connect){
+	global $id_rights;
+	$id_obj = $_POST["id_obj"];
+	$zapros_for_mysql = "";
+	if($id_obj)
+		$zapros_for_mysql = " id_obj=$id_obj ";
+	if($zapros_for_mysql)
+		$zapros_for_mysql.= "AND";
+	$zapros_for_mysql.= " (status=3 OR status=4) ";
+	$data = $connect->getAll("SELECT id, status, id_obj, schet, clean, comfort, location, staff, ratio, leisure, treatment, DATE_FORMAT(date_send, '%d.%m.%Y') as date, positive, negative, advice, company_rating FROM rating WHERE ".$zapros_for_mysql." ORDER BY date_send DESC");
+	if(!$data)
+		return "<div class='alert alert-info'><i class='fa fa-exclamation-triangle'></i> Ничего не найдено</div>";
+?>
+	<table class="table table-condensed table-bordered">
+	<tr>
+		<th>Дата</th>
+		<th>Объект</th>
+		<th title="Средняя оценка"><i class="fa fa-star icon_star"></i></th>
+		<th colspan="2"></th>
+	</tr>
+<?php
+	foreach($data as $row){
+		$object = get_object($connect, $row["id_obj"]);
+		$count = 6;
+		$average = $row["clean"] + $row["comfort"] + $row["location"] + $row["staff"] + $row["treatment"] + $row["leisure"] + $row["ratio"];
+		if($row["treatment"])
+			$count++;
+		if(!$row["schet"])
+			 $row["schet"] = "создан";
+		$average = round($average * 2 / $count, 1);
+		$class = "";
+		if($row["status"] == 4)
+			$class = " class='danger' ";
+		ob_start();
+?>
+		<tr <?php echo $class; ?>>
+			<td width="10%"><?php echo $row["date"]; ?></td>
+			<td width="10%"><?php echo $object." (".$row["schet"].")"; ?></td>
+			<td width="5%"><?php echo $average; ?></td>
+			<td width="70%">
+				<?php if($row["positive"]){ ?>
+					<div class="alert alert-success"><i class="fa fa-plus-circle"></i> <?php echo $row["positive"]; ?></div>
+				<?php } ?>
+				<?php if($row["negative"]){ ?>
+					<div class="alert alert-danger"><i class="fa fa-minus-circle"></i> <?php echo $row["negative"]; ?></div>
+				<?php } ?>
+				<?php if($row["advice"]){ ?>
+					<div class="alert alert-info"><i class="fa fa-thumbs-o-up"></i> <?php echo $row["advice"]; ?></div>
+				<?php } ?>
+				<?php if($row["company_rating"]){ ?>
+					<div class="alert alert-default"><i class="fa fa-smile-o"></i> <?php echo $row["company_rating"]; ?></div>
+				<?php } ?>
+			</td>
+			<td width="5%" class="center">
+				<?php if($id_rights == 5){ ?>
+					<button class="btn btn-default btn-sm" onclick="edit_rating('<?php echo $row['id']; ?>')">&nbsp;<i class="fa fa-pencil"></i>&nbsp;</button>
+				<?php } ?>
+			</td>
+		</tr>
+<?php
+	}
+?>
+	</table>
+<?php
+}
+
+function view_description_object($connect){
+	$id = $_POST["id"];
+	$row = $connect->getRow("SELECT name, type, id_profile, id_methods, id_infa, id_services, service_info FROM object WHERE id=?i", $id);
+	$images = $connect->getAll("SELECT name, basename FROM image WHERE id_subject=?i", $id);
+?>
+<div class="panel panel-default">
+	<div class="form-horizontal list-group">
+		<div class="list-group-item list-hover-item">
+			<div class="form-group form-group-margin">
+				<label class="col-sm-2 control-label-element">Инфраструктура</label>
+				<div class="col-sm-10">
+					<?php echo mb_strtolower(parse_index_string($connect, $row["id_infa"], "infa", "_", ", "), "UTF-8"); ?>
+				</div>
+			</div>
+		</div>
+		<div class="list-group-item list-hover-item">
+			<div class="form-group form-group-margin">
+				<label class="col-sm-2 control-label-element">Профили лечения</label>
+				<div class="col-sm-10">
+					<?php echo mb_strtolower(parse_index_string($connect, $row["id_profile"], "profile", "_", ", "), "UTF-8"); ?>
+				</div>
+			</div>
+		</div>
+		<div class="list-group-item list-hover-item">
+			<div class="form-group form-group-margin">
+				<label class="col-sm-2 control-label-element">Методы лечения</label>
+				<div class="col-sm-10">
+					<?php echo mb_strtolower(parse_index_string($connect, $row["id_methods"], "methods", "_", ", "), "UTF-8"); ?>
+				</div>
+			</div>
+		</div>
+		<div class="list-group-item list-hover-item">
+			<div class="form-group form-group-margin">
+				<label class="col-sm-2 control-label-element">Служебная информация</label>
+				<div class="col-sm-10">
+					<?php echo str_replace("\n", "<br />", $row["service_info"]); ?>
+				</div>
+			</div>
+		</div>
+        <div class="list-group-item list-hover-item">
+	        <div class="form-group form-group-margin">
+               <label class="col-sm-2 control-label-element">Услуги объекта</label>
+               <div class="col-sm-10">
+                       <?php
+                       $services = json_decode($row["id_services"], TRUE);
+                       $type = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]);
+                       $array_services = $connect->getAll("SELECT id, name, icon FROM services");
+                       ?>
+                       <ul class="list-unstyled list-icons">
+                       
+                       <?php foreach($array_services as $service){
+                       $icon = "";
+                       if($service["icon"])
+                           $icon = "<i class='fa ".$service["icon"]."'></i>";
+                       $id_s = $service["id"];
+                       if(!isset($services[$id_s]))
+                           $services[$id_s] = "";
+                       ?>
+                       <li class="row">
+                           <div class="col-sm-4">
+                                   <?php echo $icon." ".$service["name"]; ?> 
+                           </div>
+                           <div class="col-sm-8">
+                                   <?=$services[$id_s] ? $services[$id_s] : ' - ' ?>
+                           </div>
+                       </li>
+                       <?php } ?>
+                   </ul>
+               </div>
+	       </div>
+		</div>
+
+		<div class="list-group-item list-hover-item">
+			<div class="form-group form-group-margin">
+				<label class="col-sm-2 control-label-element">Картинки</label>
+				<div class="col-sm-10">
+					<?php foreach($images as $image){
+					if(!$image["name"])
+						$image["name"] = "не указано";
+					?>
+					<a href="images/service/<?php echo $image['basename']; ?>" target="_blank"><?php echo $image['name']; ?></a>&nbsp;
+					<?php
+					}
+					?>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="panel-footer text-right">
+		<button type="button" class="btn btn-default btn-sm" onclick="edit_service_information_object('<?php echo $id; ?>', 'object')"><i class="fa fa-pencil"></i> Изменить служебную информацию</button>
+		<button type="button" class="btn btn-success btn-sm" onclick="add_new_picture_object('<?php echo $id; ?>')"><i class="fa fa-picture-o"></i> Новая картинка</button>
+	</div>
+</div>
+<?php
+}
+
+function form_new_document($connect){
+?>
+<div class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+				<h4 class="modal-title">Загрузить новую картинку</h4>
+			</div>
+			<div class="modal-body form-horizontal new-document">
+				<div class="form-group form-group-margin">
+					<label class="col-sm-4 control-label">Название файла</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control name-document" />
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer text-center">
+				<button type="button" class="btn btn-primary btn-sm" id="uploadButton"><i class="fa fa-file-image-o"></i> Выбрать фото</button>
+			</div>
+		</div>
+	</div>
+</div>
+<?php
+}
+
+function upload_new_image_object($connect){
+	$id = $_POST["id"];
+	$photo = $_POST["file"];
+	$name = $_POST["name"];
+	$basename = basename($photo);
+	$connect->query("INSERT INTO image(name, id_subject) VALUES (?s, ?i)", $name, $id);
+	$last = $connect->insertId();
+	$basename = $last."_".$basename;
+	$connect->query("UPDATE image SET basename=?s WHERE id=?i", $basename, $last);
+	copy($photo, "images/service/".$basename);
+	unlink($photo);
+}
+
+function find_object($connect){
+	$head = "";
+	$region = "";
+	$country = "";
+	$direction = "";
+	$zapros_for_mysql = "";
+	if(isset($_POST["head"]))
+		$head = $_POST["head"];
+	if(isset($_POST["region"]))
+		$region = $_POST["region"];
+	if(isset($_POST["country"]))
+		$country = $_POST["country"];
+	if(isset($_POST["direction"]))
+		$direction = $_POST["direction"];
+	if($region)
+		$zapros_for_mysql = " id_reg=".$region;
+	elseif($head)
+		$zapros_for_mysql = " name LIKE '$head%' ";
+	elseif($direction)
+		$zapros_for_mysql = " direction=".$direction;
+	$object = "";
+	$direction_html = "";
+	if($region){
+		$data = $connect->getAll("SELECT id, name FROM direction_object WHERE id_reg=?i", $region);
+		foreach($data as $row){
+			$id_dir = $row["id"];
+			ob_start();
+	?>
+		<div class="col-sm-4 well well-sm pointer direction-<?php echo $id_dir; ?>" onclick="find_object_by_direction('<?php echo $id_dir; ?>')">
+			<?php echo $row["name"]; ?>
+		</div>
+	<?php
+			$direction_html.= ob_get_clean();
+		}
+	}elseif($country){
+		$data = $connect->getAll("SELECT id, name FROM direction_object WHERE id_country=?i", $country);
+		foreach($data as $row){
+			$id_dir = $row["id"];
+			ob_start();
+	?>
+		<div class="col-sm-4 well well-sm pointer direction-<?php echo $id_dir; ?>" onclick="find_object_by_direction('<?php echo $id_dir; ?>')">
+			<?php echo $row["name"]; ?>
+		</div>
+	<?php
+			$direction_html.= ob_get_clean();
+		}
+	}
+	$data = $connect->getAll("SELECT id, type, name, image FROM object WHERE ".$zapros_for_mysql." AND active=0 ORDER BY name");
+	foreach($data as $row){
+		$image = "images/object/defaul.jpg";
+		if($row["image"])
+			$image = "data:image/jpg;base64,".$row["image"];
+		$type = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]);
+		ob_start();
+?>
+	<div class="col-sm-4 well well-sm">
+		<img src="<?php echo $image; ?>" class="img-head-small" />
+		<p class="pointer" onclick="view_object('<?php echo $row['id']; ?>')"><i class="fa fa-home"></i> <?php echo $type." ".$row["name"]; ?></p>
+		<div class="clearfix"></div>
+	</div>
+<?php
+		$object.= ob_get_clean();
+	}
+	ob_start();
+?>
+<?php if(!$direction){ ?>
+	<div class="form-horizontal">
+	<?php if($direction_html){ ?>
+		<div class="alert alert-info well-sm">Направления</div>
+		<div class="div-direction">
+			<?php echo $direction_html; ?>
+		</div>
+		<div class="clearfix"></div>
+		<div class="div-object">
+	<?php }else{ ?>
+		<div class="alert alert-info well-sm">Объекты</div>
+		<div>
+			<?php echo $object; ?>
+		</div>
+	<?php } ?>
+	</div>
+<?php }else{ ?>
+	<div class="alert alert-info well-sm">Объекты</div>
+	<div>
+		<?php echo $object; ?>
+	</div>
+<?php } ?>
+<?php
+	$html = ob_get_clean();
+	echo $html;
+}
+
+function view_object_rooms($connect){
+	global $directory;
+?>
+	<div class="list-group panel panel-default form-horizontal rooms">
+<?php
+	$object = $_POST["id"];
+	$region = $connect->getOne("SELECT id_reg FROM object WHERE id=?i", $object);
+	$data = $connect->getAll("SELECT id, name, active FROM room WHERE id_obj=?i ORDER BY active, priority, housing DESC", $object);
+	foreach($data as $row){
+		$room = $row["id"];
+		$name = get_room($connect, $room, "full");
+		$class = "";
+		if($row["active"] == 1)
+			$class = "list-group-item-danger";
+		$folder = $directory."/temp/images/".$region."/".$object."/".$room."/small/";
+		$have = 0;
+		$folder_open = opendir($folder);
+		while($image = readdir($folder_open)){
+			if(($image != ".") AND ($image != "..") AND ($image)){
+				$have = 1;
+				break;
+			}
+		}
+	?>
+	<div class="list-group-item div-room-<?php echo $room; ?> <?php echo $class; ?>" room="<?php echo $room; ?>">
+		<div class="form-group form-group-margin">
+			<div class="col-sm-1 text-center">
+				<i class="fa fa-align-justify handle pointer"></i>
+			</div>
+			<div class="col-sm-7 name-room-<?php echo $room; ?>">
+				<?php echo $name; ?>
+			</div>
+		</div>
+	</div>
+	<?php
+	}
+?>
+	</div>
+<?php
+}
+
+function update_priority_room($connect){
+	$data = json_decode($_POST["data"], TRUE);
+	foreach($data as $index => $room)
+		$connect->query("UPDATE room SET priority=?i WHERE id=?i", $index + 1, $room);
+}
+
+function edit_object_sync_info($connect){
+	$id = $_POST["id"];
+	$row = $connect->getRow("SELECT 1C_full_name, inn, 1C_code, nomenclature, bank_login FROM object WHERE id=?i", $id);
+	$row = clear_quotes($row);
+?>
+<div class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+				<h4 class="modal-title">Изменить информацию <?php echo get_object($connect, $id, "type"); ?></h4>
+			</div>
+			<div class="modal-body form-horizontal edit-object">
+				<div class="form-group">
+					<label class="col-sm-4 control-label">Полное название</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control full-name-object" value="<?php echo $row['1C_full_name']; ?>" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label">ИНН</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control inn-object" value="<?php echo $row['inn']; ?>" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label">Код контрагента</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control code-1C" value="<?php echo $row['1C_code']; ?>" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label">Код номенклатуры</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control nomenclature" value="<?php echo $row['nomenclature']; ?>" />
+					</div>
+				</div>
+				<div class="form-group form-group-margin">
+					<label class="col-sm-4 control-label">Логин Альфа-банк</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control bank-login" value="<?php echo $row['bank_login']; ?>" />
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success btn-sm" onclick="update_object_sync_info(<?php echo $id; ?>)"><i class="fa fa-check-circle"></i> Сохранить</button>
+			</div>
+		</div>
+	</div>
+</div>
+<?php
+}
+
+function update_object_sync_info($connect){
+	$_POST = clear_array($_POST);
+	$id = $_POST["id"];
+	$full = $_POST["full"];
+	$code = $_POST["code"];
+	$inn = $_POST["inn"];
+	$nomenclature = $_POST["nomenclature"];
+	$bank_login = $_POST["login"];
+	$connect->query("UPDATE object SET 1C_full_name=?s, inn=?i, 1C_code=?s, nomenclature=?s, bank_login=?s WHERE id=?i", $full, $code, $inn, $nomenclature, $bank_login, $id);
+}
+
+function edit_service_information_object($connect){
+	$id = $_POST["id"];
+	$info = $connect->getOne("SELECT service_info FROM object WHERE id=?i", $id);
+?>
+<div class="modal fade">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+				<h4 class="modal-title">Изменить информацию объекта</h4>
+			</div>
+			<div class="modal-body form-horizontal service-information">
+
+				<div class="form-group form-group-margin">
+					<div class="col-sm-12">
+						<textarea class="form-control information-object"><?php echo $info; ?></textarea>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success btn-sm" onclick="update_service_information_object('<?php echo $id; ?>')"><i class="fa fa-check-circle"></i> Сохранить</button>
+			</div>
+		</div>
+	</div>
+</div>
+<?php
+}
+
+function update_service_information_object($connect){
+	$id = $_POST["id"];
+	$info = strip_tags($_POST["info"]);
+	$connect->query("UPDATE object SET service_info=?s WHERE id=?i", $info, $id);
+}
+
+function view_all_commission_object($connect){
+	global $id_rights;
+	$result = array("right" => 0, "region" => array());
+	if($id_rights > 3)
+		$result["right"] = 1;
+	$data = $connect->getAll("SELECT id, name FROM region WHERE id_country=1 ORDER BY name");
+	foreach($data as $row){
+		$id_region = $row["id"];
+		$region = get_translit(str_replace(" ", "-", $row["name"]));
+		$result["region"][$region] = array("name" => $row["name"], "object" => array());
+		$objects = $connect->getAll("SELECT id, name, type, regular_com, reward FROM object WHERE active=0 AND id_reg=?i", $id_region);
+		foreach($objects as $object){
+			$id = $object["id"];
+			$result["region"][$region]["object"][$id] = array();
+			$result["region"][$region]["object"][$id]["name"] = get_object($connect, $object["id"], "place");
+			$result["region"][$region]["object"][$id]["reward"] = $object["reward"];
+			$result["region"][$region]["object"][$id]["commis"] = $object["regular_com"];
+		}
+	}
+	return json_encode($result);
+}
+
+function update_commission_object($connect){
+	$object = $_POST["object"];
+	$regular = $_POST["regular"];
+	$reward = $_POST["reward"];
+	$connect->query("UPDATE object SET regular_com=?s, reward=?s WHERE id=?i", $regular, $reward, $object);
+	$row = $connect->getRow("SELECT regular_com, reward FROM object WHERE id=?i", $object);
+	return json_encode($row);
+}
+
+function select_object_contract($connect, $object){
+	$today = date("Y-m-d");
+	$data = $connect->getAll("SELECT id, DATE_FORMAT(date, '%d.%m.%Y') as date_cont, number, type, active, status FROM object_contract WHERE object=?i AND date>=?s ORDER BY date DESC", $object, $today);
+	return $data;
+}
+
+function view_object_contract($dogovor){
+	global $id_rights;
+	$type_dogovor = "Договор санатория";
+	if($dogovor["type"] == "sanata")
+		$type_dogovor = "Договор Саната";
+	$class_label = "danger";
+	$label = "Скан не получен";
+	if($dogovor["status"] == 1 OR $dogovor["status"] == 2)
+		$class_label = "success";
+	if($dogovor["status"] == 1)
+		$label = "Скан получен";
+	if($dogovor["status"] == 2)
+		$label = "Оригинал получен";
+	ob_start();
+?>
+	<div class="form-group">
+		<div class="col-sm-6">
+			<?php echo $type_dogovor." № ".$dogovor["number"].", действует до ".$dogovor["date_cont"]; ?>
+			<span class="label label-<?php echo $class_label; ?>"><?php echo $label; ?></span>
+		</div>
+		<div class="col-sm-6">
+		<?php if($id_rights >= 4){ ?>
+			<button class="btn btn-default btn-xs" onclick="edit_contract_object(<?php echo $dogovor['id']; ?>)"><i class="fa fa-pencil"></i> изменить</button>
+		<?php if($dogovor["status"] == 0){ ?>
+			<button class="btn btn-success btn-xs" onclick="update_status_contract_object(<?php echo $dogovor['id']; ?>, 1)"><i class="fa fa-check"></i> скан получен</button>
+		<?php } ?>
+		<?php if($dogovor["status"] == 1){ ?>
+			<button class="btn btn-success btn-xs" onclick="update_status_contract_object(<?php echo $dogovor['id']; ?>, 2)"><i class="fa fa-check"></i> оригинал получен</button>
+		<?php } ?>
+		<?php if($dogovor["status"] == 1 OR $dogovor["status"] == 2){ ?>
+			<button class="btn btn-danger btn-xs" onclick="update_status_contract_object(<?php echo $dogovor['id']; ?>, 0)"><i class="fa fa-times"></i> сбросить статус</button>
+		<?php } ?>
+		<?php } ?>
+		</div>
+	</div>
+<?php
+	$html = ob_get_clean();
+	return $html;
+}
+
+function save_new_contract_object($connect){
+	$object = $_POST["object"];
+	$type = $_POST["type"];
+	$date = $_POST["date"];
+	$number = $_POST["number"];
+	$connect->query("INSERT INTO object_contract(object, type, number, date) VALUES (?i, ?s, ?s, ?s)", $object, $type, $number, $date);
+	$id = $connect->insertId();
+	$data = array();
+	$row = $connect->getRow("SELECT id, DATE_FORMAT(date, '%d.%m.%Y') as date_cont, number, type, active, status FROM object_contract WHERE id=?i", $id);
+	$data["id"] = $id;
+	$data["html"] = view_object_contract($row);
+	return json_encode($data);
+}
+
+function edit_contract_object($connect){
+	$id = $_POST["id"];
+	$row = $connect->getRow("SELECT type, number, date FROM object_contract WHERE id=?i", $id);
+	return json_encode($row);
+}
+
+function update_contract_object($connect){
+	$id = $_POST["id"];
+	$type = $_POST["type"];
+	$date = $_POST["date"];
+	$number = $_POST["number"];
+	$connect->query("UPDATE object_contract SET type=?s, number=?s, date=?s WHERE id=?i", $type, $number, $date, $id);
+	$row = $connect->getRow("SELECT id, DATE_FORMAT(date, '%d.%m.%Y') as date_cont, number, type, active, status FROM object_contract WHERE id=?i", $id);
+	$html = view_object_contract($row);
+	return json_encode($html);
+}
+
+function update_status_contract_object($connect){
+	$id = $_POST["id"];
+	$status = $_POST["status"];
+	$connect->query("UPDATE object_contract SET status=?i WHERE id=?i", $status, $id);
+	$row = $connect->getRow("SELECT id, DATE_FORMAT(date, '%d.%m.%Y') as date_cont, number, type, active, status FROM object_contract WHERE id=?i", $id);
+	$html = view_object_contract($row);
+	return json_encode($html);
+}
+
+?>

@@ -1,0 +1,31 @@
+/* COLORS */
+
+	.green-success{
+		color: #007200;
+	}
+
+	.red-danger{
+		color: #AF0500;
+	}
+
+	.yellow-primary{
+		color: #FFFD72;
+	}
+
+/* BG COLORS */
+
+	.red-danger-bg{
+		background: #d9534f;
+	}
+
+	.red-danger-lite-bg{
+		background: #FFB4B2;
+	}
+
+	.green-success-lite-bg{
+		background: #D3FFD3;
+	}
+
+	.yellow-primary-lite-bg{
+		background: #FFFD72;
+	}

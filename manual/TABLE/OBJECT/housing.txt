@@ -1,0 +1,6 @@
+HOUSING - корпус
+
+id
+name - название
+id_obj - id объекта
+description - описание

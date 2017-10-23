@@ -1,0 +1,9 @@
+OBJECT_CONTRACT - договора санаториев
+
+id
+type - тип договора (object - договор санатория, sanata - договор Саната)
+object - id объекта
+active - дейс
+status - статус
+number - номер договора
+date - действует до

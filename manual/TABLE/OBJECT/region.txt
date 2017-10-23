@@ -1,0 +1,10 @@
+REGION - регион
+
+id - id
+name - название
+active - статус (0 - действителен, 1 - в архиве)
+id_country - id страны
+id_direction - id направления
+description - описание
+name_rod - имя в родительном падеже
+meta_desc - мета описание

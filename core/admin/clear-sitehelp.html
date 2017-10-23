@@ -1,0 +1,34 @@
+<script type="text/javascript" src="../../js/strophe/strophe.js"></script>
+
+<script type="text/javascript">
+	var BOSH_SERVICE = 'http://bosh.metajack.im:5280/xmpp-httpbind';
+	var connection = null;
+	var on_connect = function(status){
+		if(status == Strophe.Status.CONNECTING){
+		}else if(status == Strophe.Status.CONNFAIL){
+		}else if(status == Strophe.Status.DISCONNECTING){
+		}else if(status == Strophe.Status.DISCONNECTED){
+		}else if(status == Strophe.Status.CONNECTED){
+			var iq = $iq({type: "set"}).c("query", {xmlns: "jabber:iq:register"}).c("remove");
+			connection.sendIQ(iq);
+			id++;
+			setTimeout('delete_account(id)', 1000);
+		}else{
+			id++;
+			setTimeout('delete_account(id)', 1000);
+		}
+	}
+	id = 3000;
+	end = 3500;
+	delete_account(id);
+	function delete_account(id){
+		if(id > end)
+			return;
+		if(connection)
+			connection.disconnect();
+		connection = new Strophe.Connection(BOSH_SERVICE);
+		var login = 'user'+id+'@185.76.145.105';
+		var pass = 'pass';
+		connection.connect(login, pass, on_connect);
+	}
+</script>

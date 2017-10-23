@@ -1,0 +1,7 @@
+OBJECT_ACCOUNT
+
+id
+login - логин
+password - пароль
+email - эл.почта
+competitors - конкуренты

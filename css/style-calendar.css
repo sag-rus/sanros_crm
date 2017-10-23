@@ -1,0 +1,126 @@
+
+	.quota-room-container{
+		overflow: hidden;
+		overflow-x: scroll;
+	}
+
+	.tr-range td{
+		font-size: 10pt;
+		text-align: center;
+	}
+
+	.no-accessible-place{
+		cursor: not-allowed;
+	}
+
+	.accessible-place{
+		cursor: pointer!important;
+		background: #088C06;
+		color: #FFF;
+	}
+
+	.accessible-place:hover, .accessible-place.ui-selecting, .accessible-place.ui-selected{
+		background: #015900;
+		color: #FFF;
+	}
+
+	.img-small{
+		width: 50px;
+	}
+
+	.div-calendar td{
+		cursor: not-allowed;
+	}
+
+	.td-on-sale{
+		background: #B6FFBA;
+		cursor: pointer!important;
+	}
+
+	.td-on-sale:hover{
+		background: #0A3F00;
+	}
+
+	.td-reserv{
+		font-weight: bold;
+		color: #000;
+	}
+
+	.td-reserv span{
+		display: none;
+	}
+
+	.td-reserv:hover{
+		cursor: help;
+	}
+
+	.ui-selecting.td-on-sale, .ui-selected.td-on-sale{
+		background: #0A3F00;
+	}
+
+	.div-calendar{
+		margin-top: 10px;
+		margin-left: 140px;
+		overflow-x: scroll;  
+		overflow-y: visible;
+	}
+
+	.head-col{
+		position: absolute;
+		width: 140px;
+		left: 0;
+		top: auto;
+        }
+
+	.head-col .name-room{
+		width: 100px;
+		overflow: hidden;
+		display: inline-block;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+
+	.div-calendar th, .div-calendar td{
+		padding: 2px;
+		text-align: left;
+	}
+
+	.div-calendar th{
+		background-color: #DFDFDF;
+		font-weight: bold;
+		color: #000;
+		white-space: nowrap;
+		border: 1px solid #000;
+	}
+
+	.th-days{
+		padding: 0px!important;
+		font-size: 8pt;
+		text-align: center!important;
+	}
+
+	.calendar-table{
+		border-collapse: collapse;
+		width: 100%;
+		background: #fff;
+	}
+
+	.calendar-td{
+		border: 1px solid #D3D3D3;
+		overflow: hidden;
+		max-width: 28px;
+		min-width: 28px;
+		position: relative;
+	}
+
+	.calendar-td span{
+		font-size: 10pt;
+		color: #7C7C7C;
+		top: 1px;
+	}
+
+	.calendar-td span.no-save{
+		font-size: 7pt;
+		color: #000;
+		font-weight: bold;
+	}

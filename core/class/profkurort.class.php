@@ -1,0 +1,69 @@
+<?php
+
+class profkurortSync{
+
+  protected $login;
+  protected $password;
+  protected $date;
+  protected $url;
+  protected $hash;
+
+  function __construct(){
+    $login = "sanataavtobron";
+    $password = "pvn245#oy";
+    $this->login = $login;
+    $this->password = $password;
+    $this->url = "http://test.interhotel.ru/webservice/extoperator.php?wsdl";
+    $this->date = date("Y-m-d")." ".date("H:s");
+    $this->hash = md5($login."-".date("YmdHs")."-".$password);
+  }
+
+  public function get_objects(){
+    $server = new SoapClient($this->url);
+    $data = $server->getObjects("profkurort", $this->date, $this->hash);
+    $data = json_decode($data, TRUE);
+    return $data;
+  }
+
+  public function get_programms($object){
+    $server = new SoapClient($this->url);
+    $data = $server->getProgramms("profkurort", $this->date, $object, $this->hash);
+    $data = json_decode($data, TRUE);
+    return $data;
+  }
+
+  public function get_rooms_object($object){
+    $server = new SoapClient($this->url);
+    $data = $server->getCategs("profkurort", $this->date, $object, $this->hash);
+    $data = json_decode($data, TRUE);
+    return $data;
+  }
+
+  public function get_quota_object($object, $date, $days){
+    $server = new SoapClient($this->url);
+    $data = $server->getQData("profkurort", $this->date, $object, $date, $days, $this->hash);
+    $data = json_decode($data, TRUE);
+    return $data;
+  }
+
+  public function create_booking($object, $arrival, $leaving, $categs, $clidata, $suppdata){
+    $server = new SoapClient($this->url);
+    $data = $server->setOrder("profkurort", $this->date, 0, $object, $arrival, $leaving, "", $categs, $clidata, $suppdata, $this->hash);
+    $data = json_decode($data, TRUE);
+    return $data;
+  }
+
+  public function update_booking($object, $arrival, $leaving, $id_profkurort, $clidata){
+    $server = new SoapClient($this->url);
+    $data = $server->setOrder("profkurort", $this->date, 0, $id_profkurort, $object, $arrival, $leaving, "", $clidata, $this->hash);
+    $data = json_decode($data, TRUE);
+    return $data;
+  }
+
+}
+/*
+class profkurortMySQL(){
+
+}
+*/
+?>
