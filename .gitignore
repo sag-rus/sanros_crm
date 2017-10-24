@@ -11,3 +11,5 @@ time.txt
 cache.*
 core/sync/file
 core/sync/file/*
+
+.idea
