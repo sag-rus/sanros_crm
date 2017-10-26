@@ -255,6 +255,8 @@ function naimenovanie($id_obj, $room = "", $date_z = "", $date_v = "", $days = "
 		$html = "Путевка в СП \"Хазино\" ".$room." ".$date_z."-".$date_v;
 	elseif($id_obj == 47)
 		$html = "Путевка в СП \"Сосновый бор\" ".$room." ".$date_z."-".$date_v;
+	elseif($id_obj == 673)
+		$html = "Санаторий «Сибирь» (Белокуриха) ".$room." ".$date_z."-".$date_v;
 	return $html;
 }
 
@@ -296,11 +298,13 @@ function full_name($id_obj){
 		$html = "ОАО \"БАШНЕФТЬ-СЕРВИС\"";
 	elseif($id_obj == 497)
 		$html = "ОАО \"БАШНЕФТЬ-СЕРВИС\"";
+	elseif($id_obj == 673)
+		$html = "Санаторий «Сибирь» (Россия, Алтайский край, Белокуриха) ";
 	return $html;
 }
 
 function number($id_obj){
-	if($id_obj == 57 OR $id_obj == 59 OR $id_obj == 3 OR $id_obj == 31 OR $id_obj == 15 OR $id_obj == 28 OR $id_obj == 670 OR $id_obj == 22 OR $id_obj == 492 OR $id_obj == 495)
+	if($id_obj == 57 OR $id_obj == 59 OR $id_obj == 3 OR $id_obj == 31 OR $id_obj == 15 OR $id_obj == 28 OR $id_obj == 670 OR $id_obj == 22 OR $id_obj == 492 OR $id_obj == 495 OR $id_obj == 673)
 		return "шт";
 	else
 		return "";

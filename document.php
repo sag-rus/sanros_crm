@@ -109,8 +109,8 @@ if($function){
 		report_agent($connect, $id);
 
 	}elseif($function == 'agency_dogovor'){
-		include_once('print_forms/agency_dogovor.php');
-		review_agency_dogovor($id);
+		include_once($directory."/core/document/agency_dogovor.php");
+		review_agency_dogovor($connect, $id);
 
 	}elseif($function == "review_forma_certificate"){
 

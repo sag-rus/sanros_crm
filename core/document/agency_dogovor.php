@@ -1,11 +1,11 @@
 <?php
 
-function review_agency_dogovor($id){
-	global $firma, $tel, $fax, $sep_address, $leg_address, $BIK, $INN, $KPP, $RS, $KS, $bank, $OKPO, $email, $web_site, $director;
-	$res = mysql_query("SELECT * FROM agency WHERE id='$id'");
-	$a = mysql_fetch_assoc($res);
-	$ag_contract = select_ag_contract($id);
-	$n_contract = $ag_contract['number'];
+function review_agency_dogovor($connect, $id){
+	global $firma, $tel, $fax, $sep_address, $leg_address, $BIK, $INN, $KPP, $RS, $KS, $bank, $OKPO, $email, $web_site, $director; 
+	//$res = mysql_query("SELECT * FROM agency WHERE id='$id'"); 
+	$a = $connect->getAll("SELECT * FROM agency WHERE id=?i",$id); 
+	$ag_contract = end($connect->getAll("SELECT * FROM ag_contract WHERE agency=?i LIMIT 1", $id)); 
+	$n_contract = $ag_contract['number']; 
 	$date_contract = str_replace("-", ".", $ag_contract['date']);
 	ob_start();
 ?>

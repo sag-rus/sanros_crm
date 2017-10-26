@@ -314,7 +314,7 @@ function throw_off_agency_contract(id){
 }
 
 function show_agency_dogovor(id){
-	window.open('pdf.php?func=agency_dogovor&id=' + id, 'Агентский договор');
+	window.open('document.php?func=agency_dogovor&id=' + id, 'Агентский договор');
 }
 
 function show_questionary_agency(id){

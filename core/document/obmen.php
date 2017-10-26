@@ -206,12 +206,12 @@ function review_obmen($connect, $type = "PDF", $id, $for = ""){
 						echo "(".$itog_sum_string.") ".$arr[1]." копеек";
 					?>
 				</div>
-                  <?php
-                  if($number_schet == 57676) {
-                    echo "<div><strong>Предоплата на сумму:</strong> 7500</div>";
-                    echo "<div><strong>Оплата на месте:</strong> 55000</div>";
-                  }
-                  ?>
+				<?php
+					if($number_schet == 57676) {
+						echo "<div><strong>Предоплата на сумму:</strong> 7500</div>";
+						echo "<div><strong>Оплата на месте:</strong> 55000</div>";
+					}
+				?>
 			<?php
 				}
 			?>

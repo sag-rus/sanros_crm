@@ -654,7 +654,7 @@ function check_changes_cabinet_object($connect){
 			<div class="panel-footer text-right">
 				<button type="button" class="btn btn-default btn-sm" onclick="history_object_account(<?php echo $id_account; ?>)"><i class="fa fa-history"></i> История</button>
 				<button type="button" class="btn btn-default btn-sm" onclick="edit_description_object_account(<?php echo $id; ?>)"><i class="fa fa-pencil"></i> Изменить</button>
-				<button type="button" class="btn btn-success btn-sm" onclick="upload_object_price_on_server(<?php echo $id; ?>)" title="Загрузить на сайты цены номеров объекта по датам"><i class="fa fa-check-circle"></i> Загрузить цены на сайты</button>
+				<button type="button" class="btn btn-success btn-sm" onclick="upload_object_price_on_server(<?php echo $id; ?>)" title="Загрузить на сайт цены номеров объекта по датам"><i class="fa fa-check-circle"></i> Загрузить цены на сайты</button>
 			</div>
 		</div>
 	</div>
