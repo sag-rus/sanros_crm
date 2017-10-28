@@ -607,7 +607,7 @@ function filter_do($connect){
 	$data = $connect->getAll($zapros_for_mysql);
 	$num = 0;
 	$all_id = "";
-	$statistics = array("office" => array(), "all_sum" => 0, "num_prepay" => 0, "sum_prepay" => 0, "all_reward" => 0);
+	$statistics = array("office" => array(), "all_sum" => 0, "num_prepay" => 0, "sum_prepay" => 0, "all_reward" => 0, "all_reward_fact" => 0);
 	$office = $connect->getAll("SELECT id, name FROM office");
 	foreach($office as $row){
 		$id_office = $row["id"];
@@ -615,6 +615,7 @@ function filter_do($connect){
 		$statistics["office"][$id_office]["index"] = 0;
 		$statistics["office"][$id_office]["all_sum"] = 0;
 		$statistics["office"][$id_office]["all_reward"] = 0;
+        $statistics["office"][$id_office]["all_reward_fact"] = 0;
 		$statistics["office"][$id_office]["num_prepay"] = 0;
 		$statistics["office"][$id_office]["sum_prepay"] = 0;
 	}
@@ -622,6 +623,7 @@ function filter_do($connect){
 	$statistics["office"][0]["index"] = 0;
 	$statistics["office"][0]["all_sum"] = 0;
 	$statistics["office"][0]["all_reward"] = 0;
+    $statistics["office"][0]["all_reward_fact"] = 0;
 	$statistics["office"][0]["num_prepay"] = 0;
 	$statistics["office"][0]["sum_prepay"] = 0;
 	$index_check = 0;
@@ -742,10 +744,14 @@ function filter_do($connect){
 			$date_z = date_change($row["date_z"]);
 			$date_v = date_change($row["date_v"]);
 			$reward = get_reward_schet($connect, $id_schet);
+			$reward_fact = get_reward_schet($connect,$id_schet,"",true);
 			$statistics["all_sum"]+= $summa;
 			$statistics["all_reward"]+= $reward;
+			$statistics["all_reward_fact"] += $reward_fact;
 			$statistics["office"][$office]["all_sum"]+= $summa;
 			$statistics["office"][$office]["all_reward"]+= $reward;
+            $statistics["office"][$office]["all_reward_fact"]+= $reward_fact;
+
 			$img_del = "";
 			if($active == 3)
 				$img_del = " <i class='fa fa-times-circle text-danger'></i> ";
@@ -826,23 +832,27 @@ function filter_do($connect){
 		ob_start();
 	?>
 	<?php if($type_filter == "report"){ ?>
-	<div class="form-horizontal list-group">
+	<div class="form-horizontal list-group" style="font-size: 13px;">
 		<div class="list-group-item list-group-item-success">
 			<div class="form-group form-group-margin">
 				<div class="col-sm-2">
 					<i class="fa fa-users"></i> По всем
 				</div>
-				<div class="col-sm-4">
-					Результатов: <strong><?php echo $index; ?></strong>
+				<div class="col-sm-3">
+					Всего: <strong><?php echo $index; ?></strong>
 					на сумму <strong><?php echo number_format($statistics["all_sum"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
 				</div>
 				<div class="col-sm-3">
-					Предоплат <strong><?php echo $statistics["num_prepay"]; ?></strong>
+					Предопл. <strong><?php echo $statistics["num_prepay"]; ?></strong>
 					на сумму <strong><?php echo number_format($statistics["sum_prepay"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
 				</div>
-				<div class="col-sm-3">
+				<div class="col-sm-2">
 					Прибыль <strong><?php echo number_format($statistics["all_reward"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
 				</div>
+
+                <div class="col-sm-2">
+                    Прибыль факт. <strong><?php echo number_format($statistics["all_reward_fact"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
+                </div>
 			</div>
 		</div>
 	<?php
@@ -859,17 +869,21 @@ function filter_do($connect){
 				<div class="col-sm-2">
 					<i class="fa fa-home"></i> Офис <?php echo $office["name"]; ?>
 				</div>
-				<div class="col-sm-4">
-					Результатов: <strong><?php echo $office["index"]; ?></strong>
+				<div class="col-sm-3">
+					Всего: <strong><?php echo $office["index"]; ?></strong>
 					на сумму <strong><?php echo number_format($office["all_sum"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
 				</div>
 				<div class="col-sm-3">
-					Предоплат <strong><?php echo $office["num_prepay"]; ?></strong>
+					Предопл. <strong><?php echo $office["num_prepay"]; ?></strong>
 					на сумму <strong><?php echo number_format($office["sum_prepay"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
 				</div>
-				<div class="col-sm-3">
+				<div class="col-sm-2">
 					Прибыль <strong><?php echo number_format($office["all_reward"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
 				</div>
+
+                <div class="col-sm-2">
+                    Прибыль факт. <strong><?php echo number_format($office["all_reward_fact"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
+                </div>
 			</div>
 		</div>
 	<?php

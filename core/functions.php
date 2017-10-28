@@ -813,16 +813,34 @@ function get_reward_object($connect, $object, $date = ""){
 	return $reward;
 }
 
-function get_reward_schet($connect, $id, $type = ""){
+function get_reward_schet($connect, $id, $type = "", $fact = false){
 	$array = array("reward" => 0, "agency" => 0, "bonus" => 0, "correction" => 0, "bank_com" => 0, "discount" => 0);
 	$reward = 0;
 	$reck_reward = $connect->getOne("SELECT reward FROM reckoning WHERE id=?i", $id);
+
+	if($fact) {
+      $payments = $connect->getAll("SELECT id, sum FROM payment WHERE schet=?i AND class='schet'", $id);
+      $pay_sum = 0;
+
+      foreach ($payments as $payment) {
+
+        $pay_sum += $payment['sum'];
+      }
+    }
+
 	if($reck_reward > 0)
 		$reward = $reck_reward;
 	else{
 		$data = $connect->getAll("SELECT id FROM position_reck WHERE schet=?i", $id);
-		foreach($data as $row)
-			$reward+= get_reward_schet_position($connect, $row["id"]);
+		if($fact) {
+          foreach($data as $row)
+            $reward+= get_reward_schet_position_pay($connect, $row["id"],$pay_sum);
+
+        }
+        else {
+          foreach($data as $row)
+            $reward+= get_reward_schet_position($connect, $row["id"]);
+        }
 	}
 	$reward = round($reward, 2);
 	if($type == "EACH")
@@ -878,6 +896,7 @@ function get_reward_schet($connect, $id, $type = ""){
 	$raz+= $bank_com;
 
 	$reward = round($reward - $raz, 2);
+	echo $reward.'<br />';
 	if($type == "EACH"){
 		$array["sum"] = add_null($reck["sum"]);
 		$array["itog"] = add_null($reward);
@@ -896,6 +915,13 @@ function get_reward_schet_position($connect, $id){
 	$all_sum = calculate_position($sum, $number, $type, $days);
 	$reward = $all_sum * ($reward / 100);
 	return add_null($reward);
+}
+
+function get_reward_schet_position_pay($connect, $id, $pay_sum = 0){
+  $row = $connect->getRow("SELECT reward, sum, number, type, days FROM position_reck WHERE id=?i", $id);
+  $reward = $row["reward"];
+  $reward = $pay_sum * ($reward / 100);
+  return add_null($reward);
 }
 
 function get_reward_agency($connect, $id){
