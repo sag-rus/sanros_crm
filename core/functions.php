@@ -817,25 +817,26 @@ function get_reward_schet($connect, $id, $type = "", $fact = false){
 	$array = array("reward" => 0, "agency" => 0, "bonus" => 0, "correction" => 0, "bank_com" => 0, "discount" => 0);
 	$reward = 0;
 	$reck_reward = $connect->getOne("SELECT reward FROM reckoning WHERE id=?i", $id);
-
+    $bonus = $connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND sum < 0", $id);
+    $reck = $connect->getRow("SELECT sum, agency, id_com, id_dis, correction, status FROM reckoning WHERE id=?i", $id);
 	if($fact) {
-      $payments = $connect->getAll("SELECT id, sum FROM payment WHERE schet=?i AND class='schet'", $id);
+      $payments = $connect->getAll("SELECT id, sum FROM payment WHERE schet=?i AND class='schet' AND pay_method <> '0'", $id);
       $pay_sum = 0;
 
       foreach ($payments as $payment) {
-
-        $pay_sum += $payment['sum'];
+        $pay_sum += (float)$payment['sum'];
       }
     }
 
-	if($reck_reward > 0)
+	if($reck_reward > 0) {
 		$reward = $reck_reward;
+    }
 	else{
 		$data = $connect->getAll("SELECT id FROM position_reck WHERE schet=?i", $id);
-		if($fact) {
+		if($fact && $reck['status'] != 5) {
+
           foreach($data as $row)
             $reward+= get_reward_schet_position_pay($connect, $row["id"],$pay_sum);
-
         }
         else {
           foreach($data as $row)
@@ -843,33 +844,48 @@ function get_reward_schet($connect, $id, $type = "", $fact = false){
         }
 	}
 	$reward = round($reward, 2);
+
 	if($type == "EACH")
 		$array["reward"] = add_null($reward);
 	if($type == "ONLY_SAN")
 		return $reward;
-	$reck = $connect->getRow("SELECT sum, agency, id_com, id_dis, correction FROM reckoning WHERE id=?i", $id);
+
 	$raz = 0;
 	if($reck["agency"]){
+
 		$value = $connect->getOne("SELECT value FROM commission WHERE id=?i", $reck["id_com"]);
-		$commission = get_reward_agency($connect, $id);
+		if($fact) {
+          $commission = get_reward_agency($connect, $id, $pay_sum);
+        }
+		else
+		    $commission = get_reward_agency($connect, $id);
+
 		if($type == "EACH")
 			$array["agency"] = add_null($commission);
 		$raz+= $commission;
 	}
-	$bonus = $connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND sum < 0", $id);
+
 	
 	if($bonus){
 		$bonus = abs($bonus);
-		$raz+= $bonus;
-		if($type == "EACH")
-			$array["bonus"] = add_null($bonus);
+        if(!$fact || $reck['status'] == 5) {
+          $raz+= $bonus;
+          if($type == "EACH")
+            $array["bonus"] = add_null($bonus);
+        }
 	}
+
 	if($reck["id_dis"]){
 		$row = $connect->getRow("SELECT value, type FROM discount WHERE id=?i", $reck["id_dis"]);
-		if($row["type"] == 1)
-			$discount = $reck["sum"] * ($row["value"] / 100);
-		else
-			$discount = $row["value"];
+		if($row["type"] == 1) {
+          if($fact)
+              $discount = $pay_sum * ($row["value"] / 100);
+          else
+              $discount = $reck["sum"] * ($row["value"] / 100);
+        }
+		else {
+          $discount = $row["value"];
+        }
 		if($type == "EACH")
 			$array["discount"] = add_null($discount);
 		$raz+= $discount;
@@ -896,7 +912,6 @@ function get_reward_schet($connect, $id, $type = "", $fact = false){
 	$raz+= $bank_com;
 
 	$reward = round($reward - $raz, 2);
-	echo $reward.'<br />';
 	if($type == "EACH"){
 		$array["sum"] = add_null($reck["sum"]);
 		$array["itog"] = add_null($reward);
@@ -924,20 +939,26 @@ function get_reward_schet_position_pay($connect, $id, $pay_sum = 0){
   return add_null($reward);
 }
 
-function get_reward_agency($connect, $id){
+function get_reward_agency($connect, $id, $sum = NULL){
 	$sum_agency = 0;
 	$row = $connect->getRow("SELECT commission_value, id_com FROM reckoning WHERE id=?i", $id);
 	$commission = $row["commission_value"];
 	if($commission > 0)
 		return $commission;
 	$percent = $connect->getOne("SELECT value FROM commission WHERE id=?i", $row["id_com"]);
-	$data = $connect->getAll("SELECT id, reward, sum, days, number, type FROM position_reck WHERE schet=?i", $id);
-	foreach($data as $row){
-		if((int)$row["reward"] != 0)
-			$sum_agency+= calculate_position($row["sum"], $row["number"], $row["type"], $row["days"]);
-	}
-	if($sum_agency == 0)
-		$sum_agency = $connect->getOne("SELECT sum FROM reckoning WHERE id=?i", $id);
+
+	if(!is_null($sum)) {
+	    $sum_agency = $sum;
+    }
+    else {
+      $data = $connect->getAll("SELECT id, reward, sum, days, number, type FROM position_reck WHERE schet=?i", $id);
+      foreach($data as $row){
+        if((int)$row["reward"] != 0)
+          $sum_agency+= calculate_position($row["sum"], $row["number"], $row["type"], $row["days"]);
+      }
+      if($sum_agency == 0)
+        $sum_agency = $connect->getOne("SELECT sum FROM reckoning WHERE id=?i", $id);
+    }
 	return round(($sum_agency / 100) * $percent, 2);
 }
 

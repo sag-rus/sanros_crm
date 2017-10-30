@@ -847,7 +847,7 @@ function filter_do($connect){
 					на сумму <strong><?php echo number_format($statistics["sum_prepay"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
 				</div>
 				<div class="col-sm-2">
-					Прибыль <strong><?php echo number_format($statistics["all_reward"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
+					Прибыль ожид. <strong><?php echo number_format($statistics["all_reward"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
 				</div>
 
                 <div class="col-sm-2">
@@ -878,7 +878,7 @@ function filter_do($connect){
 					на сумму <strong><?php echo number_format($office["sum_prepay"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
 				</div>
 				<div class="col-sm-2">
-					Прибыль <strong><?php echo number_format($office["all_reward"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
+					Прибыль ожид. <strong><?php echo number_format($office["all_reward"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
 				</div>
 
                 <div class="col-sm-2">
