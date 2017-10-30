@@ -64,7 +64,7 @@ echo 1;
 			if(is_null($field))
 				$field = "NULL";
 			else
-				$field = "'".mysql_escape_string( $field )."'";
+				$field = "'".$connect->escapeString($field )."'";
 			if($query == "")
 				$query = $field;
 			else
