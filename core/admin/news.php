@@ -109,8 +109,9 @@ function upload_news_website($connect){
 		$url = "https://саната-тревел.рф";
 	$request = $url."/core/update.website.php";
 	$data = $connect->getAll("SELECT title, text, url, image, DATE_FORMAT(date, '%d.%m.%Y') as date_post, description FROM news WHERE website=?i AND active=1 ORDER BY date DESC", $website);
-	foreach($data as $index => $row)
-		$data[$index]["url"] = mb_strtolower($row["url"], "UTF-8");
+	foreach($data as $index => $row) {
+    $data[$index]["url"] = mb_strtolower($row["url"], "UTF-8");
+	}
 	$params = array(
 		"password" => "jgnbvbpfwbz",
 		"update" => "news",

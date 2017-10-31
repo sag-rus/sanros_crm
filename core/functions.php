@@ -111,9 +111,10 @@ function request_to_url($url, $params){
 	$string = http_build_query($params);
 	curl_setopt($curl, CURLOPT_URL, $url);
 	curl_setopt($curl, CURLOPT_HEADER, 0);
-	curl_setopt($curl, CURLOPT_POST, 1);
-	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($curl, CURLOPT_POST, true);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($curl, CURLOPT_POSTFIELDS, $string);
+    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 
 	$res = curl_exec($curl);
 	$array = json_decode($res, TRUE);
