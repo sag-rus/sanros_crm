@@ -110,7 +110,7 @@ function request_to_url($url, $params){
 	$curl = curl_init($url);
 	$string = http_build_query($params);
 	curl_setopt($curl, CURLOPT_URL, $url);
-	curl_setopt($curl, CURLOPT_HEADER, 0);
+	curl_setopt($curl, CURLOPT_HEADER, FALSE);
 	curl_setopt($curl, CURLOPT_POST, true);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($curl, CURLOPT_POSTFIELDS, $string);
