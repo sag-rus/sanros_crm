@@ -241,7 +241,7 @@ function month_transform($date){
 	return $date;
 }
 
-function date_transform($date, $year){
+function date_transform($date, $year = FALSE){
 	global $month_pad;
 	if(substr_count($date, "-"))
 		$date2 = explode("-", $date);
