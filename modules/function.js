@@ -239,7 +239,7 @@ function write_body(){
 }
 
 function check_menu_count(){
-	var str = 'func=check_menu_count';
+	var str = 'func=check_menu_count&cache='+Math.random();
 	$.ajax({
 		url: 'mysql.php',
 		type: 'POST',
