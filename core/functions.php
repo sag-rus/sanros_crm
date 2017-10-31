@@ -114,7 +114,7 @@ function request_to_url($url, $params){
 	curl_setopt($curl, CURLOPT_POST, true);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($curl, CURLOPT_POSTFIELDS, $string);
-    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+    //curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 
 	$res = curl_exec($curl);
 	$array = json_decode($res, TRUE);
