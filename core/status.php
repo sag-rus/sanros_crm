@@ -732,7 +732,7 @@ function save_pay_schet_san($connect){
 	$pay_number = $_POST["pay_number"];
 	$sum_san = $_POST["sum_san"];
 	$connect->query("UPDATE reckoning SET status_san=1 WHERE id=?i", $id);
-	save_payment($connect, $id, $sum_san, 4, $pay_number, $date, "", "");
+	save_payment($connect, $id, $sum_san, 4, $pay_number, $date, "", 1);
 	save_schet_to_history($connect, $id, "Оплачено в санаторий");
 	$data = $connect->getAll("SELECT id FROM reservation WHERE id_reck=?i AND status=5", $id);
 	foreach($data as $row){

@@ -711,7 +711,7 @@ function save_notification($connect, $text, $user){
 	$connect->query("INSERT INTO notification(text, user) VALUES (?s, ?i)", $text, $user);
 }
 
-function save_payment($connect, $schet, $sum, $type, $pay_number, $date, $pay_method, $office = ""){
+function save_payment($connect, $schet, $sum, $type, $pay_number, $date, $pay_method, $office = 1){
 	if($date == "")
 		$date = date("Y-m-d");
 	$connect->query("INSERT INTO payment (schet, sum, date, type, pay_method, pay_number, office)
