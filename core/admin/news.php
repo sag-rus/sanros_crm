@@ -107,7 +107,7 @@ function upload_news_website($connect){
 		$url = "санаторий-ундоры.рф";
 	if($url == "саната-тревел.рф")
 		$url = "https://саната-тревел.рф";
-	$request = $url."/core/update.website.php";
+	$request = idn_to_ascii($url)."/core/update.website.php";
 	$data = $connect->getAll("SELECT title, text, url, image, DATE_FORMAT(date, '%d.%m.%Y') as date_post, description FROM news WHERE website=?i AND active=1 ORDER BY date DESC", $website);
 	foreach($data as $index => $row) {
     $data[$index]["url"] = mb_strtolower($row["url"], "UTF-8");
@@ -132,7 +132,7 @@ function upload_images_website($connect){
 		$url = "санаторий-ундоры.рф";
 	if($url == "саната-тревел.рф")
 		$url = "https://саната-тревел.рф";
-	$request = $url."/core/update.website.php";
+	$request = idn_to_ascii($url)."/core/update.website.php";
 	$folder = $directory."/temp/news/".$website;
 	$open = opendir($folder);
 	$images = array();
@@ -158,7 +158,7 @@ function upload_price_website($connect){
 	$row = $connect->getRow("SELECT url, id_reg FROM st_website WHERE id=?i", $website);
 	$url = $row["url"];
 	$region = $row["id_reg"];
-	$request = $url."/core/update.website.php";
+	$request = idn_to_ascii($url)."/core/update.website.php";
 	$array = array();
 	$data = $connect->getAll("SELECT id, active FROM object WHERE id_reg=?i", $region);
 	foreach($data as $row){
