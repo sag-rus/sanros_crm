@@ -1,6 +1,6 @@
 <?php
 
-function upload_promo_object_on_server($connect, $id){
+function upload_promo_object_on_server($connect, $id = NULL){
 	$ftp_folder = "/var/www/default-site/public_html/price/XML/";
 	if(!$id)
 		$id = $_POST["id"];
