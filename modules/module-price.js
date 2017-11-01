@@ -305,7 +305,7 @@ function upload_price_on_server(){
 
 function upload_information_object(){
 	show_loader_element('.object-infa');
-	var str = 'func=upload_information_object';
+	var str = 'func=upload_information_object&cache='+Math.random();
 	$.ajax({
 		type: 'POST',
 		data: str,
