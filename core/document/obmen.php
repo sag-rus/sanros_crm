@@ -404,6 +404,7 @@ function review_obmen($connect, $type = "PDF", $id, $for = ""){
 	elseif($type == "PDF"){
 		include($directory."/core/lib/html2PDF/html2pdf.class.php");
 		$pdf = new HTML2PDF("L", "A4", "en", array(0, 0, 0, 0), "UTF-8");
+        $pdf->setTestTdInOnePage(false);
 		$pdf->WriteHTML($content);
 		if($for == "email"){
 			$file = $directory."/temp/forms/putevka".$id.".pdf";
