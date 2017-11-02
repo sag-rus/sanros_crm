@@ -371,6 +371,7 @@ function review_obmen($connect, $type = "PDF", $id, $for = ""){
 	border-right: 2px dashed black;
 	padding: 0px;
 	vertical-align: top;
+    font-size: 10px;
 }
 
 .div2{
@@ -379,6 +380,7 @@ function review_obmen($connect, $type = "PDF", $id, $for = ""){
 	padding: 0px;
 	vertical-align: top;
 	text-align: left;
+    font-size: 10px;
 }
 
 .sp_border{
@@ -404,7 +406,7 @@ function review_obmen($connect, $type = "PDF", $id, $for = ""){
 	elseif($type == "PDF"){
 		include($directory."/core/lib/html2PDF/html2pdf.class.php");
 		$pdf = new HTML2PDF("L", "A4", "en", array(0, 0, 0, 0), "UTF-8");
-        $pdf->setTestTdInOnePage(false);
+        //$pdf->setTestTdInOnePage(false);
 		$pdf->WriteHTML($content);
 		if($for == "email"){
 			$file = $directory."/temp/forms/putevka".$id.".pdf";
