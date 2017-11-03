@@ -61,9 +61,23 @@ function save_all($connect){
 	$type_price = $_POST["type"];
 	$add_one_day = $_POST["add_one_day"];
 
-	if(is_numeric($sum) AND is_numeric($number)){
+        if(is_numeric($sum) AND is_numeric($number)){
 
-		$connect->query("INSERT INTO klient(surname, name, otch, telephone, date, address, email, passport, output, date_pas, note, date_reg) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $surmane, $name, $otch, $telephone, $date, $address, $email, $passport, $output, $date_pas, $note_k, $today);
+          $original_data = [
+            'surname' => $surmane,
+            'name' => $name,
+            'otch' => $otch,
+            'telephone' => $telephone,
+            'date' => $date,
+            'address' => $address,
+            'email' => $email,
+            'passport' => $passport,
+            'output' => $output,
+            'date_pas' => $date_pas,
+            'note' => $note,
+            'date_reg' => $today
+          ];
+		$connect->query("INSERT INTO klient(surname, name, otch, telephone, date, address, email, passport, output, date_pas, note, date_reg, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $surmane, $name, $otch, $telephone, $date, $address, $email, $passport, $output, $date_pas, $note, $today, json_encode($original_data));
 		$client = $connect->insertId();
 		$connect->query("INSERT INTO reckoning(date, turist, manager, id_user, id_obj, id_tour, number_turist, rest, id_dis) VALUES (?s, ?i, ?s, ?i, ?i, ?s, ?i, ?i, ?s)", $today, $client, $name_user, $session_login, $id_obj, $id_tour, $number_turist, $client, $discount);
 		$bid = $connect->insertId();
@@ -883,7 +897,15 @@ function save_new_turist($connect){
 	$date = $_POST["date"];
 	$passport = $_POST["passport"];
 	$birth_certificate = $_POST["birth_certificate"];
-	$connect->query("INSERT INTO klient(name, surname, otch, passport, date, birth_certificate) VALUES(?s, ?s, ?s, ?s, ?s, ?s)", $name, $surname, $otch, $passport, $date, $birth_certificate);
+      $original_data = [
+        'surname' => $surname,
+        'name' => $name,
+        'otch' => $otch,
+        'passport' => $passport,
+        'date' => $date,
+        'birth_certificate' => $birth_certificate
+      ];
+	$connect->query("INSERT INTO klient(name, surname, otch, passport, date, birth_certificate, original_data) VALUES(?s, ?s, ?s, ?s, ?s, ?s, ?s)", $name, $surname, $otch, $passport, $date, $birth_certificate, json_encode($original_data));
 	$last_id = $connect->insertId();
 	$rest = $connect->getOne("SELECT rest FROM reckoning WHERE id=?i", $id);
 	if($rest == "")

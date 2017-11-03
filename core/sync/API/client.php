@@ -16,7 +16,18 @@ function register_new_account($connect, $data){
 		if($account)
 			$connect->query("UPDATE klient SET login=?s, password=?s, date_reg=?s, date=?s WHERE id=?i", $email, $password, $today, $date, $account);
 		else{
-			$connect->query("INSERT INTO klient(surname, name, otch, telephone, email, login, password, date_reg, date) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $telephone, $email, $email, $password, $today, $date);
+      $original_data = [
+        'surname' => $surname,
+        'name' => $name,
+        'otch' => $otch,
+        'telephone' => $telephone,
+        'email' => $email,
+				'login' => $email,
+				'password' => $password,
+				'date_reg' => $today,
+				'date' => $date
+      ];
+			$connect->query("INSERT INTO klient(surname, name, otch, telephone, email, login, password, date_reg, date, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $telephone, $email, $email, $password, $today, $date, json_encode($original_data));
 			$account = $connect->insertId();
 		}
 		save_client_to_history($connect, $account, "Регистрация нового аккаутна");
@@ -517,7 +528,13 @@ function new_booking_turist_cabinet($connect, $data){
 			$date_b = $turist["date"];
 			$id_old = $turist["id"];
 			if($surname AND !$id_old){
-				$connect->query("INSERT INTO klient(surname, name, otch, date) VALUES (?s, ?s, ?s, ?s)", $surname, $name, $otch, $date_b);
+        $original_data = [
+          'surname' => $surname,
+          'name' => $name,
+          'otch' => $otch,
+          'date' => $date_b
+        ];
+				$connect->query("INSERT INTO klient(surname, name, otch, date, original_data) VALUES (?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $date_b, json_encode($original_data));
 				if($rest_string)
 					$rest_string.= ",";
 				$rest_string.= $connect->insertId();

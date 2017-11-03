@@ -42,7 +42,14 @@ class CreateClient{
         return $client;
       }
     }
-    $connect->query("INSERT INTO klient(surname, name, otch, telephone, email) VALUES (?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $telephone, $email);
+    $original_data = [
+      'surname' => $surname,
+      'name' => $name,
+      'otch' => $otch,
+      'telephone' => $telephone,
+      'email' => $email
+    ];
+    $connect->query("INSERT INTO klient(surname, name, otch, telephone, email, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $telephone, $email, json_encode($original_data));
     $insertId = $connect->insertId();
     return $insertId;
   }

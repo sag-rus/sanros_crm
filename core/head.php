@@ -575,7 +575,14 @@ function create_order_call_back($connect){
 		$website = $row["website"];
 		$question = $row["question"];
 		$source = $row["source"];
-		$connect->query("INSERT INTO klient(surname, name, otch, telephone, address) VALUES (?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $telephone, $address);
+        $original_data = [
+          'surname' => $surname,
+          'name' => $name,
+          'otch' => $otch,
+          'telephone' => $telephone,
+          'address' => $address
+        ];
+		$connect->query("INSERT INTO klient(surname, name, otch, telephone, address, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $telephone, $address, json_encode($original_data));
 		$client = $connect->insertId();
 		$connect->query("INSERT INTO reckoning(date, turist, id_user, id_obj, rest, website, note, source, form_booking) VALUES (?s, ?i, ?i, ?i, ?i, ?s, ?s, ?i, 'order-call-back')", $today, $client, $session_login, $object, $client, $website, $question, $source);
 		$bid = $connect->insertId();

@@ -248,7 +248,15 @@ function booking_reservation($connect){
 			$convert_date = date("Y-m-d", $date);
 			$type_place = check_reservation_date($connect, $id_room, $convert_date, $days);
 			if($type_place){
-				$connect->query("INSERT INTO klient(surname, name, otch, telephone, address, email) VALUES (?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $telephone, $address, $email);
+			    $original_data = [
+                  'surname' => $surname,
+                  'name' => $name,
+                  'otch' => $otch,
+                  'telephone' => $telephone,
+                  'address' => $address,
+                  'email' => $email
+                ];
+				$connect->query("INSERT INTO klient(surname, name, otch, telephone, address, email, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $telephone, $address, $email, json_encode($original_data));
 				$client = $connect->insertId();
 				$connect->query("INSERT INTO reckoning(date, turist, id_user, id_obj, rest) VALUES (?s, ?i, ?i, ?i, ?i)", $today, $client, $session_login, $object, $client);
 				$bid = $connect->insertId();

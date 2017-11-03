@@ -110,7 +110,15 @@ function create_agency_booking($connect, $data){
 		$passport = $turist["passport"];
 		$birth_certificate = $turist["cert_birthday"];
 		if($surname){
-			$connect->query("INSERT INTO klient(surname, name, otch, date, passport, birth_certificate) VALUES (?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $birthday, $passport, $birth_certificate);
+      $original_data = [
+        'surname' => $surname,
+        'name' => $name,
+        'otch' => $otch,
+        'date' => $birthday,
+        'passport' => $passport,
+        'birth_certificate' => $birth_certificate
+      ];
+			$connect->query("INSERT INTO klient(surname, name, otch, date, passport, birth_certificate, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $birthday, $passport, $birth_certificate, json_encode($original_data));
 			if($rest_string)
 				$rest_string.= ",";
 			$rest_string.= $connect->insertId();

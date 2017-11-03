@@ -229,7 +229,14 @@ function booking_quota_room($connect){
 		if($surname AND $name){
 			if(!filter_var($email, FILTER_VALIDATE_EMAIL))
 				$email = "";
-			$connect->query("INSERT INTO klient(surname, name, otch, email, telephone) VALUES (?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $email, $telephone);
+            $original_data = [
+              'surname' => $surname,
+              'name' => $name,
+              'otch' => $otch,
+              'email' => $email,
+              'telephone' => $telephone
+            ];
+			$connect->query("INSERT INTO klient(surname, name, otch, email, telephone, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $email, $telephone, json_encode($original_data));
 			$insert = $connect->insertId();
 			$rest[] = $insert;
 			if($turist["head"] == 1)
