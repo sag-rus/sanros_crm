@@ -13,8 +13,9 @@ function register_new_account($connect, $data){
 	if(!$count AND $email != ""){
 		$account = $connect->getOne("SELECT id FROM klient WHERE email=?s AND (login='' OR login IS NULL) LIMIT 1", $email);
 		$today = date("Y-m-d");
-		if($account)
-			$connect->query("UPDATE klient SET login=?s, password=?s, date_reg=?s, date=?s WHERE id=?i", $email, $password, $today, $date, $account);
+		if($account) {
+      $connect->query("UPDATE klient SET login=?s, password=?s, date_reg=?s, date=?s WHERE id=?i", $email, $password, $today, $date, $account);
+    }
 		else{
       $original_data = [
         'surname' => $surname,
