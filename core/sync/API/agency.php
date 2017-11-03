@@ -969,7 +969,7 @@ function enter_dogovor_agency($connect, $data){
 		}
   }
 
-	return "100500";
+	return $number;
 
 }
 
