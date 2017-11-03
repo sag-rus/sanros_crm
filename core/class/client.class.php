@@ -35,7 +35,7 @@ class client_info{
     if($row["login"] != "")
       $row["time"] = $connect->getOne("SELECT DATE_FORMAT(date, '%d.%m.%Y %H:%i:%s') as date FROM session_account WHERE login=?s", $row["login"]);
     elseif($connect->getOne("SELECT id FROM klient WHERE id=?i AND email!='' AND (login='' OR login IS NULL)", $this->id))
-			if(!$connect->getOne("SELECT id FROM klient WHERE login=?s", $row["email"])
+			if(!$connect->getOne("SELECT id FROM klient WHERE login=?s", $row["email"]))
         $row["send-login"] = 1;
     return $row;
   }
