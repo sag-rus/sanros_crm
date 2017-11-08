@@ -111,12 +111,15 @@ function view_quota_object($connect, $data = array()){
 				$result["room"][$room]["name"].= " ".$connect->getOne("SELECT name FROM housing WHERE id=?i", $row["housing"]);
 			$places = json_decode($row["accessible_places"], TRUE);
 			$prices = json_decode($row["price_places"], TRUE);
-			foreach($places as $index => $place){
-				$start_place = $place["dt"];
-				$days_place = $place["d"];
-				$end_place = $start_place + $days_place * 86400;
-				$places[$index]["end"] = $end_place;
-			}
+
+			if(is_array($places)) {
+              foreach($places as $index => $place){
+                $start_place = $place["dt"];
+                $days_place = $place["d"];
+                $end_place = $start_place + $days_place * 86400;
+                $places[$index]["end"] = $end_place;
+              }
+            }
 
 			if($status_quota == 1){
 				#Travelline
@@ -163,18 +166,22 @@ function view_quota_object($connect, $data = array()){
 					$quota[$current_year."-".$current_month][$day] = array("quota" => 0, "price" => array());
 					$quota[$current_year."-".$current_month][$day]["date"] = $day.".".$current_month.".".$current_year;
 					$current = strToTime($current_year."-".$current_month."-".$day);
-					foreach($places as $place){
-						$start_place = $place["dt"];
-						$end_place = $place["end"];
-						if($current >= $start_place AND $current < $end_place){
-							$quota[$current_year."-".$current_month][$day]["quota"] = $place["q"];
-							if($place["q"] > $max_quota){
-								if($place["q"] > 3)
-									$place["q"] = 3;
-								$max_quota = $place["q"];
-							}
-						}
-					}
+
+					if(is_array($places)) {
+                      foreach($places as $place){
+                        $start_place = $place["dt"];
+                        $end_place = $place["end"];
+                        if($current >= $start_place AND $current < $end_place){
+                          $quota[$current_year."-".$current_month][$day]["quota"] = $place["q"];
+                          if($place["q"] > $max_quota){
+                            if($place["q"] > 3)
+                              $place["q"] = 3;
+                            $max_quota = $place["q"];
+                          }
+                        }
+                      }
+                    }
+
 					foreach($prices as $ratePlan => $ratePlanPrice){
 						foreach($ratePlanPrice as $price){
 							$start_place = $price["dt"];

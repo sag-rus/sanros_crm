@@ -1249,6 +1249,9 @@ function select_objects_quota(){
 					body+= '<i class="fa fa-file-text-o text-success fa-2x" data-toggle="tooltip" title="' +contract+ '"></i> ';
 				}else
 					body+= '<i class="fa fa-file-text-o text-danger fa-2x" data-toggle="tooltip" title="Договор не указан"></i> ';
+
+				//if(object['id'] == 57) alert(object['check-places']);
+
 				if(object['check-places'] == 1)
 					body+= '<i class="fa fa-text-width fa-2x" data-toggle="tooltip" title="Выгрузка через Travelline"></i>';
 				if(object['check-places'] == 2)

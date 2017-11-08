@@ -739,7 +739,7 @@ function view_all_profit($connect){
 				$profit = "";
 			}
 			$all_raz+= $raz;
-			$all_profit+= $profit;
+			$all_profit= $all_profit+(float)$profit;
 			$all_reward+= $reward;
 			$html.= "<tr>";
 			$html.= "<td width='130'>".$manager."</td>";
