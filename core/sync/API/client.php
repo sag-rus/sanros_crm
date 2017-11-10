@@ -5,10 +5,9 @@ function save_source_booking_data($connect, $data) {
 	$surname = $data["surname"];
   $name = $data["name"];
   $otch = $data["otch"];
-  $telephone = $data["telephone"];
+  $telephone = trim($data["telephone"]);
   $email = trim($data["email"]);
   $today = date("Y-m-d");
-  return 0;
   if(mb_strlen($telephone) > 0)
   	$id = $connect->getOne("SELECT id FROM klient WHERE login=?s OR email=?s OR telephone=?s LIMIT 1", $email, $email, $telephone);
   else
