@@ -8,7 +8,7 @@ function save_source_booking_data($connect, $data) {
   $telephone = trim($data["telephone"]);
   $email = trim($data["email"]);
   $today = date("Y-m-d");
-	return 100500;
+
   if(mb_strlen($telephone) > 0)
   	$id = $connect->getOne("SELECT id FROM klient WHERE login=?s OR email=?s OR telephone=?s LIMIT 1", $email, $email, $telephone);
   else
@@ -33,8 +33,7 @@ function save_source_booking_data($connect, $data) {
     else
     	return 0;
 	}
-	else return 100500;
-
+	else return $id;
 }
 
 function register_new_account($connect, $data){
