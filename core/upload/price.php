@@ -15,15 +15,17 @@ function upload_price_on_server($connect, $id=false){
 		return "Не удалось авторизироваться";
 
 	if(!$id)
-		$data = $connect->getAll("SELECT id, url_name FROM object WHERE object.active=0 OR object.active=1");
+		$data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1");
 	else{
-		$data = $connect->getAll("SELECT id, url_name FROM object WHERE id=?i", $id);
+		$data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE id=?i", $id);
 		$desc = $connect->getOne("SELECT description FROM object WHERE id=?i", $id);
 		$connect->query("UPDATE object SET status=1, description_check=?s WHERE id=?i", $desc, $id);
 	}
 	foreach($data as $row){
 		$id = $row["id"];
 		$url = $row["url_name"];
+		$source_booking = $row["source_booking"];
+		$website = $row['website'];
 		save_price_XML_object($connect, $id);
 		save_desc_XML_object($connect, $id);
 		$file = $directory."/temp/xml/price/".$id.".xml";
@@ -54,7 +56,7 @@ function save_price_XML_object($connect, $id){
 	global $array_type, $directory;
 	$today = date("Y-m-d");
 	$current_time = time();
-	$row = $connect->getRow("SELECT id, name, id_reg, city, id_profile, id_methods, id_infa, medical_factors, type, description, add_one_day, latitude, longitude, weather, regular_com, up_com, reward, arrival, leaving, check_places FROM object WHERE id=?i AND (active=0 OR active=1)", $id);
+	$row = $connect->getRow("SELECT id, name, id_reg, city, id_profile, id_methods, id_infa, medical_factors, type, description, add_one_day, latitude, longitude, weather, regular_com, up_com, reward, arrival, leaving, check_places, website, source_booking FROM object WHERE id=?i AND (active=0 OR active=1)", $id);
 	$quota = $row["check_places"];
 	$count = $connect->getOne("SELECT COUNT(*) FROM price, room WHERE room.id_obj=?i AND room.id=price.id_room", $id);
 	if(!$row["id"] AND $count <= 0)
@@ -85,6 +87,8 @@ function save_price_XML_object($connect, $id){
 	$object->setAttribute("weather", $row["weather"]);
 	$object->setAttribute("city", $row["city"]);
 	$object->setAttribute("quota", $quota);
+	$object->setAttribute("website",$row["website"]);
+  $object->setAttribute("source_booking",$row["source_booking"]);
 	if($row["arrival"])
 		$object->setAttribute("arrival", $row["arrival"]);
 	if($row["leaving"])

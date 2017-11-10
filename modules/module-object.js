@@ -1254,8 +1254,11 @@ function select_objects_quota(){
 
 				if(object['check-places'] == 1)
 					body+= '<i class="fa fa-text-width fa-2x" data-toggle="tooltip" title="Выгрузка через Travelline"></i>';
-				if(object['check-places'] == 2)
+				else if(object['check-places'] == 2)
 					body+= '<i class="fa fa-check-square fa-2x" data-toggle="tooltip" title="Выгрузка через наш канал"></i>';
+				else if(object['check-places'] == 3)
+          body+= '<i class="fa fa-product-hunt fa-2x" data-toggle="tooltip" title="Выгрузка через Profkurort"></i>';
+
 				if(object['have-places'] == 1)
 					body+= ' <i class="fa fa-calendar-check-o fa-2x text-success" data-toggle="tooltip" title="Доступные места для бронирования"></i>';
 				body+= '</div><div class="col-sm-4 text-right">';

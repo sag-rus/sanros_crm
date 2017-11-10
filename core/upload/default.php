@@ -96,7 +96,7 @@ function upload_information_object($connect){
 	$xml = new DomDocument("1.0", "utf-8");
 	$objects = $xml->appendChild($xml->createElement("objects"));
 	$sights = $connect->getAll("SELECT latitude, longitude FROM sights");
-	$data = $connect->getAll("SELECT object.name as object, object.id, object.image, object.id_reg, object.direction, object.city, object.id_profile, object.id_methods, object.id_infa, object.type, object.check_places, object.description, object.similar, object.add_one_day, object.latitude, object.longitude, object.weather, object.url_name, object.reward, region.name as region, region.name_rod as region_rod FROM region, object WHERE region.id_country=1 AND (object.active=0 OR object.active=1) AND object.id_reg=region.id AND object.url_name!='' ORDER BY region.name");
+	$data = $connect->getAll("SELECT object.name as object, object.id, object.image, object.id_reg, object.direction, object.city, object.id_profile, object.id_methods, object.id_infa, object.type, object.check_places, object.description, object.similar, object.add_one_day, object.latitude, object.longitude, object.weather, object.url_name, object.reward, object.source_booking, region.name as region, region.name_rod as region_rod FROM region, object WHERE region.id_country=1 AND (object.active=0 OR object.active=1) AND object.id_reg=region.id AND object.url_name!='' ORDER BY region.name");
 	foreach($data as $row){
 		$id = $row["id"];
 		$prices = get_prices_object($connect, $id);
@@ -123,6 +123,7 @@ function upload_information_object($connect){
 			$url_name = $row["url_name"];
 			$reward = $row["reward"];
 			$check_places = $row["check_places"];
+			$source_booking  = $row['source_booking'];
 
 			if(!isset($array_region[$id_reg]))
 				$array_region[$id_reg] = 0;
@@ -163,6 +164,7 @@ function upload_information_object($connect){
 			$object->setAttribute("quota", $check_places);
 			$object->setAttribute("min", $prices["min"]);
 			$object->setAttribute("page", intval($array_region[$id_reg]/10) + 1);
+			$object->setAttribute("source_booking", $source_booking);
 			if($latitude > 0){
 				$object->setAttribute("latitude", $latitude);
 				$object->setAttribute("longitude", $longitude);

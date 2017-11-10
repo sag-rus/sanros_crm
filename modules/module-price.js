@@ -888,6 +888,7 @@ function update_main_data_object(id){
 		"longitude": $('#longitude').val(),
 		"weather": $('#weather').val(),
 		"direction": $('#direction-object').val(),
+		"source_booking": parseInt($('#source_booking').prop('checked')*1),
 		"description": q
 	};
 	// var str = 'func=update_main_data_object&id=' + id;

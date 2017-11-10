@@ -1,5 +1,41 @@
 <?php
 
+
+function save_source_booking_data($connect, $data) {
+	$surname = $data["surname"];
+  $name = $data["name"];
+  $otch = $data["otch"];
+  $telephone = $data["telephone"];
+  $email = trim($data["email"]);
+  $today = date("Y-m-d");
+  if(count($telephone) > 0)
+  	$id = $connect->getOne("SELECT id FROM klient WHERE login=?s OR email=?s OR telephone=?s LIMIT 1", $email, $email, $telephone);
+  else
+    $id = $connect->getOne("SELECT id FROM klient WHERE login=?s OR email=?s LIMIT 1", $email, $email);
+
+  if(!$id) {
+    $original_data = [
+      'surname' => $surname,
+      'name' => $name,
+      'otch' => $otch,
+      'telephone' => $telephone,
+      'email' => $email,
+      'date_reg' => $today
+    ];
+
+    $connect->query("INSERT INTO klient(surname, name, otch, telephone, email, date_reg, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $telephone, $email, $today, json_encode($original_data));
+    $id = $connect->insertId();
+    if($id) {
+      save_client_to_history($connect, $id, "Добавлен новый клиент через форму перехода к бронированию на сайте объекта");
+      return $id;
+    }
+    else
+    	return 0;
+	}
+	else return $id;
+
+}
+
 function register_new_account($connect, $data){
 	$surname = $data["surname"];
 	$name = $data["name"];
