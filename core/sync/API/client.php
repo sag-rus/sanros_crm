@@ -31,7 +31,7 @@ function save_source_booking_data($connect, $data) {
       return $id;
     }
     else
-    	return -1;
+    	return print_r($data,true);
 	}
 	else return $id;
 }
