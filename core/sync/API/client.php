@@ -33,7 +33,7 @@ function save_source_booking_data($connect, $data) {
     else
     	return 0;
 	}
-	else return $id;
+	else return 100500;
 
 }
 
