@@ -1,7 +1,7 @@
 <?php
 
 
-/*function save_source_booking_data($connect, $data) {
+function save_source_booking_data($connect, $data) {
 	$surname = $data["surname"];
   $name = $data["name"];
   $otch = $data["otch"];
@@ -34,7 +34,7 @@
     	return 0;
 	}
 	else return $id;
-}*/
+}
 
 function register_new_account($connect, $data){
 	$surname = $data["surname"];
