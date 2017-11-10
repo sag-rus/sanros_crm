@@ -26,12 +26,12 @@ function save_source_booking_data($connect, $data) {
 
     $connect->query("INSERT INTO klient(surname, name, otch, telephone, email, date_reg, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $telephone, $email, $today, json_encode($original_data));
     $id = $connect->insertId();
-    if($id) {
+    if($id > 0) {
       save_client_to_history($connect, $id, "Добавлен новый клиент через форму перехода к бронированию на сайте объекта");
       return $id;
     }
     else
-    	return 0;
+    	return -1;
 	}
 	else return $id;
 }
