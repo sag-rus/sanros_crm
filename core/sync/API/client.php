@@ -1,14 +1,14 @@
 <?php
 
 
-function save_source_booking_data($connect, $data) {
+/*function save_source_booking_data($connect, $data) {
 	$surname = $data["surname"];
   $name = $data["name"];
   $otch = $data["otch"];
   $telephone = trim($data["telephone"]);
   $email = trim($data["email"]);
   $today = date("Y-m-d");
-	return "test";
+
   if(mb_strlen($telephone) > 0)
   	$id = $connect->getOne("SELECT id FROM klient WHERE login=?s OR email=?s OR telephone=?s LIMIT 1", $email, $email, $telephone);
   else
@@ -31,10 +31,10 @@ function save_source_booking_data($connect, $data) {
       return $id;
     }
     else
-    	return print_r($data,true);
+    	return 0;
 	}
 	else return $id;
-}
+}*/
 
 function register_new_account($connect, $data){
 	$surname = $data["surname"];
