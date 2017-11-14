@@ -36,7 +36,7 @@ function sync_server_database($connect){
   			if(is_null($field))
   				$field = "NULL";
   			else
-  				$field = "'".$connect->escapeString($field)."'";
+  				$field = "'".$field."'";
   			if($query == "")
   				$query = $field;
   			else
@@ -66,7 +66,7 @@ function sync_server_database($connect){
 
   	if(!ftp_put($connect_server, $server_file, $file, FTP_ASCII))
   		echo "Не удалось загрузить файл на сервер";
-  	//ftp_chmod($connect_server, 0777, $server_file);
+  	ftp_chmod($connect_server, 0777, $server_file);
   	ftp_quit($connect_server);
 
   	$data = request_to_sync(array("func" => "imports_mysql_base", "name" => $name));
