@@ -8,6 +8,7 @@ function save_source_booking_data($connect, $data) {
   $telephone = trim($data["telephone"]);
   $email = trim($data["email"]);
   $today = date("Y-m-d");
+  $object_id = $data['object_id'];
 
   if(mb_strlen($telephone) > 0)
   	$id = $connect->getOne("SELECT id FROM klient WHERE login=?s OR email=?s OR telephone=?s LIMIT 1", $email, $email, $telephone);
@@ -21,10 +22,11 @@ function save_source_booking_data($connect, $data) {
       'otch' => $otch,
       'telephone' => $telephone,
       'email' => $email,
-      'date_reg' => $today
+      'date_reg' => $today,
+			'source_booking_object' => $object_id
     ];
 
-    $connect->query("INSERT INTO klient(surname, name, otch, telephone, email, date_reg, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $telephone, $email, $today, json_encode($original_data));
+    $connect->query("INSERT INTO klient(surname, name, otch, telephone, email, date_reg, 	source_booking_object, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?i, ?s)", $surname, $name, $otch, $telephone, $email, $today, $object_id, json_encode($original_data));
     $id = $connect->insertId();
     if($id > 0) {
       save_client_to_history($connect, $id, "Добавлен новый клиент через форму перехода к бронированию на сайте объекта");
