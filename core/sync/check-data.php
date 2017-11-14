@@ -46,6 +46,7 @@
 		$i = 1;
 		$row_insert = $connect->getAll("SELECT * FROM `".$table."`");
 		foreach($row_insert as $row){
+
 			if($table == "object"){
 				$row["image"] = "";
 				$row["service_info"] = "";
@@ -56,7 +57,7 @@
 				if(is_null($field))
 					$field = "NULL";
 				else
-					$field = "'".$field."'";
+					$field = "'".$connect->escapeString($field)."'";
 				if($query == "")
 					$query = $field;
 				else

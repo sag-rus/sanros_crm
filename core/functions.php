@@ -814,6 +814,12 @@ function get_reward_object($connect, $object, $date = ""){
 	return $reward;
 }
 
+function get_payment_reward_by_id($connect,$id) {
+  $reward = 0;
+  //$reck = $connect->getAll("SELECT id, sum FROM payment WHERE schet=?i AND class='schet' AND pay_method <> '0'", $id);
+  $reck_reward = $connect->getOne("SELECT reward FROM reckoning WHERE id=?i", $id);
+}
+
 function get_reward_schet($connect, $id, $type = "", $fact = false){
 	$array = array("reward" => 0, "agency" => 0, "bonus" => 0, "correction" => 0, "bank_com" => 0, "discount" => 0);
 	$reward = 0;
