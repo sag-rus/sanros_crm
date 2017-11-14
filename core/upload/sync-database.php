@@ -36,7 +36,7 @@ function sync_server_database($connect){
   			if(is_null($field))
   				$field = "NULL";
   			else
-  				$field = "'".$field."'";
+  				$field = "'".addslashes($field)."'";
   			if($query == "")
   				$query = $field;
   			else
