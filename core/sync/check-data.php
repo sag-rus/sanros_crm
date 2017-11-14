@@ -57,7 +57,7 @@
 				if(is_null($field))
 					$field = "NULL";
 				else
-					$field = "'".$field."'";
+					$field = "'".$connect->escapeString($field)."'";
 				if($query == "")
 					$query = $field;
 				else
