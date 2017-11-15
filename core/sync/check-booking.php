@@ -80,9 +80,8 @@ var_dump($data_booking_JSON);
 				"email" => $email,
 				"ip" => $data_booking_JSON["ip"]
 			);
-			echo 'booking_function ';
+
 			if(isset($data_booking_JSON['sex'])) {
-				echo 'sex='.$client_info['sex'];
         $client_info['sex'] = $data_booking_JSON['sex'];
       }
 
