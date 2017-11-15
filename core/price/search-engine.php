@@ -231,6 +231,14 @@ function booking_reservation($connect){
 	$address = $_POST["address"];
 	$telephone = $_POST["telephone"];
 
+    $sex = null;
+    if(isset($_POST['sex'])) {
+        $sex = (int)$_POST['sex'];
+        if($sex !== 0 && $sex !== 1) {
+          $sex = null;
+        }
+    }
+
 	$room = $_POST["room"];
 	$object = $connect->getOne("SELECT id_obj FROM room WHERE id=?i", $room);
 	$reward = $connect->getOne("SELECT reward FROM object WHERE id=?i", $object);
@@ -254,9 +262,15 @@ function booking_reservation($connect){
                   'otch' => $otch,
                   'telephone' => $telephone,
                   'address' => $address,
-                  'email' => $email
+                  'email' => $email,
+                  'sex' => $sex
                 ];
-				$connect->query("INSERT INTO klient(surname, name, otch, telephone, address, email, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $telephone, $address, $email, json_encode($original_data));
+
+			    if(is_null($sex))
+			        $connect->query("INSERT INTO klient(surname, name, otch, telephone, address, email, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $telephone, $address, $email, json_encode($original_data));
+				else
+				    $connect->query("INSERT INTO klient(surname, name, otch, sex, telephone, address, email, original_data) VALUES (?s, ?s, ?s, ?i, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $sex, $telephone, $address, $email, json_encode($original_data));
+
 				$client = $connect->insertId();
 				$connect->query("INSERT INTO reckoning(date, turist, id_user, id_obj, rest) VALUES (?s, ?i, ?i, ?i, ?i)", $today, $client, $session_login, $object, $client);
 				$bid = $connect->insertId();

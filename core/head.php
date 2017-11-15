@@ -566,6 +566,16 @@ function create_order_call_back($connect){
 	$days = $_POST["days"];
 	$date = strToTime($_POST["date"]);
 	$type = $_POST["type"];
+
+    $sex = null;
+
+    if(isset($_POST['sex'])) {
+        $sex = (int)$_POST['sex'];
+        if($sex !== 0 && $sex !== 1) {
+          $sex = null;
+        }
+    }
+
 	if(is_numeric($price) AND is_numeric($number)){
 		$date = date("Y-m-d", $date);
 		$today = date("Y-m-d");
@@ -580,10 +590,16 @@ function create_order_call_back($connect){
           'name' => $name,
           'otch' => $otch,
           'telephone' => $telephone,
-          'address' => $address
+          'address' => $address,
+          'sex' => $sex
         ];
-		$connect->query("INSERT INTO klient(surname, name, otch, telephone, address, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $telephone, $address, json_encode($original_data));
-		$client = $connect->insertId();
+
+        if(is_null($sex))
+            $connect->query("INSERT INTO klient(surname, name, otch, telephone, address, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $telephone, $address, json_encode($original_data));
+		else
+		    $connect->query("INSERT INTO klient(surname, name, otch, sex, telephone, address, original_data) VALUES (?s, ?s, ?s, ?i, ?s, ?s, ?s)", $surname, $name, $otch, $sex, $telephone, $address, json_encode($original_data));
+
+      $client = $connect->insertId();
 		$connect->query("INSERT INTO reckoning(date, turist, id_user, id_obj, rest, website, note, source, form_booking) VALUES (?s, ?i, ?i, ?i, ?i, ?s, ?s, ?i, 'order-call-back')", $today, $client, $session_login, $object, $client, $website, $question, $source);
 		$bid = $connect->insertId();
 		setCookie("reck", $bid);

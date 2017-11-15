@@ -109,6 +109,15 @@ function create_agency_booking($connect, $data){
 		$birthday = $date2[2]."-".$date2[1]."-".$date2[0];
 		$passport = $turist["passport"];
 		$birth_certificate = $turist["cert_birthday"];
+    $sex = null;
+
+    if(isset($turist['sex'])) {
+      $sex = (int)$turist['sex'];
+      if($sex !== 0 && $sex !== 1) {
+        $sex = null;
+      }
+    }
+
 		if($surname){
       $original_data = [
         'surname' => $surname,
@@ -116,10 +125,16 @@ function create_agency_booking($connect, $data){
         'otch' => $otch,
         'date' => $birthday,
         'passport' => $passport,
-        'birth_certificate' => $birth_certificate
+        'birth_certificate' => $birth_certificate,
+				'sex' => $sex
       ];
-			$connect->query("INSERT INTO klient(surname, name, otch, date, passport, birth_certificate, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $birthday, $passport, $birth_certificate, json_encode($original_data));
-			if($rest_string)
+
+      if(is_null($sex))
+      	$connect->query("INSERT INTO klient(surname, name, otch, date, passport, birth_certificate, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $birthday, $passport, $birth_certificate, json_encode($original_data));
+      else
+        $connect->query("INSERT INTO klient(surname, name, otch, sex, date, passport, birth_certificate, original_data) VALUES (?s, ?s, ?s, ?i, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $sex, $birthday, $passport, $birth_certificate, json_encode($original_data));
+
+      if($rest_string)
 				$rest_string.= ",";
 			$rest_string.= $connect->insertId();
 		}

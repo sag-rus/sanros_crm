@@ -233,6 +233,15 @@ function booking_quota_room($connect){
 		$otch = $turist["otch"];
 		$email = $turist["email"];
 		$telephone = $turist["telephone"];
+
+      $sex = null;
+      if(isset($turist['sex'])) {
+        $sex = (int)$turist['sex'];
+        if($sex !== 0 && $sex !== 1) {
+          $sex = null;
+        }
+      }
+
 		if($surname AND $name){
 			if(!filter_var($email, FILTER_VALIDATE_EMAIL))
 				$email = "";
@@ -241,10 +250,16 @@ function booking_quota_room($connect){
               'name' => $name,
               'otch' => $otch,
               'email' => $email,
-              'telephone' => $telephone
+              'telephone' => $telephone,
+              'sex' => $turist
             ];
-			$connect->query("INSERT INTO klient(surname, name, otch, email, telephone, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $email, $telephone, json_encode($original_data));
-			$insert = $connect->insertId();
+
+            if(is_null($sex))
+                $connect->query("INSERT INTO klient(surname, name, otch, email, telephone, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $email, $telephone, json_encode($original_data));
+			else
+			    $connect->query("INSERT INTO klient(surname, name, otch, sex, email, telephone, original_data) VALUES (?s, ?s, ?s, ?i, ?s, ?s, ?s)", $surname, $name, $otch, $sex, $email, $telephone, json_encode($original_data));
+
+          $insert = $connect->insertId();
 			$rest[] = $insert;
 			if($turist["head"] == 1)
 				$client = $insert;

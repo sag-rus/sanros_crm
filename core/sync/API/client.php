@@ -10,10 +10,20 @@ function save_source_booking_data($connect, $data) {
   $today = date("Y-m-d");
   $object_id = $data['object_id'];
 
-  if(mb_strlen($telephone) > 0)
-  	$id = $connect->getOne("SELECT id FROM klient WHERE login=?s OR email=?s OR telephone=?s LIMIT 1", $email, $email, $telephone);
-  else
+  $sex = null;
+  if(isset($data['sex'])) {
+    $sex = (int)$data['sex'];
+    if($sex !== 0 && $sex !== 1) {
+      $sex = null;
+    }
+  }
+
+  if(mb_strlen($telephone) > 0) {
+    $id = $connect->getOne("SELECT id FROM klient WHERE login=?s OR email=?s OR telephone=?s LIMIT 1", $email, $email, $telephone);
+  }
+  else {
     $id = $connect->getOne("SELECT id FROM klient WHERE login=?s OR email=?s LIMIT 1", $email, $email);
+  }
 
   if(!$id) {
     $original_data = [
@@ -23,10 +33,15 @@ function save_source_booking_data($connect, $data) {
       'telephone' => $telephone,
       'email' => $email,
       'date_reg' => $today,
-			'source_booking_object' => $object_id
+			'source_booking_object' => $object_id,
+			'sex' => $sex
     ];
 
-    $connect->query("INSERT INTO klient(surname, name, otch, telephone, email, date_reg, 	source_booking_object, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?i, ?s)", $surname, $name, $otch, $telephone, $email, $today, $object_id, json_encode($original_data));
+    if(is_null($sex))
+    	$connect->query("INSERT INTO klient(surname, name, otch, telephone, email, date_reg, source_booking_object, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?i, ?s)", $surname, $name, $otch, $telephone, $email, $today, $object_id, json_encode($original_data));
+    else
+      $connect->query("INSERT INTO klient(surname, name, otch, sex, telephone, email, date_reg, source_booking_object, original_data) VALUES (?s, ?s, ?s, ?i, ?s, ?s, ?s, ?i, ?s)", $surname, $name, $otch, $sex, $telephone, $email, $today, $object_id, json_encode($original_data));
+
     $id = $connect->insertId();
     if($id > 0) {
       save_client_to_history($connect, $id, "Добавлен новый клиент через форму перехода к бронированию на сайте объекта");
@@ -47,12 +62,20 @@ function register_new_account($connect, $data){
 	$email = trim($data["email"]);
 	$password = $data["password"];
 	$invited = $data["invited"];
+  $sex = null;
+  if(isset($data['sex'])) {
+    $sex = (int)$data['sex'];
+    if($sex !== 0 && $sex !== 1) {
+      $sex = null;
+    }
+  }
+
 	$count = $connect->getOne("SELECT id FROM klient WHERE login=?s LIMIT 1", $email);
 	if(!$count AND $email != ""){
 		$account = $connect->getOne("SELECT id FROM klient WHERE email=?s AND (login='' OR login IS NULL) LIMIT 1", $email);
 		$today = date("Y-m-d");
 		if($account) {
-      $connect->query("UPDATE klient SET login=?s, password=?s, date_reg=?s, date=?s WHERE id=?i", $email, $password, $today, $date, $account);
+			$connect->query("UPDATE klient SET login=?s, password=?s, date_reg=?s, date=?s WHERE id=?i", $email, $password, $today, $date, $account);
     }
 		else{
       $original_data = [
@@ -64,10 +87,16 @@ function register_new_account($connect, $data){
 				'login' => $email,
 				'password' => $password,
 				'date_reg' => $today,
-				'date' => $date
+				'date' => $date,
+				'sex' => $sex
       ];
-			$connect->query("INSERT INTO klient(surname, name, otch, telephone, email, login, password, date_reg, date, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $telephone, $email, $email, $password, $today, $date, json_encode($original_data));
-			$account = $connect->insertId();
+
+      if(is_null($sex))
+      	$connect->query("INSERT INTO klient(surname, name, otch, telephone, email, login, password, date_reg, date, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $telephone, $email, $email, $password, $today, $date, json_encode($original_data));
+      else
+        $connect->query("INSERT INTO klient(surname, name, otch, sex, telephone, email, login, password, date_reg, date, original_data) VALUES (?s, ?s, ?s, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $sex, $telephone, $email, $email, $password, $today, $date, json_encode($original_data));
+
+      $account = $connect->insertId();
 		}
 		save_client_to_history($connect, $account, "Регистрация нового аккаутна");
 		if($invited == "birthday"){
@@ -566,15 +595,28 @@ function new_booking_turist_cabinet($connect, $data){
 			$otch = $turist["otch"];
 			$date_b = $turist["date"];
 			$id_old = $turist["id"];
+      $sex = null;
+      if(isset($turist['sex'])) {
+        $sex = (int)$turist['sex'];
+        if($sex !== 0 && $sex !== 1) {
+          $sex = null;
+        }
+      }
+
 			if($surname AND !$id_old){
         $original_data = [
           'surname' => $surname,
           'name' => $name,
           'otch' => $otch,
-          'date' => $date_b
+          'date' => $date_b,
+					'sex' => $sex
         ];
-				$connect->query("INSERT INTO klient(surname, name, otch, date, original_data) VALUES (?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $date_b, json_encode($original_data));
-				if($rest_string)
+        if(is_null($sex))
+        	$connect->query("INSERT INTO klient(surname, name, otch, date, original_data) VALUES (?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $date_b, json_encode($original_data));
+        else
+          $connect->query("INSERT INTO klient(surname, name, otch, sex, date, original_data) VALUES (?s, ?s, ?s, ?i, ?s, ?s)", $surname, $name, $otch, $sex, $date_b, json_encode($original_data));
+
+        if($rest_string)
 					$rest_string.= ",";
 				$rest_string.= $connect->insertId();
 			}elseif($id_old){
