@@ -81,8 +81,10 @@ var_dump($data_booking_JSON);
 				"ip" => $data_booking_JSON["ip"]
 			);
 
-			if(isset($data_booking_JSON['sex']))
-				$client_info['sex'] = $data_booking_JSON['sex'];
+			if(isset($data_booking_JSON['sex'])) {
+				echo 'sex='.$client_info['sex'];
+        $client_info['sex'] = $data_booking_JSON['sex'];
+      }
 
 			if(isset($gsok[$id_obj]))
 				$id_obj = 96;
