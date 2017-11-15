@@ -24,6 +24,8 @@ class CreateClient{
       if($sex !== 0 && $sex !== 1) {
         $sex = null;
       }
+      else
+        echo 'sex='.$sex;
     }
 
     if(isset($data["email"]))
