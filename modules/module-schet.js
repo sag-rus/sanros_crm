@@ -640,6 +640,7 @@ function update_klient(turist){
 	var twitter = $('#twitter').val();
 	var myWorld = $('#mail').val();
 	var skype = $('#skype').val();
+	var sex = parseInt($('select#sex').val());
 	var service_note = $('#service-note').val();
 	var set = '&skype=' + skype + '&icq=' + icq + '&vk=' + vk + '&facebook=' + facebook + '&od_cl=' + od_cl + '&twitter=' + twitter + '&mail=' + myWorld;
 	if(surname == '')
@@ -648,12 +649,14 @@ function update_klient(turist){
 		show_warning('.edit-turist', 'Не введены данные: имя');
 	else if(otch == '')
 		show_warning('.edit-turist', 'Не введены данные: отчество');
+	else if(sex === -1)
+    show_warning('.edit-turist', 'Не указан пол туриста');
 	else if(!check_email(email))
 		show_warning('.edit-turist', 'Не верно введено поле: Email');
 	else if((telephone.length < 10) && (telephone != ''))
 		show_warning('.edit-turist', 'Не верно введено поле: Телефон');
 	else{
-		var str = 'func=update_klient&id=' + turist + '&surname=' + surname + '&name=' + name + '&otch=' + otch + '&telephone=' + telephone + '&email=' + email + '&passport=' + passport + '&date=' + date + set + '&address=' + address + '&note_k=' + note_k + '&output=' + output + '&date_pas=' + date_pas + '&service_note=' + service_note;
+		var str = 'func=update_klient&id=' + turist + '&surname=' + surname + '&name=' + name + '&otch=' + otch +'&sex='+sex+ '&telephone=' + telephone + '&email=' + email + '&passport=' + passport + '&date=' + date + set + '&address=' + address + '&note_k=' + note_k + '&output=' + output + '&date_pas=' + date_pas + '&service_note=' + service_note;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',

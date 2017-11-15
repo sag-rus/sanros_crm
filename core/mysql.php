@@ -150,13 +150,13 @@ function help_search_by_name($connect){
 		?>
 			<span onclick="select_klient(<?php echo $id; ?>)">
 				<?php echo $row["surname"]." ".$row["name"]." ".$row["otch"]."&emsp;".$date; ?>
-			</div>
+			</span>
 		<?php
 		}
 	}
 	if($table == "object"){
 	?>
-		<span onclick="use_object('new')">Добавить новый объект</div>
+		<span onclick="use_object('new')">Добавить новый объект</span>
 	<?php
 	}
 }
@@ -425,7 +425,7 @@ function add_new_client($connect){
 
 function edit_klient($connect){
 	$id = $_POST["id"];
-	$array = $connect->getRow("SELECT surname, name, otch, date, address, email, passport, output, date_pas, note, telephone, icq, vk, fb, skype, mail, od_cl, tw, service_note FROM klient WHERE id=?i", $id);
+	$array = $connect->getRow("SELECT surname, name, otch, sex, date, address, email, passport, output, date_pas, note, telephone, icq, vk, fb, skype, mail, od_cl, tw, service_note FROM klient WHERE id=?i", $id);
 	ob_start();
 ?>
 <div class="form-horizontal">
@@ -450,6 +450,15 @@ function edit_klient($connect){
 						</div>
 						<div class="col-sm-2 mark-otch"></div>
 					</div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <select class="form-control" id="sex">
+                                <option value="-1"<?php if(is_null($array['sex'])) echo ' selected';?>>Укажите пол</option>
+                                <option value="0"<?php if(!is_null($array['sex']) && $array['sex'] == 0) echo ' selected';?>>Мужской</option>
+                                <option value="1"<?php if($array['sex'] == 1) echo ' selected';?>>Женский</option>
+                            </select>
+                        </div>
+                    </div>
 					<div class="form-group">
 						<div class="col-sm-12">
 							<input type="text" class="form-control datepicker" id="date" value="<?php echo $array['date']; ?>">
@@ -567,10 +576,11 @@ function edit_klient($connect){
 function update_klient($connect){
 	$note_update = "";
 	$id = $_POST["id"];
-	$row = $connect->getRow("SELECT surname, name, otch, telephone, email, address FROM klient WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT surname, name, otch, sex, telephone, email, address FROM klient WHERE id=?i", $id);
 	$surname = $_POST["surname"];
 	$name = $_POST["name"];
 	$otch = $_POST["otch"];
+	$sex = (int)$_POST["sex"];
 	$email = $_POST["email"];
 	$passport = $_POST["passport"];
 	$passport = str_replace(" ", "", $passport);
@@ -591,17 +601,32 @@ function update_klient($connect){
 	$mail = $_POST["mail"];
 	$vk = $_POST["vk"];
 	$service_note = $_POST["service_note"];
-	$connect->query("UPDATE klient SET surname=?s, name=?s, otch=?s, date=?s, telephone=?s, address=?s, passport=?s, output=?s, date_pas=?s, note=?s, mail=?s, email=?s, skype=?s, icq=?s, fb=?s, od_cl=?s, tw=?s, vk=?s, service_note=?s WHERE id=?i", $surname, $name, $otch, $date, $telephone, $address, $passport, $output, $date_pas, $note_k, $mail, $email, $skype, $icq, $facebook, $od_cl, $twitter, $vk, $service_note, $id);
+	$connect->query("UPDATE klient SET surname=?s, name=?s, otch=?s, sex=?i, date=?s, telephone=?s, address=?s, passport=?s, output=?s, date_pas=?s, note=?s, mail=?s, email=?s, skype=?s, icq=?s, fb=?s, od_cl=?s, tw=?s, vk=?s, service_note=?s WHERE id=?i", $surname, $name, $otch, $sex, $date, $telephone, $address, $passport, $output, $date_pas, $note_k, $mail, $email, $skype, $icq, $facebook, $od_cl, $twitter, $vk, $service_note, $id);
 	if($row["telephone"] != $telephone)
-		$note_update.= " Изменен телефон «".$row["telephone"]."» ; ";
+		$note_update.= " Изменен телефон «".$row["telephone"]."» ---> «".$telephone."»; ";
 	if($row["email"] != $email)
-		$note_update.= " Изменен email «".$row["email"]."» ; ";
+		$note_update.= " Изменен email «".$row["email"]."» ---> «".$email."»; ";
 	if($row["surname"] != $surname)
-		$note_update.= " Изменена фамилия «".$row["surname"]."» ; ";
+		$note_update.= " Изменена фамилия «".$row["surname"]."» ---> «".$surname."»; ";
 	if($row["name"] != $name)
-		$note_update.= " Изменено имя «".$row["name"]."» ; ";
+		$note_update.= " Изменено имя «".$row["name"]."» ---> «".$name."»; ";
 	if($row["otch"] != $otch)
-		$note_update.= " Изменено имя «".$row["otch"]."» ; ";
+		$note_update.= " Изменено отчество «".$row["otch"]."» ---> «".$otch."»; ";
+	if(is_null($row['sex']) || (int)$row["sex"] !== $sex) {
+      if(is_null($row['sex']))
+          $sex_string_old = "не указан";
+      elseif ($row['sex'] == 0)
+          $sex_string_old = "мужской";
+      elseif ($row['sex'] == 1)
+          $sex_string_old = "женский";
+
+      if($sex == 0)
+          $sex_string_new = "мужской";
+      else
+          $sex_string_new = "женский";
+
+      $note_update.= " Изменен пол «".$sex_string_old."» ---> «".$sex_string_new."»;";
+    }
 	if($note_update)
 		save_client_to_history($connect, $id, $note_update);
 }
