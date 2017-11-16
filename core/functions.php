@@ -1503,7 +1503,7 @@ function select_index_source($code){
 	return 1;
 }
 
-function check_promotional_code($code, $object, $sum, $dates){
+function check_promotional_code($code, $object, $sum, $dates, $client_id = NULL, $connect = NULL){
 	$promotional_code = [
 		//"bonus" => array("sum" => 100),
 		//"quota" => array("sum" => 300)
@@ -1527,6 +1527,13 @@ function check_promotional_code($code, $object, $sum, $dates){
 			else
 				return FALSE;
 		}
+
+		if(!is_null($client_id) && !is_null($connect)) {
+		    $promo_using = $connect->getOne("SELECT id FROM promo_code_using WHERE promo_code = ?s AND client_id = ?i LIMIT 1", $code, $client_id);
+		    if($promo_using)
+		        return FALSE;
+        }
+
 		return $sum;
 	}
 	return FALSE;
