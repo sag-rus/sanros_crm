@@ -641,8 +641,8 @@ function new_booking_turist_cabinet($connect, $data){
       $itog = $connect->getOne("SELECT sum FROM reckoning WHERE id=?i", $booking);
       $promo_bonus = check_promotional_code($promo_code, $object, $itog, array("arrival" => $arrival, "days" => $days));
 			if($promo_bonus) {
-        $connect->query("INSERT INTO bonus(date, turist, sum, type, note, promocode) VALUES (?s, ?i, ?s, 3, ?s, ?s)", $today, $client, $bonus, "Подарочный бонус", $promo_code);
-        $connect->query("INSERT INTO bonus(date, schet, turist, sum, cause) VALUES (?s, ?i, ?i, ?i, 1)", $today, $booking, $client, $bonus * (-1));
+        $connect->query("INSERT INTO bonus(date, turist, sum, type, note, promocode) VALUES (?s, ?i, ?s, 3, ?s, ?s)", $today, $client, $promo_bonus, "Подарочный бонус", $promo_code);
+        $connect->query("INSERT INTO bonus(date, schet, turist, sum, cause) VALUES (?s, ?i, ?i, ?i, 1)", $today, $booking, $client, $promo_bonus * (-1));
         $connect->query("UPDATE reckoning SET promo_code=?s WHERE id=?i", $promo_code, $booking);
         save_schet_to_history($connect, $booking, "Использование промокода");
 			}
