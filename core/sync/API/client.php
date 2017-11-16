@@ -645,7 +645,7 @@ function new_booking_turist_cabinet($connect, $data){
         $connect->query("INSERT INTO bonus(date, turist, sum, type, note, promocode) VALUES (?s, ?i, ?s, 3, ?s, ?s)", $today, $client, $promo_bonus, "Подарочный бонус", $promo_code);
         //$connect->query("INSERT INTO bonus(date, schet, turist, sum, cause) VALUES (?s, ?i, ?i, ?i, 1)", $today, $booking, $client, $promo_bonus * (-1));
         $connect->query("UPDATE reckoning SET promo_code=?s WHERE id=?i", $promo_code, $booking);
-        $connect->query("INSERT INTO promo_code_using(`promo_code`, `client_id`, `timestamp`) VALUES (?s, ?i, ?i)", $promo_code, $client, gmdate("U"));
+        $connect->query("INSERT INTO promo_code_using(`promo_code`, `client_id`, `reck_id`, `timestamp`) VALUES (?s, ?i, ?i, ?i)", $promo_code, $client, $booking, gmdate("U"));
         save_schet_to_history($connect, $booking, "Использование промокода");
 			}
     }

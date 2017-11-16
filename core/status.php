@@ -1250,7 +1250,9 @@ function reckoning_to_upsorted($connect){
 	if($promocode){
 		$turist = $row["turist"];
 		$connect->query("DELETE from bonus WHERE turist=?i AND promocode=?s", $turist, $promocode);
+        $connect->query("DELETE FROM promo_code_using WHERE reck_id = ?i", $id);
 	}
+
 	if(!$connect->getOne("SELECT id_user FROM reckoning WHERE id=?i", $id))
 		$connect->query("UPDATE reckoning SET id_user=?i WHERE id=?i", $session_login, $id);
 	save_schet_to_history($connect, $id, "Заявка удалена");
@@ -1264,6 +1266,7 @@ function delete_reckoning($connect){
 		$connect->query("DELETE FROM reckoning WHERE id=?i", $id);
 		$connect->query("DELETE FROM position_reck WHERE schet=?i", $id);
 		$connect->query("DELETE FROM bonus WHERE schet=?i", $id);
+        $connect->query("DELETE FROM promo_code_using WHERE reck_id = ?i", $id);
 		$connect->query("DELETE FROM history_schet WHERE id_schet=?i", $id);
 		$connect->query("DELETE FROM payment WHERE schet=?i", $id);
 		change_auto_increment($connect, "reckoning");
