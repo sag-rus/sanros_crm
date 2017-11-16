@@ -636,20 +636,25 @@ function new_booking_turist_cabinet($connect, $data){
 		change_arrival_date($connect, $booking);
 		recalculation_sum($connect, $booking);
 
+		$promo_bonus = 0;
     if($promo_code !== "") {
       $promo_code = mb_strtolower($promo_code);
       $itog = $connect->getOne("SELECT sum FROM reckoning WHERE id=?i", $booking);
       $promo_bonus = check_promotional_code($promo_code, $object, $itog, array("arrival" => $arrival, "days" => $days));
 			if($promo_bonus) {
         $connect->query("INSERT INTO bonus(date, turist, sum, type, note, promocode) VALUES (?s, ?i, ?s, 3, ?s, ?s)", $today, $client, $promo_bonus, "Подарочный бонус", $promo_code);
-        $connect->query("INSERT INTO bonus(date, schet, turist, sum, cause) VALUES (?s, ?i, ?i, ?i, 1)", $today, $booking, $client, $promo_bonus * (-1));
+        //$connect->query("INSERT INTO bonus(date, schet, turist, sum, cause) VALUES (?s, ?i, ?i, ?i, 1)", $today, $booking, $client, $promo_bonus * (-1));
         $connect->query("UPDATE reckoning SET promo_code=?s WHERE id=?i", $promo_code, $booking);
         save_schet_to_history($connect, $booking, "Использование промокода");
 			}
     }
 
-		if($bonus == 1){
-			$all_bonus = all_klient_bonus($connect, $client);
+		if($bonus == 1 || $promo_bonus){
+    	if($bonus == 1)
+    		$all_bonus = all_klient_bonus($connect, $client);
+    	else
+    		$all_bonus = $promo_bonus;
+
 			if($all_bonus > 0){
 				$reward = $connect->getOne("SELECT reward FROM object WHERE id=?i", $object);
 				$sum = $connect->getOne("SELECT sum FROM reckoning WHERE id=?i", $booking);
