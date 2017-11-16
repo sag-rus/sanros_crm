@@ -1504,10 +1504,11 @@ function select_index_source($code){
 }
 
 function check_promotional_code($code, $object, $sum, $dates){
-	$promotional_code = array(
-		"bonus" => array("sum" => 100),
-		"quota" => array("sum" => 300)
-	);
+	$promotional_code = [
+		//"bonus" => array("sum" => 100),
+		//"quota" => array("sum" => 300)
+        'ufa2017' => ["sum" => 500]
+	];
 	if(isset($promotional_code[$code])){
 		if(isset($promotional_code[$code]["min-sum"]) AND $promotional_code[$code]["min-sum"] > $sum)
 			return FALSE;
