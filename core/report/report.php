@@ -221,11 +221,21 @@ function filter_payment($connect){
 		$th_pay = "<th width='70'>Способ<br />платежа</th><th width='70'>Номер<br />плат.пор.</th>";
 	}else
 		$th_pay = "<th width='70'>Способ<br />платежа</th><th width='70'>Номер<br />плат.пор.</th>";
-	$zapros_for_mysql = "SELECT DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, payment.office, payment.type, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san FROM payment LEFT JOIN reckoning ON reckoning.id=payment.schet WHERE ".$zapros_for_mysql." AND pay_method!=3 ORDER BY payment.id";
+	$zapros_for_mysql_cond = $zapros_for_mysql;
+	$zapros_for_mysql = "SELECT payment.id, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, payment.office, payment.type, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san FROM payment LEFT JOIN reckoning ON reckoning.id=payment.schet WHERE ".$zapros_for_mysql." AND pay_method!=3 AND pay_method !=0 ORDER BY payment.id";
 	$data = $connect->getAll($zapros_for_mysql);
+	$pay_groups = [];
 	foreach($data as $row){
 		$all_fio = "";
 		$id = $row["schet"];
+
+		if(!isset($pay_groups[$id])) {
+		    $pay_groups[$id] = [$row['id']];
+        }
+        else {
+          $pay_groups[$id][] = $row['id'];
+        }
+
 		$id_file[] = $id;
 		$class = $row["class"];
 		$date = $row["date"];
@@ -384,6 +394,36 @@ function filter_payment($connect){
 			$html.= "</tr>";
 		//}
 	}
+
+	foreach ($pay_groups as $reck_id => $pay_array) {
+	    $all_pays = $connect->getAll("SELECT id FROM payment WHERE pay_method!=3 AND pay_method !=0 AND schet = ?i", $reck_id);
+	    $all_pays_count = count($all_pays);
+	    /*if($all_pays_count === count($pay_array)) {
+          $array["reward"] += get_reward_schet($connect, $reck_id, "", TRUE);
+        }
+        else {*/
+	        $pay_ar1 = [];
+	        $pay_ar2 = [];
+	        foreach ($all_pays as $all_pay_index => $all_pays_el)
+	        {
+	            if(in_array($all_pays_el['id'],$pay_array)) {
+	                if($all_pays_count-1 != $all_pay_index)
+	                    $pay_ar1[] = $all_pays_el['id'];
+	                else {
+	                    $pay_ar2[] = $all_pays_el['id'];
+                    }
+                }
+            }
+
+            if(count($pay_ar1) > 0) {
+              $array['reward'] += get_reward_schet($connect, $reck_id, "", TRUE, FALSE, $pay_ar1);
+            }
+	        if(count($pay_ar2) > 0)
+              $array['reward'] += get_reward_schet($connect, $reck_id, "", TRUE,TRUE, $pay_ar2);
+
+        //}
+    }
+
 	if(!$html)
 		return "<div class='alert alert-info'><i class='fa fa-info-circle'></i> Ничего не найдено</div>";
 	ob_start();

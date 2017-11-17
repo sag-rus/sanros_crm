@@ -827,14 +827,31 @@ function get_payment_reward_by_id($connect,$id) {
   return $reward;
 }
 
-function get_reward_schet($connect, $id, $type = "", $fact = false){
+function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bonus = true, $only_payments = NULL){
 	$array = array("reward" => 0, "agency" => 0, "bonus" => 0, "correction" => 0, "bank_com" => 0, "discount" => 0);
 	$reward = 0;
 	$reck_reward = $connect->getOne("SELECT reward FROM reckoning WHERE id=?i", $id);
     $bonus = $connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND sum < 0", $id);
     $reck = $connect->getRow("SELECT sum, agency, id_com, id_dis, correction, status FROM reckoning WHERE id=?i", $id);
-	if($fact) {
-      $payments = $connect->getAll("SELECT id, sum FROM payment WHERE schet=?i AND class='schet' AND pay_method <> '0'", $id);
+	$only_payment_state = false;
+    if($fact || (!is_null($only_payments) && count($only_payments) > 0)) {
+      $add_cond = "";
+      if(!is_null($only_payments) && count($only_payments) > 0) {
+          $only_payment_state = true;
+          foreach($only_payments as $only_payment) {
+            if(mb_strlen($add_cond) > 0)
+              $add_cond .= " OR ";
+            else
+              $add_cond .= "(";
+
+            $add_cond .= "id = '".$only_payment."'";
+          }
+      }
+
+      if(mb_strlen($add_cond) > 0)
+          $add_cond .= ") AND ";
+
+      $payments = $connect->getAll("SELECT id, sum FROM payment WHERE ".$add_cond."schet=?i AND class='schet' AND pay_method <> '0'", $id);
       $pay_sum = 0;
 
       foreach ($payments as $payment) {
@@ -847,7 +864,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false){
     }
 	else{
 		$data = $connect->getAll("SELECT id FROM position_reck WHERE schet=?i", $id);
-		if($fact && $reck['status'] != 5) {
+		if($fact && ($reck['status'] != 5 || $only_payment_state)) {
 
           foreach($data as $row)
             $reward+= get_reward_schet_position_pay($connect, $row["id"],$pay_sum);
@@ -868,7 +885,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false){
 	if($reck["agency"]){
 
 		$value = $connect->getOne("SELECT value FROM commission WHERE id=?i", $reck["id_com"]);
-		if($fact) {
+		if($fact && ($reck['status'] != 5 || $only_payment_state)) {
           $commission = get_reward_agency($connect, $id, $pay_sum);
         }
 		else
@@ -879,41 +896,54 @@ function get_reward_schet($connect, $id, $type = "", $fact = false){
 		$raz+= $commission;
 	}
 
-	
-	if($bonus){
-		$bonus = abs($bonus);
+	if($consider_bonus) {
+      if($bonus){
+        $bonus = abs($bonus);
         if(!$fact || $reck['status'] == 5) {
           $raz+= $bonus;
           if($type == "EACH")
             $array["bonus"] = add_null($bonus);
         }
-	}
+      }
+    }
 
 	if($reck["id_dis"]){
 		$row = $connect->getRow("SELECT value, type FROM discount WHERE id=?i", $reck["id_dis"]);
 		if($row["type"] == 1) {
-          if($fact)
+          if($fact && ($reck['status'] != 5 || $only_payment_state))
               $discount = $pay_sum * ($row["value"] / 100);
           else
               $discount = $reck["sum"] * ($row["value"] / 100);
         }
 		else {
-          $discount = $row["value"];
+		    if($consider_bonus)
+		        $discount = $row["value"];
         }
 		if($type == "EACH")
 			$array["discount"] = add_null($discount);
 		$raz+= $discount;
 	}
-	if($reck["correction"]){
-		if($type == "EACH")
-			$array["correction"] = add_null($reck["correction"]);
-		$raz-= $reck["correction"];
-	}
+
+	if($consider_bonus) {
+      if($reck["correction"]){
+        if($type == "EACH")
+          $array["correction"] = add_null($reck["correction"]);
+        $raz-= $reck["correction"];
+      }
+    }
+
 	$bank_com = 0;
-	$data = $connect->getAll("SELECT sum, bank_com, type FROM payment WHERE pay_method=5 AND schet=?i", $id);
+	if($only_payment_state)
+	    $data = $connect->getAll("SELECT sum, bank_com, type FROM payment WHERE ".$add_cond."pay_method=5 AND schet=?i", $id);
+	else
+	    $data = $connect->getAll("SELECT sum, bank_com, type FROM payment WHERE pay_method=5 AND schet=?i", $id);
+
 	foreach($data as $row){
 		if($row["bank_com"] > 0 AND $row["type"] == 2){
-			$row["sum"]-= $connect->getOne("SELECT sum FROM payment WHERE type=5 AND schet=?i", $id);
+            if($only_payment_state)
+			    $row["sum"]-= $connect->getOne("SELECT sum FROM payment WHERE ".$add_cond."type=5 AND schet=?i", $id);
+            else
+                $row["sum"]-= $connect->getOne("SELECT sum FROM payment WHERE type=5 AND schet=?i", $id);
 		}
 		if($row["sum"] <= 100)
 			$bank_com+= "3.5";
