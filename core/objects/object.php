@@ -259,18 +259,26 @@ function select_object($connect){
 	$quota = $row["check_places"];
 	$array = json_decode($row["telephone"], TRUE);
 	$telephone = "";
-	foreach($array as $value){
-		if($telephone)
-			$telephone.= "<br />";
-		$telephone.= "<strong>".$value["value"]."</strong> ".$value["note"];
-	}
+
+	if(is_array($array)) {
+      foreach($array as $value){
+        if($telephone)
+          $telephone.= "<br />";
+        $telephone.= "<strong>".$value["value"]."</strong> ".$value["note"];
+      }
+    }
+
 	$array = json_decode($row["email"], TRUE);
 	$email = "";
-	foreach($array as $value){
-		if($email)
-			$email.= "<br />";
-		$email.= "<strong>".$value["value"]."</strong> ".$value["note"];
-	}
+
+	if(is_array($array)) {
+      foreach($array as $value){
+        if($email)
+          $email.= "<br />";
+        $email.= "<strong>".$value["value"]."</strong> ".$value["note"];
+      }
+    }
+
 	$dogovor_object = select_object_contract($connect, $id);
 	ob_start();
 ?>
