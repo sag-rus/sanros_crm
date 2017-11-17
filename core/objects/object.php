@@ -939,13 +939,15 @@ function view_object_rooms($connect){
 			$class = "list-group-item-danger";
 		$folder = $directory."/temp/images/".$region."/".$object."/".$room."/small/";
 		$have = 0;
-		$folder_open = opendir($folder);
-		while($image = readdir($folder_open)){
-			if(($image != ".") AND ($image != "..") AND ($image)){
-				$have = 1;
-				break;
-			}
-		}
+		if(is_dir($folder)) {
+          $folder_open = opendir($folder);
+          while($image = readdir($folder_open)){
+            if(($image != ".") AND ($image != "..") AND ($image)){
+              $have = 1;
+              break;
+            }
+          }
+        }
 	?>
 	<div class="list-group-item div-room-<?php echo $room; ?> <?php echo $class; ?>" room="<?php echo $room; ?>">
 		<div class="form-group form-group-margin">
