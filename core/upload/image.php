@@ -275,10 +275,11 @@ function upload_image_object_server($connect){
 	    ftp_mkdir($connect_server, $ftp_folder."/".$region);
 
 	ftp_chmod($connect_server, 0777, $ftp_folder."/".$region);
-    if(!ftp_nlist($connect_server,$ftp_folder."/".$region."/".$object))
-        ftp_mkdir($connect_server, $ftp_folder."/".$region."/".$object);
+    if(!ftp_nlist($connect_server,$ftp_folder."/".$region."/".$object)) {
+      ftp_mkdir($connect_server, $ftp_folder . "/" . $region . "/" . $object);
+      ftp_chmod($connect_server, 0777, $ftp_folder."/".$region."/".$object);
+    }
 
-    ftp_chmod($connect_server, 0777, $ftp_folder."/".$region."/".$object);
 	do_upload_images($connect_server, $local, $ftp);
 
 	$ftp_folder = "/var/www/default-site/public_html/price/object/images/".$object;
