@@ -634,12 +634,15 @@ function get_image($dir){
 function select_image_room($region, $object, $room){
 	global $directory;
 	$url = "temp/images/".$region."/".$object."/".$room."/small/";
-	$folder = opendir($directory."/temp/images/".$region."/".$object."/".$room."/small/");
-	while($image = readdir($folder)){
-		if(($image != ".") AND ($image != "..") AND ($image)){
-			return $url.$image;
-		}
-	}
+	$dir = $directory."/temp/images/".$region."/".$object."/".$room."/small/";
+	if(is_dir($dir)) {
+      $folder = opendir($dir);
+      while($image = readdir($folder)){
+        if(($image != ".") AND ($image != "..") AND ($image)){
+          return $url.$image;
+        }
+      }
+    }
 	return FALSE;
 }
 
