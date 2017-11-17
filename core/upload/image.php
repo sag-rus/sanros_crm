@@ -292,20 +292,22 @@ function upload_image_object_server($connect){
 
 	ftp_chmod($connect_server, 0777, $ftp_folder);
 
-	$folder = opendir($local_dir);
-	while($file = readdir($folder)){
-		if(($file != ".") AND ($file != "..") AND ($file)){
-			$local_file = $local_dir."/".$file;
-			
-			if((int)is_dir($local_file)){
-				ftp_mkdir($connect_server, $ftp_folder . '/' . $file);
-				ftp_chmod($connect_server, 0777, $ftp_folder . '/' . $file);
-			}
-		}
-	}
+	if(is_dir($local_dir)) {
+      $folder = opendir($local_dir);
+      while($file = readdir($folder)){
+        if(($file != ".") AND ($file != "..") AND ($file)){
+          $local_file = $local_dir."/".$file;
 
-	do_upload_images($connect_server, $local_dir, $ftp_folder);
-	ftp_close($connect_server);
+          if((int)is_dir($local_file)){
+            ftp_mkdir($connect_server, $ftp_folder . '/' . $file);
+            ftp_chmod($connect_server, 0777, $ftp_folder . '/' . $file);
+          }
+        }
+      }
+
+      do_upload_images($connect_server, $local_dir, $ftp_folder);
+      ftp_close($connect_server);
+    }
 
 	return "<div class='alert alert-success'><i class='fa fa-picture-o'></i> Картинки загружены</div>";
 }
