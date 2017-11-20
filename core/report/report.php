@@ -165,7 +165,7 @@ function filter_payment($connect){
 	SetCookie("filter", $str);
 
 	$zapros_for_mysql = "";
-	$array = array("all_pay" => 0, "all_num" => 0, "pay_bez" => 0, "pay_nal" => 0, "pay_other" => 0, "num_bez" => 0, "num_nal" => 0, "num_other" => 0, "num_prepay" => 0, "prepay" => 0, "num_pay" => 0, "pay" => 0, "num_place" => 0, "pay_place" => 0, "num_card" => 0, "pay_card" => 0, "num_san" =>0, "pay_san" => 0, "num_cert" => 0, "pay_cert" => 0, "num_ret" => 0, "return" => 0);
+	$array = array("all_pay" => 0, "all_num" => 0, "pay_bez" => 0, "pay_nal" => 0, "pay_other" => 0, "num_bez" => 0, "num_nal" => 0, "num_other" => 0, "num_prepay" => 0, "prepay" => 0, "num_pay" => 0, "pay" => 0, "num_place" => 0, "pay_place" => 0, "num_card" => 0, "pay_card" => 0, "num_san" =>0, "pay_san" => 0, "num_cert" => 0, "pay_cert" => 0, "num_ret" => 0, "return" => 0, "reward" => 0);
 	$office = $connect->getAll("SELECT id, name FROM office");
 	foreach($office as $row){
 		$id_office = $row["id"];
@@ -222,18 +222,23 @@ function filter_payment($connect){
 	}else
 		$th_pay = "<th width='70'>Способ<br />платежа</th><th width='70'>Номер<br />плат.пор.</th>";
 	$zapros_for_mysql_cond = $zapros_for_mysql;
-	$zapros_for_mysql = "SELECT payment.id, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, payment.office, payment.type, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san FROM payment LEFT JOIN reckoning ON reckoning.id=payment.schet WHERE ".$zapros_for_mysql." AND pay_method!=3 ORDER BY payment.id";
+	$zapros_for_mysql = "SELECT payment.id, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, payment.office, payment.type, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san FROM payment LEFT JOIN reckoning ON reckoning.id=payment.schet WHERE ".$zapros_for_mysql." ORDER BY payment.id";
 	$data = $connect->getAll($zapros_for_mysql);
 	$pay_groups = [];
 	foreach($data as $row){
 		$all_fio = "";
 		$id = $row["schet"];
 
-		if(!isset($pay_groups[$id])) {
-		    $pay_groups[$id] = [$row['id']];
+		if(in_array($row['type'],[1,2])) {
+          if (!isset($pay_groups[$id])) {
+            $pay_groups[$id] = [$row['id']];
+          }
+          else {
+            $pay_groups[$id][] = $row['id'];
+          }
         }
-        else {
-          $pay_groups[$id][] = $row['id'];
+        elseif ($row['type'] == 5) {
+		    //$reward -=
         }
 
 		$id_file[] = $id;
@@ -396,7 +401,7 @@ function filter_payment($connect){
 	}
 
 	foreach ($pay_groups as $reck_id => $pay_array) {
-	    $all_pays = $connect->getAll("SELECT id FROM payment WHERE pay_method!=3 AND schet = ?i", $reck_id);
+	    $all_pays = $connect->getAll("SELECT id FROM payment WHERE (type = 1 OR type = 2) AND schet = ?i", $reck_id);
 	    $all_pays_count = count($all_pays);
 	    /*if($all_pays_count === count($pay_array)) {
           $array["reward"] += get_reward_schet($connect, $reck_id, "", TRUE);
