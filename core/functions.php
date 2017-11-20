@@ -834,7 +834,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
     $bonus = $connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND sum < 0", $id);
     $reck = $connect->getRow("SELECT sum, agency, id_com, id_dis, correction, status FROM reckoning WHERE id=?i", $id);
 	$only_payment_state = false;
-    if($fact || (!is_null($only_payments) && count($only_payments) > 0)) {
+    if($fact) {
       $add_cond = "";
       if(!is_null($only_payments) && count($only_payments) > 0) {
           $only_payment_state = true;
@@ -864,10 +864,19 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
     }
 	else{
 		$data = $connect->getAll("SELECT id FROM position_reck WHERE schet=?i", $id);
-		if($fact && ($reck['status'] != 5 || $only_payment_state)) {
-
-          foreach($data as $row)
-            $reward+= get_reward_schet_position_pay($connect, $row["id"],$pay_sum);
+		if($fact) {
+          if($reck['status'] != 5) {
+            foreach ($data as $row) {
+              $reward += get_reward_schet_position_pay($connect, $row["id"], $pay_sum);
+            }
+          }
+          else {
+            if($consider_bonus) {
+              foreach ($data as $row) {
+                $reward += get_reward_schet_position($connect, $row["id"]);
+              }
+            }
+          }
         }
         else {
           foreach($data as $row)
@@ -885,8 +894,14 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
 	if($reck["agency"]){
 
 		$value = $connect->getOne("SELECT value FROM commission WHERE id=?i", $reck["id_com"]);
-		if($fact && ($reck['status'] != 5 || $only_payment_state)) {
-          $commission = get_reward_agency($connect, $id, $pay_sum);
+		if($fact) {
+		    if($reck['status'] != 5) {
+              $commission = get_reward_agency($connect, $id, $pay_sum);
+            }
+            else {
+		        if($consider_bonus)
+                  $commission = get_reward_agency($connect, $id);
+            }
         }
 		else
 		    $commission = get_reward_agency($connect, $id);
