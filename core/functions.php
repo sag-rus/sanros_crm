@@ -832,7 +832,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
   $reward = 0;
   $reck_reward = $connect->getOne("SELECT reward FROM reckoning WHERE id=?i", $id);
   $bonus = $connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND sum < 0", $id);
-  $reck = $connect->getRow("SELECT sum, agency, id_com, id_dis, correction, status FROM reckoning WHERE id=?i", $id);
+  $reck = $connect->getRow("SELECT sum, agency, id_com, id_dis, correction, status FROM reckoning WHERE id=?i LIMIT 1", $id);
   $only_payment_state = false;
   if($fact) {
     $add_cond = "";
@@ -853,7 +853,6 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
 
     $payments = $connect->getAll("SELECT id, sum FROM payment WHERE ".$add_cond."schet=?i AND class='schet' AND type != 3 AND type != 4 AND type != 5", $id);
     $pay_sum = 0;
-
     foreach ($payments as $payment) {
       $pay_sum += (float)$payment['sum'];
     }
@@ -868,6 +867,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
       if($reck['status'] != 5) {
         foreach ($data as $row) {
           $reward += get_reward_schet_position_pay($connect, $row["id"], $pay_sum);
+          break;
         }
       }
       else {
@@ -892,8 +892,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
 
   $raz = 0;
   if($reck["agency"]){
-
-    $value = $connect->getOne("SELECT value FROM commission WHERE id=?i", $reck["id_com"]);
+    $value = $connect->getOne("SELECT value FROM commission WHERE id=?i LIMIT 1", $reck["id_com"]);
     if($fact) {
       if($reck['status'] != 5) {
         $commission = get_reward_agency($connect, $id, $pay_sum);
@@ -911,6 +910,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
     $raz+= $commission;
   }
 
+
   if($consider_bonus) {
     if($bonus){
       $bonus = abs($bonus);
@@ -923,7 +923,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
   }
 
   if($reck["id_dis"]){
-    $row = $connect->getRow("SELECT value, type FROM discount WHERE id=?i", $reck["id_dis"]);
+    $row = $connect->getRow("SELECT value, type FROM discount WHERE id=?i LIMIT 1", $reck["id_dis"]);
     if($row["type"] == 1) {
       if($fact) {
         if($reck['status'] != 5) {
@@ -988,8 +988,8 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
   }
 
   $raz+= $bank_com;
-
   $reward = round($reward - $raz, 2);
+
   if($type == "EACH"){
     $array["sum"] = add_null($reck["sum"]);
     $array["itog"] = add_null($reward);
