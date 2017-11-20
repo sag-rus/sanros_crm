@@ -851,7 +851,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
     if(mb_strlen($add_cond) > 0)
       $add_cond .= ") AND ";
 
-    $payments = $connect->getAll("SELECT id, sum FROM payment WHERE ".$add_cond."schet=?i AND class='schet' AND pay_method <> '0'", $id);
+    $payments = $connect->getAll("SELECT id, sum FROM payment WHERE ".$add_cond."schet=?i AND class='schet' AND type != 3 AND type != 4 AND type != 5", $id);
     $pay_sum = 0;
 
     foreach ($payments as $payment) {
@@ -961,18 +961,30 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
     $data = $connect->getAll("SELECT sum, bank_com, type FROM payment WHERE pay_method=5 AND schet=?i", $id);
 
   foreach($data as $row){
-    if($row["bank_com"] > 0 AND $row["type"] == 2){
+    /*if($row["bank_com"] > 0 AND $row["type"] == 2){
       if($only_payment_state)
         $row["sum"]-= $connect->getOne("SELECT sum FROM payment WHERE ".$add_cond."type=5 AND schet=?i", $id);
       else
         $row["sum"]-= $connect->getOne("SELECT sum FROM payment WHERE type=5 AND schet=?i", $id);
-    }
+    }*/
+
     if($row["sum"] <= 100)
       $bank_com+= "3.5";
     else
       $bank_com+= $row["sum"] * ($row["bank_com"] / 100);
     if($type == "EACH")
       $array["bank_com"] = add_null($bank_com);
+  }
+
+  if($fact) {
+    if($only_payment_state)
+      $ret_payments = $connect->getAll("SELECT sum FROM payment WHERE ".$add_cond."type=5 AND schet=?i", $id);
+    else
+      $ret_payments = $connect->getAll("SELECT sum FROM payment WHERE type=5 AND schet=?i", $id);
+
+    foreach ($ret_payments as $ret_payment) {
+        $raz += (float)$ret_payment['sum'];
+    }
   }
 
   $raz+= $bank_com;
