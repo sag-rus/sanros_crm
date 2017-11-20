@@ -222,7 +222,7 @@ function filter_payment($connect){
 	}else
 		$th_pay = "<th width='70'>Способ<br />платежа</th><th width='70'>Номер<br />плат.пор.</th>";
 	$zapros_for_mysql_cond = $zapros_for_mysql;
-	$zapros_for_mysql = "SELECT payment.id, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, payment.office, payment.type, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san FROM payment LEFT JOIN reckoning ON reckoning.id=payment.schet WHERE ".$zapros_for_mysql." AND pay_method!=3 AND pay_method !=0 ORDER BY payment.id";
+	$zapros_for_mysql = "SELECT payment.id, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, payment.office, payment.type, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san FROM payment LEFT JOIN reckoning ON reckoning.id=payment.schet WHERE ".$zapros_for_mysql." AND pay_method!=3 ORDER BY payment.id";
 	$data = $connect->getAll($zapros_for_mysql);
 	$pay_groups = [];
 	foreach($data as $row){
@@ -396,7 +396,7 @@ function filter_payment($connect){
 	}
 
 	foreach ($pay_groups as $reck_id => $pay_array) {
-	    $all_pays = $connect->getAll("SELECT id FROM payment WHERE pay_method!=3 AND pay_method !=0 AND schet = ?i", $reck_id);
+	    $all_pays = $connect->getAll("SELECT id FROM payment WHERE pay_method!=3 AND schet = ?i", $reck_id);
 	    $all_pays_count = count($all_pays);
 	    /*if($all_pays_count === count($pay_array)) {
           $array["reward"] += get_reward_schet($connect, $reck_id, "", TRUE);
