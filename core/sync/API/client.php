@@ -392,7 +392,7 @@ function show_tour_bid_account($connect, $data){
 		if($answer["status"] == 3 OR $answer["status"] == 4){
 			$array["doc"] = 2;
 			$reward = get_reward_schet($connect, $id);
-			if(($reward / $answer["sum"] * 100) >= 4 OR $id == 43125){
+			if(($reward / $answer["sum"] * 100) >= 4 || $id == 43125 || $id == 58509){
 				$array["pay_button"] = 1;
 				$check = $connect->getOne("SELECT sum FROM time_payment WHERE type=2 AND id_schet=?i", $id);
 				if($check AND ($answer["status"] == 3 OR $answer["status"] == 4))
