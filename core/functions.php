@@ -961,12 +961,12 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
     $data = $connect->getAll("SELECT sum, bank_com, type FROM payment WHERE pay_method=5 AND schet=?i", $id);
 
   foreach($data as $row){
-    /*if($row["bank_com"] > 0 AND $row["type"] == 2){
+    if($row["bank_com"] > 0 AND $row["type"] == 2){
       if($only_payment_state)
         $row["sum"]-= $connect->getOne("SELECT sum FROM payment WHERE ".$add_cond."type=5 AND schet=?i", $id);
       else
         $row["sum"]-= $connect->getOne("SELECT sum FROM payment WHERE type=5 AND schet=?i", $id);
-    }*/
+    }
 
     if($row["sum"] <= 100)
       $bank_com+= "3.5";
@@ -976,7 +976,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
       $array["bank_com"] = add_null($bank_com);
   }
 
-  if($fact) {
+  /*if($fact) {
     if($only_payment_state)
       $ret_payments = $connect->getAll("SELECT sum FROM payment WHERE ".$add_cond."type=5 AND schet=?i", $id);
     else
@@ -985,7 +985,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
     foreach ($ret_payments as $ret_payment) {
         $raz += (float)$ret_payment['sum'];
     }
-  }
+  }*/
 
   $raz+= $bank_com;
   $reward = round($reward - $raz, 2);
