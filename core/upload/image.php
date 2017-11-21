@@ -283,12 +283,12 @@ function upload_image_object_server($connect){
 
 	do_upload_images($connect_server, $local, $ftp);
 
-    return "Test ".$local;
-
 	$ftp_folder = "/var/www/default-site/public_html/price/object/images/".$object;
 	$local_dir = "temp/object/".$object;
 
 	ftp_rdel($connect_server, $ftp_folder);
+
+  return "Test ".$local;
 
 	if(ftp_nlist($connect_server, $ftp_folder) == false)
 	    ftp_mkdir($connect_server, $ftp_folder);
