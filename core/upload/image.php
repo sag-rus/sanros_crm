@@ -320,8 +320,13 @@ function do_upload_images($connect_server, $local_dir, $ftp_dir){
 			$local_file = $local_dir."/".$file;
 			$ftp_file = $ftp_dir."/".$file;
 			if(is_file($local_file)){
-				ftp_put($connect_server, $ftp_file, $local_file, FTP_BINARY);
-				ftp_chmod($connect_server, 0644, $ftp_file);
+
+              if(!ftp_nlist($connect_server,$ftp_dir)) {
+                ftp_mkdir($connect_server, $ftp_dir);
+              }
+
+              ftp_put($connect_server, $ftp_file, $local_file, FTP_BINARY);
+              ftp_chmod($connect_server, 0644, $ftp_file);
 			}else
 				do_upload_images($connect_server, $local_file, $ftp_file);
 		}
