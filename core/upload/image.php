@@ -262,56 +262,76 @@ function ftp_rdel ($connect_server, $path) {
 
 function upload_image_object_server($connect){
 	global $directory;
-	$object = $_POST["object"];
-	$region = $connect->getOne("SELECT id_reg FROM object WHERE id=?i", $object);
-	$ftp_folder = "/var/www/default-site/public_html/price/images";
-	$local_dir = $directory."/temp/images";
+	$object = (int)$_POST["object"];
+	$object_row = $connect->getRow("SELECT id_reg, image FROM object WHERE id=?i", $object);
 
-	$local = $local_dir."/".$region."/".$object;
-	$ftp = $ftp_folder."/".$region."/".$object;
+	if($object_row) {
+      $region = $object_row['id_reg'];
+      $image_cont = base64_decode($object_row['image']);
 
-	$connect_server = connect_to_server();
-	if(ftp_nlist($connect_server,$ftp_folder."/".$region) == false)
-	    ftp_mkdir($connect_server, $ftp_folder."/".$region);
-
-	ftp_chmod($connect_server, 0777, $ftp_folder."/".$region);
-
-    if(ftp_nlist($connect_server,$ftp_folder."/".$region."/".$object) == false) {
-      ftp_mkdir($connect_server, $ftp_folder . "/" . $region . "/" . $object);
-      ftp_chmod($connect_server, 0777, $ftp_folder."/".$region."/".$object);
-    }
-
-	do_upload_images($connect_server, $local, $ftp);
-
-
-	$ftp_folder = "/var/www/default-site/public_html/price/object/images/".$object;
-	$local_dir = "temp/object/".$object;
-
-	ftp_rdel($connect_server, $ftp_folder);
-
-	if(ftp_nlist($connect_server, $ftp_folder) == false)
-	    ftp_mkdir($connect_server, $ftp_folder);
-
-	ftp_chmod($connect_server, 0777, $ftp_folder);
-
-	if(is_dir($local_dir)) {
-      $folder = opendir($local_dir);
-      while($file = readdir($folder)){
-        if(($file != ".") AND ($file != "..") AND ($file)){
-          $local_file = $local_dir."/".$file;
-
-          if((int)is_dir($local_file)){
-            ftp_mkdir($connect_server, $ftp_folder . '/' . $file);
-            ftp_chmod($connect_server, 0777, $ftp_folder . '/' . $file);
-          }
-        }
+      if(!file_exists($directory."/temp/object-head/images/")) {
+          mkdir($directory."/temp/object-head/images/",0777,true);
       }
 
-      do_upload_images($connect_server, $local_dir, $ftp_folder);
-      ftp_close($connect_server);
-    }
+      file_put_contents($directory."/temp/object-head/images/".$object.".jpg",$image_cont);
 
-	return "<div class='alert alert-success'><i class='fa fa-picture-o'></i> Картинки загружены</div>";
+      $connect_server = connect_to_server();
+
+      if(file_exists($directory."/temp/object-head/images/".$object.".jpg")) {
+        do_upload_images($connect_server,$directory."/temp/object-head/images/".$object.".jpg","/var/www/default-site/public_html/price/object/head/".$object.".jpg");
+      }
+
+      $ftp_folder = "/var/www/default-site/public_html/price/images";
+      $local_dir = $directory . "/temp/images";
+
+      $local = $local_dir . "/" . $region . "/" . $object;
+      $ftp = $ftp_folder . "/" . $region . "/" . $object;
+
+      if (ftp_nlist($connect_server, $ftp_folder . "/" . $region) == FALSE) {
+        ftp_mkdir($connect_server, $ftp_folder . "/" . $region);
+      }
+
+      ftp_chmod($connect_server, 0777, $ftp_folder . "/" . $region);
+
+      if (ftp_nlist($connect_server, $ftp_folder . "/" . $region . "/" . $object) == FALSE) {
+        ftp_mkdir($connect_server, $ftp_folder . "/" . $region . "/" . $object);
+        ftp_chmod($connect_server, 0777, $ftp_folder . "/" . $region . "/" . $object);
+      }
+
+      do_upload_images($connect_server, $local, $ftp);
+
+
+      $ftp_folder = "/var/www/default-site/public_html/price/object/images/" . $object;
+      $local_dir = "temp/object/" . $object;
+
+      ftp_rdel($connect_server, $ftp_folder);
+
+      if (ftp_nlist($connect_server, $ftp_folder) == FALSE) {
+        ftp_mkdir($connect_server, $ftp_folder);
+      }
+
+      ftp_chmod($connect_server, 0777, $ftp_folder);
+
+      if (is_dir($local_dir)) {
+        $folder = opendir($local_dir);
+        while ($file = readdir($folder)) {
+          if (($file != ".") AND ($file != "..") AND ($file)) {
+            $local_file = $local_dir . "/" . $file;
+
+            if ((int) is_dir($local_file)) {
+              ftp_mkdir($connect_server, $ftp_folder . '/' . $file);
+              ftp_chmod($connect_server, 0777, $ftp_folder . '/' . $file);
+            }
+          }
+        }
+
+        do_upload_images($connect_server, $local_dir, $ftp_folder);
+        ftp_close($connect_server);
+      }
+
+      return "<div class='alert alert-success'><i class='fa fa-picture-o'></i> Картинки загружены</div>";
+    }
+    return "<div class='alert alert-danger'><i class='fa fa-picture-o'></i> Объект не найден</div>";
 }
 
 function do_upload_images($connect_server, $local_dir, $ftp_dir){
