@@ -873,8 +873,7 @@ function update_main_data_object(id){
 		}
 	});
 
-	var objEditor = CKEDITOR.instances["description-object"];
-	var q = objEditor.getData();
+	var q = object_description_editor.getData();
 
 	var obj = {
 		"func": "update_main_data_object",

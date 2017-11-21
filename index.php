@@ -1,5 +1,5 @@
 <?php
-	$version = "28-05-2017";
+	$version = "29-05-2017";
 ?>
 
 <!DOCTYPE html>
@@ -42,8 +42,8 @@
 	<script type="text/javascript" src="modules/module-question.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-profile.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-manual.js?ver=<?php echo $version; ?>"></script>
-	<script type="text/javascript" src="js/ckeditor/ckeditor.js"></script>
-	<link rel="stylesheet" href="js/ckeditor/style.css">
+    <script src="https://cdn.ckeditor.com/ckeditor5/1.0.0-alpha.2/classic/ckeditor.js"></script>
+	<!--link rel="stylesheet" href="js/ckeditor/style.css"-->
 	<link href="font/font-awesome/css/font-awesome.css" rel="stylesheet">
 	<link rel="stylesheet" href="css/style.css?ver=<?php echo $version; ?>">
 	<link rel="stylesheet" href="css/jquery-ui.css?ver=<?php echo $version; ?>">

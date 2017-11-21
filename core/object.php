@@ -547,9 +547,27 @@ function edit_main_data_object($connect){
 		<button type="button" class="btn btn-danger btn-sm" onclick="select_object_about('<?php echo $id; ?>')"><i class="fa fa-times-circle"></i> Отмена</button>
 	</div>
 </div>
-<script>
+<script TYPE="">
 	$(function() {
-	    CKEDITOR.replace( 'description-object' );
+      ClassicEditor.create( document.querySelector( '#description-object' ), {
+        toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+        heading: {
+          options: [
+            { modelElement: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+            { modelElement: 'heading1', viewElement: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+            { modelElement: 'heading2', viewElement: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
+          ]
+        }
+      })
+      .then( editor => {
+        console.log( 'Editor was initialized', editor );
+        object_description_editor = editor;
+      })
+      .catch(
+        error => {
+            console.log(error);
+        }
+      );
 	});
 </script>
 <?php
