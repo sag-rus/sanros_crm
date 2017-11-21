@@ -286,15 +286,15 @@ function upload_image_object_server($connect){
 	$ftp = $ftp_folder."/".$region."/".$object;
 
 	$connect_server = connect_to_server();
-	if(!ftp_dir_exist($connect_server,$ftp_folder."/".$region))
-	    ftp_mkdir($connect_server, $ftp_folder."/".$region);
+	/*if(!ftp_dir_exist($connect_server,$ftp_folder."/".$region))
+	    ftp_mkdir($connect_server, $ftp_folder."/".$region);*/
 
 	ftp_chmod($connect_server, 0777, $ftp_folder."/".$region);
 
-    if(!ftp_dir_exist($connect_server,$ftp_folder."/".$region."/".$object)) {
+    /*if(!ftp_dir_exist($connect_server,$ftp_folder."/".$region."/".$object)) {
       ftp_mkdir($connect_server, $ftp_folder . "/" . $region . "/" . $object);
       ftp_chmod($connect_server, 0777, $ftp_folder."/".$region."/".$object);
-    }
+    }*/
 
 	do_upload_images($connect_server, $local, $ftp);
 
@@ -303,8 +303,8 @@ function upload_image_object_server($connect){
 
 	ftp_rdel($connect_server, $ftp_folder);
 
-	if(!ftp_dir_exist($connect_server, $ftp_folder))
-	    ftp_mkdir($connect_server, $ftp_folder);
+	//if(!ftp_dir_exist($connect_server, $ftp_folder))
+	    //ftp_mkdir($connect_server, $ftp_folder);
 
 	ftp_chmod($connect_server, 0777, $ftp_folder);
 
