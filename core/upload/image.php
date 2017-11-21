@@ -287,9 +287,8 @@ function upload_image_object_server($connect){
 	$connect_server = connect_to_server();
 	/*if(!ftp_dir_exist($connect_server,$ftp_folder."/".$region))
 	    ftp_mkdir($connect_server, $ftp_folder."/".$region);*/
-  return "Test";
 	ftp_chmod($connect_server, 0777, $ftp_folder."/".$region);
-
+    return "Test";
     /*if(!ftp_dir_exist($connect_server,$ftp_folder."/".$region."/".$object)) {
       ftp_mkdir($connect_server, $ftp_folder . "/" . $region . "/" . $object);
       ftp_chmod($connect_server, 0777, $ftp_folder."/".$region."/".$object);
