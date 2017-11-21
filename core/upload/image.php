@@ -247,16 +247,19 @@ function upload_image_server(){
 	return "<div class='alert alert-success'><i class='fa fa-picture-o'></i> Картинки загружены</div>";
 }
 
-function ftp_rdel ($connect_server, $path) {
-
-  if (@ftp_delete ($connect_server, $path) === false) {
-
-    if ($children = @ftp_nlist ($connect_server, $path)) {
-      foreach ($children as $p)
-        ftp_rdel ($connect_server,  $p);
+function ftp_rdel($handle, $directory)
+{
+  # here we attempt to delete the file/directory
+  if( !(@ftp_rmdir($handle, $directory) || @ftp_delete($handle, $directory)) )
+  {
+    # if the attempt to delete fails, get the file listing
+    $filelist = @ftp_nlist($handle, $directory);
+    // var_dump($filelist);exit;
+    # loop through the file list and recursively delete the FILE in the list
+    foreach($filelist as $file) {
+      ftp_rdel($handle, $file);
     }
-
-    @ftp_rmdir ($connect_server, $path);
+    ftp_rdel($handle, $directory);
   }
 }
 
