@@ -281,9 +281,9 @@ function upload_image_object_server($connect){
       ftp_chmod($connect_server, 0777, $ftp_folder."/".$region."/".$object);
     }
 
-    return "Test ".$local;
-
 	do_upload_images($connect_server, $local, $ftp);
+
+    return "Test ".$local;
 
 	$ftp_folder = "/var/www/default-site/public_html/price/object/images/".$object;
 	$local_dir = "temp/object/".$object;
