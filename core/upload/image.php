@@ -260,6 +260,21 @@ function ftp_rdel ($connect_server, $path) {
   }
 }
 
+function ftp_dir_exist($pftp, $dir) {
+  $temp = ftp_pwd($pftp);
+  $return = null;
+
+  if(@ftp_chdir($pftp, $dir)) {
+    $return = true;
+  } else {
+    $return = false;
+  }
+
+  ftp_chdir($pftp, $temp);
+
+  return $return;
+}
+
 function upload_image_object_server($connect){
 	global $directory;
 	$object = $_POST["object"];
@@ -271,12 +286,12 @@ function upload_image_object_server($connect){
 	$ftp = $ftp_folder."/".$region."/".$object;
 
 	$connect_server = connect_to_server();
-	if(ftp_nlist($connect_server,$ftp_folder."/".$region) == false)
+	if(!ftp_dir_exist($connect_server,$ftp_folder."/".$region))
 	    ftp_mkdir($connect_server, $ftp_folder."/".$region);
 
 	ftp_chmod($connect_server, 0777, $ftp_folder."/".$region);
 
-    if(ftp_nlist($connect_server,$ftp_folder."/".$region."/".$object) == false) {
+    if(!ftp_dir_exist($connect_server,$ftp_folder."/".$region."/".$object)) {
       ftp_mkdir($connect_server, $ftp_folder . "/" . $region . "/" . $object);
       ftp_chmod($connect_server, 0777, $ftp_folder."/".$region."/".$object);
     }
@@ -288,7 +303,7 @@ function upload_image_object_server($connect){
 
 	ftp_rdel($connect_server, $ftp_folder);
 
-	if(ftp_nlist($connect_server, $ftp_folder) == false)
+	if(!ftp_dir_exist($connect_server, $ftp_folder))
 	    ftp_mkdir($connect_server, $ftp_folder);
 
 	ftp_chmod($connect_server, 0777, $ftp_folder);
