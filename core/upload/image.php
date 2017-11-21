@@ -278,7 +278,8 @@ function upload_image_object_server($connect){
       $connect_server = connect_to_server();
 
       if(file_exists($directory."/temp/object-head/images/".$object.".jpg")) {
-        do_upload_images($connect_server,$directory."/temp/object-head/images/".$object.".jpg","/var/www/default-site/public_html/price/object/head/".$object.".jpg");
+        ftp_put($connect_server,"/var/www/default-site/public_html/price/object/head/".$object.".jpg",$directory."/temp/object-head/images/".$object.".jpg", FTP_BINARY);
+        ftp_chmod($connect_server, 0777, "/var/www/default-site/public_html/price/object/head/".$object.".jpg");
       }
 
       $ftp_folder = "/var/www/default-site/public_html/price/images";
