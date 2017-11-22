@@ -756,47 +756,67 @@ function view_all_profit($connect){
 	}
 	$plan = 0;
 	$all_raz = 0;
+	$all_profit_stand = 0;
+	$all_profit_reg = 0;
 	$all_profit = 0;
 	$all_plan = 0;
 	$all_reward = 0;
+	$all_reward_reg = 0;
 	$html = "";
 	$users = $connect->getAll("SELECT id, name FROM users");
 	foreach($users as $user){
 		$id_man = $user["id"];
 		$manager = $user["name"];
-		$row = $connect->getRow("SELECT id, plan, commission FROM plan WHERE manager=?i AND year=?i AND month=?i AND  commission > 0", $id_man, $year, $month);
+		$row = $connect->getRow("SELECT id, plan, commission, commission_region FROM plan WHERE manager=?i AND year=?i AND month=?i AND  commission > 0", $id_man, $year, $month);
 		if($row["id"]){
 			$plan = $row["plan"];
 			$commission = $row["commission"];
+			$commission_region = $row["commission_region"];
 			$reward = 0;
+			$reward_reg = 0;
 			$all_plan+= $plan;
-			$data = $connect->getAll("SELECT id FROM reckoning WHERE id_user=?i AND status=5 AND date_z >= ?s AND date_z <= ?s", $id_man, $date_start_month, $date_end_month);
-			foreach($data as $row){
-				$id = $row["id"];
-				$reward+= get_reward_schet($connect, $id);
+			$data = $connect->getAll("SELECT reckoning.id, reckoning.date, region.man_reward_scheme AS man_reward_scheme FROM reckoning INNER JOIN object ON object.id=reckoning.id_obj LEFT OUTER JOIN region ON region.id = object.id_reg WHERE reckoning.id_user=?i AND reckoning.status=5 AND reckoning.date_z >= ?s AND reckoning.date_z <= ?s", $id_man, $date_start_month, $date_end_month);
+			foreach($data as $reck_row){
+				$id = $reck_row["id"];
+				$reward_schet = get_reward_schet($connect, $id);
+                if($reck_row['man_reward_scheme'] == 1) {
+                    $reward_reg +=$reward_schet;
+                }
+				$reward+= $reward_schet;
 			}
 			$raz = $reward - $plan;
 			if($raz >= 0){
 				$color = "green";
-				$profit = round($raz * ($commission / 100), 2);
+				$profit_stand = round($raz * ($commission / 100), 2);
+				$profit_reg = round($reward_reg * ($commission_region / 100), 2);
 			}else{
 				$color = "red";
-				$profit = "";
+				$profit_stand = 0;
+                $profit_reg = 0;
 			}
+			$profit = $profit_reg+$profit_stand;
 			$all_raz+= $raz;
-			$all_profit= $all_profit+(float)$profit;
+			$all_profit_stand +=(float)$profit_stand;
+			$all_profit_reg +=(float)$profit_reg;
 			$all_reward+= $reward;
+			$all_reward_reg+=$reward_reg;
+			$all_profit+= $profit;
+			//if($reward_reg == 0)
+			  //  $reward_reg = "";
 			$html.= "<tr>";
 			$html.= "<td width='130'>".$manager."</td>";
 			$html.= "<td width='100'>".$plan."</td>";
 			$html.= "<td width='100'>".$reward."</td>";
+			$html.= '<td width="100">'.$reward_reg.'</td>';
 			$html.= "<td width='100' style='color: ".$color."'>".$raz."</td>";
-			$html.= "<td width='100'>".$profit."</td>";
+			$html.= "<td width='100'>".$profit_stand."</td>";
+            $html.= "<td width='100'>".$profit_reg."</td>";
+            $html.= "<td width='100'>".$profit."</td>";
 			$html.= "</tr>";
 		}
 	}
 	if($html)
-		$html = "<table class='table table-condensed'><tr><th>Менеджер</th><th>План</th><th>Факт</th><th>Прибыль</th><th>З/п</th> </tr>".$html."<tr><td>Итого</td><td>".$all_plan."</td><td>".$all_reward."</td><td>".$all_raz."</td><td>".$all_profit."</td></tr></table>";
+		$html = "<table class='table table-condensed'><tr><th>Менеджер</th><th>План</th><th>Факт</th><th>Факт по спец. регионам</th><th>Прибыль</th><th>З/п станд.</th><th>З/п по спец. рег.</th><th>З/п общая</th></tr>".$html."<tr><td><strong>Итого</strong></td><td><strong>".$all_plan."</strong></td><td><strong>".$all_reward."</strong></td><td><strong>".$all_reward_reg."</strong></td><td><strong>".$all_raz."</strong></td><td><strong>".$all_profit_stand."</strong></td><td><strong>".$all_profit_reg."</strong></td><td><strong>".$all_profit."</strong></td></tr></table>";
 	else
 		$html = "Данных не найдено";
 	return $html;

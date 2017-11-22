@@ -73,6 +73,7 @@ function see_plan_manager($connect){
 		<th>Имя</th>
 		<th>План (руб.)</th>
 		<th>Сверх плата (%)</th>
+        <th>Сверх плата по специальным регионам (%)</th>
 		<th></th>
 	</tr>
 <?php
@@ -80,22 +81,25 @@ function see_plan_manager($connect){
 	foreach($data as $row){
 		$id_man = $row["id"];
 		$manager = $row["name"];
-		$row = $connect->getRow("SELECT id, plan, commission FROM plan WHERE manager=?i AND year=?i AND month=?i", $id_man, $year, $month);
+		$row = $connect->getRow("SELECT id, plan, commission, commission_region FROM plan WHERE manager=?i AND year=?i AND month=?i", $id_man, $year, $month);
 		$id_plan = $row["id"];
 		if($id_plan){
 			$plan = $row["plan"];
 			$commission = $row["commission"];
+			$commission_region = $row["commission_region"];
 			$button = "<button type='button' class='btn btn-default btn-xs' onclick='edit_plan_manager(\"".$id_plan."\")'>&nbsp;<i class='fa fa-pencil'></i>&nbsp;</button>";
 		}else{
 			$button = "<button type='button' class='btn btn-primary btn-xs'  onclick='add_plan_manager(\"".$id_man."\")'>&nbsp;<i class='fa fa-plus-circle'></i>&nbsp;</button>";
 			$plan = "-";
 			$commission = "-";
+            $commission_region = "-";
 		}
 ?>
 		<tr>
-			<td width="40%"><?php echo $manager; ?></td>
-			<td width="25%" class="center"><?php echo $plan; ?></td>
-			<td width="25%" class="center"><?php echo $commission; ?></td>
+			<td width="30%"><?php echo $manager; ?></td>
+			<td width="20%" class="center"><?php echo $plan; ?></td>
+			<td width="20%" class="center"><?php echo $commission; ?></td>
+            <td width="20%" class="center"><?php echo $commission_region; ?></td>
 			<td width="10%"><?php echo $button; ?></td>
 		</tr>
 <?php
@@ -133,6 +137,12 @@ function add_plan_manager(){
 							<input type="text" class="form-control" id="new_commis" onkeypress="validate_sum('new_commis')" />
 						</div>
 					</div>
+                    <div class="form-group form-group-margin">
+                        <label class="col-sm-4 control-label">Сверх плата по специальным регионам (%)</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="commission_region_new" onkeypress="validate_sum('commission_region_new')" />
+                        </div>
+                    </div>
 				</div>
 			</div>
 			<div class="modal-footer">
@@ -157,13 +167,14 @@ function save_plan_manager($connect){
 	}
 	$plan = $_POST["plan"];
 	$commis = $_POST["commis"];
+	$commission_region = $_POST["commission_region"];
 	$manager = $_POST["manager"];
-	$connect->query("INSERT INTO plan(plan, commission, year, month, manager) VALUES (?i, ?s, ?i, ?i, ?i)", $plan, $commis, $year, $month, $manager);
+	$connect->query("INSERT INTO plan(plan, commission, commission_region, year, month, manager) VALUES (?i, ?s, ?s, ?i, ?i, ?i)", $plan, $commis, $commission_region, $year, $month, $manager);
 }
 
 function edit_plan_manager($connect){
 	$id = $_POST["id"];
-	$row = $connect->getRow("SELECT commission, plan FROM plan WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT commission, commission_region, plan FROM plan WHERE id=?i", $id);
 	ob_start();
 ?>
 <div class="modal fade">
@@ -187,6 +198,12 @@ function edit_plan_manager($connect){
 							<input type="text" class="form-control" id="commis" value="<?php echo $row['commission']; ?>" onkeypress="validate_sum('commis')" />
 						</div>
 					</div>
+                    <div class="form-group form-group-margin">
+                        <label class="col-sm-4 control-label">Сверх плата по специальным регионам (%)</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="commission_region" value="<?php echo $row['commission_region']; ?>" onkeypress="validate_sum('commission_region')" />
+                        </div>
+                    </div>
 				</div>
 			</div>
 			<div class="modal-footer">
@@ -204,7 +221,8 @@ function update_plan_manager($connect){
 	$id = $_POST["id"];
 	$plan = $_POST["plan"];
 	$commis = $_POST["commis"];
-	$connect->query("UPDATE plan SET plan=?i, commission=?i WHERE id=?i", $plan, $commis, $id);
+	$commission_region = $_POST["commission_region"];
+	$connect->query("UPDATE plan SET plan=?i, commission=?s, commission_region=?s WHERE id=?i", $plan, $commis, $commission_region, $id);
 }
 
 function view_my_profit($connect){

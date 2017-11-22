@@ -135,7 +135,7 @@ function add_new_region($connect){
 	$country = $connect->getOne("SELECT name FROM country WHERE id=?i", $id);
 	ob_start();
 ?>
-<div class="modal fade">
+<div class="modal fade new-region-modal">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -156,6 +156,15 @@ function add_new_region($connect){
 							<input type="text" class="form-control name-region" />
 						</div>
 					</div>
+                    <div class="form-group form-group-margin">
+                        <label class="col-sm-3 control-label">Вознаграждение менеджеру с заявки</label>
+                        <div class="col-sm-9">
+                            <select class="form-control man_reward_scheme">
+                                <option value="0">Персональное</option>
+                                <option value="1">Повышенное 20%</option>
+                            </select>
+                        </div>
+                    </div>
 				</div>
 			</div>
 			<div class="modal-footer">
@@ -172,9 +181,10 @@ function add_new_region($connect){
 function save_new_region($connect){
 	$name = $_POST["name"];
 	$country = $_POST["country"];
+	$man_reward_scheme = (int)$_POST["man_reward_scheme"];
 	if($connect->getOne("SELECT id FROM region WHERE name=?s AND id_country=?i", $name, $country))
 		return FALSE;
-	$connect->query("INSERT INTO region(name, id_country) VALUES (?s, ?i)", $name, $country);
+	$connect->query("INSERT INTO region(name, id_country, man_reward_scheme) VALUES (?s, ?i, ?i)", $name, $country, $man_reward_scheme);
 	return $connect->insertId();
 }
 
@@ -1260,7 +1270,7 @@ function check_completeness_object($connect){
 
 function edit_region($connect){
 	$id = $_POST["id"];
-	$row = $connect->getRow("SELECT name, id_direction, id_country, description, meta_desc FROM region WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT name, id_direction, id_country, description, meta_desc, man_reward_scheme FROM region WHERE id=?i", $id);
 ?>
 <div class="modal fade">
 	<div class="modal-dialog">
@@ -1288,6 +1298,16 @@ function edit_region($connect){
 						<?php echo get_select_table($connect, "direction_object", "id_country=".$row["id_country"], $row["id_direction"], "direction-region", 1, ""); ?>
 					</div>
 				</div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Вознаграждение менеджеру с заявки</label>
+                    <div class="col-sm-8">
+                        <select class="form-control man_reward_scheme">
+                            <option value="0"<?php if($row['man_reward_scheme'] == 0) echo ' selected';?>>Персональное</option>
+                            <option value="1"<?php if($row['man_reward_scheme'] == 1) echo ' selected';?>>Повышенное 20%</option>
+                        </select>
+                      <?php ?>
+                    </div>
+                </div>
 				<div class="form-group">
 					<label class="col-sm-4 control-label">
 						Meta-описание
@@ -1313,7 +1333,9 @@ function update_region($connect){
 	$direction = $_POST["direction"];
 	$description = strip_tags($_POST["description"]);
 	$meta_desc = strip_tags($_POST["meta_desc"]);
-	$connect->query("UPDATE region SET name=?s, description=?s, meta_desc=?s WHERE id=?i", $name, $description, $meta_desc, $id);
+	$man_reward_scheme = (int)$_POST['man_reward_scheme'];
+
+	$connect->query("UPDATE region SET name=?s, description=?s, meta_desc=?s, man_reward_scheme=?i WHERE id=?i", $name, $description, $meta_desc, $man_reward_scheme,$id);
 	if($direction)
 		$connect->query("UPDATE region SET id_direction=?i WHERE id=?i", $direction, $id);
 }

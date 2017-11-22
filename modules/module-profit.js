@@ -75,7 +75,8 @@ function edit_plan_manager(id){
 function update_plan_manager(id){
 	var plan = $('#plan').val();
 	var commis = $('#commis').val();
-	var str = 'func=update_plan_manager&plan=' + plan + '&commis=' + commis + '&id=' + id;
+	var commission_region = $('#commission_region').val();
+	var str = 'func=update_plan_manager&plan=' + plan + '&commis=' + commis + '&id=' + id+'&commission_region='+commission_region;
 	$.ajax({
 		url: 'mysql.php',
 		type: 'POST',
@@ -103,11 +104,14 @@ function add_plan_manager(manager){
 function save_plan_manager(manager){
 	var plan = $('#new_plan').val();
 	var commis = $('#new_commis').val();
+	var commission_region = $('#commission_region_new').val();
 	var month = $('#months').val();
 	if(!commis)
 		show_warning('.plan', 'Укажите комиссию', false);
+	else if(!commission_region)
+		show_warning('.plan', 'Укажите комиссию для специальных региново', false);
 	else{
-		var str = 'func=save_plan_manager&plan=' + plan + '&commis=' + commis + '&manager=' + manager + '&month=' + month;
+		var str = 'func=save_plan_manager&plan=' + plan + '&commis=' + commis + '&manager=' + manager + '&month=' + month+'&commission_region='+commission_region;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',

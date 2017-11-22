@@ -142,14 +142,15 @@ function save_new_country(){
 }
 
 function save_new_region(country){
-	var region = $('.name-region').val();
+	var region = $('.new-region-modal .name-region').val();
+	var man_reward_scheme = $('.new-region-modal .man_reward_scheme').val();
 	if(!region)
 		show_warning('.new-region', 'Введите название', false);
 	else{
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
-			data: 'func=save_new_region&name=' + region + '&country=' + country,
+			data: 'func=save_new_region&name=' + region + '&country=' + country+'&man_reward_scheme='+man_reward_scheme,
 			success: function(id){
 				if(!id)
 					show_warning('.new-region', 'Такой регион уже существует', false);
@@ -1300,10 +1301,11 @@ function update_region(id){
 	var direction = $('.edit-region #direction-region').val();
 	var description = $('.edit-region .description-region').val();
 	var meta_desc = $('.edit-region .meta-desc-region').val();
+	var man_reward_scheme = $('.edit-region .man_reward_scheme').val();
 	if(!name)
 		show_warning('.edit-region', 'Укажите название региона', false);
 	else{
-		var str = 'func=update_region&id=' + id + '&name=' + name + '&direction=' + direction + '&description=' + description + '&meta_desc=' + meta_desc;
+		var str = 'func=update_region&id=' + id + '&name=' + name + '&direction=' + direction + '&description=' + description + '&meta_desc=' + meta_desc+'&man_reward_scheme='+man_reward_scheme;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
