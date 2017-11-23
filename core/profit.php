@@ -246,8 +246,8 @@ function view_my_profit($connect){
 		$date_end_month = date("Y-m-d", mktime(0, 0, 0, $month + 1, 0, $year));
 	}
 	$table = "";
-	$array = array("raz" => 0, "raz_h" => 0, "reward" => 0, "excess" => 0);
-	$data = $connect->getAll("SELECT id, sum, rest, DATE_FORMAT(date_z, '%d.%m.%Y') as zaezd, id_obj, DATE_FORMAT(date_v, '%d.%m.%Y') as vyezd, active  FROM reckoning WHERE id_user=?i AND status=5 AND date_z>=?s AND date_z<=?s ORDER BY id", $id_user, $date_start_month, $date_end_month);
+	$array = array("raz" => 0, "raz_h" => 0, "reward" => 0, "reward_reg" => 0, "excess_stand" => 0, "excess_reg" => 0, "excess" => 0);
+	$data = $connect->getAll("SELECT reckoning.id, reckoning.sum, reckoning.rest, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as zaezd, reckoning.id_obj, DATE_FORMAT(reckoning.date_v, '%d.%m.%Y') as vyezd, reckoning.active, region.man_reward_scheme AS man_reward_scheme FROM reckoning INNER JOIN object ON object.id=reckoning.id_obj LEFT OUTER JOIN region ON region.id = object.id_reg WHERE reckoning.id_user=?i AND reckoning.status=5 AND reckoning.date_z>=?s AND reckoning.date_z<=?s ORDER BY reckoning.id", $id_user, $date_start_month, $date_end_month);
 	$all_reward = 0;
 	foreach($data as $row){
 		$id = $row["id"];
@@ -270,6 +270,11 @@ function view_my_profit($connect){
 		$reward = get_reward_schet($connect, $id);
 		$date_z = $row["zaezd"];
 		$array["reward"]+= $reward;
+
+		if($row['man_reward_scheme'] == 1 && strtotime($row['zaezd']) >= strtotime("01.11.2017")) {
+		    $array["reward_reg"]+= $reward;
+        }
+
 		if($reward < 0)
 			$color = "class='red-danger'";
 		elseif($reward == 0)
@@ -295,14 +300,23 @@ function view_my_profit($connect){
 <?php
 		$table.= ob_get_clean();
 	}
-	$row = $connect->getRow("SELECT id, plan, commission FROM plan WHERE manager=?i AND year=?i AND month=?i", $id_user, $year, $month);
+	$row = $connect->getRow("SELECT id, plan, commission, commission_region FROM plan WHERE manager=?i AND year=?i AND month=?i", $id_user, $year, $month);
 	if($row["id"]){
 		$plan = number_format($row["plan"], 2, ".", " ")." рублей";
 		$array["raz"] = $row["plan"] - $array["reward"];
 		$raz = abs($array["raz"]);
 		$array["raz_h"] = number_format(abs($raz), 2, ".", " ")." рублей";
 		$commis_manager = $row["commission"] / 100;
-		$array["excess"] = number_format(round(abs($raz) * $commis_manager, 2), 2, ".", " ")." рублей";
+		$commis_manager_reg = $row["commission_region"] / 100;
+		$excess_stand = round(abs($raz) * $commis_manager, 2);
+        $excess__reg = 0;
+		if($raz >= 0) {
+          $excess__reg = round(abs($array["reward_reg"]) * $commis_manager_reg, 2);
+        }
+        $excess = $excess_stand+$excess__reg;
+        $array["excess_stand"] = number_format($excess_stand, 2, ".", " ")." рублей";
+		$array["excess_reg"] = number_format($excess__reg, 2, ".", " ")." рублей";
+		$array["excess"] = number_format($excess, 2, ".", " ")." рублей";
 	}else{
 		$plan = "не установлен";
 		$excess_plan = "-";
@@ -315,13 +329,20 @@ function view_my_profit($connect){
 		<div class="list-group">
 			<div class="list-group-item"><strong>План:</strong> <?php echo $plan; ?></div>
 			<div class="list-group-item"><strong>Комиссия:</strong> <?php echo $row["commission"]; ?>%</div>
+            <div class="list-group-item"><strong>Доп. комиссия по спец. регионам:</strong> <?php echo $row["commission_region"]; ?>%</div>
 			<div class="list-group-item"><strong>На данный момент:</strong> <?php echo number_format($array["reward"], 2, ".", " "); ?> рублей</div>
-			<?php if($array["raz"] > 0){ ?>
+            <div class="list-group-item" style="padding-left: 40px;"><strong>По обычным регионам:</strong> <?php echo number_format($array["reward"]-$array["reward_reg"], 2, ".", " "); ?> рублей</div>
+            <div class="list-group-item" style="padding-left: 40px;"><strong>По спец. регионам:</strong> <?php echo number_format($array["reward_reg"], 2, ".", " "); ?> рублей</div>
+          <?php if($array["raz"] > 0){ ?>
 				<div class="list-group-item"><strong>Осталось:</strong> <?php echo $array["raz_h"]; ?></div>
-			<?php }elseif($array["raz"] != 0){ ?>
+          <?php }elseif($excess > 0){ ?>
 				<div class="list-group-item"><strong>Сверх плана:</strong> <?php echo $array["raz_h"]; ?></div>
-				<div class="list-group-item"><strong>Комиссия сверх плана:</strong> <?php echo $array["excess"]; ?></div>
-			<?php } ?>
+                <div class="list-group-item"><strong>Комиссия:</strong> <?php echo $array["excess"]; ?></div>
+				<div class="list-group-item" style="padding-left: 40px;"><strong>Комиссия сверх плана станд. :</strong> <?php echo $array["excess_stand"]; ?></div>
+                <div class="list-group-item" style="padding-left: 40px;"><strong>Комиссия сверх плана по спец. рег. :</strong> <?php echo $array["excess_reg"]; ?></div>
+                <?php ?>
+                <?php ?>
+          <?php } ?>
 	<?php if($table){ ?>
 		</div>
 		<table class="table table-condensed table-bordered">
