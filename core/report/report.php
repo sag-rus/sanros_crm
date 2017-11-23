@@ -775,11 +775,11 @@ function view_all_profit($connect){
 			$reward = 0;
 			$reward_reg = 0;
 			$all_plan+= $plan;
-			$data = $connect->getAll("SELECT reckoning.id, reckoning.date, region.man_reward_scheme AS man_reward_scheme FROM reckoning INNER JOIN object ON object.id=reckoning.id_obj LEFT OUTER JOIN region ON region.id = object.id_reg WHERE reckoning.id_user=?i AND reckoning.status=5 AND reckoning.date_z >= ?s AND reckoning.date_z <= ?s", $id_man, $date_start_month, $date_end_month);
+			$data = $connect->getAll("SELECT reckoning.id, reckoning.date, reckoning.date_z, region.man_reward_scheme AS man_reward_scheme FROM reckoning INNER JOIN object ON object.id=reckoning.id_obj LEFT OUTER JOIN region ON region.id = object.id_reg WHERE reckoning.id_user=?i AND reckoning.status=5 AND reckoning.date_z >= ?s AND reckoning.date_z <= ?s", $id_man, $date_start_month, $date_end_month);
 			foreach($data as $reck_row){
 				$id = $reck_row["id"];
 				$reward_schet = get_reward_schet($connect, $id);
-                if($reck_row['man_reward_scheme'] == 1) {
+                if($reck_row['man_reward_scheme'] == 1 && strtotime($reck_row['date_z']) >= strtotime("01.11.2017")) {
                     $reward_reg +=$reward_schet;
                 }
 				$reward+= $reward_schet;
