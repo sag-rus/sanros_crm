@@ -157,11 +157,11 @@ function add_new_region($connect){
 						</div>
 					</div>
                     <div class="form-group form-group-margin">
-                        <label class="col-sm-3 control-label">Вознаграждение менеджеру с заявки</label>
+                        <label class="col-sm-3 control-label">Доп. вознаграждение менеджеру с заявки</label>
                         <div class="col-sm-9">
                             <select class="form-control man_reward_scheme">
-                                <option value="0">Персональное</option>
-                                <option value="1">Повышенное 20%</option>
+                                <option value="0">Нет</option>
+                                <option value="1">Да</option>
                             </select>
                         </div>
                     </div>
@@ -1299,11 +1299,11 @@ function edit_region($connect){
 					</div>
 				</div>
                 <div class="form-group">
-                    <label class="col-sm-4 control-label">Вознаграждение менеджеру с заявки</label>
+                    <label class="col-sm-4 control-label">Доп. вознаграждение менеджеру с заявки</label>
                     <div class="col-sm-8">
                         <select class="form-control man_reward_scheme">
-                            <option value="0"<?php if($row['man_reward_scheme'] == 0) echo ' selected';?>>Персональное</option>
-                            <option value="1"<?php if($row['man_reward_scheme'] == 1) echo ' selected';?>>Повышенное 20%</option>
+                            <option value="0"<?php if($row['man_reward_scheme'] == 0) echo ' selected';?>>Нет</option>
+                            <option value="1"<?php if($row['man_reward_scheme'] == 1) echo ' selected';?>>Да</option>
                         </select>
                       <?php ?>
                     </div>
