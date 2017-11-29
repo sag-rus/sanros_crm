@@ -104,7 +104,7 @@ function upload_new_image($connect){
 				mkdir($dir."/mobile", 0777);
 			}
 
-			$file = get_next_name($dir."/small");
+			$file = get_next_name($dir."/small","jpg");
 			$real_w = imagesx($image);
 			$real_h = imagesy($image);
 			$raz = ($real_h / $height_big);
@@ -389,7 +389,7 @@ function image_resize($image, $name_pic, $width, $height){
 	imageDestroy($new_image);
 }
 
-function get_next_name($url){
+function get_next_name($url, $extension = null){
 	$folder = opendir($url);
 	$max = 0;
 	while($file = readdir($folder)){
@@ -397,7 +397,10 @@ function get_next_name($url){
 			$max = (int)$file;
 	}
 	$max++;
-	return $max.".jpg";
+	if(!is_null($extension))
+	    return $max.".".$extension;
+	else
+	    return $max;
 }
 
 ?>
