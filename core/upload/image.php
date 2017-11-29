@@ -118,7 +118,7 @@ function upload_new_image($connect){
 			image_resize($image, $dir."/mobile/".$file, 250, $height);
 		}elseif($type == "object"){
 			$dir = "temp/object/".$id;
-            $file = get_next_name($dir)."_".uniqid().".jpg";
+            $file = get_next_name($dir."/small")."_".uniqid().".jpg";
 
 			if(!file_exists($dir)){
 				mkdir($dir, 0777);
