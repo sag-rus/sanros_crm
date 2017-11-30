@@ -349,7 +349,7 @@ function do_upload_images($connect_server, $local_dir, $ftp_dir){
                 @ftp_chmod($connect_server, 0644, $ftp_file);
               }*/
 
-                echo $local_file;
+                echo $local_file." ".$ftp_file;
               ftp_put($connect_server, $ftp_file, $local_file, FTP_BINARY);
               ftp_chmod($connect_server, 0777, $ftp_file);
 			}else
