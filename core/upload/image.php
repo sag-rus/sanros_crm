@@ -295,8 +295,7 @@ function upload_image_object_server($connect){
       ftp_chmod($connect_server, 0777, $ftp_folder . "/" . $region);
 
       if (ftp_nlist($connect_server, $ftp_folder . "/" . $region . "/" . $object) == FALSE) {
-
-        @ftp_mkdir($connect_server, $ftp_folder . "/" . $region . "/" . $object);
+        ftp_mkdir($connect_server, $ftp_folder . "/" . $region . "/" . $object);
         ftp_chmod($connect_server, 0777, $ftp_folder . "/" . $region . "/" . $object);
       }
 
@@ -337,26 +336,25 @@ function upload_image_object_server($connect){
 }
 
 function do_upload_images($connect_server, $local_dir, $ftp_dir){
-	$folder = opendir($local_dir);
-	$check = '';
-	while($file = readdir($folder)){
-		if(($file != ".") AND ($file != "..") AND ($file)){
-			$local_file = $local_dir."/".$file;
-			$ftp_file = $ftp_dir."/".$file;
-			if(is_file($local_file)){
-
-              /*if(!ftp_nlist($connect_server,$ftp_dir)) {*/
-              @ftp_mkdir($connect_server, $ftp_dir);
-              @ftp_chmod($connect_server, 0777, $ftp_file);
-              /*}*/
-
-              ftp_put($connect_server, $ftp_file, $local_file, FTP_BINARY);
-              ftp_chmod($connect_server, 0777, $ftp_file);
-			}else
-				do_upload_images($connect_server, $local_file, $ftp_file);
-		}
-	}
-	return FALSE;
+  $folder = opendir($local_dir);
+  $check = '';
+  while($file = readdir($folder)){
+    if(($file != ".") AND ($file != "..") AND ($file)){
+      $local_file = $local_dir."/".$file;
+      $ftp_file = $ftp_dir."/".$file;
+      if(is_file($local_file))
+      {
+          ftp_mkdir($connect_server, $ftp_dir);
+          ftp_chmod($connect_server, 0644, $ftp_file);
+          ftp_put($connect_server, $ftp_file, $local_file, FTP_BINARY);
+          ftp_chmod($connect_server, 0777, $ftp_file);
+      }
+      else {
+        do_upload_images($connect_server, $local_file, $ftp_file);
+      }
+    }
+  }
+  return FALSE;
 }
 
 function cut_image($url, $left, $type){
