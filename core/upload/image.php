@@ -295,7 +295,7 @@ function upload_image_object_server($connect){
       ftp_chmod($connect_server, 0777, $ftp_folder . "/" . $region);
 
       if (ftp_nlist($connect_server, $ftp_folder . "/" . $region . "/" . $object) == FALSE) {
-        ftp_mkdir($connect_server, $ftp_folder . "/" . $region . "/" . $object);
+        @ftp_mkdir($connect_server, $ftp_folder . "/" . $region . "/" . $object);
         ftp_chmod($connect_server, 0777, $ftp_folder . "/" . $region . "/" . $object);
       }
 
