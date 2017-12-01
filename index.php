@@ -1,5 +1,5 @@
 <?php
-	$version = "31-05-2017";
+	$version = "01-06-2017";
 ?>
 
 <!DOCTYPE html>
