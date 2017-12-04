@@ -424,7 +424,7 @@ function resize_photo(){
 	$image = imageCreateFromJPEG($photo);
 	$real_w = imagesx($image);
 	$real_h = imagesy($image);
-	$raz = ($real_w / 400);
+	$raz = ($real_w / 200);
 	if($real_w > $real_h)
 		$crop = $real_h;
 	else
