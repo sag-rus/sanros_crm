@@ -424,15 +424,15 @@ function resize_photo(){
 	$image = imageCreateFromJPEG($photo);
 	$real_w = imagesx($image);
 	$real_h = imagesy($image);
-	$raz = ($real_w / 200);
+	$raz = ($real_w / 400);
 	if($real_w > $real_h)
 		$crop = $real_h;
 	else
 		$crop = $real_w;
 	$left = $left * $raz;
 	$top = $top * $raz;
-	$new_image = imageCreateTrueColor(100, 100);
-	imageCopyResampled($new_image, $image, 0, 0, $left, $top, 100, 100, $crop, $crop);
+	$new_image = imageCreateTrueColor(200, 200);
+	imageCopyResampled($new_image, $image, 0, 0, $left, $top, 200, 200, $crop, $crop);
 	imageJPEG($new_image, $photo, 75);
 	imageDestroy($new_image);
 	return $photo;
