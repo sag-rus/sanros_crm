@@ -498,14 +498,14 @@ function view_dates_price_object($connect){
 	<div class="panel-heading">
 		<div class="form-group form-group-margin">
 			<div class="col-sm-3">
-		<?php if(($id != 59 AND $id != 42) AND $quota == 1){ ?>
+		<?php if($id != 59 && $id != 42 && $quota == 1){ ?>
 				<div class="alert alert-success">Цены из квоты! <span class="btn btn-link pull-right" onclick="show_quota_object_card(<?php echo $id; ?>)">Смотреть квоту</span><div class="clearfix"></div></div>
 		<?php }elseif($html){ ?>
 				<select class="form-control id-date-price" onchange="view_prices_object()"><?php echo $html; ?></select>
 		<?php } ?>
 			</div>
 			<div class="col-sm-9">
-		<?php if(($id == 59 AND $id == 42) OR $quota != 1){ ?>
+		<?php if($id == 59 || $id == 42 || $quota != 1){ ?>
 			<?php if($html){ ?>
 				<button type="button" class="btn btn-default btn-sm" onclick="edit_date_price_manager()"><i class="fa fa-pencil"></i> Редактировать</button>
 			<?php } ?>
