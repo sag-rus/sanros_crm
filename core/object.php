@@ -1169,6 +1169,7 @@ function select_object_image($connect){
 			}
 		}
 	}
+	sort($data);
 ?>
 <div class="form-horizontal panel panel-default">
 	<div class="panel-heading"><i class="fa fa-bank"></i> Фото объекта «<?php echo get_object($connect, $object, "type"); ?>»</div>
