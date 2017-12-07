@@ -1160,17 +1160,26 @@ function select_object_image($connect){
 	global $directory;
 	$object = $_POST["id"];
 	$data = array();
+	$data2 = [];
 	$open = $directory."/temp/object/".$object."/840/";
 	if(is_dir($open)){
 		$fold = opendir($open);
 		while($image = readdir($fold)){
 			if(($image != ".") AND ($image != "..") AND ($image)){
-				$data[] = $image;
+			    $expl = explode("_",$image);
+			    if(count($expl) > 1) {
+                  $data2[$expl[0]] = $image;
+                }
+                else {
+                  $data[] = $image;
+                }
 			}
 		}
 	}
-	print_r($data);
-	sort($data);
+	ksort($data2);
+	foreach ($data2 as $image) {
+	    $data[] = $image;
+    }
 ?>
 <div class="form-horizontal panel panel-default">
 	<div class="panel-heading"><i class="fa fa-bank"></i> Фото объекта «<?php echo get_object($connect, $object, "type"); ?>»</div>
