@@ -146,6 +146,7 @@ function save_price_XML_object($connect, $id){
 			$min_array = get_min_price($connect, $id_room);
 			$room->setAttribute("min_price", $min_array["price"]);
 			$room->setAttribute("min_price_type", $min_array["type"]);
+			$room->setAttribute("min_price_treatment",$min_array["treatment"]);
 			$data2 = $connect->getAll("SELECT id, start, end FROM date_price WHERE id_obj=?i AND end>=?s ORDER BY start", $id, $today);
 			$index_date = 0;
 			foreach($data2 as $row){

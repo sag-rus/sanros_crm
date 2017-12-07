@@ -164,6 +164,8 @@ function upload_information_object($connect){
 			$object->setAttribute("similar", $similar);
 			$object->setAttribute("quota", $check_places);
 			$object->setAttribute("min", $prices["min"]);
+			if(isset($prices["min_treatment"]))
+				$object->setAttribute("min_treatment",$prices["min_treatment"]);
 			$object->setAttribute("page", intval($array_region[$id_reg]/10) + 1);
 			$object->setAttribute("source_booking", $source_booking);
 			$object->setAttribute("booking_uri",$booking_uri);
@@ -179,20 +181,30 @@ function upload_information_object($connect){
 			}
 			$data2 = $connect->getAll("SELECT id, start, end FROM date_price WHERE id_obj=?i AND active=0", $id);
 			foreach($data2 as $row){
-				$min = $connect->getOne("SELECT price.price FROM price, ranges WHERE (ranges.active=0 AND price.active=0 AND ranges.id_obj=?i AND price.id_range=ranges.id AND ranges.place=1 AND ranges.id_date=?i) ORDER BY price.price ASC LIMIT 1", $id, $row["id"]);
+				$min_row = $connect->getRow("SELECT price.price AS price, ranges.treatment AS treatment FROM price, ranges WHERE (ranges.active=0 AND price.active=0 AND ranges.id_obj=?i AND price.id_range=ranges.id AND ranges.place=1 AND ranges.id_date=?i) ORDER BY price.price ASC LIMIT 1", $id, $row["id"]);
+				$min = $min_row['price'];
 				if($min){
 					$min_price = $object->appendChild($xml->createElement("price"));
 					$min_price->setAttribute("start", strToTime($row["start"]));
 					$min_price->setAttribute("end", strToTime($row["end"]));
 					$min_price->setAttribute("price", $min);
+					$min_price->setAttribute("treatment",$min_row['treatment']);
 				}
 			}
 			if(!isset($price_region[$id_reg]))
 				$price_region[$id_reg] = array("min" => 0, "max" => 0);
-			if($prices["min"] > 0 AND ($price_region[$id_reg]["min"] > $prices["min"] OR $price_region[$id_reg]["min"] == 0))
-				$price_region[$id_reg]["min"] = $prices["min"];
-			if($price_region[$id_reg]["max"] < $prices["min"])
-				$price_region[$id_reg]["max"] = $prices["min"];
+
+			if($prices["min"] > 0 AND ($price_region[$id_reg]["min"] > $prices["min"] OR $price_region[$id_reg]["min"] == 0)) {
+        $price_region[$id_reg]["min"] = $prices["min"];
+        if(isset($prices["min_treatment"]))
+        	$price_region[$id_reg]["min_treatment"] = $prices["min_treatment"];
+      }
+
+      if($price_region[$id_reg]["max"] < $prices["min"]) {
+        $price_region[$id_reg]["max"] = $prices["min"];
+        if(isset($prices["min_treatment"]))
+        	$price_region[$id_reg]["max_treatment"] = $prices["min_treatment"];
+      }
 		//}
 	}
 	$xml->formatOutput = true;
@@ -210,7 +222,13 @@ function upload_information_object($connect){
 		$region->appendChild($xml->createTextNode("$name_region"));
 		$region->setAttribute("id", $id);
 		$region->setAttribute("min", $price_region[$id]["min"]);
+		if(isset($price_region[$id]["min_treatment"]))
+      $region->setAttribute("min_treatment", $price_region[$id]["min_treatment"]);
+
 		$region->setAttribute("max", $price_region[$id]["max"]);
+    if(isset($price_region[$id]["max_treatment"]))
+      $region->setAttribute("max_treatment", $price_region[$id]["max_treatment"]);
+
 		$region->setAttribute("name_url", $name_region_url);
 		$region->setAttribute("name_rod", $name_region_rod);
 		$region->setAttribute("id_country", $row["id_country"]);
@@ -238,6 +256,7 @@ function upload_information_object($connect){
 		$direction->setAttribute("id", $id);
 		$direction->setAttribute("desc", $description);
 		$min = 0;
+		$min_treatment = null;
 		$data2 = $connect->getAll("SELECT id, name, description, name_rod, meta_desc FROM region WHERE id_direction=?i", $id);
 		foreach($data2 as $row){
 			$id_region = $row["id"];
@@ -256,12 +275,28 @@ function upload_information_object($connect){
 			$direction_region->setAttribute("desc", $row["description"]);
 			$direction_region->setAttribute("meta_desc", $row["meta_desc"]);
 			$direction_region->setAttribute("min", $price_region[$id_region]["min"]);
+			if(isset($price_region[$id_region]["min_treatment"]))
+        $direction_region->setAttribute("min_treatment", $price_region[$id_region]["min_treatment"]);
+
 			$direction_region->setAttribute("max", $price_region[$id_region]["max"]);
+      if(isset($price_region[$id_region]["max_treatment"]))
+        $direction_region->setAttribute("max_treatment", $price_region[$id_region]["max_treatment"]);
+
+
 			$direction_region->setAttribute("page", $page);
-			if(($min < $price_region[$id_region]["min"] OR $min == 0) AND $price_region[$id_region]["min"] > 0)
-				$min = $price_region[$id_region]["min"];
+			if(($min < $price_region[$id_region]["min"] OR $min == 0) AND $price_region[$id_region]["min"] > 0) {
+        $min = $price_region[$id_region]["min"];
+        if(isset($price_region[$id_region]["min_treatment"])) {
+        	$min_treatment = $price_region[$id_region]["min_treatment"];
+				}
+				else {
+        	$min_treatment = null;
+				}
+      }
 		}
 		$direction->setAttribute("min", $min);
+		if(!is_null($min_treatment))
+      $direction->setAttribute("min_treatment", $min_treatment);
 	}
 	$xml->formatOutput = true;
 	$xml->save("temp/direction.xml");
@@ -297,6 +332,9 @@ function upload_information_object($connect){
 						$object->setAttribute("id", $row["id"]);
 						$object->setAttribute("name", $row["name"]);
 						$object->setAttribute("min", $prices["min"]);
+						if(isset($prices["min_treatment"]))
+              $object->setAttribute("min_treatment", $prices["min_treatment"]);
+
 						$object->setAttribute("address", $address);
 					}
 				}
@@ -330,6 +368,9 @@ function upload_information_object($connect){
 								$object->setAttribute("id", $row["id"]);
 								$object->setAttribute("name", $row["name"]);
 								$object->setAttribute("min", $prices["min"]);
+                if(isset($prices["min_treatment"]))
+                  $object->setAttribute("min_treatment", $prices["min_treatment"]);
+
 								$object->setAttribute("address", $address);
 								$object->setAttribute("reg_com", $row["regular_com"]);
 								$object->setAttribute("up_com", $row["up_com"]);
@@ -349,6 +390,9 @@ function upload_information_object($connect){
 							$object->setAttribute("id", $row["id"]);
 							$object->setAttribute("name", $row["name"]);
 							$object->setAttribute("min", $prices["min"]);
+              if(isset($prices["min_treatment"]))
+                $object->setAttribute("min_treatment", $prices["min_treatment"]);
+
 							$object->setAttribute("address", $address);
 							$object->setAttribute("reg_com", $row["regular_com"]);
 							$object->setAttribute("up_com", $row["up_com"]);
@@ -381,7 +425,12 @@ function upload_information_object($connect){
 		$direction->setAttribute("id", $id);
 		$direction->setAttribute("name", $name_direction);
 		$direction->setAttribute("min", $price_region[$id]["min"]);
+    if(isset($price_region[$id]["min_treatment"]))
+      $direction->setAttribute("min_treatment", $price_region[$id]["min_treatment"]);
+
 		$direction->setAttribute("max", $price_region[$id]["max"]);
+    if(isset($price_region[$id]["max_treatment"]))
+      $direction->setAttribute("max_treatment", $price_region[$id]["max_treatment"]);
 	}
 	$region = $all->appendChild($xml->createElement("region"));
 	$region->setAttribute("id", 2);
@@ -395,7 +444,13 @@ function upload_information_object($connect){
 		$direction->setAttribute("id", $id);
 		$direction->setAttribute("name", $name_direction);
 		$direction->setAttribute("min", $price_region[33]["min"]);
+    if(isset($price_region[33]["min_treatment"]))
+      $direction->setAttribute("min_treatment", $price_region[33]["min_treatment"]);
+
 		$direction->setAttribute("max", $price_region[33]["max"]);
+
+    if(isset($price_region[33]["max_treatment"]))
+      $direction->setAttribute("max_treatment", $price_region[33]["max_treatment"]);
 	}
 	$region = $all->appendChild($xml->createElement("region"));
 	$region->setAttribute("id", 3);
@@ -409,7 +464,14 @@ function upload_information_object($connect){
 		$direction->setAttribute("id", $id);
 		$direction->setAttribute("name", $name_direction);
 		$direction->setAttribute("min", $price_region[27]["min"]);
+    if(isset($price_region[27]["min_treatment"]))
+      $direction->setAttribute("min_treatment", $price_region[27]["min_treatment"]);
+
 		$direction->setAttribute("max", $price_region[27]["max"]);
+    if(isset($price_region[27]["max_treatment"]))
+      $direction->setAttribute("max_treatment", $price_region[27]["max_treatment"]);
+
+
 	}
 	$region = $all->appendChild($xml->createElement("region"));
 	$region->setAttribute("id", 4);
@@ -423,7 +485,14 @@ function upload_information_object($connect){
 		$direction->setAttribute("id", $id);
 		$direction->setAttribute("name", $name_direction);
 		$direction->setAttribute("min", $price_region[40]["min"]);
+    if(isset($price_region[40]["min_treatment"]))
+      $direction->setAttribute("min_treatment", $price_region[40]["min_treatment"]);
+
 		$direction->setAttribute("max", $price_region[40]["max"]);
+
+    if(isset($price_region[40]["max_treatment"]))
+      $direction->setAttribute("max_treatment", $price_region[40]["max_treatment"]);
+
 	}
 	$region = $all->appendChild($xml->createElement("region"));
 	$region->setAttribute("id", 5);
@@ -743,7 +812,9 @@ function get_prices_object($connect, $id){
 			}
 		}
 	}else{
-		$array["min"] = (int)$connect->getOne("SELECT price.price FROM price, ranges, date_price WHERE (ranges.active=0 AND price.active=0 AND ranges.id_obj=?i AND price.id_range=ranges.id AND ranges.place=1 AND date_price.id_obj=?i AND ranges.id_date=date_price.id AND date_price.active=0) ORDER BY price.price ASC LIMIT 1", $id, $id);
+		$min_row = $connect->getRow("SELECT price.price AS price, ranges.treatment AS treatment FROM price, ranges, date_price WHERE (ranges.active=0 AND price.active=0 AND ranges.id_obj=?i AND price.id_range=ranges.id AND ranges.place=1 AND date_price.id_obj=?i AND ranges.id_date=date_price.id AND date_price.active=0) ORDER BY price.price ASC LIMIT 1", $id, $id);
+		$array["min"] = (int)$min_row['price'];
+		$array["min_treatment"] = (int)$min_row['treatment'];
 	}
 //	if(!$array["min"])
 //		$array["min"] = $connect->getOne("SELECT price.price FROM price, ranges, date_price WHERE ranges.id_obj=?i AND price.id_range=ranges.id AND ranges.place=1 AND date_price.id_obj=?i AND ranges.id_date=date_price.id AND date_price.end>=?s ORDER BY price.price ASC LIMIT 1", $id, $id, date("Y-m-d", strtotime("-6 month")));
@@ -768,7 +839,8 @@ function get_min_price($connect, $id_room){
 	$array_type = array(1 => "за чел/сутки", 2 => "за дом/сутки", 3 => "за номер/сутки", 4 => "за заезд");
 	$time = time();
 	$answer = array();
-	$data = $connect->getAll("SELECT price, id_date, type FROM price, ranges WHERE price.id_room=?i AND price.active=0 AND price.id_range=ranges.id AND ranges.place=1 ORDER BY price ASC", $id_room);
+	$data = $connect->getAll("SELECT price.price AS price, ranges.id_date AS id_date, ranges.type AS type, ranges.treatment AS treatment FROM price, ranges WHERE price.id_room=?i AND price.active=0 AND price.id_range=ranges.id AND ranges.place=1 ORDER BY price ASC", $id_room);
+	$min_price = 0;
 	foreach($data as $row){
 		if($min_price == 0)
 			$min_price = $row["price"];
@@ -777,6 +849,7 @@ function get_min_price($connect, $id_room){
 		if($end > $time){
 			$answer["price"] = $row["price"];
 			$answer["type"] = $array_type[$row["type"]];
+			$answer["treatment"] = $row["treatment"];
 			return $answer;
 		}
 	}
@@ -789,6 +862,7 @@ function get_min_price($connect, $id_room){
 		if($end > $time){
 			$answer["price"] = $row["price"];
 			$answer["type"] = $array_type[$row["type"]];
+      $answer["treatment"] = $row["treatment"];
 			return $answer;
 		}
 	}

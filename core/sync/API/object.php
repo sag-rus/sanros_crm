@@ -182,6 +182,7 @@ function save_price_object_account($connect, $data){
 	if(CheckAuthObjectCabinet::check_authorization()){
 		$object = $data["object"];
 		$parse_price = json_decode($data["data"], TRUE);
+    $date_last_save = date('d.m.Y H:m:s');
 		foreach($parse_price as $rate_plan){
 			foreach($rate_plan as $id_room => $room){
 				foreach($room as $id_range => $value){
@@ -191,7 +192,7 @@ function save_price_object_account($connect, $data){
 					elseif($id_price)
 						$connect->query("DELETE FROM price WHERE id=?i", $id_price);
 					elseif($value > 0)
-						$connect->query("INSERT INTO price(id_room, id_range, price) VALUES (?i, ?i, ?s)", $id_room, $id_range, (int)$value);
+						$connect->query("INSERT INTO price(id_room, id_range, price, date_last_save) VALUES (?i, ?i, ?s, ?s)", $id_room, $id_range, (int)$value, $date_last_save);
 				}
 			}
 		}
