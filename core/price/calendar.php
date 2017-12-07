@@ -2,9 +2,11 @@
 
 function select_objects_quota($connect){
 	global $id_rights;
+	$profkurort = null;
 	$result = array("object" => array(), "region" => array(), "info" => array("all" => 0, "quota" => 0));
 	$index = 0;
-	$data = $connect->getAll("SELECT id, check_places, id_reg FROM object WHERE check_places=1 OR check_places=2 OR check_places=3 ORDER BY id_reg, name");
+	$data = $connect->getAll("SELECT id, check_places, id_reg, sync_id FROM object WHERE check_places=1 OR check_places=2 OR check_places=3 ORDER BY id_reg, name");
+
 	foreach($data as $row){
 		$index++;
 		$object = $row["id"];
@@ -27,7 +29,14 @@ function select_objects_quota($connect){
 		}
 		if($id_rights == 5)
 			$result["object"][$index]["check-places"] = $row["check_places"];
-		if($connect->getOne("SELECT id FROM room WHERE id_obj=?i AND accessible_places!=''", $object)){
+
+        if ($row['check_places'] == 3) {
+            if(is_null($profkurort)) {
+              $profkurort = new ProfkurortSync();
+            }
+            //print_r($profkurort->get_quota_object($data['sync_id'],date("Y-m-d")." ".date("H:s"),1));
+        }
+		elseif($connect->getOne("SELECT id FROM room WHERE id_obj=?i AND accessible_places!=''", $object)){
 			$result["object"][$index]["have-places"] = 1;
 			$result["info"]["quota"]++;
 		}
