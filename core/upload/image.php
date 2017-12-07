@@ -118,8 +118,7 @@ function upload_new_image($connect){
 			image_resize($image, $dir."/mobile/".$file, 250, $height);
 		}elseif($type == "object"){
 			$dir = "temp/object/".$id;
-			$nextName = get_next_name($dir."/small");
-			echo $nextName;
+			$nextName = get_next_name_new($dir."/small");
             $file = $nextName."0".uniqid().".jpg";
 
 			if(!file_exists($dir)){
@@ -403,6 +402,18 @@ function get_next_name($url, $extension = null){
 	    return $max.".".$extension;
 	else
 	    return $max;
+}
+
+function get_next_name_new($url, $extension = null){
+  $folder = opendir($url);
+  $max = 1;
+  while($file = readdir($folder)){
+    $max++;
+  }
+  if(!is_null($extension))
+    return $max.".".$extension;
+  else
+    return $max;
 }
 
 ?>
