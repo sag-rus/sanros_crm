@@ -912,7 +912,7 @@ function copy_date_price($connect){
 	$new_date = $_POST["new_date"];
 	$object = $connect->getOne("SELECT id_obj FROM date_price WHERE id=?i", $id_date);
 	$dates = $connect->getAll("SELECT id, name, type, place, counter FROM ranges WHERE id_date=?i AND active=0", $id_date);
-	$date_last_save = date("d.m.Y H:i:s");
+	$date_last_save = date('d.m.Y H:m:s');
 	foreach($dates as $date){
 		$id_range = $date["id"];
 		$connect->query("INSERT INTO ranges(name, type, place, counter, id_date, id_obj) VALUES(?s, ?i, ?i, ?i, ?i, ?i)", $date["name"], $date["type"], $date["place"], $date["counter"], $new_date, $object);
