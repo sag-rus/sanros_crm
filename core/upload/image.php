@@ -119,7 +119,7 @@ function upload_new_image($connect){
 		}elseif($type == "object"){
 			$dir = "temp/object/".$id;
 			$nextName = get_next_name_new($dir."/small");
-            $file = $nextName."0".uniqid().".jpg";
+            $file = $nextName."_".uniqid().".jpg";
 
 			if(!file_exists($dir)){
 				mkdir($dir, 0777);

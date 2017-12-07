@@ -1169,6 +1169,7 @@ function select_object_image($connect){
 			}
 		}
 	}
+	print_r($data);
 	sort($data);
 ?>
 <div class="form-horizontal panel panel-default">
