@@ -34,7 +34,16 @@ function select_objects_quota($connect){
             if(is_null($profkurort)) {
               $profkurort = new ProfkurortSync();
             }
-            //print_r($profkurort->get_quota_object($data['sync_id'],date("Y-m-d")." ".date("H:s"),1));
+            $profk_results = $profkurort->get_quota_object($row['sync_id'],date("Y-m-d H:i"),1);
+            if(!isset($profk_results['ref'])) {
+                foreach ($profk_results as $profk_result) {
+                    if(isset($profk_result['quota']) && $profk_result['quota'] > 0) {
+                      $result["object"][$index]["have-places"] = 1;
+                      $result["info"]["quota"]++;
+                      break;
+                    }
+                }
+            }
         }
 		elseif($connect->getOne("SELECT id FROM room WHERE id_obj=?i AND accessible_places!=''", $object)){
 			$result["object"][$index]["have-places"] = 1;
@@ -80,156 +89,174 @@ function view_quota_object($connect, $data = array()){
 	$status_quota = $connect->getOne("SELECT check_places FROM object WHERE id=?i", $object);
 	$result["type"] = $status_quota;
 
-	if($status_quota == 3):
-		$data = array();
-	else:
-		if($status_quota == 2){
-			$data = $connect->getAll("SELECT id, start, end FROM date_price WHERE id_obj=?i AND active=0", $object);
-			foreach($data as $row){
-				$index = $row["id"];
-				$dates_price_object[$index] = array();
-				$dates_price_object[$index]["start"] = strToTime($row["start"]);
-				$dates_price_object[$index]["end"] = strToTime($row["end"]);
-				$dates_price_object[$index]["range"] = array();
-				$data_range = $connect->getAll("SELECT id, name, place, type FROM ranges WHERE active=0 AND id_date=?i", $index);
-				foreach($data_range as $row_range){
-					$type_range = $row_range["type"];
-					$place_row = $connect->getRow("SELECT name, type FROM place WHERE id=?i", $row_range["place"]);
-					$type_place = "Основное";
-					if($place_row["type"] == 2)
-						$type_place = "Доп.";
-					$index_range = $row_range["id"];
-					$dates_price_object[$index]["range"][$index_range] = array();
-					$dates_price_object[$index]["range"][$index_range]["name"] = $row_range["name"];
-					$dates_price_object[$index]["range"][$index_range]["place"] = $type_place." ".$place_row["name"];
-					$dates_price_object[$index]["range"][$index_range]["type-place"] = $place_row["type"];
-					$dates_price_object[$index]["range"][$index_range]["type-range"] = $type_range;
-				}
-			}
-		}
+	if($status_quota == 3) {
+      $result['room'] = [];
+      $data = $connect->getAll("SELECT id, name, accessible_places, price_places, main_place, add_place, note, housing FROM room WHERE id_obj=?i", $object);
+      foreach ($data as $row) {
+          $result['room'][$row['id']] = [];
+      }
+    }
+    else {
+      if ($status_quota == 2) {
+        $data = $connect->getAll("SELECT id, start, end FROM date_price WHERE id_obj=?i AND active=0", $object);
+        foreach ($data as $row) {
+          $index = $row["id"];
+          $dates_price_object[$index] = [];
+          $dates_price_object[$index]["start"] = strToTime($row["start"]);
+          $dates_price_object[$index]["end"] = strToTime($row["end"]);
+          $dates_price_object[$index]["range"] = [];
+          $data_range = $connect->getAll("SELECT id, name, place, type FROM ranges WHERE active=0 AND id_date=?i", $index);
+          foreach ($data_range as $row_range) {
+            $type_range = $row_range["type"];
+            $place_row = $connect->getRow("SELECT name, type FROM place WHERE id=?i", $row_range["place"]);
+            $type_place = "Основное";
+            if ($place_row["type"] == 2) {
+              $type_place = "Доп.";
+            }
+            $index_range = $row_range["id"];
+            $dates_price_object[$index]["range"][$index_range] = [];
+            $dates_price_object[$index]["range"][$index_range]["name"] = $row_range["name"];
+            $dates_price_object[$index]["range"][$index_range]["place"] = $type_place . " " . $place_row["name"];
+            $dates_price_object[$index]["range"][$index_range]["type-place"] = $place_row["type"];
+            $dates_price_object[$index]["range"][$index_range]["type-range"] = $type_range;
+          }
+        }
+      }
 
-		$data = $connect->getAll("SELECT id, name, accessible_places, price_places, main_place, add_place, note, housing FROM room WHERE id_obj=?i AND accessible_places!=''", $object);
+      $data = $connect->getAll("SELECT id, name, accessible_places, price_places, main_place, add_place, note, housing FROM room WHERE id_obj=?i AND accessible_places!=''", $object);
 
-		foreach($data as $row){
-			$room = $row["id"];
-			$result["room"][$room] = array();
-			$result["room"][$room]["name"] = $row["name"];
-			$result["room"][$room]["main"] = $row["main_place"];
-			$result["room"][$room]["add"] = $row["add_place"];
-			if($row["housing"])
-				$result["room"][$room]["name"].= " ".$connect->getOne("SELECT name FROM housing WHERE id=?i", $row["housing"]);
-			$places = json_decode($row["accessible_places"], TRUE);
-			$prices = json_decode($row["price_places"], TRUE);
+      foreach ($data as $row) {
+        $room = $row["id"];
+        $result["room"][$room] = [];
+        $result["room"][$room]["name"] = $row["name"];
+        $result["room"][$room]["main"] = $row["main_place"];
+        $result["room"][$room]["add"] = $row["add_place"];
+        if ($row["housing"]) {
+          $result["room"][$room]["name"] .= " " . $connect->getOne("SELECT name FROM housing WHERE id=?i", $row["housing"]);
+        }
+        $places = json_decode($row["accessible_places"], TRUE);
+        $prices = json_decode($row["price_places"], TRUE);
 
-			if(is_array($places)) {
-              foreach($places as $index => $place){
+        if (is_array($places)) {
+          foreach ($places as $index => $place) {
+            $start_place = $place["dt"];
+            $days_place = $place["d"];
+            $end_place = $start_place + $days_place * 86400;
+            $places[$index]["end"] = $end_place;
+          }
+        }
+
+        if ($status_quota == 1) {
+          #Travelline
+          foreach ($prices as $ratePlan => $ratePlanPrice) {
+            foreach ($ratePlanPrice as $index => $price) {
+              $start_place = $price["dt"];
+              $days_place = $price["d"];
+              $end_place = $start_place + $days_place * 86400;
+              $prices[$ratePlan][$index]["end"] = $end_place;
+            }
+          }
+        }
+        elseif ($status_quota == 2) {
+          #Sanata
+          $prices[1] = [];
+          foreach ($dates_price_object as $index => $date_price) {
+            $prices[1][$index]["dt"] = $date_price["start"];
+            $prices[1][$index]["end"] = $date_price["end"];
+            $price_object = [];
+            $name_price_object = [];
+            foreach ($date_price["range"] as $index_range => $range_price) {
+              $value_price = $connect->getOne("SELECT price FROM price WHERE id_range=?i AND id_room=?i AND active=0", $index_range, $room);
+              if ($value_price > 0) {
+                $length_price = count($price_object);
+                $price_object[$length_price] = $value_price;
+                $array_price = [
+                  "n" => $range_price["name"] . " " . $range_price["place"],
+                  "t" => $range_price["type-place"],
+                  "p" => $range_price["type-range"]
+                ];
+                $name_price_object[$length_price] = $array_price;
+              }
+            }
+            $prices[1][$index]["p"] = $price_object;
+            $prices[1][$index]["name"] = $name_price_object;
+          }
+        }
+
+        $quota = [
+          $months[1]["month"] => [],
+          $months[2]["month"] => []
+        ];
+        $max_quota = 0;
+        foreach ($months as $month) {
+          $current_month = $month["month"];
+          $current_year = $month["year"];
+          $max_day = $month["max-day"];
+          for ($day = 1; $day <= $max_day; $day++) {
+            $quota[$current_year . "-" . $current_month][$day] = [
+              "quota" => 0,
+              "price" => []
+            ];
+            $quota[$current_year . "-" . $current_month][$day]["date"] = $day . "." . $current_month . "." . $current_year;
+            $current = strToTime($current_year . "-" . $current_month . "-" . $day);
+
+            if (is_array($places)) {
+              foreach ($places as $place) {
                 $start_place = $place["dt"];
-                $days_place = $place["d"];
-                $end_place = $start_place + $days_place * 86400;
-                $places[$index]["end"] = $end_place;
+                $end_place = $place["end"];
+                if ($current >= $start_place AND $current < $end_place) {
+                  $quota[$current_year . "-" . $current_month][$day]["quota"] = $place["q"];
+                  if ($place["q"] > $max_quota) {
+                    if ($place["q"] > 3) {
+                      $place["q"] = 3;
+                    }
+                    $max_quota = $place["q"];
+                  }
+                }
               }
             }
 
-			if($status_quota == 1){
-				#Travelline
-				foreach($prices as $ratePlan => $ratePlanPrice){
-					foreach($ratePlanPrice as $index => $price){
-						$start_place = $price["dt"];
-						$days_place = $price["d"];
-						$end_place = $start_place + $days_place * 86400;
-						$prices[$ratePlan][$index]["end"] = $end_place;
-					}
-				}
-			}elseif($status_quota == 2){
-				#Sanata
-				$prices[1] = array();
-				foreach($dates_price_object as $index => $date_price){
-					$prices[1][$index]["dt"] = $date_price["start"];
-					$prices[1][$index]["end"] = $date_price["end"];
-					$price_object = array();
-					$name_price_object = array();
-					foreach($date_price["range"] as $index_range => $range_price){
-						$value_price = $connect->getOne("SELECT price FROM price WHERE id_range=?i AND id_room=?i AND active=0", $index_range, $room);
-						if($value_price > 0){
-							$length_price = count($price_object);
-							$price_object[$length_price] = $value_price;
-							$array_price = array("n" => $range_price["name"]." ".$range_price["place"], "t" => $range_price["type-place"], "p" => $range_price["type-range"]);
-							$name_price_object[$length_price] = $array_price;
-						}
-					}
-					$prices[1][$index]["p"] = $price_object;
-					$prices[1][$index]["name"] = $name_price_object;
-				}
-			}
-
-			$quota = array(
-				$months[1]["month"] => array(),
-				$months[2]["month"] => array()
-			);
-			$max_quota = 0;
-			foreach($months as $month){
-				$current_month = $month["month"];
-				$current_year = $month["year"];
-				$max_day = $month["max-day"];
-				for($day = 1; $day <= $max_day; $day++){
-					$quota[$current_year."-".$current_month][$day] = array("quota" => 0, "price" => array());
-					$quota[$current_year."-".$current_month][$day]["date"] = $day.".".$current_month.".".$current_year;
-					$current = strToTime($current_year."-".$current_month."-".$day);
-
-					if(is_array($places)) {
-                      foreach($places as $place){
-                        $start_place = $place["dt"];
-                        $end_place = $place["end"];
-                        if($current >= $start_place AND $current < $end_place){
-                          $quota[$current_year."-".$current_month][$day]["quota"] = $place["q"];
-                          if($place["q"] > $max_quota){
-                            if($place["q"] > 3)
-                              $place["q"] = 3;
-                            $max_quota = $place["q"];
-                          }
-                        }
-                      }
-                    }
-
-					foreach($prices as $ratePlan => $ratePlanPrice){
-						foreach($ratePlanPrice as $price){
-							$start_place = $price["dt"];
-							$end_place = $price["end"];
-							if($current >= $start_place AND $current < $end_place){
-								if(!isset($quota[$current_year."-".$current_month][$day]["price"][$ratePlan]))
-									$quota[$current_year."-".$current_month][$day]["price"][$ratePlan] = array();
-								$quota[$current_year."-".$current_month][$day]["price"][$ratePlan]["price"] = $price["p"];
-								$quota[$current_year."-".$current_month][$day]["price"][$ratePlan]["name-price"] = "";
-								if(isset($price["name"]))
-									$quota[$current_year."-".$current_month][$day]["price"][$ratePlan]["name"] = $price["name"];
-							}
-						}
-					}
-				}
-			}
-			$result["room"][$room]["max-quota"] = $max_quota;
-			$result["room"][$room]["quota"] = $quota;
-		}
-		$data = $connect->getAll("SELECT id, DATE_FORMAT(date_z, '%d.%m.%Y') as date FROM reckoning WHERE id_obj=?i AND id_user=?i AND (status<=3 OR status=9)", $object, $session_login);
-		foreach($data as $row){
-			$bid = $row["id"];
-			$result["bid"][$bid] = array();
-			$result["bid"][$bid]["date"] = $row["date"];
-		}
-		$data = $connect->getAll("SELECT id, name FROM rate_plan WHERE object=?i", $object);
-		foreach($data as $row){
-			$id = $row["id"];
-			$result["ratePlan"][$id] = array();
-			$result["ratePlan"][$id]["name"] = str_replace("\"", "", $row["name"]);
-		}
-	endif;
+            foreach ($prices as $ratePlan => $ratePlanPrice) {
+              foreach ($ratePlanPrice as $price) {
+                $start_place = $price["dt"];
+                $end_place = $price["end"];
+                if ($current >= $start_place AND $current < $end_place) {
+                  if (!isset($quota[$current_year . "-" . $current_month][$day]["price"][$ratePlan])) {
+                    $quota[$current_year . "-" . $current_month][$day]["price"][$ratePlan] = [];
+                  }
+                  $quota[$current_year . "-" . $current_month][$day]["price"][$ratePlan]["price"] = $price["p"];
+                  $quota[$current_year . "-" . $current_month][$day]["price"][$ratePlan]["name-price"] = "";
+                  if (isset($price["name"])) {
+                    $quota[$current_year . "-" . $current_month][$day]["price"][$ratePlan]["name"] = $price["name"];
+                  }
+                }
+              }
+            }
+          }
+        }
+        $result["room"][$room]["max-quota"] = $max_quota;
+        $result["room"][$room]["quota"] = $quota;
+      }
+      $data = $connect->getAll("SELECT id, DATE_FORMAT(date_z, '%d.%m.%Y') as date FROM reckoning WHERE id_obj=?i AND id_user=?i AND (status<=3 OR status=9)", $object, $session_login);
+      foreach ($data as $row) {
+        $bid = $row["id"];
+        $result["bid"][$bid] = [];
+        $result["bid"][$bid]["date"] = $row["date"];
+      }
+      $data = $connect->getAll("SELECT id, name FROM rate_plan WHERE object=?i", $object);
+      foreach ($data as $row) {
+        $id = $row["id"];
+        $result["ratePlan"][$id] = [];
+        $result["ratePlan"][$id]["name"] = str_replace("\"", "", $row["name"]);
+      }
+    }
 
 
-	return json_encode($result);
+  return json_encode($result);
 }
 
-function booking_quota_room($connect){
-	global $session_login;
+function booking_quota_room($connect) {
+  global $session_login;
 	$data = json_decode($_POST["data"], TRUE);
 	$object = $data["object"];
 	$rest = array();

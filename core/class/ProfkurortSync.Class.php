@@ -14,8 +14,10 @@ class ProfkurortSync{
     $this->login = $login;
     $this->password = $password;
     $this->url = $config->url_test_profkurort;
-    $this->date = date("Y-m-d")." ".date("H:s");
-    $this->hash = md5($login."-".date("YmdHs")."-".$password);
+    $this->date = date("Y-m-d H:i");
+    $this->hash = md5($login."-".date("YmdHi")."-".$password);
+    //echo $login."-".date("YmdHi")."-".$password."<br />";
+    //echo $this->hash;
   }
 
   public function get_objects(){
