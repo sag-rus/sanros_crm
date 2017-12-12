@@ -181,7 +181,7 @@ function review_contract($connect, $type, $id){
 	<p class="head" style="font-size: 14pt;">Договор № <?php echo $id; ?><br />реализации санаторно-курортной путёвки</p>
 	<table style="font-weight: bold;">
 	<tr>
-		<td style="width: 550px;">г.<?php echo $city_office; ?></td>
+		<td style="width: 550px;">г. <?php echo $city_office; ?></td>
 		<td><?php echo $date_doc; ?></td>
 	</tr>
 	</table>
