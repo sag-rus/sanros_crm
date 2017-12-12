@@ -57,6 +57,7 @@ function select_objects_quota($connect){
 function view_quota_object($connect, $data = array()){
 	date_default_timezone_set("UTC");
 	global $session_login;
+    $profkurort = null;
 	$object = $_POST["object"];
 	$result = array("room" => array(), "bid" => array(), "type" => 1, "object-name" => "", "ratePlan" => array());
 	$result["ratePlan"][1] = array();
@@ -86,15 +87,99 @@ function view_quota_object($connect, $data = array()){
 	$months[2]["max-day"] = cal_days_in_month(CAL_GREGORIAN, $next_month, $next_year);
 
 	$dates_price_object = array();
-	$status_quota = $connect->getOne("SELECT check_places FROM object WHERE id=?i", $object);
+    $object_row = $connect->getRow("SELECT check_places, sync_id FROM object WHERE id=?i", $object);
+	$status_quota = $object_row['check_places'];
 	$result["type"] = $status_quota;
 
 	if($status_quota == 3) {
       $result['room'] = [];
-      $data = $connect->getAll("SELECT id, name, accessible_places, price_places, main_place, add_place, note, housing FROM room WHERE id_obj=?i", $object);
-      foreach ($data as $row) {
-          $result['room'][$row['id']] = [];
+      $sync_rooms = [];
+      /*if(is_null($profkurort)) {
+        $profkurort = new ProfkurortSync();
       }
+      $profk_results = $profkurort->get_quota_object($object_row['sync_id'],date("Y-m-d H:i"),14);
+
+      if(!isset($profk_results['ref'])) {
+        foreach ($profk_results as $profk_result) {
+          if(isset($profk_result['quota']) && $profk_result['quota'] > 0) {
+            $result["object"][$index]["have-places"] = 1;
+            $result["info"]["quota"]++;
+            break;
+          }
+        }
+      }
+
+
+      $data = $connect->getAll("SELECT id, name, accessible_places, price_places, main_place, add_place, note, housing FROM room WHERE id_obj=?i AND sync_id != 0", $object);
+      foreach ($data as $row) {
+          $result['room'][$row['id']] = [
+            "name" => $row['name'],
+            "main" => $row["main_place"],
+            "add" => $row["add_place"]
+          ];
+
+        if ($row["housing"]) {
+          $result["room"][$row['id']]["name"] .= " " . $connect->getOne("SELECT name FROM housing WHERE id=?i", $row["housing"]);
+        }
+
+        $quota = [
+          $months[1]["month"] => [],
+          $months[2]["month"] => []
+        ];
+        $max_quota = 0;
+
+        foreach ($months as $month) {
+          $current_month = $month["month"];
+          $current_year = $month["year"];
+          $max_day = $month["max-day"];
+          for ($day = 1; $day <= $max_day; $day++) {
+            $quota[$current_year . "-" . $current_month][$day] = [
+              "quota" => 0,
+              "price" => []
+            ];
+            $quota[$current_year . "-" . $current_month][$day]["date"] = $day . "." . $current_month . "." . $current_year;
+            $current = strToTime($current_year . "-" . $current_month . "-" . $day);
+
+
+            if (is_array($places)) {
+              foreach ($places as $place) {
+                $start_place = $place["dt"];
+                $end_place = $place["end"];
+                if ($current >= $start_place AND $current < $end_place) {
+                  $quota[$current_year . "-" . $current_month][$day]["quota"] = $place["q"];
+                  if ($place["q"] > $max_quota) {
+                    if ($place["q"] > 3) {
+                      $place["q"] = 3;
+                    }
+                    $max_quota = $place["q"];
+                  }
+                }
+              }
+            }
+
+            foreach ($prices as $ratePlan => $ratePlanPrice) {
+              foreach ($ratePlanPrice as $price) {
+                $start_place = $price["dt"];
+                $end_place = $price["end"];
+                if ($current >= $start_place AND $current < $end_place) {
+                  if (!isset($quota[$current_year . "-" . $current_month][$day]["price"][$ratePlan])) {
+                    $quota[$current_year . "-" . $current_month][$day]["price"][$ratePlan] = [];
+                  }
+                  $quota[$current_year . "-" . $current_month][$day]["price"][$ratePlan]["price"] = $price["p"];
+                  $quota[$current_year . "-" . $current_month][$day]["price"][$ratePlan]["name-price"] = "";
+                  if (isset($price["name"])) {
+                    $quota[$current_year . "-" . $current_month][$day]["price"][$ratePlan]["name"] = $price["name"];
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        $result['room'][$row['id']]["max-quota"] = $max_quota;
+
+
+      }*/
     }
     else {
       if ($status_quota == 2) {
