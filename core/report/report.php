@@ -421,11 +421,14 @@ function filter_payment($connect){
             }
 
             if(count($pay_ar1) > 0) {
-              $array['reward'] += get_reward_schet($connect, $reck_id, "", TRUE, FALSE, $pay_ar1);
+              $test_reward = get_reward_schet($connect, $reck_id, "", TRUE, FALSE, $pay_ar1);
+              $array['reward'] += $test_reward;
             }
-	        if(count($pay_ar2) > 0)
-              $array['reward'] += get_reward_schet($connect, $reck_id, "", TRUE,TRUE, $pay_ar2);
 
+	        if(count($pay_ar2) > 0) {
+	          $test_reward = get_reward_schet($connect, $reck_id, "", TRUE, TRUE, $pay_ar2,$all_pays_count != (count($pay_ar1)+count($pay_ar2)));
+              $array['reward'] += $test_reward;
+            }
         //}
     }
 
