@@ -10,7 +10,13 @@ function review_contract($connect, $type, $id){
 	$full_firma = $conf->full_firma;
 	$leg_address = $conf->leg_address;
 	$sep_address = $conf->sep_address;
+	$sep_address_ufa = $conf->sep_address_ufa;
+	$sep_address_ulyan = $conf->sep_address_ulyan;
+	$sep_address_samara = $conf->sep_address_samara;
 	$tel = $conf->tel_firma;
+	$tel_ufa = $conf->ufa;
+	$tel_ulyan = $conf->ulan;
+	$tel_samara = $conf->samara;
 	$fax = $conf->fax_firma;
 	$INN = $conf->INN;
 	$KPP = $conf->KPP;
@@ -310,24 +316,35 @@ function review_contract($connect, $type, $id){
 	<p>9.1. Настоящий Договор составлен в двух экземплярах, обладающих равной юридической силой,  на русском языке  и хранится по одному у каждой из Сторон. Все документы (договор, счет, обменная путевка, доверенность), переданные факсимильной и электронной связью, имеют юридическую силу.<br />
 	9.2. Все изменения  и дополнения к настоящему Договору должны быть составлены в письменной  форме и подписаны обеими Сторонами.</p>
 	<p class="head">10. Реквизиты и подписи сторон.</p>
-
+    <br />
 	<table>
 	<tr>
 		<td valign="top" width="400">
 			<p><strong>ФИРМА:</strong> <?php echo $firma; ?><br />
 			<strong>ИНН/КПП:</strong> <?php echo $INN."/".$KPP; ?><br />
 			<strong>ОГРН:</strong> <?php echo $OGRN; ?><br />
-			<strong>Юридический адрес:</strong><br /><?php echo $leg_address; ?><br />
-			<strong>Обособленное подразделение:</strong><br /><?php echo $sep_address; ?><br />
-			<strong>Тел.:</strong> <?php echo $tel; ?><br />
-		<?php if($fax){ ?>
-			<strong>Факс:</strong> <?php echo $fax; ?><br />
-		<?php } ?>
-			<strong>р/с:</strong> <?php echo $reck; ?><br />
-			в <?php echo $bank; ?><br />
-			<strong>к/с:</strong> <?php echo $KS; ?><br />
-			<strong>БИК:</strong> <?php echo $BIK; ?><br /><br />
-			<?php echo $post; ?><br /><?php echo $firma; ?>:
+			<strong>Юридический адрес:</strong><br /><?php echo $leg_address; ?><br /><br />
+          <?php if($fax){ ?>
+              <strong>Факс:</strong> <?php echo $fax; ?><br />
+          <?php } ?>
+            <strong>р/с:</strong> <?php echo $reck; ?><br />
+            в <?php echo $bank; ?><br />
+            <strong>к/с:</strong> <?php echo $KS; ?><br />
+            <strong>БИК:</strong> <?php echo $BIK; ?><br /><br />
+
+            <strong>Обособленное подразделение:</strong><br /><?php echo $sep_address; ?><br />
+			<strong>Тел.:</strong> <?php echo $tel; ?><br /><br />
+
+            <strong>Обособленное подразделение:</strong><br /><?php echo $sep_address_ufa; ?><br />
+            <strong>Тел.:</strong> <?php echo $tel_ufa; ?><br /><br />
+
+            <strong>Обособленное подразделение:</strong><br /><?php echo $sep_address_ulyan; ?><br />
+            <strong>Тел.:</strong> <?php echo $tel_ulyan; ?><br /><br />
+
+            <strong>Обособленное подразделение:</strong><br /><?php echo $sep_address_samara; ?><br />
+            <strong>Тел.:</strong> <?php echo $tel_samara; ?><br /><br />
+
+                <?php echo $post; ?><br /><?php echo $firma; ?>:
 			<?php if($img == 1){
 			?>
 				<table>
