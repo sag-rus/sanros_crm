@@ -15,33 +15,40 @@ function review_forma_certificate($connect, $type, $id){
 	ob_start();
 ?>
 
-	<div class="border">
-		<p style="text-align: center; font-size: 18pt;">Единая Служба Бронирования<br />«КурортИнфо»</p>
-		<br /><br /><br /><br /><br />
-		<p style="text-align: center; font-size: 21pt; font-weight: bold;">СЕРТИФИКАТ</p>
-		<p style="text-align: center; font-size: 15pt;">Код №<?php echo $key; ?></p>
-		<br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-		<p style="text-align: center; font-size: 13pt;">Сертификат дает право приобретения туристических услуг<br />от компании <?php echo $firma ;?> на сумму<br /><br /><span style="font-size: 21pt; font-weight: bold;"><?php echo $sum; ?> рублей</span></p>
-		<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-		<table align="center" style="width: 650px">
+	<div class="border" style="display: block; background-repeat: no-repeat; background-size: 100%;">
+        <div style="text-align: center; width: 690px; margin-top: 100px;"><img src="<?=$directory?>/images/sanata_logo.png"></div>
+		<br /><br /><br /><br />
+        <p style="text-align: center; font-size: 24pt; color: #3e2d27; margin-bottom: 0; margin-top: 0;">ПОДАРОЧНЫЙ</p>
+		<p style="text-align: center; font-size: 40pt; font-weight: bold; color: #3e2d27; margin-bottom: 0; margin-top: 10px;">СЕРТИФИКАТ</p>
+        <p style="text-align: center; font-size: 24pt; color: #3e2d27; margin-bottom: 0; margin-top: 150px;">№<span style="text-decoration: underline; margin-left: 10px;"><?php echo $key; ?></span></p>
+        <p style="text-align: center; font-size: 24pt; color: #3e2d27; margin-bottom: 0; margin-top: 10px;">на сумму</p>
+        <p style="text-align: center; font-size: 24pt; color: #3e2d27; margin-bottom: 0; margin-top: 10px;"><span style="text-decoration: underline; margin-left: 10px;"><?php echo $sum; ?> рублей</span></p>
+        <p style="text-align: center; font-size: 12pt; color: #3e2d27; margin-bottom: 0; margin-top: 30px;">Сертификат действителен при оплате путевки в любой санаторий России через компанию ООО ТА «САНАТА-ТРЕВЕЛ»</p>
+        <p style="text-align: center; font-size: 12pt; color: #3e2d27; margin-bottom: 0; margin-top: 10px;">Действителен до 31.12.<?=(date("Y")+1)?></p>
+        <table align="center" style="width: 650px; margin-top: 200px;">
 		<tr>
 			<td style="width: 250px" style="vertical-align: middle">Генеральный директор<br /><?php echo $firma; ?></td>
 			<td style="width: 200px" style="vertical-align: middle"><img src="images/pechat/pechat1.jpg" /></td>
 			<td style="width: 200px" style="vertical-align: middle"><?php echo $director; ?></td>
 		</tr>
 		</table>
-		<br /><br /><br /><br /><br /><br />
-		<p style="text-align: center; font-size: 11pt;">Действителен до 31.12.2017</p>
 	</div>
 
 <style type="text/css">
 
 .border{
-	font-family: freesans, sans-serif;
+	font-family: freesans, Times;
 	padding: 20px;
-	height: 1020px;
+	height: 1029px;
 	width: 710px;
 	margin: 0 auto;
+    border: 2px solid #3e2d27;
+}
+
+.atomic-central {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 </style>
