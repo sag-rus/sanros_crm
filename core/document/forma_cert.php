@@ -9,9 +9,11 @@ function review_forma_certificate($connect, $type, $id){
 	$firma = $conf->firma;
 	$director = $conf->director;
 
-	$row = $connect->getRow("SELECT klient, code, sum FROM certificate WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT klient, code, sum, date_pay FROM certificate WHERE id=?i", $id);
 	$key = $row["code"];
 	$sum = $row["sum"];
+    $date_pay = NULL;
+	if(!is_null($row["date_pay"])) $date_pay = date("d.m.Y",strtotime($row["date_pay"]));
 	ob_start();
 ?>
 
@@ -25,7 +27,12 @@ function review_forma_certificate($connect, $type, $id){
         <p style="text-align: center; font-size: 24pt; color: #3e2d27; margin-bottom: 0; margin-top: 10px;"><span style="text-decoration: underline; margin-left: 10px;"><?php echo $sum; ?> рублей</span></p>
         <p style="text-align: center; font-size: 12pt; color: #3e2d27; margin-bottom: 0; margin-top: 30px;">Сертификат действителен при оплате путевки в любой санаторий России через компанию ООО ТА «САНАТА-ТРЕВЕЛ»</p>
         <p style="text-align: center; font-size: 12pt; color: #3e2d27; margin-bottom: 0; margin-top: 10px;">Действителен до 31.12.<?=(date("Y")+1)?></p>
-        <table align="center" style="width: 650px; margin-top: 200px;">
+        <table align="center" style="width: 650px; margin-top: 180px;">
+        <tr>
+            <td colspan="3">
+                <?php if(!is_null($date_pay)) { ?>Дата <?=$date_pay;?><?php } ?>
+            </td>
+        </tr>
 		<tr>
 			<td style="width: 250px" style="vertical-align: middle">Генеральный директор<br /><?php echo $firma; ?></td>
 			<td style="width: 200px" style="vertical-align: middle"><img src="images/pechat/pechat1.jpg" /></td>
