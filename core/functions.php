@@ -907,8 +907,14 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
         $commission = get_reward_agency($connect, $id, $pay_sum);
       }
       else {
-        if($consider_bonus)
-          $commission = get_reward_agency($connect, $id);
+        if($consider_bonus) {
+          if($has_old_payments) {
+            $commission = get_reward_agency($connect, $id, $pay_sum);
+          }
+          else {
+            $commission = get_reward_agency($connect, $id);
+          }
+        }
       }
     }
     else
@@ -939,8 +945,14 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
           $discount = $pay_sum * ($row["value"] / 100);
         }
         else {
-          if($consider_bonus)
-            $discount = $reck['sum'] * ($row["value"] / 100);
+          if($consider_bonus) {
+              if($has_old_payments) {
+                $discount = $pay_sum * ($row["value"] / 100);
+              }
+              else {
+                $discount = $reck['sum'] * ($row["value"] / 100);
+              }
+          }
         }
       }
       else
