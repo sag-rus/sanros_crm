@@ -254,40 +254,57 @@ function new_reckoning($connect){
 
 function save_schet($connect){
 	global $session_login;
-	$id_obj = $_POST["id_obj"];
-	$id_tour = $_POST["id_tour"];
-	$id_room = $_POST["id_room"];
-	$sum = $_POST["sum"];
-	$number = $_POST["number"];
-	$number_turist = $_POST["number_turist"];
-	$note = $_POST["note"];
-	$days = $_POST["days"];
-	$date_z = $_POST["date_z"];
-	$client = $_POST["id_klient"];
-	$type = $_POST["type"];
-	$type_price = $_POST["type_price"];
-	$id_com = $_POST["id_com"];
-	$discount = $_POST["id_dis"];
-	$commis = $_POST["commis"];
-	$add_one_day = $_POST["add_one_day"];
-	$today = date("Y-m-d");
-	$a = 2;
-	if(is_numeric($sum) AND (is_numeric($number))){
-		if($type == "agency"){
-			$connect->query("INSERT INTO reckoning(id_com, date, agency, id_user, date_z, id_obj, id_tour, number_turist) VALUES (?i, ?s, ?i, ?i, ?s, ?i, ?s, ?i)", $id_com, $today, $client, $session_login, $date_z, $id_obj, $id_tour, $number_turist);
-		}else{
-			$payer = $connect->query("SELECT payer FROM  WHERE turist=?i AND payer!='' ORDER BY id DESC", $client);
-			$connect->query("INSERT INTO reckoning(date, turist, id_user, date_z, payer, id_obj, id_tour, number_turist, id_dis, rest) VALUES (?s, ?i, ?i, ?s, ?s, ?i, ?s, ?i, ?s, ?i)", $today, $client, $session_login, $date_z, $payer, $id_obj, $id_tour, $number_turist, $discount, $client);
-		}
-		$id = $connect->insertId();
-		setCookie("reck", $id);
-		$connect->query("INSERT INTO position_reck(id_room, sum, note, schet, number, type, days, date_z, add_one_day, reward) VALUES (?i, ?s, ?s, ?i, ?i, ?i, ?i, ?s, ?s, ?s)", $id_room, $sum, $note, $id, $number, $type_price, $days, $date_z, $add_one_day, $commis);
-		recalculation_sum($connect, $id);
-		save_schet_to_history($connect, $id);
-		change_arrival_date($connect, $id);
-		return $id;
-	}
-	return FALSE;
+
+	$type_schet = $_POST['type_schet'];
+    $today = date("Y-m-d");
+    $client = $_POST["id_klient"];
+    $note = $_POST["note"];
+
+    if($type_schet == 0) {
+      $id_obj = $_POST["id_obj"];
+      $id_tour = $_POST["id_tour"];
+      $id_room = $_POST["id_room"];
+      $sum = $_POST["sum"];
+      $number = $_POST["number"];
+      $number_turist = $_POST["number_turist"];
+      $days = $_POST["days"];
+      $date_z = $_POST["date_z"];
+      $type = $_POST["type"];
+      $type_price = $_POST["type_price"];
+      $id_com = $_POST["id_com"];
+      $discount = $_POST["id_dis"];
+      $commis = $_POST["commis"];
+      $add_one_day = $_POST["add_one_day"];
+
+      $a = 2;
+      if (is_numeric($sum) AND (is_numeric($number))) {
+        if ($type == "agency") {
+          $connect->query("INSERT INTO reckoning(id_com, date, agency, id_user, date_z, id_obj, id_tour, number_turist) VALUES (?i, ?s, ?i, ?i, ?s, ?i, ?s, ?i)", $id_com, $today, $client, $session_login, $date_z, $id_obj, $id_tour, $number_turist);
+        }
+        else {
+          $payer = $connect->query("SELECT payer FROM  WHERE turist=?i AND payer!='' ORDER BY id DESC", $client);
+          $connect->query("INSERT INTO reckoning(date, turist, id_user, date_z, payer, id_obj, id_tour, number_turist, id_dis, rest) VALUES (?s, ?i, ?i, ?s, ?s, ?i, ?s, ?i, ?s, ?i)", $today, $client, $session_login, $date_z, $payer, $id_obj, $id_tour, $number_turist, $discount, $client);
+        }
+        $id = $connect->insertId();
+        setCookie("reck", $id);
+        $connect->query("INSERT INTO position_reck(id_room, sum, note, schet, number, type, days, date_z, add_one_day, reward) VALUES (?i, ?s, ?s, ?i, ?i, ?i, ?i, ?s, ?s, ?s)", $id_room, $sum, $note, $id, $number, $type_price, $days, $date_z, $add_one_day, $commis);
+        recalculation_sum($connect, $id);
+        save_schet_to_history($connect, $id);
+        change_arrival_date($connect, $id);
+        return $id;
+      }
+      return FALSE;
+    }
+    else {
+      $payer = $connect->query("SELECT payer FROM  WHERE turist=?i AND payer!='' ORDER BY id DESC", $client);
+      $connect->query("INSERT INTO reckoning(date, turist, id_user, payer, rest, type) VALUES (?s, ?i, ?i, ?s, ?i, ?i)", $today, $client, $session_login, $payer, $client,1);
+      $id = $connect->insertId();
+      setCookie("reck", $id);
+      save_schet_to_history($connect, $id);
+      recalculation_sum($connect, $id);
+      return $id;
+    }
+    return FALSE;
 }
 
 function edit_schet($connect){

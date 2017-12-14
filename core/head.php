@@ -70,6 +70,7 @@ function show_my_bid_menu($connect){
 	}
 ?>
 		<li class="special-bid-page" onclick="get_my_reckoning('special')"><a>Свияжск</a></li>
+        <li class="certificate-bid-page" onclick="get_my_reckoning('certificate')"><a>Сертификаты</a></li>
 	<?php if($deferred > 0){ ?>
 		<li class="9-bid-page" onclick="get_my_reckoning(9)"><a>Отложенные</a></li>
 	<?php } ?>
@@ -113,6 +114,11 @@ function get_my_reckoning($connect){
 		if((int)$id_rights <= 3)
 			$str.= " AND id_user=$session_login ";
 	}
+
+	if($page == "certificate") {
+      $str = " AND type = 1";
+    }
+
 	$query = "SELECT id, status, status_san, turist, agency, DATE_FORMAT(date, '%d.%m.%Y') as date, DATE_FORMAT(date_z, '%d.%m.%Y') as date_z, id_obj, id_user, sum, active FROM reckoning WHERE (active=0 OR active=2 OR active=1) $str";
 	$data = $connect->getAll($query);
 	foreach($data as $row){

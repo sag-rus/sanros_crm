@@ -476,7 +476,10 @@ function save_new_schet(){
 	var id_room = $('.select_room').val();
 	var type_price = $('#type').val();
 	var commis = $('#commis').val();
-	var add_one_day = $('#add_one_day input:checked').val();;
+	var add_one_day = $('#add_one_day input:checked').val();
+  var type_schet = parseInt(jQuery('#reck_type').val());
+	var str;
+
 	if($('#klient').length){
 		var id_klient = $('#klient').attr('name');
 		discount = $('#id_dis').val();
@@ -486,33 +489,51 @@ function save_new_schet(){
 		id_com = $('#id_com').val();
 	}
 
-	if(!date_z)
-		show_warning('.new-reckoning', 'Введите дату заезда');
-	else if(!id_obj)
-		show_warning('.new-reckoning', 'Не выбран объект');
-	else if((!sum) || (isNaN(sum)))
-		show_warning('.new-reckoning', 'Неправильно введена цена');
-	else if((!days) || (isNaN(days)))
-		show_warning('.new-reckoning', 'Неправильно введено количество дней');
-	else if(isNaN(number))
-		show_warning('.new-reckoning', 'Неправильно введено количество');
-	else if(!check_true_dates(date_z, 'new'))
-		show_warning('.new-reckoning', 'Дата заезда введена неправильно');
-	else{
-		var str = 'func=save_schet&id_klient=' + id_klient + '&sum=' + sum + '&days=' + days + '&note=' + note + '&date_z=' + date_z + '&id_obj=' + id_obj + '&id_tour=' + id_tour + '&id_room=' + id_room + '&manager=' + manager + '&number=' + number + '&number_turist=' + number_turist + '&type=' + type + '&type_price=' + type_price + '&id_com=' + id_com + '&id_dis=' + discount + '&commis=' + commis + '&add_one_day=' + add_one_day;
-		$.ajax({
-			url: 'mysql.php',
-			type: 'POST',
-			data: str,
-			success: function(answer){
-				if(!answer){
-					show_warning('.new-reckoning', 'В поле сумма ошибка');
-				}else{
-					view_schet(answer);
-					show_alert('Заявка сохранена...');
-				}
-			}
-		});
+	if(type_schet != 0) {
+    str = 'func=save_schet&id_klient=' + id_klient + '&note=' + note + '&manager=' + manager + "&type_schet="+type_schet;
+    $.ajax({
+      url: 'mysql.php',
+      type: 'POST',
+      data: str,
+      success: function(answer){
+        if(!answer){
+          show_warning('.new-reckoning', 'В поле сумма ошибка');
+        }else{
+          view_schet(answer);
+          show_alert('Заявка сохранена...');
+        }
+      }
+    });
+	}
+	else {
+    if(!date_z)
+      show_warning('.new-reckoning', 'Введите дату заезда');
+    else if(!id_obj)
+      show_warning('.new-reckoning', 'Не выбран объект');
+    else if((!sum) || (isNaN(sum)))
+      show_warning('.new-reckoning', 'Неправильно введена цена');
+    else if((!days) || (isNaN(days)))
+      show_warning('.new-reckoning', 'Неправильно введено количество дней');
+    else if(isNaN(number))
+      show_warning('.new-reckoning', 'Неправильно введено количество');
+    else if(!check_true_dates(date_z, 'new'))
+      show_warning('.new-reckoning', 'Дата заезда введена неправильно');
+    else{
+      str = 'func=save_schet&id_klient=' + id_klient + '&sum=' + sum + '&days=' + days + '&note=' + note + '&date_z=' + date_z + '&id_obj=' + id_obj + '&id_tour=' + id_tour + '&id_room=' + id_room + '&manager=' + manager + '&number=' + number + '&number_turist=' + number_turist + '&type=' + type + '&type_price=' + type_price + '&id_com=' + id_com + '&id_dis=' + discount + '&commis=' + commis + '&add_one_day=' + add_one_day+"&type_schet="+type_schet;
+      $.ajax({
+        url: 'mysql.php',
+        type: 'POST',
+        data: str,
+        success: function(answer){
+          if(!answer){
+            show_warning('.new-reckoning', 'В поле сумма ошибка');
+          }else{
+            view_schet(answer);
+            show_alert('Заявка сохранена...');
+          }
+        }
+      });
+    }
 	}
 }
 
