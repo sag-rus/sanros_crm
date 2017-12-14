@@ -465,7 +465,8 @@ function add_new_position($connect){
 	$data = $connect->getRow("SELECT add_one_day, reward FROM position_reck WHERE schet=?i", $id);
 	$reward = $data["reward"];
 	$add_one_day = $data["add_one_day"];
-	$data = $connect->getRow("SELECT id_obj, date_z FROM reckoning WHERE id=?i", $id);
+	$data = $connect->getRow("SELECT type, id_obj, date_z FROM reckoning WHERE id=?i", $id);
+	$reck_type = $data['type'];
 	$id_obj = $data["id_obj"];
 	$date_z = $data["date_z"];
 	$type_add_one_day = $connect->getOne("SELECT add_one_day FROM object WHERE id=?i", $id_obj);
@@ -498,24 +499,29 @@ function add_new_position($connect){
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
-				<h4 class="modal-title">Новая позиция. Заявка №<?php echo $id; ?></h4>
+				<h4 class="modal-title">Новая позиция<?php if($reck_type == 1) { ?> (сертификат)<?php }?>. Заявка №<?php echo $id; ?></h4>
 			</div>
 			<div class="modal-body">
 				<div class="form-horizontal new-position">
 					<div class="row">
-						<div class="col-sm-6">
+						<div class="col-sm-<?php if($reck_type == 0) { ?>6<?php } else {?>12<?php }?>">
+                            <?php if($reck_type == 0) { ?>
 							<div class="form-group">
 								<label class="col-sm-4 control-label">Номер</label>
 								<div class="col-sm-8">
 									<?php echo select_rooms($connect, $id_obj); ?>
 								</div>
 							</div>
+                            <?php } ?>
+
 							<div class="form-group">
 								<label class="col-sm-4 control-label">Цена</label>
 								<div class="col-sm-8">
 									<input type="text" class="form-control" id="sum" onKeyPress="validate_sum()">
 								</div>
 							</div>
+
+                            <?php if($reck_type == 0) { ?>
 							<div class="form-group">
 								<label class="col-sm-4 control-label">Вознаграждение</label>
 								<div class="col-sm-8">
@@ -554,6 +560,7 @@ function add_new_position($connect){
 									</select>
 								</div>
 							</div>
+                            <?php } ?>
 							<div class="form-group">
 								<label class="col-sm-4 control-label" id="label_number">Кол-во</label>
 								<div class="col-sm-8">
@@ -564,9 +571,11 @@ function add_new_position($connect){
 								<label class="col-sm-4 control-label" id="label_number">Примечание</label>
 								<div class="col-sm-8">
 									<textarea class="form-control" id="note"></textarea>
+                                    <input type="hidden" id="reck_type" value="<?=$reck_type;?>">
 								</div>
 							</div>
 						</div>
+                        <?php if($reck_type == 0) { ?>
 						<div class="col-sm-6">
 							<div class="form-group form-group-margin">
 								<label class="col-sm-4 control-label">В стоимость входит</label>
@@ -575,6 +584,7 @@ function add_new_position($connect){
 								</div>
 							</div>
 						</div>
+                        <?php } ?>
 					</div>
 				</div>
 			</div>
@@ -591,31 +601,44 @@ function add_new_position($connect){
 
 function save_new_position($connect){
 	$id = $_POST["id"];
-	$id_room = $_POST["id_room"];
-	$sum = $_POST["sum"];
-	$reward = $_POST["reward"];
-	$note = $_POST["note"];
-	$type = $_POST["type"];
-	$days = $_POST["days"];
-	$date_z = $_POST["date_z"];
-	$number = $_POST["number"];
-	$add_one_day = $_POST["add_one_day"];
-	$connect->query("INSERT INTO position_reck(id_room, sum, number, schet, note, type, days, date_z, add_one_day, reward) VALUES (?i, ?s, ?i, ?i, ?s, ?i, ?i, ?s, ?s, ?s)", $id_room, $sum, $number, $id, $note, $type, $days, $date_z, $add_one_day, $reward);
-	$last = $connect->insertId();
+    $sum = $_POST["sum"];
+    $number = $_POST["number"];
+    $note = $_POST["note"];
+    $reck_type = $_POST["reck_type"];
+    $reward = 100.0;
 
-	$services = $_POST["services"];
+    if($reck_type == 0) {
+      $id_room = $_POST["id_room"];
+      $reward = $_POST["reward"];
+      $type = $_POST["type"];
+      $days = $_POST["days"];
+      $date_z = $_POST["date_z"];
+      $add_one_day = $_POST["add_one_day"];
+      $connect->query("INSERT INTO position_reck(id_room, sum, number, schet, note, type, days, date_z, add_one_day, reward) VALUES (?i, ?s, ?i, ?i, ?s, ?i, ?i, ?s, ?s, ?s)", $id_room, $sum, $number, $id, $note, $type, $days, $date_z, $add_one_day, $reward);
+      $last = $connect->insertId();
 
-	if(count($services)) {
-		$connect->query("UPDATE reckoning SET id_services=?s WHERE id=?i", implode("_", json_decode($services)), $id);
-	}
+      $services = $_POST["services"];
 
-	changes_reckoning_cabinet($connect, $id, "position", $last, "all");
-	recalculation_sum($connect, $id);
-	change_arrival_date($connect, $id);
-	if($connect->getOne("SELECT klient.login FROM reckoning, klient WHERE reckoning.id=?i AND reckoning.turist=klient.id", $id))
-		send_mail_client_changes($connect, $id);
-	elseif($connect->getOne("SELECT agency FROM reckoning WHERE id=?i", $id))
-		send_mail_agency_changes($connect, $id);
+      if(count($services)) {
+        $connect->query("UPDATE reckoning SET id_services=?s WHERE id=?i", implode("_", json_decode($services)), $id);
+      }
+
+      changes_reckoning_cabinet($connect, $id, "position", $last, "all");
+      recalculation_sum($connect, $id);
+      change_arrival_date($connect, $id);
+      if($connect->getOne("SELECT klient.login FROM reckoning, klient WHERE reckoning.id=?i AND reckoning.turist=klient.id", $id))
+        send_mail_client_changes($connect, $id);
+      elseif($connect->getOne("SELECT agency FROM reckoning WHERE id=?i", $id))
+        send_mail_agency_changes($connect, $id);
+    }
+    else {
+      $connect->query("INSERT INTO position_reck(sum, number, schet, note, reward) VALUES (?i, ?i, ?i, ?s, ?s)", $sum, $number, $id, $note, $reward);
+      $last = $connect->insertId();
+      changes_reckoning_cabinet($connect, $id, "position", $last, "all");
+      recalculation_sum($connect, $id);
+      if($connect->getOne("SELECT klient.login FROM reckoning, klient WHERE reckoning.id=?i AND reckoning.turist=klient.id", $id))
+        send_mail_client_changes($connect, $id);
+    }
 }
 
 function edit_position($connect){
@@ -1372,8 +1395,9 @@ function show_schet_klient($connect){
 	$type = $_POST["type"];
 	if(isset($_COOKIE["reck"]))
 		SetCookie("reck","");
-	$row = $connect->getRow("SELECT agency, turist, DATE_FORMAT(date, '%d.%m.%Y') as date, sum, status, DATE_FORMAT(date_z, '%d.%m.%Y') as date_z, DATE_FORMAT(date_v, '%d.%m.%Y') as date_v, id_obj, id_tour, rest, status_san, number_turist, id_com, id_dis, note, active, status_agent, schet_san, DATE_FORMAT(date_schet_san, '%d.%m.%Y') as date_schet_san, id_user, website, guaranteed, reason_delete, changes, doc_schet_san, note_bid, correction, commission_value FROM reckoning WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT type, agency, turist, DATE_FORMAT(date, '%d.%m.%Y') as date, sum, status, DATE_FORMAT(date_z, '%d.%m.%Y') as date_z, DATE_FORMAT(date_v, '%d.%m.%Y') as date_v, id_obj, id_tour, rest, status_san, number_turist, id_com, id_dis, note, active, status_agent, schet_san, DATE_FORMAT(date_schet_san, '%d.%m.%Y') as date_schet_san, id_user, website, guaranteed, reason_delete, changes, doc_schet_san, note_bid, correction, commission_value FROM reckoning WHERE id=?i", $id);
 	$active = $row["active"];
+	$reck_type = $row["type"];
 	if($type == "agency")
 		$kl = $row["agency"];
 	else
@@ -1554,9 +1578,13 @@ function show_schet_klient($connect){
 			$html.= "<div class='alert alert-success well-sm'><i class='fa fa-file-word-o'></i> <a href='temp/schet/".$schet_san_el["doc"]."' target='_blank' class='alert-link'>".$text."</a> <button type='button' class='btn btn-danger btn-xs' onclick='delete_schet_san(\"".$id."\", \"".$index."\")'>&nbsp;<i class='fa fa-times-circle'></i>&nbsp;</button></div>";
 		}
 	}
-		$html.= "<div class='well well-sm'><button type='button' class='btn btn-default btn-xs' onclick='form_upload_document(\"".$id."\", \"bill\")'><i class='fa fa-upload icon_download'></i> Счет санатория</button>";
-		$html.= "&nbsp;<button type='button' class='btn btn-default btn-xs' onclick='form_upload_document(\"".$id."\", \"garant\")'><i class='fa fa-upload icon_download'></i> Гарант. письмо</button>";
-		$html.= "&nbsp;<button type='button' class='btn btn-default btn-xs' onclick='form_upload_document(\"".$id."\", \"return\")'><i class='fa fa-upload icon_download'></i> Возврат</button>";
+	    $html .= "<div class='well well-sm'>";
+        if($reck_type == 0) {
+          $html .= "<button type='button' class='btn btn-default btn-xs' onclick='form_upload_document(\"" . $id . "\", \"bill\")'><i class='fa fa-upload icon_download'></i> Счет санатория</button>";
+          $html .= "&nbsp;<button type='button' class='btn btn-default btn-xs' onclick='form_upload_document(\"" . $id . "\", \"garant\")'><i class='fa fa-upload icon_download'></i> Гарант. письмо</button>";
+        }
+
+        $html.= "&nbsp;<button type='button' class='btn btn-default btn-xs' onclick='form_upload_document(\"".$id."\", \"return\")'><i class='fa fa-upload icon_download'></i> Возврат</button>";
 		$html.= "&nbsp;<button type='button' class='btn btn-default btn-xs' onclick='form_upload_document(\"".$id."\", \"resetting\")'><i class='fa fa-upload icon_download'></i> Перезачет</button></div>";
 	if($active == 1)
 	if($active == 1)
@@ -1647,7 +1675,8 @@ function show_schet_klient($connect){
 			$button = "";
 			if($active == 0 OR $active == 1)
 				$button = "<button type='button' class='btn btn-default btn-xs' onclick='edit_klient_reck(\"".$tur."\", \"".$id."\")'>&nbsp;<i class='fa fa-pencil'></i>&nbsp;</button>&nbsp;<button type='button' class='btn btn-danger btn-xs' onclick='remove_klient_reck(\"".$tur."\", \"".$id."\")'>&nbsp;<i class='fa fa-trash-o'></i>&nbsp;</button>";
-			$button.= "&nbsp;<button type='button' class='btn btn-info btn-xs' onclick='show_dover(\"".$id."\", \"".$tur."\")'>Доверенность</button>";
+			if($reck_type == 0)
+			    $button.= "&nbsp;<button type='button' class='btn btn-info btn-xs' onclick='show_dover(\"".$id."\", \"".$tur."\")'>Доверенность</button>";
 			if(!$row["passport"])
 				if($row["birth_certificate"])
 					$row["passport"] = $row["birth_certificate"]." Св. о рожд.";
@@ -1716,15 +1745,17 @@ function show_schet_klient($connect){
 			<div class="col-sm-5 desc-schet">
 				<?php echo $div_warning; ?>
 				<strong>Дата добавления:</strong> <?php echo $date; ?><br />
-				<?php if($website){ ?>
-					<strong>Сайт:</strong> <a href="#"><?php echo $website; ?></a><br />
-				<?php } ?>
-				<strong>Объект:</strong> <?php echo $object; ?> <span class="label label-success pointer object-info"><i class="fa fa-info"></i> Информация</span><br />
-				<?php if($id_tour){ ?>
-					<strong>Туроператор: </strong><?php echo $connect->getOne("SELECT name FROM tour_operator WHERE id=?i", $id_tour); ?><br />
-				<?php } ?>
-				<strong>Заезд:</strong> с <?php echo $date_z." по ".$date_v; ?><br />
-				<strong>Кол-во отдыхающих:</strong> <?php echo $number_turist; ?><br />
+                <?php if($reck_type == 0) { ?>
+                    <?php if($website){ ?>
+                        <strong>Сайт:</strong> <a href="#"><?php echo $website; ?></a><br />
+                    <?php } ?>
+                    <strong>Объект:</strong> <?php echo $object; ?> <span class="label label-success pointer object-info"><i class="fa fa-info"></i> Информация</span><br />
+                    <?php if($id_tour){ ?>
+                        <strong>Туроператор: </strong><?php echo $connect->getOne("SELECT name FROM tour_operator WHERE id=?i", $id_tour); ?><br />
+                    <?php } ?>
+                    <strong>Заезд:</strong> с <?php echo $date_z." по ".$date_v; ?><br />
+                    <strong>Кол-во отдыхающих:</strong> <?php echo $number_turist; ?><br />
+                <?php } ?>
 				<strong>Менеджер:</strong> <?php echo $manager; ?><br />
 				<?php if($schet_san){ ?>
 					<strong>Счет санатория:</strong> №<?php echo $schet_san; ?> от <?php echo month_transform($date_schet_san); ?><br />
@@ -1766,8 +1797,10 @@ function show_schet_klient($connect){
 	<?php if($active == 0){ ?>
 	<div class="panel-footer">
 		<button type="button" onclick="add_new_position('<?php echo $id; ?>')" class="btn btn-default btn-sm"><i class="fa fa-plus-circle"></i> Добавить позицию</button>&nbsp;&nbsp;
-		<button type="button" onclick="add_new_turist('<?php echo $id; ?>')" class="btn btn-default btn-sm"><i class="fa fa-plus-circle"></i> Добавить туриста</button>&nbsp;&nbsp;
-		<button type="button" onclick="add_service_reckoning('<?php echo $id; ?>')" class="btn btn-default btn-sm"><i class="fa fa-plus-circle"></i> Добавить услугу</button>
+		<?php if($reck_type == 0) { ?>
+            <button type="button" onclick="add_new_turist('<?php echo $id; ?>')" class="btn btn-default btn-sm"><i class="fa fa-plus-circle"></i> Добавить туриста</button>&nbsp;&nbsp;
+		    <button type="button" onclick="add_service_reckoning('<?php echo $id; ?>')" class="btn btn-default btn-sm"><i class="fa fa-plus-circle"></i> Добавить услугу</button>
+        <?php } ?>
 		<button type="button" onclick="edit_note_bid_reckoning('<?php echo $id; ?>')" class="btn btn-default btn-sm"><i class="fa fa-plus-circle"></i> Примечание</button>
 	</div>
 	<?php } ?>

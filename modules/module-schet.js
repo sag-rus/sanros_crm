@@ -138,6 +138,8 @@ function save_new_position(id){
 	var number = $('#number').val();
 	var note = $('#note').val();
 	var type = $('#type').val();
+	var reck_type = parseInt($('#reck_type').val());
+	var str;
 
 	var services = new Array();
 	$('.services:checkbox:checked').each(function () {
@@ -148,26 +150,44 @@ function save_new_position(id){
 		show_warning('.new-position', 'Не верно введено поле: Цена', false);
 	else if(isNaN(number) || (number == ''))
 		show_warning('.new-position', 'Не верно введено поле: Кол-во', false);
-	else if(days == '')
-		show_warning('.new-position', 'Не введено поле: Дней', false);
-	else if(date_z == '')
-		show_warning('.new-position', 'Не введено поле: Заезд', false);
-	else if(!check_true_dates(date_z))
-		show_warning('.new-position', 'Дата заезда введена неправильно', false);
-	else{
-		var str = 'func=save_new_position&id=' + id + '&services=' + JSON.stringify(services) + '&id_room=' + room + '&sum=' + sum + '&number=' + number + '&note=' + note + '&type=' + type + '&days=' + days + '&date_z=' + date_z + '&add_one_day=' + add_one_day + '&reward=' + reward;
-		$.ajax({
-			url: 'mysql.php',
-			type: 'POST',
-			data: str,
-			success: function(){
-				remove_all_windows();
-				view_schet(id);
-				show_alert('Позиция добавлена...');
-			}
-		});
-		$('.btn-update').button('loading');
+
+	if(reck_type === 0) {
+    if(days == '')
+      show_warning('.new-position', 'Не введено поле: Дней', false);
+    else if(date_z == '')
+      show_warning('.new-position', 'Не введено поле: Заезд', false);
+    else if(!check_true_dates(date_z))
+      show_warning('.new-position', 'Дата заезда введена неправильно', false);
+    else{
+      str = 'func=save_new_position&id=' + id + '&services=' + JSON.stringify(services) + '&id_room=' + room + '&sum=' + sum + '&number=' + number + '&note=' + note + '&type=' + type + '&days=' + days + '&date_z=' + date_z + '&add_one_day=' + add_one_day + '&reward=' + reward+'&reck_type='+reck_type;
+      $.ajax({
+        url: 'mysql.php',
+        type: 'POST',
+        data: str,
+        success: function(){
+          remove_all_windows();
+          view_schet(id);
+          show_alert('Позиция добавлена...');
+        }
+      });
+      $('.btn-update').button('loading');
+    }
 	}
+	else {
+    str = 'func=save_new_position&id=' + id + '&sum=' + sum + '&number=' + number + '&note=' + note+'&reck_type='+reck_type;
+    $.ajax({
+      url: 'mysql.php',
+      type: 'POST',
+      data: str,
+      success: function(){
+        remove_all_windows();
+        view_schet(id);
+        show_alert('Позиция добавлена...');
+      }
+    });
+    $('.btn-update').button('loading');
+	}
+
 }
 
 

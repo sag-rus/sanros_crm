@@ -832,7 +832,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
   $reward = 0;
   $reck_reward = $connect->getOne("SELECT reward FROM reckoning WHERE id=?i", $id);
   $bonus = $connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND sum < 0", $id);
-  $reck = $connect->getRow("SELECT sum, agency, id_com, id_dis, correction, status FROM reckoning WHERE id=?i LIMIT 1", $id);
+  $reck = $connect->getRow("SELECT type, sum, agency, id_com, id_dis, correction, status FROM reckoning WHERE id=?i LIMIT 1", $id);
   $only_payment_state = false;
   if($fact) {
     $add_cond = "";
@@ -866,30 +866,50 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
     $data = $connect->getAll("SELECT id FROM position_reck WHERE schet=?i", $id);
     if($fact) {
       if($reck['status'] != 5) {
-        foreach ($data as $row) {
-          $reward += get_reward_schet_position_pay($connect, $row["id"], $pay_sum);
-          break;
+        if($reck['type'] == 1) {
+          $reward +=$pay_sum;
+        }
+        else {
+          foreach ($data as $row) {
+            $reward += get_reward_schet_position_pay($connect, $row["id"], $pay_sum);
+            break;
+          }
         }
       }
       else {
         if($consider_bonus) {
           if($has_old_payments) {
-            foreach ($data as $row) {
-              $reward += get_reward_schet_position_pay($connect, $row["id"],$pay_sum);
-              break;
+            if($reck['type'] == 1) {
+              $reward +=$pay_sum;
+            }
+            else {
+              foreach ($data as $row) {
+                $reward += get_reward_schet_position_pay($connect, $row["id"],$pay_sum);
+                break;
+              }
             }
           }
           else {
-            foreach ($data as $row) {
-              $reward += get_reward_schet_position($connect, $row["id"]);
+            if($reck['type'] == 1) {
+              $reward +=$reck['sum'];
+            }
+            else {
+              foreach ($data as $row) {
+                $reward += get_reward_schet_position($connect, $row["id"]);
+              }
             }
           }
         }
       }
     }
     else {
-      foreach($data as $row)
-        $reward+= get_reward_schet_position($connect, $row["id"]);
+      if($reck['type'] == 1) {
+          $reward +=$reck['sum'];
+      }
+      else {
+        foreach($data as $row)
+          $reward+= get_reward_schet_position($connect, $row["id"]);
+      }
     }
   }
   $reward = round($reward, 2);
@@ -1103,6 +1123,8 @@ function calculate_position($sum, $number, $type, $days){
 }
 
 function recalculation_sum($connect, $id){
+    $reck_type = $connect->getOne("SELECT type FROM reckoning WHERE id=?i", $id);
+
 	$data = $connect->getAll("SELECT sum, number, type, days FROM position_reck WHERE schet=?i", $id);
 	$all_sum = 0;
 	foreach($data as $row){
@@ -1110,7 +1132,10 @@ function recalculation_sum($connect, $id){
 		$number = $row["number"];
 		$type = $row["type"];
 		$days = $row["days"];
-		$all_sum += calculate_position($sum, $number, $type, $days);
+		if($reck_type == 0)
+          $all_sum += calculate_position($sum, $number, $type, $days);
+		else
+          $all_sum += $sum*$number;
 	}
 /*	$res = mysql_query("SELECT sum FROM payment WHERE schet='$id' AND type='5'");
 	while($a = mysql_fetch_assoc($res)){
