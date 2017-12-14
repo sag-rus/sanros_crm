@@ -766,6 +766,43 @@ function verification_input_data(id, required){
 	$('.mark-'+id).html(html);
 }
 
+function reckoning_type_checker() {
+	var type = parseInt(jQuery('#reck_type').val()),
+			$arrival = jQuery('#arrival'),
+			$days = jQuery('#days'),
+			$object = jQuery('#object'),
+			$number_turist = jQuery('#number_turist'),
+			$commis = jQuery('#commis'),
+			$id_dis = jQuery('#id_dis'),
+			$view_date_v = jQuery('#view_date_v'),
+			$mark_days = jQuery('.mark-days'),
+			$mark_object = jQuery('.mark-object');
+
+	if(type === 0) {
+		$arrival.prop('disabled',false);
+    $view_date_v.prop('disabled',false);
+    $days.prop('disabled',false);
+    $object.prop('disabled',false);
+    $number_turist.prop('disabled',false);
+    $commis.prop('disabled',false);
+    $id_dis.prop('disabled',false);
+	}
+	else {
+    $arrival.prop('disabled',true);
+    $arrival.val("");
+    $view_date_v.prop('disabled',false);
+    $view_date_v.val("");
+    $mark_days.html("");
+    $mark_object.html("");
+    $days.prop('disabled',true);
+    $object.prop('disabled',true);
+    $number_turist.prop('disabled',true);
+    $commis.prop('disabled',true);
+    $id_dis.prop('disabled',true);
+
+	}
+}
+
 function show_similar_turist(id, pole){
 	var text = $('#'+id).val();
 	var str = 'func=show_similar_turist&pole=' + pole + '&text=' + text;

@@ -117,6 +117,15 @@ function new_reckoning($connect){
 			<div class="panel panel-default">
 				<div class="panel-heading"><i class="fa fa-file-text-o"></i> Новая заявка</div>
 				<div class="panel-body">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Тип заявки</label>
+                        <div class="col-sm-7">
+                            <select class="form-control" id="reck_type" onblur="reckoning_type_checker();">
+                                <option value="0">Стандартная</option>
+                                <option value="1">Для сертификата</option>
+                            </select>
+                        </div>
+                    </div>
 					<div class="form-group">
 						<label class="col-sm-3 control-label">Заезд</label>
 						<div class="col-sm-5" style="padding-right: 0px;">
