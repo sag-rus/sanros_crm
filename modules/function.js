@@ -776,7 +776,8 @@ function reckoning_type_checker() {
 			$id_dis = jQuery('#id_dis'),
 			$view_date_v = jQuery('#view_date_v'),
 			$mark_days = jQuery('.mark-days'),
-			$mark_object = jQuery('.mark-object');
+			$mark_object = jQuery('.mark-object'),
+			$klient_room = jQuery('#klient_room');
 
 	if(type === 0) {
 		$arrival.prop('disabled',false);
@@ -786,6 +787,7 @@ function reckoning_type_checker() {
     $number_turist.prop('disabled',false);
     $commis.prop('disabled',false);
     $id_dis.prop('disabled',false);
+    $klient_room.prop('disabled',false);
 	}
 	else {
     $arrival.prop('disabled',true);
@@ -799,6 +801,7 @@ function reckoning_type_checker() {
     $number_turist.prop('disabled',true);
     $commis.prop('disabled',true);
     $id_dis.prop('disabled',true);
+    $klient_room.prop('disabled',true);
 
 	}
 }

@@ -206,24 +206,25 @@ function filter_payment($connect){
 		if($zapros_for_mysql)
 			$zapros_for_mysql.= " AND ";
 		if($type_opl == 1)
-			$zapros_for_mysql.= "(type=1 OR type=3)";
+			$zapros_for_mysql.= "(`payment`.`type`=1 OR `payment`.`type`=3)";
 		elseif($type_opl == 2)
-			$zapros_for_mysql.= "(type=2 OR type=4)";
+			$zapros_for_mysql.= "(`payment`.`type`=2 OR `payment`.`type`=4)";
 	}
 	if($type_pay_tbl == 1){
-		$zapros_for_mysql.= " AND (type=1 OR type=2)";
+		$zapros_for_mysql.= " AND (`payment`.`type`=1 OR `payment`.`type`=2)";
 		$th_pay = "<th width='70'>Способ<br />платежа</th>";
 	}elseif($type_pay_tbl == 2){
-		$zapros_for_mysql.= " AND (type=3 OR type=4)";
+		$zapros_for_mysql.= " AND (`payment`.`type`=3 OR `payment`.`type`=4)";
 		$th_pay = "<th width='70'>Номер<br />плат.пор.</th>";
 	}elseif($type_pay_tbl == 3){
-		$zapros_for_mysql.= " AND (type=5)";
+		$zapros_for_mysql.= " AND (`payment`.`type`=5)";
 		$th_pay = "<th width='70'>Способ<br />платежа</th><th width='70'>Номер<br />плат.пор.</th>";
 	}else
 		$th_pay = "<th width='70'>Способ<br />платежа</th><th width='70'>Номер<br />плат.пор.</th>";
 	$zapros_for_mysql_cond = $zapros_for_mysql;
-	$zapros_for_mysql = "SELECT payment.id, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, payment.office, payment.type, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san FROM payment LEFT JOIN reckoning ON reckoning.id=payment.schet WHERE ".$zapros_for_mysql." ORDER BY payment.id";
+	$zapros_for_mysql = "SELECT payment.id, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, payment.office, `payment`.`type`, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san FROM payment LEFT JOIN reckoning ON reckoning.id=payment.schet WHERE ".$zapros_for_mysql." ORDER BY payment.id";
 	$data = $connect->getAll($zapros_for_mysql);
+
 	$pay_groups = [];
 	foreach($data as $row){
 		$all_fio = "";
