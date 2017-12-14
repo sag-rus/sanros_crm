@@ -777,7 +777,12 @@ function reckoning_type_checker() {
 			$view_date_v = jQuery('#view_date_v'),
 			$mark_days = jQuery('.mark-days'),
 			$mark_object = jQuery('.mark-object'),
-			$klient_room = jQuery('#klient_room');
+			$klient_room = jQuery('#klient_room'),
+			$sum = jQuery('#sum'),
+			$type_room = jQuery('#type'),
+			$mark_sum = jQuery('.mark-sum'),
+			$number = jQuery('#number'),
+			$mark_number = jQuery('.mark-number');
 
 	if(type === 0) {
 		$arrival.prop('disabled',false);
@@ -788,6 +793,9 @@ function reckoning_type_checker() {
     $commis.prop('disabled',false);
     $id_dis.prop('disabled',false);
     $klient_room.prop('disabled',false);
+    $sum.prop('disabled',false);
+    $type_room.prop('disabled',false);
+    $number.prop('disabled',false);
 	}
 	else {
     $arrival.prop('disabled',true);
@@ -802,7 +810,12 @@ function reckoning_type_checker() {
     $commis.prop('disabled',true);
     $id_dis.prop('disabled',true);
     $klient_room.prop('disabled',true);
-
+    $sum.prop('disabled',true);
+    $mark_sum.html("");
+    $type_room.prop('disabled',true);
+    $number.prop('disabled',true);
+    $number.val("");
+    $mark_number.html("");
 	}
 }
 
