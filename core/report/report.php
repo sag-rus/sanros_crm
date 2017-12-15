@@ -226,9 +226,11 @@ function filter_payment($connect){
 	$data = $connect->getAll($zapros_for_mysql);
 
 	$pay_groups = [];
+	$all_reward = 0;
 	foreach($data as $row){
 		$all_fio = "";
 		$id = $row["schet"];
+		$payment_id = $row['id'];
 
 		if(in_array($row['type'],[1,2])) {
           if (!isset($pay_groups[$id])) {
@@ -383,6 +385,39 @@ function filter_payment($connect){
 				$func = "";
 				$id = "";
 			}
+
+
+			//блок расчета прибыли по платежу - начало
+            $pay_reward = 0;
+            $all_pays = $connect->getAll("SELECT id FROM payment WHERE (type = 1 OR type = 2) AND schet = ?i", $id);
+            $all_pays_count = count($all_pays);
+              $pay_ar1 = [];
+              $pay_ar2 = [];
+              foreach ($all_pays as $all_pay_index => $all_pays_el)
+              {
+                if($all_pays_el['id'] == $payment_id) {
+                  if($all_pays_count-1 != $all_pay_index)
+                    $pay_ar1[] = $all_pays_el['id'];
+                  else {
+                    $pay_ar2[] = $all_pays_el['id'];
+                  }
+                }
+              }
+
+              if(count($pay_ar1) > 0) {
+                $test_reward = get_reward_schet($connect, $id, "", TRUE, FALSE, $pay_ar1);
+                $pay_reward += $test_reward;
+              }
+
+              if(count($pay_ar2) > 0) {
+                $test_reward = get_reward_schet($connect, $id, "", TRUE, TRUE, $pay_ar2,$all_pays_count != (count($pay_ar1)+count($pay_ar2)));
+                $pay_reward += $test_reward;
+              }
+              //echo $id." ".$all_pays_count." ".count($pay_ar1)." ".count($pay_ar2)." ".$pay_reward."<br />";
+            //блок расчета прибыли по платежу - конец
+
+            $all_reward += $pay_reward;
+
 			$html.= "<tr class='".$bg_class."' ".$func." style='background: ".$color."!important;'>";
 			$html.= "<td valign='top' align='center'>".$id."</td>";
 			$html.= "<td valign='top'>".$all_fio."</td>";
@@ -392,6 +427,7 @@ function filter_payment($connect){
 			$html.= "<td valign='top' style='text-align: center;'>".$sum_reck."</td>";
 			$html.= "<td valign='top' style='text-align: center;'>".$sum."</td>";
 			$html.= "<td valign='top' style='text-align: center;'>".$type_pay_text."</td>";
+            $html.= "<td valign='top' style='text-align: center;'>".$pay_reward."</td>";
 			$html.= "<td valign='top' style='text-align: center;'>".$manager."</td>";
 			if($type_pay_tbl == 1 OR $type_pay_tbl == 3 OR $type_pay_tbl == 4)
 				$html.= "<td valign='top' style='text-align: center;'>".$type_opl_text."</td>";
@@ -420,17 +456,19 @@ function filter_payment($connect){
                     }
                 }
             }
-
+            $reck_pay_reward = 0;
             if(count($pay_ar1) > 0) {
               $test_reward = get_reward_schet($connect, $reck_id, "", TRUE, FALSE, $pay_ar1);
-              $array['reward'] += $test_reward;
+              $reck_pay_reward += $test_reward;
             }
 
 	        if(count($pay_ar2) > 0) {
 	          $test_reward = get_reward_schet($connect, $reck_id, "", TRUE, TRUE, $pay_ar2,$all_pays_count != (count($pay_ar1)+count($pay_ar2)));
-              $array['reward'] += $test_reward;
+              $reck_pay_reward += $test_reward;
             }
         //}
+      $array['reward'] += $reck_pay_reward;
+      //echo " <br />".$reck_id." ".$reck_pay_reward."<br />";
     }
 
 	if(!$html)
@@ -498,7 +536,7 @@ function filter_payment($connect){
 				<div class="clearfix"></div>
 				<hr />
 				<div class="col-sm-6">
-					Общее вознаграждение на сумму <?php echo number_format($array["reward"], 2, ",", " "); ?>
+					Общее вознаграждение на сумму <?php echo number_format($array["reward"], 2, ",", " ")." ".number_format($all_reward, 2, ",", " "); ?>
 				</div>
 			</div>
 		</div>
@@ -574,13 +612,14 @@ function filter_payment($connect){
 	<thead>
 	<tr id="filter_tr">
 		<th width="25">№</th>
-		<th width="250">ФИО</th>
-		<th width="140">Объект</th>
+		<th width="150">ФИО</th>
+		<th width="100">Объект</th>
 		<th width="80" class="{dateFormat: 'ddmmyyyy'}">Дата платежа</th>
 		<th width="80" class="{dateFormat: 'ddmmyyyy'}">Дата заезда</th>
 		<th width="80">Сумма путевки</th>
 		<th width="80">Сумма платежа</th>
 		<th width="80">Тип платежа</th>
+        <th width="80">Прибыль</th>
 		<th width="90">Менеджер</th>
 		<?php echo $th_pay; ?>
 	</tr>

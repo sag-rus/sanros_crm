@@ -856,7 +856,6 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
     foreach ($payments as $payment) {
       $pay_sum += (float)$payment['sum'];
     }
-
   }
 
   if($reck_reward > 0) {
@@ -878,6 +877,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
       }
       else {
         if($consider_bonus) {
+          //
           if($has_old_payments) {
             if($reck['type'] == 1) {
               $reward +=$pay_sum;
@@ -897,6 +897,17 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
               foreach ($data as $row) {
                 $reward += get_reward_schet_position($connect, $row["id"]);
               }
+            }
+          }
+        }
+        else {
+          if($reck['type'] == 1) {
+            $reward +=$pay_sum;
+          }
+          else {
+            foreach ($data as $row) {
+              $reward += get_reward_schet_position_pay($connect, $row["id"],$pay_sum);
+              break;
             }
           }
         }
@@ -923,17 +934,9 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
   if($reck["agency"]){
     $value = $connect->getOne("SELECT value FROM commission WHERE id=?i LIMIT 1", $reck["id_com"]);
     if($fact) {
-      if($reck['status'] != 5) {
-        $commission = get_reward_agency($connect, $id, $pay_sum);
-      }
-      else {
+      if($reck['status'] == 5) {
         if($consider_bonus) {
-          if($has_old_payments) {
-            $commission = get_reward_agency($connect, $id, $pay_sum);
-          }
-          else {
             $commission = get_reward_agency($connect, $id);
-          }
         }
       }
     }
