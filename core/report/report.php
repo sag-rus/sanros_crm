@@ -536,7 +536,7 @@ function filter_payment($connect){
 				<div class="clearfix"></div>
 				<hr />
 				<div class="col-sm-6">
-					Общее вознаграждение на сумму <?php echo number_format($array["reward"], 2, ",", " ")." ".number_format($all_reward, 2, ",", " "); ?>
+					Общее вознаграждение на сумму <?php echo number_format($array["reward"], 2, ",", " ")." (сумма прибыли по каждому платежу ".number_format($all_reward, 2, ",", " ").") "; ?>
 				</div>
 			</div>
 		</div>
