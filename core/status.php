@@ -256,7 +256,8 @@ function show_contract($connect){
 		$html_payers.= "&nbsp;".$payer["name"];
 		$html_payers.= "</label>";
 	}
-	$service_reckoning = explode("_", $connect->getOne("SELECT id_services FROM reckoning WHERE id=?i", $id));
+	$reck_row = $connect->getRow("SELECT id_services, type FROM reckoning WHERE id=?i", $id);
+	$service_reckoning = explode("_", $reck_row['id_services']);
 	$data = $connect->getAll("SELECT id, name, type FROM price_includes ORDER BY head, sort_order, name DESC, type, id");
 	foreach($data as $row){
 		$checked = "";
@@ -285,12 +286,14 @@ function show_contract($connect){
 							<label class="control-label"><input type="radio" name="dates" value="zayvka" /> дата заявки</label>
 						</div>
 					</div>
+                    <?php if($reck_row['type'] == 0) { ?>
 					<div class="form-group">
 						<label class="col-sm-3 control-label">Услуги</label>
 						<div class="col-sm-9">
 							<?php echo $html_services_1."<hr />".$html_services_2; ?>
 						</div>
 					</div>
+                    <?php } ?>
 					<div class="form-group">
 						<label class="col-sm-3 control-label">Плательщик</label>
 						<div class="col-sm-9 payers">

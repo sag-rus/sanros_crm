@@ -40,8 +40,9 @@ function review_contract($connect, $type, $id){
 	if(isset($_GET["date_to"]))
 		$date_to = $_GET["date_to"];
 
-	$row = $connect->getRow("SELECT reckoning.date, reckoning.date_z, reckoning.date_v, reckoning.sum, reckoning.id_obj, reckoning.turist, reckoning.payer, reckoning.number_turist, reckoning.rest, reckoning.id_services, position_reck.id_room, position_reck.days, reckoning.id_dis FROM reckoning, position_reck WHERE reckoning.id=?i AND position_reck.schet=?i", $id, $id);
+	$row = $connect->getRow("SELECT reckoning.date, reckoning.date_z, reckoning.date_v, reckoning.sum, reckoning.id_obj, reckoning.turist, reckoning.payer, reckoning.number_turist, reckoning.rest, reckoning.id_services, position_reck.id_room, position_reck.days, reckoning.id_dis, reckoning.type AS reck_type FROM reckoning, position_reck WHERE reckoning.id=?i AND position_reck.schet=?i", $id, $id);
 	$days = $row["days"];
+	$reck_type = $row["reck_type"];
 	$date_z_schet = date_change($row["date_z"]);
 	$date_v_schet = date_change($row["date_v"]);
 	$date_create = date_change($row["date"], ".");
@@ -122,12 +123,13 @@ function review_contract($connect, $type, $id){
 			$services_default.= "<strong>".$name_service.":</strong> Нет<br />";
 	}
 
-	$data = $connect->getAll("SELECT date_z, days, id_room, id_service, note, add_one_day, number FROM position_reck WHERE schet=?i", $id);
+	$data = $connect->getAll("SELECT date_z, days, id_room, id_service, note, add_one_day, sum, number FROM position_reck WHERE schet=?i", $id);
 	foreach($data as $row){
 		$days = $row["days"];
 		$number = $row["number"];
 		$date_z = date_change($row["date_z"]);
 		$add_one_day = $row["add_one_day"];
+		$pos_sum = $row['sum'];
 		$days_sum = $days;
 		if($add_one_day == 0)
 			$days_sum--;
@@ -143,10 +145,20 @@ function review_contract($connect, $type, $id){
 			$max_date_v = $date_v;
 		}
 		$table.= "<tr>";
-		$table.= "<td style='width: 480px;' valign='middle'>".$room." ".$note."</td>";
+		if($reck_type == 1)
+		    $table.= "<td style='width: 480px;' valign='middle'>Сертификат ".$note."</td>";
+		else
+          $table.= "<td style='width: 480px;' valign='middle'>".$room." ".$note."</td>";
+
 		$table.= "<td style='width: 100px;' align='center' valign='middle'>".$number."</td>";
-		$table.= "<td style='width: 120px;' align='center' valign='middle'>".$date_z."</td>";
-		$table.= "<td style='width: 120px;' align='center' valign='middle'>".$date_v."</td>";
+        if($reck_type == 1) {
+          $table.= "<td style='width: 120px;' align='center' valign='middle'>".$pos_sum."</td>";
+          $table.= "<td style='width: 120px;' align='center' valign='middle'>".($pos_sum*$number)."</td>";
+        }
+        else {
+          $table.= "<td style='width: 120px;' align='center' valign='middle'>".$date_z."</td>";
+          $table.= "<td style='width: 120px;' align='center' valign='middle'>".$date_v."</td>";
+        }
 		$table.= "</tr>";
 	}
 	$img = $_COOKIE['img'];
@@ -178,7 +190,7 @@ function review_contract($connect, $type, $id){
 	ob_start();
 ?>
 	<div class="border">
-	<p class="head" style="font-size: 14pt;">Договор № <?php echo $id; ?><br />реализации санаторно-курортной путёвки</p>
+	<p class="head" style="font-size: 14pt;">Договор № <?php echo $id; ?><br /><?php if($reck_type == 0) { ?>реализации санаторно-курортной путёвки<?php } else { ?>реализации туристического продукта<?php } ?></p>
 	<table style="font-weight: bold;">
 	<tr>
 		<td style="width: 550px;">г. <?php echo $city_office; ?></td>
@@ -202,10 +214,15 @@ function review_contract($connect, $type, $id){
 
 	<table border="1" cellspacing="0" cellpadding="5">
 	<tr>
-		<th align="center">Номер</th>
+		<th align="center"><?php if($reck_type == 0) {?>Номер<?php } else {?>Наименование<?php }?></th>
 		<th align="center">Кол-во</th>
-		<th align="center">Заезд</th>
-		<th align="center">Выезд</th>
+        <?php if($reck_type == 0) {?>
+            <th align="center">Заезд</th>
+		    <th align="center">Выезд</th>
+        <?php } else { ?>
+            <th align="center">Цена</th>
+            <th align="center">Сумма</th>
+        <?php }?>
 	</tr>
 	<?php echo $table; ?>
 	</table><br />
