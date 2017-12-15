@@ -257,6 +257,8 @@ function naimenovanie($id_obj, $room = "", $date_z = "", $date_v = "", $days = "
 		$html = "Путевка в СП \"Сосновый бор\" ".$room." ".$date_z."-".$date_v;
 	elseif($id_obj == 673)
 		$html = "Санаторий «Сибирь» (Белокуриха) ".$room." ".$date_z."-".$date_v;
+    elseif($id_obj == 545)
+      $html = "Санаторий-профилакторий «Бодрость» ".$room." ".$date_z."-".$date_v;
 	return $html;
 }
 
@@ -299,7 +301,9 @@ function full_name($id_obj){
 	elseif($id_obj == 497)
 		$html = "ОАО \"БАШНЕФТЬ-СЕРВИС\"";
 	elseif($id_obj == 673)
-		$html = "Санаторий «Сибирь» (Россия, Алтайский край, Белокуриха) ";
+		$html = "Санаторий «Сибирь» (Россия, Алтайский край, Белокуриха)";
+    elseif($id_obj == 545)
+        $html = "Санаторий-профилакторий «Бодрость»";
 	return $html;
 }
 
