@@ -309,7 +309,7 @@ function save_schet($connect){
 
 function edit_schet($connect){
 	$id = $_POST["id"];
-	$data = $connect->getRow("SELECT date, number_turist, id_obj, agency, id_com, id_dis, note, status_san, date_schet_san, schet_san FROM reckoning WHERE id=?i", $id);
+	$data = $connect->getRow("SELECT type, date, number_turist, id_obj, agency, id_com, id_dis, note, status_san, date_schet_san, schet_san FROM reckoning WHERE id=?i", $id);
 	$arr = array();
 	ob_start();
 ?>
@@ -322,59 +322,62 @@ function edit_schet($connect){
 			</div>
 			<div class="modal-body">
 				<div class="form-horizontal edit-reck">
-					<div class="form-group">
-						<label class="col-sm-4 control-label"><span class="span_link" onclick="$('.change-object').toggle(); $('.tour-operator-html').hide();">Изменить объект</span></label>
-					</div>
-					<div class="form-group change-object" style="display: none;">
-						<label class="col-sm-4 control-label">Объект</label>
-						<div class="col-sm-8" id="object_name" name="edit-reck">
-							<input type="text" class="form-control" id="object" onkeyup="find_klient(event, 'object', 'object', 'use_object')">
-						</div>
-					</div>
-					<div class="form-group tour-operator-html" style="display: none;">
-						<label class="col-sm-4 control-label">Туроператор</label>
-						<div class="col-sm-8 html">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-sm-4 control-label">Кол-во туристов</label>
-						<div class="col-sm-8">
-							<input type="text" class="form-control" id="number_turist" value="<?php echo $data['number_turist']; ?>" onkeypress="validate_input()" maxlength="4">
-						</div>
-					</div>
-				<?php
-					if($data["agency"]){
-				?>
-					<div class="form-group">
-						<label class="col-sm-4 control-label">Комиссия</label>
-						<div class="col-sm-8">
-							<?php echo get_select_commis($connect, $data["id_com"]); ?>
-						</div>
-					</div>
-				<?php
-					}else{
-				?>
-					<div class="form-group">
-						<label class="col-sm-4 control-label">Скидка</label>
-						<div class="col-sm-8">
-							<?php echo get_select_discount($connect, $data["id_dis"]); ?>
-						</div>
-					</div>
-				<?php
-					}
-				?>
-					<div class="form-group">
-						<label class="col-sm-4 control-label">№ счета санатория</label>
-						<div class="col-sm-8">
-							<input type="text" class="form-control" id="schet_san" value="<?php echo $data['schet_san']; ?>">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-sm-4 control-label">Дата счета санатория</label>
-						<div class="col-sm-8">
-							<input type="text" class="form-control datepicker" id="date_schet_san" value="<?php echo $data['date_schet_san']; ?>">
-						</div>
-					</div>
+                    <input type="hidden" value="<?=$data['type'];?>" id="reck_type">
+                    <?php if($data['type'] == 0) { ?>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"><span class="span_link" onclick="$('.change-object').toggle(); $('.tour-operator-html').hide();">Изменить объект</span></label>
+                    </div>
+                    <div class="form-group change-object" style="display: none;">
+                        <label class="col-sm-4 control-label">Объект</label>
+                        <div class="col-sm-8" id="object_name" name="edit-reck">
+                            <input type="text" class="form-control" id="object" onkeyup="find_klient(event, 'object', 'object', 'use_object')">
+                        </div>
+                    </div>
+                    <div class="form-group tour-operator-html" style="display: none;">
+                        <label class="col-sm-4 control-label">Туроператор</label>
+                        <div class="col-sm-8 html">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Кол-во туристов</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="number_turist" value="<?php echo $data['number_turist']; ?>" onkeypress="validate_input()" maxlength="4">
+                        </div>
+                    </div>
+                  <?php
+                  if($data["agency"]){
+                    ?>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Комиссия</label>
+                          <div class="col-sm-8">
+                            <?php echo get_select_commis($connect, $data["id_com"]); ?>
+                          </div>
+                      </div>
+                    <?php
+                  }else{
+                    ?>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Скидка</label>
+                          <div class="col-sm-8">
+                            <?php echo get_select_discount($connect, $data["id_dis"]); ?>
+                          </div>
+                      </div>
+                    <?php
+                  }
+                  ?>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">№ счета санатория</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="schet_san" value="<?php echo $data['schet_san']; ?>">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Дата счета санатория</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control datepicker" id="date_schet_san" value="<?php echo $data['date_schet_san']; ?>">
+                        </div>
+                    </div>
+                    <?php } ?>
 					<div class="form-group form-group-margin">
 						<label class="col-sm-4 control-label" id="label_number">Примечание</label>
 						<div class="col-sm-8">
@@ -396,68 +399,75 @@ function edit_schet($connect){
 
 function update_schet($connect){
 	$note = "";
-	$reward = "";
-	$id_dis = "";
-	$id = $_POST["id"];
-	$check = $_POST["check"];
-	$id_com = $_POST["id_com"];
+    $note_schet = str_replace("plus", "+", $_POST["note"]);
+    $reck_type = $_POST["reck_type"];
+    $id = $_POST["id"];
 
-	$number_turist = $_POST["number_turist"];
-	$note_schet = str_replace("plus", "+", $_POST["note"]);
-	$id_obj = $_POST["id_obj"];
-	$id_tour = $_POST["id_tour"];
-	$schet_san = $_POST["schet_san"];
-	$date_schet_san = $_POST["date_schet_san"];
-	if(isset($_POST["reward"]))
-		$reward = $_POST["reward"];
-	if(isset($_POST["id_dis"]))
-		$id_dis = $_POST["id_dis"];
-	$row = $connect->getRow("SELECT turist, agency, status, status_san, number_turist, id_obj, id_com, id_dis, date_schet_san, schet_san FROM reckoning WHERE id=?i", $id);
-	if($row["number_turist"] != $number_turist)
-		$note.= " Отдыхающих (старое - ".$row["number_turist"].");";
-	if(($row["id_com"] != $id_com) AND ($id_com)){
-		$value = $connect->getOne("SELECT value FROM commission WHERE id=?i", $row["id_com"]);
-		$note.= " Комиссия (старое - ".$value."%);";
-	}
-	if(($row["date_schet_san"] != $date_schet_san AND $date_schet_san != "") OR ($row["schet_san"] != $schet_san))
-		$note.= " Счет санатория (старый - ".$row["schet_san"]." от ".date_change($row["date_schet_san"]).");";
-	if($note){
-		$note = "Изменен. ".$note;
-		save_schet_to_history($connect, $id, $note);
-	}
-	$obj = $row["id_obj"];
-	if($check == "1" AND ($obj != $id_obj)){
-		$note = "Изменен объект. Старый - ".get_object($connect, $obj).";";
-		changes_reckoning_cabinet($connect, $id, "object");
-		save_schet_to_history($connect, $id, $note);
-		$connect->query("UPDATE reckoning SET id_obj=?i, id_tour=?s WHERE id=?i", $id_obj, $id_tour, $id);
-		$connect->query("DELETE FROM position_reck WHERE schet=?i", $id);
-		if($connect->getOne("SELECT klient.login FROM reckoning, klient WHERE reckoning.id=?i AND reckoning.turist=klient.id", $id))
-			send_mail_client_changes($connect, $id);
-		elseif($connect->getOne("SELECT agency FROM reckoning WHERE id=?i", $id))
-			send_mail_agency_changes($connect, $id);
-	}elseif($check == "1")
-		$connect->query("UPDATE reckoning SET id_tour=?s WHERE id=?i", $id_tour, $id);
-	if(($row["id_com"] != $id_com) AND ($id_com != ""))
-		$connect->query("UPDATE reckoning SET id_com=?i WHERE id=?i", $id_com, $id);
-	$dis = $row["id_dis"];
-	if($dis == 0)
-		$dis = "";
-	if(($row["turist"]) AND ($id_dis != $dis)){
-		if($dis){
-			$row = $connect->getRow("SELECT value, type FROM discount WHERE id=?i", $dis);
-			if($row["type"] == 1)
-				$type_dis = "%";
-			else
-				$type_dis = " руб.";
-			$discount = $row["value"].$type_dis;
-		}else
-			$discount = "Без скидки";
-		$connect->query("UPDATE reckoning SET id_dis=?s WHERE id=?i", $id_dis, $id);
-		save_schet_to_history($connect, $id, "Изменена скидка. Старый - ".$discount);
-	}
-	$connect->query("UPDATE reckoning SET number_turist=?i, note=?s, schet_san=?s, date_schet_san=?s WHERE id=?i", $number_turist, $note_schet, $schet_san, $date_schet_san, $id);
-	recalculation_sum($connect, $id);
+    if($reck_type == 0) {
+      $reward = "";
+      $id_dis = "";
+      $check = $_POST["check"];
+      $id_com = $_POST["id_com"];
+
+      $number_turist = $_POST["number_turist"];
+      $id_obj = $_POST["id_obj"];
+      $id_tour = $_POST["id_tour"];
+      $schet_san = $_POST["schet_san"];
+      $date_schet_san = $_POST["date_schet_san"];
+      if(isset($_POST["reward"]))
+        $reward = $_POST["reward"];
+      if(isset($_POST["id_dis"]))
+        $id_dis = $_POST["id_dis"];
+      $row = $connect->getRow("SELECT turist, agency, status, status_san, number_turist, id_obj, id_com, id_dis, date_schet_san, schet_san FROM reckoning WHERE id=?i", $id);
+      if($row["number_turist"] != $number_turist)
+        $note.= " Отдыхающих (старое - ".$row["number_turist"].");";
+      if(($row["id_com"] != $id_com) AND ($id_com)){
+        $value = $connect->getOne("SELECT value FROM commission WHERE id=?i", $row["id_com"]);
+        $note.= " Комиссия (старое - ".$value."%);";
+      }
+      if(($row["date_schet_san"] != $date_schet_san AND $date_schet_san != "") OR ($row["schet_san"] != $schet_san))
+        $note.= " Счет санатория (старый - ".$row["schet_san"]." от ".date_change($row["date_schet_san"]).");";
+      if($note){
+        $note = "Изменен. ".$note;
+        save_schet_to_history($connect, $id, $note);
+      }
+      $obj = $row["id_obj"];
+      if($check == "1" AND ($obj != $id_obj)){
+        $note = "Изменен объект. Старый - ".get_object($connect, $obj).";";
+        changes_reckoning_cabinet($connect, $id, "object");
+        save_schet_to_history($connect, $id, $note);
+        $connect->query("UPDATE reckoning SET id_obj=?i, id_tour=?s WHERE id=?i", $id_obj, $id_tour, $id);
+        $connect->query("DELETE FROM position_reck WHERE schet=?i", $id);
+        if($connect->getOne("SELECT klient.login FROM reckoning, klient WHERE reckoning.id=?i AND reckoning.turist=klient.id", $id))
+          send_mail_client_changes($connect, $id);
+        elseif($connect->getOne("SELECT agency FROM reckoning WHERE id=?i", $id))
+          send_mail_agency_changes($connect, $id);
+      }elseif($check == "1")
+        $connect->query("UPDATE reckoning SET id_tour=?s WHERE id=?i", $id_tour, $id);
+      if(($row["id_com"] != $id_com) AND ($id_com != ""))
+        $connect->query("UPDATE reckoning SET id_com=?i WHERE id=?i", $id_com, $id);
+      $dis = $row["id_dis"];
+      if($dis == 0)
+        $dis = "";
+      if(($row["turist"]) AND ($id_dis != $dis)){
+        if($dis){
+          $row = $connect->getRow("SELECT value, type FROM discount WHERE id=?i", $dis);
+          if($row["type"] == 1)
+            $type_dis = "%";
+          else
+            $type_dis = " руб.";
+          $discount = $row["value"].$type_dis;
+        }else
+          $discount = "Без скидки";
+        $connect->query("UPDATE reckoning SET id_dis=?s WHERE id=?i", $id_dis, $id);
+        save_schet_to_history($connect, $id, "Изменена скидка. Старый - ".$discount);
+      }
+      $connect->query("UPDATE reckoning SET number_turist=?i, note=?s, schet_san=?s, date_schet_san=?s WHERE id=?i", $number_turist, $note_schet, $schet_san, $date_schet_san, $id);
+      recalculation_sum($connect, $id);
+    }
+    else {
+      $connect->query("UPDATE reckoning SET note=?s WHERE id=?i", $note_schet, $id);
+    }
 }
 
 function add_new_position($connect){
@@ -647,7 +657,8 @@ function edit_position($connect){
 	$reck = $data["schet"];
 	$id_room = $data["id_room"];
 	$reward = $data["reward"];
-	$id_obj = $connect->getOne("SELECT id_obj FROM reckoning WHERE id=?i", $reck);
+    $obj_row = $connect->getRow("SELECT id_obj, type FROM reckoning WHERE id=?i", $reck);
+	$id_obj = $obj_row['id_obj'];
 	$type_add_one_day = $connect->getOne("SELECT add_one_day FROM object WHERE id=?i", $id_obj);
 	$select_room = "";
 	if($id_room == 0 AND $data["id_service"])
@@ -691,19 +702,23 @@ function edit_position($connect){
 			<div class="modal-body">
 				<div class="form-horizontal edit-position">
 					<div class="row">
-						<div class="col-sm-6">
+						<div class="col-sm-<?php if($obj_row['type'] == 0) { ?>6<?php } else {?>12<?php } ?>">
+                            <input type="hidden" value="<?=$obj_row['type'];?>" id="reck_type">
+                            <?php if($obj_row['type'] == 0) { ?>
 							<div class="form-group">
 								<label class="col-sm-4 control-label">Номер</label>
 								<div class="col-sm-8">
 									<?php echo $select_room; ?>
 								</div>
 							</div>
+                            <?php } ?>
 							<div class="form-group">
 								<label class="col-sm-4 control-label">Цена</label>
 								<div class="col-sm-8">
 									<input type="text" class="form-control" id="sum" value="<?php echo $data['sum']; ?>" onKeyPress="validate_sum()">
 								</div>
 							</div>
+                            <?php if($obj_row['type'] == 0) { ?>
 							<div class="form-group">
 								<label class="col-sm-4 control-label">Вознаграждение</label>
 								<div class="col-sm-8">
@@ -742,6 +757,7 @@ function edit_position($connect){
 									</select>
 								</div>
 							</div>
+                            <?php } ?>
 							<div class="form-group">
 								<label class="col-sm-4 control-label" id="label_number">Кол-во</label>
 								<div class="col-sm-8">
@@ -755,6 +771,7 @@ function edit_position($connect){
 								</div>
 							</div>
 						</div>
+                        <?php if($obj_row['type'] == 0) { ?>
 						<div class="col-sm-6">
 							<div class="form-group form-group-margin">
 								<label class="col-sm-4 control-label">В стоимость входит</label>
@@ -763,6 +780,7 @@ function edit_position($connect){
 								</div>
 							</div>
 						</div>
+                        <?php } ?>
 					</div>
 				</div>
 			</div>
@@ -780,85 +798,124 @@ function edit_position($connect){
 function update_position($connect){
 	$array_type = array(1 => "за чел/сутки", 2 => "за номер", 3 => "за заезд");
 	$id = $_POST["id"];
-	$id_room = $_POST["id_room"];
-	$days = $_POST["days"];
-	$date_z = $_POST["date_z"];
-	$sum = $_POST["sum"];
-	$reward = $_POST["reward"];
-	$number= $_POST["number"];
-	$note = str_replace("plus", "+", $_POST["note"]);
-	$type = $_POST["type"];
-	$add_one_day = $_POST["add_one_day"];
+    $number= $_POST["number"];
+    $sum = $_POST["sum"];
+    $note = str_replace("plus", "+", $_POST["note"]);
+    $reck_type = $_POST["reck_type"];
 
-	$note_history = "";
-	$row = $connect->getRow("SELECT id_room, sum, number, note, type, days, reward, schet, date_z FROM position_reck WHERE id=?i", $id);
-	$schet = $row["schet"];
+    if($reck_type == 0) {
+      $id_room = $_POST["id_room"];
+      $days = $_POST["days"];
+      $date_z = $_POST["date_z"];
 
-	$services = $_POST["services"];
+      $reward = $_POST["reward"];
+      $type = $_POST["type"];
+      $add_one_day = $_POST["add_one_day"];
 
-	if(count($services)) {
-		$connect->query("UPDATE reckoning SET id_services=?s WHERE id=?i", implode("_", json_decode($services)), $schet);
-	}
+      $note_history = "";
+      $row = $connect->getRow("SELECT id_room, sum, number, note, type, days, reward, schet, date_z FROM position_reck WHERE id=?i", $id);
+      $schet = $row["schet"];
 
-	$status = $connect->getOne("SELECT status FROM reckoning WHERE id=?i", $schet);
-	$change_cabinet = 0;
-	$change_quota = 0;
-	if($row["id_room"] != $id_room){
-		$note_history.= " Номер: (старое - ".$connect->getOne("SELECT name FROM room WHERE id=?i", $row["id_room"]).");";
-		changes_reckoning_cabinet($connect, $schet, "position", $id, "room");
-		$change_cabinet = 1;
-	}
-	if($row["sum"] != $sum){
-		$note_history.= " Цена: (старое - ".$row["sum"].");";
-		changes_reckoning_cabinet($connect, $schet, "position", $id, "sum");
-		$change_cabinet = 1;
-	}
-	if($row["days"] != $days){
-		$note_history.= " Дней: (старое - ".$row["days"].");";
-		changes_reckoning_cabinet($connect, $schet, "position", $id, "days");
-		$change_cabinet = 1;
-		$change_quota = 1;
-	}
-	if($row["number"] != $number){
-		$note_history.= " Кол-во: (старое - ".$row["number"].");";
-		changes_reckoning_cabinet($connect, $schet, "position", $id, "number");
-		$change_cabinet = 1;
-	}
-	if($row["note"] != $note){
-		$note_history.= " Прим.: (старое - ".$row["note"].");";
-		changes_reckoning_cabinet($connect, $connect, $schet, "position", $id, "note");
-		$change_cabinet = 1;
-	}
-	if($row["reward"] != $reward)
-		$note_history.= " Вознаграждение: (старое - ".$row["reward"]."%);";
-	if($row["type"] != $type){
-		$note_history.= " Тип: (старое - ".$array_type[$row["type"]].");";
-		changes_reckoning_cabinet($connect, $schet, "position", $id, "type");
-		$change_cabinet = 1;
-	}
-	if($row["date_z"] != $date_z){
-		changes_reckoning_cabinet($connect, $schet, "position", $id, "date_z");
-		$change_cabinet = 1;
-		$change_quota = 1;
-	}
-	if($note_history){
-		$note_history = "Изменен. ".$note_history;
-		save_schet_to_history($connect, $schet, $note_history);
-	}
-	$connect->query("UPDATE position_reck SET id_room=?s, sum=?s, number=?i, note=?s, type=?i, days=?i, date_z=?s, add_one_day=?s, reward=?s WHERE id=?i", $id_room, $sum, $number, $note, $type, $days, $date_z, $add_one_day, $reward, $id);
-	if($change_cabinet == 1){
-		if($connect->getOne("SELECT klient.login FROM reckoning, klient WHERE reckoning.id=?i AND reckoning.turist=klient.id", $schet))
-			send_mail_client_changes($connect, $schet);
-		elseif($connect->getOne("SELECT agency FROM reckoning WHERE id=?i", $schet))
-			send_mail_agency_changes($connect, $schet);
-	}
-	if($change_quota == 1){
-		check_status_booking_quota($connect, $schet, $id);
-	}
-	recalculation_sum($connect, $schet);
-	change_arrival_date($connect, $schet);
-	if($change_cabinet == 1 AND $status == 3)
-		return "check";
+      $services = $_POST["services"];
+
+      if(count($services)) {
+        $connect->query("UPDATE reckoning SET id_services=?s WHERE id=?i", implode("_", json_decode($services)), $schet);
+      }
+
+      $status = $connect->getOne("SELECT status FROM reckoning WHERE id=?i", $schet);
+      $change_cabinet = 0;
+      $change_quota = 0;
+      if($row["id_room"] != $id_room){
+        $note_history.= " Номер: (старое - ".$connect->getOne("SELECT name FROM room WHERE id=?i", $row["id_room"]).");";
+        changes_reckoning_cabinet($connect, $schet, "position", $id, "room");
+        $change_cabinet = 1;
+      }
+      if($row["sum"] != $sum){
+        $note_history.= " Цена: (старое - ".$row["sum"].");";
+        changes_reckoning_cabinet($connect, $schet, "position", $id, "sum");
+        $change_cabinet = 1;
+      }
+      if($row["days"] != $days){
+        $note_history.= " Дней: (старое - ".$row["days"].");";
+        changes_reckoning_cabinet($connect, $schet, "position", $id, "days");
+        $change_cabinet = 1;
+        $change_quota = 1;
+      }
+      if($row["number"] != $number){
+        $note_history.= " Кол-во: (старое - ".$row["number"].");";
+        changes_reckoning_cabinet($connect, $schet, "position", $id, "number");
+        $change_cabinet = 1;
+      }
+      if($row["note"] != $note){
+        $note_history.= " Прим.: (старое - ".$row["note"].");";
+        changes_reckoning_cabinet($connect, $connect, $schet, "position", $id, "note");
+        $change_cabinet = 1;
+      }
+      if($row["reward"] != $reward)
+        $note_history.= " Вознаграждение: (старое - ".$row["reward"]."%);";
+      if($row["type"] != $type){
+        $note_history.= " Тип: (старое - ".$array_type[$row["type"]].");";
+        changes_reckoning_cabinet($connect, $schet, "position", $id, "type");
+        $change_cabinet = 1;
+      }
+      if($row["date_z"] != $date_z){
+        changes_reckoning_cabinet($connect, $schet, "position", $id, "date_z");
+        $change_cabinet = 1;
+        $change_quota = 1;
+      }
+      if($note_history){
+        $note_history = "Изменен. ".$note_history;
+        save_schet_to_history($connect, $schet, $note_history);
+      }
+      $connect->query("UPDATE position_reck SET id_room=?s, sum=?s, number=?i, note=?s, type=?i, days=?i, date_z=?s, add_one_day=?s, reward=?s WHERE id=?i", $id_room, $sum, $number, $note, $type, $days, $date_z, $add_one_day, $reward, $id);
+      if($change_cabinet == 1){
+        if($connect->getOne("SELECT klient.login FROM reckoning, klient WHERE reckoning.id=?i AND reckoning.turist=klient.id", $schet))
+          send_mail_client_changes($connect, $schet);
+        elseif($connect->getOne("SELECT agency FROM reckoning WHERE id=?i", $schet))
+          send_mail_agency_changes($connect, $schet);
+      }
+      if($change_quota == 1){
+        check_status_booking_quota($connect, $schet, $id);
+      }
+      recalculation_sum($connect, $schet);
+      change_arrival_date($connect, $schet);
+      if($change_cabinet == 1 AND $status == 3)
+        return "check";
+    }
+    else {
+      $note_history = "";
+      $row = $connect->getRow("SELECT id_room, sum, number, note, type, days, reward, schet, date_z FROM position_reck WHERE id=?i", $id);
+      $schet = $row["schet"];
+      $status = $connect->getOne("SELECT status FROM reckoning WHERE id=?i", $schet);
+      if($row["sum"] != $sum){
+        $note_history.= " Цена: (старое - ".$row["sum"].");";
+        changes_reckoning_cabinet($connect, $schet, "position", $id, "sum");
+        $change_cabinet = 1;
+      }
+      if($row["number"] != $number){
+        $note_history.= " Кол-во: (старое - ".$row["number"].");";
+        changes_reckoning_cabinet($connect, $schet, "position", $id, "number");
+        $change_cabinet = 1;
+      }
+      if($row["note"] != $note){
+        $note_history.= " Прим.: (старое - ".$row["note"].");";
+        changes_reckoning_cabinet($connect, $connect, $schet, "position", $id, "note");
+        $change_cabinet = 1;
+      }
+      if($note_history){
+        $note_history = "Изменен. ".$note_history;
+        save_schet_to_history($connect, $schet, $note_history);
+      }
+
+      $connect->query("UPDATE position_reck SET sum=?s, number=?i, note=?s WHERE id=?i", $sum, $number, $note,$id);
+      if($change_cabinet == 1){
+        if($connect->getOne("SELECT klient.login FROM reckoning, klient WHERE reckoning.id=?i AND reckoning.turist=klient.id", $schet))
+          send_mail_client_changes($connect, $schet);
+      }
+      recalculation_sum($connect, $schet);
+      if($change_cabinet == 1 AND $status == 3)
+        return "check";
+    }
 }
 
 function show_form_reset_status_bid($connect){
@@ -1645,28 +1702,47 @@ function show_schet_klient($connect){
 		elseif($type_price == 3)
 			$type_price = "За заезд";
 		$table.= "<tr>";
-		$class = get_class_change($changes, "position", $id_pos, 'room');
-		$table.= "<td width='200' ".$class.">".$room."</td>";
+
+		if($reck_type == 0) {
+          $class = get_class_change($changes, "position", $id_pos, 'room');
+          $table .= "<td width='200' " . $class . ">" . $room . "</td>";
+        }
+
 		$class = get_class_change($changes, 'position', $id_pos, 'number');
 		$table.= "<td width='15' style='text-align: center;' ".$class.">".$number."</td>";
-		$class = get_class_change($changes, 'position', $id_pos, 'date_z');
-		$table.= "<td width='70' ".$class.">".str_replace("-", ".", $zaezd)."</td>";
-		$class = get_class_change($changes, 'position', $id_pos, 'days');
-		$table.= "<td width='40' style='text-align: center;' ".$class.">".$days."</td>";
-		$class = get_class_change($changes, 'position', $id_pos, 'reward');
+        if($reck_type == 0) {
+          $class = get_class_change($changes, 'position', $id_pos, 'date_z');
+          $table .= "<td width='70' " . $class . ">" . str_replace("-", ".", $zaezd) . "</td>";
+          $class = get_class_change($changes, 'position', $id_pos, 'days');
+          $table .= "<td width='40' style='text-align: center;' " . $class . ">" . $days . "</td>";
+        }
+        $class = get_class_change($changes, 'position', $id_pos, 'reward');
 		$table.= "<td width='70' style='text-align: center;' ".$class.">".$reward."% (".get_reward_schet_position($connect, $id_pos).")</td>";
-		$table.= "<td width='40' style='text-align: center;'>".$add_one_day."</td>";
-		$class = get_class_change($changes, 'position', $id_pos, 'sum');
-		$table.= "<td width='50' ".$class.">".$sum."</td>";
-		$class = get_class_change($changes, 'position', $id_pos, 'type');
-		$table.= "<td width='100' ".$class.">".$type_price."</td>";
+
+		if($reck_type == 0) {
+            $table .= "<td width='40' style='text-align: center;'>" . $add_one_day . "</td>";
+        }
+
+        $class = get_class_change($changes, 'position', $id_pos, 'sum');
+		$table.= "<td width='50' ".$class." style='text-align:center;'>".$sum."</td>";
+
+          if($reck_type == 0) {
+            $class = get_class_change($changes, 'position', $id_pos, 'type');
+            $table .= "<td width='100' " . $class . ">" . $type_price . "</td>";
+          }
 		$class = get_class_change($changes, 'position', $id_pos, 'note');
 		$table.= "<td width='100' ".$class.">".$note."</td>";
 		$table.= "<td width='80'>".$button."</td>";
 		$table.= "</tr>";
 	}
-	if($table)
-		$table_room = "<table class='table table-condensed'><tr><th>Номер</th><th>N</th><th>Заезд</th><th>Дней</th><th>Воз-ие</th><th></th><th>Цена</th><th>Тип</th><th>Примечание</th><th></th></tr>".$table."</table>";
+	if($table) {
+      if($reck_type == 0) {
+        $table_room = "<table class='table table-condensed'><tr class='text-center'><th>Номер</th><th>N</th><th>Заезд</th><th>Дней</th><th>Воз-ие</th><th></th><th>Цена</th><th>Тип</th><th>Примечание</th><th></th></tr>" . $table . "</table>";
+      }
+      else {
+        $table_room = "<table class='table table-condensed'><tr class='text-center'><th>N</th><th>Воз-ие</th><th>Цена</th><th>Примечание</th><th></th></tr>" . $table . "</table>";
+      }
+    }
 	$table = "";
 	$rest = explode(",", $rest);
 	foreach($rest as $tur){

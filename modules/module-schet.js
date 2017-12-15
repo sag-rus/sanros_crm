@@ -150,16 +150,31 @@ function save_new_position(id){
 		show_warning('.new-position', 'Не верно введено поле: Цена', false);
 	else if(isNaN(number) || (number == ''))
 		show_warning('.new-position', 'Не верно введено поле: Кол-во', false);
-
-	if(reck_type === 0) {
-    if(days == '')
-      show_warning('.new-position', 'Не введено поле: Дней', false);
-    else if(date_z == '')
-      show_warning('.new-position', 'Не введено поле: Заезд', false);
-    else if(!check_true_dates(date_z))
-      show_warning('.new-position', 'Дата заезда введена неправильно', false);
-    else{
-      str = 'func=save_new_position&id=' + id + '&services=' + JSON.stringify(services) + '&id_room=' + room + '&sum=' + sum + '&number=' + number + '&note=' + note + '&type=' + type + '&days=' + days + '&date_z=' + date_z + '&add_one_day=' + add_one_day + '&reward=' + reward+'&reck_type='+reck_type;
+	else {
+    if(reck_type === 0) {
+      if(days == '')
+        show_warning('.new-position', 'Не введено поле: Дней', false);
+      else if(date_z == '')
+        show_warning('.new-position', 'Не введено поле: Заезд', false);
+      else if(!check_true_dates(date_z))
+        show_warning('.new-position', 'Дата заезда введена неправильно', false);
+      else{
+        str = 'func=save_new_position&id=' + id + '&services=' + JSON.stringify(services) + '&id_room=' + room + '&sum=' + sum + '&number=' + number + '&note=' + note + '&type=' + type + '&days=' + days + '&date_z=' + date_z + '&add_one_day=' + add_one_day + '&reward=' + reward+'&reck_type='+reck_type;
+        $.ajax({
+          url: 'mysql.php',
+          type: 'POST',
+          data: str,
+          success: function(){
+            remove_all_windows();
+            view_schet(id);
+            show_alert('Позиция добавлена...');
+          }
+        });
+        $('.btn-update').button('loading');
+      }
+    }
+    else {
+      str = 'func=save_new_position&id=' + id + '&sum=' + sum + '&number=' + number + '&note=' + note+'&reck_type='+reck_type;
       $.ajax({
         url: 'mysql.php',
         type: 'POST',
@@ -172,20 +187,6 @@ function save_new_position(id){
       });
       $('.btn-update').button('loading');
     }
-	}
-	else {
-    str = 'func=save_new_position&id=' + id + '&sum=' + sum + '&number=' + number + '&note=' + note+'&reck_type='+reck_type;
-    $.ajax({
-      url: 'mysql.php',
-      type: 'POST',
-      data: str,
-      success: function(){
-        remove_all_windows();
-        view_schet(id);
-        show_alert('Позиция добавлена...');
-      }
-    });
-    $('.btn-update').button('loading');
 	}
 
 }
@@ -258,38 +259,59 @@ function change_object_schet(){
 }
 
 function update_schet(id){
-	var id_obj = '', id_tour = '', check_obj = 0, id_com = 0, id_dis;
-	if($('.id-object').length){
-		id_obj = $('.id-object').attr('name');
-		if($('.id-tour-operator').length)
-			id_tour = $('.id-tour-operator').val();
-		check_obj = 1;
+
+  var note = $('#note_schet').val();
+	var reck_type = parseInt($('#reck_type').val());
+
+	if(reck_type === 0) {
+    var id_obj = '', id_tour = '', check_obj = 0, id_com = 0, id_dis;
+    if($('.id-object').length){
+      id_obj = $('.id-object').attr('name');
+      if($('.id-tour-operator').length)
+        id_tour = $('.id-tour-operator').val();
+      check_obj = 1;
+    }
+    var number_turist = $('#number_turist').val();
+    var schet_san = $('#schet_san').val();
+    var date_schet_san = $('#date_schet_san').attr('date');
+    if($('#id_com').length)
+      id_com = $('#id_com').val();
+    else if($('#id_dis').length)
+      id_dis = $('#id_dis').val();
+    if($('.input-check-object').length && !id_obj)
+      show_warning('.edit-reck', 'Выберите объект', false);
+    else{
+      note = note.replace("+", "plus");
+      note = note.replace("+", "plus");
+      var str = 'func=update_schet&id=' + id + '&number_turist=' + number_turist + '&id_obj=' + id_obj + '&id_tour=' + id_tour + '&check=' + check_obj + '&id_com=' + id_com + '&note=' + note + '&id_dis=' + id_dis + '&schet_san=' + schet_san + '&date_schet_san=' + date_schet_san+"&reck_type="+reck_type;
+      $('.btn-update').button('loading');
+      $.ajax({
+        url: 'mysql.php',
+        type: 'POST',
+        data: str,
+        success: function(){
+          remove_all_windows();
+          view_schet(id);
+          show_alert('Заявка изменена...');
+        }
+      });
+    }
 	}
-	var number_turist = $('#number_turist').val();
-	var note = $('#note_schet').val();
-	var schet_san = $('#schet_san').val();
-	var date_schet_san = $('#date_schet_san').attr('date');
-	if($('#id_com').length)
-		id_com = $('#id_com').val();
-	else if($('#id_dis').length)
-		id_dis = $('#id_dis').val();
-	if($('.input-check-object').length && !id_obj)
-		show_warning('.edit-reck', 'Выберите объект', false);
-	else{
-		note = note.replace("+", "plus");
-		note = note.replace("+", "plus");
-		var str = 'func=update_schet&id=' + id + '&number_turist=' + number_turist + '&id_obj=' + id_obj + '&id_tour=' + id_tour + '&check=' + check_obj + '&id_com=' + id_com + '&note=' + note + '&id_dis=' + id_dis + '&schet_san=' + schet_san + '&date_schet_san=' + date_schet_san;
-		$('.btn-update').button('loading');
-		$.ajax({
-			url: 'mysql.php',
-			type: 'POST',
-			data: str,
-			success: function(){
-				remove_all_windows();
-				view_schet(id);
-				show_alert('Заявка изменена...');
-			}
-		});
+	else {
+    note = note.replace("+", "plus");
+    note = note.replace("+", "plus");
+    var str = 'func=update_schet&id=' + id +'&note=' + note+"&reck_type="+reck_type;
+    $('.btn-update').button('loading');
+    $.ajax({
+      url: 'mysql.php',
+      type: 'POST',
+      data: str,
+      success: function(){
+        remove_all_windows();
+        view_schet(id);
+        show_alert('Заявка изменена...');
+      }
+    });
 	}
 }
 
@@ -403,6 +425,7 @@ function update_position(id){
 	var number = $('#number').val();
 	var note = $('#note').val();
 	var type = $('#type').val();
+  var reck_type = parseInt($('#reck_type').val());
 	var add_one_day = $('#add_one_day input:checked').val();
 	var services = new Array();
 	$('.services:checkbox:checked').each(function () {
@@ -413,30 +436,53 @@ function update_position(id){
 		show_warning('.edit-position', 'Не верно введено поле: Цена', false);
 	else if(isNaN(number) || (number == ''))
 		show_warning('.edit-position', 'Не верно введено поле: Кол-во', false);
-	else if(days == '')
-		show_warning('.edit-position', 'Не введено поле: Дней', false);
-	else if(date_z == '')
-		show_warning('.edit-position', 'Не введено поле: Заезд', false);
-	else if(!check_true_dates(date_z))
-		show_warning('.edit-position', 'Дата заезда введена неправильно', false);
-	else{
-		note = note.replace("+", "plus");
-		note = note.replace("+", "plus");
-		note = note.replace("+", "plus");
-		var str = 'func=update_position&id=' + id + '&services=' + JSON.stringify(services) + '&id_room=' + room + '&sum=' + sum + '&number=' + number + '&note=' + note + '&type=' + type + '&days=' + days + '&date_z=' + date_z + '&add_one_day=' + add_one_day + '&reward=' + reward;
-		$('.btn-update').button('loading');
-		$.ajax({
-			url: 'mysql.php',
-			type: 'POST',
-			data: str,
-			success: function(answer){
-				remove_all_windows();
-				$('.reload-btn').trigger('click');
-				show_alert('Позиция изменена...');
-				if(answer == 'check')
-					show_form_reset_status_bid(id);
-			}
-		});
+	else {
+    if(reck_type === 0) {
+      if(days == '')
+        show_warning('.edit-position', 'Не введено поле: Дней', false);
+      else if(date_z == '')
+        show_warning('.edit-position', 'Не введено поле: Заезд', false);
+      else if(!check_true_dates(date_z))
+        show_warning('.edit-position', 'Дата заезда введена неправильно', false);
+      else{
+        note = note.replace("+", "plus");
+        note = note.replace("+", "plus");
+        note = note.replace("+", "plus");
+        var str = 'func=update_position&id=' + id + '&services=' + JSON.stringify(services) + '&id_room=' + room + '&sum=' + sum + '&number=' + number + '&note=' + note + '&type=' + type + '&days=' + days + '&date_z=' + date_z + '&add_one_day=' + add_one_day + '&reward=' + reward+"&reck_type="+reck_type;
+        $('.btn-update').button('loading');
+        $.ajax({
+          url: 'mysql.php',
+          type: 'POST',
+          data: str,
+          success: function(answer){
+            remove_all_windows();
+            $('.reload-btn').trigger('click');
+            show_alert('Позиция изменена...');
+            if(answer == 'check')
+              show_form_reset_status_bid(id);
+          }
+        });
+      }
+    }
+    else {
+      note = note.replace("+", "plus");
+      note = note.replace("+", "plus");
+      note = note.replace("+", "plus");
+      var str = 'func=update_position&id=' + id + '&sum=' + sum + '&number=' + number + '&note=' + note+"&reck_type="+reck_type;
+      $('.btn-update').button('loading');
+      $.ajax({
+        url: 'mysql.php',
+        type: 'POST',
+        data: str,
+        success: function(answer){
+          remove_all_windows();
+          $('.reload-btn').trigger('click');
+          show_alert('Позиция изменена...');
+          if(answer == 'check')
+            show_form_reset_status_bid(id);
+        }
+      });
+		}
 	}
 }
 
