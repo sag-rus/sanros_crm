@@ -48,6 +48,16 @@ class ProfkurortSync{
     return $data;
   }
 
+  public function get_prices_object($object, $date = NULL, $days) {
+    $server = new SoapClient($this->url);
+    if(is_null($date))
+      $data = $server->getPrices("profkurort", $this->date, $object, $days, $this->hash);
+    else
+      $data = $server->getPrices("profkurort", $date, $object, $days, $this->hash);
+    $data = json_decode($data, TRUE);
+    return $data;
+  }
+
   public function create_booking($object, $arrival, $leaving, $categs, $clidata, $suppdata){
     $server = new SoapClient($this->url);
     $data = $server->setOrder("profkurort", $this->date, 0, $object, $arrival, $leaving, "", $categs, $clidata, $suppdata, $this->hash);

@@ -94,12 +94,14 @@ function view_quota_object($connect, $data = array()){
 	if($status_quota == 3) {
       $result['room'] = [];
       $sync_rooms = [];
-      /*if(is_null($profkurort)) {
+      if(is_null($profkurort)) {
         $profkurort = new ProfkurortSync();
       }
-      $profk_results = $profkurort->get_quota_object($object_row['sync_id'],date("Y-m-d H:i"),14);
+      $profk_results = $profkurort->get_prices_object($object_row['sync_id'],NULL,1);
 
-      if(!isset($profk_results['ref'])) {
+      //print_r($profk_results);
+
+      /*if(!isset($profk_results['ref'])) {
         foreach ($profk_results as $profk_result) {
           if(isset($profk_result['quota']) && $profk_result['quota'] > 0) {
             $result["object"][$index]["have-places"] = 1;
