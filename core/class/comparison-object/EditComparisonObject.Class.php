@@ -60,6 +60,33 @@ class EditComparisonObject extends DisplayComparisonObject{
     $connect->query("UPDATE comparison_module_object SET update_info=1 WHERE object=?i", $object);
   }
 
+  public function remove_competitor($remove_competitors) {
+    $connect = $this->connect;
+    $object = $this->object;
+    $answer = [
+      "competitor",
+      "message" => "error-remove"
+    ];
+    if(!is_array($remove_competitors))
+      $remove_competitors = [$remove_competitors];
+
+    $comp = $connect->getOne("SELECT competitor FROM comparison_module_object WHERE object=?i", $object);
+    if($comp){
+      $competitors = json_decode($comp, TRUE);
+      foreach ($remove_competitors as $remove_competitor) {
+        if(isset($competitors[$remove_competitor])) {
+          $answer["message"] = "success-remove";
+          unset($competitors[$remove_competitor]);
+        }
+      }
+      $json = json_encode($competitors);
+      $answer["competitor"] = $json;
+      $connect->query("UPDATE comparison_module_object SET competitor=?s WHERE object=?i", $json, $object);
+    }
+
+    return $answer;
+  }
+
 }
 
 ?>

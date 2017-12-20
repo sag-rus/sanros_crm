@@ -509,6 +509,15 @@ function append_object_comparison_price($connect, $data){
 	}
 }
 
+function remove_object_comparison_price($connect, $data) {
+	if(CheckAuthObjectCabinet::check_authorization()){
+    $competitor = $data["competitor"];
+    $edit = new EditComparisonObject;
+    $return = $edit->remove_competitor($data["competitor"]);
+    return $return;
+	}
+}
+
 function set_default_room_comparison_price($connect, $data){
 	if(CheckAuthObjectCabinet::check_authorization()){
 		$update = array(

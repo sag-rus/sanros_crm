@@ -35,7 +35,8 @@ function select_objects_quota($connect){
               $profkurort = new ProfkurortSync();
             }
             $profk_results = $profkurort->get_quota_object($row['sync_id'],date("Y-m-d H:i"),1);
-            if(!isset($profk_results['ref'])) {
+            $profk_results2 = $profkurort->get_prices_object($row['sync_id'],NULL,1);
+            if(!isset($profk_results['ref']) && !isset($profk_results2['ref']) && count($profk_results2) > 0) {
                 foreach ($profk_results as $profk_result) {
                     if(isset($profk_result['quota']) && $profk_result['quota'] > 0) {
                       $result["object"][$index]["have-places"] = 1;
@@ -90,14 +91,16 @@ function view_quota_object($connect, $data = array()){
     $object_row = $connect->getRow("SELECT check_places, sync_id FROM object WHERE id=?i", $object);
 	$status_quota = $object_row['check_places'];
 	$result["type"] = $status_quota;
+    $result['is_profkurort'] = 0;
 
-	if($status_quota == 3) {
+    if($status_quota == 3) {
       $result['room'] = [];
+      $result['is_profkurort'] = 1;
       $sync_rooms = [];
       if(is_null($profkurort)) {
         $profkurort = new ProfkurortSync();
       }
-      $profk_results = $profkurort->get_prices_object($object_row['sync_id'],NULL,1);
+      $profk_results = $profkurort->get_prices_object($object_row['sync_id'],NULL,100);
 
       //print_r($profk_results);
 

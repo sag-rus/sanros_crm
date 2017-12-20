@@ -50,11 +50,13 @@ class ProfkurortSync{
 
   public function get_prices_object($object, $date = NULL, $days) {
     $server = new SoapClient($this->url);
+
     if(is_null($date))
       $data = $server->getPrices("profkurort", $this->date, $object, $days, $this->hash);
     else
       $data = $server->getPrices("profkurort", $date, $object, $days, $this->hash);
     $data = json_decode($data, TRUE);
+    print_r($data);
     return $data;
   }
 
