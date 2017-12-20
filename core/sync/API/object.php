@@ -513,7 +513,7 @@ function remove_object_comparison_price($connect, $data) {
 	if(CheckAuthObjectCabinet::check_authorization()){
     $competitor = $data["competitor"];
     $edit = new EditComparisonObject;
-    $return = $edit->remove_competitor($data["competitor"]);
+    $return = $edit->remove_competitors($data["competitor"]);
     return $return;
 	}
 }

@@ -60,7 +60,7 @@ class EditComparisonObject extends DisplayComparisonObject{
     $connect->query("UPDATE comparison_module_object SET update_info=1 WHERE object=?i", $object);
   }
 
-  public function remove_competitor($remove_competitors) {
+  public function remove_competitors($remove_competitors) {
     $connect = $this->connect;
     $object = $this->object;
     $answer = [
