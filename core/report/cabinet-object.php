@@ -1,4 +1,5 @@
 <?php
+$directory = dirname(__FILE__);
 
 function report_booking_module_cabinet($connect){
   $answer = array();
@@ -58,11 +59,12 @@ function report_comparison_object($connect){
       'update' => $row["update_info"],
       'class' => 0,
       "changed_status" => $row["changed_status"],
-      'contract_request' => 0
+      'contract_request' => ''
     ];
 
     if(!is_null($row['contract_request_info'])) {
-      $answer_row["contract_request"] = 1;
+      $contract_request = json_decode($row['contract_request_info'],true);
+      $answer_row["contract_request"] = '<a href="document.php?func=comparison_module_payment&object='.$row["object"].'&rate='.$contract_request['rate'].'&month='.$contract_request['month'].'" class="btn btn-info btn-sm" target="_blank">Запрос на оплату!</a>';
     }
 
     if($row["changed_status"] == 1) {

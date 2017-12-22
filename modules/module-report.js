@@ -1386,7 +1386,7 @@ function report_comparison_object(){
 				}
 				var payment_btn = '';
 				if(row['contract_request']) {
-					payment_btn = '<button class="btn btn-info btn-sm">Запрос на оплату!</button>';
+					payment_btn = row['contract_request'];
 				}
 				html+= '<div class="list-group-item list-group-item-' +bgColor+ changedStatus +'"><div class="form-group form-group-margin"><div class="col-sm-1">' +row['date']+ '</div><div class="col-sm-3">' +row['object']+ '</div><div class="col-sm-1">' +row['validity']+ '</div><div class="col-sm-2">' +row['rate']+ '</div><div class="col-sm-2"><button class="btn btn-default btn-sm" onclick="edit_comparison_object(' +row['object_id']+ ')"><i class="fa fa-pencil"></i></button> <button type="button" class="btn btn-' +btn_update+ ' btn-update-' +row['object_id']+ ' btn-sm" onclick="sync_comparison_object(' +row['object_id']+ ')"><i class="fa fa-check-circle"></i> Обновить</button></div><div class="col-sm-2">'+payment_btn+'</div></div></div>';
 			}
