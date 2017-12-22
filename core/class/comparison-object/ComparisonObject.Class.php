@@ -47,14 +47,16 @@ class ComparisonObject{
 		if(!$check){
 			$today = date("Y-m-d");
       $validity = date("Y-m-d", strToTime("+2 days"));
-			$connect->query("INSERT INTO comparison_module_object(object, date_create, validity_date) VALUES(?i, ?s, ?s)", $object, $today, $validity);
+      $rate = 0;
+			$connect->query("INSERT INTO comparison_module_object(object, date_create, validity_date, rate) VALUES(?i, ?s, ?s, ?i)", $object, $today, $validity, $rate);
+
 			$module = $connect->insertId();
 			$connect->query("UPDATE object SET status=2 WHERE id=?i", $object);
 			save_history_object("Создание модуля сравнения цен");
       $answer = array(
         "id" => $module,
         "validity" => $validity,
-        "rate" => 1
+        "rate" => $rate
       );
 			return $answer;
 		}
