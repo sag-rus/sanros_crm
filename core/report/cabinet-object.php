@@ -47,7 +47,7 @@ function report_comparison_object($connect){
   $comparison = new ComparisonObject;
   $rates = $comparison->select_rate();
   $time = time();
-  $data = $connect->getAll("SELECT id, update_info, changed_status, object, rate, DATE_FORMAT(validity_date, '%d.%m.%Y') as validity, rate, DATE_FORMAT(date_create, '%d.%m.%Y') as date, competitor FROM comparison_module_object ORDER BY changed_status DESC");
+  $data = $connect->getAll("SELECT id, contract_request_info, update_info, changed_status, object, rate, DATE_FORMAT(validity_date, '%d.%m.%Y') as validity, rate, DATE_FORMAT(date_create, '%d.%m.%Y') as date, competitor FROM comparison_module_object ORDER BY changed_status DESC, contract_request_info DESC");
   foreach($data as $row){
     $answer_row = [
       'object_id' => $row["object"],
@@ -57,8 +57,13 @@ function report_comparison_object($connect){
       'object' => get_object($connect, $row["object"], "type"),
       'update' => $row["update_info"],
       'class' => 0,
-      "changed_status" => $row["changed_status"]
+      "changed_status" => $row["changed_status"],
+      'contract_request' => 0
     ];
+
+    if(!is_null($row['contract_request_info'])) {
+      $answer_row["contract_request"] = 1;
+    }
 
     if($row["changed_status"] == 1) {
       $connect->query("UPDATE comparison_module_object SET changed_status=0 WHERE id=?i", $row['id']);

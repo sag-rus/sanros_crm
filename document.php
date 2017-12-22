@@ -133,7 +133,28 @@ if($function){
 		include_once($directory."/core/document/promo.php");
 		review_promo($connect, $region);
 
-	}else{
+	}
+	elseif ($function == "comparison_module_payment") {
+		$object =  $_GET["object"];
+    $rate = 1;
+    if(isset($_GET["rate"])){
+      $rate = $_GET["rate"];
+    }
+    $month = 1;
+    if(isset($_GET["month"])){
+      $month = $_GET["month"];
+    }
+
+    include_once($directory."/core/class/ConfigCRM.Class.php");
+    $config = ConfigCRM::getInstance();
+    $config->connect = $connect;
+    $config->directory = $directory;
+    include_once($directory."/core/class/information/CompanyInfo.Class.php");
+    include_once($directory."/core/class/comparison-object/ComparisonObject.class.php");
+    include_once($directory."/core/document/comparison_module_payment.php");
+    comparison_module_payment($connect,$object, $rate, $month);
+	}
+	else{
 		if(function_exists($function))
 			$function();
 	}
