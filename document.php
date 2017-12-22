@@ -147,7 +147,7 @@ if($function){
 
     include_once($directory."/core/class/ConfigCRM.Class.php");
     include_once($directory."/core/class/information/CompanyInfo.Class.php");
-    include_once($directory."/core/class/comparison-object/ComparisonObject.class.php");
+    include_once($directory."/core/class/comparison-object/ComparisonObject.Class.php");
     $config = ConfigCRM::getInstance();
     $config->connect = $connect;
     $config->directory = $directory;
