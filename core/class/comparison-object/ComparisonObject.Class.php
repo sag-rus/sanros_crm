@@ -5,6 +5,15 @@ class ComparisonObject{
   protected $connect;
   protected $object;
   private $rate = array(
+    0 => [
+      "name" => "Пробный",
+      "max" => 2,
+      "price" => [
+        1 => 0,
+        3 => 0,
+        6 => 0
+      ]
+    ],
     1 => array(
       "name" => "Начальный",
       "max" => 5,
