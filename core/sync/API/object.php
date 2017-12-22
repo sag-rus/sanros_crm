@@ -522,7 +522,8 @@ function object_comparison_contract_request($connect, $data) {
 	if(CheckAuthObjectCabinet::check_authorization()){
 		$info = [
 			'rate' => $data['rate'],
-			'month' => $data['duration']
+			'month' => $data['month'],
+      'date' => date("U")
 		];
     $edit = new EditComparisonObject;
     $edit->update([
@@ -573,6 +574,18 @@ function display_invoice_payment_comparison_price($connect, $data){
 		$array["product"]["price"] = $rate["price"];
 		$array["product"]["payer"] = get_object($connect, $data["object"], "full_and_place");
 		$array["product"]["bid"] = $data["object"];
+
+    $info = [
+      'rate' => $data['rate'],
+      'month' => $data['month'],
+			'date' => date("U")
+    ];
+    $edit = new EditComparisonObject;
+    $edit->update([
+      'changed_status' => 1,
+      'contract_request_info' => json_encode($info)
+    ]);
+
 		return $array;
 	}
 }
