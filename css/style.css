@@ -1577,3 +1577,19 @@ tr.text-center th ,
 tr.text-center td{
 	text-align: center;
 }
+
+span.badge.count-red,
+.btn-info .badge.count-red {
+	background: #FF5454;
+	color:#fff;
+	margin-left: 0.5em;
+}
+
+.changed-status-row,
+.list-group-item.changed-status-row {
+	box-shadow: 0 0 11px 1px #fffd72;
+}
+
+.list-group-item.changed-status-row {
+	margin-bottom: 0.5em;
+}

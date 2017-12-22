@@ -518,6 +518,24 @@ function remove_object_comparison_price($connect, $data) {
 	}
 }
 
+function object_comparison_contract_request($connect, $data) {
+	if(CheckAuthObjectCabinet::check_authorization()){
+		$info = [
+			'rate' => $data['rate'],
+			'month' => $data['duration']
+		];
+    $edit = new EditComparisonObject;
+    $edit->update([
+    	'changed_status' => 1,
+    	'contract_request_info' => json_encode($info)
+		]);
+	}
+
+	return [
+		'success' => true
+	];
+}
+
 function set_default_room_comparison_price($connect, $data){
 	if(CheckAuthObjectCabinet::check_authorization()){
 		$update = array(

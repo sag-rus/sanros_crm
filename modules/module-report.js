@@ -1295,6 +1295,7 @@ function cabinet_object_report(){
 	var html = '<div class="btn-group small-menu-cabinet"><div class="btn-group"><button type="button" class="btn btn-default btn-sm btn-booking-module" onclick="report_booking_module_cabinet()"><i class="fa fa-home"></i> Модуль бронирования</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-sm btn-booking-request-module" onclick="report_booking_request_module_cabinet()"><i class="fa fa-search"></i> Заявки с модуля бронирования</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-sm btn-comparison-module" onclick="report_comparison_object()"><i class="fa fa-rub"></i> Модуль сравнения цен</button></div></div><div id="panel" style="margin-top: 10px"></div><div id="report-html"></div>';
 	$('#data').html(html);
 	report_booking_module_cabinet();
+  report_comparison_objects_updates();
 }
 
 function report_booking_module_cabinet(){
@@ -1316,6 +1317,23 @@ function report_booking_module_cabinet(){
 			$('#report-html').html(html);
 		}
 	});
+}
+
+function report_comparison_objects_updates() {
+  $('.small-menu-cabinet button').removeClass('btn-info');
+  $('.small-menu-cabinet .btn-booking-module').addClass('btn-info');
+  var str = 'func=report_comparison_objects_updates';
+  $.ajax({
+    url: 'mysql.php',
+    type: 'POST',
+    data: str,
+    dataType: 'JSON',
+    success: function(data){
+      if(data['updates_count'] > 0) {
+      	$('.btn-comparison-module').append('<span class="badge count-red pull-right">'+data['updates_count']+'</span>');
+			}
+    }
+  });
 }
 
 function report_booking_request_module_cabinet(){
@@ -1350,9 +1368,11 @@ function report_comparison_object(){
 		dataType: 'JSON',
 		success: function(data){
 			var html = '<div class="form-horizontal list-group">';
-			for(var index in data){
-				var row = data[index];
+			var i;
+			for(i = 0; i <data.length; i++){
+				var row = data[i];
 				var bgColor = 'success';
+				var changedStatus = '';
 				if(row['class'] == 0){
 					bgColor = 'danger';
 				}
@@ -1360,10 +1380,16 @@ function report_comparison_object(){
 				if(row['update'] == 1){
 					btn_update = 'danger';
 				}
-				html+= '<div class="list-group-item list-group-item-' +bgColor+ '"><div class="form-group form-group-margin"><div class="col-sm-1">' +row['date']+ '</div><div class="col-sm-3">' +row['object']+ '</div><div class="col-sm-1">' +row['validity']+ '</div><div class="col-sm-4">' +row['rate']+ '</div><div class="col-sm-3"><button class="btn btn-default btn-sm" onclick="edit_comparison_object(' +index+ ')"><i class="fa fa-pencil"></i></button> <button type="button" class="btn btn-' +btn_update+ ' btn-update-' +index+ ' btn-sm" onclick="sync_comparison_object(' +index+ ')"><i class="fa fa-check-circle"></i> Обновить</button></div></div></div>';
+
+				if(row['changed_status'] == 1) {
+					changedStatus = ' changed-status-row';
+				}
+
+				html+= '<div class="list-group-item list-group-item-' +bgColor+ changedStatus +'"><div class="form-group form-group-margin"><div class="col-sm-1">' +row['date']+ '</div><div class="col-sm-3">' +row['object']+ '</div><div class="col-sm-1">' +row['validity']+ '</div><div class="col-sm-4">' +row['rate']+ '</div><div class="col-sm-3"><button class="btn btn-default btn-sm" onclick="edit_comparison_object(' +row['object_id']+ ')"><i class="fa fa-pencil"></i></button> <button type="button" class="btn btn-' +btn_update+ ' btn-update-' +row['object_id']+ ' btn-sm" onclick="sync_comparison_object(' +row['object_id']+ ')"><i class="fa fa-check-circle"></i> Обновить</button></div></div></div>';
 			}
 			html+= '</div>';
 			$('#report-html').html(html);
+			setTimeout('$(".btn-comparison-module .badge").remove()',3000);
 		}
 	});
 }

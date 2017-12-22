@@ -16,6 +16,11 @@ function report_booking_module_cabinet($connect){
   return json_encode($answer);
 }
 
+function report_comparison_objects_updates($connect){
+  $data = $connect->getOne("SELECT COUNT(id) FROM comparison_module_object WHERE changed_status = 1");
+  return json_encode(['updates_count'=> $data]);
+}
+
 function report_booking_request_module_cabinet($connect){
   $answer = array();
   $status = new StatusBookingModuleObject;
@@ -38,23 +43,31 @@ function report_booking_request_module_cabinet($connect){
 }
 
 function report_comparison_object($connect){
-  $answer = array();
+  $answer = [];
   $comparison = new ComparisonObject;
   $rates = $comparison->select_rate();
   $time = time();
-  $data = $connect->getAll("SELECT update_info, object, rate, DATE_FORMAT(validity_date, '%d.%m.%Y') as validity, rate, DATE_FORMAT(date_create, '%d.%m.%Y') as date, competitor FROM comparison_module_object");
+  $data = $connect->getAll("SELECT id, update_info, changed_status, object, rate, DATE_FORMAT(validity_date, '%d.%m.%Y') as validity, rate, DATE_FORMAT(date_create, '%d.%m.%Y') as date, competitor FROM comparison_module_object ORDER BY changed_status DESC");
   foreach($data as $row){
-    $id = $row["object"];
-    $answer[$id] = array();
-    $answer[$id]["date"] = $row["date"];
-    $answer[$id]["validity"] = $row["validity"];
-    $answer[$id]["rate"] = $rates[$row["rate"]]["name"];
-    $answer[$id]["object"] = get_object($connect, $row["object"], "type");
-    $answer[$id]["update"] = $row["update_info"];
-    $answer[$id]["class"] = 0;
-    if(strToTime($row["validity"]) >= $time){
-      $answer[$id]["class"] = 1;
+    $answer_row = [
+      'object_id' => $row["object"],
+      'date' => $row["date"],
+      'validity' => $row["validity"],
+      'rate' => $rates[$row["rate"]]["name"],
+      'object' => get_object($connect, $row["object"], "type"),
+      'update' => $row["update_info"],
+      'class' => 0,
+      "changed_status" => $row["changed_status"]
+    ];
+
+    if($row["changed_status"] == 1) {
+      $connect->query("UPDATE comparison_module_object SET changed_status=0 WHERE id=?i", $row['id']);
     }
+
+    if(strToTime($row["validity"]) >= $time){
+      $answer_row["class"] = 1;
+    }
+    $answer[] = $answer_row;
   }
   return json_encode($answer);
 }
