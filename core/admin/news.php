@@ -129,13 +129,13 @@ function upload_images_website($connect){
 	$website = $_POST["id"];
 	$url = $connect->getOne("SELECT url FROM st_website WHERE id=?i", $website);
 	if($url == "romashkino.com")
-		$url = "www.romashkino.com";
+		$url = "romashkino.com";
 	if($url == "санаторий-дубки.рф")
 		$url = "курорт-ундоры.рф";
 	if($url == "санаторий-ленина.рф")
 		$url = "санаторий-ундоры.рф";
 	if($url == "саната-тревел.рф")
-		$url = "https://саната-тревел.рф";
+		$url = "саната-тревел.рф";
 	$request = idn_to_ascii($url)."/core/update.website.php";
 	$folder = $directory."/temp/news/".$website;
 	$open = opendir($folder);
