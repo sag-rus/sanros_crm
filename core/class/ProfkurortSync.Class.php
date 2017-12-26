@@ -56,7 +56,6 @@ class ProfkurortSync{
     else
       $data = $server->getPrices("profkurort", $date, $object, $days, $this->hash);
     $data = json_decode($data, TRUE);
-    print_r($data);
     return $data;
   }
 
