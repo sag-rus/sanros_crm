@@ -100,24 +100,28 @@ function upload_news_website($connect){
 	$website = $_POST["id"];
 	$url = $connect->getOne("SELECT url FROM st_website WHERE id=?i", $website);
 	if($url == "romashkino.com")
-		$url = "www.romashkino.com";
+		$url = "romashkino.com";
 	if($url == "санаторий-дубки.рф")
 		$url = "курорт-ундоры.рф";
 	if($url == "санаторий-ленина.рф")
 		$url = "санаторий-ундоры.рф";
 	if($url == "саната-тревел.рф")
-		$url = "https://саната-тревел.рф";
+		$url = "саната-тревел.рф";
 	$request = idn_to_ascii($url)."/core/update.website.php";
 	$data = $connect->getAll("SELECT title, text, url, image, DATE_FORMAT(date, '%d.%m.%Y') as date_post, description FROM news WHERE website=?i AND active=1 ORDER BY date DESC", $website);
+
 	foreach($data as $index => $row) {
     $data[$index]["url"] = mb_strtolower($row["url"], "UTF-8");
 	}
+
 	$params = array(
 		"password" => "jgnbvbpfwbz",
 		"update" => "news",
 		"data" => json_encode($data)
 	);
-	return request_to_url($request, $params);
+
+	$result = request_to_url($request, $params);
+	return $result;
 }
 
 function upload_images_website($connect){
