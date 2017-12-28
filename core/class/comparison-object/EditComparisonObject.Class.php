@@ -87,6 +87,11 @@ class EditComparisonObject extends DisplayComparisonObject{
     return $answer;
   }
 
+  public function addPaymentInvoice($rate, $month, $timestamp) {
+    $module_id = $this->connect->getOne("SELECT id FROM comparison_module_object WHERE object=?i", $this->object);
+    $this->connect->query("INSERT INTO comparison_module_payment_invoice(module_id, rate, month, date, status) VALUES(?i, ?i, ?i, ?i, ?i)", $module_id, $rate, $month, $timestamp);
+  }
+
 }
 
 ?>

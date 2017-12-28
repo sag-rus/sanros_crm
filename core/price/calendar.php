@@ -102,20 +102,27 @@ function view_quota_object($connect, $data = array()){
       }
       $profk_results = $profkurort->get_prices_object($object_row['sync_id'],NULL,100);
 
-      //print_r($profk_results);
 
-      /*if(!isset($profk_results['ref'])) {
-        foreach ($profk_results as $profk_result) {
-          if(isset($profk_result['quota']) && $profk_result['quota'] > 0) {
-            $result["object"][$index]["have-places"] = 1;
-            $result["info"]["quota"]++;
-            break;
-          }
+      if(!isset($profk_results['ref']) && count($profk_results) > 0) {
+        foreach ($profk_results as $profk_price_index => $profk_result) {
+            if(!isset($dates_price_object[$profk_result['catcod']])) {
+              $dates_price_object[$profk_result['catcod']] = [];
+              $dates_price_object[$profk_result['catcod']]["start"] = strToTime($dates_price_object[$profk_result['datein']]);
+              $dates_price_object[$profk_result['catcod']]["range"] = [];
+              if(isset($dates_price_object[$profk_result['price']])) {
+                  $dates_price_object[$profk_result['catcod']]["range"][0] = [
+
+                    ];
+              }
+            }
+            elseif (!isset($dates_price_object[$profk_result['catcod']]["end"])) {
+              $dates_price_object[$profk_result['catcod']]["end"] = strToTime($dates_price_object[$profk_result['datein']])-86400;
+            }
         }
       }
 
 
-      $data = $connect->getAll("SELECT id, name, accessible_places, price_places, main_place, add_place, note, housing FROM room WHERE id_obj=?i AND sync_id != 0", $object);
+      /*$data = $connect->getAll("SELECT id, name, accessible_places, price_places, main_place, add_place, note, housing FROM room WHERE id_obj=?i AND sync_id != 0", $object);
       foreach ($data as $row) {
           $result['room'][$row['id']] = [
             "name" => $row['name'],

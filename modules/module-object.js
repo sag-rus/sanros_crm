@@ -1355,7 +1355,7 @@ function view_quota_object(object){
       var object_name = data['object-name'];
       var check_bid = $('.quota-object-bid').length;
 
-			if(data['is_profkurort']) {
+			if(0) {
 
 			}
 			else {

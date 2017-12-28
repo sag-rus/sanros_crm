@@ -63,8 +63,9 @@ function report_comparison_object($connect){
     ];
 
     if(!is_null($row['contract_request_info'])) {
-      $contract_request = json_decode($row['contract_request_info'],true);
-      $answer_row["contract_request"] = '<a href="document.php?func=comparison_module_payment&object='.$row["object"].'&rate='.$contract_request['rate'].'&month='.$contract_request['month'].'" class="btn btn-info btn-sm" target="_blank">Запрос на оплату!</a>';
+      $data2 = $connect->getRow("SELECT id, rate, month, date FROM comparison_module_payment_invoice WHERE module_id = ?i AND status != '0' ORDER BY date DESC LIMIT 1", $row["id"]);
+      if($data2)
+        $answer_row["contract_request"] = '<a href="document.php?func=comparison_module_payment&object='.$row["object"].'&rate='.$data2['rate'].'&month='.$data2['month'].'" class="btn btn-info btn-sm" target="_blank">Запрос на оплату!</a>';
     }
 
     if($row["changed_status"] == 1) {
