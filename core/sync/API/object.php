@@ -589,7 +589,7 @@ function display_invoice_payment_comparison_price($connect, $data){
     ]);
 
     $module_id = $this->connect->getOne("SELECT id FROM comparison_module_object WHERE object=?i", $data["object"]);
-    $this->connect->query("INSERT INTO comparison_module_payment_invoice(module_id, rate, month, date, status) VALUES(?i, ?i, ?i, ?i, ?i)", $module_id, $info['rate'], $info['month'], $info['date'], 1);
+    $connect->query("INSERT INTO comparison_module_payment_invoice(module_id, rate, month, date, status) VALUES(?i, ?i, ?i, ?i, ?i)", $module_id, $info['rate'], $info['month'], $info['date'], 1);
 		return $array;
 	}
 }
