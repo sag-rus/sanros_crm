@@ -36,7 +36,7 @@ function select_objects_quota($connect){
             }
             $profk_results = $profkurort->get_quota_object($row['sync_id'],date("Y-m-d H:i"),1);
             $profk_results2 = $profkurort->get_prices_object($row['sync_id'],NULL,1);
-            if(!isset($profk_results['ref']) && !isset($profk_results2['ref']) && count($profk_results2) > 0) {
+            if(is_array($profk_results) && !isset($profk_results['ref']) && !isset($profk_results2['ref']) && count($profk_results2) > 0 && count($profk_results) > 0) {
                 foreach ($profk_results as $profk_result) {
                     if(isset($profk_result['quota']) && $profk_result['quota'] > 0) {
                       $result["object"][$index]["have-places"] = 1;
@@ -112,7 +112,7 @@ function view_quota_object($connect, $data = array()){
               if(isset($dates_price_object[$profk_result['price']])) {
                   $dates_price_object[$profk_result['catcod']]["range"][0] = [
 
-                    ];
+                  ];
               }
             }
             elseif (!isset($dates_price_object[$profk_result['catcod']]["end"])) {
