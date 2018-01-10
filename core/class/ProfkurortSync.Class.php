@@ -41,9 +41,12 @@ class ProfkurortSync{
     return $data;
   }
 
-  public function get_quota_object($object, $date, $days){
+  public function get_quota_object($object, $date = NULL, $days){
     $server = new SoapClient($this->url);
-    $data = $server->getQData("profkurort", $this->date, $object, $date, $days, $this->hash);
+    if(is_null($date))
+      $data = $server->getQData("profkurort", $this->date, $object, $this->date, $days, $this->hash);
+    else
+      $data = $server->getQData("profkurort", $this->date, $object, $date, $days, $this->hash);
     $data = json_decode($data, TRUE);
     return $data;
   }

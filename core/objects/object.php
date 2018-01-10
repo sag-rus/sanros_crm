@@ -1080,13 +1080,17 @@ function view_all_commission_object($connect){
 		$id_region = $row["id"];
 		$region = get_translit(str_replace(" ", "-", $row["name"]));
 		$result["region"][$region] = array("name" => $row["name"], "object" => array());
-		$objects = $connect->getAll("SELECT id, name, type, regular_com, reward FROM object WHERE active=0 AND id_reg=?i", $id_region);
+		$objects = $connect->getAll("SELECT id, name, type, regular_com, reward, note_reward FROM object WHERE active=0 AND id_reg=?i", $id_region);
 		foreach($objects as $object){
 			$id = $object["id"];
 			$result["region"][$region]["object"][$id] = array();
 			$result["region"][$region]["object"][$id]["name"] = get_object($connect, $object["id"], "place");
 			$result["region"][$region]["object"][$id]["reward"] = $object["reward"];
-			$result["region"][$region]["object"][$id]["commis"] = $object["regular_com"];
+			if(!is_null($object['note_reward']))
+			    $result["region"][$region]["object"][$id]["note_reward"] = $object["note_reward"];
+			else
+                $result["region"][$region]["object"][$id]["note_reward"] = "";
+          $result["region"][$region]["object"][$id]["commis"] = $object["regular_com"];
 		}
 	}
 	return json_encode($result);
@@ -1096,8 +1100,11 @@ function update_commission_object($connect){
 	$object = $_POST["object"];
 	$regular = $_POST["regular"];
 	$reward = $_POST["reward"];
-	$connect->query("UPDATE object SET regular_com=?s, reward=?s WHERE id=?i", $regular, $reward, $object);
-	$row = $connect->getRow("SELECT regular_com, reward FROM object WHERE id=?i", $object);
+	$note_reward = $_POST["note_reward"];
+	$connect->query("UPDATE object SET regular_com=?s, reward=?s, note_reward=?s WHERE id=?i", $regular, $reward, $note_reward, $object);
+	$row = $connect->getRow("SELECT regular_com, reward, note_reward FROM object WHERE id=?i", $object);
+	if(is_null($row['note_reward']))
+      $row['note_reward'] = '';
 	return json_encode($row);
 }
 

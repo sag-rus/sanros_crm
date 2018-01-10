@@ -1160,10 +1160,10 @@ function view_all_commission_object(){
 			var html = '<div class="form-horizontal list-group">';
 			for(var index in data['region']){
 				var region = data['region'][index];
-				html+= '<div class="list-group-item"><div class="form-group form-group-margin"><div class="col-sm-4"><strong class="pointer" onclick="$(\'.region-objects-' +index+ '\').toggle()">' +region['name']+ '</strong></div><div class="col-sm-3">Вознаграждение объектов</div><div class="col-sm-3">Вознаграждение агентству</div><div class="col-sm-2"></div></div></div><div class="region-objects-' +index+ '" style="display: none">';
+				html+= '<div class="list-group-item"><div class="form-group form-group-margin"><div class="col-sm-4"><strong class="pointer" onclick="$(\'.region-objects-' +index+ '\').toggle()">' +region['name']+ '</strong></div><div class="col-sm-2">Вознаграждение объектов</div><div class="col-sm-2">Вознаграждение агентству</div><div class="col-sm-4">Примечание</div></div></div><div class="region-objects-' +index+ '" style="display: none">';
 				for(var id in region['object']){
 					var object = region['object'][id];
-					html+= '<div class="list-group-item list-hover-item object-' +id+ '"><div class="form-group form-group-margin"><div class="col-sm-4">' +object['name']+ '</div><div class="col-sm-3"><input type="text" class="form-control reward-value" value="' +object['reward']+ '" onchange="update_commission_object(' +id+ ')" ' +disabled+ ' /></div><div class="col-sm-3"><input type="text" class="form-control regular-value" value="' +object['commis']+ '" onchange="update_commission_object(' +id+ ')" ' +disabled+ ' /></div><div class="col-sm-2"><i class="label-status"></i></div></div></div>';
+					html+= '<div class="list-group-item list-hover-item object-' +id+ '"><div class="form-group form-group-margin"><div class="col-sm-4">' +object['name']+ '</div><div class="col-sm-2"><input type="text" class="form-control reward-value" value="' +object['reward']+ '" onchange="update_commission_object(' +id+ ')" ' +disabled+ ' /></div><div class="col-sm-2"><input type="text" class="form-control regular-value" value="' +object['commis']+ '" onchange="update_commission_object(' +id+ ')" ' +disabled+ ' /></div><div class="col-sm-4"><textarea class="form-control note-reward-value" onchange="update_commission_object(' +id+ ')">'+object['note_reward']+'</textarea></div></div></div>';
 				}
 				html+= '</div>';
 			}
@@ -1177,7 +1177,8 @@ function view_all_commission_object(){
 function update_commission_object(object){
 	var regular = $('.object-'+object+' .regular-value').val();
 	var reward = $('.object-'+object+' .reward-value').val();
-	var str = 'func=update_commission_object&object=' + object + '&regular=' + regular + '&reward=' + reward;
+	var note_reward = $('.object-'+object+' .note-reward-value').val();
+	var str = 'func=update_commission_object&object=' + object + '&regular=' + regular + '&reward=' + reward+'&note_reward='+note_reward;
 	$.ajax({
 		url: 'mysql.php',
 		type: 'POST',
@@ -1187,6 +1188,7 @@ function update_commission_object(object){
 			$('.object-'+object+' .label-status').html('Сохранено');
 			$('.object-'+object+' .regular-value').val(data['regular_com']);
 			$('.object-'+object+' .reward-value').val(data['reward']);
+			$('.object-'+object+' .note-reward-value').val(data['note_reward']);
 		}
 	});
 }
