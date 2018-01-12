@@ -159,6 +159,8 @@ var_dump($data_booking_JSON);
 				}
 			}
 
+			echo " Client ID = ".$last_id." ";
+
 			$config = ConfigCRM::getInstance();
 			$config->booking = $id;
 			$config->turist = $last_id;
