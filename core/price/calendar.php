@@ -192,8 +192,8 @@ function view_quota_object($connect, $data = array()){
 
     $data = $connect->getAll("SELECT id, name, accessible_places, price_places, main_place, add_place, note, housing, sync_id FROM room WHERE id_obj=?i AND accessible_places!=''", $object);
 
-    print_r($sync_rooms_prices);
-    print_r($sync_rooms_places);
+    //print_r($sync_rooms_prices);
+    //print_r($sync_rooms_places);
 
     foreach ($data as $row) {
         $room = $row["id"];

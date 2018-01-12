@@ -37,8 +37,11 @@ class SendMailTurist extends SendMail{
         );
         $letter = $this->select_template_letter_turist("new-reservation-login", $data);
         $this->send_mail_base("default", $email, $letter["title"], $letter["HTML"]);
+        return TRUE;
       }
+      else return FALSE;
     }
+    else return FALSE;
   }
 
   public function notification_payment_booking(){
