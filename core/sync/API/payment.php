@@ -11,6 +11,17 @@ function show_payment_card_account($connect, $data){
 	return FALSE;
 }
 
+function show_payment_card_account_sberbank($connect, $data){
+  if(CheckAuthTuristCabinet::check_authorization_booking()){
+    $type = $data["type"];
+    $payment = new BookingPayment;
+    $request = $payment->show_payment_card($type);
+    unset($payment);
+    return $request;
+  }
+  return FALSE;
+}
+
 function register_payment($connect, $data){
 	if(CheckAuthTuristCabinet::check_authorization_booking()){
 		$type = $data["type"];
