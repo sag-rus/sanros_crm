@@ -1,5 +1,15 @@
 <?php
 	$version = "10-06-2017";
+    $loader = require( __DIR__ . '/vendor/autoload.php');
+    $payment = new \App\lib\payment\Sberbank\BookingPayment([
+        'userName' => 'sanata_trevel-api',
+        'password' => 'sanata_trevel',
+        'currency' => 643,
+        'language' => 'ru',
+        'apiUri' => \App\lib\payment\Sberbank\BookingPayment::API_URI_TEST
+    ]);
+    print_r($payment->registerOrder('1-2','10000','https://xn----7sba6aaba8akdsdekah.xn--p1ai/',['description' => 'dsdsa']));
+    die();
 ?>
 
 <!DOCTYPE html>

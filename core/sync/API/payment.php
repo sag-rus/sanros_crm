@@ -1,4 +1,5 @@
 <?php
+$loader = require( __DIR__ . '/../../../vendor/autoload.php');
 
 function show_payment_card_account($connect, $data){
 	if(CheckAuthTuristCabinet::check_authorization_booking()){
@@ -14,8 +15,10 @@ function show_payment_card_account($connect, $data){
 function show_payment_card_account_sberbank($connect, $data){
   if(CheckAuthTuristCabinet::check_authorization_booking()){
     $type = $data["type"];
-    $payment = new BookingPayment;
-    $request = $payment->show_payment_card($type);
+    $payment = new \App\lib\payment\Sberbank\BookingPayment([
+
+		]);
+    $request = $payment->showPaymentCard($type);
     unset($payment);
     return $request;
   }

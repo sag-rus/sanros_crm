@@ -1,5 +1,5 @@
 <?php
-
+	$loader = require( __DIR__ . '/../../vendor/autoload.php');
 	date_default_timezone_set("Asia/Baghdad");
 
 	$directory = dirname(__FILE__)."/../..";
@@ -58,6 +58,14 @@
 		"userName" => $conf->USERNAME_ALFA,
 		"password" => $conf->PASSWORD_ALFA
 	);
+
+	$onlinePaymentInfoSber = array(
+  	"link" => $conf->BANK_PAYMENT_LINK_SBERBANK,
+  	"commission" => $conf->BANK_COM_SBERBANK,
+  	"userName" => $conf->USERNAME_SBERBANK,
+  	"password" => $conf->PASSWORD_SBERBANK
+	);
+
 	$clientCabinet = array(
 		"link" => $conf->turist_cabinet
 	);
@@ -81,6 +89,17 @@
 	$config->bonus = $bonus;
 	$config->mail = $conf->email_module;
 	$config->directory = $directory;
+
+	$configNew = \App\lib\CRM\Config\Client::getInstance();
+
+	$configNew->connect = $connect;
+	$configNew->onlinePaymentInfo = $onlinePaymentInfoSber;
+	$configNew->clientCabinet = $clientCabinet;
+	$configNew->objectCabinet = $objectCabinet;
+	$configNew->contactInfo = $contactInfo;
+	$configNew->bonus = $bonus;
+	$configNew->mail = $conf->email_module;
+	$configNew->directory = $directory;
 
 	//define("CABINET", $clientCabinet);
 	define("CABINET", "http://xn----7sba6aaba8akdsdekah.xn--p1ai/client/");
@@ -116,9 +135,10 @@
 					$config->session = $query["session"];
 				if(isset($query["object"]))
 					$config->object = $query["object"];
-				if(isset($query["booking"]))
-					$config->booking = $query["booking"];
-
+				if(isset($query["booking"])) {
+          $config->booking = $query["booking"];
+          $configNew->booking = $query["booking"];
+        }
 				$answer[$id] = $func($connect, $query);
 				$connect->query("INSERT INTO cabinet_request(request) VALUES(?i)", $id);
 			}else{

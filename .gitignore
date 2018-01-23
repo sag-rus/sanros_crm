@@ -3,6 +3,9 @@ temp
 cache/
 images
 image
+.idea
+vendor
+vendor/*
 
 #Files
 config.*
@@ -11,5 +14,5 @@ time.txt
 cache.*
 core/sync/file
 core/sync/file/*
-
-.idea
+composer.phar
+composer.lock
