@@ -134,7 +134,7 @@
 				$configNew = App\lib\CRM\Config\Client::getInstance();
 				if(isset($query["session"])) {
           $config->session = $query["session"];
-          $configNew->session = $query["booking"];
+          $configNew->session = $query["session"];
         }
 
         if(isset($query["object"])) {
