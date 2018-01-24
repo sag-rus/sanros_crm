@@ -230,6 +230,9 @@ class BookingPayment extends Client {
       unset($turist);
       $answer["product"] = "Оплата путевки по заявке №".$booking." (".self::getObject($connect, $array["id_obj"], "type").")";
     }
+    else {
+      $answer['msg'] = 'Pay sum is not correct';
+    }
     return $answer;
 
   }
