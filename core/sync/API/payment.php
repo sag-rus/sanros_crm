@@ -13,7 +13,6 @@ function show_payment_card_account($connect, $data){
 }
 
 function show_payment_card_account_sberbank($connect, $data){
-	return ['dsadasd' => 'dsadasdasdas'];
   if(CheckAuthTuristCabinet::check_authorization_booking()){
     $type = $data["type"];
     $payment = new \App\lib\payment\Sberbank\BookingPayment([
@@ -23,6 +22,7 @@ function show_payment_card_account_sberbank($connect, $data){
       'language' => 'ru',
       'apiUri' => \App\lib\payment\Sberbank\BookingPayment::API_URI_TEST
 		]);
+    return ['test' => 'dsadasd'];
     $request = $payment->showPaymentCard($type);
     unset($payment);
     return $request;
