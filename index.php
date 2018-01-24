@@ -8,7 +8,7 @@
         'language' => 'ru',
         'apiUri' => \App\lib\payment\Sberbank\BookingPayment::API_URI_TEST
     ]);
-    print_r($payment->registerOrder('1-2','10000','https://xn----7sba6aaba8akdsdekah.xn--p1ai/',['description' => 'dsdsa']));
+    print_r($payment->registerOrder('1-3','10000','https://xn----7sba6aaba8akdsdekah.xn--p1ai/',['description' => 'dsdsa']));
     die();*/
 ?>
 
