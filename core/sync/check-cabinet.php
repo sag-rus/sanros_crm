@@ -129,7 +129,7 @@
 			$func = $query["func"];
 			$check = $connect->getOne("SELECT id FROM cabinet_request WHERE request=?i LIMIT 1", $id);
 			if(!$check AND function_exists($func)){
-
+				echo " ".$func." ";
 				$config = ConfigCRM::getInstance();
 				if(isset($query["session"]))
 					$config->session = $query["session"];
