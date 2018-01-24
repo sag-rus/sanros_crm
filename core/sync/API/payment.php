@@ -16,7 +16,11 @@ function show_payment_card_account_sberbank($connect, $data){
   if(CheckAuthTuristCabinet::check_authorization_booking()){
     $type = $data["type"];
     $payment = new \App\lib\payment\Sberbank\BookingPayment([
-
+      'userName' => 'sanata_trevel-api',
+      'password' => 'sanata_trevel',
+      'currency' => 643,
+      'language' => 'ru',
+      'apiUri' => \App\lib\payment\Sberbank\BookingPayment::API_URI_TEST
 		]);
     $request = $payment->showPaymentCard($type);
     unset($payment);
