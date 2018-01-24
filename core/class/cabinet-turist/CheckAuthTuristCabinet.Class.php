@@ -6,14 +6,18 @@ class CheckAuthTuristCabinet{
 
   public static function check_authorization(){
     $config = ConfigCRM::getInstance();
+    $configNew = App\lib\CRM\Config\Client::getInstance();
     $connect = $config->connect;
     $session = $config->session;
     $login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s", $session);
   	$client = $connect->getOne("SELECT id FROM klient WHERE login=?s", $login);
     if($client){
       $config->account = $client;
+      $configNew->account = $client;
       $config->typeAuth = "turist";
+      $configNew->typeAuth =  "turist";
       $config->turist = $client;
+      $configNew->turist = $client;
       return TRUE;
     }
     return FALSE;
@@ -22,6 +26,7 @@ class CheckAuthTuristCabinet{
   public static function check_authorization_booking(){
     if(self::check_authorization()){
       $config = ConfigCRM::getInstance();
+      $configNew = App\lib\CRM\Config\Client::getInstance();
       $booking = $config->booking;
       $connect = $config->connect;
       $account = $config->account;
@@ -38,6 +43,7 @@ class CheckAuthTuristCabinet{
   public static function check_authorization_booking_object(){
     if(self::check_authorization()){
       $config = ConfigCRM::getInstance();
+      $configNew = App\lib\CRM\Config\Client::getInstance();
       $booking = $config->booking;
       $connect = $config->connect;
       $account = $config->account;

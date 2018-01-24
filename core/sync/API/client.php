@@ -1,5 +1,5 @@
 <?php
-
+$loader = require( __DIR__ . '/../../../vendor/autoload.php');
 
 function save_source_booking_data($connect, $data) {
 	$surname = $data["surname"];
