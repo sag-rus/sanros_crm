@@ -131,10 +131,17 @@
 			if(!$check AND function_exists($func)){
 				echo " ".$func." ";
 				$config = ConfigCRM::getInstance();
-				if(isset($query["session"]))
-					$config->session = $query["session"];
-				if(isset($query["object"]))
-					$config->object = $query["object"];
+				$configNew = App\lib\CRM\Config\Client::getInstance();
+				if(isset($query["session"])) {
+          $config->session = $query["session"];
+          $configNew->session = $query["booking"];
+        }
+
+        if(isset($query["object"])) {
+          $config->object = $query["object"];
+          $configNew->object = $query["object"];
+        }
+
 				if(isset($query["booking"])) {
           $config->booking = $query["booking"];
           $configNew->booking = $query["booking"];
