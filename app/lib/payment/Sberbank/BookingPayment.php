@@ -232,8 +232,8 @@ class BookingPayment extends Client {
     }
     else {
       $answer['msg'] = 'Pay sum is not correct';
-      $answer['data_dump'] = $sum;
-      $answer['connect_dump'] = \App\lib\CRM\Config\Client::getInstance();
+      //$answer['data_dump'] = $sum;
+      //$answer['connect_dump'] = \App\lib\CRM\Config\Client::getInstance();
     }
     return $answer;
 
