@@ -232,6 +232,7 @@ class BookingPayment extends Client {
     }
     else {
       $answer['msg'] = 'Pay sum is not correct';
+      $answer['data_dump'] = $sum;
     }
     return $answer;
 
