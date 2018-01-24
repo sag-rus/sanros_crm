@@ -22,7 +22,6 @@ function show_payment_card_account_sberbank($connect, $data){
       'language' => 'ru',
       'apiUri' => \App\lib\payment\Sberbank\BookingPayment::API_URI_TEST
 		]);
-    return ['test' => 'dsadasd'];
     $request = $payment->showPaymentCard($type);
     unset($payment);
     return $request;
