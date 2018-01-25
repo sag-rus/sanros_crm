@@ -3,7 +3,14 @@
 class SendMailTurist extends SendMail{
 
   public function __construct(){
-    $config = ConfigCRM::getInstance();
+
+    if(class_exists(' \App\lib\CRM\Config\Client')) {
+      $config = \App\lib\CRM\Config\Client::getInstance();
+    }
+    else {
+      $config = ConfigCRM::getInstance();
+    }
+
     $this->booking = $config->booking;
     $this->connect = $config->connect;
     $this->account = $config->turist;

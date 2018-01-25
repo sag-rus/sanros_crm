@@ -375,7 +375,7 @@ class BookingPayment extends Client {
     }
 
     $connect->query("UPDATE payment_request SET status=2 WHERE order_id=?s", $orderId);
-    $send = new SendMailTurist;
+    $send = new \SendMailTurist;
     $send->notification_payment_booking();
     unset($send);
 
