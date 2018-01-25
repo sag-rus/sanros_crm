@@ -4,6 +4,7 @@ namespace App\lib\payment\Sberbank;
 use App\lib\CRM\Client\Display;
 use App\Model\Bonus;
 use Voronkovich\SberbankAcquiring\Client;
+use Voronkovich\SberbankAcquiring\Exception\ActionException;
 
 class BookingPayment extends Client {
   protected $connect;
@@ -308,78 +309,83 @@ class BookingPayment extends Client {
   }
 
   public function depositPayment($bid_pay = ""){
-    $connect = $this->connect;
+    try {
+      $connect = $this->connect;
 
-    $row = $connect->getRow("SELECT id, bid, sum, order_id, type FROM payment_request WHERE bid_pay=?s", $bid_pay);
-    if(!$row["id"])
-      return;
-    $bid = $row["bid"];
-    $orderId = $row["order_id"];
-    $sum_to_pay = $row["sum"];
-    $type_pay = $row["type"];
-    $row = $connect->getRow("SELECT id_obj, id_user, date_v, turist FROM reckoning WHERE id=?i", $bid);
-    $object = $row["id_obj"];
-    $manager = $row["id_user"];
-    $client = $row["turist"];
-    $arrival = date_change($row["date_v"], ".");
+      $row = $connect->getRow("SELECT id, bid, sum, order_id, type FROM payment_request WHERE bid_pay=?s", $bid_pay);
+      if(!$row["id"])
+        return;
+      $bid = $row["bid"];
+      $orderId = $row["order_id"];
+      $sum_to_pay = $row["sum"];
+      $type_pay = $row["type"];
+      $row = $connect->getRow("SELECT id_obj, id_user, date_v, turist FROM reckoning WHERE id=?i", $bid);
+      $object = $row["id_obj"];
+      $manager = $row["id_user"];
+      $client = $row["turist"];
+      $arrival = date_change($row["date_v"], ".");
 
-    \App\lib\CRM\Config\Client::getInstance()->turist = $client;
-    \App\lib\CRM\Config\Client::getInstance()->booking = $bid;
+      \App\lib\CRM\Config\Client::getInstance()->turist = $client;
+      \App\lib\CRM\Config\Client::getInstance()->booking = $bid;
 
-    $data = array(
-      "orderId" => $orderId
-    );
-    $this->bookingInfo = $data;
-    $data = $this->getPaymentStatus();
+      $data = array(
+        "orderId" => $orderId
+      );
+      $this->bookingInfo = $data;
+      $data = $this->getPaymentStatus();
 
 
-    $connect->query("UPDATE payment_request SET status=?i WHERE order_id=?s", $data["OrderStatus"], $orderId);
-    if($data["OrderStatus"] != 1)
-      return $data["ErrorMessage"];
+      $connect->query("UPDATE payment_request SET status=?i WHERE order_id=?s", $data["OrderStatus"], $orderId);
+      if($data["OrderStatus"] != 1)
+        return $data["ErrorMessage"];
 
-    $sum = $data["Amount"] / 100;
-    if($sum != $sum_to_pay)
-      return;
+      $sum = $data["Amount"] / 100;
+      if($sum != $sum_to_pay)
+        return;
 
-    $data = array(
-      "orderId" => $orderId,
-      "amount" => $sum * 100
-    );
+      $data = array(
+        "orderId" => $orderId,
+        "amount" => $sum * 100
+      );
 
-    $this->bookingInfo = $data;
-    $data = $this->deposit($orderId,$sum*100);
+      $this->bookingInfo = $data;
+      $data = $this->deposit($orderId,$sum*100);
 
-    if($data["ErrorCode"] != 0)
-      return $data["ErrorMessage"]." ".($sum * 100)." ".$orderId;
+      if($data["ErrorCode"] != 0)
+        return $data["ErrorMessage"]." ".($sum * 100)." ".$orderId;
 
-    $bank_com = $this->bankInfo["commission"];
-    $today = date("Y-m-d");
+      $bank_com = $this->bankInfo["commission"];
+      $today = date("Y-m-d");
 
-    if($type_pay == 1){
+      if($type_pay == 1){
 
-      $connect->query("INSERT INTO payment(schet, date, type, pay_method, sum, bank_com) VALUES (?i, ?s, 2, 5, ?s, ?s)", $bid, $today, $sum, $bank_com);
-      $connect->query("UPDATE reckoning SET status=5 WHERE id=?i LIMIT 1", $bid);
-      $bonus = new Bonus();
-      $bonus->create();
-      unset($bonus);
-      $this->saveNotification("Оплата картой №".$bid, $manager);
-      $this->saveSchetToHistory($bid, "Оплата клиентом банковской картой. Сумма ".$sum);
+        $connect->query("INSERT INTO payment(schet, date, type, pay_method, sum, bank_com) VALUES (?i, ?s, 2, 5, ?s, ?s)", $bid, $today, $sum, $bank_com);
+        $connect->query("UPDATE reckoning SET status=5 WHERE id=?i LIMIT 1", $bid);
+        $bonus = new Bonus();
+        $bonus->create();
+        unset($bonus);
+        $this->saveNotification("Оплата картой №".$bid, $manager);
+        $this->saveSchetToHistory($bid, "Оплата клиентом банковской картой. Сумма ".$sum);
 
-    }elseif($type_pay == 2){
+      }elseif($type_pay == 2){
 
-      $connect->query("INSERT INTO payment(schet, date, type, pay_method, sum, bank_com) VALUES (?i, ?s, 1, 5, ?s, ?s)", $bid, $today, $sum, $bank_com);
-      $connect->query("UPDATE reckoning SET status=4 WHERE id=?i LIMIT 1", $bid);
-      $this->saveNotification("Предоплата картой №".$bid, $manager);
-      $this->saveSchetToHistory($bid, "Предоплата клиентом банковской картой. Сумма ".$sum);
+        $connect->query("INSERT INTO payment(schet, date, type, pay_method, sum, bank_com) VALUES (?i, ?s, 1, 5, ?s, ?s)", $bid, $today, $sum, $bank_com);
+        $connect->query("UPDATE reckoning SET status=4 WHERE id=?i LIMIT 1", $bid);
+        $this->saveNotification("Предоплата картой №".$bid, $manager);
+        $this->saveSchetToHistory($bid, "Предоплата клиентом банковской картой. Сумма ".$sum);
 
+      }
+
+      $connect->query("UPDATE payment_request SET status=2 WHERE order_id=?s", $orderId);
+      $send = new \SendMailTurist;
+      $send->notification_payment_booking();
+      unset($send);
+
+      return 1;
     }
-
-    $connect->query("UPDATE payment_request SET status=2 WHERE order_id=?s", $orderId);
-    $send = new \SendMailTurist;
-    $send->notification_payment_booking();
-    unset($send);
-
-    return 1;
+    catch (ActionException $e) {
+      return;
+    }
   }
 
 }
