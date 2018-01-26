@@ -61,6 +61,7 @@ function view_quota_object($connect, $data = array()){
     $profkurort = null;
 	$object = $_POST["object"];
 	$result = array("room" => array(), "bid" => array(), "type" => 1, "object-name" => "", "ratePlan" => array());
+
 	$result["ratePlan"][1] = array();
 	$result["ratePlan"][1]["name"] = "Основной тариф";
 	$result["object-name"] = get_object($connect, $object, "place");
@@ -97,6 +98,7 @@ function view_quota_object($connect, $data = array()){
 
     if($status_quota == 3) {
       $result['is_profkurort'] = 1;
+      $result["ratePlan"] = [];
     }
 
     if ($status_quota == 2) {
@@ -139,34 +141,36 @@ function view_quota_object($connect, $data = array()){
 
             if(!isset($sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']])) {
               $sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']] = [
-                'dt' => strToTime($profk_result['datein']),
-                'p' => [
+                1 => [
+                    'dt' => strToTime($profk_result['datein']),
+                    'p' => [
 
+                    ]
                 ]
               ];
 
               if(isset($profk_result['price'])) {
-                $sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']]['p'][0] = $profk_result['price'];
+                $sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']][1]['p'][0] = $profk_result['price'];
               }
 
               if(isset($profk_result['priceplace'])) {
-                $sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']]['p'][1] = $profk_result['priceplace'];
+                $sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']][1]['p'][1] = $profk_result['priceplace'];
               }
 
               if(isset($profk_result['pricedop'])) {
-                $sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']]['p'][2] = $profk_result['pricedop'];
+                $sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']][1]['p'][2] = $profk_result['pricedop'];
               }
 
               if(isset($profk_result['pricechild'])) {
-                $sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']]['p'][3] = $profk_result['pricechild'];
+                $sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']][1]['p'][3] = $profk_result['pricechild'];
               }
 
               if(isset($profk_result['pricedopchild'])) {
-                $sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']]['p'][4] = $profk_result['pricedopchild'];
+                $sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']][1]['p'][4] = $profk_result['pricedopchild'];
               }
             }
-            elseif (!isset($sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']]["d"])) {
-              $sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']]["d"] = (strToTime($profk_result['datein']) - $sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']]['dt'])/86400;
+            elseif (!isset($sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']][1]["d"])) {
+              $sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']][1]["d"] = (strToTime($profk_result['datein']) - $sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']][1]['dt'])/86400;
             }
           }
         }
@@ -230,7 +234,7 @@ function view_quota_object($connect, $data = array()){
         //echo " sync_id=".$row['sync_id']." ";
         if($status_quota == 3 && !is_null($row['sync_id']) && $row['sync_id'] > 0 && isset($sync_rooms_places[$row['sync_id']]) && isset($sync_rooms_prices[$row['sync_id']])) {
             $places = $sync_rooms_places[$row['sync_id']];
-            $prices = [1 => $sync_rooms_prices[$row['sync_id']]];
+            $prices = $sync_rooms_prices[$row['sync_id']];
         }
         elseif ($status_quota == 3) {
           $places = [];
@@ -291,6 +295,8 @@ function view_quota_object($connect, $data = array()){
         }
         elseif ($status_quota == 3) {
             #Profkurort
+          //print_r($prices);
+          //die();
           foreach ($prices as $ratePlan => $ratePlanPrice) {
             foreach ($ratePlanPrice as $index => $price) {
               $start_place = $price["dt"];
