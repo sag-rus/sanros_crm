@@ -64,6 +64,7 @@
 	<link href="css/fullcalendar.css" rel="stylesheet" />
 	<link href="css/bootstrap.css?ver=<?php echo $version; ?>" rel="stylesheet" />
 	<link rel="shortcut icon" href="favicon.ico">
+    <meta charset="utf-8" />
 
 </head>
 <body>
