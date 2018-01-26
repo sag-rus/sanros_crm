@@ -1393,20 +1393,46 @@ function view_quota_object(object){
                       var type_place = 1;
                       var type_range = 1;
                       var label_place = 'за чел/сутки';
-                      if(name_prices != '' && name_prices[index] !== undefined){
-                        label = name_prices[index]['n'];
-                        type_place = name_prices[index]['t'];
-                        type_range = name_prices[index]['p'];
-                        if(type_range == 2 || type_range == 3)
+
+                      if(data['is_profkurort']) {
+                      	if(index == 0){
+                          label = 'размещение';
+                          type_range = 3;
                           label_place = 'за номер';
-                      }else if(index != 'add'){
-                        label = index + '-местное размещение';
-                        type_range = 3;
-                        label_place = 'за номер';
-                      }else if(index == 'add'){
-                        label = 'Доп.место';
-                        type_place = 2;
-                      }
+                        }else if(index == 1){
+                          label = 'Место';
+                          type_place = 2;
+                        }
+                        else if(index == 2){
+                          label = 'Доп. место';
+                          type_place = 2;
+                        }
+                        else if(index == 3){
+                          label = 'Детское место';
+                          type_place = 2;
+                        }
+                        else if(index == 4){
+                          label = 'Доп. детское место';
+                          type_place = 2;
+                        }
+											}
+											else {
+                        if(name_prices != '' && name_prices[index] !== undefined){
+                          label = name_prices[index]['n'];
+                          type_place = name_prices[index]['t'];
+                          type_range = name_prices[index]['p'];
+                          if(type_range == 2 || type_range == 3)
+                            label_place = 'за номер';
+                        }else if(index != 'add'){
+                          label = index + '-местное размещение';
+                          type_range = 3;
+                          label_place = 'за номер';
+                        }else if(index == 'add'){
+                          label = 'Доп.место';
+                          type_place = 2;
+                        }
+											}
+
                       price_label+= '<div>' + label + ' ' + price_ratePlan + ' ' + label_place + '</div>';
                       var price_place = new Object();
                       price_place['v'] = price_ratePlan;

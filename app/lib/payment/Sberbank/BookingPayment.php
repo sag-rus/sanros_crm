@@ -277,6 +277,8 @@ class BookingPayment extends Client {
         "description" => $description
       ]);
 
+      //$this->
+
       if($answer["orderId"]){
         $check = $connect->getOne("SELECT id FROM payment_request WHERE order_id=?s", $answer["orderId"]);
         if(!$check){

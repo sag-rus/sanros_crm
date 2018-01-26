@@ -135,37 +135,45 @@ function view_quota_object($connect, $data = array()){
           foreach ($profk_results as $profk_price_index => $profk_result) {
             if(!isset($sync_rooms_prices[$profk_result['catcod']])) {
               $sync_rooms_prices[$profk_result['catcod']] = [];
-              $sync_rooms_prices[$profk_result['catcod']][] = [
+            }
+
+            if(!isset($sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']])) {
+              $sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']] = [
                 'dt' => strToTime($profk_result['datein']),
                 'p' => [
 
                 ]
               ];
+
               if(isset($profk_result['price'])) {
-                $sync_rooms_prices[$profk_result['catcod']][0]['p'][0] = $profk_result['price'];
+                $sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']]['p'][0] = $profk_result['price'];
               }
 
               if(isset($profk_result['priceplace'])) {
-                $sync_rooms_prices[$profk_result['catcod']][0]['p'][1] = $profk_result['priceplace'];
+                $sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']]['p'][1] = $profk_result['priceplace'];
               }
 
               if(isset($profk_result['pricedop'])) {
-                $sync_rooms_prices[$profk_result['catcod']][0]['p'][2] = $profk_result['pricedop'];
+                $sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']]['p'][2] = $profk_result['pricedop'];
               }
 
               if(isset($profk_result['pricechild'])) {
-                $sync_rooms_prices[$profk_result['catcod']][0]['p'][3] = $profk_result['pricechild'];
+                $sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']]['p'][3] = $profk_result['pricechild'];
               }
 
               if(isset($profk_result['pricedopchild'])) {
-                $sync_rooms_prices[$profk_result['catcod']][0]['p'][4] = $profk_result['pricedopchild'];
+                $sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']]['p'][4] = $profk_result['pricedopchild'];
               }
             }
-            elseif (!isset($sync_rooms_prices[$profk_result['catcod']][0]["d"])) {
-              $sync_rooms_prices[$profk_result['catcod']][0]["d"] = (strToTime($profk_result['datein']) - $sync_rooms_prices[$profk_result['catcod']][0]['dt'])/86400;
+            elseif (!isset($sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']]["d"])) {
+              $sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']]["d"] = (strToTime($profk_result['datein']) - $sync_rooms_prices[$profk_result['catcod']][$profk_result['progid']]['dt'])/86400;
             }
           }
         }
+
+        //print_r($sync_rooms_prices);
+        //die();
+
 
       $profk_results = $profkurort->get_quota_object($object_row['sync_id'],NULL,100);
       if(is_array($profk_results) && !isset($profk_results['ref']) && count($profk_results) > 0) {
@@ -182,18 +190,33 @@ function view_quota_object($connect, $data = array()){
             ];
 
             if(count($sync_rooms_places[$profk_result['catcod']]) > 1) {
-              $sync_rooms_places[$profk_result['catcod']][count($sync_rooms_places[$profk_result['catcod']])-2]['d'] = (strtotime($profk_result['resdate']) - $sync_rooms_places[$profk_result['catcod']][count($sync_rooms_places[$profk_result['catcod']])-1]['dt'])/86400;
+               // echo (strtotime($profk_result['resdate'])." ".
+              $sync_rooms_places[$profk_result['catcod']][count($sync_rooms_places[$profk_result['catcod']])-2]['d'] = (strtotime($profk_result['resdate']) - $sync_rooms_places[$profk_result['catcod']][count($sync_rooms_places[$profk_result['catcod']])-2]['dt'])/86400;
             }
 
           }
         }
       }
     }
-
-    $data = $connect->getAll("SELECT id, name, accessible_places, price_places, main_place, add_place, note, housing, sync_id FROM room WHERE id_obj=?i AND accessible_places!=''", $object);
+    //echo $object;
+    if ($status_quota == 3) {
+      $data = $connect->getAll("SELECT id, name, accessible_places, price_places, main_place, add_place, note, housing, sync_id FROM room WHERE id_obj=?i", $object);
+    }
+    else {
+      $data = $connect->getAll("SELECT id, name, accessible_places, price_places, main_place, add_place, note, housing, sync_id FROM room WHERE id_obj=?i AND accessible_places!=''", $object);
+    }
 
     //print_r($sync_rooms_prices);
     //print_r($sync_rooms_places);
+    //print_r($data);
+
+    $priceNames = [
+      'Номер',
+      'Место в номере',
+      'Доп. место в номере',
+      'Детское место в номере',
+      'Доп. детское место в номере'
+    ];
 
     foreach ($data as $row) {
         $room = $row["id"];
@@ -204,15 +227,22 @@ function view_quota_object($connect, $data = array()){
         if ($row["housing"]) {
           $result["room"][$room]["name"] .= " " . $connect->getOne("SELECT name FROM housing WHERE id=?i", $row["housing"]);
         }
-
+        //echo " sync_id=".$row['sync_id']." ";
         if($status_quota == 3 && !is_null($row['sync_id']) && $row['sync_id'] > 0 && isset($sync_rooms_places[$row['sync_id']]) && isset($sync_rooms_prices[$row['sync_id']])) {
             $places = $sync_rooms_places[$row['sync_id']];
-            $prices = $sync_rooms_prices[$row['sync_id']];
+            $prices = [1 => $sync_rooms_prices[$row['sync_id']]];
+        }
+        elseif ($status_quota == 3) {
+          $places = [];
+          $prices = [1 => []];
         }
         else {
           $places = json_decode($row["accessible_places"], TRUE);
           $prices = json_decode($row["price_places"], TRUE);
         }
+
+        //print_r($prices);
+        //die();
 
         if (is_array($places)) {
           foreach ($places as $index => $place) {
@@ -303,22 +333,29 @@ function view_quota_object($connect, $data = array()){
                 }
               }
             }
+            //print_r($prices);
+            //die();
+            if(is_array($prices)) {
+              foreach ($prices as $ratePlan => $ratePlanPrice) {
+                foreach ($ratePlanPrice as $price) {
+                  $start_place = $price["dt"];
+                  $end_place = $price["end"];
+                  if ($current >= $start_place AND $current < $end_place) {
+                    if (!isset($quota[$current_year . "-" . $current_month][$day]["price"][$ratePlan])) {
+                      $quota[$current_year . "-" . $current_month][$day]["price"][$ratePlan] = [];
+                    }
+                    $quota[$current_year . "-" . $current_month][$day]["price"][$ratePlan]["price"] = $price["p"];
+                    //print_r($price["p"]);
+                    //die();
+                    $quota[$current_year . "-" . $current_month][$day]["price"][$ratePlan]["name-price"] = "";
 
-            foreach ($prices as $ratePlan => $ratePlanPrice) {
-              foreach ($ratePlanPrice as $price) {
-                $start_place = $price["dt"];
-                $end_place = $price["end"];
-                if ($current >= $start_place AND $current < $end_place) {
-                  if (!isset($quota[$current_year . "-" . $current_month][$day]["price"][$ratePlan])) {
-                    $quota[$current_year . "-" . $current_month][$day]["price"][$ratePlan] = [];
-                  }
-                  $quota[$current_year . "-" . $current_month][$day]["price"][$ratePlan]["price"] = $price["p"];
-                  $quota[$current_year . "-" . $current_month][$day]["price"][$ratePlan]["name-price"] = "";
-                  if (isset($price["name"])) {
-                    $quota[$current_year . "-" . $current_month][$day]["price"][$ratePlan]["name"] = $price["name"];
+                    if (isset($price["name"])) {
+                      $quota[$current_year . "-" . $current_month][$day]["price"][$ratePlan]["name"] = $price["name"];
+                    }
                   }
                 }
               }
+
             }
           }
         }
@@ -331,12 +368,21 @@ function view_quota_object($connect, $data = array()){
         $result["bid"][$bid] = [];
         $result["bid"][$bid]["date"] = $row["date"];
     }
-    $data = $connect->getAll("SELECT id, name FROM rate_plan WHERE object=?i", $object);
 
-    foreach ($data as $row) {
+    if($status_quota == 3) {
+       $programs = $profkurort->get_programms($object_row['sync_id']);
+       foreach ($programs as $program) {
+         $result["ratePlan"][$program['progid']] = [];
+         $result["ratePlan"][$program['progid']]["name"] = str_replace("\"", "", $program['prognam']);
+       }
+    }
+    else {
+      $data = $connect->getAll("SELECT id, name FROM rate_plan WHERE object=?i", $object);
+      foreach ($data as $row) {
         $id = $row["id"];
         $result["ratePlan"][$id] = [];
         $result["ratePlan"][$id]["name"] = str_replace("\"", "", $row["name"]);
+      }
     }
 
 
