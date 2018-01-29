@@ -19,8 +19,8 @@ function show_payment_card_account_sberbank($connect, $data){
       'userName' => 'sanata_trevel-api',
       'password' => 'sanata_trevel',
       'currency' => 643,
-      'language' => 'ru',
-      'apiUri' => \App\lib\payment\Sberbank\BookingPayment::API_URI_TEST
+      'language' => 'ru'
+      //'apiUri' => \App\lib\payment\Sberbank\BookingPayment::API_URI_TEST
 		]);
     $request = $payment->showPaymentCard($type);
     unset($payment);
@@ -43,7 +43,7 @@ function register_payment_sberbank($connect, $data){
   if(CheckAuthTuristCabinet::check_authorization_booking()){
     $type = $data["type"];
     $payment = new \App\lib\payment\Sberbank\BookingPayment([
-      'apiUri' => \App\lib\payment\Sberbank\BookingPayment::API_URI_TEST
+      //'apiUri' => \App\lib\payment\Sberbank\BookingPayment::API_URI_TEST
 		]);
     $request = $payment->registerPayment($type);
     unset($payment);
@@ -65,7 +65,7 @@ function success_payment_sberbank($connect, $data){
   //	if(CheckAuthTuristCabinet::check_authorization_booking()){
   $bid_pay = $data["bid"];
   $payment = new \App\lib\payment\Sberbank\BookingPayment([
-    'apiUri' => \App\lib\payment\Sberbank\BookingPayment::API_URI_TEST
+    //'apiUri' => \App\lib\payment\Sberbank\BookingPayment::API_URI_TEST
 	]);
   $request = $payment->depositPayment($bid_pay);
   unset($payment);
