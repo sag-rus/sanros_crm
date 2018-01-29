@@ -386,7 +386,7 @@ class BookingPayment extends Client {
       return 1;
     }
     catch (ActionException $e) {
-      return;
+      return $e->getMessage();
     }
   }
 
