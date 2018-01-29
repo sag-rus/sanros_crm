@@ -338,8 +338,9 @@ class BookingPayment extends Client {
 
 
       $connect->query("UPDATE payment_request SET status=?i WHERE order_id=?s", $data["OrderStatus"], $orderId);
-      if($data["OrderStatus"] != 1)
-        return $data["ErrorMessage"];
+      if($data["OrderStatus"] != 1) {
+        return $data["ErrorMessage"]." OrderStatus = ".$data["OrderStatus"];
+      }
 
       $sum = $data["Amount"] / 100;
       if($sum != $sum_to_pay)
