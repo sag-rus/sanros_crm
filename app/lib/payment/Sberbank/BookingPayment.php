@@ -316,7 +316,7 @@ class BookingPayment extends Client {
 
       $row = $connect->getRow("SELECT id, bid, sum, order_id, type FROM payment_request WHERE bid_pay=?s", $bid_pay);
       if(!$row["id"])
-        return;
+        return "Incorrect payment request";
       $bid = $row["bid"];
       $orderId = $row["order_id"];
       $sum_to_pay = $row["sum"];
@@ -343,7 +343,7 @@ class BookingPayment extends Client {
 
       $sum = $data["Amount"] / 100;
       if($sum != $sum_to_pay)
-        return;
+        return "Payment sum is not equal to sum to pay";
 
       $data = array(
         "orderId" => $orderId,
