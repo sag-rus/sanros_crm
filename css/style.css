@@ -1593,3 +1593,7 @@ span.badge.count-red,
 .list-group-item.changed-status-row {
 	margin-bottom: 0.5em;
 }
+
+.form-control.form-control-required {
+	border: 1px solid #000;
+}

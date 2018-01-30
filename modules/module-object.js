@@ -1471,8 +1471,30 @@ function view_quota_object(object){
 
         var new_booking = '';
 
+        var addTuristButton = '';
+        var profkurortRequired = '';
+
+        if(!data['is_profkurort']) {
+        	addTuristButton = '<button class="btn btn-primary" onclick="add_turist_booking_quota_form()">Добавить туриста</button> ';
+				}
+				else {
+          profkurortRequired = ' form-control-required';
+				}
+
         if(check_bid == 0)
-          new_booking = '<div class="list-group new-booking-type-form booking-type-form"><div class="list-group-item turist-info turist-info-head" head="1"><div class="form-group"><div class="col-sm-4"><input type="text" class="form-control surname-turist" placeholder="Фамилия" /></div><div class="col-sm-4"><input type="text" class="form-control name-turist" placeholder="Имя" /></div><div class="col-sm-4"><input type="text" class="form-control otch-turist" placeholder="Отчество" /></div></div><div class="form-group form-group-margin"><div class="col-sm-4"></div><div class="col-sm-4"><input type="text" class="form-control email-turist" placeholder="Email" /></div><div class="col-sm-4"><input type="text" class="form-control telephone-turist" placeholder="Телефон" /></div></div></div><div class="list-group-item text-right"><button class="btn btn-primary" onclick="add_turist_booking_quota_form()">Добавить туриста</button> <button class="btn btn-success btn-booking-room" onclick="booking_quota_room()"><i class="fa fa-cart-plus"></i> Забронировать</button> <button class="btn btn-default" onclick="$(\'.room-calendar\').show(); $(\'.booking-form\').addClass(\'hidden\');"><i class="fa fa-times"></i> Отмена</button></div></div>';
+          new_booking = '<div class="list-group new-booking-type-form booking-type-form" data-is-profkurort="'+data['is_profkurort']+'"><div class="list-group-item turist-info turist-info-head" head="1"><div class="form-group"><div class="col-sm-4"><input type="text" class="form-control surname-turist form-control-required" placeholder="Фамилия" /></div><div class="col-sm-4"><input type="text" class="form-control name-turist form-control-required" placeholder="Имя" /></div><div class="col-sm-4"><input type="text" class="form-control otch-turist'+profkurortRequired+'" placeholder="Отчество" /></div></div><div class="form-group"><div class="col-sm-4"><select class="form-control sex-turist'+profkurortRequired+'">' +
+								'<option value="-1" selected="">Укажите пол</option>' +
+								'<option value="0">Мужской</option>' +
+								'<option value="1">Женский</option>' +
+              '</select></div>' +
+							'<div class="col-sm-4">' +
+								'<select class="form-control agecode-turist'+profkurortRequired+'">' +
+									'<option value="0">Взрослый или ребенок?</option>' +
+              		'<option value="1">Взрослый</option>' +
+              		'<option value="2">Ребенок</option>' +
+								'</select>'+
+							'</div>'+
+							'<div class="col-sm-4"><input type="text" class="form-control email-turist" placeholder="Email" /></div></div><div class="form-group form-group-margin"><div class="col-sm-4"><input type="text" class="form-control telephone-turist" placeholder="Телефон" /></div></div></div><div class="list-group-item text-right">'+addTuristButton+'<button class="btn btn-success btn-booking-room" onclick="booking_quota_room()"><i class="fa fa-cart-plus"></i> Забронировать</button> <button class="btn btn-default" onclick="$(\'.room-calendar\').show(); $(\'.booking-form\').addClass(\'hidden\');"><i class="fa fa-times"></i> Отмена</button></div></div>';
 
         var add_booking = '<div class="list-group add-booking-type-form booking-type-form hidden"><div class="list-group-item"><div class="form-group form-group-margin"><div class="col-sm-4">Выбрать заявку</div><div class="col-sm-8"><select class="form-control select-bid-booking">' +add_booking_select+ '</select></div></div></div><div class="list-group-item text-right"><button class="btn btn-success btn-booking-room" onclick="booking_quota_room_add_bid()"><i class="fa fa-cart-plus"></i> Забронировать</button> <button class="btn btn-default" onclick="$(\'.room-calendar\').show(); $(\'.booking-form\').addClass(\'hidden\');"><i class="fa fa-times"></i> Отмена</button></div></div>';
 
@@ -1549,9 +1571,9 @@ function show_booking_quota_form(room){
 					if(type_range == 3)
 						type_range_label = 'за номер/сутки';
 					if(prices_data['t'] == 1)
-						price_label_main+= '<div class="booking-place booking-place-main"><label><input type="radio" name="main-place-booking" /> <span class="text-danger value-price">' + prices_data['v'] + '</span> <span class="name-price">' + prices_data['n'] + '</span> <span class="type-place" type="' +type_range+ '">' +type_range_label+ '</span></label></div>';
+						price_label_main+= '<div class="booking-place booking-place-main"><label><input type="radio" name="main-place-booking" data-price-index="'+index+'"/> <span class="text-danger value-price">' + prices_data['v'] + '</span> <span class="name-price">' + prices_data['n'] + '</span> <span class="type-place" type="' +type_range+ '">' +type_range_label+ '</span></label></div>';
 					else
-						price_label_add+= '<div class="booking-place booking-place-add"><label><input type="radio" name="add-place-booking" /> <span class="text-danger value-price">' + prices_data['v'] + '</span> <span class="name-price">' + prices_data['n'] + '</span> <span class="type-place" type="' +type_range+ '">' +type_range_label+ '</span></label></div>';
+						price_label_add+= '<div class="booking-place booking-place-add"><label><input type="radio" name="add-place-booking" data-price-index="'+index+'"/> <span class="text-danger value-price">' + prices_data['v'] + '</span> <span class="name-price">' + prices_data['n'] + '</span> <span class="type-place" type="' +type_range+ '">' +type_range_label+ '</span></label></div>';
 				}
 				var class_price = '';
 				if(price_label_all != '')
@@ -1596,6 +1618,7 @@ function booking_quota_room(){
 			array['note'] = $(this).find('.name-price').html();
 			array['number'] = 1;
 			array['price'] = $(this).find('span.value-price').html();
+			array['price-index'] = $(this).find('span.value-price').closest('label').find('input').attr('data-price-index');
 			array['type'] = $(this).find('span.type-place').attr('type');
 			array['ratePlan'] = 0;
 			if($(this).hasClass('booking-place-main'))
@@ -1611,14 +1634,16 @@ function booking_quota_room(){
 		array['otch'] = $(this).find('.otch-turist').val();
 		array['email'] = '';
 		array['telephone'] = '';
+		array['sex'] = parseInt($(this).find('.sex-turist').val());
+		array['agecode'] = parseInt($(this).find('.agecode-turist').val());
 		if($(this).attr('head') == 1){
 			array['head'] = 1;
-			array['email'] = $(this).find('.email-turist').val();;
+			array['email'] = $(this).find('.email-turist').val();
 			array['telephone'] = $(this).find('.telephone-turist').val();;
 		}
 		if(array['name'] && array['surname'])
 			turist.push(array);
-		if(array['name'] && array['surname'] && array['head'] == 1)
+		if(array['name'] && array['surname'] && (array['otch'] || !$(this).find('.otch-turist').hasClass('form-control-required')) && array['head'] == 1 && (array['sex'] !== -1 || !$(this).find('.sex-turist').hasClass('form-control-required')) && (array['agecode'] > 0 || !$(this).find('.agecode-turist').hasClass('form-control-required')))
 			check = 1;
 	});
 	if(check == 1 && room.length > 0){

@@ -400,9 +400,20 @@ function booking_quota_room($connect) {
 	$data = json_decode($_POST["data"], TRUE);
 	$object = $data["object"];
 	$rest = array();
+    $today = date("Y-m-d");
+    $row = $connect->getRow("SELECT reward, id_tour, add_one_day, sync_id, check_places FROM object WHERE id=?i", $object);
+    $reward = $row["reward"];
+    $touroperator = $row["id_tour"];
+    $add_one_day = (int)$row["add_one_day"];
+    $check_places = $row['check_places'];
+
 	if(!$object)
 		return;
 
+	if(!count($data['turist']))
+        return;
+
+    $clidata = [];
 	foreach($data["turist"] as $turist){
 		$surname = $turist["surname"];
 		$name = $turist["name"];
@@ -427,8 +438,23 @@ function booking_quota_room($connect) {
               'otch' => $otch,
               'email' => $email,
               'telephone' => $telephone,
-              'sex' => $turist
+              'sex' => $sex
             ];
+
+            if($check_places == 3) {
+              $catcod = $connect->getOne('SELECT sync_id FROM room WHERE id = ?i',current($data['room'])['room']);
+              $agecod = 1;
+              $clidata[] = [
+                'clinam1' => $surname,
+                'clinam2' => $name,
+                'clinam3' => $otch,
+                'Catcod' => $catcod,
+                'Sexcod' => is_null($sex)?1:$sex,
+                'Agecod' => $agecod,
+                'Email' => $email,
+                'Countintcod' => 643,
+              ];
+            }
 
             if(is_null($sex))
                 $connect->query("INSERT INTO klient(surname, name, otch, email, telephone, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $email, $telephone, json_encode($original_data));
@@ -442,11 +468,7 @@ function booking_quota_room($connect) {
 		}
 	}
 
-	$today = date("Y-m-d");
-	$row = $connect->getRow("SELECT reward, id_tour, add_one_day FROM object WHERE id=?i", $object);
-	$reward = $row["reward"];
-	$touroperator = $row["id_tour"];
-	$add_one_day = (int)$row["add_one_day"];
+
 
 	$connect->query("INSERT INTO reckoning(date, turist, id_obj, rest, number_turist, form_booking, id_user) VALUES (?s, ?i, ?i, ?s, ?i, 'quota', ?i)", $today, $client, $object, implode(",", $rest), count($rest), $session_login);
 	$bid = $connect->insertId();
@@ -465,7 +487,14 @@ function booking_quota_room($connect) {
 		if($type_place == 3)
 			$type_place = 2;
 		$arrival = date("Y-m-d", strToTime($position["arrival"]));
-		$connect->query("INSERT INTO position_reck(id_room, schet, days, date_z, number, sum, type, note, reward, ratePlan, add_one_day) VALUES (?i, ?i, ?i, ?s, ?i, ?s, ?i, ?s, ?s, ?s, ?s)", $room, $bid, $days, $arrival, $number, $price, $type_place, $note, $reward, $ratePlan, $add_one_day);
+
+		if($check_places == 3) {
+          $connect->query("INSERT INTO position_reck(id_room, schet, days, date_z, number, sum, type, note, reward, profkurort_program_id, add_one_day) VALUES (?i, ?i, ?i, ?s, ?i, ?s, ?i, ?s, ?s, ?s, ?s)", $room, $bid, $days, $arrival, $number, $price, $type_place, $note, $reward, $ratePlan, $add_one_day);
+        }
+        else {
+          $connect->query("INSERT INTO position_reck(id_room, schet, days, date_z, number, sum, type, note, reward, ratePlan, add_one_day) VALUES (?i, ?i, ?i, ?s, ?i, ?s, ?i, ?s, ?s, ?s, ?s)", $room, $bid, $days, $arrival, $number, $price, $type_place, $note, $reward, $ratePlan, $add_one_day);
+        }
+
 		if($ratePlan > 0){
 			$last_rate_plan = $connect->insertId();
 		}else
@@ -474,7 +503,7 @@ function booking_quota_room($connect) {
 	if($last_add_place != "")
 		$connect->query("UPDATE position_reck SET add_place=?i WHERE id=?i", $last_rate_plan, $last_add_place);
 
-	if($connect->getOne("SELECT id FROM object WHERE id=?i AND (check_places=1 OR check_places=2)", $object))
+	if($connect->getOne("SELECT id FROM object WHERE id=?i AND (check_places=1 OR check_places=2 OR check_places = 3)", $object))
 		$connect->query("INSERT INTO booking(bid) VALUES (?i)", $bid);
 	change_arrival_date($connect, $bid);
 	recalculation_sum($connect, $bid);

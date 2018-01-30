@@ -9,7 +9,7 @@ function show_my_bid_menu($connect){
 <?php
 	$cancel = $connect->getOne("SELECT COUNT(*) FROM reckoning WHERE (status=10 OR status=11) AND (active=0 OR reckoning.active=2)");
 	$new = $connect->getOne("SELECT COUNT(*) FROM reckoning WHERE (id_user='' OR id_user IS NULL OR id_user=0) AND reckoning.active=0");
-	$deferred = $connect->getOne("SELECT COUNT(*) FROM reckoning WHERE id_user=?i AND reckoning.status=9", $session_login);
+	$deferred = $connect->getOne("SELECT COUNT(*) FROM reckoning WHERE (id_user=?i OR ?i) AND reckoning.status=9", $session_login, $session_login == 21);
 ?>
 	<?php if($new > 0){ ?>
 		<li class="new-bid-page" onclick="get_my_reckoning('new')"><a>Новые</a></li>
@@ -48,7 +48,7 @@ function show_my_bid_menu($connect){
 		}
 		$query = " WHERE $query AND active!=3";
 		$query2 = " WHERE $query2 AND active!=3";
-		if((int)$id_rights <= 3){
+		if((int)$id_rights <= 3 && $session_login != 21){
 			$query.= " AND id_user=$session_login ";
 			$query2.= " AND id_user=$session_login ";
 		}
@@ -74,7 +74,7 @@ function show_my_bid_menu($connect){
 	<?php if($deferred > 0){ ?>
 		<li class="9-bid-page" onclick="get_my_reckoning(9)"><a>Отложенные</a></li>
 	<?php } ?>
-	<?php if($id_rights <= 3){ ?>
+	<?php if($id_rights <= 3 ){ ?>
 		<li class="return-bid-page" onclick="return_query_report_manager()"><a><i class="fa fa-angle-double-left"></i> Возвраты</a></li>
 	<?php } ?>
 	</ul>
