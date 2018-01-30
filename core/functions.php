@@ -946,7 +946,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
     if($type == "EACH")
       $array["agency"] = add_null($commission);
     if(isset($commission)) {
-        echo $commission." ";
+        //echo $commission." ";
       $raz += $commission;
     }
   }
