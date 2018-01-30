@@ -1,5 +1,5 @@
 <?php
-	$version = "10-06-2017";
+	$version = "11-06-2017";
     $loader = require( __DIR__ . '/vendor/autoload.php');
     /*$payment = new \App\lib\payment\Sberbank\BookingPayment([
         'userName' => 'sanata_trevel-api',
