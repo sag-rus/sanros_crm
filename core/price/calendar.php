@@ -406,6 +406,7 @@ function booking_quota_room($connect) {
     $touroperator = $row["id_tour"];
     $add_one_day = (int)$row["add_one_day"];
     $check_places = $row['check_places'];
+    $object_sync = $row['sync_id'];
 
 	if(!$object)
 		return;
@@ -414,6 +415,9 @@ function booking_quota_room($connect) {
         return;
 
     $clidata = [];
+    $categs = [];
+
+    $catcod = $connect->getOne('SELECT sync_id FROM room WHERE id = ?i',current($data['room'])['room']);
 	foreach($data["turist"] as $turist){
 		$surname = $turist["surname"];
 		$name = $turist["name"];
@@ -442,18 +446,28 @@ function booking_quota_room($connect) {
             ];
 
             if($check_places == 3) {
-              $catcod = $connect->getOne('SELECT sync_id FROM room WHERE id = ?i',current($data['room'])['room']);
-              $agecod = 1;
+              $agecode = $turist['agecode'];
+              $catplacefl = current($data['room'])['price-index'] == 0?1:0;
+              $dopplacefl = (current($data['room'])['price-index'] == 2 || current($data['room'])['price-index'] == 4)?1:0;
               $clidata[] = [
                 'clinam1' => $surname,
                 'clinam2' => $name,
                 'clinam3' => $otch,
                 'Catcod' => $catcod,
-                'Sexcod' => is_null($sex)?1:$sex,
-                'Agecod' => $agecod,
+                'Sexcod' => is_null($sex)?1:($sex+1),
+                'Agecod' => $agecode,
                 'Email' => $email,
-                'Countintcod' => 643,
+                'Countintcod' => "643",
+                'Catplacefl' => (string)$catplacefl,
+                'Dopplacefl' => (string)$dopplacefl,
+                'Roomnr' => "1",
+                'Progid' => current($data['room'])['ratePlan'],
+                'progid' => current($data['room'])['ratePlan'],
+                'Enablefl' => "1"
               ];
+
+              print_r($clidata);
+              //die();
             }
 
             if(is_null($sex))
@@ -487,6 +501,21 @@ function booking_quota_room($connect) {
 		if($type_place == 3)
 			$type_place = 2;
 		$arrival = date("Y-m-d", strToTime($position["arrival"]));
+		$arrivalHours = date("Y-m-d 08:00", strToTime($position["arrival"]));
+		$leavingHours = date("Y-m-d 08:00", strToTime($position["arrival"])+86400*$days);
+
+        if($check_places == 3) {
+            $categs[] = [
+                'Catcod' => $catcod,
+                'rooms0' => 1,
+                'Roomnr' => 1
+             ];
+
+            $profkurortsync = new ProfkurortSync();
+            echo json_encode($clidata)." ";
+            print_r($profkurortsync->create_booking($object_sync,$arrivalHours,$leavingHours,json_encode($categs),json_encode($clidata),json_encode([])));
+            die();
+         }
 
 		if($check_places == 3) {
           $connect->query("INSERT INTO position_reck(id_room, schet, days, date_z, number, sum, type, note, reward, profkurort_program_id, add_one_day) VALUES (?i, ?i, ?i, ?s, ?i, ?s, ?i, ?s, ?s, ?s, ?s)", $room, $bid, $days, $arrival, $number, $price, $type_place, $note, $reward, $ratePlan, $add_one_day);
@@ -499,7 +528,15 @@ function booking_quota_room($connect) {
 			$last_rate_plan = $connect->insertId();
 		}else
 			$last_add_place = $connect->insertId();
+
+        if($check_places == 3) {
+            break;
+        }
+
+
 	}
+
+
 	if($last_add_place != "")
 		$connect->query("UPDATE position_reck SET add_place=?i WHERE id=?i", $last_rate_plan, $last_add_place);
 
