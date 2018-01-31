@@ -475,8 +475,8 @@ function save_all(){
 				if(answer == 0){
 					show_warning('.new-reckoning', 'Неправильно указана цена');
 				}else{
-					select_klient(answer);
-					show_alert('Данные сохранены...');
+					//select_klient(answer);
+					//show_alert('Данные сохранены...');
 				}
 			}
 		});

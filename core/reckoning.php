@@ -86,11 +86,12 @@ function save_all($connect){
             'date_reg' => $today,
             'sex' => $sex
           ];
+         print_r($original_data);
 
         if(is_null($sex))
-            $connect->query("INSERT INTO klient(surname, name, otch, telephone, date, address, email, passport, output, date_pas, note, date_reg, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $surmane, $name, $otch, $telephone, $date, $address, $email, $passport, $output, $date_pas, $note, $today, json_encode($original_data));
+            $connect->query("INSERT INTO klient(`surname`, `name`, otch, telephone, `date`, address, email, passport, `output`, date_pas, note, date_reg, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $surmane, $name, $otch, $telephone, $date, $address, $email, $passport, $output, $date_pas, $note, $today, json_encode($original_data));
         else
-            $connect->query("INSERT INTO klient(surname, name, otch, sex, telephone, date, address, email, passport, output, date_pas, note, date_reg, original_data) VALUES (?s, ?s, ?s, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $surmane, $name, $otch, $sex, $telephone, $date, $address, $email, $passport, $output, $date_pas, $note, $today, json_encode($original_data));
+            $connect->query("INSERT INTO klient(`surname`, `name`, otch, sex, telephone, `date`, address, email, passport, `output`, date_pas, note, date_reg, original_data) VALUES (?s, ?s, ?s, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $surmane, $name, $otch, $sex, $telephone, $date, $address, $email, $passport, $output, $date_pas, $note, $today, json_encode($original_data));
 
         $client = $connect->insertId();
 		$connect->query("INSERT INTO reckoning(date, turist, manager, id_user, id_obj, id_tour, number_turist, rest, id_dis) VALUES (?s, ?i, ?s, ?i, ?i, ?s, ?i, ?i, ?s)", $today, $client, $name_user, $session_login, $id_obj, $id_tour, $number_turist, $client, $discount);
