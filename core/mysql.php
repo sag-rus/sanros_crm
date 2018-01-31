@@ -600,9 +600,21 @@ function update_klient($connect){
 	if($passport == 0)
 		$passport = "";
 	$output = $_POST["output"];
+	if(empty($output))
+	    $output = NULL;
+
 	$date_pas = $_POST["date_pas"];
+	if(empty($date_pas))
+	    $date_pas = NULL;
+
 	$date = $_POST["date"];
+	if(empty($date))
+	    $date = NULL;
+
 	$address = $_POST["address"];
+	if(empty($address))
+	    $address = NULL;
+
 	$telephone = $_POST["telephone"];
 	$note_k = $_POST["note_k"];
 	$skype = $_POST["skype"];
