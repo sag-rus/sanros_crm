@@ -545,6 +545,7 @@ function save_new_schet(){
 	var add_one_day = $('#add_one_day input:checked').val();
   var type_schet = parseInt(jQuery('#reck_type').val());
 	var str;
+	type = 0;
 
 	if($('#klient').length){
 		var id_klient = $('#klient').attr('name');
