@@ -528,7 +528,7 @@ function new_reck(type){
 }
 
 function save_new_schet(){
-	var b, id_com, discount, id_tour = '', type_dis = '1';
+	var b, id_com = '', discount, id_tour = '', type_dis = '1';
 	var sum = $('#sum').val();
 	var days = $('#days').val();
 	var note = $('#note').val();

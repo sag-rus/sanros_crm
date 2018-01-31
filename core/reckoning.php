@@ -269,9 +269,12 @@ function save_schet($connect){
     $client = $_POST["id_klient"];
     $note = $_POST["note"];
 
+    if(empty($note)) $note = '';
+
     if($type_schet == 0) {
       $id_obj = $_POST["id_obj"];
       $id_tour = $_POST["id_tour"];
+      if(empty($id_tour)) $id_tour = NULL;
       $id_room = $_POST["id_room"];
       $sum = $_POST["sum"];
       $number = $_POST["number"];
@@ -279,11 +282,17 @@ function save_schet($connect){
       $days = $_POST["days"];
       $date_z = $_POST["date_z"];
       $type = $_POST["type"];
+      if(empty($type)) $type = 0;
       $type_price = $_POST["type_price"];
       $id_com = $_POST["id_com"];
+      if(empty($id_com)) $id_com = NULL;
       $discount = $_POST["id_dis"];
+      if(empty($discount)) $discount = NULL;
       $commis = $_POST["commis"];
       $add_one_day = $_POST["add_one_day"];
+      if(empty($add_one_day))
+          $add_one_day = 1;
+
 
       $a = 2;
       if (is_numeric($sum) AND (is_numeric($number))) {
