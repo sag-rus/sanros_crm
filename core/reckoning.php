@@ -69,7 +69,7 @@ function save_all($connect){
 	$type_price = $_POST["type"];
 	$add_one_day = $_POST["add_one_day"];
 
-        if(is_numeric($sum) AND is_numeric($number)){
+    if(is_numeric($sum) AND is_numeric($number)){
 
           $original_data = [
             'surname' => $surmane,

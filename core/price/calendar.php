@@ -466,7 +466,7 @@ function booking_quota_room($connect) {
                 'Enablefl' => "1"
               ];
 
-              print_r($clidata);
+              //print_r($clidata);
               //die();
             }
 
@@ -511,10 +511,10 @@ function booking_quota_room($connect) {
                 'Roomnr' => 1
              ];
 
-            $profkurortsync = new ProfkurortSync();
-            echo json_encode($clidata)." ";
-            print_r($profkurortsync->create_booking($object_sync,$arrivalHours,$leavingHours,json_encode($categs),json_encode($clidata),json_encode([])));
-            die();
+            //$profkurortsync = new ProfkurortSync();
+            //echo json_encode($clidata)." ";
+            //print_r($profkurortsync->create_booking($object_sync,$arrivalHours,$leavingHours,json_encode($categs),json_encode($clidata),json_encode([])));
+            //die();
          }
 
 		if($check_places == 3) {
