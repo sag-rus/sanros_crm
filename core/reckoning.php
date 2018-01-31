@@ -420,6 +420,8 @@ function edit_schet($connect){
 function update_schet($connect){
 	$note = "";
     $note_schet = str_replace("plus", "+", $_POST["note"]);
+    if(empty($note_schet))
+        $note_schet = '';
     $reck_type = $_POST["reck_type"];
     $id = $_POST["id"];
 
@@ -431,13 +433,26 @@ function update_schet($connect){
 
       $number_turist = $_POST["number_turist"];
       $id_obj = $_POST["id_obj"];
+      if(empty($id_obj)) $id_obj = NULL;
       $id_tour = $_POST["id_tour"];
+      if(empty($id_tour))
+          $id_tour = NULL;
+
       $schet_san = $_POST["schet_san"];
       $date_schet_san = $_POST["date_schet_san"];
+      if(empty($schet_san))
+          $schet_san = NULL;
+      if(empty($date_schet_san))
+            $date_schet_san = NULL;
+
       if(isset($_POST["reward"]))
         $reward = $_POST["reward"];
       if(isset($_POST["id_dis"]))
         $id_dis = $_POST["id_dis"];
+
+      if(empty($id_dis))
+          $id_dis = NULL;
+
       $row = $connect->getRow("SELECT turist, agency, status, status_san, number_turist, id_obj, id_com, id_dis, date_schet_san, schet_san FROM reckoning WHERE id=?i", $id);
       if($row["number_turist"] != $number_turist)
         $note.= " Отдыхающих (старое - ".$row["number_turist"].");";
@@ -452,7 +467,7 @@ function update_schet($connect){
         save_schet_to_history($connect, $id, $note);
       }
       $obj = $row["id_obj"];
-      if($check == "1" AND ($obj != $id_obj)){
+      if($id_obj && $check == "1" AND ($obj != $id_obj)){
         $note = "Изменен объект. Старый - ".get_object($connect, $obj).";";
         changes_reckoning_cabinet($connect, $id, "object");
         save_schet_to_history($connect, $id, $note);
