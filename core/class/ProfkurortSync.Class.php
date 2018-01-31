@@ -64,6 +64,13 @@ class ProfkurortSync{
 
   public function create_booking($object, $arrival, $leaving, $categs, $clidata, $suppdata){
     $server = new SoapClient($this->url);
+    //echo 'this->date = '.$this->date." ";
+    //echo 'object = '.$object." ";
+    //echo 'arrival = '.$arrival." ";
+    //echo 'leaving = '.$leaving." ";
+    //echo 'categs = '.$categs." ";
+    //echo 'clidata = '.$clidata." ";
+    //echo 'hash = '.$this->hash;
     $data = $server->setOrder("profkurort", $this->date, 0, $object, $arrival, $leaving, "", $categs, $clidata, $suppdata, $this->hash);
     $data = json_decode($data, TRUE);
     return $data;
