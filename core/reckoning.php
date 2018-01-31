@@ -296,11 +296,13 @@ function save_schet($connect){
 
       $a = 2;
       if (is_numeric($sum) AND (is_numeric($number))) {
-        if ($type == "agency") {
+        if ($type === "agency") {
           $connect->query("INSERT INTO reckoning(id_com, date, agency, id_user, date_z, id_obj, id_tour, number_turist) VALUES (?i, ?s, ?i, ?i, ?s, ?i, ?s, ?i)", $id_com, $today, $client, $session_login, $date_z, $id_obj, $id_tour, $number_turist);
         }
         else {
-          $payer = $connect->query("SELECT payer FROM  WHERE turist=?i AND payer!='' ORDER BY id DESC", $client);
+
+          //$payer = $connect->query("SELECT payer FROM  WHERE turist=?i AND payer!='' ORDER BY id DESC", $client);
+          $payer = NULL;
           $connect->query("INSERT INTO reckoning(date, turist, id_user, date_z, payer, id_obj, id_tour, number_turist, id_dis, rest) VALUES (?s, ?i, ?i, ?s, ?s, ?i, ?s, ?i, ?s, ?i)", $today, $client, $session_login, $date_z, $payer, $id_obj, $id_tour, $number_turist, $discount, $client);
         }
         $id = $connect->insertId();
@@ -314,7 +316,7 @@ function save_schet($connect){
       return FALSE;
     }
     else {
-      $payer = $connect->query("SELECT payer FROM  WHERE turist=?i AND payer!='' ORDER BY id DESC", $client);
+      $payer = NULL;
       $connect->query("INSERT INTO reckoning(date, turist, id_user, payer, rest, type) VALUES (?s, ?i, ?i, ?s, ?i, ?i)", $today, $client, $session_login, $payer, $client,1);
       $id = $connect->insertId();
       setCookie("reck", $id);
@@ -1497,8 +1499,10 @@ function show_schet_klient($connect){
 			break;
 		}
 	}
-	if($kl != $klient AND $check != 1)
-		return FALSE;
+	if($kl != $klient AND $check != 1) {
+	    //echo $kl;
+      return FALSE;
+    }
 	$changes = json_decode($row["changes"], TRUE);
 	$manager = $connect->getOne("SELECT name FROM users WHERE id=?i", $row["id_user"]);
 	$turist = $row["turist"];
