@@ -9,7 +9,9 @@ function show_my_bid_menu($connect){
 <?php
 	$cancel = $connect->getOne("SELECT COUNT(*) FROM reckoning WHERE (status=10 OR status=11) AND (active=0 OR reckoning.active=2)");
 	$new = $connect->getOne("SELECT COUNT(*) FROM reckoning WHERE (id_user='' OR id_user IS NULL OR id_user=0) AND reckoning.active=0");
-	$deferred = $connect->getOne("SELECT COUNT(*) FROM reckoning WHERE (id_user=?i OR ?i) AND reckoning.status=9", $session_login, $session_login == 21);
+	if($session_login == 21)
+	    $showdeffered = 1;
+	$deferred = $connect->getOne("SELECT COUNT(*) FROM reckoning WHERE (id_user=?i OR ?i) AND reckoning.status=9", $session_login, $showdeffered);
 ?>
 	<?php if($new > 0){ ?>
 		<li class="new-bid-page" onclick="get_my_reckoning('new')"><a>Новые</a></li>
