@@ -467,6 +467,7 @@ function update_schet($connect){
         save_schet_to_history($connect, $id, $note);
       }
       $obj = $row["id_obj"];
+      //echo $id_obj.' '.$fsdfs';
       if($id_obj && $check == "1" AND ($obj != $id_obj)){
         $note = "Изменен объект. Старый - ".get_object($connect, $obj).";";
         changes_reckoning_cabinet($connect, $id, "object");
