@@ -22,8 +22,7 @@ spl_autoload_register(function($class){
 });
 
 function connect_to_MySQL(){
-    global $directory;
-	include_once($directory."/config.php");
+	include_once("config.php");
 	$conf = new JConfig;
 	$options = array();
 	$options["host"] = $conf->host;

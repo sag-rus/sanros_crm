@@ -35,6 +35,7 @@ function save_all($connect){
 	$surmane = $_POST["surmane"];
 	$name = $_POST["name"];
 	$otch = $_POST["otch"];
+	if(empty($otch)) $otch = "";
 	$sex = null;
 	if(isset($_POST['sex'])) {
 	    $sex = (int)$_POST['sex'];
@@ -44,26 +45,36 @@ function save_all($connect){
     }
 
 	$email = $_POST["email"];
+	if(empty($email)) $email = '';
 	$passport = $_POST["passport"];
+	if(empty($passport)) $passport = '';
 	$passport = str_replace(" ", "", $passport);
 	$passport = (int)$passport;
 	if($passport == 0)
 		$passport = "";
 	$output = $_POST["output"];
+
 	$date_pas = $_POST["date_pas"];
+	if(empty($date_pas)) $date_pas = NULL;
+
 	$date = $_POST["date"];
 	$address = $_POST["address"];
+	if(empty($address)) $address = '';
 	$telephone = $_POST["telephone"];
 
 	$id_obj = $_POST["id_obj"];
 	$id_tour = $_POST["id_tour"];
+	if(empty($id_tour)) $id_tour = NULL;
 	$id_room = $_POST["id_room"];
 	$sum = $_POST["sum"];
 	$number = $_POST["number"];
 	$discount = $_POST["discount"];
+	if(empty($discount))
+	    $discount = NULL;
 	$commis = $_POST["commis"];
 	$number_turist = $_POST["number_turist"];
 	$note = $_POST["note"];
+	if(empty($note)) $note = '';
 	$days = $_POST["days"];
 	$date_z = $_POST["date_z"];
 	$type_price = $_POST["type"];
@@ -86,23 +97,20 @@ function save_all($connect){
             'date_reg' => $today,
             'sex' => $sex
           ];
-         print_r($original_data);
-
         if(is_null($sex))
             $connect->query("INSERT INTO klient(`surname`, `name`, otch, telephone, `date`, address, email, passport, `output`, date_pas, note, date_reg, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $surmane, $name, $otch, $telephone, $date, $address, $email, $passport, $output, $date_pas, $note, $today, json_encode($original_data));
         else
             $connect->query("INSERT INTO klient(`surname`, `name`, otch, sex, telephone, `date`, address, email, passport, `output`, date_pas, note, date_reg, original_data) VALUES (?s, ?s, ?s, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $surmane, $name, $otch, $sex, $telephone, $date, $address, $email, $passport, $output, $date_pas, $note, $today, json_encode($original_data));
 
         $client = $connect->insertId();
-		$connect->query("INSERT INTO reckoning(date, turist, manager, id_user, id_obj, id_tour, number_turist, rest, id_dis) VALUES (?s, ?i, ?s, ?i, ?i, ?s, ?i, ?i, ?s)", $today, $client, $name_user, $session_login, $id_obj, $id_tour, $number_turist, $client, $discount);
+		$connect->query("INSERT INTO reckoning(`date`, `turist`, `manager`, `id_user`, `id_obj`, `id_tour`, number_turist, rest, id_dis) VALUES (?s, ?i, ?s, ?i, ?i, ?s, ?i, ?i, ?s)", $today, $client, $name_user, $session_login, $id_obj, $id_tour, $number_turist, $client, $discount);
 		$bid = $connect->insertId();
 		setCookie("reck", $bid);
-		$connect->query("INSERT INTO position_reck(id_room, sum, number, schet, note, type, days, date_z, add_one_day, reward) VALUES (?i, ?s, ?i, ?i, ?s, ?i, ?i, ?s, ?s, ?s)", $id_room, $sum, $number, $bid, $note, $type_price, $days, $date_z, $add_one_day, $commis);
+		$connect->query("INSERT INTO position_reck(id_room, `sum`, `number`, schet, note, `type`, days, date_z, add_one_day, reward) VALUES (?i, ?s, ?i, ?i, ?s, ?i, ?i, ?s, ?s, ?s)", $id_room, $sum, $number, $bid, $note, $type_price, $days, $date_z, $add_one_day, $commis);
 		recalculation_sum($connect, $bid);
 		save_schet_to_history($connect, $bid);
 		change_arrival_date($connect, $bid);
 		return $client;
-
 	}
 	return FALSE;
 }
@@ -625,6 +633,9 @@ function save_new_position($connect){
       $days = $_POST["days"];
       $date_z = $_POST["date_z"];
       $add_one_day = $_POST["add_one_day"];
+      if(empty($add_one_day))
+          $add_one_day = 1;
+
       $connect->query("INSERT INTO position_reck(id_room, sum, number, schet, note, type, days, date_z, add_one_day, reward) VALUES (?i, ?s, ?i, ?i, ?s, ?i, ?i, ?s, ?s, ?s)", $id_room, $sum, $number, $id, $note, $type, $days, $date_z, $add_one_day, $reward);
       $last = $connect->insertId();
 
@@ -1015,8 +1026,11 @@ function save_new_turist($connect){
 	$surname = $_POST["surname"];
 	$name = $_POST["name"];
 	$otch = $_POST["otch"];
+	if(empty($otch)) $otch = NULL;
 	$date = $_POST["date"];
+	if(empty($date)) $date = NULL;
 	$passport = $_POST["passport"];
+	if(empty($passport)) $passport = NULL;
 	$sex = null;
 
     if(isset($_POST['sex'])) {
@@ -1162,10 +1176,16 @@ function update_klient_schet($connect){
 	$name = $_POST["name"];
 	$otch = $_POST["otch"];
 	$date = $_POST["date"];
+	if(empty($date)) $date = NULL;
 	$passport = $_POST["passport"];
+	if(empty($passport)) $passport = NULL;
 	$output = $_POST["output"];
+	if(empty($output)) $output = NULL;
 	$date_pass = $_POST["date_pass"];
+	if(empty($date_pass)) $date_pass = NULL;
+
 	$birth_certificate = $_POST["birth_certificate"];
+	if(empty($birth_certificate)) $birth_certificate = NULL;
 	$connect->query("UPDATE klient SET surname=?s, name=?s, otch=?s, date=?s, passport=?s, output=?s, date_pas=?s, birth_certificate=?s WHERE id=?i", $surname, $name, $otch, $date, $passport, $output, $date_pass, $birth_certificate, $id);
 	$payer = $connect->getOne("SELECT id FROM payer WHERE id_turist=?i", $id);
 	if($payer)
