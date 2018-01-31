@@ -2065,6 +2065,7 @@ function update_payment($connect){
 	$date = $_POST["date_payment"];
 	$sum = $_POST["sum_payment"];
 	$pay_method = $_POST["pay_method"];
+	if(empty($pay_method)) $pay_method = 0;
 	$pay_number = $_POST["pay_number"];
 	$pay_to_prepay = $_POST["pay_to_prepay"];
 	$office = $_POST["office"];
