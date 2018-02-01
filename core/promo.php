@@ -149,11 +149,13 @@ function add_new_promotion($connect){
 
 function save_new_promotion($connect){
 	global $session_login;
-	$id = $_POST["id"];
+	$id = (int)$_POST["id"];
 	$end = $_POST["end"];
 	$title = $_POST["title"];
 	$text = $_POST['text'];
 	$room = $_POST['room'];
+	if(empty($room))
+      $room = 0;
 	$type = $_POST['type'];
 	$today = date('Y-m-d');
 	$connect->query("INSERT INTO promotions(type, date, date_end, title, text, id_obj, id_room, id_user) VALUES(?s, ?s, ?s, ?s, ?s, ?i, ?s, ?i)", $type, $today, $end, $title, $text, $id, $room, $session_login);
