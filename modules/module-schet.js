@@ -131,6 +131,7 @@ function save_manager_to_reck(id){
 function save_new_position(id){
 	var room = $('.select_room').val();
 	var add_one_day = $('#add_one_day input:checked').val();
+	if(typeof add_one_day === 'undefined') add_one_day = 0;
 	var sum = $('#sum').val();
 	var reward = $('#commis').val();
 	var days = $('#days').val();

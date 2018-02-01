@@ -661,7 +661,11 @@ function save_new_position($connect){
       $date_z = $_POST["date_z"];
       $add_one_day = $_POST["add_one_day"];
       if(empty($add_one_day))
-          $add_one_day = 1;
+          $add_one_day = 0;
+
+      if($add_one_day == 0) {
+          $add_one_day = 0;
+      }
 
       $connect->query("INSERT INTO position_reck(id_room, sum, number, schet, note, type, days, date_z, add_one_day, reward) VALUES (?i, ?s, ?i, ?i, ?s, ?i, ?i, ?s, ?s, ?s)", $id_room, $sum, $number, $id, $note, $type, $days, $date_z, $add_one_day, $reward);
       $last = $connect->insertId();
@@ -2581,7 +2585,7 @@ function outweigh_reckoning_to_agency($connect){
 	$id = $_POST["id"];
 	$agency = $_POST["agency"];
 	if($connect->getOne("SELECT id FROM agency WHERE id=?i", $agency)){
-		$connect->query("UPDATE reckoning SET turist='', agency=?i WHERE id=?i", $agency, $id);
+		$connect->query("UPDATE reckoning SET turist=NULL, agency=?i WHERE id=?i", $agency, $id);
 		return 1;
 	}
 	return FALSE;
