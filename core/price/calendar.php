@@ -131,7 +131,7 @@ function view_quota_object($connect, $data = array()){
           $profkurort = new ProfkurortSync();
         }
 
-        $profk_results = $profkurort->get_prices_object($object_row['sync_id'],NULL,100);
+        $profk_results = $profkurort->get_prices_object($object_row['sync_id'],NULL,300);
 
         if(is_array($profk_results) && !isset($profk_results['ref']) && count($profk_results) > 0) {
           foreach ($profk_results as $profk_price_index => $profk_result) {
@@ -179,7 +179,7 @@ function view_quota_object($connect, $data = array()){
         //die();
 
 
-      $profk_results = $profkurort->get_quota_object($object_row['sync_id'],NULL,100);
+      $profk_results = $profkurort->get_quota_object($object_row['sync_id'],NULL,300);
       if(is_array($profk_results) && !isset($profk_results['ref']) && count($profk_results) > 0) {
         foreach ($profk_results as $profk_place_index => $profk_result) {
           if($profk_place_index < count($profk_results)-1) {
