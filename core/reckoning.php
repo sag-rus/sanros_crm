@@ -2067,7 +2067,7 @@ function delete_payment($connect){
 function update_payment($connect){
 	$id = $_POST["id"];
 	$date = $_POST["date_payment"];
-	$sum = $_POST["sum_payment"];
+	$sum = (float)str_replace(',','.',$_POST["sum_payment"]);
 	$pay_method = $_POST["pay_method"];
 	if(empty($pay_method)) $pay_method = 0;
 	$pay_number = $_POST["pay_number"];
