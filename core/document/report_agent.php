@@ -36,9 +36,14 @@ function report_agent($connect, $all_id){
 		$reward = round(get_reward_agency($connect, $id), 2);
 		$reward = add_null($reward);
 		$oplata = 0;
-		$data = $connect->getAll("SELECT sum FROM payment WHERE schet=?i AND (type=1 OR type=2)", $id);
-		foreach($data as $row)
-			$oplata+= $row["sum"];
+		$payment_return = 0;
+		$data = $connect->getAll("SELECT sum, type FROM payment WHERE schet=?i AND (type=1 OR type=2 OR type=5)", $id);
+		foreach($data as $row) {
+		    if($row['type'] == 5)
+		        $payment_return += $row['sum'];
+		    else
+		        $oplata += $row["sum"];
+        }
 		$date = $connect->getOne("SELECT DATE_FORMAT(date, '%d.%m.%Y') as date FROM history_schet WHERE id_schet=?i AND new_status=3 ORDER BY id", $id);
 		ob_start();
 ?>
@@ -69,9 +74,15 @@ function report_agent($connect, $all_id){
 		<td width="350"><?php echo $reward." руб."; ?></td>
 	</tr>
 	<tr>
-		<td width="300">Перечислено Исполнителю, руб.</td>
+		<td width="300">Оплачено Исполнителю, руб.</td>
 		<td width="350"><?php echo $oplata." руб."; ?></td>
 	</tr>
+    <?php if($payment_return > 0) { ?>
+    <tr>
+        <td width="300">Возврат агентству, руб.</td>
+        <td width="350"><?php echo $payment_return." руб."; ?></td>
+    </tr>
+    <?php } ?>
 	</table>
 	<p class="head">АКТ ВЫПОЛНЕННЫХ РАБОТ № <?php echo $id; ?> от <?php echo $date_z_trans." г."; ?></p>
 
