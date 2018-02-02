@@ -67,20 +67,20 @@ function report_agent($connect, $all_id){
 	</tr>
 	<tr>
 		<td width="300">Стоимость тура, руб.</td>
-		<td width="350"><?php echo $sum." руб."; ?></td>
+		<td width="350"><?php echo number_format($sum,2,'.',' ')." руб."; ?></td>
 	</tr>
 	<tr>
 		<td width="300">Величина агентского Вознаграждения, руб.</td>
-		<td width="350"><?php echo $reward." руб."; ?></td>
+		<td width="350"><?php echo number_format($reward,2,'.',' ')." руб."; ?></td>
 	</tr>
 	<tr>
 		<td width="300">Оплачено Исполнителю, руб.</td>
-		<td width="350"><?php echo $oplata." руб."; ?></td>
+		<td width="350"><?php echo  number_format($oplata,2,'.',' ')." руб."; ?></td>
 	</tr>
     <?php if($payment_return > 0) { ?>
     <tr>
         <td width="300">Возврат агентству, руб.</td>
-        <td width="350"><?php echo $payment_return." руб."; ?></td>
+        <td width="350"><?php echo number_format($payment_return,2,'.',' ')." руб."; ?></td>
     </tr>
     <?php } ?>
 	</table>
