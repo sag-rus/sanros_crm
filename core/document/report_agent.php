@@ -74,12 +74,12 @@ function report_agent($connect, $all_id){
 		<td width="350"><?php echo number_format($reward,2,'.',' ')." руб."; ?></td>
 	</tr>
 	<tr>
-		<td width="300">Оплачено Исполнителю, руб.</td>
+		<td width="300">Оплачено Агентом, руб.</td>
 		<td width="350"><?php echo  number_format($oplata,2,'.',' ')." руб."; ?></td>
 	</tr>
     <?php if($payment_return > 0) { ?>
     <tr>
-        <td width="300">Возврат агентству, руб.</td>
+        <td width="300">Возврат Агенту, руб.</td>
         <td width="350"><?php echo number_format($payment_return,2,'.',' ')." руб."; ?></td>
     </tr>
     <?php } ?>
