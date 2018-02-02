@@ -45,22 +45,27 @@ function save_all($connect){
     }
 
 	$email = $_POST["email"];
-	if(empty($email)) $email = '';
+	if(empty($email)) $email = NULL;
 	$passport = $_POST["passport"];
 	if(empty($passport)) $passport = '';
 	$passport = str_replace(" ", "", $passport);
 	$passport = (int)$passport;
 	if($passport == 0)
-		$passport = "";
+		$passport = NULL;
 	$output = $_POST["output"];
 
 	$date_pas = $_POST["date_pas"];
 	if(empty($date_pas)) $date_pas = NULL;
 
 	$date = $_POST["date"];
+	if(empty($date)) $date = NULL;
+
 	$address = $_POST["address"];
 	if(empty($address)) $address = '';
 	$telephone = $_POST["telephone"];
+
+	if(empty($telephone))
+	    $telephone = NULL;
 
 	$id_obj = $_POST["id_obj"];
 	$id_tour = $_POST["id_tour"];
