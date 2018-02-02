@@ -428,6 +428,8 @@ function update_position(id){
 	var type = $('#type').val();
   var reck_type = parseInt($('#reck_type').val());
 	var add_one_day = $('#add_one_day input:checked').val();
+	if(typeof add_one_day === 'undefined') add_one_day = 1;
+
 	var services = new Array();
 	$('.services:checkbox:checked').each(function () {
 	       services.push($(this).val());
