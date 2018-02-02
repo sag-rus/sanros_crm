@@ -795,6 +795,8 @@ function update_individual_payer($connect){
 	$id = $_POST["id"];
 	$name = $_POST["name"];
 	$date_b = $_POST["date_b"];
+	if(empty($date_b))
+	    $date_b = NULL;
 	$passport = $_POST["passport"];
 	$connect->query("UPDATE payer SET name=?s, date_b=?s, passport=?s WHERE id=?i", $name, $date_b, $passport, $id);
 }
