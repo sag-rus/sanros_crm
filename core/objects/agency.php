@@ -108,16 +108,16 @@ function agency_select($connect,&$post) {
 
 	if(mb_strlen($stroka) > 0) {
 		if($login_status === 0)  {
-			$count_all = $connect->getOne("SELECT COUNT(*) FROM agency WHERE short_name LIKE ?s ".$add_number." ORDER BY short_name ", $stroka."%");
-			$data = $connect->getAll("SELECT id, name, short_name, login, active, address, questionary FROM agency WHERE short_name LIKE ?s ".$add_number." ORDER BY short_name ".$limit_str, $stroka."%");
+			$count_all = $connect->getOne("SELECT COUNT(*) FROM agency WHERE short_name LIKE ?s ".$add_number." ORDER BY short_name ", "%".$stroka."%");
+			$data = $connect->getAll("SELECT id, name, short_name, login, active, address, questionary FROM agency WHERE short_name LIKE ?s ".$add_number." ORDER BY short_name ".$limit_str, "%".$stroka."%");
 		}
 		elseif($login_status === 1) {
-			$count_all = $connect->getOne("SELECT COUNT(*) FROM agency WHERE short_name LIKE ?s ".$add_number." AND login IS NULL ORDER BY short_name", $stroka."%");
-			$data = $connect->getAll("SELECT id, name, short_name, login, active, address, questionary FROM agency WHERE short_name LIKE ?s ".$add_number." AND login IS NULL ORDER BY short_name ".$limit_str, $stroka."%");
+			$count_all = $connect->getOne("SELECT COUNT(*) FROM agency WHERE short_name LIKE ?s ".$add_number." AND login IS NULL ORDER BY short_name", "%".$stroka."%");
+			$data = $connect->getAll("SELECT id, name, short_name, login, active, address, questionary FROM agency WHERE short_name LIKE ?s ".$add_number." AND login IS NULL ORDER BY short_name ".$limit_str, "%".$stroka."%");
 		}
 		elseif ($login_status === 2) {
-			$count_all = $connect->getOne("SELECT COUNT(*) FROM agency WHERE short_name LIKE ?s ".$add_number." AND login IS NOT NULL ORDER BY short_name", $stroka."%");
-			$data = $connect->getAll("SELECT id, name, short_name, login, active, address, questionary FROM agency WHERE short_name LIKE ?s ".$add_number." AND login IS NOT NULL ORDER BY short_name ".$limit_str, $stroka."%");
+			$count_all = $connect->getOne("SELECT COUNT(*) FROM agency WHERE short_name LIKE ?s ".$add_number." AND login IS NOT NULL ORDER BY short_name", "%".$stroka."%");
+			$data = $connect->getAll("SELECT id, name, short_name, login, active, address, questionary FROM agency WHERE short_name LIKE ?s ".$add_number." AND login IS NOT NULL ORDER BY short_name ".$limit_str, "%".$stroka."%");
 		}
 	}
 	else {
