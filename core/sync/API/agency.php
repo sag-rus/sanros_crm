@@ -818,7 +818,10 @@ function save_history_agency($connect, $agency, $text){
 function enter_dogovor_agency($connect, $data){
 	global $directory;
 	$data = $data["data"];
-
+	$responseArray = [
+		'id' => 0,
+		'msg' => ''
+	];
   $agency_post = $data;
   $number = 0;
 
@@ -958,6 +961,7 @@ function enter_dogovor_agency($connect, $data){
 
 		if($id > 0) {
       $number = $id;
+      $responseArray['id'] = $id;
 
       $message = "Номер договора: ".$number."<br />";
       $message.= "Юридическое название фирмы: ".$data["agency"]."<br />";
@@ -984,7 +988,7 @@ function enter_dogovor_agency($connect, $data){
 		}
   }
 
-	return $number;
+	return $responseArray;
 
 }
 
