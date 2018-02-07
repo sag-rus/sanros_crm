@@ -943,9 +943,94 @@ function enter_dogovor_agency($connect, $data){
     $website = trim($agency_post["website"]);
   else
     $website = "";
+  $er = false;
 
+  if(mb_strlen($name) == 0) {
+  	$er = true;
+  	$responseArray['msg'] = 'Incorrect name';
+	}
 
-  if(mb_strlen($name) > 0 && mb_strlen($short_name) > 0 && mb_strlen($present) > 0 && mb_strlen($present_short) > 0 && mb_strlen($post) > 0 && mb_strlen($post_short) > 0 && mb_strlen($doc) > 0 && mb_strlen($address) > 0 && mb_strlen($legal_address) > 0 && mb_strlen($inn) > 0 && mb_strlen($kpp) > 0 && mb_strlen($bik) > 0 && mb_strlen($rs) > 0 && mb_strlen($ks) > 0 && mb_strlen($ogrn) > 0 && mb_strlen($telephone) > 0 && mb_strlen($email) > 0) {
+	if(mb_strlen($short_name) == 0) {
+  	$er = true;
+    $responseArray['msg'] = 'Incorrect short name';
+	}
+
+	if(mb_strlen($present) == 0) {
+  	$er = true;
+    $responseArray['msg'] = 'Incorrect present';
+	}
+
+	if(mb_strlen($present_short) == 0) {
+  	$er = true;
+    $responseArray['msg'] = 'Incorrect present short';
+	}
+
+	if(mb_strlen($post) == 0) {
+  	$er = true;
+    $responseArray['msg'] = 'Incorrect post';
+	}
+
+	if(mb_strlen($post_short) == 0) {
+  	$er = true;
+    $responseArray['msg'] = 'Incorrect post short';
+	}
+
+	if(mb_strlen($doc)  == 0) {
+  	$er = true;
+    $responseArray['msg'] = 'Incorrect doc';
+	}
+
+	if(mb_strlen($address) == 0) {
+  	$er = true;
+    $responseArray['msg'] = 'Incorrect address';
+	}
+
+	if(mb_strlen($legal_address) == 0) {
+  	$er = true;
+    $responseArray['msg'] = 'Incorrect legal address';
+	}
+
+	if(mb_strlen($inn) == 0) {
+  	$er = true;
+    $responseArray['msg'] = 'Incorrect inn';
+	}
+
+	if(mb_strlen($kpp) == 0) {
+  	$er = true;
+    $responseArray['msg'] = 'Incorrect kpp';
+	}
+
+	if(mb_strlen($bik) == 0) {
+  	$er = true;
+    $responseArray['msg'] = 'Incorrect bik';
+	}
+
+	if(mb_strlen($rs) == 0) {
+    $er = true;
+    $responseArray['msg'] = 'Incorrect rs';
+	}
+
+	if(mb_strlen($ks) == 0) {
+  	$er = true;
+    $responseArray['msg'] = 'Incorrect ks';
+	}
+
+	if(mb_strlen($ogrn) == 0) {
+  	$er = true;
+    $responseArray['msg'] = 'Incorrect ogrn';
+	}
+
+	if(mb_strlen($telephone) == 0) {
+  	$er = true;
+    $responseArray['msg'] = 'Incorrect telephone';
+	}
+
+	if(mb_strlen($email) == 0) {
+  	$er = true;
+    $responseArray['msg'] = 'Incorrect email';
+	}
+
+  if(!$er) {
     $module = gen_password(rand(6, 8));
 
     while($connect->getOne("SELECT id FROM agency WHERE module=?s LIMIT 1", $module))
@@ -957,6 +1042,7 @@ function enter_dogovor_agency($connect, $data){
 		}
 		catch (Exception $e) {
     	$id = 0;
+    	$responseArray['msg'] = 'Agency insert error';
 		}
 
 		if($id > 0) {
