@@ -820,8 +820,8 @@ function enter_dogovor_agency($connect, $data){
 	$data = $data["data"];
 	$responseArray = [
 		'id' => 0,
-		'msg' => '',
-		'post_data' => $data
+		'msg' => ''
+		//'post_data' => $data
 	];
   $agency_post = $data;
   $number = 0;
@@ -924,7 +924,7 @@ function enter_dogovor_agency($connect, $data){
     $rs = "";
 
   if(isset($agency_post['bank']))
-    $bank = addslashes(trim($agency_post["bank"]));
+    $bank = trim($agency_post["bank"]);
   else
     $bank = "";
 
