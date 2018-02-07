@@ -1077,7 +1077,8 @@ function enter_dogovor_agency($connect, $data){
       $connect->query("INSERT INTO send_mail(email, title, body) VALUES (?s, ?s, ?s)", $email, $title, $message);
 		}
 		else {
-      $responseArray['msg'] = 'Agency insert error';
+    	if(empty($responseArray['msg']))
+    		$responseArray['msg'] = 'Agency insert error';
 		}
   }
 
