@@ -1036,6 +1036,10 @@ function enter_dogovor_agency($connect, $data){
     while($connect->getOne("SELECT id FROM agency WHERE module=?s LIMIT 1", $module))
       $module = gen_password(rand(6, 8));
 
+    if(mb_strlen($module) == 0) {
+    	$responseArray['msg'] = 'Module string generating error';
+		}
+
     try {
       $connect->query("INSERT INTO agency(name, short_name, present, telephone, email, fax, icq, skype, note, address, website, legal_address, inn, kpp, bik, rs, ks, bank, post, doc, module, module_email, created) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $name, $short_name, $present, $telephone, $email, $fax, $icq, $skype, $note, $address, $website, $legal_address, $inn, $kpp, $bik, $rs, $ks, $bank, $post, $doc, $module, $email, gmdate("U"));
       $id = $connect->insertId();
