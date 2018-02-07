@@ -820,7 +820,8 @@ function enter_dogovor_agency($connect, $data){
 	$data = $data["data"];
 	$responseArray = [
 		'id' => 0,
-		'msg' => ''
+		'msg' => '',
+		'post_data' => $data
 	];
   $agency_post = $data;
   $number = 0;
