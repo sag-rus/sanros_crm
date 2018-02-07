@@ -827,7 +827,7 @@ function enter_dogovor_agency($connect, $data){
   $number = 0;
 
   if(isset($agency_post['agency']))
-    $name = trim(str_replace("plus", "+", $agency_post["agency"]));
+    $name = $connect->escapeString(trim(str_replace("plus", "+", $agency_post["agency"])));
   else
     $name = "";
 
@@ -924,7 +924,7 @@ function enter_dogovor_agency($connect, $data){
     $rs = "";
 
   if(isset($agency_post['bank']))
-    $bank = trim($agency_post["bank"]);
+    $bank = $connect->escapeString(trim($agency_post["bank"]));
   else
     $bank = "";
 
