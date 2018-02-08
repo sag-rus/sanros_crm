@@ -160,6 +160,10 @@ function save_new_category_room_account($connect, $data){
 }
 
 function update_category_room_account($connect, $data){
+	$responseArray = [
+		'success' => 0,
+		'msg' => ''
+	];
 	if(CheckAuthObjectCabinet::check_authorization()){
 		$object = $data["object"];
 		$room = $data["id"];
@@ -171,6 +175,11 @@ function update_category_room_account($connect, $data){
 		$connect->query("UPDATE object SET status=2 WHERE id=?i", $object);
 		save_history_object("Изменение категории ".$data["name"]);
 	}
+	else {
+    $responseArray['msg'] = 'Access denied';
+	}
+
+	return $responseArray;
 }
 
 function remove_category_room_account($connect, $data){
