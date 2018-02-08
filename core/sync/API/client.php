@@ -372,6 +372,7 @@ function show_tour_bid_account($connect, $data){
 		$array["id"] = $answer["id"];
 		$array["object"] = get_object($connect, $answer["id_obj"], "type");
 		$array["date_z"] = month_transform(date_change($answer["date_z"]));
+		$array["date_z_format"] = $answer["date_z"];
 		$array["date_v"] = month_transform(date_change($answer["date_v"]));
 		$array["sum"] = $answer["sum"];
 		$array["changes"] = $answer["changes"];
