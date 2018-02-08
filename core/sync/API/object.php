@@ -362,7 +362,7 @@ function update_rate_plan_account($connect, $data){
 		if(!isset($data['status']) || !in_array($data['status'],[0,1,'0','1']))
 			$data['status'] = 1;
 
-		$connect->query("UPDATE rate_plan SET name=?s, food=?s, description=?s, days=?i, status=?i, WHERE id=?i", $data["name"], $data["food"], $data["desc"], $data["days"], $data['status'], $data["id"]);
+		$connect->query("UPDATE rate_plan SET name=?s, food=?s, description=?s, days=?i, status=?i, WHERE id=?i AND object=?i", $data["name"], $data["food"], $data["desc"], $data["days"], $data['status'], $data["id"],$object);
 		$connect->query("UPDATE object SET status=2 WHERE id=?i", $object);
 		save_history_object("Изменение тарифного плана ".$data["name"]);
 	}
