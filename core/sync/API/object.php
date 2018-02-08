@@ -163,6 +163,10 @@ function update_category_room_account($connect, $data){
 	if(CheckAuthObjectCabinet::check_authorization()){
 		$object = $data["object"];
 		$room = $data["id"];
+		$data['square'] = (int)$data['square'];
+		if(!$data['square']) $data['square'] = NULL;
+		if(!$data['housing']) $data['housing'] = NULL;
+
 		$connect->query("UPDATE room SET name=?s, housing=?s, main_place=?i, add_place=?i, square=?s, food=?s, note=?s, id_comfort=?s, id_best_comfort=?s, number=?i, description=?s WHERE id=?i AND id_obj=?i", $data["name"], $data["housing"], $data["main"], $data["add"], $data["square"], $data["food"], $data["note"], $data["comf"], $data["best"], (int)$data["num"], $data["description"], $room, $object);
 		$connect->query("UPDATE object SET status=2 WHERE id=?i", $object);
 		save_history_object("Изменение категории ".$data["name"]);
