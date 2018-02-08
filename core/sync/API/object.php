@@ -164,7 +164,8 @@ function update_category_room_account($connect, $data){
 		'success' => 0,
 		'msg' => ''
 	];
-	if(CheckAuthObjectCabinet::check_authorization()){
+
+	/*if(CheckAuthObjectCabinet::check_authorization()){
 		$object = $data["object"];
 		$room = $data["id"];
 		$data['square'] = (int)$data['square'];
@@ -177,7 +178,7 @@ function update_category_room_account($connect, $data){
 	}
 	else {
     $responseArray['msg'] = 'Access denied';
-	}
+	}*/
 
 	return $responseArray;
 }
