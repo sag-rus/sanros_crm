@@ -377,6 +377,7 @@ function show_tour_bid_account($connect, $data){
 		$array["sum"] = $answer["sum"];
 		$array["changes"] = $answer["changes"];
 		$array["status"] = $connect->getOne("SELECT name FROM status WHERE id=?i", $answer["status"]);
+		$array["status_int"] = $answer["status"];
 		$array["bonus"] = ABS($connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND sum<0", $id));
 		$array["manager"] = "";
 		if($answer["id_user"]){
