@@ -68,6 +68,20 @@ function register_payment_sberbank($connect, $data){
   }
 }
 
+function register_holding_sberbank($connect, $data){
+  if(CheckAuthTuristCabinet::check_authorization_booking()){
+  	if($data['sum'] > 0) {
+      $payment = new \App\lib\payment\Sberbank\BookingPayment([
+        //'apiUri' => \App\lib\payment\Sberbank\BookingPayment::API_URI_TEST
+      ]);
+      $request = $payment->registerHolding((float)$data['sum']);
+      unset($payment);
+      return $request;
+		}
+  }
+}
+
+
 function success_payment($connect, $data){
 //	if(CheckAuthTuristCabinet::check_authorization_booking()){
 		$bid_pay = $data["bid"];

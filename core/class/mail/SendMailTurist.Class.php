@@ -97,6 +97,41 @@ class SendMailTurist extends SendMail{
     }
   }
 
+  public function notification_holding_booking(){
+    $booking = $this->booking;
+    $connect = $this->connect;
+    $email = $this->select_email();
+    if($email){
+      $client = new DisplayClient($this->account);
+      $fio = $client->select_fio_array();
+
+      $bonus = new DisplayBonus();
+      $bonus_sum = $bonus->select_bonus();
+
+      $row = $connect->getRow("SELECT id_user, id_obj, date_z, status FROM reckoning WHERE id=?i", $booking);
+      $object = $row["id_obj"];
+      $arrival = $row["date_z"];
+      $manager = $row["id_user"];
+      $status = $row["status"];
+
+      $config = ConfigCRM::getInstance();
+      $link = $config->clientCabinet["link"];
+      $data = array(
+        "link" => $link."заявки/".$booking,
+        "object" => get_object($connect, $object, "type"),
+        "client" => $fio["name"]." ".$fio["otch"],
+        "arrival" => $arrival,
+        "bonus" => $bonus_sum
+      );
+
+      $this->send_mail_base_notification("Оплата из ЛК", "Произведено холдирование средств в заявке №".$booking);
+
+      $letter = $this->select_template_letter_turist("payment/obmen-holding", $data);
+
+      $this->send_mail_base("default", $email, $letter["title"], $letter["HTML"]);
+    }
+  }
+
   public function select_template_letter_turist($file, $data){
     $letter = $this->select_template_letter("client-template", "turist/".$file, $data);
     return $letter;

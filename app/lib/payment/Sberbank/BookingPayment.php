@@ -355,6 +355,70 @@ class BookingPayment extends Client {
     return FALSE;
   }
 
+  public function registerHolding(float $holding_sum){
+    $connect = $this->connect;
+    $booking = $this->booking;
+    $turist = $this->turist;
+
+    $sum = $connect->getOne("SELECT sum FROM reckoning WHERE id=?i AND (status=1 OR status=2) AND turist=?i", $booking, $turist);
+    if($sum > 0 && $holding_sum > 0){
+      $count = (int)$connect->getOne("SELECT count_holding FROM reckoning WHERE id=?i", $booking) + 1;
+      $connect->query("UPDATE reckoning SET count_holding=count_holding+1 WHERE id=?i", $count, $booking);
+      $bonus = abs($connect->getOne("SELECT sum FROM bonus WHERE sum<0 AND schet=?i", $booking));
+      if($bonus > 0){
+        $max_bonus = $this->checkBonusPaymentBankCard();
+        if($bonus > $max_bonus){
+          if($max_bonus == 0)
+            $connect->query("DELETE FROM bonus WHERE sum<0 AND schet=?i", $booking);
+          else
+            $connect->query("UPDATE bonus SET sum=?s WHERE sum<0 AND schet=?i", $max_bonus * (-1), $booking);
+          $this->saveSchetToHistory($booking, "Корректировка суммы бонусов");
+          $bonus = $max_bonus;
+        }
+      }
+
+      $type_pay = 1;
+      $prepay = 0;
+      $payment = $connect->getAll("SELECT sum FROM payment WHERE type=1 AND status = 1 AND schet=?i", $booking);
+
+      foreach($payment as $pay)
+        $prepay+= $pay["sum"];
+
+      $sum_to_pay = $sum - $bonus - $prepay;
+
+      if($holding_sum < $sum_to_pay) {
+        if($holding_sum < 100)
+          $sum_to_pay = 100;
+        else
+          $sum_to_pay = $holding_sum;
+      }
+
+      $object = $connect->getOne("SELECT id_obj FROM reckoning WHERE id=?i", $booking);
+      $link = $this->link;
+      $orderNumber = $booking."-holding-".$count;
+      $returnUrl = $link."core/payment/return-holding-sberbank.php?id=".$orderNumber;
+      //$failUrl = $link."core/payment/fault-payment.php?id=".$booking."&bank=sber";
+
+      $description = "Заморозка средств по заявке №".$booking." (".self::getObject($connect, $object, "type").")";
+
+      $answer = $this->registerOrderPreAuth($orderNumber,$sum_to_pay*100,$returnUrl,[
+        "description" => $description
+      ]);
+
+      //$this->
+
+      if($answer["orderId"]){
+        $check = $connect->getOne("SELECT id FROM payment_request WHERE order_id=?s", $answer["orderId"]);
+        if(!$check){
+          $bank_com = $this->bankInfo["commission"];
+          $connect->query("INSERT INTO payment_request(bid, type, pay_method, sum, bank_com, order_id, bid_pay) VALUES (?i, ?i, 5, ?s, ?s, ?s, ?s)", $booking, $type_pay, $sum_to_pay, $bank_com, $answer["orderId"], $orderNumber);
+        }
+      }
+      return $answer;
+    }
+    return FALSE;
+  }
+
   protected function getPaymentStatus(){
     $answer = $this->getOrderStatus($this->bookingInfo["orderId"]);
     return $answer;
@@ -374,7 +438,7 @@ class BookingPayment extends Client {
     $this->connect->query("INSERT INTO history_schet(date, time, id_schet, id_user, new_status, new_status_san, note) VALUES(?s, ?s, ?i, ?i, ?i, ?i, ?s)", $today, $time, $id, $session_login, $new_status, $new_status_san, $note);
   }
 
-  public function depositPayment($bid_pay = ""){
+  public function depositPayment($bid_pay = "", $holding = FALSE){
     try {
       $connect = $this->connect;
 
@@ -384,6 +448,7 @@ class BookingPayment extends Client {
       $bid = $row["bid"];
       $orderId = $row["order_id"];
       $sum_to_pay = $row["sum"];
+      $request_id = $row['id'];
       $type_pay = $row["type"];
       $row = $connect->getRow("SELECT id_obj, id_user, date_v, turist FROM reckoning WHERE id=?i", $bid);
       $object = $row["id_obj"];
@@ -407,8 +472,12 @@ class BookingPayment extends Client {
       }
 
       $sum = $data["Amount"] / 100;
-      if($sum != $sum_to_pay)
-        return "Payment sum is not equal to sum to pay";
+      if($sum != $sum_to_pay) {
+        if($holding)
+          return "Holding sum is not equal to sum to holding";
+        else
+          return "Payment sum is not equal to sum to pay";
+      }
 
       $data = array(
         "orderId" => $orderId,
@@ -416,7 +485,9 @@ class BookingPayment extends Client {
       );
 
       $this->bookingInfo = $data;
-      $data = $this->deposit($orderId,$sum*100);
+
+      if(!$holding)
+        $data = $this->deposit($orderId,$sum*100);
 
       if($data["ErrorCode"] != 0)
         return $data["ErrorMessage"]." ".($sum * 100)." ".$orderId;
@@ -424,29 +495,54 @@ class BookingPayment extends Client {
       $bank_com = $this->bankInfo["commission"];
       $today = date("Y-m-d");
 
-      if($type_pay == 1){
+      if($holding) {
+        if($type_pay == 1){
+          $connect->query("INSERT INTO payment(schet, status, date, type, pay_method, request_id, sum, bank_com) VALUES (?i, ?i, ?s, 2, 5, ?i, ?s, ?s)", $bid, 1, $today, $request_id, $sum, $bank_com);
+          $connect->query("UPDATE reckoning SET holding=1 WHERE id=?i LIMIT 1", $bid);
+          $this->saveNotification("Холдирование средств картой №".$bid, $manager);
+          $this->saveSchetToHistory($bid, "Холдирование клиентом банковской картой. Сумма ".$sum);
 
-        $connect->query("INSERT INTO payment(schet, date, type, pay_method, sum, bank_com) VALUES (?i, ?s, 2, 5, ?s, ?s)", $bid, $today, $sum, $bank_com);
-        $connect->query("UPDATE reckoning SET status=5 WHERE id=?i LIMIT 1", $bid);
-        $bonus = new Bonus();
-        $bonus->create();
-        unset($bonus);
-        $this->saveNotification("Оплата картой №".$bid, $manager);
-        $this->saveSchetToHistory($bid, "Оплата клиентом банковской картой. Сумма ".$sum);
+        }elseif($type_pay == 2){
 
-      }elseif($type_pay == 2){
+          $connect->query("INSERT INTO payment(schet, status, date, type, pay_method, request_id, sum, bank_com) VALUES (?i, ?i, ?s, 1, 5, ?i, ?s, ?s)", $bid, 1, $today, $request_id, $sum, $bank_com);
+          $connect->query("UPDATE reckoning SET holding=1 WHERE id=?i LIMIT 1", $bid);
+          $this->saveNotification("Холдирование средств картой №".$bid, $manager);
+          $this->saveSchetToHistory($bid, "Холдирование клиентом банковской картой. Сумма ".$sum);
 
-        $connect->query("INSERT INTO payment(schet, date, type, pay_method, sum, bank_com) VALUES (?i, ?s, 1, 5, ?s, ?s)", $bid, $today, $sum, $bank_com);
-        $connect->query("UPDATE reckoning SET status=4 WHERE id=?i LIMIT 1", $bid);
-        $this->saveNotification("Предоплата картой №".$bid, $manager);
-        $this->saveSchetToHistory($bid, "Предоплата клиентом банковской картой. Сумма ".$sum);
+        }
+      }
+      else {
+        if($type_pay == 1){
 
+          $connect->query("INSERT INTO payment(schet, date, type, pay_method, request_id, sum, bank_com) VALUES (?i, ?s, 2, 5, ?i, ?s, ?s)", $bid, $today, $request_id, $sum, $bank_com);
+          $connect->query("UPDATE reckoning SET status=5 WHERE id=?i LIMIT 1", $bid);
+          $bonus = new Bonus();
+          $bonus->create();
+          unset($bonus);
+          $this->saveNotification("Оплата картой №".$bid, $manager);
+          $this->saveSchetToHistory($bid, "Оплата клиентом банковской картой. Сумма ".$sum);
+
+        }elseif($type_pay == 2){
+
+          $connect->query("INSERT INTO payment(schet, date, type, pay_method, request_id, sum, bank_com) VALUES (?i, ?s, 1, 5, ?i, ?s, ?s)", $bid, $today, $request_id, $sum, $bank_com);
+          $connect->query("UPDATE reckoning SET status=4 WHERE id=?i LIMIT 1", $bid);
+          $this->saveNotification("Предоплата картой №".$bid, $manager);
+          $this->saveSchetToHistory($bid, "Предоплата клиентом банковской картой. Сумма ".$sum);
+
+        }
       }
 
-      $connect->query("UPDATE payment_request SET status=2 WHERE order_id=?s", $orderId);
-      $send = new \SendMailTurist;
-      $send->notification_payment_booking();
-      unset($send);
+      if($holding) {
+        $send = new \SendMailTurist;
+        $send->notification_holding_booking();
+        unset($send);
+      }
+      else {
+        $connect->query("UPDATE payment_request SET status=2 WHERE order_id=?s", $orderId);
+        $send = new \SendMailTurist;
+        $send->notification_payment_booking();
+        unset($send);
+      }
 
       return 1;
     }
