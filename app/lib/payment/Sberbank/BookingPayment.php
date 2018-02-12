@@ -363,7 +363,7 @@ class BookingPayment extends Client {
     $sum = $connect->getOne("SELECT sum FROM reckoning WHERE id=?i AND (status=1 OR status=2) AND turist=?i", $booking, $turist);
     if($sum > 0 && $holding_sum > 0){
       $count = (int)$connect->getOne("SELECT count_holding FROM reckoning WHERE id=?i", $booking) + 1;
-      $connect->query("UPDATE reckoning SET count_holding=count_holding+1 WHERE id=?i", $count, $booking);
+      $connect->query("UPDATE reckoning SET count_holding=?i WHERE id=?i", $count, $booking);
       $bonus = abs($connect->getOne("SELECT sum FROM bonus WHERE sum<0 AND schet=?i", $booking));
       if($bonus > 0){
         $max_bonus = $this->checkBonusPaymentBankCard();
