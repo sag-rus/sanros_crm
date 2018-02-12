@@ -200,6 +200,38 @@ class BookingPayment extends Client {
     return $answer;
   }
 
+  public function checkHolding()
+  {
+    $connect = $this->connect;
+    $booking = $this->booking;
+    $turist = $this->turist;
+    $type = $this->type;
+
+    $answer = array(
+      "to-pay" => 0,
+      "bonus" => 0,
+      "prepay" => 0
+    );
+    $answer["total"] = $connect->getOne("SELECT sum FROM reckoning WHERE id=?i AND turist=?i AND (status=1 OR status=2)", $booking, $turist);
+    if($answer["total"] > 0){
+
+        $answer["bonus"] = abs($connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND sum < 0", $booking));
+        if($answer["bonus"] > 0){
+          $max_bonus = $this->checkBonusPaymentBankCard();
+          if($max_bonus < $answer["bonus"]){
+            $answer["check_bonus"] = 1;
+            $answer["bonus"] = $max_bonus;
+          }
+        }
+        $payment = $connect->getAll("SELECT sum FROM payment WHERE type=1 AND schet=?i", $booking);
+        foreach($payment as $pay){
+          $answer["prepay"]+= $pay["sum"];
+        }
+        $answer["to-pay"] = $answer["total"] - $answer["bonus"] - $answer["prepay"];
+    }
+    return $answer;
+  }
+
   public function showPaymentCard($type)
   {
     $connect = $this->connect;
@@ -210,6 +242,38 @@ class BookingPayment extends Client {
     $sum = $this->checkPayment();
     if($sum["to-pay"] > 0){
       $array = $connect->getRow("SELECT id, sum, id_obj FROM reckoning WHERE id=?i AND turist=?i AND (status=3 OR status=4)", $booking, $client);
+      $answer["id"] = $array["id"];
+      $answer["check"] = 1;
+
+      $answer["all_sum"] = add_null($sum["total"]);
+      $answer["sum"] = add_null($sum["to-pay"]);
+      $answer["bonus"] = add_null($sum["bonus"]);
+      $answer["prepay"] = add_null($sum["prepay"]);
+      $turist = new Display($client);
+      $answer["turist"] = $turist->selectFio();
+      unset($turist);
+      $answer["product"] = "Оплата путевки по заявке №".$booking." (".self::getObject($connect, $array["id_obj"], "type").")";
+    }
+    else {
+      $answer['msg'] = 'Pay sum is not correct';
+      //$answer['data_dump'] = $sum;
+      //$answer['connect_dump'] = \App\lib\CRM\Config\Client::getInstance();
+    }
+    return $answer;
+
+  }
+
+
+  public function showHoldingCard($type)
+  {
+    $connect = $this->connect;
+    $booking = $this->booking;
+    $client = $this->turist;
+    $this->type = $type;
+    $answer = array();
+    $sum = $this->checkPayment();
+    if($sum["to-pay"] > 0){
+      $array = $connect->getRow("SELECT id, sum, id_obj FROM reckoning WHERE id=?i AND turist=?i AND (status=1 OR status=2)", $booking, $client);
       $answer["id"] = $array["id"];
       $answer["check"] = 1;
 
