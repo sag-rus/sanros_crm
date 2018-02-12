@@ -316,7 +316,7 @@ class BookingPayment extends Client {
           $bonus = $max_bonus;
         }
       }
-      $type_pay = 1;
+      $type_pay = 2;
       $prepay = 0;
       $payment = $connect->getAll("SELECT sum FROM payment WHERE type=1 AND schet=?i", $booking);
       foreach($payment as $pay)
@@ -379,6 +379,7 @@ class BookingPayment extends Client {
 
       $type_pay = 1;
       $prepay = 0;
+
       $payment = $connect->getAll("SELECT sum FROM payment WHERE type=1 AND status = 1 AND schet=?i", $booking);
 
       foreach($payment as $pay)
