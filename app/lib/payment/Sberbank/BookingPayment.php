@@ -271,7 +271,7 @@ class BookingPayment extends Client {
     $client = $this->turist;
     $this->type = $type;
     $answer = array();
-    $sum = $this->checkPayment();
+    $sum = $this->checkHolding();
     if($sum["to-pay"] > 0){
       $array = $connect->getRow("SELECT id, sum, id_obj FROM reckoning WHERE id=?i AND turist=?i AND (status=1 OR status=2)", $booking, $client);
       $answer["id"] = $array["id"];
