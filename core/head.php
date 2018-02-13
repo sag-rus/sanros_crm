@@ -102,7 +102,7 @@ function get_my_reckoning($connect){
 		$str = " AND status = $page ";
 	if($page == 5)
 		$str.= " AND (status_san!=1 AND status_san!=4) ";
-	if((int)$id_rights <= 3)
+	if((int)$id_rights <= 3 && $session_login != 21)
 		$str.= " AND id_user=$session_login ";
 	if($page == "cancel"){
 		$str = " AND (status=10 OR status=11)";
@@ -113,7 +113,7 @@ function get_my_reckoning($connect){
 		$str = " AND (id_user='' OR id_user IS NULL OR id_user=0)";
 	if($page == "special"){
 		$str = " AND ((id_obj=95 OR id_obj=133) AND status=7)";
-		if((int)$id_rights <= 3)
+		if((int)$id_rights <= 3 && $session_login != 21)
 			$str.= " AND id_user=$session_login ";
 	}
 

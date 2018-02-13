@@ -719,7 +719,7 @@ function write_body($connect){
 					<li id="touroperator_menu" onclick="touroperator()"><a>Туроператоры</a></li>
 					<li id="obj_menu" onclick="objects()"><a>Объекты</a></li>
 					<li id="reminder_menu" onclick="my_reminder()"><a>Напоминания</a></li>
-			<?php if($id_rights > 3){ ?>
+			<?php if($id_rights > 3 || $session_login == 21){ ?>
 					<li id="report_menu" onclick="show_reports()"><a>Отчеты</a></li>
 			<?php }else{ ?>
 					<li id="filter_menu" onclick="show_filter()"><a>Поиск</a></li>
