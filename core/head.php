@@ -118,8 +118,9 @@ function get_my_reckoning($connect){
 	}
 
 	if($page == "certificate") {
-      $str = " AND type = 1";
+      $str .= " AND type = 1";
     }
+    $str .= ' ORDER BY (id_user = '.$session_login.') DESC';
 
 	$query = "SELECT id, status, status_san, turist, agency, DATE_FORMAT(date, '%d.%m.%Y') as date, DATE_FORMAT(date_z, '%d.%m.%Y') as date_z, id_obj, id_user, sum, active FROM reckoning WHERE (active=0 OR active=2 OR active=1) $str";
 	$data = $connect->getAll($query);
