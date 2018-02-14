@@ -221,8 +221,14 @@ function filter_payment($connect){
 		$th_pay = "<th width='70'>Способ<br />платежа</th><th width='70'>Номер<br />плат.пор.</th>";
 	}else
 		$th_pay = "<th width='70'>Способ<br />платежа</th><th width='70'>Номер<br />плат.пор.</th>";
+	if(mb_strlen($zapros_for_mysql) > 0)
+	    $zapros_for_mysql .= " AND `payment`.`status` != 0";
+	else
+        $zapros_for_mysql .= " `payment`.`status` != 0";
+
 	$zapros_for_mysql_cond = $zapros_for_mysql;
-	$zapros_for_mysql = "SELECT payment.id, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, payment.office, `payment`.`type`, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san FROM payment LEFT JOIN reckoning ON reckoning.id=payment.schet WHERE ".$zapros_for_mysql." ORDER BY payment.id";
+	$zapros_for_mysql = "SELECT payment.id, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, payment.office, `payment`.`status` AS payment_status, `payment`.`type`, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san FROM payment LEFT JOIN reckoning ON reckoning.id=payment.schet WHERE ".$zapros_for_mysql." ORDER BY payment.id";
+
 	$data = $connect->getAll($zapros_for_mysql);
 
 	$pay_groups = [];
@@ -294,6 +300,11 @@ function filter_payment($connect){
 				$array["office"][$office_pay]["all_pay"]+= $sum;
 				$color = $office_color[$office_pay];
 			}
+
+			if($row['payment_status'] == 1) {
+              $color = '#ffeb3b85';
+            }
+
 			if($type_opl == 1){
 				$array["num_bez"]++;
 				$array["pay_bez"]+= $sum;
@@ -389,7 +400,7 @@ function filter_payment($connect){
 
 			//блок расчета прибыли по платежу - начало
             $pay_reward = 0;
-            $all_pays = $connect->getAll("SELECT id FROM payment WHERE (type = 1 OR type = 2) AND schet = ?i", $id);
+            $all_pays = $connect->getAll("SELECT id FROM payment WHERE (type = 1 OR type = 2) AND schet = ?i AND `payment`.`status` != 0", $id);
             $all_pays_count = count($all_pays);
               $pay_ar1 = [];
               $pay_ar2 = [];
@@ -438,7 +449,7 @@ function filter_payment($connect){
 	}
 
 	foreach ($pay_groups as $reck_id => $pay_array) {
-	    $all_pays = $connect->getAll("SELECT id FROM payment WHERE (type = 1 OR type = 2) AND schet = ?i", $reck_id);
+	    $all_pays = $connect->getAll("SELECT id FROM payment WHERE (type = 1 OR type = 2) AND schet = ?i AND `payment`.`status` != 0", $reck_id);
 	    $all_pays_count = count($all_pays);
 	    /*if($all_pays_count === count($pay_array)) {
           $array["reward"] += get_reward_schet($connect, $reck_id, "", TRUE);
@@ -655,12 +666,12 @@ function filter_payment_month($connect){
 		for($day = 1; $day <= $max; $day++){
 			$date = $year."-".$month."-".$day;
 			$array = array("sum_opl" => 0, "count_opl" => 0, "sum_opl_san" => 0, "count_opl_san" => 0);
-			$data = $connect->getAll("SELECT payment.sum FROM payment, reckoning WHERE payment.schet=reckoning.id AND (payment.type=1 OR payment.type=2) AND payment.date=?s ".$query, $date);
+			$data = $connect->getAll("SELECT payment.sum FROM payment, reckoning WHERE payment.schet=reckoning.id AND (payment.type=1 OR payment.type=2) AND payment.date=?s AND `payment`.`status` != 0".$query, $date);
 			foreach($data as $row){
 				$array["sum_opl"]+= $row["sum"];
 				$array["count_opl"]++;
 			}
-			$data = $connect->getAll("SELECT payment.sum FROM payment, reckoning WHERE payment.schet=reckoning.id AND (payment.type=3 OR payment.type=4) AND payment.date=?s ".$query, $date);
+			$data = $connect->getAll("SELECT payment.sum FROM payment, reckoning WHERE payment.schet=reckoning.id AND (payment.type=3 OR payment.type=4) AND payment.date=?s AND `payment`.`status` != 0".$query, $date);
 			foreach($data as $row){
 				$array["sum_opl_san"]+= $row["sum"];
 				$array["count_opl_san"]++;
@@ -706,12 +717,12 @@ function filter_payment_month($connect){
 			$first = $year."-".$month."-1";
 			$end = $year."-".$month."-".$max;
 			$array = array("sum_opl" => 0, "count_opl" => 0, "sum_opl_san" => 0, "count_opl_san" => 0);
-			$data = $connect->getAll("SELECT payment.sum FROM payment, reckoning WHERE payment.schet=reckoning.id AND (payment.type=1 OR payment.type=2) AND (payment.date>=?s AND payment.date<=?s) ".$query, $first, $end);
+			$data = $connect->getAll("SELECT payment.sum FROM payment, reckoning WHERE payment.schet=reckoning.id AND (payment.type=1 OR payment.type=2) AND (payment.date>=?s AND payment.date<=?s) AND `payment`.`status` != 0".$query, $first, $end);
 			foreach($data as $row){
 				$array["sum_opl"]+= $row["sum"];
 				$array["count_opl"]++;
 			}
-			$data = $connect->getAll("SELECT payment.sum FROM payment, reckoning WHERE payment.schet=reckoning.id AND (payment.type=3 OR payment.type=4) AND (payment.date>=?s AND payment.date<=?s) ".$query, $first, $end);
+			$data = $connect->getAll("SELECT payment.sum FROM payment, reckoning WHERE payment.schet=reckoning.id AND (payment.type=3 OR payment.type=4) AND (payment.date>=?s AND payment.date<=?s) AND `payment`.`status` != 0".$query, $first, $end);
 			foreach($data as $row){
 				$array["sum_opl_san"]+= $row["sum"];
 				$array["count_opl_san"]++;

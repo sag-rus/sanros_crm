@@ -850,7 +850,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
 
     if(mb_strlen($add_cond) > 0)
       $add_cond .= ") AND ";
-    $payments = $connect->getAll("SELECT id, sum FROM payment WHERE ".$add_cond."schet=?i AND class='schet' AND type != 3 AND type != 4 AND type != 5", $id);
+    $payments = $connect->getAll("SELECT id, sum FROM payment WHERE ".$add_cond."schet=?i AND class='schet' AND type != 3 AND type != 4 AND type != 5 AND `payment`.`status` != 0", $id);
     $pay_sum = 0;
 
     foreach ($payments as $payment) {
@@ -1002,7 +1002,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
   }
 
   $bank_com = 0;
-  $payment_status_string = " AND status != 0";
+  $payment_status_string = " AND `payment`.`status` != 0";
   if($only_payment_state)
     $data = $connect->getAll("SELECT sum, bank_com, type FROM payment WHERE ".$add_cond."pay_method=5 AND schet=?i".$payment_status_string, $id);
   else
@@ -1339,7 +1339,7 @@ function determine_klient_bonus($connect, $id){
 function get_payment($connect, $id, $type = ""){
 	$array = array();
 	$index = 0;
-	$data = $connect->getAll("SELECT id, pay_method, pay_number, sum, DATE_FORMAT(date, '%d.%m.%Y') as date  FROM payment WHERE schet=?i AND type=?i AND class='schet'", $id, $type);
+	$data = $connect->getAll("SELECT id, pay_method, pay_number, status, sum, DATE_FORMAT(date, '%d.%m.%Y') as date  FROM payment WHERE schet=?i AND type=?i AND class='schet' ORDER BY (`payment`.`status` = 1) DESC", $id, $type);
 	foreach($data as $row){
 		$index++;
 		$array[$index]["id"] = $row["id"];
@@ -1356,6 +1356,7 @@ function get_payment($connect, $id, $type = ""){
 		$array[$index]["sum"] = add_null($row["sum"]);
 		$array[$index]["pay_number"] = $row["pay_number"];
 		$array[$index]["date"] = month_transform($row["date"]);
+		$array[$index]['status'] = $row['status'];
 	}
 	return $array;
 }

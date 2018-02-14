@@ -1633,8 +1633,15 @@ function show_schet_klient($connect){
 	$arr = get_payment($connect, $id, 1);
 	foreach($arr as $payments){
 		$payment_div.= "<strong>Предоплата:</strong> ".$payments["sum"];
-		if($id_rights > 3 AND ($active == 0 OR $active == 1) AND $payments["pay_method"] != "сертификатом")
-			$payment_div.= "<span style='float: right;'><button type='button' class='btn btn-default btn-xs' onclick='edit_payment(\"".$payments['id']."\")'>&nbsp;<i class='fa fa-pencil'></i>&nbsp;</button> <button type='button' class='btn btn-danger btn-xs' onclick='delete_payment(\"".$payments['id']."\")'>&nbsp;<i class='fa fa-trash-o'></i>&nbsp;</button></span>";
+		if($id_rights > 3 AND ($active == 0 OR $active == 1) AND $payments["pay_method"] != "сертификатом") {
+		  $buttons = '<span style="float: right;">';
+		  if($payments['status'] != 1) {
+		    $buttons .= '<button type="button" class="btn btn-default btn-xs" onclick="edit_payment('. $payments['id'] . ')">&nbsp;<i class="fa fa-pencil"></i>&nbsp;</button>';
+            $buttons .= '<button type="button" class="btn btn-danger btn-xs" onclick="delete_payment(' . $payments['id'] . ')">&nbsp;<i class="fa fa-trash-o"></i>&nbsp;</button>';
+          }
+          $buttons .= '</span>';
+          $payment_div .= $buttons;
+        }
 		$payment_div.= "<br /><strong>Дата:</strong> ".$payments['date']."<br />";
 		$payment_div.= "<strong>Способ:</strong> ".$payments['pay_method']."<br /><hr />";
 	}
