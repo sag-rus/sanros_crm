@@ -1002,17 +1002,18 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
   }
 
   $bank_com = 0;
+  $payment_status_string = " AND status != 0";
   if($only_payment_state)
-    $data = $connect->getAll("SELECT sum, bank_com, type FROM payment WHERE ".$add_cond."pay_method=5 AND schet=?i", $id);
+    $data = $connect->getAll("SELECT sum, bank_com, type FROM payment WHERE ".$add_cond."pay_method=5 AND schet=?i".$payment_status_string, $id);
   else
-    $data = $connect->getAll("SELECT sum, bank_com, type FROM payment WHERE pay_method=5 AND schet=?i", $id);
+    $data = $connect->getAll("SELECT sum, bank_com, type FROM payment WHERE pay_method=5 AND schet=?i".$payment_status_string, $id);
 
   foreach($data as $row){
     if($row["bank_com"] > 0 AND $row["type"] == 2){
       if($only_payment_state)
-        $row["sum"]-= $connect->getOne("SELECT sum FROM payment WHERE ".$add_cond."type=5 AND schet=?i", $id);
+        $row["sum"]-= $connect->getOne("SELECT sum FROM payment WHERE ".$add_cond."type=5 AND schet=?i".$payment_status_string, $id);
       else
-        $row["sum"]-= $connect->getOne("SELECT sum FROM payment WHERE type=5 AND schet=?i", $id);
+        $row["sum"]-= $connect->getOne("SELECT sum FROM payment WHERE type=5 AND schet=?i".$payment_status_string, $id);
     }
 
     if($row["sum"] <= 100)
