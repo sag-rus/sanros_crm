@@ -1634,18 +1634,36 @@ function show_schet_klient($connect){
 	$payment_div = "";
 	$arr = get_payment($connect, $id, 1);
 	foreach($arr as $payments){
-		$payment_div.= "<strong>Предоплата:</strong> ".$payments["sum"];
+	    $payment_el_class = "";
+
+	    if($payments['status'] == 1) {
+          $payment_el_class .= ' not-confirmed';
+        }
+        elseif ($payments['status'] == 0) {
+          $payment_el_class .= ' cancelled';
+        }
+
+		$payment_div.= '<div class="payment-element'.$payment_el_class.'" data-payment-id="'.$payments['id'].'"><strong>Предоплата:</strong> '.$payments["sum"];
 		if($id_rights > 3 AND ($active == 0 OR $active == 1) AND $payments["pay_method"] != "сертификатом") {
 		  $buttons = '<span style="float: right;">';
 		  if($payments['status'] != 1) {
 		    $buttons .= '<button type="button" class="btn btn-default btn-xs" onclick="edit_payment('. $payments['id'] . ')">&nbsp;<i class="fa fa-pencil"></i>&nbsp;</button>';
-            $buttons .= '<button type="button" class="btn btn-danger btn-xs" onclick="delete_payment(' . $payments['id'] . ')">&nbsp;<i class="fa fa-trash-o"></i>&nbsp;</button>';
+
+		    if($payments['status'] != 0 && $id_rights > 4)
+		        $buttons .= '<button type="button" class="btn btn-danger btn-xs" onclick="delete_payment(' . $payments['id'] . ')">&nbsp;<i class="fa fa-trash-o"></i>&nbsp;</button>';
           }
           $buttons .= '</span>';
           $payment_div .= $buttons;
         }
 		$payment_div.= "<br /><strong>Дата:</strong> ".$payments['date']."<br />";
 		$payment_div.= "<strong>Способ:</strong> ".$payments['pay_method']."<br /><hr />";
+		if($payments['status'] == 1 && $id_rights > 3) {
+		    $payment_div .= '<div class="row clearfix payment-actions-block">';
+            $payment_div .= '<div class="col-sm-6"><button class="btn btn-sm btn-success pull-right" onclick="confirm_payment('. $payments['id'] . ')">Подтвердить</button></div>';
+            $payment_div .= '<div class="col-sm-6"><button class="btn btn-sm btn-danger pull-left" onclick="cancel_payment_show_modal('. $payments['id'] . ')">Отменить</button></div>';
+            $payment_div .='</div>';
+        }
+		$payment_div .= '</div>';
 	}
 	$arr = get_payment($connect, $id, 2);
 	foreach($arr as $payments){
@@ -1954,6 +1972,12 @@ function show_schet_klient($connect){
 	$data["html"] = ob_get_clean();
 	$data["object-info"] = $data_object;
 	return json_encode($data);
+}
+
+function cancel_payment($connect) {
+    $id = (int)$_POST["id"];
+    $payment = new \App\lib\payment\Sberbank\BookingPayment();
+    return json_encode($payment->cancelPayment($id));
 }
 
 function edit_payment($connect){

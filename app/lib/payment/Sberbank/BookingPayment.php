@@ -189,7 +189,7 @@ class BookingPayment extends Client {
             $answer["bonus"] = $max_bonus;
           }
         }
-        $payment = $connect->getAll("SELECT sum FROM payment WHERE type=1 AND schet=?i", $booking);
+        $payment = $connect->getAll("SELECT sum FROM payment WHERE type=1 AND status != 0 AND schet=?i", $booking);
         foreach($payment as $pay){
           $answer["prepay"]+= $pay["sum"];
         }
@@ -223,7 +223,7 @@ class BookingPayment extends Client {
             $answer["bonus"] = $max_bonus;
           }
         }
-        $payment = $connect->getAll("SELECT sum FROM payment WHERE type=1 AND schet=?i", $booking);
+        $payment = $connect->getAll("SELECT sum FROM payment WHERE type=1 AND status != 0 AND schet=?i", $booking);
         foreach($payment as $pay){
           $answer["prepay"]+= $pay["sum"];
         }
@@ -318,7 +318,7 @@ class BookingPayment extends Client {
       }
       $type_pay = 1;
       $prepay = 0;
-      $payment = $connect->getAll("SELECT sum FROM payment WHERE type=1 AND schet=?i", $booking);
+      $payment = $connect->getAll("SELECT sum FROM payment WHERE type=1 AND status != 0 AND schet=?i", $booking);
       foreach($payment as $pay)
         $prepay+= $pay["sum"];
       $sum_to_pay = $sum - $bonus - $prepay;
@@ -551,6 +551,48 @@ class BookingPayment extends Client {
     catch (ActionException $e) {
       return $e->getMessage();
     }
+  }
+
+  public function cancelPayment(int $id) {
+    $connect = $this->connect;
+    $responseAr = [
+      'success' => 0,
+      'msg' => '',
+      'error_code' => 0
+    ];
+
+    if($id > 0) {
+      $payment = $connect->getRow("SELECT id, request_id  FROM payment WHERE id = ?i AND status = 1", $id);
+      if($payment) {
+        if($payment['request_id']) {
+          $request = $connect->getRow("SELECT id, order_id FROM payment_request WHERE id = ?i",$payment['request_id']);
+          if($request) {
+            try {
+              $response = $this->reverseOrder($request['order_id']);
+              $connect->query("UPDATE payment_request SET status = ?i WHERE id = ?i AND status = 1",0,$payment['request_id']);
+              $connect->query("UPDATE payment SET status = ?i WHERE id = ?i AND status = 1",0,$id);
+              $responseAr['msg'] = 'Платеж успешно отменен';
+              $responseAr['success'] = 1;
+            }
+            catch (\Exception $e) {
+              $responseAr['msg'] = $e->getMessage();
+              $responseAr['error_code'] = $e->getCode();
+            }
+          }
+          else {
+            $responseAr['msg'] = 'Не найден запрос на оплату';
+          }
+        }
+        else {
+          $responseAr['msg'] = 'Отсутствует запрос на оплату';
+        }
+      }
+      else {
+        $responseAr['msg'] = 'Не найден платеж с таким ID';
+      }
+    }
+
+    return $responseAr;
   }
 
 }

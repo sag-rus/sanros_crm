@@ -4,6 +4,7 @@
 	if(!isset($_POST["func"]) OR $_POST["func"] == "")
 		return;
 	$func = $_POST["func"];
+	$loader = require( __DIR__ . '/vendor/autoload.php');
 
 	session_start();
 	header("Content-type: text/html; charset: utf-8");
@@ -23,6 +24,17 @@ if($func AND function_exists($func)){
 	$sync_api = $conf->sync_base;
 	$directory = dirname(__FILE__);
 	define("_FOLDERSITE_", $directory);
+  $configInstance = \App\lib\CRM\Config\Client::getInstance();
+	$configInstance->clientCabinet = [
+    "link" => $conf->turist_cabinet
+	];
+
+	$configInstance->onlinePaymentInfo = [
+    "userName" => $conf->USERNAME_SBERBANK,
+    "password" => $conf->PASSWORD_SBERBANK,
+    "link" => $conf->BANK_PAYMENT_LINK_SBERBANK,
+    "commission" => $conf->BANK_COM_SBERBANK
+	];
 
 	include_once("core/lib/Mysql.Class.php");
 	include_once("core/functions.php");
@@ -46,6 +58,8 @@ if($func AND function_exists($func)){
 	if(isset($_POST["object"])){
 		$config->object = $_POST["object"];
 	}
+
+  $configInstance->connect = $connect;
 
 	$result = $func($connect);
 	echo $result;

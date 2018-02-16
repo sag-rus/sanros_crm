@@ -1597,3 +1597,15 @@ span.badge.count-red,
 .form-control.form-control-required {
 	border: 1px solid #000;
 }
+
+.payment-element {
+	padding: 5px;
+}
+
+.payment-element.not-confirmed {
+	background-color: #fffd728c;
+}
+
+.payment-element.cancelled {
+	opacity: 0.5;
+}
