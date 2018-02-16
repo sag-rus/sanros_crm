@@ -852,7 +852,9 @@ function update_position($connect){
     $reck_type = $_POST["reck_type"];
 
     if($reck_type == 0) {
-      $id_room = $_POST["id_room"];
+      $id_room = (int)$_POST["id_room"];
+      if(!$id_room)
+          $id_room = NULL;
       $days = $_POST["days"];
       $date_z = $_POST["date_z"];
 

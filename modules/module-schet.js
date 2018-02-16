@@ -419,6 +419,8 @@ function edit_position_reck(id, reck){
 
 function update_position(id){
 	var room = $('.select_room').val();
+	if(typeof room === 'undefined')
+		room = 0;
 	var sum = $('#sum').val();
 	var reward = $('#commis').val();
 	var days = $('#days').val();
