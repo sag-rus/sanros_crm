@@ -117,10 +117,10 @@ function review_dover($connect, $type, $id, $turist, $type_PDF = "PDF"){
 	На получение от <?php echo full_name($id_obj); ?><br />
 	товарно-материальных ценностей по
 		<?php
-			if($id_obj != 31)
+			//if($id_obj != 31)
 				echo "счету № ".$schet_san." от ".$date_san;
-			else
-				echo "договору №0010/16/21 от 11.01.2017";
+			//else
+				//echo "договору №0010/16/21 от 11.01.2017";
 		?>
 		</p>
 	<p align="center" class="head" style="font-size: 10pt;">ПЕРЕЧЕНЬ ТОВАРНО-МАТЕРИАЛЬНЫХ ЦЕННОСТЕЙ, ПОДЛЕЖАЩИХ ПОЛУЧЕНИЮ</p>
