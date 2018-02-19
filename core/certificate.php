@@ -115,7 +115,8 @@ function change_status_certificate($connect){
 	$connect->query("UPDATE certificate SET status=?i WHERE id=?i", $status, $id);
 	if($status == 4){
 		$sum = $connect->getOne("SELECT sum FROM certificate WHERE id=?i", $id);
-		$connect->query("INSERT INTO payment(schet, class, type, sum, pay_method, date) VALUES (?i, 'cert', 2, ?i, 2, ?s)", $id, $sum, date("Y-m-d"));
+		$timestamp = date("U");
+		$connect->query("INSERT INTO payment(schet, class, type, sum, pay_method, date, created, processed) VALUES (?i, 'cert', 2, ?i, 2, ?s, ?i, ?i)", $id, $sum, date("Y-m-d"), $timestamp, $timestamp);
 	}
 	save_certificate_to_history($connect, $id);
 }

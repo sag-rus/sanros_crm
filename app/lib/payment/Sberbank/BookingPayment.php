@@ -555,6 +555,7 @@ class BookingPayment extends Client {
 
   public function cancelPayment(int $id) {
     $connect = $this->connect;
+    $timestamp = date("U");
     $responseAr = [
       'success' => 0,
       'msg' => '',
@@ -570,7 +571,7 @@ class BookingPayment extends Client {
             try {
               $response = $this->reverseOrder($request['order_id']);
               $connect->query("UPDATE payment_request SET status = ?i WHERE id = ?i AND status = 1",0,$payment['request_id']);
-              $connect->query("UPDATE payment SET status = ?i WHERE id = ?i AND status = 1",0,$id);
+              $connect->query("UPDATE payment SET status = ?i, processed = ?i WHERE id = ?i AND status = 1",0,$timestamp,$id);
               $responseAr['msg'] = 'Платеж успешно отменен';
               $responseAr['success'] = 1;
             }

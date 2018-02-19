@@ -718,8 +718,9 @@ function save_notification($connect, $text, $user){
 function save_payment($connect, $schet, $sum, $type, $pay_number, $date, $pay_method, $office = 1){
 	if($date == "")
 		$date = date("Y-m-d");
-	$connect->query("INSERT INTO payment (schet, sum, date, type, pay_method, pay_number, office)
-			VALUES (?i, ?s, ?s, ?i, ?s, ?s, ?i)", $schet, $sum, $date, $type, $pay_method, $pay_number, $office);
+	$timestamp = date("U",strtotime($date));
+	$connect->query("INSERT INTO payment (schet, sum, date, type, pay_method, pay_number, office, created, processed)
+			VALUES (?i, ?s, ?s, ?i, ?s, ?s, ?i, ?i, ?i)", $schet, $sum, $date, $type, $pay_method, $pay_number, $office, $timestamp, $timestamp);
 }
 
 function save_certificate_to_history($connect, $id){
