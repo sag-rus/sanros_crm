@@ -500,14 +500,14 @@ class BookingPayment extends Client {
       if($holding) {
         if($type_pay == 1){
           $connect->query("INSERT INTO payment(schet, status, created, date, type, pay_method, request_id, sum, bank_com) VALUES (?i, ?i, ?i, ?s, 2, 5, ?i, ?s, ?s)", $bid, 1, $timestamp, $today, $request_id, $sum, $bank_com);
-          $connect->query("UPDATE reckoning SET `holding`=1, `holding_sum` = `holding_sum`+?s WHERE id=?i LIMIT 1", $bid, $sum);
+          $connect->query("UPDATE reckoning SET `holding`=1, `holding_sum` = `holding_sum` + (?s) WHERE id=?i LIMIT 1", $bid, $sum);
           $this->saveNotification("Холдирование средств картой №".$bid, $manager);
           $this->saveSchetToHistory($bid, "Холдирование клиентом банковской картой. Сумма ".$sum);
 
         }elseif($type_pay == 2){
 
           $connect->query("INSERT INTO payment(schet, status, created, date, type, pay_method, request_id, sum, bank_com) VALUES (?i, ?i, ?i, ?s, 1, 5, ?i, ?s, ?s)", $bid, 1, $timestamp, $today, $request_id, $sum, $bank_com);
-          $connect->query("UPDATE reckoning SET `holding`=1, `holding_sum` = `holding_sum`+?s WHERE id=?i LIMIT 1", $bid, $sum);
+          $connect->query("UPDATE reckoning SET `holding`=1, `holding_sum` = `holding_sum` + (?s) WHERE id=?i LIMIT 1", $bid, $sum);
           $this->saveNotification("Холдирование средств картой №".$bid, $manager);
           $this->saveSchetToHistory($bid, "Холдирование клиентом банковской картой. Сумма ".$sum);
 
