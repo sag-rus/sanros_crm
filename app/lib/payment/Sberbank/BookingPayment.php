@@ -516,7 +516,7 @@ class BookingPayment extends Client {
       else {
         if($type_pay == 1){
 
-          $connect->query("INSERT INTO payment(schet, date, created, confirmed, type, pay_method, request_id, sum, bank_com) VALUES (?i, ?s, ?i, ?i, 2, 5, ?i, ?s, ?s)", $bid, $today, $timestamp, $timestamp, $request_id, $sum, $bank_com);
+          $connect->query("INSERT INTO payment(schet, date, created, processed, type, pay_method, request_id, sum, bank_com) VALUES (?i, ?s, ?i, ?i, 2, 5, ?i, ?s, ?s)", $bid, $today, $timestamp, $timestamp, $request_id, $sum, $bank_com);
           $connect->query("UPDATE reckoning SET status=5 WHERE id=?i LIMIT 1", $bid);
           $bonus = new Bonus();
           $bonus->create();
@@ -526,7 +526,7 @@ class BookingPayment extends Client {
 
         }elseif($type_pay == 2){
 
-          $connect->query("INSERT INTO payment(schet, date, created, confirmed, type, pay_method, request_id, sum, bank_com) VALUES (?i, ?s, ?i, ?i, 1, 5, ?i, ?s, ?s)", $bid, $today, $timestamp, $timestamp, $request_id, $sum, $bank_com);
+          $connect->query("INSERT INTO payment(schet, date, created, processed, type, pay_method, request_id, sum, bank_com) VALUES (?i, ?s, ?i, ?i, 1, 5, ?i, ?s, ?s)", $bid, $today, $timestamp, $timestamp, $request_id, $sum, $bank_com);
           $connect->query("UPDATE reckoning SET status=4 WHERE id=?i LIMIT 1", $bid);
           $this->saveNotification("Предоплата картой №".$bid, $manager);
           $this->saveSchetToHistory($bid, "Предоплата клиентом банковской картой. Сумма ".$sum);
