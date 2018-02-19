@@ -1380,68 +1380,72 @@ function view_quota_object(object){
                 var price_label = '';
                 var price_label_array = new Object();
                 for(var ratePlanId in prices){
-                  if(price_label != '')
-                    price_label+= '<hr />';
-                  price_label+= '<div>' +data['ratePlan'][ratePlanId]['name']+ '</div>';
-                  price_label_array[ratePlanId] = new Object();
-                  for(var index in prices[ratePlanId]['price']){
-                    if(prices[ratePlanId]['name'] !== undefined)
-                      name_prices = prices[ratePlanId]['name'];
-                    var price_ratePlan = prices[ratePlanId]['price'][index];
-                    if(price_ratePlan > 0){
-                      var label = '';
-                      var type_place = 1;
-                      var type_range = 1;
-                      var label_place = 'за чел/сутки';
 
-                      if(data['is_profkurort']) {
-                      	if(index == 0){
-                          label = 'размещение';
-                          type_range = 3;
-                          label_place = 'за номер';
-                        }else if(index == 1){
-                          label = 'Место';
-                          type_place = 2;
-                        }
-                        else if(index == 2){
-                          label = 'Доп. место';
-                          type_place = 2;
-                        }
-                        else if(index == 3){
-                          label = 'Детское место';
-                          type_place = 2;
-                        }
-                        else if(index == 4){
-                          label = 'Доп. детское место';
-                          type_place = 2;
-                        }
-											}
-											else {
-                        if(name_prices != '' && name_prices[index] !== undefined){
-                          label = name_prices[index]['n'];
-                          type_place = name_prices[index]['t'];
-                          type_range = name_prices[index]['p'];
-                          if(type_range == 2 || type_range == 3)
+                  if(typeof data['ratePlan'][ratePlanId] !== 'undefined') {
+                    if(price_label != '')
+                      price_label+= '<hr />';
+                    price_label+= '<div>' +data['ratePlan'][ratePlanId]['name']+ '</div>';
+                    price_label_array[ratePlanId] = new Object();
+                    for(var index in prices[ratePlanId]['price']){
+                      if(prices[ratePlanId]['name'] !== undefined)
+                        name_prices = prices[ratePlanId]['name'];
+                      var price_ratePlan = prices[ratePlanId]['price'][index];
+                      if(price_ratePlan > 0){
+                        var label = '';
+                        var type_place = 1;
+                        var type_range = 1;
+                        var label_place = 'за чел/сутки';
+
+                        if(data['is_profkurort']) {
+                          if(index == 0){
+                            label = 'размещение';
+                            type_range = 3;
                             label_place = 'за номер';
-                        }else if(index != 'add'){
-                          label = index + '-местное размещение';
-                          type_range = 3;
-                          label_place = 'за номер';
-                        }else if(index == 'add'){
-                          label = 'Доп.место';
-                          type_place = 2;
+                          }else if(index == 1){
+                            label = 'Место';
+                            type_place = 2;
+                          }
+                          else if(index == 2){
+                            label = 'Доп. место';
+                            type_place = 2;
+                          }
+                          else if(index == 3){
+                            label = 'Детское место';
+                            type_place = 2;
+                          }
+                          else if(index == 4){
+                            label = 'Доп. детское место';
+                            type_place = 2;
+                          }
                         }
-											}
+                        else {
+                          if(name_prices != '' && name_prices[index] !== undefined){
+                            label = name_prices[index]['n'];
+                            type_place = name_prices[index]['t'];
+                            type_range = name_prices[index]['p'];
+                            if(type_range == 2 || type_range == 3)
+                              label_place = 'за номер';
+                          }else if(index != 'add'){
+                            label = index + '-местное размещение';
+                            type_range = 3;
+                            label_place = 'за номер';
+                          }else if(index == 'add'){
+                            label = 'Доп.место';
+                            type_place = 2;
+                          }
+                        }
 
-                      price_label+= '<div>' + label + ' ' + price_ratePlan + ' ' + label_place + '</div>';
-                      var price_place = new Object();
-                      price_place['v'] = price_ratePlan;
-                      price_place['n'] = label;
-                      price_place['t'] = type_place;
-                      price_place['p'] = type_range;
-                      price_label_array[ratePlanId][index] = price_place;
+                        price_label+= '<div>' + label + ' ' + price_ratePlan + ' ' + label_place + '</div>';
+                        var price_place = new Object();
+                        price_place['v'] = price_ratePlan;
+                        price_place['n'] = label;
+                        price_place['t'] = type_place;
+                        price_place['p'] = type_range;
+                        price_label_array[ratePlanId][index] = price_place;
+                      }
                     }
-                  }
+									}
+
                 }
                 var date = quota[month][day]['date'];
                 var price_label_json = JSON.stringify(price_label_array);
