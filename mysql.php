@@ -29,6 +29,8 @@ if($func AND function_exists($func)){
     "link" => $conf->turist_cabinet
 	];
 
+	$configInstance->mail = $conf->email_module;
+
 	$configInstance->onlinePaymentInfo = [
     "userName" => $conf->USERNAME_SBERBANK,
     "password" => $conf->PASSWORD_SBERBANK,

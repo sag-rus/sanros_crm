@@ -1633,6 +1633,7 @@ function show_schet_klient($connect){
 	}
 	$payment_div = "";
 	$arr = get_payment($connect, $id, 1);
+	$payment_showed = FALSE;
 	foreach($arr as $payments){
 	    $payment_el_class = "";
 
@@ -1659,11 +1660,16 @@ function show_schet_klient($connect){
 		$payment_div.= "<strong>Способ:</strong> ".$payments['pay_method']."<br /><hr />";
 		if($payments['status'] == 1 && $id_rights > 3) {
 		    $payment_div .= '<div class="row clearfix payment-actions-block">';
-            $payment_div .= '<div class="col-sm-6"><button class="btn btn-sm btn-success pull-right" onclick="confirm_payment('. $payments['id'] . ')">Подтвердить</button></div>';
+		    $hide_confirm = '';
+		    if($payment_showed)
+		        $hide_confirm = ' hidden';
+
+		    $payment_div .= '<div class="col-sm-6"><button class="btn btn-sm btn-success pull-right payment-confirm-button'.$hide_confirm.'" onclick="confirm_payment('. $payments['id'] . ')">Подтвердить</button></div>';
             $payment_div .= '<div class="col-sm-6"><button class="btn btn-sm btn-danger pull-left" onclick="cancel_payment_show_modal('. $payments['id'] . ')">Отменить</button></div>';
             $payment_div .='</div>';
         }
 		$payment_div .= '</div>';
+		$payment_showed = true;
 	}
 	$arr = get_payment($connect, $id, 2);
 	foreach($arr as $payments){
@@ -1977,6 +1983,10 @@ function show_schet_klient($connect){
 function cancel_payment($connect) {
     $id = (int)$_POST["id"];
     $payment = new \App\lib\payment\Sberbank\BookingPayment();
+    include_once(__DIR__.'/class/turist/DisplayClient.Class.php');
+    include_once(__DIR__.'/class/mail/SendMail.Class.php');
+    include_once(__DIR__.'/class/mail/SendMailTurist.Class.php');
+
     return json_encode($payment->cancelPayment($id));
 }
 

@@ -56,7 +56,14 @@ class SendMail{
 
   protected function send_mail_base_notification($title, $message){
     $from_send = "default";
-    $to = ConfigCRM::getInstance()->mail["default"]["from"];
+
+    if(class_exists('App\lib\CRM\Config\Client')) {
+      $to = \App\lib\CRM\Config\Client::getInstance()->mail["default"]["from"];
+    }
+    else {
+      $to = ConfigCRM::getInstance()->mail["default"]["from"];
+    }
+
     $this->send_mail_base($from_send, $to, $title, $message);
   }
 

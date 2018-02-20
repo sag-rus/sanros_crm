@@ -1711,6 +1711,7 @@ function cancel_payment(id) {
       remove_all_windows();
       if(data['success']) {
 				$('.payment-element[data-payment-id='+id+']').removeClass('not-confirmed').addClass('cancelled');
+        $('.payment-element[data-payment-id='+id+']').next().find('.payment-confirm-button').removeClass('hidden');
         $('.payment-element[data-payment-id='+id+'] .payment-actions-block').remove();
         alert("Платеж отменен");
 			}

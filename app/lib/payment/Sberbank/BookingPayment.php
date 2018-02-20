@@ -468,7 +468,7 @@ class BookingPayment extends Client {
       $data = $this->getPaymentStatus();
 
 
-      $connect->query("UPDATE payment_request SET status=?i WHERE order_id=?s", $data["OrderStatus"], $orderId);
+      $connect->query("UPDATE payment_request SET status=?i WHERE id=?i", (int)$data["OrderStatus"], $request_id);
       if($data["OrderStatus"] != 1) {
         return $data["ErrorMessage"]." OrderStatus = ".$data["OrderStatus"];
       }
@@ -563,10 +563,16 @@ class BookingPayment extends Client {
     ];
 
     if($id > 0) {
-      $payment = $connect->getRow("SELECT id, request_id  FROM payment WHERE id = ?i AND status = 1", $id);
+      $payment = $connect->getRow("SELECT `id`, `request_id`, `schet`, `sum`  FROM payment WHERE id = ?i AND status = 1", $id);
       if($payment) {
+        $reck_id = $payment['schet'];
+        $reckoning = $connect->getRow("SELECT id, turist FROM reckoning WHERE id = ?i", $reck_id);
+        $config = \App\lib\CRM\Config\Client::getInstance();
+        $config->booking = $reck_id;
+        $config->turist = $reckoning['turist'];
+        $config->connect = $this->connect;
         if($payment['request_id']) {
-          $request = $connect->getRow("SELECT id, order_id FROM payment_request WHERE id = ?i",$payment['request_id']);
+          $request = $connect->getRow("SELECT id, order_id, bid_pay FROM payment_request WHERE id = ?i",$payment['request_id']);
           if($request) {
             try {
               $response = $this->reverseOrder($request['order_id']);
@@ -574,6 +580,10 @@ class BookingPayment extends Client {
               $connect->query("UPDATE payment SET status = ?i, processed = ?i WHERE id = ?i AND status = 1",0,$timestamp,$id);
               $responseAr['msg'] = 'Платеж успешно отменен';
               $responseAr['success'] = 1;
+              if($reckoning && $reckoning['turist']) {
+                $x = new \SendMailTurist();
+                $x->notification_holding_cancel($payment['sum'],$request['bid_pay']);
+              }
             }
             catch (\Exception $e) {
               $responseAr['msg'] = $e->getMessage();

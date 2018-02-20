@@ -3,8 +3,7 @@
 class SendMailTurist extends SendMail{
 
   public function __construct(){
-
-    if(class_exists(' \App\lib\CRM\Config\Client')) {
+    if(class_exists('App\lib\CRM\Config\Client')) {
       $config = \App\lib\CRM\Config\Client::getInstance();
     }
     else {
@@ -124,9 +123,43 @@ class SendMailTurist extends SendMail{
         "bonus" => $bonus_sum
       );
 
-      $this->send_mail_base_notification("Оплата из ЛК", "Произведено холдирование средств в заявке №".$booking);
+      $this->send_mail_base_notification("Оплата из ЛК", "Произведена заморозка средств в заявке №".$booking);
 
       $letter = $this->select_template_letter_turist("payment/obmen-holding", $data);
+
+      $this->send_mail_base("default", $email, $letter["title"], $letter["HTML"]);
+    }
+  }
+
+  public function notification_holding_cancel(float $sum,$order_number){
+    $booking = $this->booking;
+    $connect = $this->connect;
+    $email = $this->select_email();
+    if(!$order_number || !$sum)
+      return;
+    if($email){
+      $client = new DisplayClient($this->account);
+      $fio = $client->select_fio_array();
+
+      $row = $connect->getRow("SELECT id_user, id_obj, date_z, status FROM reckoning WHERE id=?i", $booking);
+      $object = $row["id_obj"];
+      $arrival = $row["date_z"];
+
+      $config = ConfigCRM::getInstance();
+      $link = $config->clientCabinet["link"];
+      $data = array(
+        "id" => $this->booking,
+        "link" => $link."заявки/".$booking,
+        "object" => get_object($connect, $object, "type"),
+        "client" => $fio["name"]." ".$fio["otch"],
+        "arrival" => $arrival,
+        "sum" => $sum,
+        "order_number" => $order_number
+      );
+
+      $this->send_mail_base_notification("Отмена холдирования", "Произведена отмена холдирования средств в заявке №".$booking);
+
+      $letter = $this->select_template_letter_turist("payment/obmen-cancel-holding", $data);
 
       $this->send_mail_base("default", $email, $letter["title"], $letter["HTML"]);
     }
