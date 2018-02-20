@@ -1590,7 +1590,7 @@ function show_schet_klient($connect){
 		$class = "success";
 	if($status == 6)
 		$class = "danger";
-	$status_string = "<div style='padding: 2px'>Статус заявки<br /><h3><span class='label label-".$class."'>".$name_status."</span></h3></div>";
+	$status_string = '<div style="padding: 2px">Статус заявки<br /><h3><span class="label label-'.$class.'" data-reckoning-status="'.$status.'">'.$name_status.'</span></h3></div>';
 	$class = "default";
 	if($status_san == 1)
 		$class = "success";
@@ -1656,15 +1656,27 @@ function show_schet_klient($connect){
           $buttons .= '</span>';
           $payment_div .= $buttons;
         }
-		$payment_div.= "<br /><strong>Дата:</strong> ".$payments['date']."<br />";
-		$payment_div.= "<strong>Способ:</strong> ".$payments['pay_method']."<br /><hr />";
+		$payment_div.= "<br /><strong>Дата и время платежа:</strong> ".$payments['datetime']."<br />";
+		$payment_div.= "<strong>Способ:</strong> ".$payments['pay_method']."<br />";
+
+		if($payments["datetime"] != $payments['datetime_processed']) {
+		    if(is_null($payments['datetime_processed'])) {
+              $payment_div.= '<strong class="text-danger">Не обработан</strong>'.'<br />';
+            }
+            else {
+              $payment_div.= "<strong>Обработан:</strong> ".$payments['datetime_processed']."<br />";
+            }
+        }
+
+        $payment_div .= '<hr />';
+
 		if($payments['status'] == 1 && $id_rights > 3) {
 		    $payment_div .= '<div class="row clearfix payment-actions-block">';
 		    $hide_confirm = '';
 		    if($payment_showed)
 		        $hide_confirm = ' hidden';
 
-		    $payment_div .= '<div class="col-sm-6"><button class="btn btn-sm btn-success pull-right payment-confirm-button'.$hide_confirm.'" onclick="confirm_payment('. $payments['id'] . ')">Подтвердить</button></div>';
+		    $payment_div .= '<div class="col-sm-6"><button class="btn btn-sm btn-success pull-right payment-confirm-button'.$hide_confirm.'" onclick="confirm_payment_show_modal('. $payments['id'] . ')">Подтвердить</button></div>';
             $payment_div .= '<div class="col-sm-6"><button class="btn btn-sm btn-danger pull-left" onclick="cancel_payment_show_modal('. $payments['id'] . ')">Отменить</button></div>';
             $payment_div .='</div>';
         }
@@ -1677,36 +1689,44 @@ function show_schet_klient($connect){
 			$add = " в санаторий";
 		else
 			$add = "";
+        $payment_div .= '<div class="payment-element">';
 		$payment_div.= "<strong>Оплата".$add.":</strong> ".$payments['sum'];
 		if($id_rights > 3 AND $active == 0 AND $payments['pay_method'] != 'сертификатом')
 			$payment_div.= "<button type='button' class='btn btn-default btn-xs' style='float: right;' onclick='edit_payment(\"".$payments['id']."\")'>&nbsp;<i class='fa fa-pencil'></i>&nbsp;</button>";
 		$payment_div.= "<br /><strong>Дата:</strong> ".$payments['date']."<br />";
 		$payment_div.= "<strong>Способ:</strong> ".$payments['pay_method']."<hr />";
+		$payment_div .= '</div>';
 	}
 	$arr = get_payment($connect, $id, 3);
 	foreach($arr as $payments){
+        $payment_div .= '<div class="payment-element">';
 		$payment_div.= "<strong>Предоплата в санаторий:</strong> ".$payments["sum"];
 	if($id_rights > 3 AND $active == 0)
 		$payment_div.= "<span style='float: right;'><button type='button' class='btn btn-default btn-xs' onclick='edit_payment(\"".$payments['id']."\")'>&nbsp;<i class='fa fa-pencil'></i>&nbsp;</button> <button type='button' class='btn btn-danger btn-xs' onclick='delete_payment(\"".$payments["id"]."\")'>&nbsp;<i class='fa fa-trash-o'></i>&nbsp;</button></span>";
 		$payment_div.= "<br /><strong>Дата:</strong> ".$payments["date"]."<br />";
 		$payment_div.= "<strong>Номер платежного поручения:</strong> ".$payments["pay_number"]."<br /><hr />";
+        $payment_div .= '</div>';
 	}
 	$arr = get_payment($connect, $id, 4);
 	foreach($arr as $payments){
+        $payment_div .= '<div class="payment-element">';
 		$payment_div.= "<strong>Оплата в санаторий:</strong> ".$payments["sum"];
 		if($id_rights > 3 AND $active == 0)
 			$payment_div.= "<span style='float: right;'><button type='button' class='btn btn-default btn-xs' onclick='edit_payment(\"".$payments['id']."\")'>&nbsp;<i class='fa fa-pencil'></i>&nbsp;</button> <button type='button' class='btn btn-danger btn-xs' onclick='delete_payment(\"".$payments["id"]."\")'>&nbsp;<i class='fa fa-trash-o'></i>&nbsp;</button></span>";
 		$payment_div.= "<br /><strong>Дата:</strong> ".$payments["date"]."<br />";
 		$payment_div.= "<strong>Номер платежного поручения:</strong> ".$payments["pay_number"]."<br /><hr />";
+        $payment_div .= '</div>';
 	}
 	$arr = get_payment($connect, $id, 5);
 	foreach($arr as $payments){
+        $payment_div .= '<div class="payment-element">';
 		$payment_div.= "<strong>Возврат:</strong> ".$payments["sum"];
 		if($id_rights > 3 AND $active == 0)
 			$payment_div.= "<button type='button' class='btn btn-default btn-xs' style='float: right;' onclick='edit_payment(\"".$payments['id']."\")'>&nbsp;<i class='fa fa-pencil'></i>&nbsp;</button>";
 		$payment_div.= "<br /><strong>Дата:</strong> ".$payments["date"]."<br />";
 		$payment_div.= "<strong>Способ:</strong> ".$payments["pay_method"]."<br />";
 		$payment_div.= "<strong>Номер платежного поручения:</strong> ".$payments["pay_number"]."<br /><hr />";
+        $payment_div .= '</div>';
 	}
 	if($document)
 		$html.= "<button onclick=\"$('#document_div').toggle();\" class='btn btn-default btn-xs'><i class='fa fa-file-text-o'></i> Документы</button><br /><div style='display: none;' id='document_div'><hr />".$document."<hr /></div>";

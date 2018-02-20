@@ -1340,7 +1340,7 @@ function determine_klient_bonus($connect, $id){
 function get_payment($connect, $id, $type = ""){
 	$array = array();
 	$index = 0;
-	$data = $connect->getAll("SELECT id, pay_method, pay_number, status, sum, DATE_FORMAT(date, '%d.%m.%Y') as date  FROM payment WHERE schet=?i AND type=?i AND class='schet' ORDER BY (`payment`.`status` = 1) DESC", $id, $type);
+	$data = $connect->getAll("SELECT id, pay_method, pay_number, status, sum, DATE_FORMAT(date, '%d.%m.%Y') as date, created, processed FROM payment WHERE schet=?i AND type=?i AND class='schet' ORDER BY (`payment`.`status` = 1) DESC", $id, $type);
 	foreach($data as $row){
 		$index++;
 		$array[$index]["id"] = $row["id"];
@@ -1357,7 +1357,12 @@ function get_payment($connect, $id, $type = ""){
 		$array[$index]["sum"] = add_null($row["sum"]);
 		$array[$index]["pay_number"] = $row["pay_number"];
 		$array[$index]["date"] = month_transform($row["date"]);
+		$array[$index]["datetime"] = month_transform(date("d.m.Y H:i:s",$row["created"]));
 		$array[$index]['status'] = $row['status'];
+		$array[$index]["datetime_processed"] = NULL;
+		if($row['processed']) {
+		    $array[$index]["datetime_processed"] = month_transform(date("d.m.Y H:i:s",$row["processed"]));
+        }
 	}
 	return $array;
 }

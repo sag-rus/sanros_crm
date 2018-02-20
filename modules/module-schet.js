@@ -1686,7 +1686,8 @@ function cancel_payment_show_modal(id) {
   					modal +='<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>';
   					modal +='<h4 class="modal-title">Подтвердите отмену платежа</h4>';
   				modal += '</div>';
-  				modal += '<div class="modal-body">';
+  				modal += '<div class="modal-body text-center">';
+  						modal += 'Данное действие нельзя будет отменить!';
   				modal += '</div>';
   				modal += '<div class="modal-footer text-center">';
  	 					modal+= '<button type="button" class="btn btn-success btn-sm btn-cancel-payment-confirm" onclick="cancel_payment('+id+')"><i class="fa fa-check"></i> Подтвердить</button>';
@@ -1696,6 +1697,66 @@ function cancel_payment_show_modal(id) {
 		modal += '</div>';
   modal += '</div>';
 	show_modal(modal);
+}
+
+function confirm_payment_show_modal(id) {
+	var reckStatus = parseInt($('[data-reckoning-status]').attr('data-reckoning-status'));
+	var modal = '';
+	if(reckStatus === 3  || reckStatus === 4) {
+    modal += '<div class="modal fade">';
+    modal += '<div class="modal-dialog">';
+    modal += '<div class="modal-content">';
+    modal +='<div class="modal-header">';
+    modal +='<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>';
+    modal +='<h4 class="modal-title">Подтвердить платеж?</h4>';
+    modal += '</div>';
+    modal += '<div class="modal-body">';
+    modal += '</div>';
+    modal += '<div class="modal-footer text-center">';
+    modal+= '<button type="button" class="btn btn-success btn-sm btn-confirm-payment-confirm" onclick="confirm_payment('+id+')"><i class="fa fa-check"></i> Подтвердить</button>';
+    modal+= '<button type="button" class="btn btn-danger btn-sm btn-confirm-payment-cancel" data-dismiss="modal"><i class="fa fa-ban"></i> Отмена</button>';
+    modal += '</div>';
+    modal += '</div>';
+    modal += '</div>';
+    modal += '</div>';
+	}
+	else if(reckStatus === 1 || reckStatus === 2) {
+    modal += '<div class="modal fade">';
+    modal += '<div class="modal-dialog">';
+    modal += '<div class="modal-content">';
+    modal +='<div class="modal-header">';
+    modal +='<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>';
+    modal +='<h4 class="modal-title">Статус заявки</h4>';
+    modal += '</div>';
+    modal += '<div class="modal-body text-center">';
+    	modal += 'Заявка должна быть подтверженной! Пожалуйста, измените её статус. ';
+    modal += '</div>';
+    modal += '<div class="modal-footer text-center">';
+    modal+= '<button type="button" class="btn btn-success btn-sm" data-dismiss="modal"><i class="fa fa-check"></i> Хорошо</button>';
+    modal += '</div>';
+    modal += '</div>';
+    modal += '</div>';
+    modal += '</div>';
+	}
+	else {
+    modal += '<div class="modal fade">';
+    modal += '<div class="modal-dialog">';
+    modal += '<div class="modal-content">';
+    modal +='<div class="modal-header">';
+    modal +='<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>';
+    modal +='<h4 class="modal-title">Статус заявки</h4>';
+    modal += '</div>';
+    modal += '<div class="modal-body text-center">';
+    modal += 'По данной заявке нельзя принимать платежи. ';
+    modal += '</div>';
+    modal += '<div class="modal-footer text-center">';
+    modal+= '<button type="button" class="btn btn-success btn-sm" data-dismiss="modal"><i class="fa fa-check"></i> Хорошо</button>';
+    modal += '</div>';
+    modal += '</div>';
+    modal += '</div>';
+    modal += '</div>';
+	}
+  show_modal(modal);
 }
 
 function cancel_payment(id) {
