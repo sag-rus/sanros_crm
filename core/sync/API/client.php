@@ -380,6 +380,14 @@ function show_tour_bid_account($connect, $data){
 		$array["status_int"] = $answer["status"];
 		$array["bonus"] = ABS($connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND sum<0", $id));
 		$array["manager"] = "";
+
+		if($array["status_int"] == 1 || $array["status_int"] == 2) {
+      $array["payment_sum"] = $connect->getOne("SELECT sum(`sum`) FROM payment WHERE `schet`=?i AND `status` = 1", $answer["id"]);
+		}
+		else {
+      $array["payment_sum"] = $connect->getOne("SELECT sum(`sum`) FROM payment WHERE `schet`=?i AND `status` = 2", $answer["id"]);
+    }
+
 		if($answer["id_user"]){
 			$manager = $connect->getRow("SELECT name, photo FROM users WHERE id=?i", $answer["id_user"]);
 			$array["manager"] = $manager["name"];
