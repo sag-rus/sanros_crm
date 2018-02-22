@@ -2010,6 +2010,15 @@ function cancel_payment($connect) {
     return json_encode($payment->cancelPayment($id));
 }
 
+function confirm_payment($connect) {
+  $id = (int)$_POST["id"];
+  $payment = new \App\lib\payment\Sberbank\BookingPayment();
+  include_once(__DIR__.'/class/turist/DisplayClient.Class.php');
+  include_once(__DIR__.'/class/mail/SendMail.Class.php');
+  include_once(__DIR__.'/class/mail/SendMailTurist.Class.php');
+  return json_encode($payment->confirmPayment($id));
+}
+
 function edit_payment($connect){
 	$id = $_POST["id"];
 	$row = $connect->getRow("SELECT * FROM payment WHERE id=?i", $id);

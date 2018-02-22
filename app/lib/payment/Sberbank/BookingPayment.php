@@ -501,15 +501,15 @@ class BookingPayment extends Client {
         if($type_pay == 1){
           $connect->query("INSERT INTO payment(schet, status, created, date, type, pay_method, request_id, sum, bank_com) VALUES (?i, ?i, ?i, ?s, 2, 5, ?i, ?s, ?s)", $bid, 1, $timestamp, $today, $request_id, $sum, $bank_com);
           $connect->query("UPDATE reckoning SET `holding`=1, `holding_sum` = `holding_sum` + ".((float)$sum)." WHERE id=?i LIMIT 1", $bid);
-          $this->saveNotification("Холдирование средств картой №".$bid, $manager);
-          $this->saveSchetToHistory($bid, "Холдирование клиентом банковской картой. Сумма ".$sum);
+          $this->saveNotification("Заморозка средств картой №".$bid, $manager);
+          $this->saveSchetToHistory($bid, "Заморозка средств клиентом банковской картой. Сумма ".$sum);
 
         }elseif($type_pay == 2){
 
           $connect->query("INSERT INTO payment(schet, status, created, date, type, pay_method, request_id, sum, bank_com) VALUES (?i, ?i, ?i, ?s, 1, 5, ?i, ?s, ?s)", $bid, 1, $timestamp, $today, $request_id, $sum, $bank_com);
           $connect->query("UPDATE reckoning SET `holding`=1, `holding_sum` = `holding_sum` + ".((float)$sum)." WHERE id=?i LIMIT 1", $bid);
-          $this->saveNotification("Холдирование средств картой №".$bid, $manager);
-          $this->saveSchetToHistory($bid, "Холдирование клиентом банковской картой. Сумма ".$sum);
+          $this->saveNotification("Заморозка средств картой №".$bid, $manager);
+          $this->saveSchetToHistory($bid, "Заморозка средств клиентом банковской картой. Сумма ".$sum);
 
         }
       }
@@ -578,6 +578,8 @@ class BookingPayment extends Client {
               $response = $this->reverseOrder($request['order_id']);
               $connect->query("UPDATE payment_request SET status = ?i WHERE id = ?i AND status = 1",0,$payment['request_id']);
               $connect->query("UPDATE payment SET status = ?i, processed = ?i WHERE id = ?i AND status = 1",0,$timestamp,$id);
+              $connect->query("UPDATE reckoning SET `holding_sum` = `holding_sum`-".$payment['sum'].", `holding_cancelled_sum` = `holding_cancelled_sum` + ".$payment['sum']." WHERE id = ?i",$reck_id);
+              $this->saveSchetToHistory($reck_id, "Отмена заморозки средств по заявке. Сумма ".$payment['sum']);
               $responseAr['msg'] = 'Платеж успешно отменен';
               $responseAr['success'] = 1;
               if($reckoning && $reckoning['turist']) {
@@ -606,4 +608,118 @@ class BookingPayment extends Client {
     return $responseAr;
   }
 
+  public function confirmPayment(int $id) {
+    $connect = $this->connect;
+    $timestamp = date("U");
+    $responseAr = [
+      'success' => 0,
+      'msg' => '',
+      'error_code' => 0
+    ];
+    if($id > 0) {
+      $payment = $connect->getRow("SELECT `id`, `request_id`, `schet`, `sum`, `created`  FROM payment WHERE id = ?i AND status = 1", $id);
+      if ($payment) {
+        $reck_id = $payment['schet'];
+        $reckoning = $connect->getRow("SELECT `id`, `turist`, `sum` FROM reckoning WHERE id = ?i", $reck_id);
+        $config = \App\lib\CRM\Config\Client::getInstance();
+        $config->booking = $reck_id;
+        $config->turist = $reckoning['turist'];
+        $config->connect = $this->connect;
+        if($reckoning) {
+          if($reckoning['sum'] > 0) {
+            if($payment['request_id']) {
+              $older_holding = $connect->getRow("SELECT id FROM `payment` WHERE `id` < ?i AND `status` = 1 AND `schet` = ?i LIMIT 1",$payment['id'], $reck_id);
+              if(!$older_holding) {
+                $request = $connect->getRow("SELECT id, order_id, bid_pay FROM payment_request WHERE id = ?i",$payment['request_id']);
+                if($request) {
+                  $type = 1;
+                  $reck_new_status = 4;
+                  $bonus = abs($connect->getOne("SELECT `sum` FROM bonus WHERE sum<0 AND schet=?i", $reck_id));
+                  if($bonus > 0){
+                    $max_bonus = $this->checkBonusPaymentBankCard();
+                    if($bonus > $max_bonus){
+                      if($max_bonus == 0)
+                        $connect->query("DELETE FROM bonus WHERE sum<0 AND schet=?i", $reck_id);
+                      else
+                        $connect->query("UPDATE bonus SET sum=?s WHERE sum<0 AND schet=?i", $max_bonus * (-1), $reck_id);
+                      $this->saveSchetToHistory($reck_id, "Корректировка суммы бонусов");
+                      $bonus = $max_bonus;
+                    }
+                  }
+
+                  $prepay = 0;
+                  $old_payments = $connect->getAll("SELECT `sum` FROM payment WHERE `status` = 2 AND schet=?i", $reck_id);
+
+                  foreach($old_payments as $old_payment)
+                    $prepay+= $old_payment["sum"];
+
+                  $sum_to_pay = (float)($reckoning['sum'] - $bonus - $prepay);
+                  $payment_sum = (float)$payment['sum'];
+                  if($sum_to_pay > 0) {
+                    if($sum_to_pay === $payment_sum) {
+                      $reck_new_status = 5;
+                      if($prepay) {
+                        $type = 3;
+                      }
+                      else {
+                        $type = 2;
+                      }
+                    }
+
+                    if ($sum_to_pay < $payment_sum) {
+                      $responseAr['msg'] = 'Платеж больше, чем нужно в заявке';
+                    }
+                    else {
+                      try {
+                        $response = $this->deposit($request['order_id'],$payment_sum*100);
+                        $this->saveSchetToHistory($reck_id, "Принятие замороженных клиентом средств в качестве платежа. Сумма ".$payment_sum);
+                        if($reck_new_status == 4)
+                          $connect->query("UPDATE `reckoning` SET `status` = ?i, `holding_sum` = `holding_sum` - ".$payment_sum.", `holding_confirmed_sum` = `holding_confirmed_sum` + ".$payment_sum.", `prepay` = `prepay` + ".$payment_sum." WHERE id = ?i",$reck_new_status, $reck_id);
+                        else
+                          $connect->query("UPDATE `reckoning` SET `status` = ?i, `holding_sum` = `holding_sum` - ".$payment_sum.", `holding_confirmed_sum` = `holding_confirmed_sum` + ".$payment_sum." WHERE id = ?i",$reck_new_status, $reck_id);
+
+                        $connect->query("UPDATE payment_request SET status = ?i WHERE id = ?i AND status = 1",2,$payment['request_id']);
+                        $connect->query("UPDATE payment SET `status` = ?i, `type` = ?i, `processed` = ?i WHERE id = ?i AND status = 1",2,$type, $timestamp,$payment['id']);
+                        $bonus = new Bonus();
+                        $bonus->create();
+                        unset($bonus);
+                        $responseAr['msg'] = 'Платеж успешно принят!';
+                        $responseAr['success'] = 1;
+                      }
+                      catch (\Exception $e) {
+                        $responseAr['msg'] = $e->getMessage();
+                        $responseAr['error_code'] = $e->getCode();
+                      }
+                    }
+                  }
+                  else {
+                    $responseAr['msg'] = 'По данной заявке не требуются платежи';
+                  }
+                }
+                else {
+                  $responseAr['msg'] = 'Не найден запрос на оплату';
+                }
+              }
+              else {
+                $responseAr['msg'] = 'Сначала обработайте предыдущие платежи';
+              }
+            }
+            else {
+              $responseAr['msg'] = 'Отсутствует запрос на оплату';
+            }
+          }
+          else {
+            $responseAr['msg'] = 'Не указана сумма заявки';
+          }
+        }
+        else {
+          $responseAr['msg'] = 'Не найдена заявка';
+        }
+      }
+      else {
+        $responseAr['msg'] = 'Не найден платеж с таким ID';
+      }
+    }
+    return $responseAr;
+  }
 }

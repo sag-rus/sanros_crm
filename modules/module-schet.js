@@ -1710,7 +1710,8 @@ function confirm_payment_show_modal(id) {
     modal +='<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>';
     modal +='<h4 class="modal-title">Подтвердить платеж?</h4>';
     modal += '</div>';
-    modal += '<div class="modal-body">';
+    modal += '<div class="modal-body text-center">';
+    	modal += 'Данное действие нельзя будет отменить!';
     modal += '</div>';
     modal += '<div class="modal-footer text-center">';
     modal+= '<button type="button" class="btn btn-success btn-sm btn-confirm-payment-confirm" onclick="confirm_payment('+id+')"><i class="fa fa-check"></i> Подтвердить</button>';
@@ -1779,6 +1780,30 @@ function cancel_payment(id) {
 			else {
       	alert(data['msg']);
 			}
+    }
+  });
+}
+
+function confirm_payment(id) {
+  var str = 'func=confirm_payment&id=' + id;
+  $('.btn-confirm-payment-confirm').button('loading');
+  $('.btn-confirm-payment-cancel').hide();
+  $.ajax({
+    url: 'mysql.php',
+    type: 'POST',
+    data: str,
+    dataType: 'json',
+    success: function(data){
+      remove_all_windows();
+      if(data['success']) {
+        $('.payment-element[data-payment-id='+id+']').removeClass('not-confirmed');
+        $('.payment-element[data-payment-id='+id+']').next().find('.payment-confirm-button').removeClass('hidden');
+        $('.payment-element[data-payment-id='+id+'] .payment-actions-block').remove();
+        alert("Платеж подтвержден");
+      }
+      else {
+        alert(data['msg']);
+      }
     }
   });
 }

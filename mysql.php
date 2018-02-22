@@ -38,6 +38,11 @@ if($func AND function_exists($func)){
     "commission" => $conf->BANK_COM_SBERBANK
 	];
 
+	$configInstance->bonus = [
+    "bonus-booking" => $conf->bonus_rec,
+    "bonus-affiliate" => $conf->bonus_ref
+	];
+
 	include_once("core/lib/Mysql.Class.php");
 	include_once("core/functions.php");
 	$connect = connect_to_MySQL();
