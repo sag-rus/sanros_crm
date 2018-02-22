@@ -684,6 +684,7 @@ class BookingPayment extends Client {
                         $bonus->create();
                         unset($bonus);
                         $responseAr['msg'] = 'Платеж успешно принят!';
+                        $responseAr['reck_id'] = $reck_id;
                         $responseAr['success'] = 1;
                       }
                       catch (\Exception $e) {
