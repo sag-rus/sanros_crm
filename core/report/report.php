@@ -192,10 +192,15 @@ function filter_payment($connect){
 		$array["office"][$id_office]["return"] = 0;
 	}
 	if($date_opl != ""){
-		if($date_opl2)
-			$zapros_for_mysql.= " (payment.date >= '$date_opl' AND payment.date <= '$date_opl2') ";
-		else
-			$zapros_for_mysql.= " payment.date = '$date_opl' ";
+	    $date_opl_t = strtotime($date_opl);
+		if($date_opl2) {
+		  $date_opl2_t = strtotime($date_opl2)+86400;
+          $zapros_for_mysql .= " ((`payment`.`date` >= '$date_opl' AND `payment`.`date` <= '$date_opl2' AND `payment`.`status` = 2 AND `payment`.`processed` IS NULL) OR (`payment`.`processed` IS NOT NULL AND `payment`.`processed` >= '".$date_opl_t."' AND `payment`.`processed` < '".$date_opl2_t."'))";
+        }
+		else {
+          $date_opl2_t = $date_opl_t+86400;
+          $zapros_for_mysql .= "((`payment`.`date` = '$date_opl' AND `payment`.`status` = 2 AND `payment`.`processed` IS NULL)  OR (`payment`.`processed` IS NOT NULL AND `payment`.`processed` >= '".$date_opl_t."' AND `payment`.`processed` < '".$date_opl2_t."'))";
+        }
 	}
 	if($method_opl != ""){
 		if($zapros_for_mysql)
