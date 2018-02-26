@@ -659,7 +659,7 @@ class BookingPayment extends Client {
                     if($sum_to_pay === $payment_sum) {
                       $reck_new_status = 5;
                       if($prepay) {
-                        $type = 3;
+                        $type = 6;
                       }
                       else {
                         $type = 2;
