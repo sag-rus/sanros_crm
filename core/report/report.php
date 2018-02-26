@@ -209,6 +209,8 @@ function filter_payment($connect){
 			$zapros_for_mysql.= "(`payment`.`type`=1 OR `payment`.`type`=3)";
 		elseif($type_opl == 2)
 			$zapros_for_mysql.= "(`payment`.`type`=2 OR `payment`.`type`=4)";
+		elseif ($type_opl == 3)
+            $zapros_for_mysql.= "(`payment`.`type`=6)";
 	}
 	if($type_pay_tbl == 1){
 		$zapros_for_mysql.= " AND (`payment`.`type`=1 OR `payment`.`type`=2)";
