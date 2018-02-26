@@ -52,6 +52,7 @@ function general_payment_report(){
 					<option value="">Не выбран</option>
 					<option value="1">Предоплата</option>
 					<option value="2">Оплата</option>
+                    <option value="3">Доплата</option>
 				</select>
 			</div>
 			<label class="col-sm-2 control-label">Оплата</label>
