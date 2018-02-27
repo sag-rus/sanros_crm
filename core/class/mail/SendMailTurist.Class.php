@@ -194,7 +194,8 @@ class SendMailTurist extends SendMail{
         "object" => get_object($connect, $object, "type"),
         "client" => $fio["name"]." ".$fio["otch"],
         "arrival" => $arrival,
-        "bonus" => $bonus_sum
+        "bonus" => $bonus_sum,
+        "id" => $booking
       );
       if($status == 5){
         $this->send_mail_base_notification("Оплата из ЛК", "Произведено принятие замороженных средств в качестве оплаты путевки №".$booking);
