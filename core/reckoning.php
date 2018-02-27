@@ -2014,6 +2014,7 @@ function confirm_payment($connect) {
   $id = (int)$_POST["id"];
   $payment = new \App\lib\payment\Sberbank\BookingPayment();
   include_once(__DIR__.'/class/turist/DisplayClient.Class.php');
+  include_once(__DIR__.'/class/bonus/DisplayBonus.Class.php');
   include_once(__DIR__.'/class/mail/SendMail.Class.php');
   include_once(__DIR__.'/class/mail/SendMailTurist.Class.php');
   return json_encode($payment->confirmPayment($id));

@@ -680,9 +680,14 @@ class BookingPayment extends Client {
 
                         $connect->query("UPDATE payment_request SET status = ?i WHERE id = ?i AND status = 1",2,$payment['request_id']);
                         $connect->query("UPDATE payment SET `status` = ?i, `type` = ?i, `processed` = ?i WHERE id = ?i AND status = 1",2,$type, $timestamp,$payment['id']);
+
                         $bonus = new Bonus();
                         $bonus->create();
                         unset($bonus);
+
+                        $x = new \SendMailTurist();
+                        $x->notification_holding_confirm();
+
                         $responseAr['msg'] = 'Платеж успешно принят!';
                         $responseAr['reck_id'] = $reck_id;
                         $responseAr['success'] = 1;

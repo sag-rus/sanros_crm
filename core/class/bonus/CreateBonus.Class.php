@@ -9,7 +9,12 @@ class CreateBonus{
   private $bonusAffiliate;
 
   public function __construct(){
-    $config = ConfigCRM::getInstance();
+    if(class_exists('App\lib\CRM\Config\Client')) {
+      $config = \App\lib\CRM\Config\Client::getInstance();
+    }
+    else {
+      $config = ConfigCRM::getInstance();
+    }
     $this->connect = $config->connect;
     $this->booking = $config->booking;
     $this->turist = $config->turist;

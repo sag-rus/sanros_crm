@@ -170,6 +170,50 @@ class SendMailTurist extends SendMail{
     return $letter;
   }
 
+  public function notification_holding_confirm(){
+    $booking = $this->booking;
+    $connect = $this->connect;
+    $email = $this->select_email();
+    if($email){
+      $client = new DisplayClient($this->account);
+      $fio = $client->select_fio_array();
+
+      $bonus = new DisplayBonus();
+      $bonus_sum = $bonus->select_bonus();
+
+      $row = $connect->getRow("SELECT id_user, id_obj, date_z, status FROM reckoning WHERE id=?i", $booking);
+      $object = $row["id_obj"];
+      $arrival = $row["date_z"];
+      $manager = $row["id_user"];
+      $status = $row["status"];
+
+      $config = ConfigCRM::getInstance();
+      $link = $config->clientCabinet["link"];
+      $data = array(
+        "link" => $link."заявки/".$booking,
+        "object" => get_object($connect, $object, "type"),
+        "client" => $fio["name"]." ".$fio["otch"],
+        "arrival" => $arrival,
+        "bonus" => $bonus_sum
+      );
+      if($status == 5){
+        $this->send_mail_base_notification("Оплата из ЛК", "Произведено принятие замороженных средств в качестве оплаты путевки №".$booking);
+        $letter = $this->select_template_letter_turist("payment/obmen-confirm-holding-payment", $data);
+
+      }else{
+
+        $this->send_mail_base_notification("Оплата из ЛК", "Произведено принятие замороженных средств в качестве предоплаты путевки №".$booking);
+        $date_to_pay = $connect->getOne("SELECT DATE_FORMAT(date, '%d.%m.%Y') as date FROM time_payment WHERE id_schet=?i AND type=1", $booking);
+        if($date_to_pay){
+          $data["ostatok"] = "Оставшуюся часть суммы Вам необходимо оплатить до ".$date_to_pay."<br /><br />";
+        }
+        $connect->query("DELETE FROM time_payment WHERE type=2 AND id_schet=?i", $booking);
+        $letter = $this->select_template_letter_turist("payment/obmen-confirm-holding-prepay", $data);
+
+      }
+      $this->send_mail_base("default", $email, $letter["title"], $letter["HTML"]);
+    }
+  }
 }
 
 ?>
