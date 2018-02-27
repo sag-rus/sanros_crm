@@ -22,7 +22,12 @@ class SendMail{
   }
 
   protected function select_template_letter($template, $file, Array $data = array()){
-    $config = ConfigCRM::getInstance();
+    if(class_exists('App\lib\CRM\Config\Client')) {
+      $config = \App\lib\CRM\Config\Client::getInstance();
+    }
+    else {
+      $config = ConfigCRM::getInstance();
+    }
     $directory = $config->directory;
     $HTML = $this->select_template($template);
     $letter = file_get_contents($directory."/templates/".$file.".html");

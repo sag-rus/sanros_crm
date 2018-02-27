@@ -43,6 +43,10 @@ if($func AND function_exists($func)){
     "bonus-affiliate" => $conf->bonus_ref
 	];
 
+	$configInstance->contactInfo = [
+    "free-line" => $conf->linia
+  ];
+
 	include_once("core/lib/Mysql.Class.php");
 	include_once("core/functions.php");
 	$connect = connect_to_MySQL();
