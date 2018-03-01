@@ -42,6 +42,8 @@ function general_payment_report(){
 					<option value="3">Сертификатом</option>
 					<option value="4">На месте</option>
 					<option value="5">Банковской картой</option>
+                    <option value="5-1">--- Банковской картой без холдирования</option>
+                    <option value="5-2">--- Банковской картой с холдированием</option>
 				</select>
 			</div>
 		</div>
@@ -65,6 +67,12 @@ function general_payment_report(){
 				</select>
 			</div>
 		</div>
+        <div class="form-group">
+            <div class="col-sm-2">
+                <input type="checkbox" id="show-holdings" class="pull-right">
+            </div>
+            <label class="col-sm-4 control-label text-left" style="padding-top: 0;">Показывать замороженные на данный момент платежи</label>
+        </div>
 	</div>
 	<div class="panel-footer" style="text-align: right">
 		<button type="button" class="btn btn-success btn-sm" onclick="filter_payment()"><i class="fa fa-search"></i> Применить</button>
@@ -153,6 +161,8 @@ function filter_payment($connect){
 	$method_opl = $_POST["method_opl"];
 	$type_opl = $_POST["type_opl"];
 	$type_pay_tbl = $_POST["type_pay"];
+	$showHoldings = (int)$_POST["show_holdings"];
+	$cardPaymentTypes = (int)$_POST["card_payment_types"];
 	$count = $_POST;
 	$id_file = array();
 	$str = "";
@@ -196,18 +206,41 @@ function filter_payment($connect){
 	    $date_opl_t = strtotime($date_opl);
 		if($date_opl2) {
 		  $date_opl2_t = strtotime($date_opl2)+86400;
-          $zapros_for_mysql .= " ((`payment`.`date` >= '$date_opl' AND `payment`.`date` <= '$date_opl2' AND `payment`.`status` = 2 AND `payment`.`processed` IS NULL) OR (`payment`.`processed` IS NOT NULL AND `payment`.`processed` >= '".$date_opl_t."' AND `payment`.`processed` < '".$date_opl2_t."'))";
+		  if($showHoldings) {
+            $zapros_for_mysql .= " ((`payment`.`processed` IS NULL AND `payment`.`date` >= '$date_opl' AND `payment`.`date` <= '$date_opl2' AND `payment`.`status` = 2) OR (`payment`.`processed` IS NOT NULL AND `payment`.`processed` >= '".$date_opl_t."' AND `payment`.`processed` < '".$date_opl2_t."') OR (`payment`.`status` = 1 AND `payment`.`created` >= '".$date_opl_t."' AND `payment`.`created` < '".$date_opl2_t."'))";
+          }
+          else {
+            $zapros_for_mysql .= " ((`payment`.`processed` IS NULL AND `payment`.`date` >= '$date_opl' AND `payment`.`date` <= '$date_opl2' AND `payment`.`status` = 2) OR (`payment`.`processed` IS NOT NULL AND `payment`.`processed` >= '".$date_opl_t."' AND `payment`.`processed` < '".$date_opl2_t."'))";
+          }
         }
 		else {
           $date_opl2_t = $date_opl_t+86400;
-          $zapros_for_mysql .= "((`payment`.`date` = '$date_opl' AND `payment`.`status` = 2 AND `payment`.`processed` IS NULL)  OR (`payment`.`processed` IS NOT NULL AND `payment`.`processed` >= '".$date_opl_t."' AND `payment`.`processed` < '".$date_opl2_t."'))";
+          if($showHoldings) {
+            $zapros_for_mysql .= "((`payment`.`processed` IS NULL AND `payment`.`date` = '$date_opl' AND `payment`.`status` = 2)  OR (`payment`.`processed` IS NOT NULL AND `payment`.`processed` >= '".$date_opl_t."' AND `payment`.`processed` < '".$date_opl2_t."') OR (`payment`.`status` = 1 AND `payment`.`created` >= '".$date_opl_t."' AND `payment`.`created` < '".$date_opl2_t."'))";
+          }
+          else {
+            $zapros_for_mysql .= "((`payment`.`processed` IS NULL AND `payment`.`date` = '$date_opl' AND `payment`.`status` = 2)  OR (`payment`.`processed` IS NOT NULL AND `payment`.`processed` >= '".$date_opl_t."' AND `payment`.`processed` < '".$date_opl2_t."'))";
+          }
         }
 	}
+	elseif (!$showHoldings) {
+      $zapros_for_mysql .= "(`payment`.`status` != 1)";
+    }
+
 	if($method_opl != ""){
 		if($zapros_for_mysql)
 			$zapros_for_mysql.= " AND ";
 		$zapros_for_mysql.= " pay_method='$method_opl' ";
+		if($cardPaymentTypes) {
+          if($zapros_for_mysql)
+            $zapros_for_mysql.= " AND ";
+          if($cardPaymentTypes === 1)
+              $zapros_for_mysql .= " `payment`.`created` = `payment`.`processed` ";
+          else
+              $zapros_for_mysql .= " `payment`.`created` != `payment`.`processed` ";
+        }
 	}
+
 	if($type_opl != ""){
 		if($zapros_for_mysql)
 			$zapros_for_mysql.= " AND ";
@@ -235,7 +268,7 @@ function filter_payment($connect){
         $zapros_for_mysql .= " `payment`.`status` != 0";
 
 	$zapros_for_mysql_cond = $zapros_for_mysql;
-	$zapros_for_mysql = "SELECT payment.id, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, payment.office, `payment`.`status` AS payment_status, `payment`.`type`, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san FROM payment LEFT JOIN reckoning ON reckoning.id=payment.schet WHERE ".$zapros_for_mysql." ORDER BY payment.id";
+	$zapros_for_mysql = "SELECT payment.id, `payment`.`processed`, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, payment.office, `payment`.`status` AS payment_status, `payment`.`type`, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san FROM payment LEFT JOIN reckoning ON reckoning.id=payment.schet WHERE ".$zapros_for_mysql." ORDER BY payment.id";
 
 	$data = $connect->getAll($zapros_for_mysql);
 
@@ -261,6 +294,9 @@ function filter_payment($connect){
 		$id_file[] = $id;
 		$class = $row["class"];
 		$date = $row["date"];
+		if(!is_null($row['processed']))
+		    $date = date("d.m.Y",$row["processed"]);
+
 		$date_z = $row["date_z"];
 		$sum = $row["sum"];
 		$status = $row["status"];
@@ -673,13 +709,15 @@ function filter_payment_month($connect){
 		$max = cal_days_in_month(CAL_GREGORIAN, $month, $year);
 		for($day = 1; $day <= $max; $day++){
 			$date = $year."-".$month."-".$day;
+			$date1t = strtotime($date);
+			$date2t = $date1t+86400;
 			$array = array("sum_opl" => 0, "count_opl" => 0, "sum_opl_san" => 0, "count_opl_san" => 0);
-			$data = $connect->getAll("SELECT payment.sum FROM payment, reckoning WHERE payment.schet=reckoning.id AND (payment.type=1 OR payment.type=2) AND payment.date=?s AND `payment`.`status` != 0".$query, $date);
+			$data = $connect->getAll("SELECT payment.sum FROM payment, reckoning WHERE payment.schet=reckoning.id AND (payment.type=1 OR payment.type=2) AND ((`payment`.`processed` IS NULL AND `payment`.`date`=?s AND `payment`.`status` = 2) OR (`payment`.`processed` IS NOT NULL AND `payment`.`processed`>= ?i AND `payment`.`processed`< ?i AND `payment`.`status` = 2)) AND `payment`.`status` != 0".$query, $date,$date1t,$date2t);
 			foreach($data as $row){
 				$array["sum_opl"]+= $row["sum"];
 				$array["count_opl"]++;
 			}
-			$data = $connect->getAll("SELECT payment.sum FROM payment, reckoning WHERE payment.schet=reckoning.id AND (payment.type=3 OR payment.type=4) AND payment.date=?s AND `payment`.`status` != 0".$query, $date);
+			$data = $connect->getAll("SELECT payment.sum FROM payment, reckoning WHERE payment.schet=reckoning.id AND (payment.type=3 OR payment.type=4) AND ((`payment`.`processed` IS NULL AND `payment`.`date`=?s AND `payment`.`status` = 2) OR (`payment`.`processed` IS NOT NULL AND `payment`.`processed`>= ?i AND `payment`.`processed`< ?i AND `payment`.`status` = 2)) AND `payment`.`status` != 0".$query, $date,$date1t,$date2t);
 			foreach($data as $row){
 				$array["sum_opl_san"]+= $row["sum"];
 				$array["count_opl_san"]++;
@@ -724,13 +762,15 @@ function filter_payment_month($connect){
 			$max = cal_days_in_month(CAL_GREGORIAN, $month, $year);
 			$first = $year."-".$month."-1";
 			$end = $year."-".$month."-".$max;
+			$first_t = strtotime($first);
+			$end_t = strtotime($end)+86400;
 			$array = array("sum_opl" => 0, "count_opl" => 0, "sum_opl_san" => 0, "count_opl_san" => 0);
-			$data = $connect->getAll("SELECT payment.sum FROM payment, reckoning WHERE payment.schet=reckoning.id AND (payment.type=1 OR payment.type=2) AND (payment.date>=?s AND payment.date<=?s) AND `payment`.`status` != 0".$query, $first, $end);
+			$data = $connect->getAll("SELECT payment.sum FROM payment, reckoning WHERE payment.schet=reckoning.id AND (payment.type=1 OR payment.type=2) AND ((`payment`.`processed` IS NULL AND payment.date>=?s AND payment.date<=?s AND `payment`.`status` = 2) OR (`payment`.`processed` IS NOT NULL AND `payment`.`status` = 2 AND `payment`.`processed` >= ?i AND `payment`.`processed` < ?i)) AND `payment`.`status` != 0".$query, $first, $end, $first_t, $end_t);
 			foreach($data as $row){
 				$array["sum_opl"]+= $row["sum"];
 				$array["count_opl"]++;
 			}
-			$data = $connect->getAll("SELECT payment.sum FROM payment, reckoning WHERE payment.schet=reckoning.id AND (payment.type=3 OR payment.type=4) AND (payment.date>=?s AND payment.date<=?s) AND `payment`.`status` != 0".$query, $first, $end);
+			$data = $connect->getAll("SELECT payment.sum FROM payment, reckoning WHERE payment.schet=reckoning.id AND (payment.type=3 OR payment.type=4) AND ((`payment`.`processed` IS NULL AND payment.date>=?s AND payment.date<=?s AND `payment`.`status` = 2) OR (`payment`.`processed` IS NOT NULL AND `payment`.`status` = 2 AND `payment`.`processed` >= ?i AND `payment`.`processed` < ?i)) AND `payment`.`status` != 0".$query, $first, $end, $first_t, $end_t);
 			foreach($data as $row){
 				$array["sum_opl_san"]+= $row["sum"];
 				$array["count_opl_san"]++;

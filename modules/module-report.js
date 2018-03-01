@@ -309,14 +309,28 @@ function payment_report_general(){
 
 function filter_payment(){
 	var method_opl = $('#method_opl').val();
+	var card_payment_types = 0;
+	if(method_opl === "5-1") {
+		method_opl = 5;
+		card_payment_types = 1;
+	}
+	else if(method_opl === "5-2") {
+		method_opl = 5;
+    card_payment_types = 2;
+	}
+	else {
+		method_opl = parseInt(method_opl);
+	}
+
 	var type_opl = $('#type_opl').val();
 	var type_pay = $('#type_pay').val();
 	var date_opl = $('#date_opl').attr('date');
 	var date_opl2 = $('#date_opl2').attr('date');
+	var showHoldings = parseInt($('#show-holdings').prop('checked')*1);
 	if(!date_opl)
 		show_warning('#filter_res', 'Введите дату');
 	else{
-		var str = 'func=filter_payment&date_opl=' + date_opl + '&date_opl2=' + date_opl2 + '&method_opl=' + method_opl + '&type_opl=' + type_opl + '&type_pay=' + type_pay;
+		var str = 'func=filter_payment&date_opl=' + date_opl + '&date_opl2=' + date_opl2 + '&method_opl=' + method_opl + '&type_opl=' + type_opl + '&type_pay=' + type_pay+'&show_holdings='+showHoldings+"&card_payment_types="+card_payment_types;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
