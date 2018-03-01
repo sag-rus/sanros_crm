@@ -526,8 +526,14 @@ class BookingPayment extends Client {
           $bonus = new Bonus();
           $bonus->create();
           unset($bonus);
-          $this->saveNotification("Оплата картой №".$bid, $manager);
-          $this->saveSchetToHistory($bid, "Оплата клиентом банковской картой. Сумма ".$sum);
+          if($type_pay_addit == 6) {
+            $this->saveNotification("Доплата картой №" . $bid, $manager);
+            $this->saveSchetToHistory($bid, "Доплата клиентом банковской картой. Сумма " . $sum);
+          }
+          else {
+            $this->saveNotification("Оплата картой №" . $bid, $manager);
+            $this->saveSchetToHistory($bid, "Оплата клиентом банковской картой. Сумма " . $sum);
+          }
 
         }elseif($type_pay == 2){
 

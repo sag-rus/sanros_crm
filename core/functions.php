@@ -1010,7 +1010,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
     $data = $connect->getAll("SELECT sum, bank_com, type FROM payment WHERE pay_method=5 AND schet=?i".$payment_status_string, $id);
 
   foreach($data as $row){
-    if($row["bank_com"] > 0 AND $row["type"] == 2){
+    if($row["bank_com"] > 0 && ($row["type"] == 2 || $row["type"] == 6)){
       if($only_payment_state)
         $row["sum"]-= $connect->getOne("SELECT sum FROM payment WHERE ".$add_cond."type=5 AND schet=?i".$payment_status_string, $id);
       else
