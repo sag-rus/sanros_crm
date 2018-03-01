@@ -452,12 +452,13 @@ class BookingPayment extends Client {
       $sum_to_pay = $row["sum"];
       $request_id = $row['id'];
       $type_pay = $row["type"];
-      $row = $connect->getRow("SELECT id_obj, id_user, date_v, turist FROM reckoning WHERE id=?i", $bid);
+      $row = $connect->getRow("SELECT id_obj, id_user, date_v, turist, status FROM reckoning WHERE id=?i", $bid);
       $object = $row["id_obj"];
       $manager = $row["id_user"];
       $client = $row["turist"];
       $arrival = date_change($row["date_v"], ".");
       $timestamp = date("U");
+      $reck_row_status = $row['status'];
       \App\lib\CRM\Config\Client::getInstance()->turist = $client;
       \App\lib\CRM\Config\Client::getInstance()->booking = $bid;
 
@@ -515,8 +516,12 @@ class BookingPayment extends Client {
       }
       else {
         if($type_pay == 1){
+          $type_pay_addit = 2;
 
-          $connect->query("INSERT INTO payment(schet, date, created, processed, type, pay_method, request_id, sum, bank_com) VALUES (?i, ?s, ?i, ?i, 2, 5, ?i, ?s, ?s)", $bid, $today, $timestamp, $timestamp, $request_id, $sum, $bank_com);
+          if($reck_row_status == 4)
+            $type_pay_addit = 6;
+
+          $connect->query("INSERT INTO payment(schet, date, created, processed, type, pay_method, request_id, sum, bank_com) VALUES (?i, ?s, ?i, ?i, $type_pay_addit, 5, ?i, ?s, ?s)", $bid, $today, $timestamp, $timestamp, $request_id, $sum, $bank_com);
           $connect->query("UPDATE reckoning SET status=5 WHERE id=?i LIMIT 1", $bid);
           $bonus = new Bonus();
           $bonus->create();

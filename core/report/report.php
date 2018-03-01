@@ -176,7 +176,7 @@ function filter_payment($connect){
 	SetCookie("filter", $str);
 
 	$zapros_for_mysql = "";
-	$array = array("all_pay" => 0, "all_num" => 0, "pay_bez" => 0, "pay_nal" => 0, "pay_other" => 0, "num_bez" => 0, "num_nal" => 0, "num_other" => 0, "num_prepay" => 0, "prepay" => 0, "num_pay" => 0, "pay" => 0, "num_place" => 0, "pay_place" => 0, "num_card" => 0, "pay_card" => 0, "num_san" =>0, "pay_san" => 0, "num_cert" => 0, "pay_cert" => 0, "num_ret" => 0, "return" => 0, "reward" => 0);
+	$array = array("all_pay" => 0, "all_num" => 0, "pay_bez" => 0, "pay_nal" => 0, "pay_other" => 0, "num_bez" => 0, "num_nal" => 0, "num_other" => 0, "num_prepay" => 0, "prepay" => 0, "num_feepay" => 0, "feepay" => 0, "num_pay" => 0, "pay" => 0, "num_place" => 0, "pay_place" => 0, "num_card" => 0, "pay_card" => 0, "num_san" =>0, "pay_san" => 0, "num_cert" => 0, "pay_cert" => 0, "num_ret" => 0, "return" => 0, "reward" => 0);
 	$office = $connect->getAll("SELECT id, name FROM office");
 	foreach($office as $row){
 		$id_office = $row["id"];
@@ -415,7 +415,17 @@ function filter_payment($connect){
 					$array["office"][$office_pay]["num_pay"]++;
 					$array["office"][$office_pay]["pay"]+= $sum;
 				}
-			}elseif($type_pay == 5){
+			}
+			elseif ($type_pay == 6) {
+              $type_pay_text = "Доплата";
+              $array["num_feepay"]++;
+              $array["feepay"]+= $sum;
+              if($office_pay > 0){
+                $array["office"][$office_pay]["num_feepay"]++;
+                $array["office"][$office_pay]["feepay"]+= $sum;
+              }
+            }
+			elseif($type_pay == 5){
 				$type_pay_text = "Возврат";
 				$array["num_ret"]++;
 				$array["return"]+= $sum;
@@ -579,15 +589,22 @@ function filter_payment($connect){
 				</div>
 				<?php } ?>
 				<?php if($array["num_prepay"]){ ?>
-				<div class="col-sm-6">
+				<div class="col-sm-4">
 					Предоплата <?php echo $array["num_prepay"]; ?> на сумму <?php echo number_format($array["prepay"], 2, ",", " "); ?>
 				</div>
 				<?php } ?>
 				<?php if($array["num_pay"]){ ?>
-				<div class="col-sm-6">
+				<div class="col-sm-4">
 					Оплата <?php echo $array["num_pay"]; ?> на сумму <?php echo number_format($array["pay"], 2, ",", " "); ?>
 				</div>
 				<?php } ?>
+
+				<?php if($array["num_feepay"]){ ?>
+				<div class="col-sm-4">
+					Доплата <?php echo $array["num_feepay"]; ?> на сумму <?php echo number_format($array["feepay"], 2, ",", " "); ?>
+				</div>
+				<?php } ?>
+
 				<div class="clearfix"></div>
 				<hr />
 				<div class="col-sm-6">
@@ -646,15 +663,22 @@ function filter_payment($connect){
 				</div>
 				<?php } ?>
 				<?php if($data["num_prepay"]){ ?>
-				<div class="col-sm-6">
+				<div class="col-sm-4">
 					Предоплата <?php echo $data["num_prepay"]; ?> на сумму <?php echo number_format($data["prepay"], 2, ",", " "); ?>
 				</div>
 				<?php } ?>
 				<?php if($data["num_pay"]){ ?>
-				<div class="col-sm-6">
+				<div class="col-sm-4">
 					Оплата <?php echo $data["num_pay"]; ?> на сумму <?php echo number_format($data["pay"], 2, ",", " "); ?>
 				</div>
 				<?php } ?>
+
+                <?php if($data["num_feepay"]){ ?>
+                  <div class="col-sm-4">
+                      Доплата <?php echo $data["num_feepay"]; ?> на сумму <?php echo number_format($data["feepay"], 2, ",", " "); ?>
+                  </div>
+                <?php } ?>
+
 			</div>
 		</div>
 		<?php } ?>

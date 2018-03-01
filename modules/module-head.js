@@ -35,15 +35,9 @@ function get_my_reckoning(page){
 			remove_all_windows();
 			$(".my-bid-table").tablesorter({
 				headers:{
-					7:{
+					/*8:{
 						sorter: false
-					},
-					8:{
-						sorter: false
-					},
-					9:{
-						sorter: false
-					}
+					}*/
 				}
 			});
 		}

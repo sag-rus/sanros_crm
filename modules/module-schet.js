@@ -1776,6 +1776,7 @@ function cancel_payment(id) {
         $('.payment-element[data-payment-id='+id+']').next().find('.payment-confirm-button').removeClass('hidden');
         $('.payment-element[data-payment-id='+id+'] .payment-actions-block').remove();
         alert("Платеж отменен");
+        view_schet(data['reck_id']);
 			}
 			else {
       	alert(data['msg']);

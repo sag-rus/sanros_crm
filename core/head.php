@@ -111,6 +111,7 @@ function get_my_reckoning($connect){
 		$str = " AND active=1 AND id_user=$session_login";
 	if($page == "new")
 		$str = " AND (id_user='' OR id_user IS NULL OR id_user=0)";
+
 	if($page == "special"){
 		$str = " AND ((id_obj=95 OR id_obj=133) AND status=7)";
 		if((int)$id_rights <= 3 && $session_login != 21)
@@ -120,9 +121,9 @@ function get_my_reckoning($connect){
 	if($page == "certificate") {
       $str .= " AND type = 1";
     }
-    $str .= ' ORDER BY (id_user = '.$session_login.') DESC';
+    $str .= ' ORDER BY (id_user = '.$session_login.') DESC, (holding_sum > 0) DESC';
 
-	$query = "SELECT id, status, status_san, turist, agency, DATE_FORMAT(date, '%d.%m.%Y') as date, DATE_FORMAT(date_z, '%d.%m.%Y') as date_z, id_obj, id_user, sum, active FROM reckoning WHERE (active=0 OR active=2 OR active=1) $str";
+	$query = "SELECT id, status, status_san, turist, agency, holding_sum, DATE_FORMAT(date, '%d.%m.%Y') as date, DATE_FORMAT(date_z, '%d.%m.%Y') as date_z, id_obj, id_user, sum, active FROM reckoning WHERE (active=0 OR active=2 OR active=1) $str";
 	$data = $connect->getAll($query);
 	foreach($data as $row){
 		$row["manager"] = $connect->getOne("SELECT name FROM users WHERE id=?i", $row["id_user"]);
@@ -166,7 +167,7 @@ function get_my_reckoning($connect){
 	if($page > 2)
 		$date_s = "<th width='9%' class='{dateFormat: \"ddmmyyyy\"}'>Оплата</th>";
 	if($html)
-		$html = "<thead><tr class='tr_head'><th width='5%'>№</th><th style='text-align: left;' width='25%'>Клиент</th><th width='20%'>Объект</th><th width='9%' class='{dateFormat: \"ddmmyyyy\"}'>Заезд</th><th width='9%' class='{dateFormat: \"ddmmyyyy\"}'>Заявка</th>".$date_s."<th width='7%'>Сан</th><th width='9%'>Сумма</th><th width='4%'>Менеджер</th><th width='5%'></th></tr></thead><tbody>".$html."</tbody>";
+		$html = "<thead><tr class='tr_head'><th width='5%'>№</th><th style='text-align: left;' width='20%'>Клиент</th><th width='20%'>Объект</th><th width='9%' class='{dateFormat: \"ddmmyyyy\"}'>Заезд</th><th width='9%' class='{dateFormat: \"ddmmyyyy\"}'>Заявка</th>".$date_s."<th width='7%'>Сан</th><th width='8%'>Сумма</th><th width='10%'>Заморожено</th><th width='5%'>Менеджер</th></tr></thead><tbody>".$html."</tbody>";
 	else
 		$html = "<tr style='background: white;'><td><div class='alert alert-info'>Заявок нет</div></td></tr>";
 ?>
@@ -223,7 +224,8 @@ function get_stroka_HTML($connect, $row, $page){
 		$row["turist"] = $row["agency"];
 	}else
 		$agency = "";
-	$html = "<td>".$row["id"]."</td><td style='text-align: left;'><span style='cursor: pointer;' onclick='show_turist(\"".$row["turist"]."\", \"".$row["id"]."\", \"".$agency."\")'>".$row["fio"]."</td> <td>".$row["object"]."</td><td>".$row["date_z"]."</td><td class='td_date'>".$row["date"]."</td>".$date_schet."<td>".$status_san."</td><td>".$row["sum"]."</td><td>".$row["manager"]."</td><td style='background: #FFF !important;'></td>";
+
+	$html = "<td>".$row["id"]."</td><td style='text-align: left;'><span style='cursor: pointer;' onclick='show_turist(\"".$row["turist"]."\", \"".$row["id"]."\", \"".$agency."\")'>".$row["fio"]."</td> <td>".$row["object"]."</td><td>".$row["date_z"]."</td><td class='td_date'>".$row["date"]."</td>".$date_schet."<td>".$status_san."</td><td>".$row["sum"]."</td><td>".$row["holding_sum"]."</td><td>".$row["manager"]."</td>";
 	return $html;
 }
 

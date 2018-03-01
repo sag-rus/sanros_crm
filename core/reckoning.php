@@ -1503,7 +1503,7 @@ function save_service_reckoning($connect){
 }
 
 function show_schet_klient($connect){
-	global $id_rights;
+	global $id_rights, $session_login;
 	$html = "";
 	$document = "";
 	$id = $_POST["id"];
@@ -1511,7 +1511,7 @@ function show_schet_klient($connect){
 	$type = $_POST["type"];
 	if(isset($_COOKIE["reck"]))
 		SetCookie("reck","");
-	$row = $connect->getRow("SELECT type, agency, turist, DATE_FORMAT(date, '%d.%m.%Y') as date, sum, status, DATE_FORMAT(date_z, '%d.%m.%Y') as date_z, DATE_FORMAT(date_v, '%d.%m.%Y') as date_v, id_obj, id_tour, rest, status_san, number_turist, id_com, id_dis, note, active, status_agent, schet_san, DATE_FORMAT(date_schet_san, '%d.%m.%Y') as date_schet_san, id_user, website, guaranteed, reason_delete, changes, doc_schet_san, note_bid, correction, commission_value FROM reckoning WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT type, agency, turist, holding_sum, DATE_FORMAT(date, '%d.%m.%Y') as date, sum, status, DATE_FORMAT(date_z, '%d.%m.%Y') as date_z, DATE_FORMAT(date_v, '%d.%m.%Y') as date_v, id_obj, id_tour, rest, status_san, number_turist, id_com, id_dis, note, active, status_agent, schet_san, DATE_FORMAT(date_schet_san, '%d.%m.%Y') as date_schet_san, id_user, website, guaranteed, reason_delete, changes, doc_schet_san, note_bid, correction, commission_value FROM reckoning WHERE id=?i", $id);
 	$active = $row["active"];
 	$reck_type = $row["type"];
 	if($type == "agency")
@@ -1670,7 +1670,7 @@ function show_schet_klient($connect){
 
         $payment_div .= '<hr />';
 
-		if($payments['status'] == 1 && $id_rights > 3) {
+		if($payments['status'] == 1 && ($id_rights > 3 || ($session_login > 0 && $session_login == $id_user))) {
 		    $payment_div .= '<div class="row clearfix payment-actions-block">';
 		    $hide_confirm = '';
 		    if($payment_showed)
@@ -1693,9 +1693,21 @@ function show_schet_klient($connect){
 		$payment_div.= "<strong>Оплата".$add.":</strong> ".$payments['sum'];
 		if($id_rights > 3 AND $active == 0 AND $payments['pay_method'] != 'сертификатом')
 			$payment_div.= "<button type='button' class='btn btn-default btn-xs' style='float: right;' onclick='edit_payment(\"".$payments['id']."\")'>&nbsp;<i class='fa fa-pencil'></i>&nbsp;</button>";
-		$payment_div.= "<br /><strong>Дата:</strong> ".$payments['date']."<br />";
-		$payment_div.= "<strong>Способ:</strong> ".$payments['pay_method']."<hr />";
-		$payment_div .= '</div>';
+      $payment_div.= "<br /><strong>Дата и время платежа:</strong> ".$payments['datetime']."<br />";
+      $payment_div.= "<strong>Способ:</strong> ".$payments['pay_method']."<br />";
+
+      if($payments["datetime"] != $payments['datetime_processed']) {
+        if(is_null($payments['datetime_processed'])) {
+          $payment_div.= '<strong class="text-danger">Не обработан</strong>'.'<br />';
+        }
+        else {
+          $payment_div.= "<strong>Обработан:</strong> ".$payments['datetime_processed']."<br />";
+        }
+      }
+
+      $payment_div .= '<hr />';
+
+      $payment_div .= '</div>';
 	}
 	$arr = get_payment($connect, $id, 3);
 	foreach($arr as $payments){
@@ -1728,6 +1740,34 @@ function show_schet_klient($connect){
 		$payment_div.= "<strong>Номер платежного поручения:</strong> ".$payments["pay_number"]."<br /><hr />";
         $payment_div .= '</div>';
 	}
+
+    $arr = get_payment($connect, $id, 6);
+    foreach($arr as $payments){
+        if($status_san == 5 OR $status_san == 4)
+          $add = " в санаторий";
+        else
+          $add = "";
+        $payment_div .= '<div class="payment-element">';
+        $payment_div.= "<strong>Доплата".$add.":</strong> ".$payments['sum'];
+        if($id_rights > 3 AND $active == 0 AND $payments['pay_method'] != 'сертификатом')
+          $payment_div.= "<button type='button' class='btn btn-default btn-xs' style='float: right;' onclick='edit_payment(\"".$payments['id']."\")'>&nbsp;<i class='fa fa-pencil'></i>&nbsp;</button>";
+        $payment_div.= "<br /><strong>Дата и время платежа:</strong> ".$payments['datetime']."<br />";
+        $payment_div.= "<strong>Способ:</strong> ".$payments['pay_method']."<br />";
+
+        if($payments["datetime"] != $payments['datetime_processed']) {
+          if(is_null($payments['datetime_processed'])) {
+            $payment_div.= '<strong class="text-danger">Не обработан</strong>'.'<br />';
+          }
+          else {
+            $payment_div.= "<strong>Обработан:</strong> ".$payments['datetime_processed']."<br />";
+          }
+        }
+
+        $payment_div .= '<hr />';
+
+        $payment_div .= '</div>';
+    }
+
 	if($document)
 		$html.= "<button onclick=\"$('#document_div').toggle();\" class='btn btn-default btn-xs'><i class='fa fa-file-text-o'></i> Документы</button><br /><div style='display: none;' id='document_div'><hr />".$document."<hr /></div>";
 	if($note_schet){
@@ -2728,7 +2768,7 @@ function show_menu_document($connect){
 function show_menu_bid($connect){
 	global $id_rights, $session_login;
 	$id = $_POST["id"];
-	$row = $connect->getRow("SELECT status, status_san, date_z, agency, turist, status_agent, id_user, active, changes, id_user FROM reckoning WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT status, holding_sum, status_san, date_z, agency, turist, status_agent, id_user, active, changes, id_user FROM reckoning WHERE id=?i", $id);
 	$status = $row["status"];
 	$status_san = $row["status_san"];
 	$date_z = $row["date_z"];
@@ -2748,13 +2788,13 @@ function show_menu_bid($connect){
 		<?php if($status == 2){ ?>
 			<span onclick="show_bill(<?php echo $id; ?>)">Выставить счет</span>
 		<?php } ?>
-		<?php if($status == 1){ ?>
+		<?php if($status == 1 && $row['holding_sum'] == 0){ ?>
 			<span onclick="reckoning_to_upsorted(<?php echo $id; ?>)">Удалить</span>
 		<?php } ?>
 		<?php if($status < 4){ ?>
 			<span onclick="reckoning_put_aside(<?php echo $id; ?>)">Отложить</span>
 		<?php } ?>
-		<?php if($status == 9){ ?>
+		<?php if($status == 9 && $row['holding_sum'] == 0){ ?>
 			<span onclick="reckoning_from_aside(<?php echo $id; ?>)">Вернуть в работу</span>
 			<span onclick="reckoning_to_upsorted(<?php echo $id; ?>)">Удалить</span>
 		<?php } ?>
@@ -2878,10 +2918,10 @@ function show_menu_bid($connect){
 
 	<?php if(!$user OR $active == 3){ ?>
 		<hr /><span class="hr_label">Новая заявка<hr /></span>
-		<?php if($active != 3){ ?>
+		<?php if($active != 3 && $row['holding_sum'] == 0){ ?>
 			<span onclick="reckoning_to_upsorted(<?php echo $id; ?>)">Удалить</span>
 		<?php } ?>
-		<?php if($id_rights == 5 AND $active == 3){ ?>
+		<?php if($id_rights == 5 AND $active == 3 && $row['holding_sum'] == 0){ ?>
 			<span onclick="delete_reckoning(<?php echo $id; ?>)">Удалить навсегда</span>
 		<?php } ?>
 		<?php if($active == 3){ ?>
