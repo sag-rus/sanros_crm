@@ -158,7 +158,7 @@ function filter_payment($connect){
 	}
 	$date_opl = $_POST["date_opl"];
 	$date_opl2 = $_POST["date_opl2"];
-	$method_opl = $_POST["method_opl"];
+	$method_opl = (int)$_POST["method_opl"];
 	$type_opl = $_POST["type_opl"];
 	$type_pay_tbl = $_POST["type_pay"];
 	$showHoldings = (int)$_POST["show_holdings"];
@@ -207,19 +207,19 @@ function filter_payment($connect){
 		if($date_opl2) {
 		  $date_opl2_t = strtotime($date_opl2)+86400;
 		  if($showHoldings) {
-            $zapros_for_mysql .= " ((`payment`.`processed` IS NULL AND `payment`.`date` >= '$date_opl' AND `payment`.`date` <= '$date_opl2' AND `payment`.`status` = 2) OR (`payment`.`processed` IS NOT NULL AND `payment`.`processed` >= '".$date_opl_t."' AND `payment`.`processed` < '".$date_opl2_t."') OR (`payment`.`status` = 1 AND `payment`.`created` >= '".$date_opl_t."' AND `payment`.`created` < '".$date_opl2_t."'))";
+            $zapros_for_mysql .= " ((`payment`.`processed` IS NULL AND `payment`.`date` >= '$date_opl' AND `payment`.`date` <= '$date_opl2' AND `payment`.`status` = 2) OR (`payment`.`processed` IS NOT NULL AND `payment`.`processed` >= '".$date_opl_t."' AND `payment`.`processed` < '".$date_opl2_t."') OR (`payment`.`status` = 1 AND `payment`.`created` >= '".$date_opl_t."' AND `payment`.`created` < '".$date_opl2_t."')) ";
           }
           else {
-            $zapros_for_mysql .= " ((`payment`.`processed` IS NULL AND `payment`.`date` >= '$date_opl' AND `payment`.`date` <= '$date_opl2' AND `payment`.`status` = 2) OR (`payment`.`processed` IS NOT NULL AND `payment`.`processed` >= '".$date_opl_t."' AND `payment`.`processed` < '".$date_opl2_t."'))";
+            $zapros_for_mysql .= " ((`payment`.`processed` IS NULL AND `payment`.`date` >= '$date_opl' AND `payment`.`date` <= '$date_opl2' AND `payment`.`status` = 2) OR (`payment`.`processed` IS NOT NULL AND `payment`.`processed` >= '".$date_opl_t."' AND `payment`.`processed` < '".$date_opl2_t."')) ";
           }
         }
 		else {
           $date_opl2_t = $date_opl_t+86400;
           if($showHoldings) {
-            $zapros_for_mysql .= "((`payment`.`processed` IS NULL AND `payment`.`date` = '$date_opl' AND `payment`.`status` = 2)  OR (`payment`.`processed` IS NOT NULL AND `payment`.`processed` >= '".$date_opl_t."' AND `payment`.`processed` < '".$date_opl2_t."') OR (`payment`.`status` = 1 AND `payment`.`created` >= '".$date_opl_t."' AND `payment`.`created` < '".$date_opl2_t."'))";
+            $zapros_for_mysql .= "((`payment`.`processed` IS NULL AND `payment`.`date` = '$date_opl' AND `payment`.`status` = 2)  OR (`payment`.`processed` IS NOT NULL AND `payment`.`processed` >= '".$date_opl_t."' AND `payment`.`processed` < '".$date_opl2_t."') OR (`payment`.`status` = 1 AND `payment`.`created` >= '".$date_opl_t."' AND `payment`.`created` < '".$date_opl2_t."')) ";
           }
           else {
-            $zapros_for_mysql .= "((`payment`.`processed` IS NULL AND `payment`.`date` = '$date_opl' AND `payment`.`status` = 2)  OR (`payment`.`processed` IS NOT NULL AND `payment`.`processed` >= '".$date_opl_t."' AND `payment`.`processed` < '".$date_opl2_t."'))";
+            $zapros_for_mysql .= "((`payment`.`processed` IS NULL AND `payment`.`date` = '$date_opl' AND `payment`.`status` = 2)  OR (`payment`.`processed` IS NOT NULL AND `payment`.`processed` >= '".$date_opl_t."' AND `payment`.`processed` < '".$date_opl2_t."')) ";
           }
         }
 	}
