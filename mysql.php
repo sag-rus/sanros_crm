@@ -71,6 +71,7 @@ if($func AND function_exists($func)){
 	}
 
   $configInstance->connect = $connect;
+	$configInstance->directory = $directory;
 
 	$result = $func($connect);
 	echo $result;
