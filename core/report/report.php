@@ -252,7 +252,7 @@ function filter_payment($connect){
             $zapros_for_mysql.= "(`payment`.`type`=6)";
 	}
 	if($type_pay_tbl == 1){
-		$zapros_for_mysql.= " AND (`payment`.`type`=1 OR `payment`.`type`=2)";
+		$zapros_for_mysql.= " AND (`payment`.`type`=1 OR `payment`.`type`=2 OR `payment`.`type`=6)";
 		$th_pay = "<th width='70'>Способ<br />платежа</th>";
 	}elseif($type_pay_tbl == 2){
 		$zapros_for_mysql.= " AND (`payment`.`type`=3 OR `payment`.`type`=4)";
@@ -279,7 +279,7 @@ function filter_payment($connect){
 		$id = $row["schet"];
 		$payment_id = $row['id'];
 
-		if(in_array($row['type'],[1,2])) {
+		if(in_array($row['type'],[1,2,6])) {
           if (!isset($pay_groups[$id])) {
             $pay_groups[$id] = [$row['id']];
           }
@@ -454,7 +454,7 @@ function filter_payment($connect){
 
 			//блок расчета прибыли по платежу - начало
             $pay_reward = 0;
-            $all_pays = $connect->getAll("SELECT id FROM payment WHERE (type = 1 OR type = 2) AND schet = ?i AND `payment`.`status` != 0", $id);
+            $all_pays = $connect->getAll("SELECT id FROM payment WHERE (type = 1 OR type = 2 OR type = 6) AND schet = ?i AND `payment`.`status` != 0", $id);
             $all_pays_count = count($all_pays);
               $pay_ar1 = [];
               $pay_ar2 = [];
@@ -475,6 +475,7 @@ function filter_payment($connect){
               }
 
               if(count($pay_ar2) > 0) {
+
                 $test_reward = get_reward_schet($connect, $id, "", TRUE, TRUE, $pay_ar2,$all_pays_count != (count($pay_ar1)+count($pay_ar2)));
                 $pay_reward += $test_reward;
               }
@@ -503,7 +504,7 @@ function filter_payment($connect){
 	}
 
 	foreach ($pay_groups as $reck_id => $pay_array) {
-	    $all_pays = $connect->getAll("SELECT id FROM payment WHERE (type = 1 OR type = 2) AND schet = ?i AND `payment`.`status` != 0", $reck_id);
+	    $all_pays = $connect->getAll("SELECT id FROM payment WHERE (type = 1 OR type = 2 OR type = 6) AND schet = ?i AND `payment`.`status` != 0", $reck_id);
 	    $all_pays_count = count($all_pays);
 	    /*if($all_pays_count === count($pay_array)) {
           $array["reward"] += get_reward_schet($connect, $reck_id, "", TRUE);
@@ -529,7 +530,7 @@ function filter_payment($connect){
 
 	        if(count($pay_ar2) > 0) {
 	          $test_reward = get_reward_schet($connect, $reck_id, "", TRUE, TRUE, $pay_ar2,$all_pays_count != (count($pay_ar1)+count($pay_ar2)));
-              $reck_pay_reward += $test_reward;
+	          $reck_pay_reward += $test_reward;
             }
         //}
       $array['reward'] += $reck_pay_reward;

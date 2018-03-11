@@ -833,7 +833,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
   $reward = 0;
   $reck_reward = $connect->getOne("SELECT reward FROM reckoning WHERE id=?i", $id);
   $bonus = $connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND sum < 0", $id);
-  $reck = $connect->getRow("SELECT type, sum, agency, id_com, id_dis, correction, status FROM reckoning WHERE id=?i LIMIT 1", $id);
+  $reck = $connect->getRow("SELECT id, type, sum, agency, id_com, id_dis, correction, status FROM reckoning WHERE id=?i LIMIT 1", $id);
   $only_payment_state = false;
   if($fact) {
     $add_cond = "";
@@ -1009,6 +1009,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
   else
     $data = $connect->getAll("SELECT sum, bank_com, type FROM payment WHERE pay_method=5 AND schet=?i".$payment_status_string, $id);
 
+
   foreach($data as $row){
     if($row["bank_com"] > 0 && ($row["type"] == 2 || $row["type"] == 6)){
       if($only_payment_state)
@@ -1038,6 +1039,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
 
   $raz+= $bank_com;
   $reward = round($reward - $raz, 2);
+  //if($reck['id'] == 65139) echo $reck['id']." ".$reward."<br />";
 
   if($type == "EACH"){
     $array["sum"] = add_null($reck["sum"]);
