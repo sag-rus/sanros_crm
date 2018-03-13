@@ -63,7 +63,7 @@ function find_tour_operator($connect){
 <?php
 }
 
-function save_new_tour_operator($connect, $data){
+function save_new_tour_operator($connect, $data = []){
 	$short_name = $_POST["short_name"];
 	$name = $_POST["name"];
 	$telephone = $_POST["telephone"];
