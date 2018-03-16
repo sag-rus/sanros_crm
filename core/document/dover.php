@@ -99,14 +99,14 @@ function review_dover($connect, $type, $id, $turist, $type_PDF = "PDF"){
 	</tr>
 	</table>
 	</p>
-	<p>Организация <?php echo $firma.", ".$INN."/".$BIK.", ".$leg_address; ?><div style="width: 600px; margin-left: 75px;"><hr /></div></p>
+	<p>Организация <?php echo $firma.", ".$INN."/".$KPP.", ".$leg_address; ?><div style="width: 600px; margin-left: 75px;"><hr /></div></p>
 	<p class="head">Доверенность № <?php echo $id; ?></p>
 	<p>Дата выдачи <?php echo month_transform($date_out)." г."; ?><br /><br />
 	Доверенность действительна по <?php echo month_transform($date_dei); ?></p>
-	<span><?php echo $firma.", ".$INN."/".$BIK.", ".$leg_address; ?></span><br />
+	<span><?php echo $firma.", ".$INN."/".$KPP.", ".$leg_address; ?></span><br />
 	<hr />
 	<p class="label">наименование потребителя и его адрес</p><br />
-	<span><?php echo $firma.", ".$INN."/".$BIK.", ".$leg_address; ?></span><br />
+	<span><?php echo $firma.", ".$INN."/".$KPP.", ".$leg_address; ?></span><br />
 	<hr />
 	<p class="label">наименование плательщика и его адрес</p><br />
 	<?php echo "Счет № ".$reck." в ".$bank.", БИК ".$BIK." корр.сч. ".$KS;?><br /><br />
