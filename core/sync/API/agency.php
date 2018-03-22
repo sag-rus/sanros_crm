@@ -102,11 +102,19 @@ function create_agency_booking($connect, $data){
 	}
 
 	foreach($rest as $turist){
-		$surname = $turist["surname"];
-		$name = $turist["name"];
-		$otch = $turist["otch"];
-		$date2 = explode(".", $turist["birthday"]);
-		$birthday = $date2[2]."-".$date2[1]."-".$date2[0];
+		$surname = trim($turist["surname"]);
+		$name = trim($turist["name"]);
+		$otch = trim($turist["otch"]);
+		$birthday_orig = trim($turist["birthday"]);
+
+		if(mb_strlen($birthday_orig) > 0) {
+      $date2 = explode(".", $birthday_orig);
+      $birthday = $date2[2]."-".$date2[1]."-".$date2[0];
+		}
+		else {
+			$birthday = NULL;
+		}
+
 		$passport = $turist["passport"];
 		$birth_certificate = $turist["cert_birthday"];
     $sex = null;
