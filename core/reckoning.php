@@ -2191,7 +2191,7 @@ function update_payment($connect){
 	$pay_number = $_POST["pay_number"];
 	$pay_to_prepay = $_POST["pay_to_prepay"];
 	$office = $_POST["office"];
-	$row = $connect->getRow("SELECT date, sum, pay_method, pay_number, type, schet, office FROM payment WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT date, created, processed, sum, pay_method, pay_number, type, schet, office FROM payment WHERE id=?i", $id);
 	$schet = $row["schet"];
 	$type = $row["type"];
 	$note = "";
@@ -2235,8 +2235,12 @@ function update_payment($connect){
 	}
 	if($note)
 		save_schet_to_history($connect, $schet, $note);
-	$connect->query("UPDATE payment SET date=?s, sum=?s, pay_method=?s, pay_number=?s WHERE id=?i", $date, $sum, $pay_method, $pay_number, $id);
-	return $schet;
+	$date_t = strtotime($date);
+	if($row['created'] != $row['processed'])
+	    $connect->query("UPDATE payment SET date=?s, processed = ?i, sum=?s, pay_method=?s, pay_number=?s WHERE id=?i", $date, $date_t, $sum, $pay_method, $pay_number, $id);
+	else
+        $connect->query("UPDATE payment SET date=?s, created = ?i, processed = ?i, sum=?s, pay_method=?s, pay_number=?s WHERE id=?i", $date, $date_t, $date_t, $sum, $pay_method, $pay_number, $id);
+  return $schet;
 }
 
 function show_history_schet($connect){
