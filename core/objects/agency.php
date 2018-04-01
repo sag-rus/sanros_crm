@@ -572,10 +572,14 @@ function show_menu_agency($connect){
 	$status = $ag_contract["status"];
 	$number = $ag_contract["number"];
 	$id_contract = $ag_contract["id"];
-	$send_login = $connect->getOne("SELECT id FROM agency WHERE login!='' AND password!='' AND id=?i", $id);
+	$send_login = $connect->getOne("SELECT id FROM agency WHERE login!='' AND password!='' AND id=?i LIMIT 1", $id);
+	$find_reck = $connect->getOne("SELECT id FROM reckoning WHERE agency = ?i LIMIT 1", $id);
 	ob_start();
 ?>
 	<span onclick="edit_agency('<?php echo $id; ?>')">Редактировать</span>
+    <?php if(!$number AND $id_rights > 3 && !$find_reck){ ?>
+    <span onclick="remove_agency('<?php echo $id; ?>')">Удалить</span>
+    <?php } ?>
 	<span onclick="new_reck('agency')">Новая заявка</span>
 	<?php if(!$number AND $id_rights > 2){ ?>
 		<span onclick="add_new_contract('<?php echo $id; ?>')">Ввести номер дог-ра</span>
@@ -1064,6 +1068,22 @@ function update_agency_sync_info($connect){
 	$code = $_POST["code"];
 	$inn = $_POST["inn"];
 	$connect->query("UPDATE agency SET name=?s, inn=?i, 1C_code=?s WHERE id=?i", $name, $code, $inn, $id);
+}
+
+function remove_agency($connect) {
+  $id = (int)$_POST["id"];
+  $result = [
+    'success' => 0,
+    'msg' => ""
+  ];
+  if($id > 0) {
+    $result['success'] = 1;
+    $connect->query("DELETE FROM agency WHERE id = ?i", $id);
+  }
+  else {
+      $result['msg'] = "Некорректный ID";
+  }
+  return json_encode($result);
 }
 
 ?>

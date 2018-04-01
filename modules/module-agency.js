@@ -404,3 +404,48 @@ function update_agency_sync_info(id){
 		});
 	}
 }
+
+function remove_agency(id) {
+  var modal = '';
+
+	modal += '<div class="modal fade">';
+	modal += '<div class="modal-dialog">';
+	modal += '<div class="modal-content">';
+	modal +='<div class="modal-header">';
+	modal +='<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>';
+	modal +='<h4 class="modal-title text-center">Вы уверены, что хотите удалить агенство?</h4>';
+	modal += '</div>';
+	modal += '<div class="modal-body text-center">';
+	modal += 'Данное действие нельзя будет отменить!';
+	modal += '</div>';
+	modal += '<div class="modal-footer text-center">';
+	modal+= '<button type="button" class="btn btn-success btn-sm btn-remove-agency-confirm" onclick="confirm_remove_agency('+id+')"><i class="fa fa-check"></i> Да</button>';
+	modal+= '<button type="button" class="btn btn-danger btn-sm btn-remove-agency-cancel" data-dismiss="modal"><i class="fa fa-ban"></i> Отмена</button>';
+	modal += '</div>';
+	modal += '</div>';
+	modal += '</div>';
+	modal += '</div>';
+
+
+  show_modal(modal);
+}
+
+function confirm_remove_agency(id) {
+  $('.btn-remove-agency-confirm').button('loading');
+  $('.btn-remove-agency-cancel').hide();
+  var str = 'func=remove_agency&id=' + id;
+  $.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		dataType: 'json',
+		success: function (data) {
+			remove_all_windows();
+			if (data['success']) {
+        remove_all_windows();
+        agency();
+			}
+			else alert(data["msg"]);
+		}
+	});
+}
