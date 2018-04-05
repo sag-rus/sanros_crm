@@ -588,12 +588,12 @@ function edit_main_data_object($connect){
 function update_main_data_object($connect){
 	$id = $_POST["id"];
 	$type = $_POST["type"];
-	$latitude = $_POST["latitude"];
-	$longitude = $_POST["longitude"];
+	$latitude = (float)$_POST["latitude"];
+	$longitude = (float)$_POST["longitude"];
 	$name = $_POST["name"];
 	$full_name = $_POST["full_name"];
 	$city = $_POST["city"];
-	$direction = $_POST["direction"];
+	$direction = (int)$_POST["direction"];
 	$similar = $_POST["similar"];
 	$weather = $_POST["weather"];
 	$description = $connect->escapeString($_POST["description"]);
