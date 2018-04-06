@@ -793,7 +793,7 @@ function get_prices_object($connect, $id){
 	$check_places = $connect->getOne("SELECT check_places FROM object WHERE id=?i", $id);
 	if($check_places == 1){
 		$time = time();
-		$data = $connect->getAll("SELECT price_places FROM room WHERE id_obj=?i AND price_places!=''", $id);
+		$data = $connect->getAll("SELECT price_places FROM room WHERE id_obj=?i AND price_places!='' ORDER BY `housing` ASC", $id);
 		foreach($data as $row){
 			$prices = json_decode($row["price_places"], TRUE);
 			foreach($prices as $price_rate_plan){
