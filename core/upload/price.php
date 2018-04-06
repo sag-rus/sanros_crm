@@ -115,6 +115,9 @@ function save_price_XML_object($connect, $id){
 	}
 
 	$data = $connect->getAll("SELECT name, id, id_best_comfort, id_comfort, main_place, add_place, note, housing, square, food, price_places FROM room WHERE id_obj=?i and active=0 ORDER BY housing ASC", $id);
+
+	//print_r($data);
+
 	foreach($data as $row){
 		$name_room = $row["name"];
 		$id_room = $row["id"];
