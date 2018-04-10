@@ -1238,7 +1238,7 @@ function all_klient_bonus($connect, $id){
 	else {
 		$costsArray = array();
 
-		$bonuses = $connect->getAll("SELECT id, active, sum, date, type, schet FROM bonus WHERE turist=?i AND sum > 0 ORDER BY id ASC", $id);
+		$bonuses = $connect->getAll("SELECT id, active, sum, date, type, schet, `last_timestamp` FROM bonus WHERE turist=?i AND sum > 0 ORDER BY id ASC", $id);
 		$bonusList = array();
 
 		foreach ($bonuses as $bonus) {
@@ -1250,11 +1250,13 @@ function all_klient_bonus($connect, $id){
 			else {
 				$access = true;
 			}
+            if(is_null($bonus['last_timestamp'])) {
+              $dateO = new DateTime($bonus['date']);
+              $dateO->modify("+1 year");
+              $dateO->modify("+6 month");
+              $bonus['last_timestamp'] = $dateO->format("U");
+            }
 
-			$dateO = new DateTime($bonus['date']);
-			$dateO->modify("+1 year");
-			$dateO->modify("+6 month");
-			$bonus['last_timestamp'] = $dateO->format("U");
 			$bonus['timestamp'] = strToTime($bonus['date']);
 			$bonusList[] = $bonus;
 		}

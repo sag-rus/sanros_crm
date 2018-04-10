@@ -486,16 +486,21 @@ function show_bonus_account($connect, $data){
 	$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s", $data["session"]);
 	$client = $connect->getOne("SELECT id FROM klient WHERE login=?s", $login);
 	if($login AND $client){
-		$answer = $connect->getAll("SELECT id, date, sum, schet, type, note, booking FROM bonus WHERE turist=?i", $client);
+		$answer = $connect->getAll("SELECT id, date, sum, schet, type, note, booking, `last_timestamp` FROM bonus WHERE turist=?i", $client);
 		foreach($answer as $a){
 			$today = date("Y-m-d");
 			$id = $a["id"];
 			$array[$id]["date"] = date_change($a["date"], ".");
 			$array[$id]["timestamp"] = strToTime($a['date']);
-			$dateO = new DateTime($a['date']);
-			$dateO->modify("+1 year");
-			$dateO->modify("+6 month");
-			$array[$id]['last_timestamp'] = $dateO->format("U");
+			if(is_null($a['last_timestamp'])) {
+        $dateO = new DateTime($a['date']);
+        $dateO->modify("+1 year");
+        $dateO->modify("+6 month");
+        $array[$id]['last_timestamp'] = $dateO->format("U");
+			}
+			else {
+        $array[$id]['last_timestamp'] = $a['last_timestamp'];
+			}
 
 			$array[$id]["sum"] = $a["sum"];
 			$type = $a["type"];
