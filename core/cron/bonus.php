@@ -229,4 +229,12 @@
 		}
 	}
 
+	/*$b_days = 20;
+	$last_timestamp = strtotime(date("d.m.Y"))+86400*$b_days;
+	$validDateBonuses = $connect->getAll("SELECT `id`, `sum`, `date`, `last_timestamp`, `turist`, `note` FROM bonus WHERE sum>0 AND `last_timestamp` = ?i AND active = 1", $last_timestamp);
+
+	foreach ($validDateBonuses as $validDateBonus) {
+
+	}*/
+
 ?>
