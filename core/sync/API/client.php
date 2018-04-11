@@ -407,7 +407,7 @@ function show_tour_bid_account($connect, $data){
 		if($answer["status"] == 3 OR $answer["status"] == 4){
 			$array["doc"] = 2;
 			$reward = get_reward_schet($connect, $id);
-			if((($reward / $answer["sum"] * 100) >= 4 || $id == 43125 || $id == 58509) && !$array['holding_sum']){
+			if((($reward / $answer["sum"] * 100) >= 4 || $id == 43125 || $id == 58509 || $id = 66300) && !$array['holding_sum']){
 				$array["pay_button"] = 1;
 				$check = $connect->getOne("SELECT sum FROM time_payment WHERE type=2 AND id_schet=?i", $id);
 				if($check AND ($answer["status"] == 3 OR $answer["status"] == 4))
