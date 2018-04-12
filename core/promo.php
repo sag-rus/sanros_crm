@@ -253,8 +253,8 @@ function update_promotion($connect){
 	$title = $_POST["title"];
 	$text = $_POST["text"];
 	$type = $_POST["type"];
-	$room = $_POST["room"];
-	$connect->query("UPDATE promotions SET type=?s, id_room=?s, date_end=?s, title=?s, text=?s WHERE id=?i", $type, $room, $end, $title, $text, $id);
+	$room = (int)$_POST["room"];
+	$connect->query("UPDATE promotions SET type=?s, id_room=?i, date_end=?s, title=?s, text=?s WHERE id=?i", $type, $room, $end, $title, $text, $id);
 	return selection_promotion($connect, $id);
 }
 
