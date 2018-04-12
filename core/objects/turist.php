@@ -559,6 +559,9 @@ function transfer_bonuses($connect){
 				</div>
 			</div>
 			<div class="modal-footer">
+                <div class="form-group">
+                    <div class="text-center text-danger col-md-12">Внимание! Уведомите клиента, что при передаче бонусов срок их действия составляет 2 недели с момента передачи.</div>
+                </div>
 				<button type="button" class="btn btn-success btn-sm" onclick="transfer_bonuses_to_new_klient('<?php echo $id; ?>')"><i class="fa fa-paper-plane-o"></i> Перевести</button>
 			</div>
 		</div>
@@ -582,12 +585,13 @@ function transfer_bonuses_to_new_klient($connect){
 	$bonus_to_trans = determine_klient_bonus($connect, $old_klient);
 	if($bonus <= $bonus_to_trans AND $bonus > 0){
 		$today = date("Y-m-d");
+		$last_timestamp = strtotime($today)+14*86400;
 		$bonus_minus = -1 * $bonus;
 		$manager = " Менеджер: ".$name_user;
 		$note = "Перевод на ".select_name_klient($connect, $new_klient).".<br />".$manager;
 		$connect->query("INSERT INTO bonus(date, turist, sum, type, note) VALUES (?s, ?i, ?s, 2, ?s)", $today, $old_klient, $bonus_minus, $note);
 		$note = "Перевод от ".select_name_klient($connect, $old_klient).".<br />".$manager;
-		$connect->query("INSERT INTO bonus(date, turist, sum, type, note) VALUES (?s, ?i, ?s, 2, ?s)", $today, $new_klient, $bonus, $note);
+		$connect->query("INSERT INTO bonus(date, turist, sum, type, note, `last_timestamp`) VALUES (?s, ?i, ?s, 2, ?s, ?i)", $today, $new_klient, $bonus, $note, $last_timestamp);
 		return 1;
 	}
 }
