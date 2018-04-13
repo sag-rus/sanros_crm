@@ -188,6 +188,11 @@ var_dump($data_booking_JSON);
 				"email" => "",
 				"ip" => $data_booking_JSON["ip"]
 			);
+
+			if(isset($data_booking_JSON["otch"])) {
+				$client_info["otch"] = $data_booking_JSON["otch"];
+			}
+
 			if(isset($data_booking_JSON["email"]))
 				$client_info["email"] = $data_booking_JSON["email"];
 
