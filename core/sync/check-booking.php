@@ -189,6 +189,24 @@ var_dump($data_booking_JSON);
 				"ip" => $data_booking_JSON["ip"]
 			);
 
+			$fio = "";
+			if(mb_strlen($client_info["surname"]) > 0)
+				$fio .= $client_info["surname"];
+
+			if(mb_strlen($client_info["name"]) > 0) {
+        if(mb_strlen($fio) > 0)
+          $fio .= " ";
+
+        $fio .= $client_info["name"];
+      }
+
+      if(mb_strlen($client_info["otch"]) > 0) {
+        if(mb_strlen($fio) > 0)
+          $fio .= " ";
+
+        $fio .= $client_info["otch"];
+      }
+
 			if(isset($data_booking_JSON["otch"])) {
 				$client_info["otch"] = $data_booking_JSON["otch"];
 			}
@@ -225,7 +243,7 @@ var_dump($data_booking_JSON);
 			if(!$arrival OR !$object){
 
 				$address = get_address_by_ip($client_info["ip"]);
-				$connect->query("INSERT INTO order_call_back(website, turist, telephone, question, address, type, source, href) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $website, $client_info["name"], $client_info["telephone"], $question, $address, $type, $source, $page);
+				$connect->query("INSERT INTO order_call_back(website, turist, telephone, question, address, type, source, href) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $website, $fio, $client_info["telephone"], $question, $address, $type, $source, $page);
 				if($id){
 					$last = $connect->insertId();
 					$connect->query("UPDATE order_call_back SET type='module', promo=?i WHERE id=?i", $id, $last);
