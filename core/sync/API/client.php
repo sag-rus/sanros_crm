@@ -406,6 +406,12 @@ function show_tour_bid_account($connect, $data){
 			$array["sum-discount"] = ($array["discount"] / 100) * $answer["sum"];
 		}
 		$array["doc"] = 0;
+    $array["voucher"] = 1;
+
+    if($answer["id_obj"] == 45) {
+    	$array["voucher"] = 0;
+		}
+
 		if($answer["status"] == 3 OR $answer["status"] == 4){
 			$array["doc"] = 2;
 			$reward = get_reward_schet($connect, $id);
