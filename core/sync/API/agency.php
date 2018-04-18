@@ -255,6 +255,12 @@ function show_tour_bid_agency($connect, $data){
 			$status = $array["status"];
 			$answer["status"] = $connect->getOne("SELECT name FROM status WHERE id=?i", $status);
 			$answer["id-status"] = 0;
+			$answer["voucher"] = 1;
+
+			if($id_obj == 45) {
+        $answer["voucher"] = 0;
+			}
+
 			if($status < 5)
 				$answer["id-status"] = 1;
 			if($status > 2 AND $status < 5)
