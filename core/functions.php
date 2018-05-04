@@ -1322,6 +1322,7 @@ function get_payment($connect, $id, $type = ""){
 	foreach($data as $row){
 		$index++;
 		$array[$index]["id"] = $row["id"];
+		$array[$index]["pay_method_int"] = $row["pay_method"];
 		if($row["pay_method"] == 1)
 			$array[$index]["pay_method"] = "безналичный";
 		elseif($row["pay_method"] == 2)

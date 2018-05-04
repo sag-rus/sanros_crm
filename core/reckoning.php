@@ -1685,14 +1685,22 @@ function show_schet_klient($connect){
 	}
 	$arr = get_payment($connect, $id, 2);
 	foreach($arr as $payments){
+
 		if($status_san == 5 OR $status_san == 4)
 			$add = " в санаторий";
 		else
 			$add = "";
         $payment_div .= '<div class="payment-element">';
 		$payment_div.= "<strong>Оплата".$add.":</strong> ".$payments['sum'];
+
+          if($id_rights > 4 AND $active == 0 && in_array($payments['pay_method_int'],[1,2,3])) {
+            $payment_div.= "<button type='button' class='btn btn-default btn-xs' style='float: right;' onclick='delete_payment_prepare(\"".$payments['id']."\")'>&nbsp;<i class='fa fa-trash-o'></i>&nbsp;</button>";
+          }
+
 		if($id_rights > 3 AND $active == 0 AND $payments['pay_method'] != 'сертификатом')
 			$payment_div.= "<button type='button' class='btn btn-default btn-xs' style='float: right;' onclick='edit_payment(\"".$payments['id']."\")'>&nbsp;<i class='fa fa-pencil'></i>&nbsp;</button>";
+
+
       $payment_div.= "<br /><strong>Дата и время платежа:</strong> ".$payments['datetime']."<br />";
       $payment_div.= "<strong>Способ:</strong> ".$payments['pay_method']."<br />";
 
@@ -2145,17 +2153,64 @@ function edit_payment($connect){
 	return $html;
 }
 
+
+function delete_payment_prepare($connect){
+  $id = $_POST["id"];
+  $row = $connect->getRow("SELECT * FROM payment WHERE id=?i", $id);
+  $select[$row["pay_method"]] = " SELECTED ";
+  $type = $row["type"];
+  ob_start();
+  ?>
+    <div class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+                    <h4 class="modal-title">Удаление платежа. Заявка №<?php echo $row["schet"]; ?></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        Вы уверены, что хотите удалить платеж?
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-sm" onclick="delete_payment('<?php echo $id; ?>',true)"><i class="fa fa-check-circle"></i> Да</button>
+                    <button type="button" class="btn btn-danger btn-sm"  data-dismiss="modal">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </div>
+  <?php
+  $html = ob_get_clean();
+  return $html;
+}
+
 function delete_payment($connect){
 	$id = $_POST["id"];
 	$row = $connect->getRow("SELECT DATE_FORMAT(date, '%d.%m.%Y') as date, sum, pay_number, type, schet FROM payment WHERE id=?i", $id);
-	$connect->query("DELETE FROM payment WHERE id=?i AND type!=2 AND type!=5 LIMIT 1", $id);
+	$connect->query("DELETE FROM payment WHERE id=?i AND type!=5 LIMIT 1", $id);
 	$schet = $row["schet"];
 	$new_status = 0;
 	$new_status_san = -1;
-	if($row["type"] == 1){
-		if(!get_payment($connect, $schet, 1) AND !get_payment($connect, $schet, 2))
-			$new_status = 3;
-		$type = "предоплата";
+	if($row["type"] == 1) {
+      if (!get_payment($connect, $schet, 1) AND !get_payment($connect, $schet, 2)) {
+        $new_status = 3;
+      }
+      $type = "предоплата";
+    }
+	elseif($row["type"] == 2) {
+      $new_status = 3;
+
+      if (get_payment($connect, $schet, 1)) {
+        $new_status = 4;
+      }
+
+      if (get_payment($connect, $schet, 2)) {
+        $new_status = 5;
+      }
+
+      $type = "оплата";
+
 	}elseif($row["type"] == 3){
 		if(!get_payment($connect, $schet, 3) AND !get_payment($connect, $schet, 4))
 			$new_status_san = 0;

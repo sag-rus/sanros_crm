@@ -807,9 +807,36 @@ function save_payment(id){
 	}
 }
 
-function delete_payment(id){
-	if(confirm('Удалить платеж')){
-		var str = 'func=delete_payment&id=' + id;
+
+function delete_payment_prepare(id){
+  var str = 'func=delete_payment_prepare&id=' + id;
+  $.ajax({
+    url: 'mysql.php',
+    type: 'POST',
+    data: str,
+    success: function(html){
+      show_modal(html);
+    }
+  });
+}
+
+function delete_payment(id, not_confirm){
+  var str;
+	if(not_confirm) {
+    str = 'func=delete_payment&id=' + id;
+    $.ajax({
+      url: 'mysql.php',
+      type: 'POST',
+      data: str,
+      success: function(id){
+        remove_all_windows();
+        view_schet(id, 'payment');
+        show_alert('Платеж удален...');
+      }
+    });
+	}
+	else if(confirm('Удалить платеж')){
+		str = 'func=delete_payment&id=' + id;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
