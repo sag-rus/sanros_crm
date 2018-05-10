@@ -79,11 +79,9 @@ function bonus_report_month(){
 			<div class="col-sm-8">
 				<select class="form-control" id="year">
 					<option value="">Выбрать год</option>
-					<option value="2013">2013</option>
-					<option value="2014">2014</option>
-					<option value="2015">2015</option>
-					<option value="2016">2016</option>
-					<option value="2017">2017</option>
+                  <?php for($year = 2013; $year<= date("Y"); $year++){ ?>
+                      <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
+                  <?php } ?>
 				</select>
 			</div>
 		</div>

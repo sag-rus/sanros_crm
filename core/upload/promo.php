@@ -7,8 +7,10 @@ function upload_promo_object_on_server($connect, $id = NULL){
 	$connect_server = connect_to_server_directory();
 //	if($connect_server == 1)
 //		return "<div class='alert alert-danger'>Ошибка соединения</div>";
+
 	if($connect_server == 2)
 		return "<div class='alert alert-danger'>Не удалось авторизироваться</div>";
+
 	$connect->query("UPDATE promotions SET active=0 WHERE date_end<?s", date("Y-m-d"));
 	if(!$id)
 		$data = $connect->getAll("SELECT object.id FROM object, region WHERE region.id=object.id_reg AND region.active=0 AND object.active=0 GROUP BY object.id");

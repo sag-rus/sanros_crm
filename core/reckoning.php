@@ -1651,7 +1651,7 @@ function show_schet_klient($connect){
 		    $buttons .= '<button type="button" class="btn btn-default btn-xs" onclick="edit_payment('. $payments['id'] . ')">&nbsp;<i class="fa fa-pencil"></i>&nbsp;</button>';
 
 		    if($payments['status'] != 0 && $id_rights > 4)
-		        $buttons .= '<button type="button" class="btn btn-danger btn-xs" onclick="delete_payment(' . $payments['id'] . ')">&nbsp;<i class="fa fa-trash-o"></i>&nbsp;</button>';
+		        $buttons .= '<button type="button" class="btn btn-danger btn-xs" onclick="delete_payment_prepare(' . $payments['id'] . ')">&nbsp;<i class="fa fa-trash-o"></i>&nbsp;</button>';
           }
           $buttons .= '</span>';
           $payment_div .= $buttons;
@@ -1694,7 +1694,7 @@ function show_schet_klient($connect){
 		$payment_div.= "<strong>Оплата".$add.":</strong> ".$payments['sum'];
 
           if($id_rights > 4 AND $active == 0 && in_array($payments['pay_method_int'],[1,2,3])) {
-            $payment_div.= "<button type='button' class='btn btn-default btn-xs' style='float: right;' onclick='delete_payment_prepare(\"".$payments['id']."\")'>&nbsp;<i class='fa fa-trash-o'></i>&nbsp;</button>";
+            $payment_div.= "<button type='button' class='btn btn-danger btn-xs' style='float: right;' onclick='delete_payment_prepare(\"".$payments['id']."\")'>&nbsp;<i class='fa fa-trash-o'></i>&nbsp;</button>";
           }
 
 		if($id_rights > 3 AND $active == 0 AND $payments['pay_method'] != 'сертификатом')
@@ -1722,7 +1722,7 @@ function show_schet_klient($connect){
         $payment_div .= '<div class="payment-element">';
 		$payment_div.= "<strong>Предоплата в санаторий:</strong> ".$payments["sum"];
 	if($id_rights > 3 AND $active == 0)
-		$payment_div.= "<span style='float: right;'><button type='button' class='btn btn-default btn-xs' onclick='edit_payment(\"".$payments['id']."\")'>&nbsp;<i class='fa fa-pencil'></i>&nbsp;</button> <button type='button' class='btn btn-danger btn-xs' onclick='delete_payment(\"".$payments["id"]."\")'>&nbsp;<i class='fa fa-trash-o'></i>&nbsp;</button></span>";
+		$payment_div.= "<span style='float: right;'><button type='button' class='btn btn-default btn-xs' onclick='edit_payment(\"".$payments['id']."\")'>&nbsp;<i class='fa fa-pencil'></i>&nbsp;</button> <button type='button' class='btn btn-danger btn-xs' onclick='delete_payment_prepare(\"".$payments["id"]."\")'>&nbsp;<i class='fa fa-trash-o'></i>&nbsp;</button></span>";
 		$payment_div.= "<br /><strong>Дата:</strong> ".$payments["date"]."<br />";
 		$payment_div.= "<strong>Номер платежного поручения:</strong> ".$payments["pay_number"]."<br /><hr />";
         $payment_div .= '</div>';
@@ -1732,7 +1732,7 @@ function show_schet_klient($connect){
         $payment_div .= '<div class="payment-element">';
 		$payment_div.= "<strong>Оплата в санаторий:</strong> ".$payments["sum"];
 		if($id_rights > 3 AND $active == 0)
-			$payment_div.= "<span style='float: right;'><button type='button' class='btn btn-default btn-xs' onclick='edit_payment(\"".$payments['id']."\")'>&nbsp;<i class='fa fa-pencil'></i>&nbsp;</button> <button type='button' class='btn btn-danger btn-xs' onclick='delete_payment(\"".$payments["id"]."\")'>&nbsp;<i class='fa fa-trash-o'></i>&nbsp;</button></span>";
+			$payment_div.= "<span style='float: right;'><button type='button' class='btn btn-default btn-xs' onclick='edit_payment(\"".$payments['id']."\")'>&nbsp;<i class='fa fa-pencil'></i>&nbsp;</button> <button type='button' class='btn btn-danger btn-xs' onclick='delete_payment_prepare(\"".$payments["id"]."\")'>&nbsp;<i class='fa fa-trash-o'></i>&nbsp;</button></span>";
 		$payment_div.= "<br /><strong>Дата:</strong> ".$payments["date"]."<br />";
 		$payment_div.= "<strong>Номер платежного поручения:</strong> ".$payments["pay_number"]."<br /><hr />";
         $payment_div .= '</div>';
