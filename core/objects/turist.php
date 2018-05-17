@@ -747,7 +747,18 @@ function save_new_individual_payer($connect){
 	$id = $_POST["id"];
 	$name = $_POST['name'];
 	$date_b = $_POST['date_b'];
+
+	if(empty($date_b))
+	    $date_b = NULL;
+	else
+	    $date_b = date("Y-m-d",strtotime($date_b));
+
 	$passport = $_POST["passport"];
+
+	if(empty($passport))
+	    $passport = NULL;
+
+
 	$connect->query("INSERT INTO payer(type, name, date_b, passport) VALUES(1, ?s, ?s, ?s)", $name, $date_b, $passport);
 	$last_id = $connect->insertId();
 	$payers = $connect->getOne("SELECT payer FROM klient WHERE id=?i", $id);
@@ -801,7 +812,14 @@ function update_individual_payer($connect){
 	$date_b = $_POST["date_b"];
 	if(empty($date_b))
 	    $date_b = NULL;
+	else {
+	    $date_b = date("Y-m-d",strtotime($date_b));
+    }
 	$passport = $_POST["passport"];
+
+	if(empty($passport))
+	    $passport = NULL;
+
 	$connect->query("UPDATE payer SET name=?s, date_b=?s, passport=?s WHERE id=?i", $name, $date_b, $passport, $id);
 }
 
