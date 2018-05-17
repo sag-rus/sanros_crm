@@ -1692,14 +1692,14 @@ function show_schet_klient($connect){
 			$add = "";
         $payment_div .= '<div class="payment-element">';
 		$payment_div.= "<strong>Оплата".$add.":</strong> ".$payments['sum'];
-
-          if($id_rights > 4 AND $active == 0 && in_array($payments['pay_method_int'],[1,2,3])) {
+		$payment_div.= '<span style="float: right;">';
+          if($id_rights > 4 && $active == 0 && in_array($payments['pay_method_int'],[1,2,3,5])) {
             $payment_div.= "<button type='button' class='btn btn-danger btn-xs' style='float: right;' onclick='delete_payment_prepare(\"".$payments['id']."\")'>&nbsp;<i class='fa fa-trash-o'></i>&nbsp;</button>";
           }
 
 		if($id_rights > 3 AND $active == 0 AND $payments['pay_method'] != 'сертификатом')
 			$payment_div.= "<button type='button' class='btn btn-default btn-xs' style='float: right;' onclick='edit_payment(\"".$payments['id']."\")'>&nbsp;<i class='fa fa-pencil'></i>&nbsp;</button>";
-
+        $payment_div.= '</span>';
 
       $payment_div.= "<br /><strong>Дата и время платежа:</strong> ".$payments['datetime']."<br />";
       $payment_div.= "<strong>Способ:</strong> ".$payments['pay_method']."<br />";
