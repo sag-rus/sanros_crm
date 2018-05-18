@@ -311,6 +311,7 @@ class BookingPayment extends Client {
       $answer["sum"] = add_null($sum["to-pay"]);
       $answer["bonus"] = add_null($sum["bonus"]);
       $answer["prepay"] = add_null($sum["prepay"]);
+      $answer['fast_booking'] = $connect->getOne("SELECT fast_booking FROM object WHERE id = ?i",$array["id_obj"]);
       $turist = new Display($client);
       $answer["turist"] = $turist->selectFio();
       unset($turist);
