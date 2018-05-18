@@ -146,7 +146,7 @@ function authorization_account($connect, $data){
 			else
 				$connect->query("INSERT INTO session_account(login, id_session) VALUES (?s, ?s)", $login, $session);
 
-			$data = $connect->getAll("SELECT reckoning.id AS id FROM reckoning LEFT OUTER JOIN object ON reckoning.id_obj = object.id WHERE (reckoning.status=3 OR reckoning.status=4 OR (reckoning.status IN (1,2) AND object.fast_booking NOT IS NULL AND object.fast_booking = 1)) AND reckoning.turist=?i", $id);
+			$data = $connect->getAll("SELECT reckoning.id AS id FROM reckoning LEFT OUTER JOIN object ON reckoning.id_obj = object.id WHERE (reckoning.status=3 OR reckoning.status=4 OR (reckoning.status IN (1,2) AND object.fast_booking IS NOT NULL AND object.fast_booking = 1)) AND reckoning.turist=?i", $id);
 			foreach($data as $row){
 				$no_pay[] = $row["id"];
 			}
