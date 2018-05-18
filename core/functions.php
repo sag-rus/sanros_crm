@@ -716,11 +716,28 @@ function save_notification($connect, $text, $user){
 }
 
 function save_payment($connect, $schet, $sum, $type, $pay_number, $date, $pay_method, $office = 1){
+      global $directory;
+      include_once($directory."/config.php");
+      $conf = new JConfig;
 	if($date == "")
 		$date = date("Y-m-d");
 	$timestamp = date("U",strtotime($date));
-	$connect->query("INSERT INTO payment (schet, sum, date, type, pay_method, pay_number, office, created, processed)
-			VALUES (?i, ?s, ?s, ?i, ?s, ?s, ?i, ?i, ?i)", $schet, $sum, $date, $type, $pay_method, $pay_number, $office, $timestamp, $timestamp);
+
+	$bank_com = NULL;
+	$terminal = 0;
+	$pay_method = (string)$pay_method;
+	if($pay_method === '5' || $pay_method === '5-1') {
+      $bank_com = $conf->BANK_COM_SBERBANK;
+	    $pay_method = 5;
+    }
+    elseif($pay_method === '5-2') {
+	    $bank_com = $conf->BANK_COM_SBERBANK_TERMINAL;
+	    $terminal = 1;
+        $pay_method = 5;
+    }
+
+	$connect->query("INSERT INTO payment (schet, sum, date, type, pay_method, pay_number, office, created, processed, bank_com, terminal)
+			VALUES (?i, ?s, ?s, ?i, ?s, ?s, ?i, ?i, ?i, ?s, ?i)", $schet, $sum, $date, $type, $pay_method, $pay_number, $office, $timestamp, $timestamp, $bank_com, $terminal);
 }
 
 function save_certificate_to_history($connect, $id){

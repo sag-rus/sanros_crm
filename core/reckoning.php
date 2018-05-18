@@ -2071,8 +2071,17 @@ function confirm_payment($connect) {
 function edit_payment($connect){
 	$id = $_POST["id"];
 	$row = $connect->getRow("SELECT * FROM payment WHERE id=?i", $id);
-	$select = array(1 => "", 2 => "", 3 => "", 4 => "", 5 => "");
-	$select[$row["pay_method"]] = " SELECTED ";
+	$select = array(1 => "", 2 => "", 3 => "", 4 => "", '5-1' => "", '5-2' => "");
+	if($row["pay_method"] != 5)
+	{
+        $select[$row["pay_method"]] = " selected ";
+    }
+    else {
+	    if($row['terminal'])
+	        $select["5-2"] = ' selected ';
+	    else
+	        $select["5-1"] = ' selected ';
+    }
 	$type = $row["type"];
 	ob_start();
 ?>
@@ -2102,10 +2111,11 @@ function edit_payment($connect){
 							<label class="col-sm-4 control-label">Способ оплаты</label>
 							<div class="col-sm-8">
 								<select class="form-control" id="pay_method">
-									<option value="1" <?php echo $select[1]; ?>>безналичный</option>
-									<option value="2" <?php echo $select[2]; ?>>наличными</option>
-									<option value="4" <?php echo $select[4]; ?>>на месте</option>
-									<option value="5" <?php echo $select[5]; ?>>банковской картой</option>
+									<option value="1" <?php echo $select[1]; ?>>Безналичный</option>
+									<option value="2" <?php echo $select[2]; ?>>Наличными</option>
+									<option value="4" <?php echo $select[4]; ?>>На месте</option>
+									<option value="5-1" <?php echo $select['5-1']; ?>>Банковской картой</option>
+                                    <option value="5-2" <?php echo $select['5-2']; ?>>Банковской картой через терминал</option>
 								</select>
 							</div>
 						</div>
@@ -2238,15 +2248,37 @@ function delete_payment($connect){
 }
 
 function update_payment($connect){
+    include_once __DIR__.'/../config.php';
+    $config = new JConfig();
 	$id = $_POST["id"];
 	$date = $_POST["date_payment"];
 	$sum = (float)str_replace(',','.',$_POST["sum_payment"]);
-	$pay_method = $_POST["pay_method"];
-	if(empty($pay_method)) $pay_method = 0;
+	$pay_method = (string)$_POST["pay_method"];
+	$terminal = 0;
+	$bank_com = NULL;
+	if(empty($pay_method))
+	    $pay_method = 0;
+	elseif($pay_method === '5-1' || $pay_method === '5') {
+	    $pay_method = 5;
+	    $bank_com = $config->BANK_COM_SBERBANK;
+    }
+    elseif($pay_method === '5-2') {
+	    $pay_method = 5;
+	    $terminal = 1;
+        $bank_com = $config->BANK_COM_SBERBANK_TERMINAL;
+    }
+
 	$pay_number = $_POST["pay_number"];
 	$pay_to_prepay = $_POST["pay_to_prepay"];
 	$office = $_POST["office"];
-	$row = $connect->getRow("SELECT date, created, processed, sum, pay_method, pay_number, type, schet, office FROM payment WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT date, created, processed, sum, pay_method, pay_number, type, schet, office, terminal, bank_com FROM payment WHERE id=?i", $id);
+
+	if($pay_method == $row['pay_method'] && $pay_method == 5) {
+	    if($terminal == $row['terminal']) {
+          $bank_com = $row["bank_com"];
+        }
+    }
+
 	$schet = $row["schet"];
 	$type = $row["type"];
 	$note = "";
@@ -2264,8 +2296,19 @@ function update_payment($connect){
 			$row["pay_method"] = "наличными";
 		elseif($row["pay_method"] == 4)
 			$row["pay_method"] = "на месте";
+		else if($row["pay_method"] == 5)
+		    $row["pay_method"] = "банковской картой";
+		if($terminal)
+		    $row["pay_method"] .= " через терминал";
 		$note.= " Способ (старое - ".$row["pay_method"].")";
 	}
+	elseif($terminal != $row['terminal'] && $row["pay_method"] == 5) {
+	  if($terminal)
+	      $note.= " Способ (старое - банковской картой)";
+	  else
+	      $note.= " Способ (старое - банковской картой через терминал)";
+    }
+
 	if($note){
 		if($type == 1) $note_type = "предоплата";
 		elseif($type == 2) $note_type = "оплата";
@@ -2292,9 +2335,9 @@ function update_payment($connect){
 		save_schet_to_history($connect, $schet, $note);
 	$date_t = strtotime($date);
 	if($row['created'] != $row['processed'])
-	    $connect->query("UPDATE payment SET date=?s, processed = ?i, sum=?s, pay_method=?s, pay_number=?s WHERE id=?i", $date, $date_t, $sum, $pay_method, $pay_number, $id);
+	    $connect->query("UPDATE payment SET date=?s, processed = ?i, sum=?s, pay_method=?s, pay_number=?s, terminal=?i, bank_com=?s WHERE id=?i", $date, $date_t, $sum, $pay_method, $pay_number, $terminal, $bank_com, $id);
 	else
-        $connect->query("UPDATE payment SET date=?s, created = ?i, processed = ?i, sum=?s, pay_method=?s, pay_number=?s WHERE id=?i", $date, $date_t, $date_t, $sum, $pay_method, $pay_number, $id);
+        $connect->query("UPDATE payment SET date=?s, created = ?i, processed = ?i, sum=?s, pay_method=?s, pay_number=?s, terminal=?i, bank_com=?s WHERE id=?i", $date, $date_t, $date_t, $sum, $pay_method, $pay_number,$terminal, $bank_com, $id);
   return $schet;
 }
 

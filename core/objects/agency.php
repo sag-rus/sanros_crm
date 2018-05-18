@@ -590,7 +590,7 @@ function show_menu_agency($connect){
 			<span onclick="original_received('<?php echo $id; ?>', '<?php echo $id_contract; ?>')">Оригинал получен</span>
 		<?php } ?>
 	<?php } ?>
-	<span onclick="show_agency_dogovor(<?php echo $id; ?>)">Агентский договор</span>
+	<!--span onclick="show_agency_dogovor(<?php echo $id; ?>)">Агентский договор</span-->
 	<?php if($id_rights > 2){ ?>
 		<span onclick="edit_agency_sync_info(<?php echo $id; ?>)">Синхронизация 1С</span>
 		<span onclick="agency_to_trash(<?php echo $id; ?>)">В архив</span>
