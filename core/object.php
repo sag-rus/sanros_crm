@@ -464,7 +464,7 @@ function select_object_about($connect){
 
 function edit_main_data_object($connect){
 	$id = $_POST["id"];
-	$row = $connect->getRow("SELECT name, similar, full_name, id_reg, type, city, direction, latitude, longitude, weather, direction, source_booking, booking_uri, description FROM object WHERE id='$id'");
+	$row = $connect->getRow("SELECT name, similar, full_name, id_reg, type, city, direction, latitude, longitude, weather, direction, source_booking, booking_uri, description, fast_booking FROM object WHERE id='$id'");
 	$similar = explode("_", $row["similar"]);
 	$type = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]);
 	$country = $connect->getOne("SELECT id_country FROM region WHERE id=?i", $row["id_reg"]);
@@ -533,16 +533,22 @@ function edit_main_data_object($connect){
 				<i class="fa fa-plus-circle icon_add pointer" onclick="add_new_similar_object()"></i>
 			</div>
 		</div>
-        <div class="form-group form-group-margin">
+        <div class="form-group">
             <label class="col-sm-3 control-label">Бронирование на официальном сайте (для объектов Travelline)</label>
             <div class="col-sm-9">
-                <input type="checkbox" id="source_booking"<?php if($row['source_booking'] == 1) echo ' checked';?>>
+                <input type="checkbox" class="form-control" id="source_booking"<?php if($row['source_booking'] == 1) echo ' checked';?>>
             </div>
         </div>
         <div class="form-group">
             <label class="col-sm-3 control-label">Путь к модулю бронирования</label>
             <div class="col-sm-9">
                 <input type="text" class="form-control" id="booking_uri" value="<?php echo $row['booking_uri']; ?>">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Быстрое бронирование</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control" id="fast_booking"<?php if($row['fast_booking'] == 1) echo ' checked';?>>
             </div>
         </div>
 		<div class="form-group form-group-margin">
@@ -597,9 +603,10 @@ function update_main_data_object($connect){
 	$similar = $_POST["similar"];
 	$weather = $_POST["weather"];
 	$description = $connect->escapeString($_POST["description"]);
-	$source_booking = $_POST["source_booking"];
+	$source_booking = (int)$_POST["source_booking"];
+	$fast_booking = (int)$_POST["fast_booking"];
 	$booking_uri = $_POST["booking_uri"];
-	$connect->query("UPDATE object SET name=?s, full_name=?s, city=?s, direction=?s, type=?s, latitude=?s, longitude=?s, similar=?s, weather=?s, description=?s, source_booking=?i, description_check=?s, booking_uri=?s WHERE id=?i", $name, $full_name, $city, $direction, $type, $latitude, $longitude, $similar, $weather, $description, $source_booking, $description, $booking_uri, $id);
+	$connect->query("UPDATE object SET name=?s, full_name=?s, city=?s, direction=?s, type=?s, latitude=?s, longitude=?s, similar=?s, weather=?s, description=?s, source_booking=?i, description_check=?s, booking_uri=?s, fast_booking=?i WHERE id=?i", $name, $full_name, $city, $direction, $type, $latitude, $longitude, $similar, $weather, $description, $source_booking, $description, $booking_uri, $fast_booking, $id);
 }
 
 function edit_desc_object($connect){

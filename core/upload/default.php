@@ -96,7 +96,7 @@ function upload_information_object($connect){
 	$xml = new DomDocument("1.0", "utf-8");
 	$objects = $xml->appendChild($xml->createElement("objects"));
 	$sights = $connect->getAll("SELECT latitude, longitude FROM sights");
-	$data = $connect->getAll("SELECT object.name as object, object.id, object.image, object.id_reg, object.direction, object.city, object.id_profile, object.id_methods, object.id_infa, object.type, object.check_places, object.description, object.similar, object.add_one_day, object.latitude, object.longitude, object.weather, object.url_name, object.reward, object.source_booking, object.booking_uri, region.name as region, region.name_rod as region_rod FROM region, object WHERE region.id_country=1 AND (object.active=0) AND object.id_reg=region.id AND object.url_name!='' ORDER BY region.name");
+	$data = $connect->getAll("SELECT object.name as object, object.id, object.image, object.id_reg, object.direction, object.city, object.id_profile, object.id_methods, object.id_infa, object.type, object.check_places, object.description, object.similar, object.add_one_day, object.latitude, object.longitude, object.weather, object.url_name, object.reward, object.source_booking, object.booking_uri, object.fast_booking, region.name as region, region.name_rod as region_rod FROM region, object WHERE region.id_country=1 AND (object.active=0) AND object.id_reg=region.id AND object.url_name!='' ORDER BY region.name");
 	foreach($data as $row){
 		$id = $row["id"];
 		$prices = get_prices_object($connect, $id);
@@ -125,6 +125,7 @@ function upload_information_object($connect){
 			$check_places = $row["check_places"];
 			$source_booking  = $row['source_booking'];
 			$booking_uri = $row['booking_uri'];
+			$fast_booking = $row['fast_booking'];
 
 			if(!isset($array_region[$id_reg]))
 				$array_region[$id_reg] = 0;
@@ -164,6 +165,7 @@ function upload_information_object($connect){
 			$object->setAttribute("similar", $similar);
 			$object->setAttribute("quota", $check_places);
 			$object->setAttribute("min", $prices["min"]);
+			$object->setAttribute("fast_booking", $fast_booking);
 			if(isset($prices["min_treatment"]))
 				$object->setAttribute("min_treatment",$prices["min_treatment"]);
 			$object->setAttribute("page", intval($array_region[$id_reg]/10) + 1);
@@ -378,7 +380,7 @@ function upload_information_object($connect){
 						}
 					}
 				}else{
-					$data3 = $connect->getAll("SELECT id, name, type, id_reg, city, regular_com, up_com FROM object WHERE id_reg=?i AND active=0", $id_region);
+					$data3 = $connect->getAll("SELECT id, name, type, id_reg, city, regular_com, up_com, fast_booking FROM object WHERE id_reg=?i AND active=0", $id_region);
 					foreach($data3 as $row){
 						$prices = get_prices_object($connect, $row["id"]);
 						if($prices["min"]){
@@ -390,6 +392,7 @@ function upload_information_object($connect){
 							$object->setAttribute("id", $row["id"]);
 							$object->setAttribute("name", $row["name"]);
 							$object->setAttribute("min", $prices["min"]);
+							$object->setAttribute("fast_booking", $row["fast_booking"]);
               if(isset($prices["min_treatment"]))
                 $object->setAttribute("min_treatment", $prices["min_treatment"]);
 

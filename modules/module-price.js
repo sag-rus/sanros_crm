@@ -889,6 +889,7 @@ function update_main_data_object(id){
 		"weather": $('#weather').val(),
 		"direction": $('#direction-object').val(),
 		"source_booking": parseInt($('#source_booking').prop('checked')*1),
+		"fast_booking": parseInt($('#fast_booking').prop('checked')*1),
 		"booking_uri": $("#booking_uri").val().trim(),
 		"description": q
 	};

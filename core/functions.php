@@ -283,7 +283,7 @@ function get_managers($connect, $type = "", $select = ""){
 }
 
 function get_object($connect, $id, $type_view = ""){
-	$data_object = $connect->getRow("SELECT name, full_name, type, id_reg, city FROM object WHERE id=?i", $id);
+	$data_object = $connect->getRow("SELECT name, full_name, type, id_reg, city, fast_booking FROM object WHERE id=?i", $id);
 	$short = $data_object["name"];
 	$full = $data_object["full_name"];
 	$type = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $data_object["type"]);
@@ -319,7 +319,14 @@ function get_object($connect, $id, $type_view = ""){
 			$object = $type.$object." (".$country.", ".$region.$city.")";
 	}elseif($type_view == "type"){
 		$object = $type." ".$short;
-	}else
+	}
+	elseif ($type_view == "type_and_fast_booking") {
+	    $object = [
+	      'type' => $type." ".$short,
+          'fast_booking' => $data_object['fast_booking']
+        ];
+    }
+	else
 		$object = $short;
 	return $object;
 }

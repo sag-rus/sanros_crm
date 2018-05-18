@@ -1609,3 +1609,8 @@ span.badge.count-red,
 .payment-element.cancelled {
 	opacity: 0.5;
 }
+
+input[type="checkbox"].form-control {
+	display: inline-block;
+	width: 28px;
+}
