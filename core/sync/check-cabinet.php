@@ -26,6 +26,7 @@
 	$conf = new JConfig;
 	$sync = $conf->sync_base;
 	$CRM = $conf->CRM;
+	$unisender_api_key = $conf->unisender_api_key;
 
 	define("DEFAULT_OBJECT_IMAGE", "http://tonia.ru/price/object/head/default.jpg");
 	$COLORS = array("success" => "#CAFFC3", "cancel" => "#FFD3C5", "info" => "#D0DDFF", "waiting" => "#E7C97C");

@@ -1309,4 +1309,46 @@ function send_comment_rating($connect, $data){
 	}
 }
 
+function generate_phone_token($connect, $data) {
+	$phone = "";
+	$result = [
+		'msg' => '',
+		'title' => '',
+		'success' => 0
+	];
+
+	if(isset($data['phone']))
+		$phone = trim($data['phone']);
+
+	if(mb_strlen($phone) > 9 && mb_strlen($phone) < 16) {
+		$phone_int = (int)$phone;
+
+		if($phone_int > 0) {
+      $phone = $connect->getOne("SELECT id FROM klient WHERE login IS NOT NULL AND login != '' AND phone = ?s LIMIT 1",$phone);
+      $time = time();
+      if(!$phone) {
+      	$token = random_int(100000,999999);
+        $connect->query("INSERT INTO phone_token(`status`, `created`, `changed`, `number`, `token`) VALUES (?i, ?i, ?i, ?s, ?s)", 1, $time, $time, $phone, hash("sha256",$token));
+        send_sms($connect,$phone,NULL, $token." - используйтей этот код для регистрации","phone_token");
+        $result['success'] = 1;
+      }
+      else {
+        $result['msg'] = "User with this phone number already exists";
+        $result['title'] = "Error";
+			}
+    }
+    else {
+      $result['msg'] = "Incorrect phone number";
+      $result['title'] = "Error";
+		}
+
+	}
+	else {
+		$result['msg'] = "Incorrect phone number length";
+		$result['title'] = "Error";
+	}
+
+	return $result;
+}
+
 ?>

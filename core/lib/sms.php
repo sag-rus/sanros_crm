@@ -3,7 +3,10 @@
 function send_sms($connect, $phone, $bid, $text, $type){
 	global $unisender_api_key;
 	$check = $connect->getOne("SELECT id FROM send_sms WHERE phone=?s AND type=?s", $phone, $type);
-	if(!$check AND strlen($phone) == 11){
+	if(mb_substr($phone,0,1) === '+')
+		$phone = mb_substr($phone,1);
+
+  if(!$check AND mb_strlen($phone) == 11){
 		$POST = array(
 			"api_key" => $unisender_api_key,
 			"phone" => $phone,
