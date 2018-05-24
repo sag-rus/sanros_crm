@@ -1,6 +1,6 @@
 <?php
 
-function send_sms($connect, $phone, $bid = NULL, $text, $type, $check_old = true){
+function send_sms($connect, $phone, $bid = NULL, $text, $type, $check_old = false){
 	global $unisender_api_key;
 	$check = ($check_old && $connect->getOne("SELECT id FROM send_sms WHERE phone=?s AND type=?s", $phone, $type));
 	if(mb_substr($phone,0,1) === '+')
