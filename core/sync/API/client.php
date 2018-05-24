@@ -1320,7 +1320,7 @@ function generate_phone_token($connect, $data) {
 	if(isset($data['phone']))
 		$phone = trim($data['phone']);
 
-	if(mb_strlen($phone) > 9 && mb_strlen($phone) < 16) {
+	if(mb_strlen($phone) > 10 && mb_strlen($phone) < 16) {
 		$phone_int = (int)$phone;
 
 		if($phone_int > 0) {
