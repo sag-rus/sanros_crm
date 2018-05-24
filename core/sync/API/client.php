@@ -1324,9 +1324,9 @@ function generate_phone_token($connect, $data) {
 		$phone_int = (int)$phone;
 
 		if($phone_int > 0) {
-      $phone = $connect->getOne("SELECT id FROM klient WHERE login IS NOT NULL AND login != '' AND phone = ?s LIMIT 1",$phone);
+      $phone_row = $connect->getOne("SELECT id FROM klient WHERE login IS NOT NULL AND login != '' AND phone = ?s LIMIT 1",$phone);
       $time = time();
-      if(!$phone) {
+      if(!$phone_row) {
       	$token = random_int(100000,999999);
         $connect->query("INSERT INTO phone_token(`status`, `created`, `changed`, `number`, `token`) VALUES (?i, ?i, ?i, ?s, ?s)", 1, $time, $time, $phone, hash("sha256",$token));
         send_sms($connect,$phone,NULL, $token." - используйтей этот код для регистрации","phone_token");
