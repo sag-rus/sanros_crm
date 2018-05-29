@@ -1317,35 +1317,55 @@ function generate_phone_token($connect, $data) {
 		'success' => 0
 	];
 
+	$email = "";
+
+	if(isset($data["email"]))
+		$email = trim(mb_strtolower($data['email']));
+
 	if(isset($data['phone']))
 		$phone = trim($data['phone']);
 
-	if(mb_strlen($phone) > 10 && mb_strlen($phone) < 16) {
-		$phone_int = (int)$phone;
 
-		if($phone_int > 0) {
-      $phone_row = $connect->getOne("SELECT id FROM klient WHERE login IS NOT NULL AND login != '' AND phone = ?s LIMIT 1",$phone);
-      $time = time();
-      if(!$phone_row) {
-      	$token = random_int(100000,999999);
-        $connect->query("INSERT INTO phone_token(`status`, `created`, `changed`, `number`, `token`) VALUES (?i, ?i, ?i, ?s, ?s)", 1, $time, $time, $phone, hash("sha256",$token));
-        send_sms($connect, $phone,NULL, $token." - используйте этот код для регистрации","phone_token",false);
-        $result['success'] = 1;
+	if(mb_strlen($email) > 5) {
+    if(mb_strlen($phone) > 10 && mb_strlen($phone) < 16) {
+      $phone_int = (int)$phone;
+
+      if($phone_int > 0) {
+        $email_row = $connect->getOne("SELECT id FROM klient WHERE login IS NOT NULL AND login != '' AND login = ?s LIMIT 1",$email);
+        $phone_row = $connect->getOne("SELECT id FROM klient WHERE login IS NOT NULL AND login != '' AND phone = ?s LIMIT 1",$phone);
+        $time = time();
+        if(!$phone_row && !$email_row) {
+          $token = random_int(100000,999999);
+          $connect->query("INSERT INTO phone_token(`status`, `created`, `changed`, `number`, `token`) VALUES (?i, ?i, ?i, ?s, ?s)", 1, $time, $time, $phone, hash("sha256",$token));
+          send_sms($connect, $phone,NULL, $token." - используйте этот код для регистрации","phone_token",false);
+          $result['success'] = 1;
+        }
+        else {
+        	$result['msg'] = [];
+
+        	if($email_row)
+        		$result['msg'][] = "User with this email address already exists";
+
+        	if($phone_row)
+        		$result['msg'][] = "User with this phone number already exists";;
+
+          $result['title'] = "Error";
+        }
       }
       else {
-        $result['msg'] = "User with this phone number already exists";
+        $result['msg'] = "Incorrect phone number";
         $result['title'] = "Error";
-			}
+      }
+
     }
     else {
-      $result['msg'] = "Incorrect phone number";
+      $result['msg'] = "Incorrect phone number length";
       $result['title'] = "Error";
-		}
-
+    }
 	}
 	else {
-		$result['msg'] = "Incorrect phone number length";
-		$result['title'] = "Error";
+    $result['msg'] = "Incorrect email length";
+    $result['title'] = "Error";
 	}
 
 	return $result;
