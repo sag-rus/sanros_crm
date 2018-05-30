@@ -1431,7 +1431,7 @@ function registration($connect, $data) {
 											'login' => $email
 										];
                     $connect->query("UPDATE phone_token SET status = 2 WHERE id = ?i",$token_confirm['id']);
-                    $connect->query("INSERT INTO klient (`type`, `surname`, `name`, `otch`, `phone`, `email`, `login`, `password`, `hash`,`invited`, `date_reg`, `active`,	`original_data`) VALUES(2,?s, ?s, ?s, ?s, ?s, ?s, ?s, 0, ?s, 0, ?s)",$lname,$name,$fname,$phone, $email, $email,	md5($password), $hash, date("Y-m-d"),json_encode($original_data));
+                    $connect->query("INSERT INTO klient (`type`, `surname`, `name`, `otch`, `phone`, `email`, `login`, `password`, `hash`,`invited`, `date_reg`, `active`,	`original_data`) VALUES(2,?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, 0, ?s, 0, ?s)",$lname,$name,$fname,$phone, $email, $email,	md5($password), $hash, date("Y-m-d"),json_encode($original_data));
                     $result['success'] = 1;
                   }
                   else {
