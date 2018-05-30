@@ -1371,4 +1371,123 @@ function generate_phone_token($connect, $data) {
 	return $result;
 }
 
+function registration($connect, $data) {
+  $phone = "";
+  $result = [
+    'msg' => '',
+    'title' => '',
+    'success' => 0
+  ];
+
+  $email = "";
+  $name = "";
+  $lname = "";
+  $fname = "";
+  $password = "";
+
+  if(isset($data["email"]))
+    $email = trim(mb_strtolower($data['email']));
+
+  if(isset($data['phone']))
+    $phone = trim($data['phone']);
+
+  if(isset($data['name']))
+  	$name = trim($data['name']);
+
+  if(isset($data['lname']))
+    $lname = trim($data['lname']);
+
+  if(isset($data['fname']))
+    $fname = trim($data['fname']);
+
+  if(isset($data['password']))
+  	$password = trim($data['password']);
+
+  $token = "";
+
+  if(isset($data['token']))
+  	$token = trim($data['token']);
+
+  if(mb_strlen($token) > 0) {
+    if(mb_strlen($name) > 0 && mb_strlen($lname) > 0) {
+      if(mb_strlen($email) > 5) {
+        if(mb_strlen($phone) > 10 && mb_strlen($phone) < 16) {
+        	if(mb_strlen($password) > 6 && mb_strlen($password) < 21) {
+            $phone_int = (int)$phone;
+
+            if($phone_int > 0) {
+              $email_row = $connect->getOne("SELECT id FROM klient WHERE login IS NOT NULL AND login != '' AND login = ?s LIMIT 1",$email);
+              $phone_row = $connect->getOne("SELECT id FROM klient WHERE login IS NOT NULL AND login != '' AND phone = ?s LIMIT 1",$phone);
+              if(!$phone_row && !$email_row) {
+                $token_confirm = $connect->getRow("SELECT id, created FROM phone_token WHERE `number` = ?s AND token = ?s AND status = 1 ORDER BY created DESC LIMIT 1",$phone,hash("sha256",$token));
+                if($token_confirm) {
+                  if($token_confirm['created'] > time()-300) {
+                    $hash = uniqid();
+                  	$original_data = [
+                  		'name' => $name,
+											'surname' => $lname,
+											'otch' => $fname,
+											'email' => $email,
+											'login' => $email
+										];
+                    $connect->query("UPDATE phone_token SET status = 2 WHERE id = ?i",$token_confirm['id']);
+                    $connect->query("INSERT INTO klient (`type`, `surname`, `name`, `otch`, `phone`, `email`, `login`, `password`, `hash`,`invited`, `date_reg`, `active`,	`original_data`) VALUES(2,?s, ?s, ?s, ?s, ?s, ?s, ?s, 0, ?s, 0, ?s)",$lname,$name,$fname,$phone, $email, $email,	md5($password), $hash, date("Y-m-d"),json_encode($original_data));
+                    $result['success'] = 1;
+                  }
+                  else {
+                    $result['title'] = 'Error';
+                    $result['msg'] = "Incorrect phone confirmation code";
+                  }
+                }
+                else {
+                  $result['title'] = 'Error';
+                  $result['msg'] = "Incorrect phone confirmation code";
+                }
+              }
+              else {
+                $result['msg'] = [];
+
+                if($email_row)
+                  $result['msg'][] = "User with this email address already exists";
+
+                if($phone_row)
+                  $result['msg'][] = "User with this phone number already exists";;
+
+                $result['title'] = "Error";
+              }
+            }
+            else {
+              $result['msg'] = "Incorrect phone number";
+              $result['title'] = "Error";
+            }
+					}
+					else {
+            $result['msg'] = "Incorrect password length";
+            $result['title'] = "Error";
+					}
+
+        }
+        else {
+          $result['msg'] = "Incorrect phone number length";
+          $result['title'] = "Error";
+        }
+      }
+      else {
+        $result['msg'] = "Incorrect email length";
+        $result['title'] = "Error";
+      }
+    }
+    else {
+      $result['msg'] = "Incorrect user's name and surname";
+      $result['title'] = "Error";
+    }
+	}
+	else {
+    $result['msg'] = "Incorrect phone confirmation code";
+    $result['title'] = "Error";
+	}
+
+  return $result;
+}
+
 ?>
