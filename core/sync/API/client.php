@@ -1507,7 +1507,7 @@ function authorization($connect, $data) {
 		$password = trim($data['password']);
 
 	if(mb_strlen($login) > 5 && mb_strlen($password) > 6) {
-		$user = $connect->getOne("SELECT `id` FROM `klient` WHERE `login` IS NOT NULL AND `phone` IS NOT NULL AND (`login` = ?s OR `phone` = ?s) AND `password` = ?s",$login, $login,	md5($password));
+		$user = $connect->getOne("SELECT `id` FROM `klient` WHERE `login` IS NOT NULL AND `phone` IS NOT NULL AND (`login` = ?s OR `phone` = ?s) AND `password` = ?s LIMIT 1",$login, $login,	md5($password));
 		if($user) {
 			$result['success'] = 1;
 			$result['title'] = 'Success';
