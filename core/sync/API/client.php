@@ -143,9 +143,9 @@ function authorization_account($connect, $data){
 			$session = md5(uniqid());
 			$time = time();
 			if($connect->getOne("SELECT id FROM session_account WHERE login=?s", $login))
-				$connect->query("UPDATE session_account SET `id_session`=?s, `changed` = ?i WHERE login=?s", $session, $time, $login);
+				$connect->query("UPDATE session_account SET `id_session` = ?s, `changed` = ?i WHERE login=?s", $session, $time, $login);
 			else
-				$connect->query("INSERT INTO session_account(login, id_session, created, changed) VALUES (?s, ?s, ?i, ?i)", $login, $session, $time, $time);
+				$connect->query("INSERT INTO session_account(login, id_session, `created`, `	changed`) VALUES (?s, ?s, ?i, ?i)", $login, $session, $time, $time);
 
 			$data = $connect->getAll("SELECT reckoning.id AS id FROM reckoning LEFT OUTER JOIN object ON reckoning.id_obj = object.id WHERE (reckoning.status=3 OR reckoning.status=4 OR (reckoning.status IN (1,2) AND object.fast_booking IS NOT NULL AND object.fast_booking = 1)) AND reckoning.turist=?i", $id);
 			foreach($data as $row){
@@ -1508,11 +1508,23 @@ function authorization($connect, $data) {
 		$password = trim($data['password']);
 
 	if(mb_strlen($login) > 5 && mb_strlen($password) > 6) {
-		$user = $connect->getOne("SELECT `id` FROM `klient` WHERE `login` IS NOT NULL AND `phone` IS NOT NULL AND (`login` = ?s OR `phone` = ?s) AND `password` = ?s LIMIT 1",$login, $login,	md5($password));
+		$user = $connect->getRow("SELECT `id`, `login` FROM `klient` WHERE `login` IS NOT NULL AND `phone` IS NOT NULL AND (`login` = ?s OR `phone` = ?s) AND `password` = ?s LIMIT 1",$login, $login,	md5($password));
 		if($user) {
+			$session = hash('sha256',bin2hex(random_bytes(64)));
+			$salt = hash('sha256',bin2hex(random_bytes(64)));
+			$time = time();
+			$session_salt = hash('sha256',$session."_".$salt);
+			$old_session = $connect->getOne("SELECT id FROM `session_account` WHERE `login` = ?s", $user['login']);
+			if($old_session)
+				$connect->query("UPDATE `session_account` SET `type` = 2, id_session` = ?s, `salt` = ?s, `changed` = ?i WHERE id = ?i LIMIT 1",$session_salt, $salt, $time,$old_session['id']);
+			else
+				$connect->query("INSERT INTO `session_account` (`type`, `id_session`, `salt`, `login`, `created`, `changed`) VALUES (2,?s,?s,?s,?i,?i)",$session_salt,$salt,$user['login'],$time,$time);
+
 			$result['success'] = 1;
 			$result['title'] = 'Success';
 			$result['msg'] = 'Welcome!';
+			$result['session'] = $session;
+			$result['user_id'] = $user['id'];
 		}
     else {
       $result['title'] = 'Error';
