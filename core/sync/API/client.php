@@ -1566,6 +1566,10 @@ function authentication($connect, $data) {
   				$result['title'] = "Success";
   				$result['user'] = $user;
 				}
+				else {
+          $result['title'] = 'Error';
+          $result['msg'] = "Incorrect session data";
+				}
 			}
 			else {
         $result['title'] = 'Error';
@@ -1576,9 +1580,6 @@ function authentication($connect, $data) {
   		$result['title'] = 'Error';
   		$result['msg'] = "Incorrect session data";
 		}
-	}
-	else {
-  	$result['data'] = $user_id." ".$session;
 	}
 
   return $result;
