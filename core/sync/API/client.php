@@ -1540,4 +1540,46 @@ function authorization($connect, $data) {
 
 }
 
+function authentication($connect, $data) {
+  $result = [
+    'msg' => '',
+    'title' => '',
+    'success' => 0
+  ];
+
+  $user_id = 0;
+  $session = "";
+
+  if(isset($data['user_id']))
+  	$user_id = (int)$data['user_id'];
+
+  if(isset($data['session']))
+		$session = trim($data['session']);
+
+  if($user_id > 0 && mb_strtolower($session) === 64) {
+  	$user = $connect->qetRow("SELECT `id`, `login`, `active`, `name`, `surname`, `otch` FROM `klient` WHERE login IS NOT NULL AND login != '' id = ?i LIMIT 1",$user_id);
+  	if($user) {
+  		$session_row = $connect->getRow("SELECT `id`, `login`, `id_session`, `salt`, `created`, `changed` FROM `session_account` WHERE `login` = ?s AND `type` = 2 ORDER BY `created` DESC LIMIT 1",$user['login']);
+  		if($session_row) {
+  			if($session_row['id_session'] === hash('sha256',$session."_".$session_row['salt'])) {
+  				$result['success'] = 1;
+  				$result['title'] = "Success";
+  				$result['user'] = $user;
+				}
+			}
+			else {
+        $result['title'] = 'Error';
+        $result['msg'] = "Incorrect session data";
+			}
+		}
+		else {
+  		$result['title'] = 'Error';
+  		$result['msg'] = "Incorrect session data";
+		}
+	}
+
+  return $result;
+}
+
+
 ?>
