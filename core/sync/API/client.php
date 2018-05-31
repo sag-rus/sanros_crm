@@ -1490,4 +1490,41 @@ function registration($connect, $data) {
   return $result;
 }
 
+function authorization($connect, $data) {
+  $result = [
+    'msg' => '',
+    'title' => '',
+    'success' => 0
+  ];
+
+	$password = "";
+	$login = "";
+
+	if(isset($data['login']))
+		$login = mb_strtolower(trim($data['login']));
+
+	if(isset($data['password']))
+		$password = trim($data['password']);
+
+	if(mb_strlen($login) > 5 && mb_strlen($password) > 6) {
+		$user = $connect->getOne("SELECT `id` FROM `klient` WHERE `login` IS NOT NULL AND `phone` IS NOT NULL AND (`login` = ?s OR `phone` = ?s) AND `password` = ?s",$login, $login,	md5($password));
+		if($user) {
+			$result['success'] = 1;
+			$result['title'] = 'Success';
+			$result['msg'] = 'Welcome!';
+		}
+    else {
+      $result['title'] = 'Error';
+      $result['msg'] = 'Incorrect authorization data';
+    }
+	}
+	else {
+		$result['title'] = 'Error';
+		$result['msg'] = 'Incorrect authorization data';
+	}
+
+  return $result;
+
+}
+
 ?>
