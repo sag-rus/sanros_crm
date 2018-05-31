@@ -1577,6 +1577,9 @@ function authentication($connect, $data) {
   		$result['msg'] = "Incorrect session data";
 		}
 	}
+	else {
+  	$result['data'] = $user_id." ".$session;
+	}
 
   return $result;
 }
