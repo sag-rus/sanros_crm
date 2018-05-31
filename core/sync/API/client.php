@@ -1556,7 +1556,7 @@ function authentication($connect, $data) {
   if(isset($data['session']))
 		$session = trim($data['session']);
 
-  if($user_id > 0 && mb_strtolower($session) === 64) {
+  if($user_id > 0 && mb_strlen($session) === 64) {
   	$user = $connect->qetRow("SELECT `id`, `login`, `active`, `name`, `surname`, `otch` FROM `klient` WHERE login IS NOT NULL AND login != '' id = ?i LIMIT 1",$user_id);
   	if($user) {
   		$session_row = $connect->getRow("SELECT `id`, `login`, `id_session`, `salt`, `created`, `changed` FROM `session_account` WHERE `login` = ?s AND `type` = 2 ORDER BY `created` DESC LIMIT 1",$user['login']);
