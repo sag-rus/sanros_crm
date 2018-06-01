@@ -147,7 +147,7 @@ function authorization_account($connect, $data){
 			else
 				$connect->query("INSERT INTO session_account(login, id_session, `created`, `	changed`) VALUES (?s, ?s, ?i, ?i)", $login, $session, $time, $time);
 
-			$data = $connect->getAll("SELECT reckoning.id AS id FROM reckoning LEFT OUTER JOIN object ON reckoning.id_obj = object.id WHERE (reckoning.status=3 OR reckoning.status=4 OR (reckoning.status IN (1,2) AND object.fast_booking IS NOT NULL AND object.fast_booking = 1)) AND reckoning.turist=?i", $id);
+			$data = $connect->getAll("SELECT reckoning.id AS id FROM reckoning LEFT OUTER JOIN object ON reckoning.id_obj = object.id WHERE (reckoning.status=3 OR reckoning.status=4 OR (reckoning.status IN (1,2) AND object.fast_booking IS NOT NULL AND object.fast_booking = 1)) AND reckoning.active != 3 AND reckoning.turist=?i", $id);
 			foreach($data as $row){
 				$no_pay[] = $row["id"];
 			}
@@ -1516,7 +1516,7 @@ function authorization($connect, $data) {
 			$session_salt = hash('sha256',$session."_".$salt);
 			$old_session = $connect->getOne("SELECT id FROM `session_account` WHERE `login` = ?s", $user['login']);
 			if($old_session)
-				$connect->query("UPDATE `session_account` SET `type` = 2, id_session` = ?s, `salt` = ?s, `changed` = ?i WHERE id = ?i LIMIT 1",$session_salt, $salt, $time,$old_session['id']);
+				$connect->query("UPDATE `session_account` SET `type` = 2, `id_session` = ?s, `salt` = ?s, `changed` = ?i WHERE id = ?i LIMIT 1",$session_salt, $salt, $time,$old_session['id']);
 			else
 				$connect->query("INSERT INTO `session_account` (`type`, `id_session`, `salt`, `login`, `created`, `changed`) VALUES (2,?s,?s,?s,?i,?i)",$session_salt,$salt,$user['login'],$time,$time);
 
