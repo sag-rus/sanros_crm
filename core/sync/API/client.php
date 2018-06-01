@@ -1569,7 +1569,7 @@ function authentication($connect, $data) {
 				}
 				else {
           $result['title'] = 'Error';
-          $result['msg'] = "Incorrect session data";
+          $result['msg'] = "Incorrect session data ".$session."_".$session_row['salt'];
 				}
 			}
 			else {
