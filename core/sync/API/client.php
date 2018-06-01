@@ -1513,7 +1513,7 @@ function authorization($connect, $data) {
 			$session = hash('sha256',bin2hex(random_bytes(64)));
 			$salt = hash('sha256',bin2hex(random_bytes(64)));
 			$time = time();
-			$newdate = date('Y-m-d');
+			$newdate = date('Y-m-d H:i:s');
 			$session_salt = hash('sha256',$session."_".$salt);
 			$old_session = $connect->getOne("SELECT id FROM `session_account` WHERE `login` = ?s", $user['login']);
 			if($old_session)
