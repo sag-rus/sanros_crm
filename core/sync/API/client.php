@@ -1513,12 +1513,13 @@ function authorization($connect, $data) {
 			$session = hash('sha256',bin2hex(random_bytes(64)));
 			$salt = hash('sha256',bin2hex(random_bytes(64)));
 			$time = time();
+			$newdate = date('Y-m-d');
 			$session_salt = hash('sha256',$session."_".$salt);
 			$old_session = $connect->getOne("SELECT id FROM `session_account` WHERE `login` = ?s", $user['login']);
 			if($old_session)
-				$connect->query("UPDATE `session_account` SET `type` = 2, `id_session` = ?s, `salt` = ?s, `changed` = ?i WHERE id = ?i LIMIT 1",$session_salt, $salt, $time,$old_session['id']);
+				$connect->query("UPDATE `session_account` SET `type` = 2, `id_session` = ?s, `salt` = ?s, `changed` = ?i, `date` = ?s WHERE id = ?i LIMIT 1",$session_salt, $salt, $time, $newdate, $old_session);
 			else
-				$connect->query("INSERT INTO `session_account` (`type`, `id_session`, `salt`, `login`, `created`, `changed`) VALUES (2,?s,?s,?s,?i,?i)",$session_salt,$salt,$user['login'],$time,$time);
+				$connect->query("INSERT INTO `session_account` (`type`, `id_session`, `salt`, `login`, `created`, `changed`, `date`) VALUES (2,?s,?s,?s,?i,?i,?s)",$session_salt,$salt,$user['login'],$time,$time, $newdate);
 
 			$result['success'] = 1;
 			$result['title'] = 'Success';
