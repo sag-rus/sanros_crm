@@ -1314,7 +1314,7 @@ function generate_phone_token($connect, $data) {
 	$phone = "";
 	$actions = [
 		'registration' => 'используйте этот код для регистрации',
-		'password_restore' => 'используйте этот код для восстановления пароля'
+		'password-restore' => 'используйте этот код для восстановления пароля'
 	];
 	$action = "";
 	$result = [
@@ -1444,7 +1444,7 @@ function registration($connect, $data) {
                 	$time = time();
                   if($token_confirm['created'] > $time-300) {
                     $hash = uniqid();
-                    $promo = "doc_".base64_decode(random_bytes(3));
+                    $promo = "doc_".bin2hex(random_bytes(3));
                   	$original_data = [
                   		'name' => $name,
 											'surname' => $lname,
