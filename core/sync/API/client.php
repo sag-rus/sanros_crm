@@ -1312,6 +1312,11 @@ function send_comment_rating($connect, $data){
 
 function generate_phone_token($connect, $data) {
 	$phone = "";
+	$actions = [
+		'registration' => 'используйте этот код для регистрации',
+		'password_restore' => 'используйте этот код для восстановления пароля'
+	];
+	$action = "";
 	$result = [
 		'msg' => '',
 		'title' => '',
@@ -1326,46 +1331,60 @@ function generate_phone_token($connect, $data) {
 	if(isset($data['phone']))
 		$phone = trim($data['phone']);
 
+	if(isset($data['action']))
+		$action = trim($data['action']);
 
-	if(mb_strlen($email) > 5) {
-    if(mb_strlen($phone) > 10 && mb_strlen($phone) < 16) {
-      $phone_int = (int)$phone;
+	if(mb_strlen($action) > 0) {
+		if(array_key_exists($action,$actions)) {
+      if(mb_strlen($email) > 5) {
+        if(mb_strlen($phone) > 10 && mb_strlen($phone) < 16) {
+          $phone_int = (int)$phone;
 
-      if($phone_int > 0) {
-        $email_row = $connect->getOne("SELECT id FROM klient WHERE login IS NOT NULL AND login != '' AND login = ?s LIMIT 1",$email);
-        $phone_row = $connect->getOne("SELECT id FROM klient WHERE login IS NOT NULL AND login != '' AND phone = ?s LIMIT 1",$phone);
-        $time = time();
-        if(!$phone_row && !$email_row) {
-          $token = random_int(100000,999999);
-          $connect->query("INSERT INTO phone_token(`status`, `created`, `changed`, `number`, `token`) VALUES (?i, ?i, ?i, ?s, ?s)", 1, $time, $time, $phone, hash("sha256",$token));
-          send_sms($connect, $phone,NULL, $token." - используйте этот код для регистрации","phone_token",false);
-          $result['success'] = 1;
+          if($phone_int > 0) {
+            $email_row = $connect->getOne("SELECT id FROM klient WHERE login IS NOT NULL AND login != '' AND login = ?s LIMIT 1",$email);
+            $phone_row = $connect->getOne("SELECT id FROM klient WHERE login IS NOT NULL AND login != '' AND phone = ?s LIMIT 1",$phone);
+            $time = time();
+            if(!$phone_row && !$email_row) {
+              $token = random_int(100000,999999);
+              $connect->query("INSERT INTO phone_token(`status`, `created`, `changed`, `number`, `token`, `action`) VALUES (?i, ?i, ?i, ?s, ?s, ?s)", 1, $time, $time, $phone, hash("sha256",$token),$action);
+              send_sms($connect, $phone,NULL, $token." - ".$actions[$action],"phone_token",false);
+              $result['success'] = 1;
+            }
+            else {
+              $result['msg'] = [];
+
+              if($email_row)
+                $result['msg'][] = "User with this email address already exists";
+
+              if($phone_row)
+                $result['msg'][] = "User with this phone number already exists";;
+
+              $result['title'] = "Error";
+            }
+          }
+          else {
+            $result['msg'] = "Incorrect phone number";
+            $result['title'] = "Error";
+          }
+
         }
         else {
-        	$result['msg'] = [];
-
-        	if($email_row)
-        		$result['msg'][] = "User with this email address already exists";
-
-        	if($phone_row)
-        		$result['msg'][] = "User with this phone number already exists";;
-
+          $result['msg'] = "Incorrect phone number length";
           $result['title'] = "Error";
         }
       }
       else {
-        $result['msg'] = "Incorrect phone number";
+        $result['msg'] = "Incorrect email length";
         $result['title'] = "Error";
       }
-
-    }
-    else {
-      $result['msg'] = "Incorrect phone number length";
+		}
+		else {
+      $result['msg'] = "Action is not allowed";
       $result['title'] = "Error";
-    }
+		}
 	}
 	else {
-    $result['msg'] = "Incorrect email length";
+    $result['msg'] = "Action is not defined";
     $result['title'] = "Error";
 	}
 
@@ -1420,10 +1439,12 @@ function registration($connect, $data) {
               $email_row = $connect->getOne("SELECT id FROM klient WHERE login IS NOT NULL AND login != '' AND login = ?s LIMIT 1",$email);
               $phone_row = $connect->getOne("SELECT id FROM klient WHERE login IS NOT NULL AND login != '' AND phone = ?s LIMIT 1",$phone);
               if(!$phone_row && !$email_row) {
-                $token_confirm = $connect->getRow("SELECT id, created FROM phone_token WHERE `number` = ?s AND token = ?s AND status = 1 ORDER BY created DESC LIMIT 1",$phone,hash("sha256",$token));
+                $token_confirm = $connect->getRow("SELECT id, created FROM phone_token WHERE `number` = ?s AND `token` = ?s AND status = 1 AND `action` = 'registration' ORDER BY created DESC LIMIT 1",$phone,hash("sha256",$token));
                 if($token_confirm) {
-                  if($token_confirm['created'] > time()-300) {
+                	$time = time();
+                  if($token_confirm['created'] > $time-300) {
                     $hash = uniqid();
+                    $promo = "doc_".base64_decode(random_bytes(3));
                   	$original_data = [
                   		'name' => $name,
 											'surname' => $lname,
@@ -1433,7 +1454,21 @@ function registration($connect, $data) {
 										];
                     $connect->query("UPDATE phone_token SET status = 2 WHERE id = ?i",$token_confirm['id']);
                     $connect->query("INSERT INTO klient (`type`, `surname`, `name`, `otch`, `phone`, `email`, `login`, `password`, `hash`,`invited`, `date_reg`, `active`,	`original_data`) VALUES(2,?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, 0, ?s, 0, ?s)",$lname,$name,$fname,$phone, $email, $email,	md5($password), $hash, date("Y-m-d"),json_encode($original_data));
-                    $result['success'] = 1;
+                    $uid = $connect->insertId();
+                    if($uid > 0) {
+                      $connect->query("INSERT INTO doctor_card (`status`,`created`, `changed`, `uid`, `promo`) VALUES (?i, ?i, ?i, ?i, ?s)",1,$time,$time,$uid,$promo);
+                      if($connect->insertId() > 0) {
+                        $result['success'] = 1;
+											}
+                      else {
+                        $result['title'] = 'Error';
+                        $result['msg'] = "Doctor card creating error";
+                      }
+										}
+										else {
+                      $result['title'] = 'Error';
+                      $result['msg'] = "User creating error";
+										}
                   }
                   else {
                     $result['title'] = 'Error';
@@ -1566,7 +1601,11 @@ function authentication($connect, $data) {
   				$result['success'] = 1;
   				$result['title'] = "Success";
   				$result['user'] = $user;
-				}
+          $doctor_card = $connect->getRow("SELECT * FROM `doctor_card` WHERE `uid` = ?i LIMIT 1",$user['id']);
+          if($doctor_card) {
+          	$result['user']['doctor_card'] = $doctor_card;
+					}
+        }
 				else {
           $result['title'] = 'Error';
           $result['msg'] = "Incorrect session data ".$session."_".$session_row['salt'];
