@@ -1311,7 +1311,6 @@ function send_comment_rating($connect, $data){
 }
 
 function generate_phone_token($connect, $data) {
-	$phone = "";
 	$actions = [
 		'registration' => 'используйте этот код для регистрации',
 		'password-restore' => 'используйте этот код для восстановления пароля'
@@ -1323,60 +1322,88 @@ function generate_phone_token($connect, $data) {
 		'success' => 0
 	];
 
-	$email = "";
-
-	if(isset($data["email"]))
-		$email = trim(mb_strtolower($data['email']));
-
-	if(isset($data['phone']))
-		$phone = trim($data['phone']);
-
 	if(isset($data['action']))
 		$action = trim($data['action']);
 
 	if(mb_strlen($action) > 0) {
 		if(array_key_exists($action,$actions)) {
-      if(mb_strlen($email) > 5) {
-        if(mb_strlen($phone) > 10 && mb_strlen($phone) < 16) {
-          $phone_int = (int)$phone;
+			if($action === 'password-restore') {
+        $login = "";
+        if(isset($data['login']))
+          $login = mb_strtolower(trim($data['login']));
 
-          if($phone_int > 0) {
-            $email_row = $connect->getOne("SELECT id FROM klient WHERE login IS NOT NULL AND login != '' AND login = ?s LIMIT 1",$email);
-            $phone_row = $connect->getOne("SELECT id FROM klient WHERE login IS NOT NULL AND login != '' AND phone = ?s LIMIT 1",$phone);
-            $time = time();
-            if(!$phone_row && !$email_row) {
-              $token = random_int(100000,999999);
-              $connect->query("INSERT INTO phone_token(`status`, `created`, `changed`, `number`, `token`, `action`) VALUES (?i, ?i, ?i, ?s, ?s, ?s)", 1, $time, $time, $phone, hash("sha256",$token),$action);
-              send_sms($connect, $phone,NULL, $token." - ".$actions[$action],"phone_token",false);
-              $result['success'] = 1;
-            }
-            else {
-              $result['msg'] = [];
-
-              if($email_row)
-                $result['msg'][] = "User with this email address already exists";
-
-              if($phone_row)
-                $result['msg'][] = "User with this phone number already exists";;
-
-              $result['title'] = "Error";
-            }
+        if(mb_strlen($login) > 5) {
+          $user = $connect->getRow("SELECT `id`, `login`, `phone` FROM `klient` WHERE `login` IS NOT NULL AND `phone` IS NOT NULL AND (`login` = ?s OR `phone` = ?s) LIMIT 1",$login, $login);
+          if($user) {
+          	$time = time();
+            $token = random_int(100000,999999);
+            $connect->query("INSERT INTO phone_token(`status`, `created`, `changed`, `number`, `token`, `action`) VALUES (?i, ?i, ?i, ?s, ?s, ?s)", 1, $time, $time, $user['phone'], hash("sha256",$token),$action);
+            send_sms($connect, $user['phone'],NULL, $token." - ".$actions[$action],"phone_token",false);
+            $result['success'] = 1;
           }
           else {
-            $result['msg'] = "Incorrect phone number";
-            $result['title'] = "Error";
+            $result['title'] = 'Error';
+            $result['msg'] = 'User not found';
           }
-
         }
         else {
-          $result['msg'] = "Incorrect phone number length";
+          $result['title'] = 'Error';
+          $result['msg'] = 'User not found';
+        }
+
+			}
+			else {
+        $phone = "";
+        $email = "";
+
+        if(isset($data["email"]))
+          $email = trim(mb_strtolower($data['email']));
+
+        if(isset($data['phone']))
+          $phone = trim($data['phone']);
+
+        if(mb_strlen($email) > 5) {
+          if(mb_strlen($phone) > 10 && mb_strlen($phone) < 16) {
+            $phone_int = (int)$phone;
+
+            if($phone_int > 0) {
+              $email_row = $connect->getOne("SELECT id FROM klient WHERE login IS NOT NULL AND login != '' AND login = ?s LIMIT 1",$email);
+              $phone_row = $connect->getOne("SELECT id FROM klient WHERE login IS NOT NULL AND login != '' AND phone = ?s LIMIT 1",$phone);
+              $time = time();
+              if(!$phone_row && !$email_row) {
+                $token = random_int(100000,999999);
+                $connect->query("INSERT INTO phone_token(`status`, `created`, `changed`, `number`, `token`, `action`) VALUES (?i, ?i, ?i, ?s, ?s, ?s)", 1, $time, $time, $phone, hash("sha256",$token),$action);
+                send_sms($connect, $phone,NULL, $token." - ".$actions[$action],"phone_token",false);
+                $result['success'] = 1;
+              }
+              else {
+                $result['msg'] = [];
+
+                if($email_row)
+                  $result['msg'][] = "User with this email address already exists";
+
+                if($phone_row)
+                  $result['msg'][] = "User with this phone number already exists";;
+
+                $result['title'] = "Error";
+              }
+            }
+            else {
+              $result['msg'] = "Incorrect phone number";
+              $result['title'] = "Error";
+            }
+
+          }
+          else {
+            $result['msg'] = "Incorrect phone number length";
+            $result['title'] = "Error";
+          }
+        }
+        else {
+          $result['msg'] = "Incorrect email length";
           $result['title'] = "Error";
         }
-      }
-      else {
-        $result['msg'] = "Incorrect email length";
-        $result['title'] = "Error";
-      }
+			}
 		}
 		else {
       $result['msg'] = "Action is not allowed";
