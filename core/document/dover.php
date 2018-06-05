@@ -265,11 +265,13 @@ function naimenovanie($id_obj, $room = "", $date_z = "", $date_v = "", $days = "
 function full_name($id_obj){
 	$html = "";
 	if($id_obj == 3) //Бакирово
-		$html = "ЛПУП санаторий \"Бакирово\"";
+		$html = "ЛПЧУП санаторий \"Бакирово\"";
 	elseif($id_obj == 6) //варзи-ятчи
 		$html = "ООО \"Санаторий Варзи-Ятчи\"";
 	elseif($id_obj == 4) //балкыш
 		$html = "ООО \"Санаторий Балкыш\"";
+	elseif ($id_obj == 17)
+      $html = "ЛПЧУП \"Санаторий Жемчужина\"";
 	elseif($id_obj == 59) //ян
 		$html = "ПАО \"Татнефть\" им. В.Д.Шашина";
 	elseif($id_obj == 31) //лениногорский
