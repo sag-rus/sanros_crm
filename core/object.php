@@ -946,7 +946,7 @@ function update_room($connect){
 	$comfort = $_POST["comfort"];
 	$best_comfort = $_POST["best_comfort"];
 	$name_room = $_POST["name_room"];
-	$housing = $_POST["housing"];
+	$housing = (int)$_POST["housing"];
 	$square = $_POST["square"];
 	$food = $_POST["food"];
 	$connect->query("UPDATE room SET name=?s, id_comfort=?s, id_best_comfort=?s, note=?s, main_place=?i, add_place=?i, housing=?s, food=?s, square=?s WHERE id=?i", $name_room, $comfort, $best_comfort, $note, $main_place, $add_place, $housing, $food, $square, $id);
