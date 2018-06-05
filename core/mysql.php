@@ -757,6 +757,9 @@ function write_body($connect){
 							<li id="office_menu" onclick="see_office()"><a><i class="fa fa-users"></i> Офис</a></li>
 							<li id="users_menu" onclick="see_users()"><a><i class="fa fa-user"></i> Пользователь</a></li>
 							<li id="group-menu" onclick="see_groups()"><a><i class="fa fa-users"></i> Группы</a></li>
+                          <?php if($id_rights > 5){ ?>
+                            <li id="accounts-menu" onclick="see_accounts()"><a><i class="fa fa-user"></i> Аккаунты</a></li>
+                          <?php } ?>
 							<li id="sync-reboot-menu" onclick="restart_sync()"><a><i class="fa fa-refresh"></i> Перезапуск синхронизации</a></li>
 							<li><hr /></li>
 							<li id="profile_open" onclick="profile()"><a><i class="fa fa-heartbeat"></i> Профиль лечения</a></li>

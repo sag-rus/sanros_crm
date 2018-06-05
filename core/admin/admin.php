@@ -1,6 +1,7 @@
 <?php
 
 function see_office($connect){
+    global $id_rights;
 ?>
 <div class="form-horizontal panel panel-default">
 	<div class="panel-heading"><i class="fa fa-users"></i> Офис</div>
@@ -14,8 +15,10 @@ function see_office($connect){
 			<div class="form-group form-group-margin">
 				<div class="col-sm-9"><?php echo $row["name"]; ?></div>
 				<div class="col-sm-3">
+                  <?php if($id_rights > 5) { ?>
 					<button type="button" class="btn btn-default btn-xs" onclick="edit_office('<?php echo $id; ?>')">&nbsp;<i class="fa fa-pencil"></i>&nbsp;</button>
 					<button type="button" class="btn btn-default btn-xs" onclick="edit_office_bank('<?php echo $id; ?>')">&nbsp;<i class="fa fa-university"></i>&nbsp;</button>
+                  <?php } ?>
 				</div>
 			</div>
 		</div>
@@ -168,6 +171,7 @@ function update_office_bank($connect){
 }
 
 function see_users($connect){
+    global $id_rights;
 ?>
 <div class="panel panel-default">
 	<div class="panel-heading"><i class="fa fa-user"></i> Пользователи</div>
@@ -187,8 +191,10 @@ function see_users($connect){
 			<td width="25%"><?php echo $user["date_last_in"]; ?></td>
 			<td width="20%"><?php echo $connect->getOne("SELECT name FROM rights WHERE id=?i", $user["rights"]); ?></td>
 			<td width="15%">
-				<button type="button" class="btn btn-default btn-xs" onclick="edit_user('<?php echo $id; ?>')">&nbsp;<i class="fa fa-pencil"></i>&nbsp;</button>
-				<button type="button" class="btn btn-primary btn-xs" onclick="add_photo_profile('<?php echo $id; ?>', 'user')">&nbsp;<i class="fa fa-file-image-o"></i>&nbsp;</button>
+                <?php if($id_rights > 5) { ?>
+                    <button type="button" class="btn btn-default btn-xs" onclick="edit_user('<?php echo $id; ?>')">&nbsp;<i class="fa fa-pencil"></i>&nbsp;</button>
+                    <button type="button" class="btn btn-primary btn-xs" onclick="add_photo_profile('<?php echo $id; ?>', 'user')">&nbsp;<i class="fa fa-file-image-o"></i>&nbsp;</button>
+                <?php } ?>
 			<?php if($connect->getOne("SELECT id FROM session WHERE login=?s AND request=1", $user["login"])){ ?>
 				<button type="button" class="btn btn-danger btn-xs btn-bomb-<?php echo $id; ?>" onclick="check_request_user('<?php echo $id; ?>')">&nbsp;<i class="fa fa-bomb"></i>&nbsp;</button>
 			<?php } ?>
@@ -203,6 +209,66 @@ function see_users($connect){
 	</div>
 </div>
 <?php
+}
+
+function see_accounts($connect){
+    global $id_rights;
+  ?>
+    <?php if($id_rights > 5) { ?>
+    <div class="panel panel-default">
+        <div class="panel-heading"><i class="fa fa-user"></i> Пользователи</div>
+        <table class="table table-hover table-condensed">
+          <thead>
+            <tr>
+                <th>ID</th>
+                <th>ФИО</th>
+                <th>E-MAIL (login)</th>
+                <th>Моб. телефон</th>
+                <th>Статус</th>
+                <th>Действия</th>
+            </tr>
+          </thead>
+          <tbody>
+          <?php
+          $data = $connect->getAll("SELECT `klient`.`id` AS `account_id`, `klient`.`name` AS `account_name`, `klient`.`surname` AS `account_surname`, `klient`.`otch` AS `account_otch`, `login`, `klient`.`phone` AS `account_phone`, `doctor_card`.`status` AS `card_status` FROM klient INNER JOIN `doctor_card` ON `doctor_card`.`uid` = `klient`.`id` WHERE `type` = 2 AND `login` IS NOT NULL AND login !=''");
+          foreach($data as $user){
+            ?>
+              <tr>
+                  <td><?=$user['account_id'];?></td>
+                  <td><?=$user['account_name'];?> <?=$user['account_surname'];?> <?=$user['account_otch'];?></td>
+                  <td><?=$user['login'];?></td>
+                  <td>+<?=$user['account_phone'];?></td>
+                  <td>
+                      <?php
+                      switch ((int)$user['card_status']) {
+                        case 0:
+                            echo '<div class="alert-danger">Заблокирован</div>';
+                            break;
+                        case 1: echo '<div class="alert-warning">На модерации</div>';
+                            break;
+                        case 2: echo '<div class="alert-success">Действует</div>';
+                            break;
+                      }
+                      ?>
+                  </td>
+                  <td>
+                      <button type="button" class="btn btn-default btn-xs" onclick="edit_account(<?=$user['account_id']?>)">&nbsp;<i class="fa fa-pencil"></i>&nbsp;</button>
+                  </td>
+              </tr>
+            <?php
+          }
+          ?>
+          </tbody>
+        </table>
+    </div>
+    <?php } else  { ?>
+    <div class="panel panel-default">
+        <div class="panel-body alert-danger">
+            У Вас нет прав для доступа к данной странице...
+        </div>
+    </div>
+    <?php } ?>
+  <?php
 }
 
 function edit_user($connect){
@@ -288,6 +354,68 @@ function edit_user($connect){
 	$html = ob_get_clean();
 	return $html;
 }
+
+function edit_account($connect){
+  $id = $_POST["id"];
+  $user = $connect->getRow("SELECT `klient`.`id` AS `account_id`, `klient`.`name` AS `account_name`, `klient`.`surname` AS `account_surname`, `klient`.`otch` AS `account_otch`, `klient`.`login` AS `account_login`, `klient`.`phone` AS `account_phone`, `doctor_card`.`status` AS `card_status` FROM klient INNER JOIN `doctor_card` ON `doctor_card`.`uid` = `klient`.`id` WHERE `type` = 2 AND `login` IS NOT NULL AND login !='' AND `klient`.`id` = ?i LIMIT 1",$id);
+  ob_start();
+  ?>
+    <?php
+    if($user) {
+      ?>
+        <div class="panel panel-default edit-account">
+            <div class="panel-heading"><i class="fa fa-pencil"></i>
+                Редактирование пользователя <?= $user['account_login']; ?></div>
+            <div class="form-horizontal panel-body">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Логин</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="login"
+                               value="<?= $user['account_login']; ?>"/>
+                    </div>
+                </div>
+            </div>
+            <div class="form-horizontal panel-footer">
+                <div class="form-group form-group-margin">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="button" class="btn btn-success btn-sm"
+                                onclick="update_account('<?php echo $id; ?>')">
+                            <i class="fa fa-check-circle"></i> Сохранить
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm"
+                                onclick="see_accounts()"><i
+                                    class="fa fa-times-circle"></i> Отмена
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+      <?php
+    }
+    else {
+    ?>
+    <div class="panel panel-default">
+        <div class="row">
+            <div class="col-md-12 text-danger text-center">
+                <div class="panel-body">
+                    Ошибка! Пользователь не найден...
+                </div>
+            </div>
+            <div class="col-md-12 text-center">
+                <div class="panel-body">
+                    <button type="button" class="btn btn-danger btn-sm" onclick="see_accounts()">Назад</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
+    }
+    ?>
+  <?php
+  $html = ob_get_clean();
+  return $html;
+}
+
 
 function update_user($connect){
 	$id = $_POST["id"];
@@ -741,6 +869,7 @@ function history_object_account(){
 }
 
 function see_groups($connect){
+    global $id_rights;
 ?>
 <div class="form-horizontal panel panel-default">
 	<div class="panel-heading"><i class="fa fa-users"></i> Группы</div>
@@ -755,7 +884,9 @@ function see_groups($connect){
 			<div class="form-group form-group-margin">
 				<div class="col-sm-9"><?php echo $row["name"]; ?></div>
 				<div class="col-sm-3">
+                  <?php if($id_rights > 5) { ?>
 					<button type="button" class="btn btn-default btn-xs" onclick="edit_group('<?php echo $id; ?>')">&nbsp;<i class="fa fa-pencil"></i>&nbsp;</button>
+                  <?php } ?>
 				</div>
 			</div>
 		</div>
@@ -763,9 +894,11 @@ function see_groups($connect){
 	}
 ?>
 	</div>
+  <?php if($id_rights > 5) { ?>
 	<div class="panel-footer right">
 		<button type="button" class="btn btn-default btn-sm" onclick="add_new_group()"><i class="fa fa-plus-circle"></i> Новая группа</button>
 	</div>
+  <?php } ?>
 </div>
 <?php
 }

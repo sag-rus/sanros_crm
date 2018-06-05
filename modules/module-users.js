@@ -11,6 +11,19 @@ function see_users(type){
 	});
 }
 
+function see_accounts(type){
+  var str = 'func=see_accounts';
+  select_menu('accounts-menu', '2');
+  $.ajax({
+    url: 'mysql.php',
+    type: 'POST',
+    data: str,
+    success: function(html){
+      $('#body').html(html);
+    }
+  });
+}
+
 function add_new_users(){
 	var str = 'func=add_new_user';
 	$.ajax({
@@ -68,6 +81,22 @@ function edit_user(id){
 	});
 
 }
+
+function edit_account(id){
+  var str = 'func=edit_account&id=' + id;
+  $.ajax({
+    type: 'POST',
+    url: 'mysql.php',
+    data: str,
+    success: function(html){
+      $('#body').html(html);
+    }
+
+  });
+
+}
+
+
 
 function update_user(id){
 	var login = $('#login').val();
