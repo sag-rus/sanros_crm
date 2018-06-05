@@ -135,6 +135,46 @@ function update_user(id){
 	}
 }
 
+function update_account(id){
+	var $name = $('.edit-account #name');
+  var name = $name.val().trim();
+
+  var $surname = $('.edit-account #surname');
+  var surname = $surname.val().trim();
+
+  var $otch = $('.edit-account #otch');
+  var otch = $otch.val().trim();
+
+  var $status = $('.edit-account #status');
+	var status = parseInt($status.val());
+
+	var $moderation_comment = $('.edit-account #moderation-comment');
+	var moderation_comment = $moderation_comment.val().trim();
+  if(!surname)
+    show_warning('.edit-account', 'Фамилия обязательна для заполнения');
+  else if(!name)
+    show_warning('.edit-account', 'Имя обязательно для заполнения');
+  else if(!otch)
+    show_warning('.edit-account', 'Отчество обязательно для заполнения');
+  else if(!status && !moderation_comment)
+    show_warning('.edit-account', 'Укажите причину блокировки аккаунта в комментарии модератора');
+  else{
+    /*var str = 'func=update_user&login=' + login + '&password=' + password + '&rights=' + rights + '&name=' + name + '&surname=' + surname + '&telephone=' + telephone + '&email=' + email + '&id=' + id + '&office=' + office + '&group=' + group;
+    $.ajax({
+      url: 'mysql.php',
+      type: 'POST',
+      data: str,
+      success: function(a){
+        if(a == 1){
+          see_users();
+          show_alert('Пользователь изменен...');
+        }else
+          show_warning('.edit-user', 'Пользователь с таким логином уже существует');
+      }
+    });*/
+  }
+}
+
 
 var left = 0, height = 0, topq = 0;
 

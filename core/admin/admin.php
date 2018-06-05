@@ -230,7 +230,7 @@ function see_accounts($connect){
           </thead>
           <tbody>
           <?php
-          $data = $connect->getAll("SELECT `klient`.`id` AS `account_id`, `klient`.`name` AS `account_name`, `klient`.`surname` AS `account_surname`, `klient`.`otch` AS `account_otch`, `login`, `klient`.`phone` AS `account_phone`, `doctor_card`.`status` AS `card_status` FROM klient INNER JOIN `doctor_card` ON `doctor_card`.`uid` = `klient`.`id` WHERE `type` = 2 AND `login` IS NOT NULL AND login !=''");
+          $data = $connect->getAll("SELECT `klient`.`id` AS `account_id`, `klient`.`name` AS `account_name`, `klient`.`surname` AS `account_surname`, `klient`.`otch` AS `account_otch`, `login`, `klient`.`phone` AS `account_phone`, `doctor_card`.`status` AS `card_status` FROM klient INNER JOIN `doctor_card` ON `doctor_card`.`uid` = `klient`.`id` WHERE `type` = 2 AND `login` IS NOT NULL AND login !='' ORDER BY (`doctor_card`.`status` = 1) DESC");
           foreach($data as $user){
             ?>
               <tr>
@@ -357,7 +357,7 @@ function edit_user($connect){
 
 function edit_account($connect){
   $id = $_POST["id"];
-  $user = $connect->getRow("SELECT `klient`.`id` AS `account_id`, `klient`.`name` AS `account_name`, `klient`.`surname` AS `account_surname`, `klient`.`otch` AS `account_otch`, `klient`.`login` AS `account_login`, `klient`.`phone` AS `account_phone`, `doctor_card`.`status` AS `card_status` FROM klient INNER JOIN `doctor_card` ON `doctor_card`.`uid` = `klient`.`id` WHERE `type` = 2 AND `login` IS NOT NULL AND login !='' AND `klient`.`id` = ?i LIMIT 1",$id);
+  $user = $connect->getRow("SELECT `klient`.`id` AS `account_id`, `klient`.`name` AS `account_name`, `klient`.`surname` AS `account_surname`, `klient`.`otch` AS `account_otch`, `klient`.`login` AS `account_login`, `klient`.`phone` AS `account_phone`, `doctor_card`.`status` AS `card_status`, `doctor_card`.`moderation_comment` AS `card_moderation_comment` FROM klient INNER JOIN `doctor_card` ON `doctor_card`.`uid` = `klient`.`id` WHERE `type` = 2 AND `login` IS NOT NULL AND login !='' AND `klient`.`id` = ?i LIMIT 1",$id);
   ob_start();
   ?>
     <?php
@@ -368,10 +368,55 @@ function edit_account($connect){
                 Редактирование пользователя <?= $user['account_login']; ?></div>
             <div class="form-horizontal panel-body">
                 <div class="form-group">
+                    <label class="col-sm-3 control-label">ID</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="account-id" value="<?= $user['account_id']; ?>" disabled>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="col-sm-3 control-label">Логин</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" id="login"
-                               value="<?= $user['account_login']; ?>"/>
+                        <input type="text" class="form-control" id="login" value="<?= $user['account_login']; ?>" disabled>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Мобильный телефон</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="phone" value="+<?= $user['account_phone']; ?>" disabled>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Фамилия *</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="surname" value="<?= $user['account_surname']; ?>">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Имя *</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="name" value="<?= $user['account_name']; ?>">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Отчество *</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="otch" value="<?= $user['account_otch']; ?>">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Статус</label>
+                    <div class="col-sm-9">
+                        <select class="form-control" id="status">
+                            <option value="0"<?php if($user['card_status'] == 0) { ?> selected<?php } ?>>Заблокирован</option>
+                            <option value="1"<?php if($user['card_status'] == 1) { ?> selected<?php } ?>>На модерации</option>
+                            <option value="2"<?php if($user['card_status'] == 2) { ?> selected<?php } ?>>Действует</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Комментарий модератора</label>
+                    <div class="col-sm-9">
+                        <textarea class="form-control" id="moderation-comment"><?=$user['card_moderation_comment'];?></textarea>
                     </div>
                 </div>
             </div>
