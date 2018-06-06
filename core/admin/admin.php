@@ -1,5 +1,12 @@
 <?php
 
+include_once(__DIR__."/../../config.php");
+include_once(__DIR__."/../lib/sms.php");
+$conf = new JConfig;
+$sync = $conf->sync_base;
+$CRM = $conf->CRM;
+$unisender_api_key = $conf->unisender_api_key;
+
 function see_office($connect){
     global $id_rights;
 ?>
@@ -235,19 +242,21 @@ function see_accounts($connect){
             ?>
               <tr>
                   <td><?=$user['account_id'];?></td>
-                  <td><?=$user['account_name'];?> <?=$user['account_surname'];?> <?=$user['account_otch'];?></td>
+                  <td><?=$user['account_surname'];?> <?=$user['account_name'];?> <?=$user['account_otch'];?></td>
                   <td><?=$user['login'];?></td>
                   <td>+<?=$user['account_phone'];?></td>
                   <td>
                       <?php
                       switch ((int)$user['card_status']) {
                         case 0:
-                            echo '<div class="alert-danger">Заблокирован</div>';
+                            echo '<div class="text-danger">Заблокирован</div>';
                             break;
-                        case 1: echo '<div class="alert-warning">На модерации</div>';
+                        case 1: echo '<div class="text-warning">На модерации</div>';
                             break;
-                        case 2: echo '<div class="alert-success">Действует</div>';
+                        case 2: echo '<div class="text-danger">Не прошёл модерацию</div>';
                             break;
+                        case 3: echo '<div class="text-success">Активирован</div>';
+                          break;
                       }
                       ?>
                   </td>
@@ -409,7 +418,8 @@ function edit_account($connect){
                         <select class="form-control" id="status">
                             <option value="0"<?php if($user['card_status'] == 0) { ?> selected<?php } ?>>Заблокирован</option>
                             <option value="1"<?php if($user['card_status'] == 1) { ?> selected<?php } ?>>На модерации</option>
-                            <option value="2"<?php if($user['card_status'] == 2) { ?> selected<?php } ?>>Действует</option>
+                            <option value="2"<?php if($user['card_status'] == 2) { ?> selected<?php } ?>>Не прошёл модерацию</option>
+                            <option value="3"<?php if($user['card_status'] == 3) { ?> selected<?php } ?>>Активирован</option>
                         </select>
                     </div>
                 </div>
@@ -481,6 +491,82 @@ function update_user($connect){
 	if($password)
 		$connect->query("UPDATE users SET password=?s WHERE id=?i", $password, $id);
 	return 1;
+}
+
+
+function update_account($connect){
+  $id = $_POST["id"];
+  $name = "";
+  $surname = "";
+  $otch = "";
+  $status = 0;
+  $moderation_comment = "";
+
+  $respAr = [
+    'title' => '',
+    'msg' => '',
+    'success' => 0
+  ];
+
+  if(isset($_POST['name']))
+      $name = trim($_POST["name"]);
+
+  if(isset($_POST['surname']))
+      $surname = trim($_POST["surname"]);
+
+  if(isset($_POST["otch"]))
+      $otch = trim($_POST["otch"]);
+
+  if(isset($_POST['status']))
+      $status = (int)$_POST['status'];
+
+  if(isset($_POST['moderation_comment']))
+      $moderation_comment = trim($_POST['moderation_comment']);
+
+  if($name && $surname && $otch && in_array($status,[0,1,2,3])) {
+      if(($status === 0 || $status === 2) && !$moderation_comment) {
+        $respAr['msg'] = "Укажите причину блокировки аккаунта в комментарии модератора";
+      }
+      else {
+        $respAr['success'] = 1;
+        $user = $connect->getRow("SELECT `id`, `phone` FROM `klient` WHERE `id` = ?i LIMIT 1",$id);
+        $doctorCard = $connect->getRow("SELECT `status` FROM `doctor_card` WHERE `uid` = ?i LIMIT 1",$id);
+
+        if($doctorCard && $user) {
+          $doctorCard['status'] = (int)$doctorCard['status'];
+          if($status === 3)
+            $moderation_comment = "";
+
+          if($doctorCard['status'] !== $status) {
+              $msg = "Уважаемый ".$name." ".$otch."!";
+
+              if($status === 0)
+                  $msg .= " Ваш аккаунт заблокирован. Подброности вы можете уточнить в личном кабинете.";
+              elseif($status === 1)
+                $msg .= " Ваш аккаунт переведён в режим модерации. Подробности вы можете уточнить в личном кабинете.";
+              elseif($status === 2)
+                $msg .= " Ваш аккаунт не прошёл модерацию. Подробности вы можете уточнить в личном кабинете.";
+              elseif ($status === 3)
+                $msg .= " Ваш аккаунт успешно прошёл модерацию и теперь активен. Поздравляем и надеемся на долгое и плодотворное сотрудничество!";
+
+              send_sms($connect,$user['phone'],NULL,$msg,"moderation_result");
+
+          }
+
+          $connect->query("UPDATE `klient` SET `name` = ?s, `surname` = ?s, `otch` = ?s WHERE id = ?i LIMIT 1",$name,$surname,$otch,$id);
+          $connect->query("UPDATE `doctor_card` SET `status` = ?i, `moderation_comment` = ?s WHERE `uid` = ?i", $status, $moderation_comment, $id);
+        }
+        else {
+            $respAr['msg'] = "Не найдена карточка врача";
+        }
+
+      }
+  }
+  else {
+      $respAr['msg'] = "Некорректные входные данные";
+  }
+
+  return json_encode($respAr);
 }
 
 function add_new_user($connect){

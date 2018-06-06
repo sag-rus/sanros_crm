@@ -156,22 +156,23 @@ function update_account(id){
     show_warning('.edit-account', 'Имя обязательно для заполнения');
   else if(!otch)
     show_warning('.edit-account', 'Отчество обязательно для заполнения');
-  else if(!status && !moderation_comment)
+  else if((status === 0 || status === 2) && !moderation_comment)
     show_warning('.edit-account', 'Укажите причину блокировки аккаунта в комментарии модератора');
   else{
-    /*var str = 'func=update_user&login=' + login + '&password=' + password + '&rights=' + rights + '&name=' + name + '&surname=' + surname + '&telephone=' + telephone + '&email=' + email + '&id=' + id + '&office=' + office + '&group=' + group;
+    var str = 'func=update_account&name='+name+"&surname="+surname+"&otch="+otch+"&status="+status+"&moderation_comment="+moderation_comment+"&id="+id;
     $.ajax({
       url: 'mysql.php',
       type: 'POST',
       data: str,
-      success: function(a){
-        if(a == 1){
-          see_users();
-          show_alert('Пользователь изменен...');
+			dataType:"JSON",
+      success: function(data){
+        if(data['success']){
+          see_accounts();
+          show_alert('Данные пользователя изменены...');
         }else
-          show_warning('.edit-user', 'Пользователь с таким логином уже существует');
+          show_warning('.edit-account', data['msg']);
       }
-    });*/
+    });
   }
 }
 
