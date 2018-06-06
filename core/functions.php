@@ -469,16 +469,20 @@ function get_select_discount($connect, $select = ""){
 	return $html;
 }
 
-function get_select_rights($connect, $id_rights = ""){
-	$data = $connect->getAll("SELECT name, id FROM rights");
+function get_select_rights($connect, $id_rights_sel = ""){
+	global $id_rights;
+    $data = $connect->getAll("SELECT name, id FROM rights");
 	$html = "<select id='dostup_id' class='form-control'>";
+
 	foreach($data as $right){
-		$name_rights = $right["name"];
-		$id = $right["id"];
-		$select = "";
-		if($id_rights == $id)
-			$select = " SELECTED ";
-		$html.= "<option ".$select." value='".$id."'>".$name_rights."</option>";
+	    if($right['id'] <= $id_rights) {
+          $name_rights = $right["name"];
+          $id = $right["id"];
+          $select = "";
+          if($id_rights_sel == $id)
+            $select = " SELECTED ";
+          $html.= "<option ".$select." value='".$id."'>".$name_rights."</option>";
+        }
 	}
 	$html.= "</select>";
 	return $html;

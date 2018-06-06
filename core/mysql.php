@@ -822,7 +822,7 @@ function select_managers($connect){
 
 function show_admin_button_reckoning($connect){
 	global $id_rights;
-	if($id_rights != 5)
+	if(!in_array($id_rights,[5,6]))
 		return FALSE;
 	$id = $_POST["id"];
 ?>

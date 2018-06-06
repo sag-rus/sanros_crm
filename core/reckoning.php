@@ -1969,7 +1969,7 @@ function show_schet_klient($connect){
 		<button type="button" class="btn btn-default btn-sm" id="btn-menu-document" onclick="show_menu_document(<?php echo $id; ?>)">&nbsp;<i class="fa fa-file-text-o"></i>&nbsp;<i class="fa fa-angle-down"></i>&nbsp;</button>
 	<?php } ?>
 	<button type="button" class="btn btn-default btn-sm" id="other<?php echo $id; ?>" onclick="show_but_div('<?php echo $id; ?>')">Ещё&nbsp;<i class="fa fa-angle-down"></i>&nbsp;</button>
-	<?php if($id_rights == 5){ ?>
+	<?php if(in_array($id_rights,[5,6])){ ?>
 	<button type="button" class="btn btn-primary btn-sm" id="admin-<?php echo $id; ?>" onclick="show_but_div_admin('<?php echo $id; ?>')">Админ <i class="fa fa-angle-down"></i></button>
 	<?php } ?>
 	<?php if($connect->getOne("SELECT id FROM rating WHERE schet=?i AND status=3", $id)){ ?>
@@ -2900,7 +2900,7 @@ function show_menu_bid($connect){
 			<span onclick="reckoning_from_aside(<?php echo $id; ?>)">Вернуть в работу</span>
 			<span onclick="reckoning_to_upsorted(<?php echo $id; ?>)">Удалить</span>
 		<?php } ?>
-		<?php if(($status == 4 OR $status == 3 OR $status == 7) AND $id_rights > 3){ ?>
+		<?php if(($status == 4 OR $status == 3 OR $status == 7) AND $id_rights > 5){ ?>
 			<span onclick="pay_schet(<?php echo $id; ?>)">Оплачено</span>
 			<span onclick="prepay_schet(<?php echo $id; ?>)">Предоплата</span>
 		<?php } ?>
@@ -2926,7 +2926,7 @@ function show_menu_bid($connect){
 			<?php if($check_payment){ ?>
 				<span onclick="return_oplata(<?php echo $id; ?>)">Возврат</span>
 			<?php } ?>
-			<?php if($status == 5 AND $id_rights > 3){ ?>
+			<?php if($status == 5 AND $id_rights > 5){ ?>
 				<span onclick="remove_payment(<?php echo $id; ?>)">Снять оплату</span>
 				<span onclick="block_reckoning(<?php echo $id; ?>)">Заблокировать</span>
 			<?php } ?>
@@ -2995,7 +2995,7 @@ function show_menu_bid($connect){
 		<span class="hr_label"><hr /></span>
 	<?php } ?>
 
-	<?php if($id_rights > 3 AND $active == 0 AND $user){ ?>
+	<?php if($id_rights > 5 AND $active == 0 AND $user){ ?>
 			<span class="hr_label">Оплата в санаторий<hr /></span>
 		<?php if($status_san == 2){ ?>
 			<span onclick="pay_schet_san(<?php echo $id; ?>)">Оплачено в санаторий</span>
