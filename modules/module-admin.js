@@ -985,7 +985,7 @@ function update_description_object_account(id){
 		}
 	});
 	var service_string = JSON.stringify(services);
-	var objEditor = CKEDITOR.instances["head-description"];
+	var objEditor = object_edit_description_editor;
 	var desc = objEditor.getData();
 
 	var obj = {
