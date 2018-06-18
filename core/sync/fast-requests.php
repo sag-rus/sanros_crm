@@ -24,7 +24,7 @@ if(file_exists($directory."/core/sync/file/fast-time.txt")) {
 
 if(is_null($last_time) || time() > $last_time + 60) {
   file_put_contents($directory."/core/sync/file/fast-time.txt", time());
-  for($i = 0; $i <1000; $i++) {
+  for($i = 0; $i <2000; $i++) {
 
     if(!$connect) {
       echo 'Database connection exception';

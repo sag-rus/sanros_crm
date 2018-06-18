@@ -1452,8 +1452,8 @@ function registration($connect, $data) {
 
   $token = "";
 
-  if(isset($data['token']))
-  	$token = trim($data['token']);
+  if(isset($data['phone_token']))
+  	$token = trim($data['phone_token']);
 
   if(mb_strlen($token) > 0) {
     if(mb_strlen($name) > 0 && mb_strlen($lname) > 0) {
