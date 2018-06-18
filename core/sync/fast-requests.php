@@ -39,26 +39,13 @@ if(is_null($last_time) || time() > $last_time + 60) {
       if($res->getStatusCode() === 200) {
         $res = json_decode($res->getBody(),true);
         if(isset($res['requests']) && is_array($res['requests'])) {
-          $respAr = [
-            'success' => 0,
-            'title' => '',
-            'msg' => ''
-          ];
           foreach ($res['requests'] as $id => $request) {
             if(function_exists($request['action'])) {
-              $respAr['success'] = 1;
-              try {
-                $respAr['result'] = $request['action']($connect,$request['data']);
-              }
-              catch (Exception $e) {
-                break 2;
-              }
-
               try {
                 $res = $client->request('POST',"https://sync.tonia.ru/api/request/answer/set/".$id,[
                   'form_params' => [
                     'token' => $token,
-                    'answer' => $respAr
+                    'answer' => $request['action']($connect,$request['data'])
                   ]
                 ]);
 
