@@ -2,6 +2,7 @@
 require_once "../../vendor/autoload.php";
 date_default_timezone_set("Asia/Baghdad");
 $directory = dirname(__FILE__)."/../..";
+define("_FOLDERSITE_", $directory);
 include_once($directory."/core/sync/API/client.php");
 include_once($directory."/core/functions.php");
 include_once($directory."/core/lib/sms.php");
