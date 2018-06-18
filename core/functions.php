@@ -14,11 +14,12 @@ spl_autoload_register(function($class){
 				$file = _FOLDERSITE_."/core/class/".$fold."/".$class.".Class.php";
 				if(file_exists($file)){
 					include_once($file);
-					return;
+					return "";
 				}
 			}
 		}
 	}
+	return "";
 });
 
 function connect_to_MySQL(){
