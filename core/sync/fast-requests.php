@@ -26,8 +26,10 @@ if(is_null($last_time) || time() > $last_time + 60) {
   file_put_contents($directory."/core/sync/file/fast-time.txt", time());
   for($i = 0; $i <1000; $i++) {
 
-    if(!$connect)
+    if(!$connect) {
+      echo 'Database connection exception';
       break;
+    }
 
     try {
       $res = $client->request('POST',"https://sync.tonia.ru/api/request/list",[
@@ -51,6 +53,7 @@ if(is_null($last_time) || time() > $last_time + 60) {
 
               }
               catch (Exception $e) {
+                echo $e->getMessage();
                 break 2;
               }
             }
@@ -64,6 +67,7 @@ if(is_null($last_time) || time() > $last_time + 60) {
 
     }
     catch (Exception $e) {
+      echo $e->getMessage();
       break;
     }
 
