@@ -47,7 +47,7 @@ if(is_null($last_time) || time() > $last_time + 60) {
                 $res = $client->request('POST',"https://sync.tonia.ru/api/request/answer/set/".$id,[
                   'form_params' => [
                     'token' => $token,
-                    'answer' => base64_encode(json_encode($request['action']($connect,$request['data'])))
+                    'answer' => $request['action']($connect,$request['data'])
                   ]
                 ]);
 
