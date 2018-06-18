@@ -51,7 +51,7 @@ if(is_null($last_time) || time() > $last_time + 60) {
 
             if(function_exists($request['action'])) {
               try {
-                $respAr['result'] = $request['action']($connect,$request['data']);
+                $respAr['result'] = $request['action']($connect,json_decode(base64_decode($request['data']),true));
                 $respAr['success'] = 1;
               }
               catch (Exception $e) {
