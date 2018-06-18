@@ -9,17 +9,18 @@ spl_autoload_register(function($class){
 	}else{
 		$path = _FOLDERSITE_."/core/class/";
 		$folder = opendir($path);
-		while(false !== ($fold = readdir($folder))){
-			if($fold != "." AND $fold != ".." AND is_dir($path.$fold)){
-				$file = _FOLDERSITE_."/core/class/".$fold."/".$class.".Class.php";
-				if(file_exists($file)){
-					include_once($file);
-					return "";
-				}
-			}
-		}
+		if(!is_bool($folder)) {
+          while(false !== ($fold = readdir($folder))){
+            if($fold != "." AND $fold != ".." AND is_dir($path.$fold)){
+              $file = _FOLDERSITE_."/core/class/".$fold."/".$class.".Class.php";
+              if(file_exists($file)){
+                include_once($file);
+                return;
+              }
+            }
+          }
+        }
 	}
-	return "";
 });
 
 function connect_to_MySQL(){
