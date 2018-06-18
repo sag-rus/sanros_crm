@@ -9,7 +9,8 @@
   },
   "require": {
     "php": ">=7.1",
-    "voronkovich/sberbank-acquiring-client": "^1.1"
+    "voronkovich/sberbank-acquiring-client": "^1.1",
+    "guzzlehttp/guzzle": "~6.0"
   },
   "config": {
     "optimize-autoloader": true
