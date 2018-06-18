@@ -42,15 +42,17 @@ if(is_null($last_time) || time() > $last_time + 60) {
         $res = json_decode($res->getBody(),true);
         if(isset($res['requests']) && is_array($res['requests'])) {
           foreach ($res['requests'] as $id => $request) {
+
+            $respAr = [
+              'title' => '',
+              'msg' => '',
+              'success' => ''
+            ];
+
             if(function_exists($request['action'])) {
               try {
-                $res = $client->request('POST',"https://sync.tonia.ru/api/request/answer/set/".$id,[
-                  'form_params' => [
-                    'token' => $token,
-                    'answer' => $request['action']($connect,$request['data'])
-                  ]
-                ]);
-
+                $respAr['result'] = $request['action']($connect,$request['data']);
+                $respAr['success'] = 1;
               }
               catch (Exception $e) {
                 echo $e->getMessage();
@@ -61,6 +63,19 @@ if(is_null($last_time) || time() > $last_time + 60) {
               $respAr['msg'] = "Action's method not exists";
               $respAr['title'] = 'Error';
             }
+
+            try {
+              $res = $client->request('POST',"https://sync.tonia.ru/api/request/answer/set/".$id,[
+                'form_params' => [
+                  'token' => $token,
+                  'answer' => $respAr
+                ]
+              ]);
+            }
+            catch (Exception $e) {
+              break 2;
+            }
+
           }
         }
       }
