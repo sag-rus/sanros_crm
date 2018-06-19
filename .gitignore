@@ -12,6 +12,8 @@ config.*
 kill.txt
 time.txt
 fast-time.txt
+fast-time-0.txt
+fast-time-1.txt
 cache.*
 core/sync/file
 core/sync/file/*
