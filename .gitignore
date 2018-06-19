@@ -14,6 +14,8 @@ time.txt
 fast-time.txt
 fast-time-0.txt
 fast-time-1.txt
+fast-time-2.txt
+fast-time-3.txt
 cache.*
 core/sync/file
 core/sync/file/*

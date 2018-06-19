@@ -18,12 +18,12 @@ $client = new GuzzleHttp\Client();
 
 $last_time = NULL;
 
-if(file_exists($directory."/core/sync/file/fast-time-1.txt")) {
-  $last_time = (int)file_get_contents($directory."/core/sync/file/fast-time-1.txt");
+if(file_exists($directory."/core/sync/file/fast-time-3.txt")) {
+  $last_time = (int)file_get_contents($directory."/core/sync/file/fast-time-3.txt");
 }
 
 if(is_null($last_time) || time() > $last_time + 60) {
-  file_put_contents($directory."/core/sync/file/fast-time-1.txt", time());
+  file_put_contents($directory."/core/sync/file/fast-time-3.txt", time());
   for($i = 0; $i <2000; $i++) {
 
     if(!$connect) {
@@ -32,7 +32,7 @@ if(is_null($last_time) || time() > $last_time + 60) {
     }
 
     try {
-      $res = $client->request('POST',"https://sync.tonia.ru/api/request/list/2n",[
+      $res = $client->request('POST',"https://sync.tonia.ru/api/request/list/4n",[
         'form_params' => [
           'token' => $token
         ]
