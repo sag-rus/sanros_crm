@@ -388,7 +388,7 @@ function show_tour_bid_account($connect, $data){
     $array["holding_sum"] = 0;
     $array["payment_sum"] = 0;
 
-		$payment_rows = $connect->getAll("SELECT `sum`, `status` FROM payment WHERE `schet`=?i AND (`status` = 1  OR `status` = 2)", $answer["id"]);
+		$payment_rows = $connect->getAll("SELECT `sum`, `status` FROM payment WHERE `schet`=?i AND (`status` = 1  OR `status` = 2) AND (`type` = 1 OR `type` = 2 OR `type` = 6)", $answer["id"]);
     foreach ($payment_rows as $payment_row) {
     	if($payment_row['status'] == 1) {
     		$array["holding_sum"] += $payment_row["sum"];
