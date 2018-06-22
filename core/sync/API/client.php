@@ -1652,5 +1652,21 @@ function authentication($connect, $data) {
   return $result;
 }
 
+function change_fio($connect, $data) {
+	$checkAuth = authentication($connect,$data);
+
+	$respAr = [
+		'title' => '',
+		'msg' => '',
+		'success' => ''
+	];
+
+	if($checkAuth['success']) {
+			
+	}
+
+	return $respAr;
+}
+
 
 ?>

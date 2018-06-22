@@ -249,14 +249,16 @@ function see_accounts($connect){
                       <?php
                       switch ((int)$user['card_status']) {
                         case 0:
-                            echo '<div class="text-danger">Заблокирован</div>';
+                            echo '<div class="text-danger">Новый</div>';
                             break;
                         case 1: echo '<div class="text-warning">На модерации</div>';
                             break;
                         case 2: echo '<div class="text-danger">Не прошёл модерацию</div>';
                             break;
                         case 3: echo '<div class="text-success">Активирован</div>';
-                          break;
+                            break;
+                        case 4: echo '<div class="text-success">Заблокирован</div>';
+                            break;
                       }
                       ?>
                   </td>
@@ -416,10 +418,10 @@ function edit_account($connect){
                     <label class="col-sm-3 control-label">Статус</label>
                     <div class="col-sm-9">
                         <select class="form-control" id="status">
-                            <option value="0"<?php if($user['card_status'] == 0) { ?> selected<?php } ?>>Заблокирован</option>
                             <option value="1"<?php if($user['card_status'] == 1) { ?> selected<?php } ?>>На модерации</option>
                             <option value="2"<?php if($user['card_status'] == 2) { ?> selected<?php } ?>>Не прошёл модерацию</option>
                             <option value="3"<?php if($user['card_status'] == 3) { ?> selected<?php } ?>>Активирован</option>
+                            <option value="4"<?php if($user['card_status'] == 4) { ?> selected<?php } ?>>Заблокирован</option>
                         </select>
                     </div>
                 </div>
@@ -523,7 +525,7 @@ function update_account($connect){
   if(isset($_POST['moderation_comment']))
       $moderation_comment = trim($_POST['moderation_comment']);
 
-  if($name && $surname && $otch && in_array($status,[0,1,2,3])) {
+  if($name && $surname && $otch && in_array($status,[0,1,2,3,4])) {
       if(($status === 0 || $status === 2) && !$moderation_comment) {
         $respAr['msg'] = "Укажите причину блокировки аккаунта в комментарии модератора";
       }
@@ -541,13 +543,15 @@ function update_account($connect){
               $msg = "Уважаемый ".$name." ".$otch."!";
 
               if($status === 0)
-                  $msg .= " Ваш аккаунт заблокирован. Подброности вы можете уточнить в личном кабинете.";
+                  $msg .= " Ваш аккаунт перевед в режим нового. Подброности вы можете уточнить в личном кабинете.";
               elseif($status === 1)
                 $msg .= " Ваш аккаунт переведён в режим модерации. Подробности вы можете уточнить в личном кабинете.";
               elseif($status === 2)
                 $msg .= " Ваш аккаунт не прошёл модерацию. Подробности вы можете уточнить в личном кабинете.";
               elseif ($status === 3)
                 $msg .= " Ваш аккаунт успешно прошёл модерацию и теперь активен. Поздравляем и надеемся на долгое и плодотворное сотрудничество!";
+              elseif ($status === 4)
+                $msg .= " Ваш аккаунт заблокирован. Подброности вы можете уточнить в личном кабинете.";
 
               send_sms($connect,$user['phone'],NULL,$msg,"moderation_result");
 

@@ -156,7 +156,7 @@ function update_account(id){
     show_warning('.edit-account', 'Имя обязательно для заполнения');
   else if(!otch)
     show_warning('.edit-account', 'Отчество обязательно для заполнения');
-  else if((status === 0 || status === 2) && !moderation_comment)
+  else if((status === 0 || status === 2 || status === 4) && !moderation_comment)
     show_warning('.edit-account', 'Укажите причину блокировки аккаунта в комментарии модератора');
   else{
     var str = 'func=update_account&name='+name+"&surname="+surname+"&otch="+otch+"&status="+status+"&moderation_comment="+moderation_comment+"&id="+id;
