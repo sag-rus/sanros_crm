@@ -1662,7 +1662,7 @@ function change_fio($connect, $data) {
 	];
 
 	if($checkAuth['success']) {
-			
+
 	}
 
 	return $respAr;

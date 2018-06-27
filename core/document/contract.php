@@ -206,8 +206,10 @@ function review_contract($connect, $type, $id){
 	<p class="head">1. Предмет договора</p>
 	<p>1.1. На условиях и в сроки, установленные настоящим Договором, ФИРМА обязуется реализовать санаторно-курортную путёвку (оказать следующий комплекс туристских услуг указанным ниже туристам), а КЛИЕНТ обязуется оплатить эту санаторно-курортную путёвку:<br /><br />
 	<strong>Объект:</strong>  <?php echo $object; ?><br />
-	<strong>Начало тура:</strong>  <?php echo $date_z_schet; ?><br />
-	<strong>Окончание тура:</strong>  <?php echo $date_v_schet; ?><br />
+      <?php if($reck_type == 0) {?>
+        <strong>Начало тура:</strong>  <?php echo $date_z_schet; ?><br />
+        <strong>Окончание тура:</strong>  <?php echo $date_v_schet; ?><br />
+      <?php }?>
 	<strong>Отдыхающих:</strong> <?php echo $number_turist; ?><br />
 	<?php echo $services_default; ?>
 	<strong>В стоимость входит:</strong> <?php echo $services_string; ?><br /><br />
