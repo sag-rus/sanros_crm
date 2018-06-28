@@ -163,7 +163,7 @@ if(is_null($last_time) || time() > $last_time + 60) {
               }
               catch (Exception $e) {
                 echo $e->getMessage();
-                break 2;
+                //break 2;
               }
             }
             else {
