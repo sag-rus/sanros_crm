@@ -142,7 +142,24 @@ if(is_null($last_time) || time() > $last_time + 60) {
 
             if(function_exists($request['action'])) {
               try {
-                $respAr['result'] = $request['action']($connect,json_decode(base64_decode($request['data']),true));
+                $config = ConfigCRM::getInstance();
+                $configNew = App\lib\CRM\Config\Client::getInstance();
+                $requestData = json_decode(base64_decode($request['data']));
+                if(isset($requestData["session"])) {
+                  $config->session = $requestData["session"];
+                  $configNew->session = $requestData["session"];
+                }
+
+                if(isset($requestData["object"])) {
+                  $config->object = $requestData["object"];
+                  $configNew->object = $requestData["object"];
+                }
+
+                if(isset($requestData["booking"])) {
+                  $config->booking = $requestData["booking"];
+                  $configNew->booking = $requestData["booking"];
+                }
+                $respAr['result'] = $request['action']($connect,$requestData,true);
                 $respAr['success'] = 1;
               }
               catch (Exception $e) {
