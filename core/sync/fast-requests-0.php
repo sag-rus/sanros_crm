@@ -143,7 +143,7 @@ if(is_null($last_time) || time() > $last_time + 60) {
               try {
                 $config = ConfigCRM::getInstance();
                 $configNew = App\lib\CRM\Config\Client::getInstance();
-                $requestData = json_decode(base64_decode($request['data']));
+                $requestData = json_decode(base64_decode($request['data']),true);
                 if(isset($requestData["session"])) {
                   $config->session = $requestData["session"];
                   $configNew->session = $requestData["session"];
