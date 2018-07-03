@@ -3023,7 +3023,7 @@ function show_menu_bid($connect){
 		<?php if($active != 3 && $row['holding_sum'] == 0){ ?>
 			<span onclick="reckoning_to_upsorted(<?php echo $id; ?>)">Удалить</span>
 		<?php } ?>
-		<?php if($id_rights == 5 AND $active == 3 && $row['holding_sum'] == 0){ ?>
+		<?php if($id_rights >= 5 AND $active == 3 && $row['holding_sum'] == 0){ ?>
 			<span onclick="delete_reckoning(<?php echo $id; ?>)">Удалить навсегда</span>
 		<?php } ?>
 		<?php if($active == 3){ ?>
