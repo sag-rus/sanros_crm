@@ -1,4 +1,5 @@
 <?php
+$directory = __DIR__."/..";
 
 $gsok = array(61 => "", 62 => "", 63 => "", 64 => "", 71 => "", 138 => "", 494 => "");
 
@@ -51,7 +52,8 @@ function connect_to_MySQL_directory(){
 }
 
 function connect_to_server(){
-	include_once("config.php");
+    global $directory;
+	include_once($directory."/config.php");
 
 	$conf = new JConfig;
 	$server = $conf->ftp_server;
