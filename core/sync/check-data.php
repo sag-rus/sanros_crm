@@ -83,7 +83,7 @@
 	$name = "dump-base";
 
 	$connect_server = connect_to_server_directory();
-	$server_file = $directory."/sync/file/".$name.".txt";
+	$server_file = "/var/www/default-site/public_html/sync/file/".$name.".txt";
 
 	if(!ftp_put($connect_server, $server_file, $file, FTP_ASCII))
 		echo "Не удалось загрузить файл на сервер";
