@@ -15,37 +15,67 @@ function upload_price_on_server($connect, $id=false, $nthChild = NULL){
 		return "Не удалось авторизироваться";
 
 	if(!$id) {
-    if(!in_array($nthChild,["n","2n","3n","4n","5n","6n","7n","8n","9n","10n"]))
+    if(!in_array($nthChild,["n","2n","3n","4n","5n","6n","7n","8n","9n","10n","11n","12n","13n","14n","15n","16n","17n","18n","19n","20n"]))
     	$data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1");
     elseif ($nthChild === "n") {
-      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%2<>0 AND id%3<>0 AND id%4<>0 AND id%5<>0 AND id%6<>0 AND id%7<>0 AND id%8<>0 AND id%9<>0 AND id%10<>0");
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%2<>0 AND id%3<>0 AND id%4<>0 AND id%5<>0 AND id%6<>0 AND id%7<>0 AND id%8<>0 AND id%9<>0 AND id%10<>0 AND id%11<>0 AND id%12<>0 AND id%13<>0 AND id%14<>0 AND id%15<>0 AND id%16<>0 AND id%17<>0 AND id%18<>0 AND id%19<>0 AND id%20<>0");
     }
 		elseif ($nthChild === "2n") {
-      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%2=0 AND id%3<>0 AND id%4<>0 AND id%5<>0 AND id%6<>0 AND id%7<>0 AND id%8<>0 AND id%9<>0 AND id%10<>0");
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%2=0 AND id%3<>0 AND id%4<>0 AND id%5<>0 AND id%6<>0 AND id%7<>0 AND id%8<>0 AND id%9<>0 AND id%10<>0 AND id%11<>0 AND id%12<>0 AND id%13<>0 AND id%14<>0 AND id%15<>0 AND id%16<>0 AND id%17<>0 AND id%18<>0 AND id%19<>0 AND id%20<>0");
     }
 		elseif ($nthChild === "3n") {
-      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%3=0 AND id%4<>0 AND id%5<>0 AND id%6<>0 AND id%7<>0 AND id%8<>0 AND id%9<>0 AND id%10<>0");
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%3=0 AND id%4<>0 AND id%5<>0 AND id%6<>0 AND id%7<>0 AND id%8<>0 AND id%9<>0 AND id%10<>0 AND id%11<>0 AND id%12<>0 AND id%13<>0 AND id%14<>0 AND id%15<>0 AND id%16<>0 AND id%17<>0 AND id%18<>0 AND id%19<>0 AND id%20<>0");
     }
 		elseif ($nthChild === "4n") {
-      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%4=0 AND id%5<>0 AND id%6<>0 AND id%7<>0 AND id%8<>0 AND id%9<>0 AND id%10<>0");
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%4=0 AND id%5<>0 AND id%6<>0 AND id%7<>0 AND id%8<>0 AND id%9<>0 AND id%10<>0 AND id%11<>0 AND id%12<>0 AND id%13<>0 AND id%14<>0 AND id%15<>0 AND id%16<>0 AND id%17<>0 AND id%18<>0 AND id%19<>0 AND id%20<>0");
     }
 		elseif ($nthChild === "5n") {
-      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%5=0 AND id%6<>0 AND id%7<>0 AND id%8<>0 AND id%9<>0 AND id%10<>0");
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%5=0 AND id%6<>0 AND id%7<>0 AND id%8<>0 AND id%9<>0 AND id%10<>0 AND id%11<>0 AND id%12<>0 AND id%13<>0 AND id%14<>0 AND id%15<>0 AND id%16<>0 AND id%17<>0 AND id%18<>0 AND id%19<>0 AND id%20<>0");
     }
 		elseif ($nthChild === "6n") {
-      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%6=0 AND id%7<>0 AND id%8<>0 AND id%9<>0 AND id%10<>0");
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%6=0 AND id%7<>0 AND id%8<>0 AND id%9<>0 AND id%10<>0 AND id%11<>0 AND id%12<>0 AND id%13<>0 AND id%14<>0 AND id%15<>0 AND id%16<>0 AND id%17<>0 AND id%18<>0 AND id%19<>0 AND id%20<>0");
     }
 		elseif ($nthChild === "7n") {
-      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%7=0 AND id%8<>0 AND id%9<>0 AND id%10<>0");
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%7=0 AND id%8<>0 AND id%9<>0 AND id%10<>0 AND id%11<>0 AND id%12<>0 AND id%13<>0 AND id%14<>0 AND id%15<>0 AND id%16<>0 AND id%17<>0 AND id%18<>0 AND id%19<>0 AND id%20<>0");
     }
 		elseif ($nthChild === "8n") {
-      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%8=0 AND id%9<>0 AND id%10<>0");
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%8=0 AND id%9<>0 AND id%10<>0 AND id%11<>0 AND id%12<>0 AND id%13<>0 AND id%14<>0 AND id%15<>0 AND id%16<>0 AND id%17<>0 AND id%18<>0 AND id%19<>0 AND id%20<>0");
     }
 		elseif ($nthChild === "9n") {
-      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%9=0 AND id%10<>0");
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%9=0 AND id%10<>0 AND id%11<>0 AND id%12<>0 AND id%13<>0 AND id%14<>0 AND id%15<>0 AND id%16<>0 AND id%17<>0 AND id%18<>0 AND id%19<>0 AND id%20<>0");
     }
 		elseif ($nthChild === "10n") {
-      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%10=0");
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%10=0 AND id%11<>0 AND id%12<>0 AND id%13<>0 AND id%14<>0 AND id%15<>0 AND id%16<>0 AND id%17<>0 AND id%18<>0 AND id%19<>0 AND id%20<>0");
+    }
+		elseif ($nthChild === "11n") {
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%11=0 AND id%12<>0 AND id%13<>0 AND id%14<>0 AND id%15<>0 AND id%16<>0 AND id%17<>0 AND id%18<>0 AND id%19<>0 AND id%20<>0");
+    }
+		elseif ($nthChild === "12n") {
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%12=0 AND id%13<>0 AND id%14<>0 AND id%15<>0 AND id%16<>0 AND id%17<>0 AND id%18<>0 AND id%19<>0 AND id%20<>0");
+    }
+		elseif ($nthChild === "13n") {
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%13=0 AND id%14<>0 AND id%15<>0 AND id%16<>0 AND id%17<>0 AND id%18<>0 AND id%19<>0 AND id%20<>0");
+    }
+		elseif ($nthChild === "14n") {
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%14=0 AND id%15<>0 AND id%16<>0 AND id%17<>0 AND id%18<>0 AND id%19<>0 AND id%20<>0");
+    }
+		elseif ($nthChild === "15n") {
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%15=0 AND id%16<>0 AND id%17<>0 AND id%18<>0 AND id%19<>0 AND id%20<>0");
+    }
+		elseif ($nthChild === "16n") {
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%16=0 AND id%17<>0 AND id%18<>0 AND id%19<>0 AND id%20<>0");
+    }
+		elseif ($nthChild === "17n") {
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%17=0 AND id%18<>0 AND id%19<>0 AND id%20<>0");
+    }
+		elseif ($nthChild === "18n") {
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%18=0 AND id%19<>0 AND id%20<>0");
+    }
+		elseif ($nthChild === "19n") {
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%19=0 AND id%20<>0");
+    }
+		elseif ($nthChild === "20n") {
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%20=0");
     }
   }
 	else{
