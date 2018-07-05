@@ -2,7 +2,7 @@
 
 $array_type = array(1 => "за чел/сутки", 2 => "за дом/сутки", 3 => "за номер/сутки", 4 => "за заезд");
 
-function upload_price_on_server($connect, $id=false, $nthChild = NULL){
+function upload_price_on_server($connect, $id=false, $nthChild = NULL,$showProccess = false){
 	global $directory;
 	$url = false;
 
@@ -100,6 +100,8 @@ function upload_price_on_server($connect, $id=false, $nthChild = NULL){
 		if(!ftp_put($connect_server, $server_file, $file, FTP_ASCII))
 			return "Не удалось загрузить файл на сервер";
 		ftp_chmod($connect_server, 0777, $server_file);
+		if($showProccess)
+			echo $id;
 	}
 	ftp_quit($connect_server);
 	if($id) {
