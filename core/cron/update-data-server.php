@@ -8,7 +8,7 @@
 	include_once($directory."/core/functions.php");
 	include_once($directory."/core/lib/Mysql.Class.php");
 	include_once $directory."/core/upload/price.php";
-
+	include_once $directory."/core/upload/default.php";
 	$connect = connect_to_MySQL_directory();
 
 	$data = $connect->getAll("SELECT id, image FROM object WHERE image!=''");
