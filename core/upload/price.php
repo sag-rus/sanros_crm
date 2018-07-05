@@ -18,7 +18,7 @@ function upload_price_on_server($connect, $id=false, $nthChild = NULL,$showProcc
     if(!in_array($nthChild,["n","2n","3n","4n","5n","6n","7n","8n","9n","10n","11n","12n","13n","14n","15n","16n","17n","18n","19n","20n"]))
     	$data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1");
     elseif ($nthChild === "n") {
-      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id % 2 <> 0 AND id%3<>0 AND id%4<>0 AND id%5<>0 AND id%6<>0 AND id%7<>0 AND id%8<>0 AND id%9<>0 AND id%10<>0 AND id%11<>0 AND id%12<>0 AND id%13<>0 AND id%14<>0 AND id%15<>0 AND id%16<>0 AND id%17<>0 AND id%18<>0 AND id%19<>0 AND id%20<>0");
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%2<>0 AND id%3<>0 AND id%4<>0 AND id%5<>0 AND id%6<>0 AND id%7<>0 AND id%8<>0 AND id%9<>0 AND id%10<>0 AND id%11<>0 AND id%12<>0 AND id%13<>0 AND id%14<>0 AND id%15<>0 AND id%16<>0 AND id%17<>0 AND id%18<>0 AND id%19<>0 AND id%20<>0");
     }
 		elseif ($nthChild === "2n") {
       $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%2=0 AND id%3<>0 AND id%4<>0 AND id%5<>0 AND id%6<>0 AND id%7<>0 AND id%8<>0 AND id%9<>0 AND id%10<>0 AND id%11<>0 AND id%12<>0 AND id%13<>0 AND id%14<>0 AND id%15<>0 AND id%16<>0 AND id%17<>0 AND id%18<>0 AND id%19<>0 AND id%20<>0");
