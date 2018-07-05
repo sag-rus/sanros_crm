@@ -11,6 +11,6 @@
 	include_once $directory."/core/upload/default.php";
 	$connect = connect_to_MySQL_directory();
 
-	upload_price_on_server($connect,false,"4n",true);
+	upload_price_on_server($connect,false,"23n",true);
 
 ?>
