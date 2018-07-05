@@ -2,7 +2,7 @@
 
 $array_type = array(1 => "за чел/сутки", 2 => "за дом/сутки", 3 => "за номер/сутки", 4 => "за заезд");
 
-function upload_price_on_server($connect, $id=false, $showProccess = false){
+function upload_price_on_server($connect, $id=false, $nthChild = NULL){
 	global $directory;
 	$url = false;
 
@@ -14,8 +14,40 @@ function upload_price_on_server($connect, $id=false, $showProccess = false){
 	if($connect_server == 2)
 		return "Не удалось авторизироваться";
 
-	if(!$id)
-		$data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1");
+	if(!$id) {
+    if(!in_array($nthChild,["n","2n","3n","4n","5n","6n","7n","8n","9n","10n"]))
+    	$data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1");
+    elseif ($nthChild === "n") {
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%2<>0 AND id%3<>0 AND id%4<>0 AND id%5<>0 AND id%6<>0 AND id%7<>0 AND id%8<>0 AND id%9<>0 AND id%10<>0");
+    }
+		elseif ($nthChild === "2n") {
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%2=0 AND id%3<>0 AND id%4<>0 AND id%5<>0 AND id%6<>0 AND id%7<>0 AND id%8<>0 AND id%9<>0 AND id%10<>0");
+    }
+		elseif ($nthChild === "3n") {
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%3=0 AND id%4<>0 AND id%5<>0 AND id%6<>0 AND id%7<>0 AND id%8<>0 AND id%9<>0 AND id%10<>0");
+    }
+		elseif ($nthChild === "4n") {
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%4=0 AND id%5<>0 AND id%6<>0 AND id%7<>0 AND id%8<>0 AND id%9<>0 AND id%10<>0");
+    }
+		elseif ($nthChild === "5n") {
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%5=0 AND id%6<>0 AND id%7<>0 AND id%8<>0 AND id%9<>0 AND id%10<>0");
+    }
+		elseif ($nthChild === "6n") {
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%6=0 AND id%7<>0 AND id%8<>0 AND id%9<>0 AND id%10<>0");
+    }
+		elseif ($nthChild === "7n") {
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%7=0 AND id%8<>0 AND id%9<>0 AND id%10<>0");
+    }
+		elseif ($nthChild === "8n") {
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%8=0 AND id%9<>0 AND id%10<>0");
+    }
+		elseif ($nthChild === "9n") {
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%9=0 AND id%10<>0");
+    }
+		elseif ($nthChild === "10n") {
+      $data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1 AND id%10=0");
+    }
+  }
 	else{
 		$data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE id=?i LIMIT 1", $id);
 		$desc = $connect->getOne("SELECT description FROM object WHERE id=?i LIMIT 1", $id);
