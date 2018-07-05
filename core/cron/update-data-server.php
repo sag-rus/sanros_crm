@@ -1,6 +1,7 @@
 <?php
 
 	$directory = dirname(__FILE__)."/../..";
+	define("EARTH_RADIUS", 6372795);
 	include_once($directory."/config.php");
 	$conf = new JConfig;
 	$sync = $conf->sync_base;
