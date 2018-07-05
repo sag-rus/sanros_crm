@@ -6,10 +6,12 @@
 	$sync = $conf->sync_base;
 	include_once($directory."/core/functions.php");
 	include_once($directory."/core/lib/Mysql.Class.php");
+	include_once $directory."/core/upload/price.php";
 
 	$connect = connect_to_MySQL_directory();
 
 	$data = $connect->getAll("SELECT id, image FROM object WHERE image!=''");
 	request_to_sync(array("func" => "update_image_object", "data" => $data));
+	upload_price_on_server($connect);
 
 ?>
