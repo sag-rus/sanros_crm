@@ -13,6 +13,6 @@
 
 	$data = $connect->getAll("SELECT id, image FROM object WHERE image!=''");
 	request_to_sync(array("func" => "update_image_object", "data" => $data));
-	upload_price_on_server($connect);
+	upload_price_on_server($connect,false,true);
 
 ?>
