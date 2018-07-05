@@ -161,7 +161,7 @@ function upload_price_on_server($connect, $id=false, $nthChild = NULL,$showProcc
 			return "Не удалось загрузить файл на сервер";
 		ftp_chmod($connect_server, 0777, $server_file);
 		if($showProccess)
-			echo $id;
+			echo $id.PHP_EOL;
 	}
 	ftp_quit($connect_server);
 	if($id) {
