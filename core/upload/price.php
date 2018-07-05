@@ -6,7 +6,7 @@ function upload_price_on_server($connect, $id=false){
 	global $directory;
 	$url = false;
 
-	if(!$id)
+	if(!$id && isset($_POST['id']))
 		$id = $_POST["id"];
 	$connect_server = connect_to_server();
 	//if($connect_server == 1)
@@ -56,7 +56,7 @@ function save_price_XML_object($connect, $id){
 	global $array_type, $directory;
 	$today = date("Y-m-d");
 	$current_time = time();
-	$row = $connect->getRow("SELECT id, name, id_reg, city, id_profile, id_methods, id_infa, medical_factors, type, description, add_one_day, latitude, longitude, weather, regular_com, up_com, reward, arrival, leaving, check_places, website, source_booking, booking_uri FROM object WHERE id=?i AND (active=0 OR active=1)", $id);
+	$row = $connect->getRow("SELECT id, name, id_reg, city, id_profile, id_methods, id_infa, medical_factors, type, description, add_one_day, latitude, longitude, weather, regular_com, up_com, reward, arrival, leaving, check_places, website, source_booking, booking_uri FROM object WHERE id=?i AND (active=0 OR active=1) LIMIT 1", $id);
 	$quota = $row["check_places"];
 	$count = $connect->getOne("SELECT COUNT(*) FROM price, room WHERE room.id_obj=?i AND room.id=price.id_room", $id);
 	if(!$row["id"] AND $count <= 0)
@@ -332,7 +332,7 @@ function save_price_XML_object($connect, $id){
 
 function save_desc_XML_object($connect, $id){
 	global $directory;
-	$row = $connect->getRow("SELECT id, id_reg, name, id_profile, id_methods, id_infa, medical_factors, description, id_services FROM object WHERE id=?i AND (active=0 OR active=1)", $id);
+	$row = $connect->getRow("SELECT id, id_reg, name, id_profile, id_methods, id_infa, medical_factors, description, id_services FROM object WHERE id=?i AND (active=0 OR active=1) LIMIT 1", $id);
 	$name_object = $row["name"];
 	$region = $row["id_reg"];
 	$infa_text = json_encode(parse_index_string_to_array($connect, $row["id_infa"], "infa", "_"));
@@ -346,7 +346,7 @@ function save_desc_XML_object($connect, $id){
 	$profiles = array();
 	foreach($array as $index){
 		if($index){
-			$row = $connect->getRow("SELECT name, description FROM profile WHERE id=?i", $index);
+			$row = $connect->getRow("SELECT name, description FROM profile WHERE id=?i LIMIT 1", $index);
 			$profiles[$index] = array();
 			$profiles[$index]["name"] = $row["name"];
 			$profiles[$index]["desc"] = $row["description"];
@@ -358,7 +358,7 @@ function save_desc_XML_object($connect, $id){
 	$methods = array();
 	foreach($array as $index){
 		if($index){
-			$row = $connect->getRow("SELECT name, description FROM methods WHERE id=?i", $index);
+			$row = $connect->getRow("SELECT name, description FROM methods WHERE id=?i LIMIT 1", $index);
 			$methods[$index] = array();
 			$methods[$index]["name"] = $row["name"];
 			$methods[$index]["desc"] = $row["description"];
