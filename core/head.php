@@ -11,6 +11,8 @@ function show_my_bid_menu($connect){
 	$new = $connect->getOne("SELECT COUNT(*) FROM reckoning WHERE (id_user='' OR id_user IS NULL OR id_user=0) AND reckoning.active=0");
 	if($session_login == 21)
 	    $showdeffered = 1;
+	else
+	    $showdeffered = 0;
 	$deferred = $connect->getOne("SELECT COUNT(*) FROM reckoning WHERE (id_user=?i OR ?i) AND reckoning.status=9", $session_login, $showdeffered);
 ?>
 	<?php if($new > 0){ ?>
