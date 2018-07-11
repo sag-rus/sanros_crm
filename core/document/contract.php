@@ -356,10 +356,10 @@ function review_contract($connect, $type, $id){
 
             <strong>Обособленное подразделение:</strong><br /><?php echo $sep_address_ufa; ?><br />
             <?php if(0) { ?>
-            <strong>Тел.:</strong> <?php echo $tel_ufa; ?><br /><br />
+            <strong>Тел.:</strong> <?php echo $tel_ufa; ?>
             <?php
             }
-            ?>
+            ?><br /><br />
             <strong>Обособленное подразделение:</strong><br /><?php echo $sep_address_ulyan; ?><br />
             <strong>Тел.:</strong> <?php echo $tel_ulyan; ?><br /><br />
 
