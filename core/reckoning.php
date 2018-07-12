@@ -1333,7 +1333,7 @@ function view_schet_client($connect){
 		$status_agent = $row["status_agent"];
 		$turists = explode(",", $row["rest"]);
 		$turists = array_diff($turists, array(""));
-		$rest = $turists[0];
+		$rest = isset($turists[0])?$turists[0]:null;
 		$turist = $connect->getOne("SELECT surname FROM klient WHERE id=?i", $rest);
 		$status = $connect->getOne("SELECT name FROM status WHERE id=?i", $status);
 		$table.= "<tr onclick='view_schet(".$reck.")' class='tr_reck' ".$bgColor.">";
@@ -1926,6 +1926,9 @@ function show_schet_klient($connect){
 	}
 	if($table)
 		$table_turist = "<table class='table table-condensed'><tr><th>Фамилия Имя Отчество</th><th>Дата</th><th>Паспорт</th><th></th>".$table."</table>";
+	else
+        $table_turist = "";
+
 	$class = "info";
 	if($status == 5)
 		$class = "success";
@@ -2890,7 +2893,7 @@ function show_menu_bid($connect){
 		<?php if($status == 2){ ?>
 			<span onclick="show_bill(<?php echo $id; ?>)">Выставить счет</span>
 		<?php } ?>
-		<?php if($status == 1 && $row['holding_sum'] == 0){ ?>
+		<?php if(($status == 1 || $id_rights > 5) && $row['holding_sum'] == 0){ ?>
 			<span onclick="reckoning_to_upsorted(<?php echo $id; ?>)">Удалить</span>
 		<?php } ?>
 		<?php if($status < 4){ ?>
@@ -2973,7 +2976,7 @@ function show_menu_bid($connect){
 		<?php } ?>
 	<?php } ?>
 
-	<?php if($agency AND ($status > 2 OR $_SESSION["change_to_agency"]["id"] == $id)){ ?>
+	<?php if($agency AND ($status > 2 || (isset($_SESSION["change_to_agency"]["id"]) && $_SESSION["change_to_agency"]["id"] == $id))){ ?>
 		<span class="hr_label">Отправка почты<hr /></span>
 		<?php if($status > 2){ ?>
 			<span onclick="show_send_mail(<?php echo $id; ?>, 'schet')">Отправить счет</span>

@@ -1265,16 +1265,17 @@ function reckoning_to_upsorted($connect){
 }
 
 function delete_reckoning($connect){
+    global $id_rights;
 	$id = $_POST["id"];
 	$status = $connect->getOne("SELECT status FROM reckoning WHERE id=?i", $id);
-	if($status == 1 OR $status == 9){
-		$connect->query("DELETE FROM reckoning WHERE id=?i", $id);
+	if(($status == 1 || $id_rights > 5) OR $status == 9){
+		$connect->query("DELETE FROM reckoning WHERE id=?i LIMIT 1", $id);
 		$connect->query("DELETE FROM position_reck WHERE schet=?i", $id);
 		$connect->query("DELETE FROM bonus WHERE schet=?i", $id);
         $connect->query("DELETE FROM promo_code_using WHERE reck_id = ?i", $id);
 		$connect->query("DELETE FROM history_schet WHERE id_schet=?i", $id);
 		$connect->query("DELETE FROM payment WHERE schet=?i", $id);
-		change_auto_increment($connect, "reckoning");
+		//change_auto_increment($connect, "reckoning");
 	}
 }
 

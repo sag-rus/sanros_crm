@@ -1167,7 +1167,7 @@ function delete_client_from_system($connect){
 	$id = $_POST["id"];
 	if(!$connect->getOne("SELECT id FROM reckoning WHERE turist=?i OR rest LIKE ?s", $id, "%".$id."%")){
 		$connect->query("DELETE from klient WHERE id=?i", $id);
-		change_auto_increment($connect, "klient");
+		//change_auto_increment($connect, "klient");
 		return 1;
 	}
 }
