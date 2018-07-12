@@ -45,7 +45,7 @@ function general_payment_report(){
                     <option value="5-1">-- Банковской картой через личный кабинет</option>
                     <option value="5-2">----- Банковской картой с холдированием</option>
                     <option value="5-3">----- Банковской картой без холдирования</option>
-                    <option value="5-4">-- Банковской через терминал</option>
+                    <option value="5-4">-- Банковской картой через терминал</option>
 				</select>
 			</div>
 		</div>
