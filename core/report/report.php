@@ -42,8 +42,10 @@ function general_payment_report(){
 					<option value="3">Сертификатом</option>
 					<option value="4">На месте</option>
 					<option value="5">Банковской картой</option>
-                    <option value="5-1">--- Банковской картой без холдирования</option>
-                    <option value="5-2">--- Банковской картой с холдированием</option>
+                    <option value="5-1">-- Банковской картой через личный кабинет</option>
+                    <option value="5-2">----- Банковской картой с холдированием</option>
+                    <option value="5-3">----- Банковской картой без холдирования</option>
+                    <option value="5-4">-- Банковской через терминал</option>
 				</select>
 			</div>
 		</div>
@@ -233,9 +235,13 @@ function filter_payment($connect){
           if($zapros_for_mysql)
             $zapros_for_mysql.= " AND ";
           if($cardPaymentTypes === 1)
-              $zapros_for_mysql .= " `payment`.`created` = `payment`.`processed` ";
-          else
-              $zapros_for_mysql .= " `payment`.`created` != `payment`.`processed` ";
+              $zapros_for_mysql .= " `payment`.`terminal` = 0 ";
+          elseif ($cardPaymentTypes === 2)
+              $zapros_for_mysql .= " `payment`.`created` != `payment`.`processed` AND `payment`.`terminal` = 0";
+          elseif ($cardPaymentTypes === 3)
+              $zapros_for_mysql .= " `payment`.`created` = `payment`.`processed` AND `payment`.`terminal` = 0";
+          elseif ($cardPaymentTypes === 4)
+              $zapros_for_mysql .= " `payment`.`terminal` = 1 ";
         }
 	}
 
@@ -419,7 +425,14 @@ function filter_payment($connect){
               $array["num_feepay"]++;
               $array["feepay"]+= $sum;
               if($office_pay > 0){
+                if(!isset($array["office"][$office_pay]["num_feepay"]))
+                    $array["office"][$office_pay]["num_feepay"] = 0;
+
                 $array["office"][$office_pay]["num_feepay"]++;
+
+                if(!isset($array["office"][$office_pay]["feepay"]))
+                  $array["office"][$office_pay]["feepay"] = 0;
+
                 $array["office"][$office_pay]["feepay"]+= $sum;
               }
             }
@@ -672,7 +685,7 @@ function filter_payment($connect){
 				</div>
 				<?php } ?>
 
-                <?php if($data["num_feepay"]){ ?>
+                <?php if(isset($data["num_feepay"]) && $data["num_feepay"]){ ?>
                   <div class="col-sm-4">
                       Доплата <?php echo $data["num_feepay"]; ?> на сумму <?php echo number_format($data["feepay"], 2, ",", " "); ?>
                   </div>
