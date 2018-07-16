@@ -1638,7 +1638,10 @@ function select_index_source($code){
 	$conf = connect_config();
 	$source_array = $conf->source_array;
 	foreach($source_array as $key => $row){
-		if($row["code"] == $code){
+	    if(!is_array($row["code"]))
+	       $row["code"] = [$row["code"]];
+
+		if(in_array($code,$row["code"])){
 			return $key;
 		}
 	}
