@@ -334,7 +334,7 @@ function save_contract($connect){
 
 function show_obmen($connect){
 	$id = $_POST["id"];
-	$turist_mode = isset($_POST['turist_mode'])?(int)$_POST['turist_mode']:0;
+	$turist_mode = isset($_GET['turist_mode'])?(int)$_GET['turist_mode']:0;
 	$html_services_1 = "";
 	$html_services_2 = "";
 	$service_reckoning = explode("_", $connect->getOne("SELECT id_services FROM reckoning WHERE id=?i", $id));
