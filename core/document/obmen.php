@@ -80,7 +80,8 @@ function review_obmen($connect, $type = "PDF", $id, $for = ""){
 	$date_z_schet = date_change($row["date_z"]);
 	$date_v_schet = date_change($row["date_v"]);
 	$number_turist = $row["number_turist"];
-	$row = $connect->getRow("SELECT arrival, leaving FROM object WHERE id=?i", $id_obj);
+    $turist_mode = isset($_GET['turist_mode'])?(int)$_GET['turist_mode']:0;
+    $row = $connect->getRow("SELECT arrival, leaving FROM object WHERE id=?i", $id_obj);
 	$arrival = $row["arrival"];
 	$leaving = $row["leaving"];
 	$object = get_object($connect, $id_obj, "full_and_place");
@@ -134,7 +135,11 @@ function review_obmen($connect, $type = "PDF", $id, $for = ""){
 			</div>
 
 			<p class="head">
-				ОБМЕННАЯ ПУТЕВКА № <?php echo $number_schet; ?>
+                <?php if($turist_mode) { ?>
+				ТУРИСТИЧЕСКАЯ ПУТЕВКА № <?php echo $number_schet; ?>
+                <?php } else { ?>
+                    ОБМЕННАЯ ПУТЕВКА № <?php echo $number_schet; ?>
+                <?php } ?>
 			</p>
 			<?php if($schet_san){ ?>
 				<p style="text-align: center; margin: 0">(счет № <?php echo $schet_san; ?> от <?php echo date_change($date_schet_san, "."); ?>)</p>
