@@ -110,7 +110,7 @@ function review_obmen($connect, $type = "PDF", $id, $for = ""){
 		}else
 			$number_schet = $id;
 
-		$img = $_COOKIE["img"];
+		$img = isset($_COOKIE["img"])?$_COOKIE["img"]:null;
 		ob_start();
 
 ?>

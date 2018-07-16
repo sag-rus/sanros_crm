@@ -140,12 +140,17 @@ function show_obmen(id){
 function show_obmen_blank(id){
 	var dubl = $('#dubl').val();
 	var show_pay = '', reduced = '';
+	var turist_mode = 0;
 	if($('#show_pay').prop("checked"))
 		show_pay = 1;
 	if($('#show-reduced').prop("checked"))
 		reduced = 1;
+
+	if($('#turist-mode').prop("checked"))
+		turist_mode = 1;
+
 	var check = select_checkbox('services');
-	window.open('document.php?func=review_obmen&id=' + id + '&dubl=' + dubl + '&show_pay=' + show_pay + '&reduced=' + reduced + '&service=' + check, 'Обменная путевка PDF');
+	window.open('document.php?func=review_obmen&id=' + id + '&dubl=' + dubl + '&show_pay=' + show_pay + '&reduced=' + reduced + '&service=' + check+'&turist_mode='+turist_mode, 'Обменная путевка PDF');
 	remove_all_windows();
 }
 

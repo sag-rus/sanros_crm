@@ -61,7 +61,7 @@ if($function){
 	if(isset($_GET["turist"]))
 		$turist = $_GET["turist"];
 	$today = date("d.m.Y");
-	$version = $_GET["ver"];
+	$version = isset($_GET["ver"])?$_GET["ver"]:null;
 
 	if($function == "review_bron"){
 

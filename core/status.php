@@ -334,6 +334,7 @@ function save_contract($connect){
 
 function show_obmen($connect){
 	$id = $_POST["id"];
+	$turist_mode = isset($_POST['turist_mode'])?(int)$_POST['turist_mode']:0;
 	$html_services_1 = "";
 	$html_services_2 = "";
 	$service_reckoning = explode("_", $connect->getOne("SELECT id_services FROM reckoning WHERE id=?i", $id));
@@ -354,7 +355,7 @@ function show_obmen($connect){
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
-				<h4 class="modal-title">Обменная путевка №<?php echo $id; ?></h4>
+				<h4 class="modal-title"><?php if($turist_mode) { ?>Туристическая путевка<?php } else {  ?>Обменная путевка<?php } ?> №<?=$id;?></h4>
 			</div>
 			<div class="modal-body form-horizontal">
 				<div class="form-group">
@@ -379,6 +380,13 @@ function show_obmen($connect){
 						<label class="control-label"><input type="checkbox" id="show-reduced" /> Уменьшенная путевка</label>
 					</div>
 				</div>
+                <div class="form-group">
+                    <div class="col-sm-4">
+                    </div>
+                    <div class="col-sm-8">
+                        <label class="control-label"><input type="checkbox" id="turist-mode" /> Туристическая путевка</label>
+                    </div>
+                </div>
 				<!--
 				<div class="form-group form-group-margin">
 					<label class="col-sm-4 control-label">В стоимость входит</label>
