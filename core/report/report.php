@@ -1351,6 +1351,10 @@ function update_oplata_query($connect){
 	$id = $_POST["id"];
 	$sum = $_POST["sum"];
 	$date = $_POST["date"];
+
+	if(empty($date))
+	    $date = NULL;
+
 	$type = $_POST["type"];
 	$connect->query("UPDATE return_query SET date=?s, sum=?s, type_pay=?i WHERE id=?i", $date, $sum, $type, $id);
 }
