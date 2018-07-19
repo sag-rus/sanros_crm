@@ -1,5 +1,5 @@
 <?php
-
+include_once __DIR__.'/promo.php';
 $array_type = array(1 => "за чел/сутки", 2 => "за дом/сутки", 3 => "за номер/сутки", 4 => "за заезд");
 
 function upload_price_on_server($connect, $id=false, $nthChild = NULL,$showProccess = false){
@@ -145,6 +145,7 @@ function upload_price_on_server($connect, $id=false, $nthChild = NULL,$showProcc
 	}
 	foreach($data as $row){
 		$id = $row["id"];
+    upload_promo_object_on_server($connect,$id);
 		$url = $row["url_name"];
 		$source_booking = $row["source_booking"];
 		$website = $row['website'];
