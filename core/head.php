@@ -371,6 +371,20 @@ function show_call_back($connect){
 				</div>
 			</div>
 			<?php } ?>
+
+          <?php if($row["source"] == 10){ ?>
+              <div class="list-group-item list-hover-item">
+                  <div class="form-group form-group-margin">
+                      <label class="col-sm-4 control-label-element">
+                          Заявка из JVOSITE
+                      </label>
+                      <div class="col-sm-8 note-text">
+                        <a href="https://app.jivosite.com/chat/inbox" target="_blank">Перейти</a>
+                      </div>
+                  </div>
+              </div>
+          <?php } ?>
+
 			<div class="list-group-item list-hover-item note-call-back-block <?php echo $class_note; ?>">
 				<div class="form-group form-group-margin">
 					<label class="col-sm-4 control-label-element">
