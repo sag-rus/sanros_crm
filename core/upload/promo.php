@@ -1,6 +1,9 @@
 <?php
 
+$rootPath = __DIR__.'/../..';
+
 function upload_promo_object_on_server($connect, $id = NULL){
+	global $rootPath;
 	$ftp_folder = "/var/www/default-site/public_html/price/XML/";
 	if(!$id)
 		$id = $_POST["id"];
@@ -19,7 +22,7 @@ function upload_promo_object_on_server($connect, $id = NULL){
 	foreach($data as $row){
 		$id = $row["id"];
 		save_promo_XML_object($connect, $id);
-		$file = "temp/xml/promo/".$id.".xml";
+		$file = $rootPath."/temp/xml/promo/".$id.".xml";
 		$server_file = $ftp_folder."promo/".$id.".xml";
 		if(!ftp_put($connect_server, $server_file, $file, FTP_ASCII))
 			return "Не удалось загрузить файл на сервер";
@@ -28,9 +31,9 @@ function upload_promo_object_on_server($connect, $id = NULL){
 	save_primary_promo_XML($connect);
 	save_VIP_promo_XML($connect);
 	save_all_promo_XML($connect);
-	ftp_put($connect_server, $ftp_folder."overall/VIPpromo.xml", "temp/VIPpromo.xml", FTP_ASCII);
-	ftp_put($connect_server, $ftp_folder."overall/PrimaryPromo.xml", "temp/PrimaryPromo.xml", FTP_ASCII);
-	ftp_put($connect_server, $ftp_folder."overall/promotions.xml", "temp/promotions.xml", FTP_ASCII);
+	ftp_put($connect_server, $ftp_folder."overall/VIPpromo.xml", $rootPath."/temp/VIPpromo.xml", FTP_ASCII);
+	ftp_put($connect_server, $ftp_folder."overall/PrimaryPromo.xml", $rootPath."/temp/PrimaryPromo.xml", FTP_ASCII);
+	ftp_put($connect_server, $ftp_folder."overall/promotions.xml", $rootPath."/temp/promotions.xml", FTP_ASCII);
 	ftp_chmod($connect_server, 0644, $ftp_folder."overall/VIPpromo.xml");
 	ftp_chmod($connect_server, 0644, $ftp_folder."overall/PrimaryPromo.xml");
 	ftp_chmod($connect_server, 0644, $ftp_folder."overall/promotions.xml");
@@ -41,6 +44,7 @@ function upload_promo_object_on_server($connect, $id = NULL){
 }
 
 function save_promo_XML_object($connect, $id){
+	global $rootPath;
 	$xml = new DomDocument("1.0", "utf-8");
 	$promotions = $xml->appendChild($xml->createElement("object"));
 	$data = $connect->getAll("SELECT id, type, id_room, title, text, active FROM promotions WHERE active!=0 AND id_obj=?i ORDER BY active DESC", $id);
@@ -74,7 +78,7 @@ function save_promo_XML_object($connect, $id){
 	if(count($rating) > 0)
 		$promotions->setAttribute("rating", json_encode($rating));
 	$xml->formatOutput = true;
-	$xml->save("temp/xml/promo/".$id.".xml");
+	$xml->save($rootPath."/temp/xml/promo/".$id.".xml");
 }
 
 function select_last_rating($connect, $id){
