@@ -177,7 +177,7 @@ var_dump($data_booking_JSON);
 	    }
 
 		}elseif($function == "send_call_back"){
-
+		  echo PHP_EOL.$function.PHP_EOL;
 			$booking_source = "";
 
 			$client_info = array(
@@ -240,7 +240,7 @@ var_dump($data_booking_JSON);
 
 			$source = select_index_source($booking_source);
 
-			if(!$arrival OR !$object){
+			if(!$arrival || !$object){
 
 				$address = get_address_by_ip($client_info["ip"]);
 				$connect->query("INSERT INTO order_call_back(website, turist, telephone, question, address, type, source, href) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $website, $fio, $client_info["telephone"], $question, $address, $type, $source, $page);
