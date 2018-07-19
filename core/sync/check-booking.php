@@ -225,6 +225,10 @@ var_dump($data_booking_JSON);
 			$type = $data_booking_JSON["type"];
 			$page = $data_booking_JSON["page"];
 			$object = $data_booking_JSON["object"];
+			$chat_id = NULL;
+
+			if(isset($data_booking_JSON["chat_id"]))
+				$chat_id = (int)$data_booking_JSON["chat_id"];
 
 			if(isset($gsok[$object]))
 				$object = 96;
@@ -243,7 +247,7 @@ var_dump($data_booking_JSON);
 			if(!$arrival || !$object){
 
 				$address = get_address_by_ip($client_info["ip"]);
-				$connect->query("INSERT INTO order_call_back(website, turist, telephone, question, address, type, source, href) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $website, $fio, $client_info["telephone"], $question, $address, $type, $source, $page);
+				$connect->query("INSERT INTO order_call_back(website, turist, telephone, question, address, type, source, href, chat_id) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i)", $website, $fio, $client_info["telephone"], $question, $address, $type, $source, $page, $chat_id);
 				if($id){
 					$last = $connect->insertId();
 					$connect->query("UPDATE order_call_back SET type='module', promo=?i WHERE id=?i", $id, $last);

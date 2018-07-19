@@ -277,7 +277,7 @@ function show_call_back($connect){
 		</p>
 		<?php } ?>
 <?php
-	$data = $connect->getAll("SELECT id, active, id_user, website, turist, telephone, question, address, type, DATE_FORMAT(time, '%H:%i:%s %d.%m.%Y') as date, promo, note, id_bid, source, href FROM order_call_back WHERE ".$zapros);
+	$data = $connect->getAll("SELECT id, active, id_user, website, turist, telephone, question, address, type, DATE_FORMAT(time, '%H:%i:%s %d.%m.%Y') as date, promo, note, id_bid, source, href, chat_id FROM order_call_back WHERE ".$zapros);
 	foreach($data as $row){
 		$id = $row["id"];
 		$active = $row["active"];
@@ -379,7 +379,7 @@ function show_call_back($connect){
                           Заявка из JVOSITE
                       </label>
                       <div class="col-sm-8 note-text">
-                        <a href="https://app.jivosite.com/chat/inbox" target="_blank">Перейти</a>
+                        <a href="https://app.jivosite.com/chat/inbox<?php if($row['chat_id']) { ?>/<?=$row['chat_id'];?><?php } ?>" target="_blank">Перейти</a>
                       </div>
                   </div>
               </div>
