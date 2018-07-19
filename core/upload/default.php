@@ -682,6 +682,7 @@ function save_ratePlan_XML($connect){
 }
 
 function save_primary_promo_XML($connect){
+	global $directory;
 	$xml = new DomDocument("1.0", "utf-8");
 	$promotions = $xml->appendChild($xml->createElement("promotions"));
 	$data = $connect->getAll("SELECT object.id FROM reservation, object_room, room, object WHERE reservation.status=1 AND reservation.active=0 AND reservation.room=object_room.id AND object_room.id_category=room.id AND room.id_obj=object.id AND reservation.sum!='' GROUP BY object.id");
@@ -712,10 +713,11 @@ function save_primary_promo_XML($connect){
 	}
 
 	$xml->formatOutput = true;
-	$xml->save("temp/PrimaryPromo.xml");
+	$xml->save($directory."/temp/PrimaryPromo.xml");
 }
 
 function save_VIP_promo_XML($connect){
+	global $directory;
 	$xml = new DomDocument("1.0", "utf-8");
 	$promotions = $xml->appendChild($xml->createElement("promotions"));
 	$data = $connect->getAll("SELECT type, id_obj, title, text FROM promotions WHERE active=3");
@@ -739,10 +741,11 @@ function save_VIP_promo_XML($connect){
 	}
 
 	$xml->formatOutput = true;
-	$xml->save("temp/VIPpromo.xml");
+	$xml->save($directory."/temp/VIPpromo.xml");
 }
 
 function save_all_promo_XML($connect){
+	global $directory;
 	$xml = new DomDocument("1.0", "utf-8");
 	$objects = $xml->appendChild($xml->createElement("objects"));
 	$data = $connect->getAll("SELECT id, id_reg FROM object WHERE active=0");
@@ -777,7 +780,7 @@ function save_all_promo_XML($connect){
 	}
 
 	$xml->formatOutput = true;
-	$xml->save("temp/promotions.xml");
+	$xml->save($directory."/temp/promotions.xml");
 }
 
 function have_price($connect, $id_date, $id_room){
