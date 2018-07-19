@@ -227,8 +227,8 @@ var_dump($data_booking_JSON);
 			$object = $data_booking_JSON["object"];
 			$chat_id = NULL;
 
-			if(isset($data_booking_JSON["chat_id"]))
-				$chat_id = (int)$data_booking_JSON["chat_id"];
+			//if(isset($data_booking_JSON["chat_id"]))
+				//$chat_id = (int)$data_booking_JSON["chat_id"];
 
 			if(isset($gsok[$object]))
 				$object = 96;
