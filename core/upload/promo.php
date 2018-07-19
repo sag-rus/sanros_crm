@@ -38,7 +38,7 @@ function upload_promo_object_on_server($connect, $id = NULL){
 	ftp_chmod($connect_server, 0644, $ftp_folder."overall/PrimaryPromo.xml");
 	ftp_chmod($connect_server, 0644, $ftp_folder."overall/promotions.xml");
 	ftp_quit($connect_server);
-	if(!$_POST["id"])
+	if(!isset($_POST["id"]) || !$_POST["id"])
 		return "<div class='alert alert-success'>Загрузка завершена!</div>";
 	return "<div class='alert alert-success'>Загрузка завершена!<br /><a class='alert-link' href='http://xn----dtbmnhpbbghbyj0jwa2c.xn--p1ai/price.html#object/".$id."/promo' target='_blank'><i class='fa fa-smile-o'></i> Посмотреть как это выглядит на сайте</a></div>";
 }
