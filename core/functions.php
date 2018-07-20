@@ -778,8 +778,13 @@ function get_sum_for_pay($connect, $id){
 	if($bonus)
 		$raz+= $bonus * (-1);
 	if($row["id_dis"]){
-		$dicsount = ($connect->getOne("SELECT value FROM discount WHERE id=?i", $row["id_dis"])) / 100;
-		$raz+= $dicsount * $sum;
+        $discount = $connect->getRow("SELECT `value`, `type` FROM discount WHERE id=?i", $row["id_dis"]);
+        if($discount) {
+          if($discount['type'] == 1)
+            $raz+= ($discount['value']/100) * $sum;
+          else
+            $raz+= $discount['value'];
+        }
 	}
 	if($row["status"] == 4 OR $row["status"] == 7){
 		$payment = $connect->getAll("SELECT sum FROM payment WHERE type=1 AND schet=?i", $id);

@@ -405,8 +405,13 @@ function show_tour_bid_account($connect, $data){
 				$array["manager-photo"] = "data:image/jpg;base64,".$manager["photo"];
 		}
 		if($answer["id_dis"]){
-			$array["discount"] = $connect->getOne("SELECT value FROM discount WHERE id=?i", $answer["id_dis"]);
-			$array["sum-discount"] = ($array["discount"] / 100) * $answer["sum"];
+    	$discount = $connect->getRow("SELECT `value`, `type` FROM discount WHERE id=?i", $answer["id_dis"]);
+			$array["discount"] = $discount['value'];
+			$array['discount_type'] = $discount['type'];
+			if($discount['type'] == 1)
+				$array["sum-discount"] = ($array["discount"] / 100) * $answer["sum"];
+			else
+        $array["sum-discount"] = $array['discount'];
 		}
 		$array["doc"] = 0;
     $array["voucher"] = 1;
@@ -799,14 +804,20 @@ function get_document_bill($connect, $data){
 
 			$array["itog"] = $array["itog_sum"];
 			$array["sum3"] = $array["itog_sum"];
-			$discount = $connect->getOne("SELECT value FROM discount WHERE id=?i", $array["id_dis"]);
+			$discount = $connect->getRow("SELECT `value`, `type` FROM discount WHERE id=?i LIMIT 1", $array["id_dis"]);
 			if($array["agency"]){
 				$array["sum3"] = get_reward_agency($connect, $id);
 				$array["itog_sum"] = $array["itog_sum"] - $array["sum3"];
 			}elseif($discount){
 				//if($type_dis == 1){
-				$array["sum3"] = ($discount / 100) * $array["itog"];
-				$array["type_dis"] = "%";
+				if($discount['type'] == 1){
+          $array["sum3"] = ($discount['value'] / 100) * $array["itog"];
+          $array["type_dis"] = "%";
+				}
+				else {
+          $array["sum3"] = $discount['value'];
+          $array["type_dis"] = " руб.";
+				}
 				//}else{
 				//	$sum3 = $discount;
 				//	$type_dis = " руб.";

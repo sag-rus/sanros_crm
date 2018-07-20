@@ -90,7 +90,7 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 			$commis = $connect->getOne("SELECT value FROM commission WHERE id=?i", $row["id_com"]);
 		else{
 			$id_dis = $row["id_dis"];
-			$discount = $connect->getOne("SELECT value FROM discount WHERE id=?i", $id_dis);
+			$discount = $connect->getRow("SELECT `value`, `type` FROM discount WHERE id=?i", $id_dis);
 			$bonus = abs($connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND sum < 0", $id));
 		}
 	}
@@ -101,12 +101,15 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 		$itog_sum = $itog_sum - $sum3;
 	}elseif($discount){
 		//if($type_dis == 1){
-		$sum3 = ($discount / 100) * $itog;
-		$type_dis = "%";
-		//}else{
-		//	$sum3 = $discount;
-		//	$type_dis = " руб.";
-		//}
+        if($discount['type'] == 1) {
+          $sum3 = ($discount['value'] / 100) * $itog;
+          $type_dis = "%";
+        }
+        else {
+          $sum3 = $discount['value'];
+          $type_dis = " руб.";
+        }
+
 		$itog_sum = $itog_sum - $sum3;
 	}
 	if($bonus > 0)
@@ -238,7 +241,7 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 				if($agency){
 					$nad = "Комиссия (".$commis."%):";
 				}else
-					$nad = "Скидка (".$discount.$type_dis."):";
+					$nad = "Скидка (".$discount['value'].$type_dis."):";
 				echo "<tr><td colspan='2' style='text-align: right; border: none'><strong>".$nad."</strong></td><td align='center'>".str_replace(".", "-", $sum3)."</td></tr>";
 				$col_str--;
 			}
