@@ -312,7 +312,7 @@ function show_call_back($connect){
 						Страница сайта
 					</label>
 					<div class="col-sm-8 note-text">
-						<a class="btn btn-link btn-xs" href="http://<?php echo $row['website'].$row['href']; ?>" target="_blank"><?php echo $row["href"]; ?></a>
+						<a class="btn btn-link btn-xs" href="<?php if($row['source'] != 10) { ?>http://<?=$row['website']?><?php } ?><?=urldecode($row['href']);?>" target="_blank"><?php echo urldecode($row["href"]); ?></a>
 					</div>
 				</div>
 			</div>
