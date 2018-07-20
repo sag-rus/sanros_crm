@@ -258,17 +258,17 @@ function last_manager_assign_call_back($connect){
 }
 
 function show_call_back($connect){
-	global $session_login;
+	global $session_login, $id_rights;
 	$type = $_POST["type"];
 	$today = date("Y-m-d");
 	if($type == "new")
 		$zapros = " active=1 AND (id_user='' OR id_user IS NULL OR id_user=0)";
 	elseif($type == "work")
-		$zapros = " active=1 AND id_user=".$session_login;
+		$zapros = " active=1 AND (id_user=".$session_login." OR (".(int)($id_rights > 5)." AND id_user > 0))";
 	elseif($type == "process")
-		$zapros = " active=2 AND id_user=".$session_login." AND (DATE_ADD(DATE(time), INTERVAL (5) DAY)) > '".$today."'";
+		$zapros = " active=2 AND (id_user=".$session_login." OR (".(int)($id_rights > 5)." AND id_user > 0)) AND (DATE_ADD(DATE(time), INTERVAL (10) DAY)) > '".$today."'";
 	elseif($type == "archive")
-		$zapros = " active=3 AND id_user=".$session_login." AND (DATE_ADD(DATE(time), INTERVAL (5) DAY)) > '".$today."'";
+		$zapros = " active=3 AND (id_user=".$session_login." OR (".(int)($id_rights > 5)." AND id_user > 0)) AND (DATE_ADD(DATE(time), INTERVAL (10) DAY)) > '".$today."'";
 ?>
 	<div class="form-horizontal">
 		<?php if($type == "new"){ ?>
