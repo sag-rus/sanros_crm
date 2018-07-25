@@ -277,7 +277,7 @@ function show_call_back($connect){
 		</p>
 		<?php } ?>
 <?php
-	$data = $connect->getAll("SELECT id, active, id_user, website, turist, telephone, question, address, type, DATE_FORMAT(time, '%H:%i:%s %d.%m.%Y') as date, promo, note, id_bid, source, href, chat_id FROM order_call_back WHERE ".$zapros);
+	$data = $connect->getAll("SELECT id, active, id_user, website, turist, telephone, question, address, type, DATE_FORMAT(time, '%H:%i:%s %d.%m.%Y') as date, promo, note, id_bid, source, href, chat_id, user_remote_id FROM order_call_back WHERE ".$zapros." ORDER BY `time` DESC");
 	foreach($data as $row){
 		$id = $row["id"];
 		$active = $row["active"];
@@ -312,7 +312,7 @@ function show_call_back($connect){
 						Страница сайта
 					</label>
 					<div class="col-sm-8 note-text">
-						<a class="btn btn-link btn-xs" href="<?php if($row['source'] != 10) { ?>http://<?=$row['website']?><?php } ?><?=urldecode($row['href']);?>" target="_blank"><?php echo urldecode($row["href"]); ?></a>
+						<a class="btn btn-link btn-xs" href="<?php if($row['source'] != 10) { ?>http://<?=$row['website']?><?php } if($row['href'] && $row['href'] !== '/') { ?><?=urldecode($row['href']);?><?php } ?>" target="_blank"><?php echo urldecode($row["href"]); ?></a>
 					</div>
 				</div>
 			</div>
@@ -323,7 +323,7 @@ function show_call_back($connect){
 						Турист
 					</label>
 					<div class="col-sm-8">
-						<?php echo $row["turist"]; ?> (<?php echo $row["address"]; ?>)
+						<?php echo $row["turist"]; if($row["address"]) { ?> (<?php echo $row["address"]; ?>) <?php } ?>
 					</div>
 				</div>
 			</div>
@@ -383,8 +383,30 @@ function show_call_back($connect){
                       </div>
                   </div>
               </div>
+          <?php } elseif ($row["source"] == 11) { ?>
+              <div class="list-group-item list-hover-item">
+                  <div class="form-group form-group-margin">
+                      <label class="col-sm-4 control-label-element">
+                          Заявка с формы ВКонтакте
+                      </label>
+                      <div class="col-sm-8 note-text">
+                          <a href="https://<?=$row['website'];?><?php if($row['href'] && $row['href'] !== '/') { ?><?=$row['href'];?><?php } ?>" target="_blank">Перейти</a>
+                      </div>
+                  </div>
+              </div>
+              <?php if($row['user_remote_id']) { ?>
+                  <div class="list-group-item list-hover-item">
+                      <div class="form-group form-group-margin">
+                          <label class="col-sm-4 control-label-element">
+                              Пользователь ВК
+                          </label>
+                          <div class="col-sm-8 note-text">
+                              <a href="https://vk.com/id<?=$row['user_remote_id'];?>" target="_blank">Перейти</a>
+                          </div>
+                      </div>
+                  </div>
+              <?php } ?>
           <?php } ?>
-
 			<div class="list-group-item list-hover-item note-call-back-block <?php echo $class_note; ?>">
 				<div class="form-group form-group-margin">
 					<label class="col-sm-4 control-label-element">
@@ -395,6 +417,20 @@ function show_call_back($connect){
 					</div>
 				</div>
 			</div>
+          <?php if($row['id_user']) {
+              $user_name = $connect->getOne("SELECT `name` FROM users WHERE id = ?i LIMIT 1",$row['id_user']);
+              ?>
+              <div class="list-group-item list-hover-item">
+                  <div class="form-group form-group-margin">
+                      <label class="col-sm-4 control-label-element">
+                          Менеджер
+                      </label>
+                      <div class="col-sm-8 note-text">
+                          <?=$user_name;?>
+                      </div>
+                  </div>
+              </div>
+          <?php } ?>
 		</div>
 		<div class="panel-footer text-right">
 		<?php if(!$row["id_user"]){ ?>
