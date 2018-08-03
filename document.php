@@ -134,6 +134,10 @@ if($function){
 		review_promo($connect, $region);
 
 	}
+	elseif ($function === 'object_agency_report') {
+		include_once($directory.'/core/document/object_agency_report.php');
+    object_agency_report($connect);
+	}
 	elseif ($function == "comparison_module_payment") {
 		$object =  $_GET["object"];
     $rate = 1;

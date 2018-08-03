@@ -449,6 +449,7 @@ function show_menu_object(){
 ?>
 	<span onclick="edit_object_info('<?php echo $id; ?>')">Редактировать</span>
 	<span onclick="edit_object_sync_info('<?php echo $id; ?>')">Синхронизация 1С</span>
+    <span onclick="object_agency_report('<?php echo $id; ?>')">Отчет агента</span>
 <?php
 }
 

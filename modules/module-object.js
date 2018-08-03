@@ -171,6 +171,85 @@ function edit_object_info(id){
 	});
 }
 
+function object_agency_report(id){
+	remove_all_windows();
+	var months = '';
+	var years = [];
+  var mdate = new Date();
+  var i;
+	for(i = mdate.getFullYear()-3; i <= mdate.getFullYear(); i++) {
+		if(i === mdate.getFullYear()) {
+      years += '<option class="form-control" value="'+i+'" selected>'+i+'</option>';
+    }
+		else {
+      years += '<option class="form-control" value="'+i+'">'+i+'</option>';
+    }
+	}
+
+	var monthAr = [
+		null,
+		'Январь',
+    'Февраль',
+    'Март',
+    'Апрель',
+    'Май',
+		'Июнь',
+    'Июль',
+    'Август',
+    'Сентябрь',
+    'Октябрь',
+    'Ноябрь',
+		'Декабрь'
+  ];
+
+	for(i = 1; i < 13; i++) {
+		if(i === mdate.getMonth()+1) {
+      months += '<option class="form-control" value="'+i+'" selected>'+monthAr[i]+'</option>';
+    }
+		else {
+      months += '<option class="form-control" value="'+i+'">'+monthAr[i]+'</option>';
+    }
+	}
+
+	var modal = '<div class="modal fade">'+
+								'<div class="modal-dialog">'+
+  								'<div class="modal-content">'+
+										'<div class="modal-header">' +
+      								'<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>' +
+      								'<h4 class="modal-title">Отчет агента за месяц</h4>' +
+										'</div>' +
+      							'<div class="modal-body form-horizontal">' +
+											'<div class="form-group">' +
+												'<div class="col-md-6">'+
+													'<label class="control-label">Месяц</label>' +
+													'<select class="form-control" id="agency-report-month">'+
+														months +
+													'</select>'+
+												'</div>'+
+												'<div class="col-md-6">'+
+													'<label class="control-label">Год</label>' +
+													'<select class="form-control" id="agency-report-year">'+
+															years +
+													'</select>'+
+												'</div>'+
+											'</div>'+
+										'</div>' +
+										'<div class="modal-footer text-center">' +
+												'<button type="button" class="btn btn-success btn-sm" onclick="object_agency_report_generate('+id+')"><i class="fa fa-check"></i> Сформировать</button>' +
+										'</div>' +
+									'</div>'+
+								'</div>' +
+							'</div>';
+	show_modal(modal);
+}
+
+function object_agency_report_generate(id) {
+	var month = $('#agency-report-month').val();
+	var year = $('#agency-report-year').val();
+	window.open('/document.php?func=object_agency_report&id='+id+"&year="+year+"&month="+month,"_blank");
+  remove_all_windows();
+}
+
 function add_new_contact_object(type){
 	if(type == "telephone")
 		icon = "<i class='fa fa-phone'></i>";

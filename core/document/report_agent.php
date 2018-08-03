@@ -17,11 +17,15 @@ function report_agent($connect, $all_id){
 	$director_pad = $conf->director_pad;
 	$today = date("d.m.Y");
 
+	$content = "";
+
 	$all_id = explode("_", $all_id);
 	$all_id = array_diff($all_id, array(""));
+
 	foreach($all_id as $id){
 		$row = $connect->getRow("SELECT DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.sum, reckoning.id_obj, reckoning.agency, reckoning.id_com, position_reck.days FROM reckoning, position_reck WHERE reckoning.id=?i AND reckoning.id=position_reck.schet", $id);
 		$object = get_object($connect, $row["id_obj"], "type");
+		$date_z = $row["date_z"];
 		$date_z_trans = month_transform($row["date_z"]);
 		$days = $row["days"];
 		$sum = add_null($row["sum"]);
