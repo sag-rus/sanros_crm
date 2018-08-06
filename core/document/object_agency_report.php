@@ -133,7 +133,7 @@ function object_agency_report($connect) {
                             Ф.И.О. отдыхающего
                         </th>
                         <th colspan="2">
-                            Период пребывания <?=(is_null($objRow['type']) || !isset($types[$objRow['type']]))?'в санатории':$types[$objRow['type']]?> «Ромашкино»
+                            Период пребывания <?=(is_null($objRow['type']) || !isset($types[$objRow['type']]))?'в санатории':$types[$objRow['type']]?> «<?=$objRow['name'];?>»
                         </th>
                         <th rowspan="2">
                             № заявки
