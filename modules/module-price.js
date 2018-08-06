@@ -883,6 +883,8 @@ function update_main_data_object(id){
 		"type": $('#type_object').val(),
 		"name": $('#name_object').val(),
 		"full_name": $('#full_name').val(),
+		"main_post_name": $('#main_post_name').val(),
+		"main_post_fio": $("#main_post_fio").val(),
 		"city": $('#city_object').val(),
 		"latitude": $('#latitude').val(),
 		"longitude": $('#longitude').val(),

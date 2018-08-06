@@ -464,7 +464,7 @@ function select_object_about($connect){
 
 function edit_main_data_object($connect){
 	$id = $_POST["id"];
-	$row = $connect->getRow("SELECT name, similar, full_name, id_reg, type, city, direction, latitude, longitude, weather, direction, source_booking, booking_uri, description, fast_booking FROM object WHERE id='$id'");
+	$row = $connect->getRow("SELECT name, similar, full_name, id_reg, type, city, direction, latitude, longitude, weather, direction, source_booking, booking_uri, description, fast_booking, main_post_name, main_post_fio FROM object WHERE id='$id'");
 	$similar = explode("_", $row["similar"]);
 	$type = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]);
 	$country = $connect->getOne("SELECT id_country FROM region WHERE id=?i", $row["id_reg"]);
@@ -485,6 +485,18 @@ function edit_main_data_object($connect){
 				<input type="text" class="form-control" id="full_name" value="<?php echo $row['full_name']; ?>">
 			</div>
 		</div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Должность руководителя</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" id="main_post_name" value="<?php echo $row['main_post_name']; ?>">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Фамилия и инициалы руководителя</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" id="main_post_fio" value="<?php echo $row['main_post_fio']; ?>">
+            </div>
+        </div>
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Тип объекта</label>
 			<div class="col-sm-9">
@@ -606,7 +618,9 @@ function update_main_data_object($connect){
 	$source_booking = (int)$_POST["source_booking"];
 	$fast_booking = (int)$_POST["fast_booking"];
 	$booking_uri = $_POST["booking_uri"];
-	$connect->query("UPDATE object SET name=?s, full_name=?s, city=?s, direction=?s, type=?s, latitude=?s, longitude=?s, similar=?s, weather=?s, description=?s, source_booking=?i, description_check=?s, booking_uri=?s, fast_booking=?i WHERE id=?i", $name, $full_name, $city, $direction, $type, $latitude, $longitude, $similar, $weather, $description, $source_booking, $description, $booking_uri, $fast_booking, $id);
+	$main_post_name = trim($_POST["main_post_name"]);
+    $main_post_fio = trim($_POST["main_post_fio"]);
+	$connect->query("UPDATE object SET name=?s, full_name=?s, city=?s, direction=?s, type=?s, latitude=?s, longitude=?s, similar=?s, weather=?s, description=?s, source_booking=?i, description_check=?s, booking_uri=?s, fast_booking=?i, main_post_name = ?s, main_post_fio = ?s WHERE id=?i", $name, $full_name, $city, $direction, $type, $latitude, $longitude, $similar, $weather, $description, $source_booking, $description, $booking_uri, $fast_booking, $main_post_name, $main_post_fio, $id);
 }
 
 function edit_desc_object($connect){

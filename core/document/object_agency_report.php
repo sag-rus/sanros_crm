@@ -24,7 +24,7 @@ function object_agency_report($connect) {
 
   $id = isset($_GET['id'])?(int)$_GET['id']:0;
 
-  $objRow = $connect->getRow('SELECT `id`, `full_name`, `name`, `type` FROM object WHERE id = ?i LIMIT 1',$id);
+  $objRow = $connect->getRow('SELECT `id`, `full_name`, `name`, `type`, `reward`, `main_post_name`, `main_post_fio` FROM object WHERE id = ?i LIMIT 1',$id);
 
   if(!$objRow)
       $id = 0;
@@ -65,7 +65,7 @@ function object_agency_report($connect) {
           $year = date("Y");
         }
 
-      $objReck = $connect->getAll("SELECT `id`, `sum`, `date_z`, `date_v`, `rest` FROM  `reckoning` WHERE `id_obj` = ?i AND `status` = 5 AND `status_san` = 1 AND MONTH(`date_z`) = ?i AND YEAR(`date_z`) = ?i ORDER BY `date_z` ASC", $id,$month, $year);
+      $objReck = $connect->getAll("SELECT `id`, `sum`, `date_z`, `date_v`, `rest`, `reward` FROM  `reckoning` WHERE `id_obj` = ?i AND `status` = 5 AND `status_san` = 1 AND MONTH(`date_z`) = ?i AND YEAR(`date_z`) = ?i ORDER BY `date_z` ASC", $id,$month, $year);
 
 
       $monthLastDay = date("t", strtotime("01." . $month . "." . $year));
@@ -144,6 +144,7 @@ function object_agency_report($connect) {
                         <th rowspan="2">
                             Сумма агентского вознаграждения
                         </th>
+                        <th rowspan="2">Платежное поручение</th>
                     </tr>
                     <tr>
                         <th>
@@ -155,8 +156,28 @@ function object_agency_report($connect) {
                     </tr>
                   </thead>
                   <tbody>
-                    <?php $i = 0; $sum = 0; foreach ($objReck as $reck) { $i++; $sum+= $reck['sum'];
+                    <?php $i = 0; $sum = 0; $rewardSum = 0; foreach ($objReck as $reck) { $i++; $sum+= $reck['sum'];
                         $restString = "";
+                        $reward = 0;
+                        $paymentsStr = "";
+                        $payments = $connect->getAll("SELECT `id`, `date`, `sum`, `type`, `pay_number` FROM `payment` WHERE `schet` = ?i AND `type` IN (3,4) AND `status` = 2",$reck['id']);
+
+
+                        foreach ($payments as $payment) {
+
+                            if($paymentsStr)
+                                $paymentsStr .= "<br><br>";
+
+                            $paymentsStr .= number_format($payment['sum'],2,","," ")." - п/п ".$payment['pay_number']." от ".date("d.m.Y", strtotime($payment['date']));
+                        }
+
+                        if($reck['reward'])
+                            $reward = (float)$reck['reward'];
+                        elseif ($objRow['reward'])
+                            $reward = $reck['sum']*$objRow['reward']/100;
+
+                        $rewardSum += $reward;
+
                         if($reck['rest']) {
                             $klients = $connect->getAll("SELECT `name`, `surname`, `otch` FROM `klient` WHERE `id` IN (".$reck['rest'].")");
                             foreach ($klients AS $klient) {
@@ -187,7 +208,10 @@ function object_agency_report($connect) {
                             <?=number_format($reck['sum'],2,","," ");?>
                           </td>
                           <td>
-
+                            <?=number_format($reward,2,","," ");?>
+                          </td>
+                          <td>
+                            <?=$paymentsStr;?>
                           </td>
                       </tr>
                     <?php } ?>
@@ -202,11 +226,30 @@ function object_agency_report($connect) {
                           <?=number_format($sum,2,","," ");?>
                         </th>
                         <th>
-
+                          <?=number_format($rewardSum,2,","," ");?>
                         </th>
+                        <th></th>
                     </tr>
                   </tfoot>
               </table>
+              <br><br>
+              <table border="0" cellpadding="0" cellspacing="0">
+                  <tbody>
+                    <tr>
+                        <td style="padding-left: 0;">
+                            Комиссионер:<br>
+                            Генеральный директор ООО ТА «САНАТА-ТРЕВЕЛ»<br><br>
+                            ________________Терентьева О. Б.
+                        </td>
+                        <td style="padding-left: 0;">
+                            Комитент:<br>
+                            <?=$objRow['main_post_name'];?><br><br>
+                            ________________<?=$objRow['main_post_fio'];?>
+                        </td>
+                    </tr>
+                  </tbody>
+              </table>
+
           </div>
           </body>
           </html>
