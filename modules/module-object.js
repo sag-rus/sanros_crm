@@ -246,7 +246,7 @@ function object_agency_report(id){
 function object_agency_report_generate(id) {
 	var month = $('#agency-report-month').val();
 	var year = $('#agency-report-year').val();
-	window.open('/document.php?func=object_agency_report&id='+id+"&year="+year+"&month="+month,"_blank");
+	window.open('./document.php?func=object_agency_report&id='+id+"&year="+year+"&month="+month,"_blank");
   remove_all_windows();
 }
 
