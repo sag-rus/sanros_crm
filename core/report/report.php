@@ -201,6 +201,8 @@ function filter_payment($connect){
 		$array["office"][$id_office]["pay"] = 0;
 		$array["office"][$id_office]["num_ret"] = 0;
 		$array["office"][$id_office]["return"] = 0;
+		$array["office"][$id_office]["reward"] = 0;
+		$array["office"][$id_office]["all_reward"] = 0;
 	}
 	if($date_opl != ""){
 	    $date_opl_t = strtotime($date_opl);
@@ -272,7 +274,7 @@ function filter_payment($connect){
         $zapros_for_mysql .= " `payment`.`status` != 0";
 
 	$zapros_for_mysql_cond = $zapros_for_mysql;
-	$zapros_for_mysql = "SELECT payment.id, `payment`.`processed`, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, payment.office, `payment`.`status` AS payment_status, `payment`.`type`, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san FROM payment LEFT JOIN reckoning ON reckoning.id=payment.schet WHERE ".$zapros_for_mysql." ORDER BY payment.id";
+	$zapros_for_mysql = "SELECT `payment`.`id`, `payment`.`processed`, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, `users`.`office`, `payment`.`status` AS payment_status, `payment`.`type`, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san FROM payment LEFT JOIN reckoning ON reckoning.id=payment.schet LEFT JOIN users ON `reckoning`.`id_user`=`users`.`id` WHERE ".$zapros_for_mysql." ORDER BY payment.id";
 
 	$data = $connect->getAll($zapros_for_mysql);
 
@@ -494,6 +496,10 @@ function filter_payment($connect){
             //блок расчета прибыли по платежу - конец
 
             $all_reward += $pay_reward;
+              if($office_pay > 0){
+                $array["office"][$office_pay]["all_reward"]+= $pay_reward;
+              }
+
 
 			$html.= "<tr class='".$bg_class."' ".$func." style='background: ".$color."!important;'>";
 			$html.= "<td valign='top' align='center'>".$id."</td>";
@@ -515,7 +521,8 @@ function filter_payment($connect){
 	}
 
 	foreach ($pay_groups as $reck_id => $pay_array) {
-	    $all_pays = $connect->getAll("SELECT id FROM payment WHERE (type = 1 OR type = 2 OR type = 6) AND schet = ?i AND `payment`.`status` != 0", $reck_id);
+	    $all_pays = $connect->getAll("SELECT `id`, `office` FROM payment WHERE (type = 1 OR type = 2 OR type = 6) AND schet = ?i AND `payment`.`status` != 0", $reck_id);
+	    $office_g = $connect->getOne("SELECT `users`.`office` FROM `reckoning` LEFT JOIN `users` ON `reckoning`.`id_user`=`users`.`id` WHERE `reckoning`.`id` = ?i", $reck_id);
 	    $all_pays_count = count($all_pays);
 	    /*if($all_pays_count === count($pay_array)) {
           $array["reward"] += get_reward_schet($connect, $reck_id, "", TRUE);
@@ -545,6 +552,9 @@ function filter_payment($connect){
             }
         //}
       $array['reward'] += $reck_pay_reward;
+	  if($office_g) {
+        $array["office"][$office_g]["reward"] += $reck_pay_reward;
+      }
       //echo " <br />".$reck_id." ".$reck_pay_reward."<br />";
     }
 
@@ -689,6 +699,14 @@ function filter_payment($connect){
                   <div class="col-sm-4">
                       Доплата <?php echo $data["num_feepay"]; ?> на сумму <?php echo number_format($data["feepay"], 2, ",", " "); ?>
                   </div>
+                <?php } ?>
+
+                <?php if($data["reward"]){ ?>
+                    <div class="clearfix"></div>
+                    <hr />
+                    <div class="col-sm-6">
+                        Общее вознаграждение по офису на сумму <?php echo number_format($data["reward"], 2, ",", " ")." (сумма прибыли по каждому платежу ".number_format($data['all_reward'], 2, ",", " ").") "; ?>
+                    </div>
                 <?php } ?>
 
 			</div>
