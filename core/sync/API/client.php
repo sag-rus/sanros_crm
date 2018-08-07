@@ -1348,9 +1348,12 @@ function generate_phone_token($connect, $data) {
           if($user) {
           	$time = time();
             $token = random_int(100000,999999);
-            $connect->query("INSERT INTO phone_token(`status`, `created`, `changed`, `number`, `token`, `action`) VALUES (?i, ?i, ?i, ?s, ?s, ?s)", 1, $time, $time, $user['phone'], hash("sha256",$token),$action);
+            $secret_hash = bin2hex(random_bytes(64));
+            $connect->query("INSERT INTO phone_token(`status`, `created`, `changed`, `number`, `token`, `action`, `hash`) VALUES (?i, ?i, ?i, ?s, ?s, ?s, ?s)", 1, $time, $time, $user['phone'], hash("sha256",$token),$action, $secret_hash);
+
             send_sms($connect, $user['phone'],NULL, $token." - ".$actions[$action],"phone_token",false);
             $result['success'] = 1;
+            $result['secret_hash'] = $secret_hash;
           }
           else {
             $result['title'] = 'Error';
@@ -1383,9 +1386,11 @@ function generate_phone_token($connect, $data) {
               $time = time();
               if(!$phone_row && !$email_row) {
                 $token = random_int(100000,999999);
-                $connect->query("INSERT INTO phone_token(`status`, `created`, `changed`, `number`, `token`, `action`) VALUES (?i, ?i, ?i, ?s, ?s, ?s)", 1, $time, $time, $phone, hash("sha256",$token),$action);
+                $secret_hash = bin2hex(random_bytes(64));
+                $connect->query("INSERT INTO phone_token(`status`, `created`, `changed`, `number`, `token`, `action`, `hash`) VALUES (?i, ?i, ?i, ?s, ?s, ?s, ?s)", 1, $time, $time, $phone, hash("sha256",$token),$action, $secret_hash);
                 send_sms($connect, $phone,NULL, $token." - ".$actions[$action],"phone_token",false);
                 $result['success'] = 1;
+                $result['secret_hash'] = $secret_hash;
               }
               else {
                 $result['msg'] = [];
@@ -1463,10 +1468,15 @@ function registration($connect, $data) {
 
   $token = "";
 
+  $secret_hash = "";
+
   if(isset($data['phone_token']))
   	$token = trim($data['phone_token']);
 
-  if(mb_strlen($token) > 0) {
+  if(isset($data['secret_hash']))
+  	$secret_hash = trim($data['secret_hash']);
+
+  if(mb_strlen($token) > 0 && mb_strlen($secret_hash) > 0) {
     if(mb_strlen($name) > 0 && mb_strlen($lname) > 0) {
       if(mb_strlen($email) > 5) {
         if(mb_strlen($phone) > 10 && mb_strlen($phone) < 16) {
@@ -1477,7 +1487,7 @@ function registration($connect, $data) {
               $email_row = $connect->getOne("SELECT id FROM klient WHERE login IS NOT NULL AND login != '' AND login = ?s LIMIT 1",$email);
               $phone_row = $connect->getOne("SELECT id FROM klient WHERE login IS NOT NULL AND login != '' AND phone = ?s LIMIT 1",$phone);
               if(!$phone_row && !$email_row) {
-                $token_confirm = $connect->getRow("SELECT id, created FROM phone_token WHERE `number` = ?s AND `token` = ?s AND status = 1 AND `action` = 'registration' ORDER BY created DESC LIMIT 1",$phone,hash("sha256",$token));
+                $token_confirm = $connect->getRow("SELECT id, created FROM phone_token WHERE `number` = ?s AND `token` = ?s AND `hash` = ?s AND status = 1 AND `action` = 'registration' ORDER BY created DESC LIMIT 1",$phone,hash("sha256",$token),$secret_hash);
                 if($token_confirm) {
                 	$time = time();
                   if($token_confirm['created'] > $time-300) {
@@ -1560,6 +1570,35 @@ function registration($connect, $data) {
     $result['msg'] = "Incorrect phone confirmation code";
     $result['title'] = "Error";
 	}
+
+  return $result;
+}
+
+function check_token($connect, $data) {
+  $result = [
+    'msg' => '',
+    'title' => '',
+    'success' => 0
+  ];
+
+  $token = "";
+  $action = "";
+
+  if(isset($data['phone_token']))
+    $token = trim($data['phone_token']);
+
+  if(isset($data['action']))
+    $action = trim($data['action']);
+
+  if($action === 'password-restore') {
+    $login = "";
+    if(isset($data['login']))
+      $login = mb_strtolower(trim($data['login']));
+
+    if(mb_strlen($login) > 5)
+      $user = $connect->getRow("SELECT `id`, `login`, `phone` FROM `klient` WHERE `login` IS NOT NULL AND `phone` IS NOT NULL AND (`login` = ?s OR `phone` = ?s) LIMIT 1",$login, $login);
+
+  }
 
   return $result;
 }
