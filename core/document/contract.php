@@ -76,7 +76,7 @@ function review_contract($connect, $type, $id){
 	$arr = explode(".", $sale);
 	if(!$arr[0])
 		$arr[0] = 0;
-	if(!$arr[1])
+	if(!isset($arr[1]) || !$arr[1])
 		$arr[1] = 0;
 	$itog_sum_sale = first_symbol_to_title(convert_number_to_string($arr[0])." рублей ".$arr[1]." копеек");
 	$arr = explode(".", add_null($sum_pay));
@@ -161,7 +161,7 @@ function review_contract($connect, $type, $id){
         }
 		$table.= "</tr>";
 	}
-	$img = $_COOKIE['img'];
+	$img = isset($_COOKIE['img'])?$_COOKIE['img']:1;
 	$director_pad = "Генерального директора $director_pad, действующего на основании Устава";
 	$city_office = "Казань";
 	$image = "pechat1";
@@ -187,6 +187,12 @@ function review_contract($connect, $type, $id){
 			$reck = $row["rs"];
 		}
 	}
+
+	$brand_info = false;
+
+	if($id == 65742)
+	    $brand_info = true;
+
 	ob_start();
 ?>
 	<div class="border">
@@ -197,7 +203,7 @@ function review_contract($connect, $type, $id){
 		<td><?php echo $date_doc; ?></td>
 	</tr>
 	</table>
-	<p align="justify"><?php echo $full_firma." (".$firma.")"; ?> в лице <?php echo $director_pad; ?>, именуемое в дальнейшем ФИРМА, с одной стороны, и
+	<p align="justify"><?php echo $full_firma." (".($brand_info?"торговая марка «САНАТОРИИ РОССИИ»":$firma).")"; ?> в лице <?php echo $director_pad; ?>, именуемое в дальнейшем ФИРМА, с одной стороны, и
 		<?php
 			echo $payers["name"];
 			if($payers["type"] == 2)
@@ -339,7 +345,7 @@ function review_contract($connect, $type, $id){
 	<table>
 	<tr>
 		<td valign="top" width="400">
-			<p><strong>ФИРМА:</strong> <?php echo $firma; ?><br />
+			<p><strong>ФИРМА:</strong> <?php echo $firma; ?><br /><?php if($brand_info) { ?> (торговая марка «САНАТОРИИ РОССИИ»)<br><?php } ?>
 			<strong>ИНН/КПП:</strong> <?php echo $INN."/".$KPP; ?><br />
 			<strong>ОГРН:</strong> <?php echo $OGRN; ?><br />
 			<strong>Юридический адрес:</strong><br /><?php echo $leg_address; ?><br /><br />
@@ -366,7 +372,7 @@ function review_contract($connect, $type, $id){
             <strong>Обособленное подразделение:</strong><br /><?php echo $sep_address_samara; ?><br />
             <strong>Тел.:</strong> <?php echo $tel_samara; ?><br /><br />
 
-                <?php echo $post; ?><br /><?php echo $firma; ?>:
+                <?php echo $post; ?><br /><?php echo $firma; ?><?php if($brand_info) { ?> (торговая марка «САНАТОРИИ РОССИИ»)<?php } ?>:
 			<?php if($img == 1){
 			?>
 				<table>
@@ -377,7 +383,7 @@ function review_contract($connect, $type, $id){
 				</table>
 			<?php
 				}else
-					echo "&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;".$director;
+					echo "_______________________".$director;
 			?>
 			</p>
 		</td>
@@ -411,13 +417,13 @@ function review_contract($connect, $type, $id){
 					echo "<p><strong>КЛИЕНТ:</strong> ".$payers["name"]."<br />";
 					if($payers["passport"]){
 						echo "<strong>ПАСПОРТ:</strong> ".substr_replace($payers["passport"], " ", 4, 0)."<br />";
-						if($payers["output"])
+						if(isset($payers['output']) && $payers["output"])
 							echo "<strong>ВЫДАН:</strong> ".$payers["output"]."<br />";
-						if($payers["date_passport"])
+						if(isset($payers['date_passport']) && $payers["date_passport"])
 							echo "<strong>ДАТА ВЫДАЧИ:</strong> ".$payers["date_passport"]."<br />";
-						if($payers["telephone"])
+						if(isset($payers['telephone']) && $payers["telephone"])
 							echo "<strong>ТЕЛЕФОН:</strong> ".$payers["telephone"]."<br />";
-						if($payers["email"])
+						if(isset($payers['email']) && $payers["email"])
 							echo "<strong>EMAIL:</strong> ".$payers["email"];
 					}
 					echo "<br /><br /><br /><strong>ПОДПИСЬ:</strong> ____________</p>";
