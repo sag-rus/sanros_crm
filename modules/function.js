@@ -892,14 +892,14 @@ function show_prev_page(){
 
 function check_true_dates(date, type){
 	var current = new Date();
-	var current_year = current.getFullYear();
+	var current_year = parseInt(current.getFullYear());
 	var current_month = current.getMonth() + 1;
 	var arr = date.split("-");
 	var year = parseInt(arr[0]);
 	var month = parseInt(arr[1]);
-	if((year < current_year || (year == current_year && month < current_month)) && type == 'new')
+	if((year < current_year || (year === current_year && month < current_month)) && type === 'new')
 		return false;
-	if((year == 2017) || (year == 2018))
+	if(year >= current_year)
 		return true;
 	return false;
 }

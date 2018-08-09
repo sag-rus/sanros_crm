@@ -1749,7 +1749,7 @@ function get_service_information(){
 	$conf = new JConfig;
 	$array = array();
 	$array["firma"] = $conf->firma;
-	$array["online"] = $conf->online;
+	$array["online"] = isset($conf->online)?$conf->online:null;
 	$array["full_firma"] = $conf->full_firma;
 	$array["email"] = $conf->Email;
 	$array["new_email"] = $conf->new_email;

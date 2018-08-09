@@ -48,7 +48,7 @@ function select_template_letter($file_name, $type, $id = ""){
 		$answer["content"] = str_replace("<telephone>", $service["tel"], $answer["content"]);
 		$answer["content"] = str_replace("<telephones>", $telephone, $answer["content"]);
 		$answer["content"] = str_replace("<fax>", $service["fax"], $answer["content"]);
-		$answer["content"] = str_replace("<linia>", $service["linia"], $answer["content"]);
+		$answer["content"] = str_replace("<linia>", isset($service["linia"])?$service["linia"]:null, $answer["content"]);
 	}
 	return $answer;
 }
