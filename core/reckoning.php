@@ -727,7 +727,11 @@ function edit_position($connect){
 
 	$service_reckoning = explode("_", $connect->getOne("SELECT id_services FROM reckoning WHERE id=?i", $reck));
 	$service = $connect->getAll("SELECT id, name, type FROM price_includes ORDER BY head DESC, type, id");
-	foreach($service as $row){
+
+	$html_services_1 = "";
+    $html_services_2 = "";
+
+    foreach($service as $row){
 		$checked = "";
 		if(in_array($row["id"], $service_reckoning))
 			$checked = " CHECKED ";
