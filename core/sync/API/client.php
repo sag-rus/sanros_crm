@@ -422,10 +422,10 @@ function show_tour_bid_account($connect, $data){
 
 		if($answer["status"] == 3 OR $answer["status"] == 4){
 			$array["doc"] = 2;
-			$reward = get_reward_schet($connect, $id);
-			if((($reward / $answer["sum"] * 100) >= 4 || $id == 43125 || $id == 58509 || $id = 66300) && !$array['holding_sum']){
+			$reward = get_reward_schet($connect, $array['id']);
+			if((($reward / $answer["sum"] * 100) >= 4 || $array['id'] == 43125 || $array['id'] == 58509 || $array['id'] = 66300) && !$array['holding_sum']){
 				$array["pay_button"] = 1;
-				$check = $connect->getOne("SELECT sum FROM time_payment WHERE type=2 AND id_schet=?i", $id);
+				$check = $connect->getOne("SELECT sum FROM time_payment WHERE type=2 AND id_schet=?i", $array['id']);
 				if($check AND ($answer["status"] == 3 OR $answer["status"] == 4))
 					$array["prepay_sum"] = $check;
 			}
@@ -471,7 +471,7 @@ function show_tour_bid_account($connect, $data){
 			}
 			$array["rest"][$answer["id"]]["document"] = $document;
 		}
-		$talk = $connect->getOne("SELECT id FROM talk WHERE client=?i AND type='turist' AND id_reck=?i", $turist, $id);
+		$talk = $connect->getOne("SELECT id FROM talk WHERE client=?i AND type='turist' AND id_reck=?i", $turist, $array['id']);
 		$data = $connect->getAll("SELECT id, DATE_FORMAT(date, '%H:%i:%s %d.%m.%Y') as date, text, type, user FROM message_talk WHERE talk=?i ORDER BY id", $talk);
 		foreach($data as $row){
 			$array["message"][$row["id"]]["date"] = $row["date"];
