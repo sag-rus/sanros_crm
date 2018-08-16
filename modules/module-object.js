@@ -1470,12 +1470,22 @@ function view_quota_object(object){
                         name_prices = prices[ratePlanId]['name'];
                       var price_ratePlan = prices[ratePlanId]['price'][index];
                       if(price_ratePlan > 0){
+
+                      	var priceTypesAr = [
+                      			null,
+														'за чел/сутки',
+														'за дом/сутки',
+														'за номер/сутки',
+														'за заезд'
+												];
+
                         var label = '';
                         var type_place = 1;
                         var type_range = 1;
                         var label_place = 'за чел/сутки';
 
-                        if(data['is_profkurort']) {
+
+												if(data['is_profkurort']) {
                           if(index == 0){
                             label = 'размещение';
                             type_range = 3;
@@ -1502,12 +1512,29 @@ function view_quota_object(object){
                             label = name_prices[index]['n'];
                             type_place = name_prices[index]['t'];
                             type_range = name_prices[index]['p'];
-                            if(type_range == 2 || type_range == 3)
-                              label_place = 'за номер';
+													if(type_range == 2 || type_range == 3) {
+                            label_place = 'за номер';
+                            if('default_price_type' in data) {
+                              var default_price_type = parseInt(data['default_price_type']);
+                              if(priceTypesAr.length > default_price_type && default_price_type !== 0) {
+                                type_range = default_price_type;
+																label_place = priceTypesAr[default_price_type];
+                              }
+                            }
+                          }
                           }else if(index != 'add'){
                             label = index + '-местное размещение';
                             type_range = 3;
                             label_place = 'за номер';
+
+                            if('default_price_type' in data) {
+                              var default_price_type = parseInt(data['default_price_type']);
+                              if(priceTypesAr.length > default_price_type && default_price_type !== 0) {
+                                type_range = default_price_type;
+                                label_place = priceTypesAr[default_price_type];
+                              }
+                            }
+
                           }else if(index == 'add'){
                             label = 'Доп.место';
                             type_place = 2;

@@ -89,10 +89,11 @@ function view_quota_object($connect, $data = array()){
 	$months[2]["max-day"] = cal_days_in_month(CAL_GREGORIAN, $next_month, $next_year);
 
 	$dates_price_object = array();
-    $object_row = $connect->getRow("SELECT check_places, sync_id FROM object WHERE id=?i", $object);
+    $object_row = $connect->getRow("SELECT check_places, sync_id, default_price_type FROM object WHERE id=?i", $object);
 	$status_quota = $object_row['check_places'];
 	$result["type"] = $status_quota;
     $result['is_profkurort'] = 0;
+    $default_price_type = $object_row['default_price_type'];
     $sync_rooms_prices = [];
     $sync_rooms_places = [];
 
@@ -390,6 +391,8 @@ function view_quota_object($connect, $data = array()){
         $result["ratePlan"][$id]["name"] = str_replace("\"", "", $row["name"]);
       }
     }
+
+    $result['default_price_type'] = $default_price_type;
 
 
     return json_encode($result);
