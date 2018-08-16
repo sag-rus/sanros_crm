@@ -181,11 +181,14 @@ function save_price_XML_object($connect, $id){
 	global $array_type, $directory;
 	$today = date("Y-m-d");
 	$current_time = time();
-	$row = $connect->getRow("SELECT id, name, id_reg, city, id_profile, id_methods, id_infa, medical_factors, type, description, add_one_day, latitude, longitude, weather, regular_com, up_com, reward, arrival, leaving, check_places, website, source_booking, booking_uri FROM object WHERE id=?i AND (active=0 OR active=1) LIMIT 1", $id);
+	$row = $connect->getRow("SELECT id, name, id_reg, city, id_profile, id_methods, id_infa, medical_factors, type, description, add_one_day, latitude, longitude, weather, regular_com, up_com, reward, arrival, leaving, check_places, website, source_booking, booking_uri, default_price_type FROM object WHERE id=?i AND (active=0 OR active=1) LIMIT 1", $id);
 	$quota = $row["check_places"];
 	$count = $connect->getOne("SELECT COUNT(*) FROM price, room WHERE room.id_obj=?i AND room.id=price.id_room", $id);
 	if(!$row["id"] AND $count <= 0)
 		return FALSE;
+
+  $default_price_type = $row['default_price_type'];
+
 	if($row["add_one_day"] != 1)
 		$row["add_one_day"] = 0;
 	$bonus = 5;
@@ -396,8 +399,8 @@ function save_price_XML_object($connect, $id){
 							$check_price = 1;
 							$count_index_place++;
 							$place_name = $index_place."-мест. размещение";
-							$type_price = "за номер";
-							$type_index_place = 2;
+							$type_price = $array_type[$default_price_type];
+							$type_index_place = $default_price_type;
 							$place_type = 1;
 							if($index_place == "add"){
 								$type_price = "за чел/сутки";

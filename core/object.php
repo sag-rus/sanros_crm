@@ -1,4 +1,6 @@
 <?php
+$array_type = array(1 => "за чел/сутки", 2 => "за дом/сутки", 3 => "за номер/сутки", 4 => "за заезд");
+
 
 function select_country_admin($connect){
 	$id = $_POST["id"];
@@ -463,8 +465,9 @@ function select_object_about($connect){
 }
 
 function edit_main_data_object($connect){
-	$id = $_POST["id"];
-	$row = $connect->getRow("SELECT name, similar, full_name, id_reg, type, city, direction, latitude, longitude, weather, direction, source_booking, booking_uri, description, fast_booking, main_post_name, main_post_fio FROM object WHERE id='$id'");
+    global $array_type;
+    $id = $_POST["id"];
+	$row = $connect->getRow("SELECT name, similar, full_name, id_reg, type, city, direction, latitude, longitude, weather, direction, source_booking, booking_uri, description, fast_booking, main_post_name, main_post_fio, default_price_type FROM object WHERE id='$id'");
 	$similar = explode("_", $row["similar"]);
 	$type = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]);
 	$country = $connect->getOne("SELECT id_country FROM region WHERE id=?i", $row["id_reg"]);
@@ -563,6 +566,16 @@ function edit_main_data_object($connect){
                 <input type="checkbox" class="form-control" id="fast_booking"<?php if($row['fast_booking'] == 1) echo ' checked';?>>
             </div>
         </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Тип цены Travelline по умолчанию</label>
+            <div class="col-sm-9">
+                <select class="form-control" id="default_price_type">
+                    <?php foreach ($array_type as $key => $type_name) { ?>
+                      <option value="<?=$key;?>"<?php if($row['default_price_type'] == $key) { ?> selected<?php } ?>><?=$type_name;?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
 		<div class="form-group form-group-margin">
 			<label class="col-sm-3 control-label">Описание</label>
 			<div class="col-sm-9">
@@ -604,6 +617,7 @@ function edit_main_data_object($connect){
 }
 
 function update_main_data_object($connect){
+    global $array_type;
 	$id = $_POST["id"];
 	$type = $_POST["type"];
 	$latitude = (float)$_POST["latitude"];
@@ -620,7 +634,12 @@ function update_main_data_object($connect){
 	$booking_uri = $_POST["booking_uri"];
 	$main_post_name = trim($_POST["main_post_name"]);
     $main_post_fio = trim($_POST["main_post_fio"]);
-	$connect->query("UPDATE object SET name=?s, full_name=?s, city=?s, direction=?s, type=?s, latitude=?s, longitude=?s, similar=?s, weather=?s, description=?s, source_booking=?i, description_check=?s, booking_uri=?s, fast_booking=?i, main_post_name = ?s, main_post_fio = ?s WHERE id=?i", $name, $full_name, $city, $direction, $type, $latitude, $longitude, $similar, $weather, $description, $source_booking, $description, $booking_uri, $fast_booking, $main_post_name, $main_post_fio, $id);
+    $default_price_type = isset($_POST['default_price_type'])?(int)$_POST['default_price_type']:1;
+
+    if(!array_key_exists($default_price_type,$array_type))
+        $default_price_type = 1;
+
+    $connect->query("UPDATE object SET name=?s, full_name=?s, city=?s, direction=?s, type=?s, latitude=?s, longitude=?s, similar=?s, weather=?s, description=?s, source_booking=?i, description_check=?s, booking_uri=?s, fast_booking=?i, main_post_name = ?s, main_post_fio = ?s, default_price_type = ?i WHERE id=?i", $name, $full_name, $city, $direction, $type, $latitude, $longitude, $similar, $weather, $description, $source_booking, $description, $booking_uri, $fast_booking, $main_post_name, $main_post_fio, $default_price_type, $id);
 }
 
 function edit_desc_object($connect){
