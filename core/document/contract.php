@@ -78,9 +78,9 @@ function review_contract($connect, $type, $id){
 		$arr[0] = 0;
 	if(!isset($arr[1]) || !$arr[1])
 		$arr[1] = 0;
-	$itog_sum_sale = first_symbol_to_title(convert_number_to_string($arr[0])." рублей ".$arr[1]." копеек");
+	$itog_sum_sale = first_symbol_to_title(convert_number_to_string($arr[0])." рублей ".(isset($arr[1])?$arr[1]:0)." копеек");
 	$arr = explode(".", add_null($sum_pay));
-	$itog_sum_pay = first_symbol_to_title(convert_number_to_string($arr[0])." рублей ".$arr[1]." копеек");
+	$itog_sum_pay = first_symbol_to_title(convert_number_to_string($arr[0])." рублей ".(isset($arr[1])?$arr[1]:0)." копеек");
 
 	if($prepay AND $date_to){
 		$prepay = add_null($prepay);
@@ -175,7 +175,7 @@ function review_contract($connect, $type, $id){
 			$post = $row["post"];
 			$sep_address = $row["address"];
 			$tel = $row["telephone"];
-			$fax = $row["fax"];
+			$fax = isset($row["fax"])?$row['fax']:null;
 			$city_office = $row["name"];
 			if($row["print_image"])
 				$image = $row["print_image"];
@@ -218,7 +218,10 @@ function review_contract($connect, $type, $id){
       <?php }?>
 	<strong>Отдыхающих:</strong> <?php echo $number_turist; ?><br />
 	<?php echo $services_default; ?>
-	<strong>В стоимость входит:</strong> <?php echo $services_string; ?><br /><br />
+	<strong>В стоимость входит:</strong> <?php echo $services_string; ?><br />
+    <?php if($id == 70172) { ?>
+        <strong>Примечание: </strong> лечение назначается врачом санатория<br><br>
+    <?php } ?>
 
 	<table border="1" cellspacing="0" cellpadding="5">
 	<tr>
