@@ -490,7 +490,7 @@ function get_data_for_graph_current($connect){
 						$date2 = $i_year."-".$i_month."-".$max_day;
 						$query_status = "";
 						if($status != "all")
-							$query_status = " AND ".$type_status."=$status ";
+							$query_status = " AND `reckoning`.`status`=".$status." ";
 						$count = count($connect->getAll("SELECT id FROM reckoning WHERE (".$date_params." >= '$date1' AND ".$date_params." <= '$date2') ".$query_status.$place));
 						if($choice_data == "percent"){
 							$all_count = count($connect->getAll("SELECT id FROM reckoning WHERE (".$date_params." >= '$date1' AND ".$date_params." <= '$date2') ".$place));
@@ -510,7 +510,7 @@ function get_data_for_graph_current($connect){
 							$i_year++;
 						}
 					}
-					$arr["data"][] = array("name" => $label." ".$status_name[$status], "data" => $data);
+					$arr["data"][] = array("name" => (isset($label)?$label:null)." ".$status_name[$status], "data" => $data);
 				}
 				foreach($categories as $index => $date)
 					$arr["categories"][$index] = $date;
