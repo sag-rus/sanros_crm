@@ -367,6 +367,7 @@ function show_tour_bid_account($connect, $data){
 		$data['id'] = 0;
 	$data['id'] = (int)$data['id'];
 	$id = $data["id"];
+	$originID = $data['id'];
 	$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s", $data["session"]);
 	$client = $connect->getOne("SELECT id FROM klient WHERE login=?s", $login);
 	if($login AND $client)
@@ -484,7 +485,7 @@ function show_tour_bid_account($connect, $data){
 				$array["message"][$row["id"]]["manager"] = $connect->getOne("SELECT name FROM users WHERE id=?i", $row["user"]);
 		}
 		$connect->query("UPDATE message_talk SET active=1 WHERE talk=?i AND type='manager'", $talk);
-    $array["id"] = $data["id"];
+    $array["id"] = $originID;
 		return $array;
 	}
 	return FALSE;
