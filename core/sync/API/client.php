@@ -437,7 +437,7 @@ function show_tour_bid_account($connect, $data){
 			$array["doc"] = 3;
 		if($answer["status"] == 1 OR $answer["status"] == 2)
 			$array["doc"] = 1;
-		$answer = $connect->getAll("SELECT id, id_room, id_service, date_z, days, sum, number, type, note FROM position_reck WHERE schet=?i", $array['id']);
+		$answer = $connect->getAll("SELECT id, id_room, id_service, date_z, days, sum, number, type, note FROM position_reck WHERE schet=?i", $data['id']);
 		foreach($answer as $a){
 			$array["position"][$a["id"]]["date_z"] = month_transform(date_change($a["date_z"]));
 			$array["position"][$a["id"]]["days"] = $a["days"];
