@@ -372,7 +372,7 @@ function show_tour_bid_account($connect, $data){
 		$array = array("check" => 1);
 		$answer = $connect->getRow("SELECT id, id_obj, date_z, date_v, sum, status, status_san, rest, changes, id_user, id_dis FROM reckoning WHERE id=?i LIMIT 1", $id);
 		$rest = $answer["rest"];
-		$array["id"] = $answer["id"];
+		$array["id"] = $data["id"];
 		$object = get_object($connect, $answer["id_obj"], "type_and_fast_booking");
 		$array["object"] = $object['type'];
 		$array['fast_booking'] = $object['fast_booking'];
