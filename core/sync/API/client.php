@@ -363,6 +363,9 @@ function show_tours_account($connect, $data){
 }
 
 function show_tour_bid_account($connect, $data){
+	if(!isset($data['id']))
+		$data['id'] = 0;
+	$data['id'] = (int)$data['id'];
 	$id = $data["id"];
 	$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s", $data["session"]);
 	$client = $connect->getOne("SELECT id FROM klient WHERE login=?s", $login);
@@ -370,7 +373,7 @@ function show_tour_bid_account($connect, $data){
 		$true = $connect->getOne("SELECT id FROM reckoning WHERE id=?i AND turist=?i AND active!=3 LIMIT 1", $id, $client);
 	if($true == $id){
 		$array = array("check" => 1);
-		$answer = $connect->getRow("SELECT id, id_obj, date_z, date_v, sum, status, status_san, rest, changes, id_user, id_dis FROM reckoning WHERE id=?i LIMIT 1", $id);
+		$answer = $connect->getRow("SELECT id, id_obj, date_z, date_v, sum, status, status_san, rest, changes, id_user, id_dis FROM reckoning WHERE id=?i LIMIT 1", $data['id']);
 		$rest = $answer["rest"];
 		$array["id"] = $data["id"];
 		$object = get_object($connect, $answer["id_obj"], "type_and_fast_booking");
