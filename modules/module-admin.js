@@ -1461,3 +1461,101 @@ function history_object_account(id){
 		}
 	});
 }
+
+function show_sites_list(){
+  select_menu('sites-list', 1);
+  var str = 'func=show_sites_list';
+  $.ajax({
+    type: 'POST',
+    data: str,
+    url: 'mysql.php',
+    success: function(html){
+      $('#body').html(html);
+    }
+  });
+}
+
+function add_new_site() {
+  var html = '<div class="modal fade">' +
+								'<div class="modal-dialog">' +
+									'<div class="modal-content">' +
+										'<div class="modal-header">' +
+											'<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>' +
+											'<h4 class="modal-title">Новый сайт</h4>' +
+										'</div>' +
+										'<div class="modal-body form-horizontal site-name">' +
+											'<div class="form-group">' +
+												'<label class="col-sm-4 control-label">Название</label>' +
+												'<div class="col-sm-8">' +
+													'<input type="text" class="form-control" name="name">' +
+													'<div class="input-message-block"></div>'+
+												'</div>' +
+											'</div>' +
+											'<div class="form-group">' +
+												'<label class="col-sm-4 control-label">URL</label>' +
+												'<div class="col-sm-8">' +
+													'<input type="text" class="form-control site-url" name="url">' +
+													'<div class="input-message-block"></div>'+
+												'</div>' +
+											'</div>' +
+										'</div>' +
+										'<div class="modal-footer">' +
+											'<button class="btn btn-success btn-sm btn-save-new-site" onclick="save_new_site()" id="btn-save-new-site"><i class="fa fa-check-circle"></i> Добавить</button>' +
+										'</div>' +
+									'</div>' +
+								'</div>' +
+							'</div>';
+
+
+	show_modal(html);
+}
+
+function save_new_site() {
+	var $button = $('.btn-save-new-site');
+	var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
+	var $name = $modalBody.find('input[name="name"]');
+	var $nameMsg = $name.parent().find('.input-message-block');
+	var name = $name.val().trim();
+	var $url = $modalBody.find('input[name="url"]');
+  var $urlMsg = $url.parent().find('.input-message-block');
+
+  var url = $url.val().trim();
+  $nameMsg.html('');
+
+  var error = false;
+
+  if(name.length > 0) {
+
+	}
+	else {
+    $nameMsg.html('Это обязательное поле');
+		$name.focus();
+		error = true;
+  }
+
+  if(url.length > 0) {
+
+  }
+  else {
+    $urlMsg.html('Это обязательное поле');
+    if(!error) {
+      $url.focus();
+      error = true;
+		}
+  }
+
+  if(!error) {
+    show_loader_element($modalBody);
+    $button.prop('disabled',true);
+    var str = 'func=add_new_site';
+    $.ajax({
+      type: 'POST',
+      data: str,
+      url: 'mysql.php',
+      success: function(html){
+        $('#body').html(html);
+      }
+    });
+	}
+
+}

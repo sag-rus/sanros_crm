@@ -784,6 +784,14 @@ function write_body($connect){
 							<li onclick="select_object_profkurort()" id="profkurort-menu"><a><i class="fa fa-product-hunt"></i> Профкурорт</a></li>
 						</ul>
 					</li>
+                  <?php if($id_rights > 5){ ?>
+
+                      <li><a onclick="$('.show-menu-sites').toggle()">Сайты</a>
+                        <ul class="nav nav-pills nav-stacked second-level-menu show-menu-sites" style="display: none">
+                            <li onclick="show_sites_list()" id="sites-list"><a><i class="fa fa-list"></i> Список</a></li>
+                        </ul>
+                    </li>
+                  <?php } ?>
 			<?php } ?>
 				</ul>
 

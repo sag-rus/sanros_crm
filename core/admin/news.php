@@ -59,6 +59,46 @@ function show_news_website($connect){
 	return json_encode($result);
 }
 
+function show_sites_list($connect) {
+	$sites = $connect->getAll("SELECT id, name, url FROM sites ORDER BY id ASC");
+	ob_start();
+	?>
+	<div class="panel panel-default">
+		<div class="panel-heading"><i class="fa fa-list"></i> Сайты (новые)</div>
+		<div class="panel-body">
+			<table class="table table-hover table-condensed">
+				<thead>
+				<tr>
+					<th>
+						ID
+					</th>
+					<th>
+						Название
+					</th>
+					<th>
+						URL
+					</th>
+				</tr>
+				</thead>
+				<tbody>
+        <?php
+        foreach ($sites as $site) {
+          ?>
+          <?php
+        }
+        ?>
+				</tbody>
+			</table>
+		</div>
+		<div class="panel-footer text-right">
+			<button type="button" class="btn btn-primary btn-sm" onclick="add_new_site()"><i class="fa fa-plus-circle"></i> Добавить сайт</button>
+		</div>
+	</div>
+	<?php
+	return ob_get_clean();
+}
+
+
 function check_status_news($connect){
 	$id = $_POST["id"];
 	$check = 0;
