@@ -24,13 +24,15 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 	$reestr = $conf->reestr;
 
 	$type_date = $_GET["date"];
-	$data = $connect->getAll("SELECT position_reck.date_z, position_reck.number, reckoning.payer, position_reck.days, reckoning.id_obj, position_reck.id_room, position_reck.note, reckoning.turist, reckoning.agency, reckoning.id_dis, reckoning.id_com, reckoning.date, reckoning.status_san, position_reck.reward, position_reck.sum, position_reck.type, position_reck.add_one_day, position_reck.id_service, reckoning.agency FROM position_reck, reckoning WHERE reckoning.id=?i AND position_reck.schet=?i", $id, $id);
+	$data = $connect->getAll("SELECT position_reck.date_z, position_reck.number, reckoning.payer, position_reck.days, reckoning.id_obj, position_reck.id_room, position_reck.note, reckoning.turist, reckoning.agency, reckoning.id_dis, reckoning.id_com, reckoning.date, reckoning.status_san, position_reck.reward, position_reck.sum, position_reck.type, position_reck.add_one_day, position_reck.id_service, reckoning.agency, reckoning.date, reckoning.status FROM position_reck, reckoning WHERE reckoning.id=?i AND position_reck.schet=?i", $id, $id);
 	$index = 0;
 	$itog_sum = 0;
 	$itog_num = 0;
 	$table = "";
+	$date_reck = 0;
 	foreach($data as $row){
-	    if(!$row['agency']) {
+	    $date_reck = $row['date'];
+	    if(!$row['agency'] && (strtotime($date_reck) >= strtotime("07.09.2018") || $row['status'] == 3)) {
           $BIK = $conf->BIK2;
           $KS = $conf->KS2;
           $bank = $conf->bank2;
@@ -135,11 +137,13 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 	$office = $connect->getOne("SELECT office FROM users WHERE id=?i", $session_login);
 	$row = $connect->getRow("SELECT address, bank, rs, ks, bik, inn, kpp, telephone FROM office WHERE id=?i", $office);
 	if($row["bank"]){
-		/*$BIK = $row["bik"];
-		$KS = $row["ks"];
-		$bank = $row["bank"];
-		$reck = $row["rs"];
-		$sep_address = $row["address"];*/
+	    if(!(strtotime($date_reck) >= strtotime("07.09.2018") || $row['status'] == 3)) {
+          $BIK = $row["bik"];
+          $KS = $row["ks"];
+          $bank = $row["bank"];
+          $reck = $row["rs"];
+        }
+		$sep_address = $row["address"];
 		$tel = $row["telephone"];
 	}
 
