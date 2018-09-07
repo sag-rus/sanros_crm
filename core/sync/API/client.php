@@ -571,21 +571,22 @@ function show_affiliate_program($connect, $data){
 	if($account){
 		$hash = $account['hash'];
 		$account = $account['id'];
-		$id = 0;
-		$answer = $connect->getAll("SELECT date_reg, id, name, surname FROM klient WHERE invited=?i", $account);
+		$answer = $connect->getAll("SELECT date_reg, id, name, surname FROM klient WHERE invited=?i ORDER BY `date_reg` DESC", $account);
 		foreach($answer as $a){
-			$id++;
 			$date = date_change($a["date_reg"]);
-			$array["ref"][$id] = [];
-			$array["ref"][$id]["date"] = month_transform($date);
-			$array["ref"][$id]["name"] = $a["name"];
-			$array["ref"][$id]["surname"] = $a["surname"];
-			$array["ref"][$id]["bonus"] = 0;
+
+			$referal = [
+        "date" => month_transform($date),
+				"name" => $a["name"],
+				"surname" => $a["surname"],
+				"bonus" => 0
+			];
 			$klient = $a["id"];
 			$res = $connect->getAll("SELECT id FROM reckoning WHERE status=5 AND turist=?i", $klient);
 			foreach($res as $b){
-				$array["ref"][$id]["bonus"]+= $connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND type=4 AND turist=?i", $b["id"], $account);
+				$referal["bonus"]+= $connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND type=4 AND turist=?i", $b["id"], $account);
 			}
+			$array['ref'][] = $referal;
 		}
 		$array['hash'] = $hash;
 		return $array;
