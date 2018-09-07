@@ -1625,3 +1625,8 @@ input[type="checkbox"].form-control {
 	color: #bf2626;
 	font-size: 13px;
 }
+
+textarea.resizable-textarea {
+	max-height: none;
+	resize: both;
+}

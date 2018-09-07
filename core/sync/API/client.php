@@ -562,24 +562,27 @@ function show_bonus_account($connect, $data){
 }
 
 function show_affiliate_program($connect, $data){
-	$array = array();
+	$array = [
+		"ref" => []
+	];
 	$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s", $data["session"]);
 	$account = $connect->getOne("SELECT id FROM klient WHERE login=?s", $login);
 	if($account){
 		$array["hash"] = $connect->getOne("SELECT hash FROM klient WHERE id=?i LIMIT 1", $account);
-		$klient_id = $connect->getOne("SELECT id FROM klient WHERE id=?i", $account);
 		$id = 0;
 		$answer = $connect->getAll("SELECT date_reg, id, name, surname FROM klient WHERE invited=?i", $account);
 		foreach($answer as $a){
 			$id++;
 			$date = date_change($a["date_reg"]);
+			$array["ref"][$id] = [];
 			$array["ref"][$id]["date"] = month_transform($date);
 			$array["ref"][$id]["name"] = $a["name"];
 			$array["ref"][$id]["surname"] = $a["surname"];
+			$array["ref"][$id]["bonus"] = 0;
 			$klient = $a["id"];
 			$res = $connect->getAll("SELECT id FROM reckoning WHERE status=5 AND turist=?i", $klient);
 			foreach($res as $b){
-				$array["ref"][$id]["bonus"]+= $connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND type=4 AND turist=?i", $b["id"], $klient_id)." ";
+				$array["ref"][$id]["bonus"]+= $connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND type=4 AND turist=?i", $b["id"], $account);
 			}
 		}
 		return $array;

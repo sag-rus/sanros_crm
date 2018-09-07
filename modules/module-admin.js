@@ -1488,17 +1488,18 @@ function add_new_site() {
 												'<label class="col-sm-4 control-label">Название</label>' +
 												'<div class="col-sm-8">' +
 													'<input type="text" class="form-control" name="name">' +
-													'<div class="input-message-block"></div>'+
+													'<div class="input-message-block" data-for="name"></div>'+
 												'</div>' +
 											'</div>' +
 											'<div class="form-group">' +
 												'<label class="col-sm-4 control-label">URL</label>' +
 												'<div class="col-sm-8">' +
 													'<input type="text" class="form-control site-url" name="url">' +
-													'<div class="input-message-block"></div>'+
+													'<div class="input-message-block" data-for="url"></div>'+
 												'</div>' +
 											'</div>' +
 										'</div>' +
+										'<div class="modal-loader"></div>'+
 										'<div class="modal-footer">' +
 											'<button class="btn btn-success btn-sm btn-save-new-site" onclick="save_new_site()" id="btn-save-new-site"><i class="fa fa-check-circle"></i> Добавить</button>' +
 										'</div>' +
@@ -1513,6 +1514,7 @@ function add_new_site() {
 function save_new_site() {
 	var $button = $('.btn-save-new-site');
 	var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
+	var $modalLoader = $button.closest('.modal-dialog').find('.modal-loader');
 	var $name = $modalBody.find('input[name="name"]');
 	var $nameMsg = $name.parent().find('.input-message-block');
 	var name = $name.val().trim();
@@ -1545,17 +1547,151 @@ function save_new_site() {
   }
 
   if(!error) {
-    show_loader_element($modalBody);
+    show_loader_element($modalLoader);
+    $modalBody.addClass('hidden');
     $button.prop('disabled',true);
-    var str = 'func=add_new_site';
+    var str = 'func=add_new_site&name='+name+"&url="+url;
     $.ajax({
       type: 'POST',
       data: str,
+			dataType: 'JSON',
       url: 'mysql.php',
-      success: function(html){
-        $('#body').html(html);
+      success: function(data){
+      	if(data['success']) {
+      		remove_all_windows();
+          show_sites_list();
+        }
+        else {
+					$modalLoader.html('');
+					$modalBody.removeClass('hidden');
+					$modalBody.find('*[data-for="'+data['msg_field']+'"]').html(data['msg']);
+				}
       }
     });
 	}
+
+}
+
+function show_sites_contents_list(site_id) {
+  var str = 'func=show_sites_contents_list&site_id='+site_id;
+  $.ajax({
+    type: 'POST',
+    data: str,
+    url: 'mysql.php',
+    success: function(html){
+      $('#body').html(html);
+    }
+  });
+}
+
+function add_new_sites_content(site_id) {
+   var html = '<div class="modal fade">' +
+								'<div class="modal-dialog">' +
+									'<div class="modal-content">' +
+										'<div class="modal-header">' +
+											'<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>' +
+											'<h4 class="modal-title">Новый материал</h4>' +
+										'</div>' +
+										'<div class="modal-body form-horizontal site-name">' +
+											'<div class="form-group">' +
+												'<label class="col-sm-2 control-label">Заголовок</label>' +
+												'<div class="col-sm-10">' +
+													'<input type="text" class="form-control" name="title" maxlength="255">' +
+			 										'<input type="hidden" value="'+site_id+'" name="site_id">'+
+													'<div class="input-message-block" data-for="title"></div>'+
+												'</div>' +
+											'</div>' +
+			 								'<div class="form-group">' +
+												'<label class="col-sm-2 control-label">URL картинки</label>' +
+												'<div class="col-sm-10">' +
+													'<input type="text" class="form-control" name="image">' +
+													'<div class="input-message-block" data-for="image"></div>'+
+												'</div>' +
+											'</div>' +
+											'<div class="form-group">' +
+												'<label class="col-sm-2 control-label">Тип</label>' +
+												'<div class="col-sm-10">' +
+													'<select class="form-control" name="type">' +
+			 											'<option value="page">Страница</option>'+
+			 											'<option value="news">Новость</option>'+
+			 										'</select>'+
+												'</div>' +
+											'</div>' +
+			 								'<div class="form-group">' +
+												'<label class="col-sm-2 control-label">Мета-описание</label>' +
+												'<div class="col-sm-10">' +
+													'<textarea class="form-control" name="description"></textarea>'+
+												'</div>' +
+											'</div>' +
+			 								'<div class="form-group">' +
+												'<label class="col-sm-2 control-label">Анонс</label>' +
+												'<div class="col-sm-10">' +
+													'<textarea class="form-control" name="summary"></textarea>'+
+												'</div>' +
+											'</div>' +
+			 								'<div class="form-group">' +
+												'<label class="col-sm-2 control-label">Содержимое</label>' +
+												'<div class="col-sm-10">' +
+													'<textarea class="form-control resizable-textarea" name="body" id="sites_content_body"></textarea>'+
+												'</div>' +
+											'</div>' +
+										'</div>' +
+										'<div class="modal-loader"></div>'+
+										'<div class="modal-footer">' +
+											'<button class="btn btn-success btn-sm btn-save-new-sites-content" onclick="save_new_sites_content()" id="btn-save-new-sites-content"><i class="fa fa-check-circle"></i> Добавить</button>' +
+										'</div>' +
+									'</div>' +
+								'</div>' +
+							'</div>';
+
+	show_modal(html);
+  CKEDITOR.replace('sites_content_body');
+}
+
+function save_new_sites_content() {
+  var $button = $('.btn-save-new-sites-content');
+  var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
+  var $modalLoader = $button.closest('.modal-dialog').find('.modal-loader');
+  var $title = $modalBody.find('input[name="title"]');
+  var $titleMsg = $title.parent().find('.input-message-block');
+  var title = $title.val().trim();
+  $titleMsg.html('');
+
+  var $description = $modalBody.find('input[name="description"]');
+  var $descriptionMsg = $description.parent().find('.input-message-block');
+  var description = $description.val().trim();
+  $descriptionMsg.html('');
+
+  var $summary = $modalBody.find('input[name="summary"]');
+  var $summaryMsg = $summary.parent().find('.input-message-block');
+  var summary = $summary.val().trim();
+  $summaryMsg.html();
+
+  var error = false;
+
+
+  if(!error) {
+    show_loader_element($modalLoader);
+    $modalBody.addClass('hidden');
+    $button.prop('disabled',true);
+    var str = 'func=add_new_sites_content&title='+title+"&description="+description;
+    $.ajax({
+      type: 'POST',
+      data: str,
+      dataType: 'JSON',
+      url: 'mysql.php',
+      success: function(data){
+        if(data['success']) {
+          remove_all_windows();
+          show_sites_list();
+        }
+        else {
+          $modalLoader.html('');
+          $modalBody.removeClass('hidden');
+          $modalBody.find('*[data-for="'+data['msg_field']+'"]').html(data['msg']);
+        }
+      }
+    });
+  }
 
 }

@@ -78,12 +78,25 @@ function show_sites_list($connect) {
 					<th>
 						URL
 					</th>
+                    <th>
+                        Действия
+                    </th>
 				</tr>
 				</thead>
 				<tbody>
         <?php
         foreach ($sites as $site) {
           ?>
+          <tr>
+              <td><?=$site['id'];?></td>
+              <td><?=$site['name'];?></td>
+              <td><?=$site['url'];?></td>
+              <td>
+                  <button class="btn btn-default btn-sm" onclick="show_sites_contents_list(<?=$site['id'];?>)">Материалы</button>
+                  <button class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
+                  <button class="btn btn-default btn-sm"><i class="fa fa-pencil"></i></button>
+              </td>
+          </tr>
           <?php
         }
         ?>
@@ -98,6 +111,95 @@ function show_sites_list($connect) {
 	return ob_get_clean();
 }
 
+function show_sites_contents_list($connect) {
+  $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
+  $site = NULL;
+  if($site_id) {
+    $site = $connect->getRow("SELECT `id`, `name`, `url` FROM `sites` WHERE `id`=?i",$site_id);
+    if($site)
+        $sites_contents = $connect->getAll("SELECT id, title, published FROM `sites_contents` WHERE `site_id`=?i ORDER BY id ASC", $site_id);
+    else
+        $sites_contents = [];
+  }
+  else
+      $sites_contents = $connect->getAll("SELECT id, title, published FROM `sites_contents` ORDER BY id ASC");
+
+  ob_start();
+  ?>
+    <div class="panel panel-default">
+        <div class="panel-heading"><i class="fa fa-list"></i> Материалы<?php if($site) { ?>сайта «<?=$site['name'];?>»<?php } ?></div>
+        <div class="panel-body">
+            <table class="table table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        Заголовок
+                    </th>
+                    <th>
+                        Действия
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                foreach ($sites_contents as $sites_content) {
+                  ?>
+                    <tr>
+                        <td><?=$sites_content['id'];?></td>
+                        <td><?=$sites_content['title'];?></td>
+                        <td>
+                            <button class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
+                            <button class="btn btn-default btn-sm"><i class="fa fa-pencil"></i></button>
+                        </td>
+                    </tr>
+                  <?php
+                }
+                ?>
+                </tbody>
+            </table>
+        </div>
+        <div class="panel-footer text-right">
+            <button type="button" class="btn btn-primary btn-sm" onclick="add_new_sites_content(<?=$site_id;?>)"><i class="fa fa-plus-circle"></i> Добавить материал</button>
+        </div>
+    </div>
+  <?php
+  return ob_get_clean();
+}
+
+function add_new_site($connect) {
+    $respAr = [
+      'success' => 0,
+      'title' => '',
+      'msg' => ''
+    ];
+
+    $siteName = isset($_POST['name'])?trim($_POST['name']):"";
+    $siteUrl = isset($_POST['url'])?mb_strtolower(trim($_POST['url'])):"";
+
+    if($siteName && $siteUrl) {
+        $datetime = gmdate("U");
+        $oldsite = $connect->getRow("SELECT `name`,`url` FROM `sites` WHERE `name`=?s OR `url`=?s LIMIT 1",$siteName,$siteUrl);
+        if(!$oldsite) {
+            $respAr['success'] = 1;
+            $connect->query("INSERT INTO `sites` (`status`,`created`,`changed`,`name`,`url`) VALUES (1,?i,?i,?s,?s)", $datetime, $datetime, $siteName, $siteUrl);
+        }
+        else {
+            if($oldsite['name'] === $siteName) {
+              $respAr['msg'] = 'Сайт с таким названием уже есть';
+              $respAr['msg_field'] = 'name';
+            }
+            elseif ($oldsite['url'] === $siteUrl) {
+              $respAr['msg'] = 'Сайт с таким URL уже есть';
+              $respAr['msg_field'] = 'url';
+            }
+        }
+    }
+
+    return json_encode($respAr);
+}
 
 function check_status_news($connect){
 	$id = $_POST["id"];
