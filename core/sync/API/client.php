@@ -566,7 +566,7 @@ function show_affiliate_program($connect, $data){
 		"ref" => [],
 		"client_h" => "sdsadas"
 	];
-	$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s AND type = 1", $data["session"]);
+	/*$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s AND type = 1", $data["session"]);
 	$account = $connect->getRow("SELECT id, hash FROM klient WHERE login=?s LIMIT 1", $login);
 	if($account){
 		$hash = $account['hash'];
@@ -587,7 +587,7 @@ function show_affiliate_program($connect, $data){
 				$array["ref"][$id]["bonus"]+= $connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND type=4 AND turist=?i", $b["id"], $account);
 			}
 		}
-		$array['client_h'] = $hash;
+		$array['client_h'] = $hash;*/
 		return $array;
 	}
 	return FALSE;
