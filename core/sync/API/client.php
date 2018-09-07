@@ -563,13 +563,13 @@ function show_bonus_account($connect, $data){
 
 function show_affiliate_program($connect, $data){
 	$array = [
-		"ref" => [],
-		"client_h" => "sdsadas"
+    "client_h" => "sdsadas",
+		"ref" => []
 	];
 	$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s AND type = 1", $data["session"]);
 	$account = $connect->getRow("SELECT id, hash FROM klient WHERE login=?s LIMIT 1", $login);
 	if($account){
-		/*$hash = $account['hash'];
+		$hash = $account['hash'];
 		$account = $account['id'];
 		$id = 0;
 		$answer = $connect->getAll("SELECT date_reg, id, name, surname FROM klient WHERE invited=?i", $account);
@@ -587,7 +587,7 @@ function show_affiliate_program($connect, $data){
 				$array["ref"][$id]["bonus"]+= $connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND type=4 AND turist=?i", $b["id"], $account);
 			}
 		}
-		$array['client_h'] = $hash;*/
+		//$array['client_h'] = $hash;
 		return $array;
 	}
 	return FALSE;
