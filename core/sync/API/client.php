@@ -566,10 +566,10 @@ function show_affiliate_program($connect, $data){
 		"ref" => [],
 		"client_h" => "sdsadas"
 	];
-	/*$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s AND type = 1", $data["session"]);
+	$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s AND type = 1", $data["session"]);
 	$account = $connect->getRow("SELECT id, hash FROM klient WHERE login=?s LIMIT 1", $login);
 	if($account){
-		$hash = $account['hash'];
+		/*$hash = $account['hash'];
 		$account = $account['id'];
 		$id = 0;
 		$answer = $connect->getAll("SELECT date_reg, id, name, surname FROM klient WHERE invited=?i", $account);
