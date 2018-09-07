@@ -565,10 +565,10 @@ function show_affiliate_program($connect, $data){
 	$array = [
 		"ref" => []
 	];
-	$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s", $data["session"]);
+	$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s AND type = 1", $data["session"]);
 	$account = $connect->getOne("SELECT id FROM klient WHERE login=?s", $login);
 	if($account){
-		$array["hash"] = $connect->getOne("SELECT hash FROM klient WHERE id=?i LIMIT 1", $account);
+		$array["hash"] = "aaasaasa";
 		$id = 0;
 		$answer = $connect->getAll("SELECT date_reg, id, name, surname FROM klient WHERE invited=?i", $account);
 		foreach($answer as $a){
