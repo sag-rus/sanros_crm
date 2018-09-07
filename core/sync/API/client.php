@@ -586,7 +586,7 @@ function show_affiliate_program($connect, $data){
 				$array["ref"][$id]["bonus"]+= $connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND type=4 AND turist=?i", $b["id"], $account);
 			}
 		}
-		$array['hash'] = $hash;
+		$array['client_hash'] = $hash;
 		return $array;
 	}
 	return FALSE;
