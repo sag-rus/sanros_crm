@@ -24,12 +24,19 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 	$reestr = $conf->reestr;
 
 	$type_date = $_GET["date"];
-	$data = $connect->getAll("SELECT position_reck.date_z, position_reck.number, reckoning.payer, position_reck.days, reckoning.id_obj, position_reck.id_room, position_reck.note, reckoning.turist, reckoning.agency, reckoning.id_dis, reckoning.id_com, reckoning.date, reckoning.status_san, position_reck.reward, position_reck.sum, position_reck.type, position_reck.add_one_day, position_reck.id_service FROM position_reck, reckoning WHERE reckoning.id=?i AND position_reck.schet=?i", $id, $id);
+	$data = $connect->getAll("SELECT position_reck.date_z, position_reck.number, reckoning.payer, position_reck.days, reckoning.id_obj, position_reck.id_room, position_reck.note, reckoning.turist, reckoning.agency, reckoning.id_dis, reckoning.id_com, reckoning.date, reckoning.status_san, position_reck.reward, position_reck.sum, position_reck.type, position_reck.add_one_day, position_reck.id_service, reckoning.agency FROM position_reck, reckoning WHERE reckoning.id=?i AND position_reck.schet=?i", $id, $id);
 	$index = 0;
 	$itog_sum = 0;
 	$itog_num = 0;
 	$table = "";
 	foreach($data as $row){
+	    if(!$row['agency']) {
+          $BIK = $conf->BIK2;
+          $KS = $conf->KS2;
+          $bank = $conf->bank2;
+          $reck = $conf->reck2;
+        }
+
 		$days = $row["days"];
 		$note = $row["note"];
 		$turist = $row["turist"];
@@ -112,7 +119,7 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 
 		$itog_sum = $itog_sum - $sum3;
 	}
-	if($bonus > 0)
+	if(isset($bonus) && $bonus > 0)
 		$itog_sum = $itog_sum - $bonus;
 	$prepay_sum = $connect->getOne("SELECT sum(sum) FROM payment WHERE schet=?i AND type=1", $id);
 	if($prepay_sum > 0){
@@ -122,17 +129,17 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 	$itog_sum = add_null(round($itog_sum, 2));
 	$sum3 = add_null($sum3);
 	$itog = add_null($itog);
-	$bonus = add_null($bonus);
+	$bonus = isset($bonus)?add_null($bonus):add_null(null);
 	$col_str = 5;
-	$img = $_COOKIE["img"];
+	$img = isset($_COOKIE["img"])?$_COOKIE["img"]:null;
 	$office = $connect->getOne("SELECT office FROM users WHERE id=?i", $session_login);
 	$row = $connect->getRow("SELECT address, bank, rs, ks, bik, inn, kpp, telephone FROM office WHERE id=?i", $office);
 	if($row["bank"]){
-		$BIK = $row["bik"];
+		/*$BIK = $row["bik"];
 		$KS = $row["ks"];
 		$bank = $row["bank"];
 		$reck = $row["rs"];
-		$sep_address = $row["address"];
+		$sep_address = $row["address"];*/
 		$tel = $row["telephone"];
 	}
 

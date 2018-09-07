@@ -14,7 +14,7 @@
 	<title>CRM БОНУСЫ</title>
 
 	<script type="text/javascript" src="js/jquery-1.9.1.js"></script>
-    <script type="text/javascript" src="/js/ckeditor-4/ckeditor.js"></script>
+    <script type="text/javascript" src="js/ckeditor-4/ckeditor.js"></script>
     <script type="text/javascript" src="js/highcharts.js"></script>
 	<script type="text/javascript" src="js/ajaxupload.js"></script>
 	<script type="text/javascript" src="js/jquery-ui.js"></script>
