@@ -566,9 +566,10 @@ function show_affiliate_program($connect, $data){
 		"ref" => []
 	];
 	$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s AND type = 1", $data["session"]);
-	$account = $connect->getOne("SELECT id FROM klient WHERE login=?s", $login);
+	$account = $connect->getRow("SELECT id, hash FROM klient WHERE login=?s LIMIT 1", $login);
 	if($account){
-		$array["hash"] = "aaasaasa";
+		$hash = $account['hash'];
+		$account = $account['id'];
 		$id = 0;
 		$answer = $connect->getAll("SELECT date_reg, id, name, surname FROM klient WHERE invited=?i", $account);
 		foreach($answer as $a){
@@ -585,6 +586,7 @@ function show_affiliate_program($connect, $data){
 				$array["ref"][$id]["bonus"]+= $connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND type=4 AND turist=?i", $b["id"], $account);
 			}
 		}
+		$array['hash'] = $hash;
 		return $array;
 	}
 	return FALSE;
