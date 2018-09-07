@@ -563,7 +563,8 @@ function show_bonus_account($connect, $data){
 
 function show_affiliate_program($connect, $data){
 	$array = [
-		"ref" => []
+		"ref" => [],
+		"client_hash" => ""
 	];
 	$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s AND type = 1", $data["session"]);
 	$account = $connect->getRow("SELECT id, hash FROM klient WHERE login=?s LIMIT 1", $login);
