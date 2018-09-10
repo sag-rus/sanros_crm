@@ -1630,3 +1630,7 @@ textarea.resizable-textarea {
 	max-height: none;
 	resize: both;
 }
+
+.not-synchronized {
+	background: rgba(255, 31, 31, 0.11);
+}

@@ -1598,6 +1598,7 @@ function add_new_sites_content(site_id) {
 												'<div class="col-sm-10">' +
 													'<input type="text" class="form-control" name="title" maxlength="255">' +
 			 										'<input type="hidden" value="'+site_id+'" name="site_id">'+
+													'<input type="hidden" value="0" name="content_id">'+
 													'<div class="input-message-block" data-for="title"></div>'+
 												'</div>' +
 											'</div>' +
@@ -1608,6 +1609,13 @@ function add_new_sites_content(site_id) {
 													'<div class="input-message-block" data-for="image"></div>'+
 												'</div>' +
 											'</div>' +
+			 								'<div class="form-group">' +
+												'<label class="col-sm-2 control-label">Адрес страницы</label>' +
+												'<div class="col-sm-10">' +
+													'<input type="text" class="form-control" name="path">' +
+													'<div class="input-message-block" data-for="path"></div>'+
+												'</div>' +
+											'</div>' +
 											'<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Тип</label>' +
 												'<div class="col-sm-10">' +
@@ -1615,12 +1623,19 @@ function add_new_sites_content(site_id) {
 			 											'<option value="page">Страница</option>'+
 			 											'<option value="news">Новость</option>'+
 			 										'</select>'+
+													'<div class="input-message-block" data-for="type"></div>'+
 												'</div>' +
 											'</div>' +
 			 								'<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Мета-описание</label>' +
 												'<div class="col-sm-10">' +
 													'<textarea class="form-control" name="description"></textarea>'+
+												'</div>' +
+											'</div>' +
+			 								'<div class="form-group">' +
+												'<label class="col-sm-2 control-label">Ключевые слова (через запятую)</label>' +
+												'<div class="col-sm-10">' +
+													'<textarea class="form-control" name="keywords"></textarea>'+
 												'</div>' +
 											'</div>' +
 			 								'<div class="form-group">' +
@@ -1635,10 +1650,22 @@ function add_new_sites_content(site_id) {
 													'<textarea class="form-control resizable-textarea" name="body" id="sites_content_body"></textarea>'+
 												'</div>' +
 											'</div>' +
+			 								'<div class="form-group">' +
+												'<label class="col-sm-2 control-label">Дата и время публикации</label>' +
+												'<div class="col-sm-10">' +
+													'<input type="datetime-local" name="published" class="form-control">'+
+												'</div>' +
+											'</div>' +
+			 								'<div class="form-group">' +
+												'<label class="col-sm-2 control-label">Опубликовано</label>' +
+												'<div class="col-sm-10">' +
+													'<input type="checkbox" name="status" class="form-control">'+
+												'</div>' +
+											'</div>' +
 										'</div>' +
 										'<div class="modal-loader"></div>'+
 										'<div class="modal-footer">' +
-											'<button class="btn btn-success btn-sm btn-save-new-sites-content" onclick="save_new_sites_content()" id="btn-save-new-sites-content"><i class="fa fa-check-circle"></i> Добавить</button>' +
+											'<button class="btn btn-success btn-sm btn-save-new-sites-content" onclick="set_sites_content()" id="btn-save-new-sites-content"><i class="fa fa-check-circle"></i> Добавить</button>' +
 										'</div>' +
 									'</div>' +
 								'</div>' +
@@ -1648,33 +1675,69 @@ function add_new_sites_content(site_id) {
   CKEDITOR.replace('sites_content_body');
 }
 
-function save_new_sites_content() {
+function set_sites_content() {
   var $button = $('.btn-save-new-sites-content');
   var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
   var $modalLoader = $button.closest('.modal-dialog').find('.modal-loader');
   var $title = $modalBody.find('input[name="title"]');
   var $titleMsg = $title.parent().find('.input-message-block');
   var title = $title.val().trim();
+  var content_id = parseInt($modalBody.find('*[name="content_id"]').val());
   $titleMsg.html('');
 
-  var $description = $modalBody.find('input[name="description"]');
+  var $path = $modalBody.find('input[name="path"]');
+  var $pathMsg = $path.parent().find('.input-message-block');
+  var path = $path.val().trim();
+  $pathMsg.html('');
+
+  var $description = $modalBody.find('textarea[name="description"]');
   var $descriptionMsg = $description.parent().find('.input-message-block');
   var description = $description.val().trim();
   $descriptionMsg.html('');
 
-  var $summary = $modalBody.find('input[name="summary"]');
+  var $status = $modalBody.find('*[name="status"]');
+  var status;
+  if($status.prop('checked'))
+  	status = 1;
+  else
+  	status = 0;
+
+  var $summary = $modalBody.find('textarea[name="summary"]');
   var $summaryMsg = $summary.parent().find('.input-message-block');
   var summary = $summary.val().trim();
   $summaryMsg.html();
 
+  var body = CKEDITOR.instances.sites_content_body.getData();
+
+  var imageUrl = $modalBody.find('*[name="image"]').val();
+  var site_id = $modalBody.find('*[name="site_id"]').val();
+  var type = $modalBody.find('*[name="type"]').val();
+  var keywords = $modalBody.find('*[name="keywords"]').val();
+  var published = $modalBody.find('*[name="published"]').val();
+
   var error = false;
 
+  if(title.length === 0) {
+  	$titleMsg.html("Это обязательное поле");
+  	if(!error) {
+  		$title.focus();
+      error = true;
+    }
+	}
+
+  if(path.length === 0) {
+    $pathMsg.html("Это обязательное поле");
+    if(!error) {
+      $path.focus();
+      error = true;
+    }
+  }
 
   if(!error) {
     show_loader_element($modalLoader);
     $modalBody.addClass('hidden');
     $button.prop('disabled',true);
-    var str = 'func=add_new_sites_content&title='+title+"&description="+description;
+    var str = 'func=set_sites_content&title='+title+"&description="+description+"&body="+body+"&site_id="+site_id+"&image="+imageUrl+"&type="+type+"&keywords="+keywords+"&published="+published+"&path="+path+"&summary="+summary+"&status="+status+"&content_id="+content_id;
     $.ajax({
       type: 'POST',
       data: str,
@@ -1683,15 +1746,29 @@ function save_new_sites_content() {
       success: function(data){
         if(data['success']) {
           remove_all_windows();
-          show_sites_list();
+          show_sites_contents_list(site_id);
         }
         else {
           $modalLoader.html('');
           $modalBody.removeClass('hidden');
+          $button.prop('disabled',false);
           $modalBody.find('*[data-for="'+data['msg_field']+'"]').html(data['msg']);
         }
       }
     });
   }
 
+}
+
+function edit_sites_content(id) {
+  var str = 'func=edit_sites_content&id='+id;
+  $.ajax({
+    type: 'POST',
+    data: str,
+    url: 'mysql.php',
+    success: function(html){
+      show_modal(html);
+      CKEDITOR.replace('sites_content_body');
+    }
+  });
 }
