@@ -330,9 +330,9 @@ function set_sites_content($connect) {
     if($site_id) {
       if($title && $path) {
         if($content_id)
-          $oldPath = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `path`=?s AND id <> ?i",$path,$content_id);
+          $oldPath = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `path`=?s AND `id` <> ?i AND `site_id` = ?i",$path,$content_id,$site_id);
         else
-          $oldPath = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `path`=?s",$path);
+          $oldPath = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `path`=?s AND `site_id` = ?i",$path,$site_id);
 
         if($oldPath) {
           $respAr['msg'] = "Указанный адрес уже используется";
