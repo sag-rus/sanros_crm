@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__.'/../../vendor/autoload.php';
 
 function save_new_news($connect){
 	$date = $_POST["date"];
@@ -127,8 +128,8 @@ function show_sites_contents_list($connect) {
   ob_start();
   ?>
     <div class="panel panel-default">
-        <div class="panel-heading"><i class="fa fa-list"></i> Материалы<?php if($site) { ?>сайта «<?=$site['name'];?>»<?php } ?></div>
-        <div class="panel-body">
+        <div class="panel-heading"><i class="fa fa-list"></i> Материалы<?php if($site) { ?> сайта «<?=$site['name'];?>»<?php } ?> <button class="btn btn-success btn-sm btn-sites-sync" onclick="sync_site(<?=($site?$site['id']:0);?>)">Синхронизировать</button></div>
+        <div class="panel-body table-body">
             <table class="table table-hover table-condensed">
                 <thead>
                 <tr>
@@ -366,6 +367,59 @@ function set_sites_content($connect) {
   }
 
   return json_encode($respAr);
+}
+
+function sync_site_content($connect, $id):bool {
+    $content = $connect->getRow("SELECT `id` AS `source_id`, `status`, `published`, `type`, `site_id`, `title`, `summary`, `body`, `path`, `description`, `keywords`, `image` FROM `sites_contents` WHERE `id` =?i",$id);
+    if($content) {
+        try {
+          $client = new \GuzzleHttp\Client();
+          $content["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+          $res = $client->request('POST',"https://sites.tonia.ru/api/content/set/".$content['source_id'],[
+            'form_params' => $content
+          ]);
+
+          $res = json_decode($res->getBody(),true);
+          if(array_key_exists('success',$res)) {
+            $success = (bool)(int)$res['success'];
+            if($success) {
+                $connect->query("UPDATE `sites_contents` SET `synchronized` = '1' WHERE `id` = ?i",$id);
+            }
+            return $success;
+          }
+          else
+              return false;
+        }
+        catch (Exception $e) {
+            return false;
+        }
+    }
+    else return false;
+}
+
+function sync_site($connect) {
+    $respAr = [
+      'title' => '',
+      'msg' => '',
+      'success' => 0
+    ];
+    $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
+    if($site_id)
+        $contents = $connect->getAll("SELECT `id` FROM `sites_contents` WHERE `site_id` = ?i AND `synchronized` = 0",$site_id);
+    else
+        $contents = $connect->getAll("SELECT `id` FROM `sites_contents` WHERE `synchronized` = 0");
+
+    $respAr['success'] = 1;
+
+    foreach ($contents as $content) {
+        if(!sync_site_content($connect,$content['id'])) {
+            $respAr['success'] = 0;
+            $respAr['msg'] = "Что-то пошло не так...";
+        }
+    }
+
+
+    return json_encode($respAr);
 }
 
 function check_status_news($connect){

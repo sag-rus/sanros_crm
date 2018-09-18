@@ -22,8 +22,30 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 	$director = $conf->director;
 	$booker = $conf->booker;
 	$reestr = $conf->reestr;
+	$pay_days = isset($_POST['pay_days'])?(int)$_POST['pay_days']:1;
 
-	$type_date = $_GET["date"];
+	$pay_days_strings = [
+        '0' => 'банковских дней',
+        '1' => 'банковский день',
+        '2' => 'банковских дня',
+        '3' => 'банковских дня',
+        '4' => 'банковских дня',
+        '5' => 'банковских дней',
+        '6' => 'банковских дней',
+        '7' => 'банковских дней',
+        '8' => 'банковских дней',
+        '9' => 'банковских дней'
+    ];
+
+
+
+	if($pay_days <= 0)
+	    $pay_days = 1;
+
+    $pay_days_last_char = (string)$pay_days;
+    $pay_days_last_char = mb_substr($pay_days_last_char,mb_strlen($pay_days_last_char)-1,1);
+
+    $type_date = $_GET["date"];
 	$data = $connect->getAll("SELECT position_reck.date_z, position_reck.number, reckoning.payer, position_reck.days, reckoning.id_obj, position_reck.id_room, position_reck.note, reckoning.turist, reckoning.agency, reckoning.id_dis, reckoning.id_com, reckoning.date, reckoning.status_san, position_reck.reward, position_reck.sum, position_reck.type, position_reck.add_one_day, position_reck.id_service, reckoning.agency, reckoning.date, reckoning.status FROM position_reck, reckoning WHERE reckoning.id=?i AND position_reck.schet=?i", $id, $id);
 	$index = 0;
 	$itog_sum = 0;
@@ -297,7 +319,7 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 	<tr>
 		<td colspan="3" style="border: none;">
 			<div style=" width: 200px">
-				<strong style="color: red">Срок оплаты 5 банковских дней</strong>
+				<strong style="color: red">Срок оплаты <?=$pay_days;?> <?=$pay_days_strings[$pay_days_last_char];?></strong>
 			</div>
 		</td>
 	</tr>

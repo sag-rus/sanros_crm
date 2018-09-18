@@ -83,7 +83,7 @@ function show_bill($connect){
 	$html_payers = "";
 	foreach($payers as $id_payer => $payer){
 		$type = "Физ.";
-		if($payer["type"] == 2)
+		if(isset($payer['type']) && $payer["type"] == 2)
 			$type = "Юр.";
 		if($html_payers)
 			$html_payers.= "<br />";

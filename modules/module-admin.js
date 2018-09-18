@@ -1772,3 +1772,30 @@ function edit_sites_content(id) {
     }
   });
 }
+
+function sync_site(site_id) {
+  if(typeof site_id === 'undefined')
+    site_id = 0;
+
+  var $button = $('.btn-sites-sync');
+  var $panel = $button.closest('.panel');
+  var $tableBody = $panel.find('.table-body');
+  show_loader_element($tableBody);
+
+  var str = 'func=sync_site&site_id='+site_id;
+  $.ajax({
+    type: 'POST',
+    data: str,
+    dataType: 'JSON',
+    url: 'mysql.php',
+    success: function (data) {
+      if (data['success']) {
+        remove_all_windows();
+        show_sites_contents_list(site_id);
+      }
+      else {
+        $tableBody.html(data['msg']);
+      }
+    }
+  });
+}
