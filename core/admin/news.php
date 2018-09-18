@@ -61,6 +61,7 @@ function show_news_website($connect){
 }
 
 function show_sites_list($connect) {
+    global $id_rights;
 	$sites = $connect->getAll("SELECT id, name, url FROM sites ORDER BY id ASC");
 	ob_start();
 	?>
@@ -94,8 +95,10 @@ function show_sites_list($connect) {
               <td><?=$site['url'];?></td>
               <td>
                   <button class="btn btn-default btn-sm" onclick="show_sites_contents_list(<?=$site['id'];?>)">Материалы</button>
-                  <button class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
-                  <button class="btn btn-default btn-sm"><i class="fa fa-pencil"></i></button>
+                  <?php if($id_rights > 5)  { ?>
+                      <button class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
+                      <button class="btn btn-default btn-sm"><i class="fa fa-pencil"></i></button>
+                  <?php } ?>
               </td>
           </tr>
           <?php
@@ -113,6 +116,7 @@ function show_sites_list($connect) {
 }
 
 function show_sites_contents_list($connect) {
+  global $id_rights;
   $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
   $site = NULL;
   if($site_id) {
@@ -152,7 +156,9 @@ function show_sites_contents_list($connect) {
                         <td><?=$sites_content['id'];?></td>
                         <td><?=$sites_content['title'];?></td>
                         <td>
-                            <button class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
+                            <?php if($id_rights > 5) { ?>
+                                <button class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
+                            <?php } ?>
                             <button class="btn btn-default btn-sm" onclick="edit_sites_content(<?=$sites_content['id'];?>)"><i class="fa fa-pencil"></i></button>
                         </td>
                     </tr>
