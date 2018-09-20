@@ -382,6 +382,7 @@ function sync_site_content($connect, $id):bool {
         try {
           $client = new \GuzzleHttp\Client();
           $content["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+          $content["body"] = base64_encode($content["body"]);
           $res = $client->request('POST',"https://sites.tonia.ru/api/content/set/".$content['source_id'],[
             'form_params' => $content
           ]);
