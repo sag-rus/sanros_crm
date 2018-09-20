@@ -1675,6 +1675,16 @@ function add_new_sites_content(site_id) {
   CKEDITOR.replace('sites_content_body');
 }
 
+function b64EncodeUnicode(str) {
+  // first we use encodeURIComponent to get percent-encoded UTF-8,
+  // then we convert the percent encodings into raw bytes which
+  // can be fed into btoa.
+  return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
+      function toSolidBytes(match, p1) {
+        return String.fromCharCode('0x' + p1);
+      }));
+}
+
 function set_sites_content() {
   var $button = $('.btn-save-new-sites-content');
   var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
