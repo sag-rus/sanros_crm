@@ -278,9 +278,9 @@ function edit_sites_content($connect) {
                       <div class="form-group">
                           <label class="col-sm-2 control-label">Содержимое</label>
                           <div class="col-sm-10">
-                              <textarea class="form-control resizable-textarea" name="body" id="sites_content_body"><?=$content['body'];?></textarea>
-                              </div>
+                              <textarea class="form-control resizable-textarea" name="body" id="sites_content_body"><?=htmlspecialchars($content['body']);?></textarea>
                           </div>
+                      </div>
                       <div class="form-group">
                           <label class="col-sm-2 control-label">Дата и время публикации</label>
                           <div class="col-sm-10">
@@ -318,7 +318,7 @@ function set_sites_content($connect) {
   $description = isset($_POST['description'])?trim($_POST['description']):"";
   $body = isset($_POST['body'])?$_POST['body']:"";
   $connect->query("SET CHARSET utf8");
-  ///$body = $body;
+
   $summary = isset($_POST['summary'])?trim($_POST['summary']):"";
   $keywords = isset($_POST['keywords'])?trim($_POST['keywords']):"";
   $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
