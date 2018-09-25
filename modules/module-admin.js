@@ -1890,6 +1890,13 @@ function set_sites_content() {
       error = true;
     }
   }
+  else if(path[0] !== '/') {
+  	$pathMsg.html("путь должен начинаться с /");
+  	if(!error) {
+  		$path.focus();
+  		error = true;
+		}
+	}
 
   if(!error) {
     show_loader_element($modalLoader);
