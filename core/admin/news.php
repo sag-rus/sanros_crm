@@ -97,7 +97,7 @@ function show_sites_list($connect) {
                   <button class="btn btn-default btn-sm" onclick="show_sites_contents_list(<?=$site['id'];?>)">Материалы</button>
                   <?php if($id_rights > 5)  { ?>
                       <button class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
-                      <button class="btn btn-default btn-sm"><i class="fa fa-pencil"></i></button>
+                      <button class="btn btn-default btn-sm" onclick="edit_site(<?=$site['id'];?>);"><i class="fa fa-pencil"></i></button>
                   <?php } ?>
               </td>
           </tr>
@@ -117,22 +117,26 @@ function show_sites_list($connect) {
 
 function show_sites_contents_list($connect) {
   global $id_rights;
+  $content_types = [
+    'news' => 'Новость',
+    'page' => 'Страница'
+  ];
   $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
   $site = NULL;
   if($site_id) {
     $site = $connect->getRow("SELECT `id`, `name`, `url` FROM `sites` WHERE `id`=?i",$site_id);
     if($site)
-        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized FROM `sites_contents` WHERE `site_id`=?i ORDER BY id ASC", $site_id);
+        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type FROM `sites_contents` WHERE `site_id`=?i ORDER BY id ASC", $site_id);
     else
         $sites_contents = [];
   }
   else
-      $sites_contents = $connect->getAll("SELECT id, title, published, synchronized FROM `sites_contents` ORDER BY id ASC");
+      $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type FROM `sites_contents` ORDER BY id ASC");
 
   ob_start();
   ?>
     <div class="panel panel-default">
-        <div class="panel-heading"><i class="fa fa-list"></i> Материалы<?php if($site) { ?> сайта «<?=$site['name'];?>»<?php } ?> <button class="btn btn-success btn-sm btn-sites-sync" onclick="sync_site(<?=($site?$site['id']:0);?>)">Синхронизировать</button></div>
+        <div class="panel-heading"><i class="fa fa-list"></i> Материалы<?php if($site) { ?> сайта «<?=$site['name'];?>»<?php } ?> <button class="btn btn-success btn-sm btn-sites-sync" onclick="sync_site(<?=($site?$site['id']:0);?>)">Синхронизировать</button> <button class="btn btn-default btn-sm" onclick="show_sites_list();">К списку сайтов</button></div>
         <div class="panel-body table-body">
             <table class="table table-hover table-condensed">
                 <thead>
@@ -142,6 +146,9 @@ function show_sites_contents_list($connect) {
                     </th>
                     <th>
                         Заголовок
+                    </th>
+                    <th>
+                        Тип материала
                     </th>
                     <th>
                         Действия
@@ -155,6 +162,7 @@ function show_sites_contents_list($connect) {
                     <tr <?php if(!$sites_content['synchronized']){ ?>class="not-synchronized"<?php } ?>>
                         <td><?=$sites_content['id'];?></td>
                         <td><?=$sites_content['title'];?></td>
+                        <td><?=$content_types[$sites_content['type']];?></td>
                         <td>
                             <?php if($id_rights > 5) { ?>
                                 <button class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
@@ -176,22 +184,36 @@ function show_sites_contents_list($connect) {
   return ob_get_clean();
 }
 
-function add_new_site($connect) {
+function save_site($connect) {
     $respAr = [
       'success' => 0,
       'title' => '',
       'msg' => ''
     ];
 
+    $id = isset($_POST['id'])?(int)$_POST['id']:0;
+    $site = NULL;
+    if($id)
+        $site = $connect->getRow("SELECT `id` FROM `sites` WHERE `id` =?i",$id);
+
     $siteName = isset($_POST['name'])?trim($_POST['name']):"";
     $siteUrl = isset($_POST['url'])?mb_strtolower(trim($_POST['url'])):"";
 
-    if($siteName && $siteUrl) {
+    if($siteName && $siteUrl && (!$id || $site)) {
         $datetime = gmdate("U");
-        $oldsite = $connect->getRow("SELECT `name`,`url` FROM `sites` WHERE `name`=?s OR `url`=?s LIMIT 1",$siteName,$siteUrl);
+        if($id)
+            $oldsite = $connect->getRow("SELECT `id`,`name`,`url` FROM `sites` WHERE (`name`=?s OR `url`=?s) AND `id` <> ?i LIMIT 1",$siteName,$siteUrl,$id);
+        else
+            $oldsite = $connect->getRow("SELECT `id`, `name`,`url` FROM `sites` WHERE `name`=?s OR `url`=?s LIMIT 1",$siteName,$siteUrl);
+
         if(!$oldsite) {
             $respAr['success'] = 1;
-            $connect->query("INSERT INTO `sites` (`status`,`created`,`changed`,`name`,`url`) VALUES (1,?i,?i,?s,?s)", $datetime, $datetime, $siteName, $siteUrl);
+            if($id) {
+                $connect->query("UPDATE `sites` SET `name` = ?s, `url` = ?s WHERE `id`=?i",$siteName,$siteUrl,$id);
+            }
+            else {
+                $connect->query("INSERT INTO `sites` (`status`,`created`,`changed`,`name`,`url`) VALUES (1,?i,?i,?s,?s)", $datetime, $datetime, $siteName, $siteUrl);
+            }
         }
         else {
             if($oldsite['name'] === $siteName) {
@@ -297,6 +319,50 @@ function edit_sites_content($connect) {
                   <div class="modal-loader"></div>
                   <div class="modal-footer">
                       <button class="btn btn-success btn-sm btn-save-new-sites-content" onclick="set_sites_content()" id="btn-save-new-sites-content"><i class="fa fa-check-circle"></i> Сохранить</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+    <?php
+  }
+  return ob_get_clean();
+}
+
+function edit_site($connect) {
+  $id = isset($_POST['id'])?(int)$_POST['id']:0;
+  $site = NULL;
+  if($id)
+    $site = $connect->getRow("SELECT `id`, `status`, `name`,  `url` FROM `sites` WHERE `id` =?i",$id);
+  ob_start();
+  if($site) {
+    ?>
+      <div class="modal fade">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+                      <h4 class="modal-title">Основная информация сайта</h4>
+                      </div>
+                  <div class="modal-body form-horizontal site-name">
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Название</label>
+                          <div class="col-sm-8">
+                              <input type="text" class="form-control" name="name" value="<?=$site['name'];?>">
+                              <input type="hidden" name="id" value="<?=$id;?>">
+                              <div class="input-message-block" data-for="name"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">URL</label>
+                          <div class="col-sm-8">
+                              <input type="text" class="form-control site-url" name="url" value="<?=$site['url'];?>">
+                              <div class="input-message-block" data-for="url"></div>
+                              </div>
+                          </div>
+                      </div>
+                  <div class="modal-loader"></div>
+                  <div class="modal-footer">
+                      <button class="btn btn-success btn-sm btn-save-new-site" onclick="save_site()" id="btn-save-new-site"><i class="fa fa-check-circle"></i> Сохранить</button>
                       </div>
                   </div>
               </div>

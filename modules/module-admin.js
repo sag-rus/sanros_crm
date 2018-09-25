@@ -1488,6 +1488,7 @@ function add_new_site() {
 												'<label class="col-sm-4 control-label">Название</label>' +
 												'<div class="col-sm-8">' +
 													'<input type="text" class="form-control" name="name">' +
+													'<input type="hidden" name="id" value="0">' +
 													'<div class="input-message-block" data-for="name"></div>'+
 												'</div>' +
 											'</div>' +
@@ -1501,7 +1502,7 @@ function add_new_site() {
 										'</div>' +
 										'<div class="modal-loader"></div>'+
 										'<div class="modal-footer">' +
-											'<button class="btn btn-success btn-sm btn-save-new-site" onclick="save_new_site()" id="btn-save-new-site"><i class="fa fa-check-circle"></i> Добавить</button>' +
+											'<button class="btn btn-success btn-sm btn-save-new-site" onclick="save_site()" id="btn-save-new-site"><i class="fa fa-check-circle"></i> Добавить</button>' +
 										'</div>' +
 									'</div>' +
 								'</div>' +
@@ -1511,7 +1512,7 @@ function add_new_site() {
 	show_modal(html);
 }
 
-function save_new_site() {
+function save_site() {
 	var $button = $('.btn-save-new-site');
 	var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
 	var $modalLoader = $button.closest('.modal-dialog').find('.modal-loader');
@@ -1520,6 +1521,8 @@ function save_new_site() {
 	var name = $name.val().trim();
 	var $url = $modalBody.find('input[name="url"]');
   var $urlMsg = $url.parent().find('.input-message-block');
+  var id = parseInt($modalBody.find('*[name="id"]').val());
+
 
   var url = $url.val().trim();
   $nameMsg.html('');
@@ -1550,7 +1553,7 @@ function save_new_site() {
     show_loader_element($modalLoader);
     $modalBody.addClass('hidden');
     $button.prop('disabled',true);
-    var str = 'func=add_new_site&name='+name+"&url="+url;
+    var str = 'func=save_site&name='+name+"&url="+url+"&id="+id;
     $.ajax({
       type: 'POST',
       data: str,
@@ -1563,7 +1566,8 @@ function save_new_site() {
         }
         else {
 					$modalLoader.html('');
-					$modalBody.removeClass('hidden');
+          $button.prop('disabled',false);
+          $modalBody.removeClass('hidden');
 					$modalBody.find('*[data-for="'+data['msg_field']+'"]').html(data['msg']);
 				}
       }
@@ -1949,6 +1953,18 @@ function edit_sites_content(id) {
       var sites_content_body = $('#sites_content_body').val();
       CKEDITOR.replace('sites_content_body');
       CKEDITOR.instances.sites_content_body.setData(sites_content_body);
+    }
+  });
+}
+
+function edit_site(id) {
+	var str = 'func=edit_site&id='+id;
+  $.ajax({
+    type: 'POST',
+    data: str,
+    url: 'mysql.php',
+    success: function(html){
+      show_modal(html);
     }
   });
 }
