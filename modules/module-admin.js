@@ -1499,6 +1499,20 @@ function add_new_site() {
 													'<div class="input-message-block" data-for="url"></div>'+
 												'</div>' +
 											'</div>' +
+      								'<div class="form-group">' +
+												'<label class="col-sm-4 control-label">Основной цвет интерфейса</label>' +
+												'<div class="col-sm-8">' +
+													'<input type="color" class="form-control site-main-bg-color" name="main-bg-color" value="#ffffff">' +
+													'<div class="input-message-block" data-for="main-bg-color"></div>' +
+												'</div>' +
+											'</div>' +
+											'<div class="form-group">' +
+												'<label class="col-sm-4 control-label">Основной цвет интерфейса 2</label>' +
+												'<div class="col-sm-8">' +
+													'<input type="color" class="form-control site-main-bg-color2" name="main-bg-color2" value="#356d33">' +
+													'<div class="input-message-block" data-for="main-bg-color2"></div>' +
+												'</div>' +
+											'</div>' +
 										'</div>' +
 										'<div class="modal-loader"></div>'+
 										'<div class="modal-footer">' +
@@ -1522,7 +1536,8 @@ function save_site() {
 	var $url = $modalBody.find('input[name="url"]');
   var $urlMsg = $url.parent().find('.input-message-block');
   var id = parseInt($modalBody.find('*[name="id"]').val());
-
+	var main_bg_color = $modalBody.find('*[name="main-bg-color"]').val();
+  var main_bg_color2 = $modalBody.find('*[name="main-bg-color2"]').val();
 
   var url = $url.val().trim();
   $nameMsg.html('');
@@ -1553,7 +1568,7 @@ function save_site() {
     show_loader_element($modalLoader);
     $modalBody.addClass('hidden');
     $button.prop('disabled',true);
-    var str = 'func=save_site&name='+name+"&url="+url+"&id="+id;
+    var str = 'func=save_site&name='+name+"&url="+url+"&id="+id+'&main_bg_color='+main_bg_color+"&main_bg_color2="+main_bg_color2;
     $.ajax({
       type: 'POST',
       data: str,
@@ -1658,6 +1673,13 @@ function add_new_sites_content(site_id) {
 												'<label class="col-sm-2 control-label">Дата и время публикации</label>' +
 												'<div class="col-sm-10">' +
 													'<input type="datetime-local" name="published" class="form-control">'+
+												'</div>' +
+											'</div>' +
+			 								'<div class="form-group">' +
+												'<label class="col-sm-2 control-label">Вес материала (для Sitemap)</label>' +
+												'<div class="col-sm-10">' +
+													'<input type="number" name="weight" class="form-control" min="0" max="1" value="0.9">'+
+													'<div class="input-message-block" data-for="weight"></div>'+
 												'</div>' +
 											'</div>' +
 			 								'<div class="form-group">' +
@@ -1852,6 +1874,12 @@ function set_sites_content() {
   var path = $path.val().trim();
   $pathMsg.html('');
 
+
+  var $weight = $modalBody.find('input[name="weight"]');
+  var $weightMsg = $weight.parent().find('.input-message-block');
+  var weight = $weight.val().trim();
+  $weightMsg.html('');
+
   var $description = $modalBody.find('textarea[name="description"]');
   var $descriptionMsg = $description.parent().find('.input-message-block');
   var description = $description.val().trim();
@@ -1902,6 +1930,24 @@ function set_sites_content() {
 		}
 	}
 
+  if(weight.length === 0) {
+    $weightMsg.html("Это обязательное поле");
+    if(!error) {
+      $weight.focus();
+      error = true;
+    }
+  }
+  else {
+  	weight = parseFloat(weight);
+  	if(isNaN(weight) || weight < 0 || weight > 1) {
+      $weightMsg.html("Введите число от 0 до 1");
+      if(!error) {
+        $weight.focus();
+        error = true;
+      }
+		}
+  }
+
   if(!error) {
     show_loader_element($modalLoader);
     $modalBody.addClass('hidden');
@@ -1921,7 +1967,8 @@ function set_sites_content() {
 				path: path,
 				summary: summary,
 				status: status,
-				content_id: content_id
+				content_id: content_id,
+				weight: weight
 			},
       dataType: 'JSON',
       url: 'mysql.php',

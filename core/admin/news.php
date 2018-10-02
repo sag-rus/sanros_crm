@@ -198,6 +198,9 @@ function save_site($connect) {
 
     $siteName = isset($_POST['name'])?trim($_POST['name']):"";
     $siteUrl = isset($_POST['url'])?mb_strtolower(trim($_POST['url'])):"";
+    $main_bg_color = isset($_POST['main_bg_color'])?mb_strtolower(trim($_POST['main_bg_color'])):"#ffffff";
+    $main_bg_color2 = isset($_POST['main_bg_color2'])?mb_strtolower(trim($_POST['main_bg_color2'])):"#356d33";
+
 
     if($siteName && $siteUrl && (!$id || $site)) {
         $datetime = gmdate("U");
@@ -209,10 +212,10 @@ function save_site($connect) {
         if(!$oldsite) {
             $respAr['success'] = 1;
             if($id) {
-                $connect->query("UPDATE `sites` SET `name` = ?s, `url` = ?s WHERE `id`=?i",$siteName,$siteUrl,$id);
+                $connect->query("UPDATE `sites` SET `name` = ?s, `url` = ?s, `main_bg_color` = ?s, `main_bg_color2` = ?s WHERE `id`=?i",$siteName,$siteUrl,$main_bg_color,$main_bg_color2,$id);
             }
             else {
-                $connect->query("INSERT INTO `sites` (`status`,`created`,`changed`,`name`,`url`) VALUES (1,?i,?i,?s,?s)", $datetime, $datetime, $siteName, $siteUrl);
+                $connect->query("INSERT INTO `sites` (`status`,`created`,`changed`,`name`,`url`,`main_bg_color`,`main_bg_color2`) VALUES (1,?i,?i,?s,?s,?s,?s)", $datetime, $datetime, $siteName, $siteUrl,$main_bg_color,$main_bg_color2);
             }
         }
         else {
@@ -234,7 +237,7 @@ function edit_sites_content($connect) {
   $content_id = isset($_POST['id'])?(int)$_POST['id']:0;
   $content = NULL;
   if($content_id)
-      $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `summary`, `body`, `path`, `description`, `keywords`, `image` FROM `sites_contents` WHERE `id` =?i",$content_id);
+      $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `summary`, `body`, `path`, `description`, `keywords`, `image`, `weight` FROM `sites_contents` WHERE `id` =?i",$content_id);
   ob_start();
   if($content) {
     ?>
@@ -249,7 +252,7 @@ function edit_sites_content($connect) {
                       <div class="form-group">
                           <label class="col-sm-2 control-label">Заголовок</label>
                           <div class="col-sm-10">
-                              <input type="text" class="form-control" name="title" maxlength="255" value="<?=$content['title'];?>">
+                              <input type="text" class="form-control" name="title" maxlength="255" value="<?=htmlspecialchars($content['title']);?>">
                               <input type="hidden" value="<?=$content['site_id'];?>" name="site_id">
                               <input type="hidden" value="<?=$content['id'];?>" name="content_id">
                               <div class="input-message-block" data-for="title"></div>
@@ -288,13 +291,13 @@ function edit_sites_content($connect) {
                       <div class="form-group">
                           <label class="col-sm-2 control-label">Ключевые слова (через запятую)</label>
                           <div class="col-sm-10">
-                              <textarea class="form-control" name="keywords"><?=$content['keywords'];?></textarea>
+                              <textarea class="form-control" name="keywords"><?=htmlspecialchars($content['keywords']);?></textarea>
                           </div>
                       </div>
                       <div class="form-group">
                           <label class="col-sm-2 control-label">Анонс</label>
                           <div class="col-sm-10">
-                              <textarea class="form-control" name="summary"><?=$content['summary'];?></textarea>
+                              <textarea class="form-control" name="summary"><?=htmlspecialchars($content['summary']);?></textarea>
                           </div>
                       </div>
                       <div class="form-group">
@@ -307,8 +310,15 @@ function edit_sites_content($connect) {
                           <label class="col-sm-2 control-label">Дата и время публикации</label>
                           <div class="col-sm-10">
                               <input type="datetime-local" name="published" class="form-control" value="<?=date("Y-m-d\TH:i",$content['published']+3600*3);?>">
-                              </div>
                           </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-2 control-label">Вес материала (для Sitemap)</label>
+                          <div class="col-sm-10">
+                              <input type="number" name="weight" class="form-control" value="<?=$content['weight'];?>">
+                              <div class="input-message-block" data-for="weight"></div>
+                          </div>
+                      </div>
                       <div class="form-group">
                           <label class="col-sm-2 control-label">Опубликовано</label>
                           <div class="col-sm-10">
@@ -332,7 +342,7 @@ function edit_site($connect) {
   $id = isset($_POST['id'])?(int)$_POST['id']:0;
   $site = NULL;
   if($id)
-    $site = $connect->getRow("SELECT `id`, `status`, `name`,  `url` FROM `sites` WHERE `id` =?i",$id);
+    $site = $connect->getRow("SELECT `id`, `status`, `name`,  `url`, `main_bg_color`, `main_bg_color2` FROM `sites` WHERE `id` =?i",$id);
   ob_start();
   if($site) {
     ?>
@@ -357,9 +367,23 @@ function edit_site($connect) {
                           <div class="col-sm-8">
                               <input type="text" class="form-control site-url" name="url" value="<?=$site['url'];?>">
                               <div class="input-message-block" data-for="url"></div>
-                              </div>
                           </div>
                       </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Основной цвет интерфейса</label>
+                          <div class="col-sm-8">
+                              <input type="color" class="form-control site-main-bg-color" name="main-bg-color" value="<?=$site['main_bg_color'];?>">
+                              <div class="input-message-block" data-for="main-bg-color"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Основной цвет интерфейса 2</label>
+                          <div class="col-sm-8">
+                              <input type="color" class="form-control site-main-bg-color2" name="main-bg-color2" value="<?=$site['main_bg_color2'];?>">
+                              <div class="input-message-block" data-for="main-bg-color2"></div>
+                          </div>
+                      </div>
+                  </div>
                   <div class="modal-loader"></div>
                   <div class="modal-footer">
                       <button class="btn btn-success btn-sm btn-save-new-site" onclick="save_site()" id="btn-save-new-site"><i class="fa fa-check-circle"></i> Сохранить</button>
@@ -383,7 +407,14 @@ function set_sites_content($connect) {
   $path = isset($_POST['path'])?trim($_POST['path']):"";
   $description = isset($_POST['description'])?trim($_POST['description']):"";
   $body = isset($_POST['body'])?$_POST['body']:"";
+  $weight = isset($_POST['weight'])?(float)$_POST['weight']:0;
   $connect->query("SET CHARSET utf8");
+
+  if($weight < 0)
+      $weight = 0;
+
+  if($weight > 1)
+      $weight = 1;
 
   $summary = isset($_POST['summary'])?trim($_POST['summary']):"";
   $keywords = isset($_POST['keywords'])?trim($_POST['keywords']):"";
@@ -415,12 +446,12 @@ function set_sites_content($connect) {
           if($content_id) {
             $respAr['success'] = 1;
             $respAr['msg'] = "Контент успешно обновлен";
-            $connect->query("UPDATE `sites_contents` SET `title`=?s, `path`=?s, `description`=?s, `body`=?s, `summary`=?s, `keywords`=?s, `image`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i WHERE `id`=?i",$title,$path,$description,$body,$summary,$keywords,$image,$type,$timestamp,$published,$status,0,$content_id);
+            $connect->query("UPDATE `sites_contents` SET `title`=?s, `path`=?s, `description`=?s, `body`=?s, `summary`=?s, `keywords`=?s, `image`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s WHERE `id`=?i",$title,$path,$description,$body,$summary,$keywords,$image,$type,$timestamp,$published,$status,0,$weight,$content_id);
           }
           else {
             $respAr['success'] = 1;
             $respAr['msg'] = "Контент успешно добавлен";
-            $connect->query("INSERT INTO `sites_contents` (`title`, `path`, `description`, `body`, `summary`, `keywords`, `image`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`) VALUES (?s,?s,?s,?s,?s,?s,?s,?s,?i,?i,?i,?i,?i,?i)",$title,$path,$description,$body,$summary,$keywords,$image,$type,$timestamp,$published,$status,0,$site_id,$timestamp);
+            $connect->query("INSERT INTO `sites_contents` (`title`, `path`, `description`, `body`, `summary`, `keywords`, `image`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`) VALUES (?s,?s,?s,?s,?s,?s,?s,?s,?i,?i,?i,?i,?i,?i,?s)",$title,$path,$description,$body,$summary,$keywords,$image,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight);
           }
         }
       }
