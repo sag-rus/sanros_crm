@@ -137,6 +137,12 @@ function show_bill($connect){
 							<?php echo $html_payers; ?>
 						</div>
 					</div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Дней для оплаты</label>
+                        <div class="col-sm-9 payers">
+                            <input name="pay_days" id="pay_days" type="number" min="1" value="1">
+                        </div>
+                    </div>
 					<div class="form-group">
 						<label class="col-sm-6 control-label"><input type="checkbox" id="pay_on_place" <?php echo $check_status; ?> onclick="$('#type_pay').toggle()" /> Клиент оплатит на месте</label>
 						<div class="col-sm-6">

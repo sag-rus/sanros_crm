@@ -22,7 +22,7 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 	$director = $conf->director;
 	$booker = $conf->booker;
 	$reestr = $conf->reestr;
-	$pay_days = isset($_POST['pay_days'])?(int)$_POST['pay_days']:1;
+	$pay_days = isset($_GET['pay_days'])?(int)$_GET['pay_days']:1;
 
 	$pay_days_strings = [
         '0' => 'банковских дней',
@@ -35,6 +35,20 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
         '7' => 'банковских дней',
         '8' => 'банковских дней',
         '9' => 'банковских дней'
+    ];
+
+
+	$pay_days_strings2 = [
+	  '0' => 'рабочих дней',
+      '1' => 'рабочего дня',
+      '2' => 'рабочих дней',
+      '3' => 'рабочих дней',
+      '4' => 'рабочих дней',
+      '5' => 'рабочих дней',
+      '6' => 'рабочих дней',
+      '7' => 'рабочих дней',
+      '8' => 'рабочих дней',
+      '9' => 'рабочих дней'
     ];
 
 
@@ -185,7 +199,7 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 	<table cellpadding="5" cellspacing="0">
 	<tr>
 		<td style="border: none; text-align: right; width: 730px;">
-			<span class="bold_head" style="color: #DB0E0E;">ДЕЙСТВИТЕЛЕН В ТЕЧЕНИЕ 5 РАБОЧИХ ДНЕЙ</span><br />
+			<span class="bold_head" style="color: #DB0E0E;">ДЕЙСТВИТЕЛЕН В ТЕЧЕНИЕ <?=$pay_days;?> <?=mb_strtoupper($pay_days_strings2[$pay_days_last_char]);?></span><br />
 			<span class="bold_head" style="color: #DB0E0E;">При оплате обязательно указывайте номер счета</span>
 		</td>
 	</tr>

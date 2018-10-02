@@ -96,6 +96,7 @@ function form_bill(id, type){
 	var payer = $('.payers input:checked').val();
 	var date = $('.date_checked input:checked').val();
 	var str = 'func=save_bill&id=' + id + '&payer=' + payer;
+	var pay_days = parseInt($('#pay_days').val());
 	if($('#pay_on_place').prop('checked') == true)
 		str+= '&status_san=' + $('#type_pay input:checked').val();
 	$.ajax({
@@ -109,7 +110,7 @@ function form_bill(id, type){
 			view_schet(id);
 			var img = Get_Cookie('img');
 			if(Get_Cookie('writing') == '1')
-				window.open('document.php?func=review_schet&id=' + id + '&img=' + img + '&date=' + date, 'Счет PDF');
+				window.open('document.php?func=review_schet&id=' + id + '&img=' + img + '&date=' + date+'&pay_days='+pay_days, 'Счет PDF');
 		}
 	});
 }
