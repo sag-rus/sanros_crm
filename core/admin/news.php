@@ -509,11 +509,14 @@ function sync_site($connect) {
       'success' => 0
     ];
     $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
-    if($site_id)
-        $contents = $connect->getAll("SELECT `id` FROM `sites_contents` WHERE `site_id` = ?i AND `synchronized` = 0",$site_id);
-    else
-        $contents = $connect->getAll("SELECT `id` FROM `sites_contents` WHERE `synchronized` = 0");
-
+    if($site_id) {
+      $contents = $connect->getAll("SELECT `id` FROM `sites_contents` WHERE `site_id` = ?i AND `synchronized` = 0", $site_id);
+      $sites = $connect->getAll("SELECT * FROM `sites` WHERE `id` = ?i LIMIT 1",$site_id);
+    }
+    else {
+      $contents = $connect->getAll("SELECT `id` FROM `sites_contents` WHERE `synchronized` = 0");
+      $sites = $connect->getAll("SELECT * FROM `sites`");
+    }
     $respAr['success'] = 1;
 
     foreach ($contents as $content) {
@@ -521,6 +524,32 @@ function sync_site($connect) {
             $respAr['success'] = 0;
             $respAr['msg'] = "Что-то пошло не так...";
         }
+    }
+
+    foreach ($sites as $site) {
+      try {
+        $client = new \GuzzleHttp\Client();
+        $site["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+        $site['source_id'] = $site['id'];
+        unset($site['id']);
+        $res = $client->request('POST',"https://sites.tonia.ru/api/site/set/".$site['source_id'],[
+          'form_params' => $site
+        ]);
+
+        $res = json_decode($res->getBody(),true);
+        if(array_key_exists('success',$res)) {
+          $respAr['success'] = $res['success'];
+          $respAr['msg'] = $res['msg']." ".print_r($res,true);
+        }
+        else {
+          $respAr['success'] = 0;
+          $respAr['msg'] = "Что-то пошло не так...";
+        }
+      }
+      catch (Exception $e) {
+        $respAr['success'] = 0;
+        $respAr['msg'] = "Что-то пошло не так...";
+      }
     }
 
 
