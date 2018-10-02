@@ -49,8 +49,8 @@ function check_new_update_booking($connect){
 			$booking["hotelId"] = $id_obj;
 			$booking["currencyCode"] = "RUB";
 			$object = $connect->getRow("SELECT arrival, leaving FROM object WHERE id=?i", $id_obj);
-			$booking["arrivalTime"] = str_replace(".", ":", $object["arrival"]);
-			$booking["departureTime"] = str_replace(".", ":", $object["leaving"]);
+			$booking["arrivalTime"] = str_replace([".","-"], ":", $object["arrival"]);
+			$booking["departureTime"] = str_replace([".","-"], ":", $object["leaving"]);
 			$booking["roomStays"] = array();
 			$positions = $connect->getAll("SELECT id, id_room, number, sum, date_z, days, reward, ratePlan FROM position_reck WHERE ratePlan>0 AND schet=?i", $bid);
 			foreach($positions as $position){
@@ -158,8 +158,8 @@ function check_new_update_booking($connect){
 
 			$row = $connect->getRow("SELECT arrival, leaving FROM object WHERE id=?i", $object);
 			if($object["arrival"]){
-				$arrival.= " ".str_replace(".", ":", $row["arrival"]);
-				$leaving.= " ".str_replace(".", ":", $row["leaving"]);
+				$arrival.= " ".str_replace([".","-"], ":", $row["arrival"]);
+				$leaving.= " ".str_replace([".","-"], ":", $row["leaving"]);
 			}
 
 			if($status == "new")
