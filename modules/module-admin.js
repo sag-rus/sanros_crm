@@ -1493,10 +1493,10 @@ function add_new_site() {
 												'</div>' +
 											'</div>' +
 											'<div class="form-group">' +
-												'<label class="col-sm-4 control-label">URL</label>' +
+												'<label class="col-sm-4 control-label">Домен</label>' +
 												'<div class="col-sm-8">' +
-													'<input type="text" class="form-control site-url" name="url">' +
-													'<div class="input-message-block" data-for="url"></div>'+
+													'<input type="text" class="form-control site-domain" name="domain">' +
+													'<div class="input-message-block" data-for="domain"></div>'+
 												'</div>' +
 											'</div>' +
       								'<div class="form-group">' +
@@ -1513,6 +1513,33 @@ function add_new_site() {
 													'<div class="input-message-block" data-for="main-bg-color2"></div>' +
 												'</div>' +
 											'</div>' +
+											'<div class="form-group">' +
+                          '<label class="col-sm-4 control-label">Основной цвет текста</label>' +
+                          '<div class="col-sm-8">' +
+                              '<input type="color" class="form-control site-main-font-color" name="main-font-color" value="#356d33">' +
+                              '<div class="input-message-block" data-for="main-font-color"></div>' +
+                          '</div>' +
+                      '</div>' +
+                      '<div class="form-group">' +
+                          '<label class="col-sm-4 control-label">Основной цвет текста 2</label>' +
+                          '<div class="col-sm-8">' +
+                              '<input type="color" class="form-control site-main-font-color2" name="main-font-color2" value="#ffffff">' +
+                              '<div class="input-message-block" data-for="main-font-color2"></div>' +
+                          '</div>' +
+                      '</div>' +
+                      '<div class="form-group">' +
+                          '<label class="col-sm-4 control-label">Основной цвет ссылок</label>' +
+                          '<div class="col-sm-8">' +
+                              '<input type="color" class="form-control site-main-link-color" name="main-link-color" value="#356d33">' +
+                              '<div class="input-message-block" data-for="main-link-color"></div>' +
+                          '</div>' +
+                      '</div>' +
+											'<div class="form-group">' +
+                          '<label class="col-sm-4 control-label">Код счетчиков</label>' +
+                          '<div class="col-sm-8">' +
+                              '<textarea class="form-control" name="counters-code"></textarea>' +
+                          '</div>' +
+                      '</div>' +
 										'</div>' +
 										'<div class="modal-loader"></div>'+
 										'<div class="modal-footer">' +
@@ -1533,13 +1560,19 @@ function save_site() {
 	var $name = $modalBody.find('input[name="name"]');
 	var $nameMsg = $name.parent().find('.input-message-block');
 	var name = $name.val().trim();
-	var $url = $modalBody.find('input[name="url"]');
-  var $urlMsg = $url.parent().find('.input-message-block');
+	var $domain = $modalBody.find('input[name="domain"]');
+  var $domainMsg = $domain.parent().find('.input-message-block');
   var id = parseInt($modalBody.find('*[name="id"]').val());
 	var main_bg_color = $modalBody.find('*[name="main-bg-color"]').val();
   var main_bg_color2 = $modalBody.find('*[name="main-bg-color2"]').val();
 
-  var url = $url.val().trim();
+  var main_font_color = $modalBody.find('*[name="main-font-color"]').val();
+  var main_font_color2 = $modalBody.find('*[name="main-font-color2"]').val();
+  var main_link_color = $modalBody.find('*[name="main-link-color"]').val();
+
+  var counters_code = $modalBody.find('*[name="counters-code"]').val();
+
+  var domain = $domain.val().trim();
   $nameMsg.html('');
 
   var error = false;
@@ -1553,13 +1586,13 @@ function save_site() {
 		error = true;
   }
 
-  if(url.length > 0) {
+  if(domain.length > 0) {
 
   }
   else {
-    $urlMsg.html('Это обязательное поле');
+    $domainMsg.html('Это обязательное поле');
     if(!error) {
-      $url.focus();
+      $domain.focus();
       error = true;
 		}
   }
@@ -1568,10 +1601,21 @@ function save_site() {
     show_loader_element($modalLoader);
     $modalBody.addClass('hidden');
     $button.prop('disabled',true);
-    var str = 'func=save_site&name='+name+"&url="+url+"&id="+id+'&main_bg_color='+main_bg_color+"&main_bg_color2="+main_bg_color2;
+    var obj = {
+    	func: "save_site",
+			name: name,
+			domain: domain,
+			id: id,
+			main_bg_color: main_bg_color,
+			main_bg_color2: main_bg_color2,
+      main_font_color: main_font_color,
+      main_font_color2: main_font_color2,
+			main_link_color: main_link_color,
+			counters_code: counters_code
+    };
     $.ajax({
       type: 'POST',
-      data: str,
+      data: obj,
 			dataType: 'JSON',
       url: 'mysql.php',
       success: function(data){

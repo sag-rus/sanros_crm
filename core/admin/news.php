@@ -62,7 +62,7 @@ function show_news_website($connect){
 
 function show_sites_list($connect) {
     global $id_rights;
-	$sites = $connect->getAll("SELECT id, name, url FROM sites ORDER BY id ASC");
+	$sites = $connect->getAll("SELECT id, name, domain FROM sites ORDER BY id ASC");
 	ob_start();
 	?>
 	<div class="panel panel-default">
@@ -78,7 +78,7 @@ function show_sites_list($connect) {
 						Название
 					</th>
 					<th>
-						URL
+						Домен
 					</th>
                     <th>
                         Действия
@@ -92,7 +92,7 @@ function show_sites_list($connect) {
           <tr>
               <td><?=$site['id'];?></td>
               <td><?=$site['name'];?></td>
-              <td><?=$site['url'];?></td>
+              <td><?=$site['domain'];?></td>
               <td>
                   <button class="btn btn-default btn-sm" onclick="show_sites_contents_list(<?=$site['id'];?>)">Материалы</button>
                   <?php if($id_rights > 5)  { ?>
@@ -197,25 +197,30 @@ function save_site($connect) {
         $site = $connect->getRow("SELECT `id` FROM `sites` WHERE `id` =?i",$id);
 
     $siteName = isset($_POST['name'])?trim($_POST['name']):"";
-    $siteUrl = isset($_POST['url'])?mb_strtolower(trim($_POST['url'])):"";
+    $siteDomain = isset($_POST['domain'])?mb_strtolower(trim($_POST['domain'])):"";
     $main_bg_color = isset($_POST['main_bg_color'])?mb_strtolower(trim($_POST['main_bg_color'])):"#ffffff";
     $main_bg_color2 = isset($_POST['main_bg_color2'])?mb_strtolower(trim($_POST['main_bg_color2'])):"#356d33";
 
+    $main_font_color = isset($_POST['main_font_color'])?mb_strtolower(trim($_POST['main_font_color'])):"#356d33";
+    $main_font_color2 = isset($_POST['main_font_color2'])?mb_strtolower(trim($_POST['main_font_color2'])):"#ffffff";
+    $main_link_color = isset($_POST['main_link_color'])?mb_strtolower(trim($_POST['main_link_color'])):"#356d33";
 
-    if($siteName && $siteUrl && (!$id || $site)) {
+    $counters_code = isset($_POST['counters_code'])?mb_strtolower(trim($_POST['counters_code'])):"";
+
+    if($siteName && $siteDomain && (!$id || $site)) {
         $datetime = gmdate("U");
         if($id)
-            $oldsite = $connect->getRow("SELECT `id`,`name`,`url` FROM `sites` WHERE (`name`=?s OR `url`=?s) AND `id` <> ?i LIMIT 1",$siteName,$siteUrl,$id);
+            $oldsite = $connect->getRow("SELECT `id`,`name`,`domain` FROM `sites` WHERE (`name`=?s OR `domain`=?s) AND `id` <> ?i LIMIT 1",$siteName,$siteDomain,$id);
         else
-            $oldsite = $connect->getRow("SELECT `id`, `name`,`url` FROM `sites` WHERE `name`=?s OR `url`=?s LIMIT 1",$siteName,$siteUrl);
+            $oldsite = $connect->getRow("SELECT `id`, `name`,`domain` FROM `sites` WHERE `name`=?s OR `domain`=?s LIMIT 1",$siteName,$siteDomain);
 
         if(!$oldsite) {
             $respAr['success'] = 1;
             if($id) {
-                $connect->query("UPDATE `sites` SET `name` = ?s, `url` = ?s, `main_bg_color` = ?s, `main_bg_color2` = ?s WHERE `id`=?i",$siteName,$siteUrl,$main_bg_color,$main_bg_color2,$id);
+                $connect->query("UPDATE `sites` SET `name` = ?s, `domain` = ?s, `main_bg_color` = ?s, `main_bg_color2` = ?s, `main_font_color` = ?s, `main_font_color2` = ?s, `main_link_color` = ?s, `counters_code` =?s WHERE `id`=?i",$siteName,$siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$counters_code,$id);
             }
             else {
-                $connect->query("INSERT INTO `sites` (`status`,`created`,`changed`,`name`,`url`,`main_bg_color`,`main_bg_color2`) VALUES (1,?i,?i,?s,?s,?s,?s)", $datetime, $datetime, $siteName, $siteUrl,$main_bg_color,$main_bg_color2);
+                $connect->query("INSERT INTO `sites` (`status`,`created`,`changed`,`name`,`domain`,`main_bg_color`,`main_bg_color2`,`main_font_color`,`main_font_color2`,`main_link_color`,`counters_code`) VALUES (1,?i,?i,?s,?s,?s,?s,?s,?s,?s,?s)", $datetime, $datetime, $siteName, $siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$counters_code);
             }
         }
         else {
@@ -223,9 +228,9 @@ function save_site($connect) {
               $respAr['msg'] = 'Сайт с таким названием уже есть';
               $respAr['msg_field'] = 'name';
             }
-            elseif ($oldsite['url'] === $siteUrl) {
-              $respAr['msg'] = 'Сайт с таким URL уже есть';
-              $respAr['msg_field'] = 'url';
+            elseif ($oldsite['domain'] === $siteDomain) {
+              $respAr['msg'] = 'Сайт с таким доменом уже есть';
+              $respAr['msg_field'] = 'domain';
             }
         }
     }
@@ -342,7 +347,7 @@ function edit_site($connect) {
   $id = isset($_POST['id'])?(int)$_POST['id']:0;
   $site = NULL;
   if($id)
-    $site = $connect->getRow("SELECT `id`, `status`, `name`,  `url`, `main_bg_color`, `main_bg_color2` FROM `sites` WHERE `id` =?i",$id);
+    $site = $connect->getRow("SELECT `id`, `status`, `name`,  `domain`, `main_bg_color`, `main_bg_color2`, `main_font_color`, `main_font_color2`, `main_link_color`, `counters_code` FROM `sites` WHERE `id` =?i",$id);
   ob_start();
   if($site) {
     ?>
@@ -363,10 +368,10 @@ function edit_site($connect) {
                           </div>
                       </div>
                       <div class="form-group">
-                          <label class="col-sm-4 control-label">URL</label>
+                          <label class="col-sm-4 control-label">Домен</label>
                           <div class="col-sm-8">
-                              <input type="text" class="form-control site-url" name="url" value="<?=$site['url'];?>">
-                              <div class="input-message-block" data-for="url"></div>
+                              <input type="text" class="form-control site-domain" name="domain" value="<?=$site['domain'];?>">
+                              <div class="input-message-block" data-for="domain"></div>
                           </div>
                       </div>
                       <div class="form-group">
@@ -381,6 +386,33 @@ function edit_site($connect) {
                           <div class="col-sm-8">
                               <input type="color" class="form-control site-main-bg-color2" name="main-bg-color2" value="<?=$site['main_bg_color2'];?>">
                               <div class="input-message-block" data-for="main-bg-color2"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Основной цвет текста</label>
+                          <div class="col-sm-8">
+                              <input type="color" class="form-control site-main-font-color" name="main-font-color" value="<?=$site['main_font_color'];?>">
+                              <div class="input-message-block" data-for="main-font-color"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Основной цвет текста 2</label>
+                          <div class="col-sm-8">
+                              <input type="color" class="form-control site-main-font-color2" name="main-font-color2" value="<?=$site['main_font_color2'];?>">
+                              <div class="input-message-block" data-for="main-font-color2"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Основной цвет ссылок</label>
+                          <div class="col-sm-8">
+                              <input type="color" class="form-control site-main-link-color" name="main-link-color" value="<?=$site['main_link_color'];?>">
+                              <div class="input-message-block" data-for="main-link-color"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Код счетчиков</label>
+                          <div class="col-sm-8">
+                              <textarea class="form-control" name="counters-code"><?=$site['counters_code'];?></textarea>
                           </div>
                       </div>
                   </div>
