@@ -1648,7 +1648,7 @@ function show_sites_contents_list(site_id) {
 }
 
 function add_new_sites_content(site_id) {
-   var html = '<div class="modal fade">' +
+   var html = '<div class="modal fade sites-content-modal">' +
 								'<div class="modal-dialog">' +
 									'<div class="modal-content">' +
 										'<div class="modal-header">' +
@@ -1685,10 +1685,31 @@ function add_new_sites_content(site_id) {
 													'<select class="form-control" name="type">' +
 			 											'<option value="page">Страница</option>'+
 			 											'<option value="news">Новость</option>'+
+			 											'<option value="module">Модуль бронирования</option>' +
 			 										'</select>'+
 													'<div class="input-message-block" data-for="type"></div>'+
 												'</div>' +
 											'</div>' +
+			 								'<div class="form-group hidden">' +
+												'<label class="col-sm-2 control-label">ID объекта</label>' +
+			 									'<div class="col-sm-10">'+
+			 										'<input type="number" class="form-control" min="1" name="module_object_id">' +
+													'<div class="input-message-block" data-for="module_object_id"></div>'+
+			 									'</div>'+
+			 								'</div>'+
+			 								'<div class="form-group hidden">' +
+                          '<label class="col-sm-2 control-label">Блок модуля</label>'+
+                          '<div class="col-sm-10">' +
+                              '<select class="form-control" name="module_block">' +
+                                  '<option value="">Выберите блок для отображения...</option>' +
+                                  '<option value="rooms">Номера и цены</option>' +
+                                  '<option value="desc">Описание</option>' +
+                                  '<option value="promo">Акции</option>' +
+                                  '<option value="rating">Отзывы</option>' +
+                              '</select>' +
+			 												'<div class="input-message-block" data-for="module_block"></div>'+
+                          '</div>' +
+                      '</div>' +
 			 								'<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Мета-описание</label>' +
 												'<div class="col-sm-10">' +
@@ -1941,6 +1962,17 @@ function set_sites_content() {
   var summary = $summary.val().trim();
   $summaryMsg.html();
 
+  var $module_object_id = $modalBody.find('input[name="module_object_id"]');
+  var $module_object_idMsg = $module_object_id.parent().find('.input-message-block');
+  var module_object_id = $module_object_id.val().trim();
+  $module_object_idMsg.html('');
+
+  var $module_block = $modalBody.find('select[name="module_block"]');
+  var $module_blockMsg = $module_block.parent().find('.input-message-block');
+  var module_block = $module_block.val().trim();
+  $module_blockMsg.html('');
+
+
   var body = CKEDITOR.instances.sites_content_body.getData();
 
   var imageUrl = $modalBody.find('*[name="image"]').val();
@@ -1992,6 +2024,39 @@ function set_sites_content() {
 		}
   }
 
+	if(type === 'module') {
+    if(module_object_id.length === 0) {
+      $module_object_idMsg.html("Это обязательное поле");
+      if(!error) {
+        $module_object_id.focus();
+        error = true;
+      }
+    }
+    else {
+      module_object_id = parseInt(module_object_id);
+      if(isNaN(module_object_id) || module_object_id <= 0) {
+        $module_object_idMsg.html("Некорректный ID");
+        if(!error) {
+          $module_object_id.focus();
+          error = true;
+        }
+      }
+    }
+
+    if(module_block.length === 0) {
+      $module_blockMsg.html("Это обязательное поле");
+      if(!error) {
+        $module_block.focus();
+        error = true;
+      }
+    }
+
+	}
+	else {
+    module_object_id = 0;
+    module_block = "";
+	}
+
   if(!error) {
     show_loader_element($modalLoader);
     $modalBody.addClass('hidden');
@@ -2012,7 +2077,9 @@ function set_sites_content() {
 				summary: summary,
 				status: status,
 				content_id: content_id,
-				weight: weight
+				weight: weight,
+        module_object_id: module_object_id,
+        module_block: module_block
 			},
       dataType: 'JSON',
       url: 'mysql.php',
@@ -2086,3 +2153,21 @@ function sync_site(site_id) {
     }
   });
 }
+
+$(document).on('change','.sites-content-modal select[name="type"]',function (e) {
+	var type = $(this).val().trim();
+	var $module_object_id = $('.sites-content-modal *[name="module_object_id"]');
+	var $moduleObjectFormG = $module_object_id.closest('.form-group');
+
+  var $module_block = $('.sites-content-modal *[name="module_block"]');
+  var $moduleBlockFormG = $module_block.closest('.form-group');
+
+	if(type === 'module') {
+		$moduleObjectFormG.removeClass('hidden');
+    $moduleBlockFormG.removeClass('hidden');
+	}
+	else {
+		$moduleObjectFormG.addClass('hidden');
+    $moduleBlockFormG.addClass('hidden');
+	}
+});

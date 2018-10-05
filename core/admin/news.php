@@ -119,12 +119,13 @@ function show_sites_contents_list($connect) {
   global $id_rights;
   $content_types = [
     'news' => 'Новость',
-    'page' => 'Страница'
+    'page' => 'Страница',
+    'module' => 'Модуль бронирования'
   ];
   $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
   $site = NULL;
   if($site_id) {
-    $site = $connect->getRow("SELECT `id`, `name`, `url` FROM `sites` WHERE `id`=?i",$site_id);
+    $site = $connect->getRow("SELECT `id`, `name`, `domain` FROM `sites` WHERE `id`=?i",$site_id);
     if($site)
         $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type FROM `sites_contents` WHERE `site_id`=?i ORDER BY id ASC", $site_id);
     else
@@ -242,11 +243,13 @@ function edit_sites_content($connect) {
   $content_id = isset($_POST['id'])?(int)$_POST['id']:0;
   $content = NULL;
   if($content_id)
-      $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `summary`, `body`, `path`, `description`, `keywords`, `image`, `weight` FROM `sites_contents` WHERE `id` =?i",$content_id);
+      $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `summary`, `body`, `path`, `description`, `keywords`, `image`, `weight`, `module_object_id`, `module_block` FROM `sites_contents` WHERE `id` =?i",$content_id);
   ob_start();
   if($content) {
+      if(!$content['module_object_id'])
+          $content['module_object_id'] = NULL;
     ?>
-      <div class="modal fade">
+      <div class="modal fade sites-content-modal">
           <div class="modal-dialog">
               <div class="modal-content">
                   <div class="modal-header">
@@ -283,8 +286,29 @@ function edit_sites_content($connect) {
                               <select class="form-control" name="type">
                                   <option value="page"<?php if($content['type'] === 'page') {?> selected<?php } ?>>Страница</option>
                                   <option value="news"<?php if($content['type'] === 'news') {?> selected<?php } ?>>Новость</option>
+                                  <option value="module"<?php if($content['type'] === 'module') {?> selected<?php } ?>>Модуль бронирования</option>
                               </select>
                               <div class="input-message-block" data-for="type"></div>
+                          </div>
+                      </div>
+                      <div class="form-group<?php if($content['type'] !== 'module') { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">ID объекта </label>
+                          <div class="col-sm-10">
+                              <input type="number" class="form-control" min="1" name="module_object_id" value="<?=$content['module_object_id'];?>">
+                              <div class="input-message-block" data-for="module_object_id"></div>
+                          </div>
+                      </div>
+                      <div class="form-group<?php if($content['type'] !== 'module') { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Блок модуля</label>
+                          <div class="col-sm-10">
+                              <select class="form-control" name="module_block">
+                                  <option value=""<?php if(is_null($content['module_block'])) { ?> selected<?php } ?>>Выберите блок для отображения...</option>
+                                  <option value="rooms"<?php if($content['module_block'] === 'rooms') { ?> selected<?php } ?>>Номера и цены</option>
+                                  <option value="desc"<?php if($content['module_block'] === 'desc') { ?> selected<?php } ?>>Описание</option>
+                                  <option value="promo"<?php if($content['module_block'] === 'promo') { ?> selected<?php } ?>>Акции</option>
+                                  <option value="rating"<?php if($content['module_block'] === 'rating') { ?> selected<?php } ?>>Отзывы</option>
+                              </select>
+                              <div class="input-message-block" data-for="module_block"></div>
                           </div>
                       </div>
                       <div class="form-group">
@@ -453,18 +477,22 @@ function set_sites_content($connect) {
   $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
   $image = isset($_POST['image'])?trim($_POST['image']):"";
   $type = isset($_POST['type'])?trim($_POST['type']):"page";
-  $typesAr = ['page','news'];
+  $typesAr = ['page','news', 'module'];
+  $moduleBlocks = ["rooms","desc","promo","rating"];
   $timestamp = gmdate("U");
   $published = isset($_POST['published'])?(strtotime($_POST['published'])-3600*3):$timestamp;
   $content_id = isset($_POST['content_id'])?(int)$_POST['content_id']:0;
   $status = isset($_POST['status'])?(int)$_POST['status']:0;
+  $module_object_id = isset($_POST['module_object_id'])?(int)$_POST['module_object_id']:0;
+  $module_block = isset($_POST['module_block'])?mb_strtolower(trim($_POST['module_block'])):"";
 
   if($status !== 0 && $status !== 1)
       $status = 0;
 
-  if(in_array($type,$typesAr)) {
+  if(in_array($type,$typesAr) && (($module_object_id === 0 && $module_block === "" && $type !== 'module') || ($module_object_id > 0 && in_array($module_block,$moduleBlocks) && $type === 'module'))) {
     if($site_id) {
       if($title && $path) {
+
         if($content_id)
           $oldPath = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `path`=?s AND `id` <> ?i AND `site_id` = ?i",$path,$content_id,$site_id);
         else
@@ -475,15 +503,21 @@ function set_sites_content($connect) {
           $respAr['msg_field'] = 'path';
         }
         else {
-          if($content_id) {
-            $respAr['success'] = 1;
-            $respAr['msg'] = "Контент успешно обновлен";
-            $connect->query("UPDATE `sites_contents` SET `title`=?s, `path`=?s, `description`=?s, `body`=?s, `summary`=?s, `keywords`=?s, `image`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s WHERE `id`=?i",$title,$path,$description,$body,$summary,$keywords,$image,$type,$timestamp,$published,$status,0,$weight,$content_id);
+          if(!$module_object_id || $connect->getOne("SELECT `id` FROM `object` WHERE `id` = ?i",$module_object_id)) {
+            if($content_id) {
+              $respAr['success'] = 1;
+              $respAr['msg'] = "Контент успешно обновлен";
+              $connect->query("UPDATE `sites_contents` SET `title`=?s, `path`=?s, `description`=?s, `body`=?s, `summary`=?s, `keywords`=?s, `image`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `module_object_id` = ?i, `module_block` =?s WHERE `id`=?i",$title,$path,$description,$body,$summary,$keywords,$image,$type,$timestamp,$published,$status,0,$weight,$module_object_id,$module_block,$content_id);
+            }
+            else {
+              $respAr['success'] = 1;
+              $respAr['msg'] = "Контент успешно добавлен";
+              $connect->query("INSERT INTO `sites_contents` (`title`, `path`, `description`, `body`, `summary`, `keywords`, `image`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`,`module_object_id`, `module_block`) VALUES (?s,?s,?s,?s,?s,?s,?s,?s,?i,?i,?i,?i,?i,?i,?s,?i,?s)",$title,$path,$description,$body,$summary,$keywords,$image,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight,$module_object_id,$module_block);
+            }
           }
           else {
-            $respAr['success'] = 1;
-            $respAr['msg'] = "Контент успешно добавлен";
-            $connect->query("INSERT INTO `sites_contents` (`title`, `path`, `description`, `body`, `summary`, `keywords`, `image`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`) VALUES (?s,?s,?s,?s,?s,?s,?s,?s,?i,?i,?i,?i,?i,?i,?s)",$title,$path,$description,$body,$summary,$keywords,$image,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight);
+            $respAr['msg'] = "Объект с указанным ID не существует";
+            $respAr['msg_field'] = 'module_object_id';
           }
         }
       }
