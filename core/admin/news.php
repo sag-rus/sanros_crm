@@ -198,6 +198,10 @@ function save_site($connect) {
         $site = $connect->getRow("SELECT `id` FROM `sites` WHERE `id` =?i",$id);
 
     $siteName = isset($_POST['name'])?trim($_POST['name']):"";
+
+    $branding_name = isset($_POST['branding_name'])?trim($_POST['branding_name']):"";
+    $branding_slogan = isset($_POST['branding_slogan'])?trim($_POST['branding_slogan']):"";
+
     $siteDomain = isset($_POST['domain'])?mb_strtolower(trim($_POST['domain'])):"";
     $main_bg_color = isset($_POST['main_bg_color'])?mb_strtolower(trim($_POST['main_bg_color'])):"#ffffff";
     $main_bg_color2 = isset($_POST['main_bg_color2'])?mb_strtolower(trim($_POST['main_bg_color2'])):"#356d33";
@@ -208,7 +212,7 @@ function save_site($connect) {
 
     $head_code = isset($_POST['head_code'])?mb_strtolower(trim($_POST['head_code'])):"";
 
-    if($siteName && $siteDomain && (!$id || $site)) {
+    if($siteName && $branding_name && $siteDomain && (!$id || $site)) {
         $datetime = gmdate("U");
         if($id)
             $oldsite = $connect->getRow("SELECT `id`,`name`,`domain` FROM `sites` WHERE (`name`=?s OR `domain`=?s) AND `id` <> ?i LIMIT 1",$siteName,$siteDomain,$id);
@@ -218,10 +222,10 @@ function save_site($connect) {
         if(!$oldsite) {
             $respAr['success'] = 1;
             if($id) {
-                $connect->query("UPDATE `sites` SET `name` = ?s, `domain` = ?s, `main_bg_color` = ?s, `main_bg_color2` = ?s, `main_font_color` = ?s, `main_font_color2` = ?s, `main_link_color` = ?s, `head_code` =?s WHERE `id`=?i",$siteName,$siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$head_code,$id);
+                $connect->query("UPDATE `sites` SET `name` = ?s, `branding_name` = ?s, `branding_slogan` = ?s, `domain` = ?s, `main_bg_color` = ?s, `main_bg_color2` = ?s, `main_font_color` = ?s, `main_font_color2` = ?s, `main_link_color` = ?s, `head_code` =?s WHERE `id`=?i",$siteName,$branding_name,$branding_slogan,$siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$head_code,$id);
             }
             else {
-                $connect->query("INSERT INTO `sites` (`status`,`created`,`changed`,`name`,`domain`,`main_bg_color`,`main_bg_color2`,`main_font_color`,`main_font_color2`,`main_link_color`,`head_code`) VALUES (1,?i,?i,?s,?s,?s,?s,?s,?s,?s,?s)", $datetime, $datetime, $siteName, $siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$head_code);
+                $connect->query("INSERT INTO `sites` (`status`,`created`,`changed`,`name`, `branding_name`, `branding_slogan`, `domain`,`main_bg_color`,`main_bg_color2`,`main_font_color`,`main_font_color2`,`main_link_color`,`head_code`) VALUES (1,?i,?i,?s,?s, ?s, ?s,?s,?s,?s,?s,?s,?s)", $datetime, $datetime, $siteName, $branding_name, $branding_slogan, $siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$head_code);
             }
         }
         else {
@@ -371,7 +375,7 @@ function edit_site($connect) {
   $id = isset($_POST['id'])?(int)$_POST['id']:0;
   $site = NULL;
   if($id)
-    $site = $connect->getRow("SELECT `id`, `status`, `name`,  `domain`, `main_bg_color`, `main_bg_color2`, `main_font_color`, `main_font_color2`, `main_link_color`, `head_code` FROM `sites` WHERE `id` =?i",$id);
+    $site = $connect->getRow("SELECT `id`, `status`, `name`, `branding_name`, `branding_slogan`,  `domain`, `main_bg_color`, `main_bg_color2`, `main_font_color`, `main_font_color2`, `main_link_color`, `head_code` FROM `sites` WHERE `id` =?i",$id);
   ob_start();
   if($site) {
     ?>
@@ -389,6 +393,20 @@ function edit_site($connect) {
                               <input type="text" class="form-control" name="name" value="<?=$site['name'];?>">
                               <input type="hidden" name="id" value="<?=$id;?>">
                               <div class="input-message-block" data-for="name"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Название бренда</label>
+                          <div class="col-sm-8">
+                              <input type="text" class="form-control" name="branding_name" value="<?=$site['branding_name'];?>">
+                              <div class="input-message-block" data-for="branding_name"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Слоган бренда</label>
+                          <div class="col-sm-8">
+                              <input type="text" class="form-control" name="branding_slogan" value="<?=$site['branding_slogan'];?>">
+                              <div class="input-message-block" data-for="branding_slogan"></div>
                           </div>
                       </div>
                       <div class="form-group">

@@ -1493,6 +1493,20 @@ function add_new_site() {
 												'</div>' +
 											'</div>' +
 											'<div class="form-group">' +
+												'<label class="col-sm-4 control-label">Название бренда</label>' +
+												'<div class="col-sm-8">' +
+													'<input type="text" class="form-control" name="branding_name">' +
+													'<div class="input-message-block" data-for="branding_name"></div>'+
+												'</div>' +
+											'</div>' +
+											'<div class="form-group">' +
+												'<label class="col-sm-4 control-label">Слоган бренда</label>' +
+												'<div class="col-sm-8">' +
+													'<input type="text" class="form-control" name="branding_slogan">' +
+													'<div class="input-message-block" data-for="branding_slogan"></div>'+
+												'</div>' +
+											'</div>' +
+											'<div class="form-group">' +
 												'<label class="col-sm-4 control-label">Домен</label>' +
 												'<div class="col-sm-8">' +
 													'<input type="text" class="form-control site-domain" name="domain">' +
@@ -1570,6 +1584,14 @@ function save_site() {
   var main_font_color2 = $modalBody.find('*[name="main-font-color2"]').val();
   var main_link_color = $modalBody.find('*[name="main-link-color"]').val();
 
+  var $branding_name = $modalBody.find('input[name="branding_name"]');
+  var $branding_nameMsg = $branding_name.parent().find('.input-message-block');
+  var branding_name = $branding_name.val().trim();
+
+  var $branding_slogan = $modalBody.find('input[name="branding_slogan"]');
+  var $branding_sloganMsg = $branding_slogan.parent().find('.input-message-block');
+  var branding_slogan = $branding_slogan.val().trim();
+
   var head_code = $modalBody.find('*[name="head_code"]').val();
 
   var domain = $domain.val().trim();
@@ -1597,6 +1619,17 @@ function save_site() {
 		}
   }
 
+  if(branding_name.length > 0) {
+
+  }
+  else {
+    $branding_nameMsg.html('Это обязательное поле');
+    if(!error) {
+      $branding_name.focus();
+      error = true;
+    }
+  }
+
   if(!error) {
     show_loader_element($modalLoader);
     $modalBody.addClass('hidden');
@@ -1611,7 +1644,9 @@ function save_site() {
       main_font_color: main_font_color,
       main_font_color2: main_font_color2,
 			main_link_color: main_link_color,
-			head_code: head_code
+			head_code: head_code,
+			branding_name: branding_name,
+			branding_slogan: branding_slogan
     };
     $.ajax({
       type: 'POST',
