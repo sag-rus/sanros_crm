@@ -206,7 +206,7 @@ function save_site($connect) {
     $main_font_color2 = isset($_POST['main_font_color2'])?mb_strtolower(trim($_POST['main_font_color2'])):"#ffffff";
     $main_link_color = isset($_POST['main_link_color'])?mb_strtolower(trim($_POST['main_link_color'])):"#356d33";
 
-    $counters_code = isset($_POST['counters_code'])?mb_strtolower(trim($_POST['counters_code'])):"";
+    $head_code = isset($_POST['head_code'])?mb_strtolower(trim($_POST['head_code'])):"";
 
     if($siteName && $siteDomain && (!$id || $site)) {
         $datetime = gmdate("U");
@@ -218,10 +218,10 @@ function save_site($connect) {
         if(!$oldsite) {
             $respAr['success'] = 1;
             if($id) {
-                $connect->query("UPDATE `sites` SET `name` = ?s, `domain` = ?s, `main_bg_color` = ?s, `main_bg_color2` = ?s, `main_font_color` = ?s, `main_font_color2` = ?s, `main_link_color` = ?s, `counters_code` =?s WHERE `id`=?i",$siteName,$siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$counters_code,$id);
+                $connect->query("UPDATE `sites` SET `name` = ?s, `domain` = ?s, `main_bg_color` = ?s, `main_bg_color2` = ?s, `main_font_color` = ?s, `main_font_color2` = ?s, `main_link_color` = ?s, `head_code` =?s WHERE `id`=?i",$siteName,$siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$head_code,$id);
             }
             else {
-                $connect->query("INSERT INTO `sites` (`status`,`created`,`changed`,`name`,`domain`,`main_bg_color`,`main_bg_color2`,`main_font_color`,`main_font_color2`,`main_link_color`,`counters_code`) VALUES (1,?i,?i,?s,?s,?s,?s,?s,?s,?s,?s)", $datetime, $datetime, $siteName, $siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$counters_code);
+                $connect->query("INSERT INTO `sites` (`status`,`created`,`changed`,`name`,`domain`,`main_bg_color`,`main_bg_color2`,`main_font_color`,`main_font_color2`,`main_link_color`,`head_code`) VALUES (1,?i,?i,?s,?s,?s,?s,?s,?s,?s,?s)", $datetime, $datetime, $siteName, $siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$head_code);
             }
         }
         else {
@@ -371,7 +371,7 @@ function edit_site($connect) {
   $id = isset($_POST['id'])?(int)$_POST['id']:0;
   $site = NULL;
   if($id)
-    $site = $connect->getRow("SELECT `id`, `status`, `name`,  `domain`, `main_bg_color`, `main_bg_color2`, `main_font_color`, `main_font_color2`, `main_link_color`, `counters_code` FROM `sites` WHERE `id` =?i",$id);
+    $site = $connect->getRow("SELECT `id`, `status`, `name`,  `domain`, `main_bg_color`, `main_bg_color2`, `main_font_color`, `main_font_color2`, `main_link_color`, `head_code` FROM `sites` WHERE `id` =?i",$id);
   ob_start();
   if($site) {
     ?>
@@ -434,9 +434,9 @@ function edit_site($connect) {
                           </div>
                       </div>
                       <div class="form-group">
-                          <label class="col-sm-4 control-label">Код счетчиков</label>
+                          <label class="col-sm-4 control-label">Код в блоке head</label>
                           <div class="col-sm-8">
-                              <textarea class="form-control" name="counters-code"><?=$site['counters_code'];?></textarea>
+                              <textarea class="form-control" name="head_code"><?=$site['head_code'];?></textarea>
                           </div>
                       </div>
                   </div>

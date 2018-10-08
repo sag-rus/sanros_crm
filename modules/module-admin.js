@@ -1535,9 +1535,9 @@ function add_new_site() {
                           '</div>' +
                       '</div>' +
 											'<div class="form-group">' +
-                          '<label class="col-sm-4 control-label">Код счетчиков</label>' +
+                          '<label class="col-sm-4 control-label">Код в блоке head</label>' +
                           '<div class="col-sm-8">' +
-                              '<textarea class="form-control" name="counters-code"></textarea>' +
+                              '<textarea class="form-control" name="head_code"></textarea>' +
                           '</div>' +
                       '</div>' +
 										'</div>' +
@@ -1570,7 +1570,7 @@ function save_site() {
   var main_font_color2 = $modalBody.find('*[name="main-font-color2"]').val();
   var main_link_color = $modalBody.find('*[name="main-link-color"]').val();
 
-  var counters_code = $modalBody.find('*[name="counters-code"]').val();
+  var head_code = $modalBody.find('*[name="head_code"]').val();
 
   var domain = $domain.val().trim();
   $nameMsg.html('');
@@ -1611,7 +1611,7 @@ function save_site() {
       main_font_color: main_font_color,
       main_font_color2: main_font_color2,
 			main_link_color: main_link_color,
-			counters_code: counters_code
+			head_code: head_code
     };
     $.ajax({
       type: 'POST',
