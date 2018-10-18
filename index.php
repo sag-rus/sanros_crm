@@ -49,6 +49,7 @@
 	<script type="text/javascript" src="modules/module-profile.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-manual.js?ver=<?php echo $version; ?>"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/1.0.0-alpha.2/classic/ckeditor.js"></script>
+    <script type="text/javascript" src="js/damirez-uploader.js?ver=<?php echo $version; ?>"></script>
     <!--link rel="stylesheet" href="js/ckeditor/style.css"-->
 	<link href="font/font-awesome/css/font-awesome.css" rel="stylesheet">
 	<link rel="stylesheet" href="css/style.css?ver=<?php echo $version; ?>">
@@ -59,6 +60,7 @@
 	<link rel="stylesheet" href="css/dots.css">
 	<link href="css/fullcalendar.css" rel="stylesheet" />
 	<link href="css/bootstrap.css?ver=<?php echo $version; ?>" rel="stylesheet" />
+    <link rel="stylesheet" href="css/damirez-uploader.css?ver=<?php echo $version; ?>">
 	<link rel="shortcut icon" href="favicon.ico">
     <meta charset="utf-8" />
 

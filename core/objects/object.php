@@ -1030,11 +1030,11 @@ function update_object_sync_info($connect){
 	$_POST = clear_array($_POST);
 	$id = $_POST["id"];
 	$full = $_POST["full"];
-	$code = $_POST["code"];
-	$inn = $_POST["inn"];
+	$code = trim($_POST["code"]);
+	$inn = trim($_POST["inn"]);
 	$nomenclature = $_POST["nomenclature"];
 	$bank_login = $_POST["login"];
-	$connect->query("UPDATE object SET 1C_full_name=?s, inn=?i, 1C_code=?s, nomenclature=?s, bank_login=?s WHERE id=?i", $full, $code, $inn, $nomenclature, $bank_login, $id);
+	$connect->query("UPDATE object SET 1C_full_name=?s, inn=?s, 1C_code=?s, nomenclature=?s, bank_login=?s WHERE id=?i", $full, $code, $inn, $nomenclature, $bank_login, $id);
 }
 
 function edit_service_information_object($connect){
