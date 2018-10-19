@@ -259,6 +259,8 @@ function naimenovanie($id_obj, $room = "", $date_z = "", $date_v = "", $days = "
 		$html = "Санаторий «Сибирь» (Белокуриха) ".$room." ".$date_z."-".$date_v;
     elseif($id_obj == 545)
       $html = "Санаторий-профилакторий «Бодрость» ".$room." ".$date_z."-".$date_v;
+    elseif ($id_obj == 20)
+      $html = "Санаторно-курортная путевка";
 	return $html;
 }
 
