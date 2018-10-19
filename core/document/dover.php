@@ -260,7 +260,7 @@ function naimenovanie($id_obj, $room = "", $date_z = "", $date_v = "", $days = "
     elseif($id_obj == 545)
       $html = "Санаторий-профилакторий «Бодрость» ".$room." ".$date_z."-".$date_v;
     elseif ($id_obj == 20)
-      $html = "Санаторно-курортная путевка";
+      $html = "Путевка";
 	return $html;
 }
 
@@ -274,6 +274,8 @@ function full_name($id_obj){
 		$html = "ООО \"Санаторий Балкыш\"";
 	elseif ($id_obj == 17)
       $html = "ЛПЧУП \"Санаторий Жемчужина\"";
+    elseif ($id_obj == 20)
+      $html = 'Управление социальными объектами ПАО "Татнефть" им.В.Д.Шашина';
 	elseif($id_obj == 59) //ян
 		$html = "ПАО \"Татнефть\" им. В.Д.Шашина";
 	elseif($id_obj == 31) //лениногорский
