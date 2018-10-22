@@ -118,6 +118,8 @@ function show_sites_list($connect) {
 function show_sites_contents_list($connect) {
   global $id_rights;
   $content_types = [
+    'landing' => 'Лэндинг',
+    'photogallery' => 'Фотогалерея',
     'news' => 'Новость',
     'page' => 'Страница',
     'module' => 'Модуль бронирования'
@@ -248,6 +250,8 @@ function edit_sites_content($connect) {
   $content = NULL;
   if($content_id)
       $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `summary`, `body`, `path`, `description`, `keywords`, `image`, `weight`, `module_object_id`, `module_block` FROM `sites_contents` WHERE `id` =?i",$content_id);
+      $entity = $content;
+      $entity['type'] = 'content';
   ob_start();
   if($content) {
       if(!$content['module_object_id'])
@@ -288,8 +292,10 @@ function edit_sites_content($connect) {
                           <label class="col-sm-2 control-label">Тип</label>
                           <div class="col-sm-10">
                               <select class="form-control" name="type">
+                                  <option value="landing"<?php if($content['type'] === 'landing') {?> selected<?php } ?>>Лэндинг</option>
                                   <option value="page"<?php if($content['type'] === 'page') {?> selected<?php } ?>>Страница</option>
                                   <option value="news"<?php if($content['type'] === 'news') {?> selected<?php } ?>>Новость</option>
+                                  <option value="photogallery"<?php if($content['type'] === 'photogallery') {?> selected<?php } ?>>Фотогалерея</option>
                                   <option value="module"<?php if($content['type'] === 'module') {?> selected<?php } ?>>Модуль бронирования</option>
                               </select>
                               <div class="input-message-block" data-for="type"></div>
@@ -313,6 +319,20 @@ function edit_sites_content($connect) {
                                   <option value="rating"<?php if($content['module_block'] === 'rating') { ?> selected<?php } ?>>Отзывы</option>
                               </select>
                               <div class="input-message-block" data-for="module_block"></div>
+                          </div>
+                      </div>
+                      <div class="form-group<?php if($content['type'] !== 'photogallery') { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Фотографии</label>
+                          <div class="col-sm-10">
+                              <div class="input-message-block" data-for="photogallery"></div>
+                              <input type="file" name="photogallery" value="<?=htmlspecialchars(json_encode((object)bounds_to_files($connect,load_bounds($connect,$entity,'photogallery'))));?>">
+                          </div>
+                      </div>
+                      <div class="form-group<?php if($content['type'] !== 'landing') { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Фото слайдера</label>
+                          <div class="col-sm-10">
+                              <div class="input-message-block" data-for="slider_photos"></div>
+                              <input type="file" name="slider_photos" value="<?=htmlspecialchars(json_encode((object)bounds_to_files($connect,load_bounds($connect,$entity,'slider_photos'))));?>">
                           </div>
                       </div>
                       <div class="form-group">
@@ -369,6 +389,172 @@ function edit_sites_content($connect) {
     <?php
   }
   return ob_get_clean();
+}
+
+function remove_bounds($connect,$entity,$boundsName) {
+  $connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type`=?s AND `entity1_id`=?i AND `name` =?s",$entity['type'],$entity['id'],$boundsName);
+}
+
+function set_bounds($connect,$boundsArray,String $boundsName)
+{
+    $entity1_types = [
+      'site',
+      'content'
+    ];
+
+    $entity2_types = [
+      'file'
+    ];
+
+    $timestamp = gmdate("U");
+    $i = 0;
+    foreach ($boundsArray as $bound) {
+      if(in_array($bound['entity1_type'],$entity1_types) && in_array($bound['entity2_type'],$entity2_types) && $bound['entity1_id'] > 0 && $bound['entity2_id'] > 0) {
+          $connect->query("INSERT INTO `app_models_site_bound` (`created`,`changed`,`status`,`uid`, `sort`, `name`,`entity1_type`,`entity1_id`,`entity2_type`,`entity2_id`, `title`, `description`) VALUES (?i,?i,?i,?i,?i,?s,?s,?i,?s,?i,?s,?s)",$timestamp,$timestamp,1,1,$i,$boundsName,$bound['entity1_type'],$bound['entity1_id'],$bound['entity2_type'],$bound['entity2_id'],$bound['title'],$bound['description']);
+      }
+      $i++;
+    }
+}
+
+function load_bounds($connect,$entity,String $boundsName = NULL)
+{
+    if(!is_null($boundsName))
+        return $connect->getAll("SELECT * FROM `app_models_site_bound` WHERE  `status` = 1 AND `entity1_type`=?s AND `entity1_id` = ?i AND `name`=?s ORDER BY `sort` ASC",$entity['type'],$entity['id'],$boundsName);
+    else
+        return $connect->getAll("SELECT * FROM `app_models_site_bound` WHERE `status` = 1 AND `entity1_type`=?s AND `entity1_id` = ?i ORDER BY `sort` ASC",$entity['type'],$entity['id']);
+}
+
+function bounds_to_files($connect,array $bounds):array
+{
+    $filesAr = [];
+
+    foreach ($bounds as $bound) {
+        if($bound['entity2_type'] === 'file' && ($file = $connect->getRow("SELECT * FROM `core_models_file_file` WHERE `id` =?i LIMIT 1",$bound['entity2_id']))) {
+          $filesAr[] = [
+            'fid' => $bound['entity2_id'],
+            'title' => $bound['title'],
+            'description' => $bound['description'],
+            'uri' => $file['uri'],
+            'uri_thumbnail' => imageUriStyle($file['uri'],"thumbnail"),
+            'uri_preview' => imageUriStyle($file['uri'],"preview"),
+            'mime' => $file['mime'],
+            'ext' => $file['ext']
+          ];
+        }
+    }
+    return $filesAr;
+}
+
+function files_to_bounds($connect,$entity,String $name, array $files):array
+{
+    $boundsAr = [];
+    $i = 0;
+    $timestamp = gmdate("U");
+    foreach ($files as $file) {
+        if($fileBase = $connect->getRow("SELECT * FROM `core_models_file_file` WHERE `id` =?i LIMIT 1",$file['fid'])) {
+            $boundsAr[] = [
+            'created' => $timestamp,
+            'changed' => $timestamp,
+            'status' => 1,
+            'uid' => 1,
+            'name' => $name,
+            'entity1_type' => $entity['type'],
+            'entity1_id' => $entity['id'],
+            'entity2_type' => 'file',
+            'entity2_id' => $fileBase['id'],
+            'title' => $file['title'],
+            'description' => $file['description'],
+            'sort' => $i
+          ];
+          $i++;
+        }
+    }
+  return $boundsAr;
+
+}
+
+function imageUriStyle(String $uri, String $style) {
+    $uriExpl = explode("/",$uri);
+    $newUri = "";
+
+    foreach ($uriExpl as $i => $uriItem) {
+        if($i > 0 || $uriItem !== '') {
+
+            if($i === count($uriExpl)-1)
+                $newUri .= '/'.$style;
+
+            if($i !== 0)
+              $newUri .= '/';
+
+            $newUri .= $uriItem;
+        }
+    }
+
+    return $newUri;
+}
+
+function multipart_upload($connect) {
+  $respAr = [
+    'msg' => "Неизвестная ошибка",
+    'title' => 'Error',
+    'success' => 0
+  ];
+  try {
+    $client = new \GuzzleHttp\Client();
+    $postCopy = $_POST;
+    $postCopy["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+    $respAr['partnum'] = (int)$_POST['partnum'];
+    $respAr['plength'] = (int)$_POST['plength'];
+
+    if($respAr['partnum'] == $respAr['plength']-1)
+        $postCopy['used'] = 1;
+
+
+    $multipart = [
+      [
+        'Content-type' => 'multipart/form-data',
+        'name' => 'upload',
+        'contents' => fopen($_FILES['upload']['tmp_name'],"r")
+      ]
+    ];
+
+    foreach ($postCopy as $postKey => $postItem) {
+      $multipart[] = [
+        'name' => $postKey,
+        'contents' => $postItem
+      ];
+    }
+
+
+    $res = $client->request('POST',"https://cdn.tonia.ru/api/files/upload/multipart",[
+      'multipart' => $multipart
+    ]);
+
+    $res = json_decode($res->getBody(),true);
+    if(array_key_exists('success',$res)) {
+      $respAr = $res;
+      $respAr['success'] = (int)$respAr['success'];
+      if(array_key_exists('loaded',$respAr))
+          $respAr['loaded'] = (int)$respAr['loaded'];
+      else
+          $respAr['loaded'] = 0;
+
+      if($respAr['loaded']) {
+        $respAr['uri'] = 'https://cdn.tonia.ru'.$respAr['uri'];
+        $connect->query("INSERT INTO `core_models_file_file` (`id`, `created`, `changed`, `status`, `uid`, `title`, `description`, `uri`, `mime`, `ext`, `usages`) VALUES (?i,?i,?i,?i,?i,?s,?s,?s,?s,?s,?i)",$respAr['fid'],$respAr['created'],$respAr['changed'],1,$respAr['uid'],'','',$respAr['uri'],$respAr['mime'],$respAr['ext'],0);
+        $respAr['uri_thumbnail'] = 'https://cdn.tonia.ru'.$respAr['uri_thumbnail'];
+        $respAr['uri_preview'] = 'https://cdn.tonia.ru'.$respAr['uri_preview'];
+      }
+
+      return json_encode($respAr);
+    }
+    else
+      return json_encode($respAr);
+  }
+  catch (Exception $e) {
+    $respAr['msg'] = "Ошибка соединения: ".$e->getMessage();
+    return json_encode($respAr);
+  }
 }
 
 function edit_site($connect) {
@@ -495,7 +681,7 @@ function set_sites_content($connect) {
   $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
   $image = isset($_POST['image'])?trim($_POST['image']):"";
   $type = isset($_POST['type'])?trim($_POST['type']):"page";
-  $typesAr = ['page','news', 'module'];
+  $typesAr = ['page','news', 'module', 'landing', `photogallery`];
   $moduleBlocks = ["rooms","desc","promo","rating"];
   $timestamp = gmdate("U");
   $published = isset($_POST['published'])?(strtotime($_POST['published'])-3600*3):$timestamp;
@@ -525,12 +711,54 @@ function set_sites_content($connect) {
             if($content_id) {
               $respAr['success'] = 1;
               $respAr['msg'] = "Контент успешно обновлен";
+
+              $entity = [
+                  'id' => $content_id,
+                  'type' => 'content'
+              ];
+              $boundsArrayPhotogallery = [];
+
+              if($type === 'photogallery') {
+                  $boundsArrayPhotogallery = files_to_bounds($connect,$entity,'photogallery',$_POST['photogallery']);
+              }
+
+              $boundsArraySliderPhotos = [];
+
+              if($type === 'landing') {
+                $boundsArraySliderPhotos = files_to_bounds($connect,$entity,'slider_photos',$_POST['slider_photos']);
+              }
+
+              remove_bounds($connect,$entity,'photogallery');
+              remove_bounds($connect,$entity,'slider_photos');
+              set_bounds($connect,$boundsArrayPhotogallery,'photogallery');
+              set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
+
+
               $connect->query("UPDATE `sites_contents` SET `title`=?s, `path`=?s, `description`=?s, `body`=?s, `summary`=?s, `keywords`=?s, `image`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `module_object_id` = ?i, `module_block` =?s WHERE `id`=?i",$title,$path,$description,$body,$summary,$keywords,$image,$type,$timestamp,$published,$status,0,$weight,$module_object_id,$module_block,$content_id);
             }
             else {
               $respAr['success'] = 1;
               $respAr['msg'] = "Контент успешно добавлен";
               $connect->query("INSERT INTO `sites_contents` (`title`, `path`, `description`, `body`, `summary`, `keywords`, `image`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`,`module_object_id`, `module_block`) VALUES (?s,?s,?s,?s,?s,?s,?s,?s,?i,?i,?i,?i,?i,?i,?s,?i,?s)",$title,$path,$description,$body,$summary,$keywords,$image,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight,$module_object_id,$module_block);
+
+              $entity = [
+                'id' => $connect->insertId(),
+                'type' => 'content'
+              ];
+              $boundsArrayPhotogallery = [];
+
+              if($type === 'photogallery') {
+                $boundsArrayPhotogallery = files_to_bounds($connect,$entity,'photogallery',$_POST['photogallery']);
+              }
+
+              $boundsArraySliderPhotos = [];
+
+              if($type === 'landing') {
+                $boundsArraySliderPhotos = files_to_bounds($connect,$entity,'slider_photos',$_POST['slider_photos']);
+              }
+
+              set_bounds($connect,$boundsArrayPhotogallery,'photogallery');
+              set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
             }
           }
           else {

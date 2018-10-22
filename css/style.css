@@ -1634,3 +1634,7 @@ textarea.resizable-textarea {
 .not-synchronized {
 	background: rgba(255, 31, 31, 0.11);
 }
+
+.input-message-block.with-bottom-margin {
+	margin-bottom: 1em;
+}

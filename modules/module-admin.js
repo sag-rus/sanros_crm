@@ -1718,8 +1718,10 @@ function add_new_sites_content(site_id) {
 												'<label class="col-sm-2 control-label">Тип</label>' +
 												'<div class="col-sm-10">' +
 													'<select class="form-control" name="type">' +
+			 											'<option value="landing">Лэндинг</option>' +
 			 											'<option value="page">Страница</option>'+
 			 											'<option value="news">Новость</option>'+
+			 											'<option value="photogallery">Фотогалерея</option>'+
 			 											'<option value="module">Модуль бронирования</option>' +
 			 										'</select>'+
 													'<div class="input-message-block" data-for="type"></div>'+
@@ -1743,6 +1745,20 @@ function add_new_sites_content(site_id) {
                                   '<option value="rating">Отзывы</option>' +
                               '</select>' +
 			 												'<div class="input-message-block" data-for="module_block"></div>'+
+                          '</div>' +
+                      '</div>' +
+			 								'<div class="form-group hidden">' +
+                          '<label class="col-sm-2 control-label">Фотографии</label>' +
+                          '<div class="col-sm-10">' +
+                              '<div class="input-message-block" data-for="photogallery"></div>' +
+                              '<input type="file" name="photogallery">' +
+                          '</div>' +
+                      '</div>' +
+			 								'<div class="form-group">' +
+                          '<label class="col-sm-2 control-label">Фото слайдера</label>' +
+                          '<div class="col-sm-10">' +
+                              '<div class="input-message-block" data-for="slider_photos"></div>' +
+                              '<input type="file" name="slider_photos">' +
                           '</div>' +
                       '</div>' +
 			 								'<div class="form-group">' +
@@ -1799,6 +1815,11 @@ function add_new_sites_content(site_id) {
 
 	show_modal(html);
   CKEDITOR.replace('sites_content_body');
+  $('.sites-content-modal *[name="slider_photos"], .sites-content-modal *[name="photogallery"]').multUploader({
+    action:'mysql.php?func=multipart_upload',
+    fragmentSize:1024*1024,
+    contentType:['image/jpeg','image/png']
+  });
 }
 
 function b64EncodeUnicode(str) {
@@ -1995,7 +2016,18 @@ function set_sites_content() {
   var $summary = $modalBody.find('textarea[name="summary"]');
   var $summaryMsg = $summary.parent().find('.input-message-block');
   var summary = $summary.val().trim();
-  $summaryMsg.html();
+  $summaryMsg.html("");
+
+
+  var $slider_photos = $modalBody.find('*[name="slider_photos"]');
+  var $slider_photosMsg = $slider_photos.parent().find('.input-message-block');
+  var slider_photos = JSON.parse($slider_photos.val().trim());
+  $slider_photosMsg.html("").removeClass('with-bottom-margin');
+
+  var $photogallery = $modalBody.find('*[name="photogallery"]');
+  var $photogalleryMsg = $photogallery.parent().find('.input-message-block');
+  var photogallery = JSON.parse($photogallery.val().trim());
+  $photogalleryMsg.html("").removeClass('with-bottom-margin');
 
   var $module_object_id = $modalBody.find('input[name="module_object_id"]');
   var $module_object_idMsg = $module_object_id.parent().find('.input-message-block');
@@ -2092,6 +2124,26 @@ function set_sites_content() {
     module_block = "";
 	}
 
+  if(type === 'landing') {
+    if(jQuery.isEmptyObject(slider_photos)) {
+      $slider_photosMsg.html("Нужно внести фотографии!").addClass('with-bottom-margin');
+      if(!error) {
+        $slider_photos.focus();
+        error = true;
+      }
+    }
+  }
+
+  if(type === 'photogallery') {
+    if(jQuery.isEmptyObject(photogallery)) {
+      $photogalleryMsg.html("Нужно внести фотографии!").addClass('with-bottom-margin');
+      if(!error) {
+        $photogallery.focus();
+        error = true;
+      }
+    }
+  }
+
   if(!error) {
     show_loader_element($modalLoader);
     $modalBody.addClass('hidden');
@@ -2102,6 +2154,8 @@ function set_sites_content() {
       	func: 'set_sites_content',
 				title: title,
         description: description,
+				slider_photos: slider_photos,
+        photogallery: photogallery,
         body: body,
         site_id: site_id,
 				image: imageUrl,
@@ -2146,6 +2200,11 @@ function edit_sites_content(id) {
       var sites_content_body = $('#sites_content_body').val();
       CKEDITOR.replace('sites_content_body');
       CKEDITOR.instances.sites_content_body.setData(sites_content_body);
+      $('.sites-content-modal *[name="slider_photos"], .sites-content-modal *[name="photogallery"]').multUploader({
+        action:'mysql.php?func=multipart_upload',
+        fragmentSize:1024*1024,
+        contentType:['image/jpeg','image/png']
+      });
     }
   });
 }
@@ -2197,6 +2256,12 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
   var $module_block = $('.sites-content-modal *[name="module_block"]');
   var $moduleBlockFormG = $module_block.closest('.form-group');
 
+  var $slider_photos = $('.sites-content-modal *[name="slider_photos"]');
+  var $sliderPhotosFormG = $slider_photos.closest('.form-group');
+
+  var $photogallery = $('.sites-content-modal *[name="photogallery"]');
+  var $photogalleryFormG = $photogallery.closest('.form-group');
+
 	if(type === 'module') {
 		$moduleObjectFormG.removeClass('hidden');
     $moduleBlockFormG.removeClass('hidden');
@@ -2205,4 +2270,19 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 		$moduleObjectFormG.addClass('hidden');
     $moduleBlockFormG.addClass('hidden');
 	}
+
+  if(type === 'landing') {
+    $sliderPhotosFormG.removeClass('hidden');
+  }
+  else {
+    $sliderPhotosFormG.addClass('hidden');
+  }
+
+  if(type === 'photogallery') {
+    $photogalleryFormG.removeClass('hidden');
+  }
+  else {
+    $photogalleryFormG.addClass('hidden');
+  }
+
 });

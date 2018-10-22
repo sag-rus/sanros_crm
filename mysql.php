@@ -1,9 +1,10 @@
 <?php
 //ini_set("display_errors",1);
 //error_reporting(E_ALL);
-	if(!isset($_POST["func"]) OR $_POST["func"] == "")
+	$func = isset($_POST["func"])?$_POST['func']:(isset($_GET['func'])?$_GET['func']:"");
+
+	if(!$func)
 		return;
-	$func = $_POST["func"];
 	$loader = require( __DIR__ . '/vendor/autoload.php');
 
 	session_start();
@@ -59,7 +60,8 @@ if($func AND function_exists($func)){
 		$id_rights = $row["rights"];
 	}
 	foreach($_POST as $index => $value){
-		$_POST[$index] = trim($value);
+		if(is_string($value))
+			$_POST[$index] = trim($value);
 	}
 
 	$config = ConfigCRM::getInstance();
