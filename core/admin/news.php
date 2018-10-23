@@ -224,10 +224,28 @@ function save_site($connect) {
         if(!$oldsite) {
             $respAr['success'] = 1;
             if($id) {
+
+                $entity = [
+                    'id' => $id,
+                    'type' => 'site'
+                ];
+
+                $boundsArrayFavicon = files_to_bounds($connect,$entity,'favicon',isset($_POST['favicon'])?$_POST['favicon']:[]);
+                remove_bounds($connect,$entity,'favicon');
+                set_bounds($connect,$boundsArrayFavicon,'favicon');
+
                 $connect->query("UPDATE `sites` SET `name` = ?s, `branding_name` = ?s, `branding_slogan` = ?s, `domain` = ?s, `main_bg_color` = ?s, `main_bg_color2` = ?s, `main_font_color` = ?s, `main_font_color2` = ?s, `main_link_color` = ?s, `head_code` =?s WHERE `id`=?i",$siteName,$branding_name,$branding_slogan,$siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$head_code,$id);
             }
             else {
                 $connect->query("INSERT INTO `sites` (`status`,`created`,`changed`,`name`, `branding_name`, `branding_slogan`, `domain`,`main_bg_color`,`main_bg_color2`,`main_font_color`,`main_font_color2`,`main_link_color`,`head_code`) VALUES (1,?i,?i,?s,?s, ?s, ?s,?s,?s,?s,?s,?s,?s)", $datetime, $datetime, $siteName, $branding_name, $branding_slogan, $siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$head_code);
+
+                $entity = [
+                    'id' => $connect->insertId(),
+                    'type' => 'site'
+                ];
+
+                $boundsArrayFavicon = files_to_bounds($connect,$entity,'favicon',isset($_POST['favicon'])?$_POST['favicon']:[]);
+                set_bounds($connect,$boundsArrayFavicon,'favicon');
             }
         }
         else {
@@ -440,8 +458,8 @@ function bounds_to_files($connect,array $bounds):array
             'title' => $bound['title'],
             'description' => $bound['description'],
             'uri' => $file['uri'],
-            'uri_thumbnail' => imageUriStyle($file['uri'],"thumbnail"),
-            'uri_preview' => imageUriStyle($file['uri'],"preview"),
+            'uri_thumbnail' => in_array($file['mime'],['image/png','image/jpeg'])?imageUriStyle($file['uri'],"thumbnail"):(in_array($file['mime'],['image/vnd.microsoft.icon','image/x-icon'])?$file['uri']:""),
+            'uri_preview' => in_array($file['mime'],['image/png','image/jpeg'])?imageUriStyle($file['uri'],"preview"):(in_array($file['mime'],['image/vnd.microsoft.icon','image/x-icon'])?$file['uri']:""),
             'mime' => $file['mime'],
             'ext' => $file['ext']
           ];
@@ -569,8 +587,12 @@ function edit_site($connect) {
     $site = $connect->getRow("SELECT `id`, `status`, `name`, `branding_name`, `branding_slogan`,  `domain`, `main_bg_color`, `main_bg_color2`, `main_font_color`, `main_font_color2`, `main_link_color`, `head_code` FROM `sites` WHERE `id` =?i",$id);
   ob_start();
   if($site) {
+      $entity = [
+          'id' => $site['id'],
+          'type' => 'site'
+      ];
     ?>
-      <div class="modal fade">
+      <div class="modal fade site-modal">
           <div class="modal-dialog">
               <div class="modal-content">
                   <div class="modal-header">
@@ -598,6 +620,13 @@ function edit_site($connect) {
                           <div class="col-sm-8">
                               <input type="text" class="form-control" name="branding_slogan" value="<?=$site['branding_slogan'];?>">
                               <div class="input-message-block" data-for="branding_slogan"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Favicon</label>
+                          <div class="col-sm-8">
+                              <div class="input-message-block" data-for="favicon"></div>
+                              <input type="file" name="favicon" value="<?=htmlspecialchars(json_encode((object)bounds_to_files($connect,load_bounds($connect,$entity,'favicon'))));?>">
                           </div>
                       </div>
                       <div class="form-group">
@@ -724,13 +753,13 @@ function set_sites_content($connect) {
               $boundsArrayPhotogallery = [];
 
               if($type === 'photogallery') {
-                  $boundsArrayPhotogallery = files_to_bounds($connect,$entity,'photogallery',$_POST['photogallery']);
+                  $boundsArrayPhotogallery = files_to_bounds($connect,$entity,'photogallery',isset($_POST['photogallery'])?$_POST['photogallery']:[]);
               }
 
               $boundsArraySliderPhotos = [];
 
               if($type === 'landing') {
-                $boundsArraySliderPhotos = files_to_bounds($connect,$entity,'slider_photos',$_POST['slider_photos']);
+                $boundsArraySliderPhotos = files_to_bounds($connect,$entity,'slider_photos',isset($_POST['slider_photos'])?$_POST['slider_photos']:[]);
               }
 
               remove_bounds($connect,$entity,'photogallery');
@@ -753,13 +782,13 @@ function set_sites_content($connect) {
               $boundsArrayPhotogallery = [];
 
               if($type === 'photogallery') {
-                $boundsArrayPhotogallery = files_to_bounds($connect,$entity,'photogallery',$_POST['photogallery']);
+                $boundsArrayPhotogallery = files_to_bounds($connect,$entity,'photogallery',isset($_POST['photogallery'])?$_POST['photogallery']:[]);
               }
 
               $boundsArraySliderPhotos = [];
 
               if($type === 'landing') {
-                $boundsArraySliderPhotos = files_to_bounds($connect,$entity,'slider_photos',$_POST['slider_photos']);
+                $boundsArraySliderPhotos = files_to_bounds($connect,$entity,'slider_photos',isset($_POST['slider_photos'])?$_POST['slider_photos']:[]);
               }
 
               set_bounds($connect,$boundsArrayPhotogallery,'photogallery');

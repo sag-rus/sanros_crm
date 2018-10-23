@@ -1476,7 +1476,7 @@ function show_sites_list(){
 }
 
 function add_new_site() {
-  var html = '<div class="modal fade">' +
+  var html = '<div class="modal fade site-modal">' +
 								'<div class="modal-dialog">' +
 									'<div class="modal-content">' +
 										'<div class="modal-header">' +
@@ -1506,6 +1506,13 @@ function add_new_site() {
 													'<div class="input-message-block" data-for="branding_slogan"></div>'+
 												'</div>' +
 											'</div>' +
+											'<div class="form-group">' +
+                          '<label class="col-sm-4 control-label">Favicon</label>' +
+                          '<div class="col-sm-8">' +
+                              '<div class="input-message-block" data-for="favicon"></div>' +
+                              '<input type="file" name="favicon">' +
+                          '</div>' +
+                      '</div>' +
 											'<div class="form-group">' +
 												'<label class="col-sm-4 control-label">Домен</label>' +
 												'<div class="col-sm-8">' +
@@ -1565,6 +1572,12 @@ function add_new_site() {
 
 
 	show_modal(html);
+  $('.site-modal *[name="favicon"]').multUploader({
+    action:'mysql.php?func=multipart_upload',
+    fragmentSize:1024*1024,
+    maxcount: 1,
+    contentType:['image/vnd.microsoft.icon','image/x-icon']
+  });
 }
 
 function save_site() {
@@ -1591,6 +1604,11 @@ function save_site() {
   var $branding_slogan = $modalBody.find('input[name="branding_slogan"]');
   var $branding_sloganMsg = $branding_slogan.parent().find('.input-message-block');
   var branding_slogan = $branding_slogan.val().trim();
+
+  var $favicon = $modalBody.find('*[name="favicon"]');
+  var $faviconMsg = $favicon.parent().find('.input-message-block');
+  var favicon = JSON.parse($favicon.val().trim());
+  $faviconMsg.html("").removeClass('with-bottom-margin');
 
   var head_code = $modalBody.find('*[name="head_code"]').val();
 
@@ -1638,6 +1656,7 @@ function save_site() {
     	func: "save_site",
 			name: name,
 			domain: domain,
+			favicon: favicon,
 			id: id,
 			main_bg_color: main_bg_color,
 			main_bg_color2: main_bg_color2,
@@ -2217,6 +2236,12 @@ function edit_site(id) {
     url: 'mysql.php',
     success: function(html){
       show_modal(html);
+      $('.site-modal *[name="favicon"]').multUploader({
+        action:'mysql.php?func=multipart_upload',
+        fragmentSize:1024*1024,
+				maxcount: 1,
+        contentType:['image/vnd.microsoft.icon','image/x-icon']
+      });
     }
   });
 }
