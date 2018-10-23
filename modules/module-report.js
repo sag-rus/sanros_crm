@@ -469,6 +469,10 @@ function calc_payment_to_san(){
 
 function show_mass_action(type){
 	var all_id = select_checkbox('check_mass');
+
+	if(all_id[all_id.length-1] === '_')
+		all_id = all_id.substring(0,all_id.length-1);
+
 	if(all_id){
 		var array = all_id.split('_');
 		var table = '';

@@ -462,7 +462,7 @@ function filter_do($connect){
 		$a = explode("_", $status);
 		$a = array_diff($a, array(""));
 		foreach($a as $stat){
-			if($and_st == 1)
+			if(isset($and_st) && $and_st == 1)
 				$zapros_for_mysql .= " OR ";
 			else
 				$zapros_for_mysql.= " (";
