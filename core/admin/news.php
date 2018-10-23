@@ -392,6 +392,7 @@ function edit_sites_content($connect) {
 }
 
 function remove_bounds($connect,$entity,$boundsName) {
+  $connect->query("UPDATE `app_models_site_bound` INNER JOIN `core_models_file_file` ON `app_models_site_bound`.`entity2_id` = `core_models_file_file`.`id` AND `app_models_site_bound`.`entity2_type` = 'file' SET `core_models_file_file`.`usages` = `core_models_file_file`.`usages`-1 WHERE `app_models_site_bound`.`entity1_type`=?s AND `app_models_site_bound`.`entity1_id`=?i AND `app_models_site_bound`.`name`=?s",$entity['type'],$entity['id'],$boundsName);
   $connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type`=?s AND `entity1_id`=?i AND `name` =?s",$entity['type'],$entity['id'],$boundsName);
 }
 
@@ -410,6 +411,10 @@ function set_bounds($connect,$boundsArray,String $boundsName)
     $i = 0;
     foreach ($boundsArray as $bound) {
       if(in_array($bound['entity1_type'],$entity1_types) && in_array($bound['entity2_type'],$entity2_types) && $bound['entity1_id'] > 0 && $bound['entity2_id'] > 0) {
+          if($bound['entity2_type'] === 'file') {
+            $connect->query("UPDATE `core_models_file_file` SET `usages` = `usages`+1 WHERE `id` = ?i",$bound['entity2_id']);
+          }
+
           $connect->query("INSERT INTO `app_models_site_bound` (`created`,`changed`,`status`,`uid`, `sort`, `name`,`entity1_type`,`entity1_id`,`entity2_type`,`entity2_id`, `title`, `description`) VALUES (?i,?i,?i,?i,?i,?s,?s,?i,?s,?i,?s,?s)",$timestamp,$timestamp,1,1,$i,$boundsName,$bound['entity1_type'],$bound['entity1_id'],$bound['entity2_type'],$bound['entity2_id'],$bound['title'],$bound['description']);
       }
       $i++;
