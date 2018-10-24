@@ -715,7 +715,7 @@ function set_sites_content($connect) {
   $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
   $image = isset($_POST['image'])?trim($_POST['image']):"";
   $type = isset($_POST['type'])?trim($_POST['type']):"page";
-  $typesAr = ['page','news', 'module', 'landing', `photogallery`];
+  $typesAr = ['page','news', 'module', 'landing', "photogallery"];
   $moduleBlocks = ["rooms","desc","promo","rating"];
   $timestamp = gmdate("U");
   $published = isset($_POST['published'])?(strtotime($_POST['published'])-3600*3):$timestamp;
@@ -848,6 +848,63 @@ function sync_site_content($connect, $id):bool {
     else return false;
 }
 
+function sync_files($connect) {
+    $ret = true;
+    while ($files = $connect->getAll("SELECT * FROM `core_models_file_file` WHERE `synchronized` = 0 LIMIT 0, 10")) {
+      try {
+        $client = new \GuzzleHttp\Client();
+        $data = [];
+        $data["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+        $data["files_list"] = $files;
+        $res = $client->request('POST',"https://sites.tonia.ru/api/files/set",[
+          'form_params' => $data
+        ]);
+
+        $res = json_decode($res->getBody(),true);
+        if(array_key_exists('success',$res)) {
+          $success = (bool)(int)$res['success'];
+          if($success) {
+              foreach ($files as $file) {
+                $connect->query("UPDATE `core_models_file_file` SET `synchronized` = '1' WHERE `id` = ?i", $file['id']);
+              }
+              $ret = $success;
+          }
+          else
+              return false;
+        }
+        else
+          return false;
+      }
+      catch (Exception $e) {
+        return false;
+      }
+    }
+    return $ret;
+}
+
+function sync_bounds($connect,$entity) {
+    $bounds = $connect->getAll("SELECT * FROM `app_models_site_bound` WHERE `entity1_type` =?s AND `entity1_id` =?i ORDER BY `sort` ASC",$entity['type'],$entity['id']);
+  try {
+    $client = new \GuzzleHttp\Client();
+    $data = [];
+    $data["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+    $data["bounds"] = $bounds;
+    $res = $client->request('POST',"https://sites.tonia.ru/api/".$entity['type']."/".$entity['id']."/bounds/set",[
+      'form_params' => $data
+    ]);
+
+    $res = json_decode($res->getBody(),true);
+    if(array_key_exists('success',$res)) {
+      return (bool)(int)$res['success'];
+    }
+    else
+      return false;
+  }
+  catch (Exception $e) {
+    return false;
+  }
+}
+
 function sync_site($connect) {
     $respAr = [
       'title' => '',
@@ -870,34 +927,51 @@ function sync_site($connect) {
             $respAr['success'] = 0;
             $respAr['msg'] = "Что-то пошло не так...";
         }
-    }
-
-    foreach ($sites as $site) {
-      try {
-        $client = new \GuzzleHttp\Client();
-        $site["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
-        $site['source_id'] = $site['id'];
-        unset($site['id']);
-        $res = $client->request('POST',"https://sites.tonia.ru/api/site/set/".$site['source_id'],[
-          'form_params' => $site
-        ]);
-
-        $res = json_decode($res->getBody(),true);
-        if(array_key_exists('success',$res)) {
-          $respAr['success'] = $res['success'];
-          $respAr['msg'] = $res['msg']." ".print_r($res,true);
-        }
-        else {
+        elseif (!sync_bounds($connect,[
+            'type' => 'content',
+            'id' => $content['id']
+        ])) {
           $respAr['success'] = 0;
           $respAr['msg'] = "Что-то пошло не так...";
         }
+    }
+
+    if($respAr['success']) {
+      foreach ($sites as $site) {
+        try {
+          $client = new \GuzzleHttp\Client();
+          $site["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+          $site['source_id'] = $site['id'];
+          $site_id = $site['id'];
+          unset($site['id']);
+          $res = $client->request('POST',"https://sites.tonia.ru/api/site/set/".$site['source_id'],[
+            'form_params' => $site
+          ]);
+
+          $res = json_decode($res->getBody(),true);
+          if(array_key_exists('success',$res)) {
+            $respAr['success'] = $res['success'];
+            $respAr['msg'] = $res['msg'];
+            if(!sync_bounds($connect,['type' => 'site', 'id' => $site_id])) {
+              throw new Exception("Bounds sync error");
+            }
+          }
+          else {
+            $respAr['success'] = 0;
+            $respAr['msg'] = "Что-то пошло не так...";
+          }
+        }
+        catch (Exception $e) {
+          $respAr['success'] = 0;
+          $respAr['msg'] = "Что-то пошло не так: ".$e->getMessage();
+        }
       }
-      catch (Exception $e) {
+
+      if(!sync_files($connect)) {
         $respAr['success'] = 0;
         $respAr['msg'] = "Что-то пошло не так...";
       }
     }
-
 
     return json_encode($respAr);
 }
