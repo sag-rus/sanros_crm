@@ -1701,6 +1701,18 @@ function show_sites_contents_list(site_id) {
   });
 }
 
+function show_sites_addresses_list(site_id) {
+  var str = 'func=show_sites_addresses_list&site_id='+site_id;
+  $.ajax({
+    type: 'POST',
+    data: str,
+    url: 'mysql.php',
+    success: function(html){
+      $('#body').html(html);
+    }
+  });
+}
+
 function add_new_sites_content(site_id) {
    var html = '<div class="modal fade sites-content-modal">' +
 								'<div class="modal-dialog">' +
@@ -2208,6 +2220,101 @@ function set_sites_content() {
 
 }
 
+
+function save_sites_address() {
+  var $button = $('.btn-save-sites-address');
+  var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
+  var $modalLoader = $button.closest('.modal-dialog').find('.modal-loader');
+  var $title = $modalBody.find('input[name="title"]');
+  var $titleMsg = $title.parent().find('.input-message-block');
+  var title = $title.val().trim();
+  var site_id = parseInt($modalBody.find('*[name="site_id"]').val());
+  var id = parseInt($modalBody.find('*[name="id"]').val());
+
+  $titleMsg.html('');
+
+
+
+  var $sort = $modalBody.find('input[name="sort"]');
+  var $sortMsg = $sort.parent().find('.input-message-block');
+  var sort = $sort.val().trim();
+  $sortMsg.html('');
+
+  var $description = $modalBody.find('textarea[name="description"]');
+  var $descriptionMsg = $description.parent().find('.input-message-block');
+  var description = $description.val().trim();
+  $descriptionMsg.html('');
+
+  var $status = $modalBody.find('*[name="status"]');
+  var status;
+  if($status.prop('checked'))
+    status = 1;
+  else
+    status = 0;
+
+  var error = false;
+
+  if(title.length === 0) {
+    $titleMsg.html("Это обязательное поле");
+    if(!error) {
+      $title.focus();
+      error = true;
+    }
+  }
+
+  if(sort.length === 0) {
+    $sortMsg.html("Это обязательное поле");
+    if(!error) {
+      $sort.focus();
+      error = true;
+    }
+  }
+  else {
+    sort = parseInt(sort);
+    if(isNaN(sort)) {
+      $sortMsg.html("Введите любое целое число");
+      if(!error) {
+        $sort.focus();
+        error = true;
+      }
+    }
+  }
+
+
+  if(!error) {
+    show_loader_element($modalLoader);
+    $modalBody.addClass('hidden');
+    $button.prop('disabled',true);
+    $.ajax({
+      type: 'POST',
+      data: {
+        func: 'save_sites_address',
+        title: title,
+        description: description,
+				id:id,
+				sort: sort,
+        status: status,
+        site_id: site_id
+      },
+      dataType: 'JSON',
+      url: 'mysql.php',
+      success: function(data){
+        if(data['success']) {
+          remove_all_windows();
+          show_sites_addresses_list(site_id);
+        }
+        else {
+          $modalLoader.html('');
+          $modalBody.removeClass('hidden');
+          $button.prop('disabled',false);
+          $modalBody.find('*[data-for="'+data['msg_field']+'"]').html(data['msg']);
+        }
+      }
+    });
+  }
+
+}
+
 function edit_sites_content(id) {
   var str = 'func=edit_sites_content&id='+id;
   $.ajax({
@@ -2246,6 +2353,59 @@ function edit_site(id) {
   });
 }
 
+function sites_address(id,site_id) {
+	if(typeof id === 'undefined')
+		id = 0;
+
+	if(typeof site_id === 'undefined')
+		site_id = 0;
+
+  var str = 'func=sites_address&id='+id+"&site_id="+site_id;
+  $.ajax({
+    type: 'POST',
+    data: str,
+    url: 'mysql.php',
+    success: function(html){
+      show_modal(html);
+    }
+  });
+}
+
+function remove_sites_address(id) {
+  var str = 'func=remove_sites_address&id='+id;
+  $.ajax({
+    type: 'POST',
+    data: str,
+    url: 'mysql.php',
+    success: function(html){
+      show_modal(html);
+    }
+  });
+}
+
+function remove_sites_address_success(id) {
+  var $button = $('.btn-remove-sites-address-success');
+  var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
+  var $modalLoader = $button.closest('.modal-dialog').find('.modal-loader');
+  var site_id = $modalBody.find('*[name="site_id"]');
+  var str = 'func=remove_sites_address_success&id='+id+"&site_id="+site_id;
+  $modalBody.addClass('hidden');
+  show_loader_element($modalLoader);
+  $.ajax({
+    type: 'POST',
+    data: str,
+		dataType: 'JSON',
+    url: 'mysql.php',
+    success: function(data){
+      if(data['success']) {
+      	show_sites_addresses_list(site_id);
+			}
+			else alert("Ошибка при удалении");
+			remove_all_windows();
+    }
+  });
+}
+
 function sync_site(site_id) {
   if(typeof site_id === 'undefined')
     site_id = 0;
@@ -2264,7 +2424,10 @@ function sync_site(site_id) {
     success: function (data) {
       if (data['success']) {
         remove_all_windows();
-        show_sites_contents_list(site_id);
+        if($('.addresses-panel').length > 0)
+        	show_sites_addresses_list(site_id);
+        else
+        	show_sites_contents_list(site_id);
       }
       else {
         $tableBody.html(data['msg']);

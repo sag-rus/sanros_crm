@@ -94,7 +94,8 @@ function show_sites_list($connect) {
               <td><?=$site['name'];?></td>
               <td><?=$site['domain'];?></td>
               <td>
-                  <button class="btn btn-default btn-sm" onclick="show_sites_contents_list(<?=$site['id'];?>)">Материалы</button>
+                  <button class="btn btn-default btn-sm" onclick="show_sites_contents_list(<?=$site['id'];?>);">Материалы</button>
+                  <button class="btn btn-default btn-sm" onclick="show_sites_addresses_list(<?=$site['id'];?>);">Адреса</button>
                   <?php if($id_rights > 5)  { ?>
                       <button class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
                       <button class="btn btn-default btn-sm" onclick="edit_site(<?=$site['id'];?>);"><i class="fa fa-pencil"></i></button>
@@ -108,7 +109,9 @@ function show_sites_list($connect) {
 			</table>
 		</div>
 		<div class="panel-footer text-right">
-			<button type="button" class="btn btn-primary btn-sm" onclick="add_new_site()"><i class="fa fa-plus-circle"></i> Добавить сайт</button>
+          <?php if($id_rights > 5)  { ?>
+                <button type="button" class="btn btn-primary btn-sm" onclick="add_new_site()"><i class="fa fa-plus-circle"></i> Добавить сайт</button>
+          <?php } ?>
 		</div>
 	</div>
 	<?php
@@ -181,6 +184,73 @@ function show_sites_contents_list($connect) {
         </div>
         <div class="panel-footer text-right">
             <button type="button" class="btn btn-primary btn-sm" onclick="add_new_sites_content(<?=$site_id;?>)"><i class="fa fa-plus-circle"></i> Добавить материал</button>
+        </div>
+    </div>
+  <?php
+  return ob_get_clean();
+}
+
+function show_sites_addresses_list($connect) {
+  global $id_rights;
+  $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
+  $site = NULL;
+  if($site_id) {
+    $site = $connect->getRow("SELECT `id`, `name`, `domain` FROM `sites` WHERE `id`=?i",$site_id);
+    if($site)
+      $sites_addresses = $connect->getAll("SELECT * FROM `app_models_site_address` WHERE `site_id`=?i ORDER BY `sort` ASC", $site_id);
+    else
+      $sites_addresses = [];
+  }
+  else
+    $sites_addresses = $connect->getAll("SELECT * FROM `app_models_site_address` ORDER BY `sort` ASC");
+
+  ob_start();
+  ?>
+    <div class="panel panel-default addresses-panel">
+        <div class="panel-heading"><i class="fa fa-list"></i> Адреса<?php if($site) { ?> сайта «<?=$site['name'];?>»<?php } ?> <button class="btn btn-success btn-sm btn-sites-sync" onclick="sync_site(<?=($site?$site['id']:0);?>)">Синхронизировать</button> <button class="btn btn-default btn-sm" onclick="show_sites_list();">К списку сайтов</button></div>
+        <div class="panel-body table-body">
+            <table class="table table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        Заголовок
+                    </th>
+                    <th>
+                        Статус
+                    </th>
+                    <th>
+                        Действия
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                foreach ($sites_addresses as $sites_address) {
+                  ?>
+                    <tr>
+                        <td><?=$sites_address['id'];?></td>
+                        <td><?=$sites_address['title'];?></td>
+                        <td><?=$sites_address['status'] == 1?"Активен":"Не активен";?></td>
+                        <td>
+                          <?php if($id_rights > 5) { ?>
+                              <button class="btn btn-default btn-sm" onclick="remove_sites_address(<?=$sites_address['id'];?>);"><i class="fa fa-trash-o"></i></button>
+                          <?php } ?>
+                            <button class="btn btn-default btn-sm" onclick="sites_address(<?=$sites_address['id'];?>);"><i class="fa fa-pencil"></i></button>
+                        </td>
+                    </tr>
+                  <?php
+                }
+                ?>
+                </tbody>
+            </table>
+        </div>
+        <div class="panel-footer text-right">
+            <?php if($id_rights > 5) { ?>
+                <button type="button" class="btn btn-primary btn-sm" onclick="sites_address(null,<?=$site_id;?>);"><i class="fa fa-plus-circle"></i> Добавить адрес</button>
+            <?php } ?>
         </div>
     </div>
   <?php
@@ -261,6 +331,172 @@ function save_site($connect) {
     }
 
     return json_encode($respAr);
+}
+
+
+function save_sites_address($connect) {
+  $respAr = [
+    'success' => 0,
+    'title' => '',
+    'msg' => ''
+  ];
+
+  $id = isset($_POST['id'])?(int)$_POST['id']:0;
+  $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
+  $title = isset($_POST['title'])?trim($_POST['title']):"";
+  $description = isset($_POST['description'])?trim($_POST['description']):"";
+  $status = isset($_POST['status'])?(int)$_POST['status']:0;
+  $sort = isset($_POST['sort'])?(int)$_POST['sort']:0;
+  if($id)
+    $address = $connect->getRow("SELECT `id` FROM `app_models_site_address` WHERE `id` =?i",$id);
+  else
+    $address = NULL;
+
+  if($site_id)
+      $site = $connect->getRow("SELECT `id` FROM `sites` WHERE `id`=?i",$site_id);
+  else
+      $site = NULL;
+
+
+  if((!$id || $address) && $site && $title && in_array($status,[0,1])) {
+    if($address)
+        $oldAddr = $connect->getRow("SELECT `id` FROM `app_models_site_address` WHERE `title`=?s AND `id` <> ?i",$title,$address['id']);
+    else
+        $oldAddr = $connect->getRow("SELECT `id` FROM `app_models_site_address` WHERE `title`=?s",$title);
+
+    if($oldAddr) {
+      $respAr['msg'] = 'Адрес с таким заголовком уже есть';
+      $respAr['msg_field'] = 'title';
+    }
+    else {
+        $timestamp = gmdate("U");
+        if($address)
+            $connect->query("UPDATE `app_models_site_address` SET `changed`=?i, `title`=?s, `description`=?s, `status` =?i, `sort` =?i WHERE `id` =?i",$timestamp, $title,$description,$status,$sort,$address['id']);
+        else
+            $connect->query("INSERT INTO `app_models_site_address` (`created`,`changed`,`status`,`uid`,`sort`,`title`,`site_id`,`description`) VALUES (?i, ?i, ?i, ?i, ?i, ?s, ?i, ?s)",$timestamp, $timestamp, $status, 1, $sort, $title, $site['id'],$description);
+
+        $respAr['success'] = 1;
+    }
+  }
+
+  return json_encode($respAr);
+}
+
+function remove_sites_address($connect) {
+    $id = isset($_POST['id'])?(int)$_POST['id']:0;
+    $address = $connect->getRow("SELECT `id`, `site_id` FROM `app_models_site_address` WHERE `id` =?i",$id);
+    ob_start();
+    ?>
+    <div class="modal fade remove-sites-address">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+                    <h4 class="modal-title">Удалить адрес</h4>
+                </div>
+                <div class="modal-body form-horizontal site-name">
+                    <?php if($address) { ?>
+                    <input type="hidden" name="id" value="<?=$id;?>">
+                    <input type="hidden" name="site_id" value="<?=$address['site_id'];?>">
+                   Вы уверены, что хотите удалить адрес?
+                    <?php } else { ?>
+                      Некорректный ID
+                    <?php } ?>
+                </div>
+                <div class="modal-loader"></div>
+                <div class="modal-footer">
+                  <?php if($address) { ?>
+                    <button class="btn btn-success btn-sm btn-remove-sites-address-success" onclick="remove_sites_address_success(<?=$id;?>)" id="btn-remove-sites-address-success"><i class="fa fa-check-circle"></i> Сохранить</button>
+                    <button class="btn btn-danger btn-sm" data-dismiss="modal" aria-label="Close">Нет</button>
+                  <?php } else { ?>
+                      <button class="btn btn-danger btn-sm" data-dismiss="modal" aria-label="Close">Закрыть</button>
+                  <?php } ?>
+                </div>
+            </div>
+        </div>
+    </div>
+  <?php
+  return ob_get_clean();
+}
+
+function remove_sites_address_success($connect) {
+  $respAr = [
+    'msg' => '',
+    'title' => '',
+    'success' => 0
+  ];
+  $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
+  $address = $connect->getRow("SELECT `id` FROM `app_models_site_address` WHERE `id` =?i", $id);
+  if($address) {
+      $connect->query("DELETE FROM `app_models_site_address` WHERE `id` =?i",$id);
+      $respAr['success'] = 1;
+  }
+  return json_encode($respAr);
+}
+
+function sites_address($connect)
+{
+    $address_id = isset($_POST['id'])?(int)$_POST['id']:0;
+    $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
+    if($address_id)
+        $address = $connect->getRow("SELECT * FROM `app_models_site_address` WHERE `id`=?i",$address_id);
+    else
+        $address = NULL;
+    $maxSort = $connect->getOne("SELECT MAX(`sort`) FROM `app_models_site_address`");
+    if(is_null($maxSort))
+        $maxSort = -1;
+
+    $maxSort++;
+    ob_start();
+    ?>
+    <div class="modal fade sites-content-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+                    <h4 class="modal-title"><?php if($address) { ?>Редактировать адрес<?php } else { ?>Добавить адрес<?php } ?></h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <?php if($address || $site_id) { ?>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Заголовок</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="title" maxlength="255" value="<?=$address?htmlspecialchars($address['title']):"";?>">
+                                <input type="hidden" value="<?=$site_id?$site_id:$address['site_id'];?>" name="site_id">
+                                <input type="hidden" value="<?=$address?$address['id']:0;?>" name="id">
+                                <div class="input-message-block" data-for="title"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Содержимое</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control resizable-textarea" name="description"><?=$address?htmlspecialchars($address['description']):"";?></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Вес</label>
+                            <div class="col-sm-10">
+                                <input type="number" class="form-control" name="sort" value="<?=$address?$address['sort']:$maxSort;?>">
+                                <div class="input-message-block" data-for="sort"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Активный</label>
+                            <div class="col-sm-10">
+                                <input type="checkbox" name="status" class="form-control"<?php if($address && $address['status'] == 1) {?> checked<?php } ?>>
+                            </div>
+                        </div>
+                    <?php } ?>
+                </div>
+                <div class="modal-loader"></div>
+                <div class="modal-footer">
+                    <button class="btn btn-success btn-sm btn-save-sites-address" onclick="save_sites_address()" id="btn-save-sites-address"><i class="fa fa-check-circle"></i> Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
+    return ob_get_clean();
 }
 
 function edit_sites_content($connect) {
