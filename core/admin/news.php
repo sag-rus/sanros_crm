@@ -1056,13 +1056,13 @@ function set_sites_content($connect) {
 }
 
 function sync_site_content($connect, $id):bool {
-    $content = $connect->getRow("SELECT `id` AS `source_id`, `status`, `published`, `type`, `site_id`, `title`, `summary`, `body`, `path`, `description`, `keywords`, `image`, `weight`, `module_object_id`, `module_block` FROM `sites_contents` WHERE `id` =?i",$id);
+    $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `summary`, `body`, `path`, `description`, `keywords`, `image`, `weight`, `module_object_id`, `module_block` FROM `sites_contents` WHERE `id` =?i",$id);
     if($content) {
         try {
           $client = new \GuzzleHttp\Client();
           $content["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
           $content["body"] = base64_encode($content["body"]);
-          $res = $client->request('POST',"https://sites.tonia.ru/api/content/set/".$content['source_id'],[
+          $res = $client->request('POST',"https://sites.tonia.ru/api/content/set/".$content['id'],[
             'form_params' => $content
           ]);
 
@@ -1177,10 +1177,7 @@ function sync_site($connect) {
         try {
           $client = new \GuzzleHttp\Client();
           $site["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
-          $site['source_id'] = $site['id'];
-          $site_id = $site['id'];
-          unset($site['id']);
-          $res = $client->request('POST',"https://sites.tonia.ru/api/site/set/".$site['source_id'],[
+          $res = $client->request('POST',"https://sites.tonia.ru/api/site/set/".$site['id'],[
             'form_params' => $site
           ]);
 
@@ -1188,7 +1185,7 @@ function sync_site($connect) {
           if(array_key_exists('success',$res)) {
             $respAr['success'] = $res['success'];
             $respAr['msg'] = $res['msg'];
-            if(!sync_bounds($connect,['type' => 'site', 'id' => $site_id])) {
+            if(!sync_bounds($connect,['type' => 'site', 'id' => $site['id']])) {
               throw new Exception("Bounds sync error");
             }
           }
