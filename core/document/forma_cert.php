@@ -35,7 +35,7 @@ function review_forma_certificate($connect, $type, $id){
         </tr>
 		<tr>
 			<td style="width: 250px" style="vertical-align: middle">Генеральный директор<br /><?php echo $firma; ?></td>
-			<?php if(1) { ?>
+			<?php if(0) { ?>
                 <td style="width: 200px" style="vertical-align: middle"><img src="images/pechat/pechat1.jpg" /></td>
             <?php } ?>
 			<td style="width: 200px" style="vertical-align: middle"><?php echo $director; ?></td>
