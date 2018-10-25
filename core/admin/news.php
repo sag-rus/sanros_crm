@@ -1192,12 +1192,23 @@ function sync_site($connect) {
           else {
             $respAr['success'] = 0;
             $respAr['msg'] = "Что-то пошло не так...";
+            break;
           }
         }
         catch (Exception $e) {
           $respAr['success'] = 0;
           $respAr['msg'] = "Что-то пошло не так: ".$e->getMessage();
+          break;
         }
+
+        /*if($respAr['success']) {
+          $addresses = $connect->getAll("SELECT * FROM `app_models_site_address` WHERE `site_id` = ?i", $site['id']);
+          $res = $client->request('POST',"https://sites.tonia.ru/api/site/".$site['id']."/addresses/set",[
+            'form_params' => [
+                'addresses' => $addresses
+            ]
+          ]);
+        }*/
       }
 
       if(!sync_files($connect)) {

@@ -195,7 +195,7 @@ function review_contract($connect, $type, $id){
 
 	ob_start();
 ?>
-	<div class="border">
+	<div class="border-off">
 	<p class="head" style="font-size: 14pt;">Договор № <?php echo $id; ?><br /><?php if($reck_type == 0) { ?>реализации санаторно-курортной путёвки<?php } else { ?>реализации туристического продукта<?php } ?></p>
 	<table style="font-weight: bold;">
 	<tr>
