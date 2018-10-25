@@ -1778,7 +1778,7 @@ function add_new_sites_content(site_id) {
 			 												'<div class="input-message-block" data-for="module_block"></div>'+
                           '</div>' +
                       '</div>' +
-			 								'<div class="form-group hidden">' +
+			 								'<div class="form-group">' +
                           '<label class="col-sm-2 control-label">Фотографии</label>' +
                           '<div class="col-sm-10">' +
                               '<div class="input-message-block" data-for="photogallery"></div>' +
@@ -2466,7 +2466,7 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
     $sliderPhotosFormG.addClass('hidden');
   }
 
-  if(type === 'photogallery') {
+  if(type === 'photogallery' || type === 'landing' || type === 'news' || type === 'page') {
     $photogalleryFormG.removeClass('hidden');
   }
   else {

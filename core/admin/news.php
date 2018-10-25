@@ -575,7 +575,7 @@ function edit_sites_content($connect) {
                               <div class="input-message-block" data-for="module_block"></div>
                           </div>
                       </div>
-                      <div class="form-group<?php if($content['type'] !== 'photogallery') { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(!in_array($content['type'],['photogallery','landing','news', 'page'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Фотографии</label>
                           <div class="col-sm-10">
                               <div class="input-message-block" data-for="photogallery"></div>
@@ -988,7 +988,7 @@ function set_sites_content($connect) {
               ];
               $boundsArrayPhotogallery = [];
 
-              if($type === 'photogallery') {
+              if(in_array($type,['photogallery','landing','news', 'page'])) {
                   $boundsArrayPhotogallery = files_to_bounds($connect,$entity,'photogallery',isset($_POST['photogallery'])?$_POST['photogallery']:[]);
               }
 
@@ -1017,7 +1017,7 @@ function set_sites_content($connect) {
               ];
               $boundsArrayPhotogallery = [];
 
-              if($type === 'photogallery') {
+              if(in_array($type,['photogallery','landing','news', 'page'])) {
                 $boundsArrayPhotogallery = files_to_bounds($connect,$entity,'photogallery',isset($_POST['photogallery'])?$_POST['photogallery']:[]);
               }
 
