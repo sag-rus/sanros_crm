@@ -17,7 +17,7 @@ function review_forma_certificate($connect, $type, $id){
 	ob_start();
 ?>
 
-	<div class="border" style="display: block; background-repeat: no-repeat; background-size: 100%;">
+	<div class="border-off" style="display: block; background-repeat: no-repeat; background-size: 100%;">
         <div style="text-align: center; width: 690px; margin-top: 100px;"><img src="<?=$directory?>/images/sanata_logo.png"></div>
 		<br /><br /><br /><br />
         <p style="text-align: center; font-size: 24pt; color: #3e2d27; margin-bottom: 0; margin-top: 0;">ПОДАРОЧНЫЙ</p>
