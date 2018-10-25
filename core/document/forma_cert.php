@@ -29,13 +29,15 @@ function review_forma_certificate($connect, $type, $id){
         <p style="text-align: centНовая заявкаer; font-size: 12pt; color: #3e2d27; margin-bottom: 0; margin-top: 10px;">Действителен до 31.12.<?=(date("Y")+1)?></p>
         <table align="center" style="width: 650px; margin-top: 180px;">
         <tr>
-            <td colspan="3">
+            <td colspan="2">
                 <?php if(!is_null($date_pay)) { ?>Дата <?=$date_pay;?><?php } ?>
             </td>
         </tr>
 		<tr>
 			<td style="width: 250px" style="vertical-align: middle">Генеральный директор<br /><?php echo $firma; ?></td>
-			<td style="width: 200px" style="vertical-align: middle"><!--img src="images/pechat/pechat1.jpg" /--></td>
+			<?php if(1) { ?>
+                <td style="width: 200px" style="vertical-align: middle"><img src="images/pechat/pechat1.jpg" /></td>
+            <?php } ?>
 			<td style="width: 200px" style="vertical-align: middle"><?php echo $director; ?></td>
 		</tr>
 		</table>
