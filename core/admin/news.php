@@ -1201,14 +1201,29 @@ function sync_site($connect) {
           break;
         }
 
-        /*if($respAr['success']) {
+        if($respAr['success']) {
           $addresses = $connect->getAll("SELECT * FROM `app_models_site_address` WHERE `site_id` = ?i", $site['id']);
           $res = $client->request('POST',"https://sites.tonia.ru/api/site/".$site['id']."/addresses/set",[
             'form_params' => [
-                'addresses' => $addresses
+                'addresses' => $addresses,
+                'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4'
             ]
           ]);
-        }*/
+
+          $res = json_decode($res->getBody(),true);
+          if(array_key_exists('success',$res)) {
+            $respAr['success'] = $res['success'];
+            $respAr['msg'] = $res['msg'];
+            if(!$respAr['success']) {
+                break;
+            }
+          }
+          else {
+            $respAr['success'] = 0;
+            $respAr['msg'] = "Что-то пошло не так...";
+            break;
+          }
+        }
       }
 
       if(!sync_files($connect)) {
