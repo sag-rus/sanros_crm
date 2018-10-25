@@ -21,3 +21,4 @@ core/sync/file
 core/sync/file/*
 composer.phar
 composer.lock
+/objects.xlsx
