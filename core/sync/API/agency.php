@@ -459,7 +459,9 @@ function get_document_bill_agency($connect, $data){
 		$array = array("check" => 1, "position" => array());
 		$array["payer"] = $connect->getOne("SELECT name FROM agency WHERE id=?i", $agency);
 		$array["id"] = $id;
-		$row = $connect->getRow("SELECT id_obj, id_com, date, sum, id_user FROM reckoning WHERE id=?i", $id);
+		$row = $connect->getRow("SELECT id_obj, id_com, date, sum, id_user, status FROM reckoning WHERE id=?i", $id);
+		$reckStatus = $row['status'];
+		$date_reck = $row['date'];
 		$array["object"] = get_object($connect, $row["id_obj"], "full");
 		$array["date"] = $row["date"];
 		$array["all-sum"] = add_null($row["sum"]);
@@ -490,14 +492,16 @@ function get_document_bill_agency($connect, $data){
 		$t = explode(".", $array["itog-sum"]);
 		$array["sum-text"] = convert_number_to_string($t[0])." рублей ".convert_number_to_string($t[1])." копеек";
 		$array["sum-text"] = first_symbol_to_title($array["sum-text"]);
-		$array["service"] = get_service_information();
+		$array["service"] = get_service_information(true);
 		$row = $connect->getRow("SELECT address, bank, rs, ks, bik, inn, kpp FROM office WHERE id=?i", $connect->getOne("SELECT office FROM users WHERE id=?i", $manager));
 		if($row["bank"]){
-			$array["service"]["BIK"] = $row["bik"];
-			$array["service"]["KS"] = $row["ks"];
-			$array["service"]["bank"] = $row["bank"];
-			$array["service"]["reck"] = $row["rs"];
-			$array["service"]["sep_address"] = $row["address"];
+      if(!(strtotime($date_reck) >= strtotime("07.09.2018") || $reckStatus > 3)) {
+        $array["service"]["BIK"] = $row["bik"];
+        $array["service"]["KS"] = $row["ks"];
+        $array["service"]["bank"] = $row["bank"];
+        $array["service"]["reck"] = $row["rs"];
+        $array["service"]["sep_address"] = $row["address"];
+      }
 		}
 
 		$array["service_reckoning"] = explode("_", $connect->getOne("SELECT id_services FROM reckoning WHERE id=?i", $id));

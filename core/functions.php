@@ -1743,7 +1743,7 @@ function save_to_PDF($connect, $id, $doc){
 	return $file;
 }
 
-function get_service_information(){
+function get_service_information(bool $agency = false){
 	global $directory;
 	include_once($directory."/config.php");
 	$conf = new JConfig;
@@ -1760,13 +1760,21 @@ function get_service_information(){
 	$array["tel"] = $conf->tel_firma;
 	$array["fax"] = $conf->fax_firma;
 	$array["web_site"] = $conf->web_site;
+	if($agency) {
+      $array["BIK"] = $conf->BIK;
+      $array["KS"] = $conf->KS;
+      $array["bank"] = $conf->bank;
+      $array["reck"] = $conf->reck;
+    }
+    else {
+      $array["BIK"] = $conf->BIK2;
+      $array["KS"] = $conf->KS2;
+      $array["bank"] = $conf->bank2;
+      $array["reck"] = $conf->reck2;
+    }
 	$array["INN"] = $conf->INN;
 	$array["KPP"] = $conf->KPP;
-	$array["BIK"] = $conf->BIK;
 	$array["OGRN"] = $conf->OGRN;
-	$array["KS"] = $conf->KS;
-	$array["bank"] = $conf->bank;
-	$array["reck"] = $conf->reck;
 	$array["director"] = $conf->director;
 	$array["director_pad"] = $conf->director_pad;
 	$array["booker"] = $conf->booker;
