@@ -529,9 +529,9 @@ function edit_sites_content($connect) {
                           </div>
                       </div>
                       <div class="form-group">
-                          <label class="col-sm-2 control-label">URL картинки</label>
+                          <label class="col-sm-2 control-label">Основная картинка</label>
                           <div class="col-sm-10">
-                              <input type="text" class="form-control" name="image" value="<?=$content['image'];?>">
+                              <input type="file" class="form-control" name="image" value="<?=htmlspecialchars(json_encode((object)bounds_to_files($connect,load_bounds($connect,$entity,'image'))));?>">
                               <div class="input-message-block" data-for="image"></div>
                           </div>
                       </div>
@@ -949,7 +949,6 @@ function set_sites_content($connect) {
   $summary = isset($_POST['summary'])?trim($_POST['summary']):"";
   $keywords = isset($_POST['keywords'])?trim($_POST['keywords']):"";
   $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
-  $image = isset($_POST['image'])?trim($_POST['image']):"";
   $type = isset($_POST['type'])?trim($_POST['type']):"page";
   $typesAr = ['page','news', 'module', 'landing', "photogallery"];
   $moduleBlocks = ["rooms","desc","promo","rating"];
@@ -986,6 +985,10 @@ function set_sites_content($connect) {
                   'id' => $content_id,
                   'type' => 'content'
               ];
+
+              $boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);;
+
+
               $boundsArrayPhotogallery = [];
 
               if(in_array($type,['photogallery','landing','news', 'page'])) {
@@ -998,23 +1001,29 @@ function set_sites_content($connect) {
                 $boundsArraySliderPhotos = files_to_bounds($connect,$entity,'slider_photos',isset($_POST['slider_photos'])?$_POST['slider_photos']:[]);
               }
 
+              remove_bounds($connect,$entity,'image');
               remove_bounds($connect,$entity,'photogallery');
               remove_bounds($connect,$entity,'slider_photos');
+              set_bounds($connect,$boundsArrayImage,'image');
               set_bounds($connect,$boundsArrayPhotogallery,'photogallery');
               set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
 
 
-              $connect->query("UPDATE `sites_contents` SET `title`=?s, `path`=?s, `description`=?s, `body`=?s, `summary`=?s, `keywords`=?s, `image`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `module_object_id` = ?i, `module_block` =?s WHERE `id`=?i",$title,$path,$description,$body,$summary,$keywords,$image,$type,$timestamp,$published,$status,0,$weight,$module_object_id,$module_block,$content_id);
+              $connect->query("UPDATE `sites_contents` SET `title`=?s, `path`=?s, `description`=?s, `body`=?s, `summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `module_object_id` = ?i, `module_block` =?s WHERE `id`=?i",$title,$path,$description,$body,$summary,$keywords,$type,$timestamp,$published,$status,0,$weight,$module_object_id,$module_block,$content_id);
             }
             else {
               $respAr['success'] = 1;
               $respAr['msg'] = "Контент успешно добавлен";
-              $connect->query("INSERT INTO `sites_contents` (`title`, `path`, `description`, `body`, `summary`, `keywords`, `image`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`,`module_object_id`, `module_block`) VALUES (?s,?s,?s,?s,?s,?s,?s,?s,?i,?i,?i,?i,?i,?i,?s,?i,?s)",$title,$path,$description,$body,$summary,$keywords,$image,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight,$module_object_id,$module_block);
+              $connect->query("INSERT INTO `sites_contents` (`title`, `path`, `description`, `body`, `summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`,`module_object_id`, `module_block`) VALUES (?s,?s,?s,?s,?s,?s,?s,?i,?i,?i,?i,?i,?i,?s,?i,?s)",$title,$path,$description,$body,$summary,$keywords,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight,$module_object_id,$module_block);
 
               $entity = [
                 'id' => $connect->insertId(),
                 'type' => 'content'
               ];
+
+              $boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);;
+
+
               $boundsArrayPhotogallery = [];
 
               if(in_array($type,['photogallery','landing','news', 'page'])) {
@@ -1027,6 +1036,7 @@ function set_sites_content($connect) {
                 $boundsArraySliderPhotos = files_to_bounds($connect,$entity,'slider_photos',isset($_POST['slider_photos'])?$_POST['slider_photos']:[]);
               }
 
+              set_bounds($connect,$boundsArrayImage,'image');
               set_bounds($connect,$boundsArrayPhotogallery,'photogallery');
               set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
             }

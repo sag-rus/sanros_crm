@@ -1732,9 +1732,9 @@ function add_new_sites_content(site_id) {
 												'</div>' +
 											'</div>' +
 			 								'<div class="form-group">' +
-												'<label class="col-sm-2 control-label">URL картинки</label>' +
+												'<label class="col-sm-2 control-label">Основная картинка</label>' +
 												'<div class="col-sm-10">' +
-													'<input type="text" class="form-control" name="image">' +
+													'<input type="file" class="form-control" name="image">' +
 													'<div class="input-message-block" data-for="image"></div>'+
 												'</div>' +
 											'</div>' +
@@ -1849,6 +1849,13 @@ function add_new_sites_content(site_id) {
   $('.sites-content-modal *[name="slider_photos"], .sites-content-modal *[name="photogallery"]').multUploader({
     action:'mysql.php?func=multipart_upload',
     fragmentSize:1024*1024,
+    contentType:['image/jpeg','image/png']
+  });
+
+  $('.sites-content-modal *[name="image"]').multUploader({
+    action:'mysql.php?func=multipart_upload',
+    fragmentSize:1024*1024,
+		maxcount: 1,
     contentType:['image/jpeg','image/png']
   });
 }
@@ -2060,6 +2067,11 @@ function set_sites_content() {
   var photogallery = JSON.parse($photogallery.val().trim());
   $photogalleryMsg.html("").removeClass('with-bottom-margin');
 
+  var $image = $modalBody.find('*[name="image"]');
+  var $imageMsg = $image.parent().find('.input-message-block');
+  var image = JSON.parse($image.val().trim());
+  $imageMsg.html("").removeClass('with-bottom-margin');
+
   var $module_object_id = $modalBody.find('input[name="module_object_id"]');
   var $module_object_idMsg = $module_object_id.parent().find('.input-message-block');
   var module_object_id = $module_object_id.val().trim();
@@ -2073,7 +2085,6 @@ function set_sites_content() {
 
   var body = CKEDITOR.instances.sites_content_body.getData();
 
-  var imageUrl = $modalBody.find('*[name="image"]').val();
   var site_id = $modalBody.find('*[name="site_id"]').val();
   var type = $modalBody.find('*[name="type"]').val();
   var keywords = $modalBody.find('*[name="keywords"]').val();
@@ -2189,7 +2200,7 @@ function set_sites_content() {
         photogallery: photogallery,
         body: body,
         site_id: site_id,
-				image: imageUrl,
+				image: image,
 				type: type,
 				keywords: keywords,
         published: published,
@@ -2331,6 +2342,14 @@ function edit_sites_content(id) {
         fragmentSize:1024*1024,
         contentType:['image/jpeg','image/png']
       });
+
+      $('.sites-content-modal *[name="image"]').multUploader({
+        action:'mysql.php?func=multipart_upload',
+        fragmentSize:1024*1024,
+        maxcount: 1,
+        contentType:['image/jpeg','image/png']
+      });
+
     }
   });
 }
