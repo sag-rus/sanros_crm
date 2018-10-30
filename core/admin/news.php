@@ -284,7 +284,7 @@ function save_site($connect) {
     $main_font_color2 = isset($_POST['main_font_color2'])?mb_strtolower(trim($_POST['main_font_color2'])):"#ffffff";
     $main_link_color = isset($_POST['main_link_color'])?mb_strtolower(trim($_POST['main_link_color'])):"#356d33";
 
-    $head_code = isset($_POST['head_code'])?mb_strtolower(trim($_POST['head_code'])):"";
+    $head_code = isset($_POST['head_code'])?trim($_POST['head_code']):"";
 
     if($siteName && $branding_name && $siteDomain && (!$id || $site)) {
         $datetime = gmdate("U");
