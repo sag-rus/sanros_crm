@@ -912,7 +912,7 @@ function edit_site($connect) {
                       <div class="form-group">
                           <label class="col-sm-4 control-label">Код в блоке head</label>
                           <div class="col-sm-8">
-                              <textarea class="form-control" name="head_code"><?=$site['head_code'];?></textarea>
+                              <textarea class="form-control" name="head_code"><?=htmlspecialchars($site['head_code']);?></textarea>
                           </div>
                       </div>
                   </div>
