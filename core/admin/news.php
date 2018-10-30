@@ -98,6 +98,8 @@ function show_sites_list($connect) {
                   <button class="btn btn-default btn-sm" onclick="show_sites_addresses_list(<?=$site['id'];?>);">Адреса</button>
                   <?php if($id_rights > 5)  { ?>
                       <button class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
+                  <?php } ?>
+                  <?php if($id_rights > 4)  { ?>
                       <button class="btn btn-default btn-sm" onclick="edit_site(<?=$site['id'];?>);"><i class="fa fa-pencil"></i></button>
                   <?php } ?>
               </td>
@@ -248,7 +250,7 @@ function show_sites_addresses_list($connect) {
             </table>
         </div>
         <div class="panel-footer text-right">
-            <?php if($id_rights > 5) { ?>
+            <?php if($id_rights > 4) { ?>
                 <button type="button" class="btn btn-primary btn-sm" onclick="sites_address(null,<?=$site_id;?>);"><i class="fa fa-plus-circle"></i> Добавить адрес</button>
             <?php } ?>
         </div>
