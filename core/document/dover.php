@@ -42,23 +42,27 @@ function review_dover($connect, $type, $id, $turist, $type_PDF = "PDF"){
 	$date_pass = $row["date_pas"];
 	$img = $_COOKIE["img"];
 	$index = 0;
-	$row = $connect->getRow("SELECT id_room, days, number FROM position_reck WHERE schet=?i", $id);
-	$days = $row["days"];
-	$number_turist.= " (".$prop[$number_turist].")";
-	$index++;
-	$room = get_room($connect, $row["id_room"]);
-	$putevka = naimenovanie($id_obj, $room, $date_z, $date_v, $days);
+	$rows = $connect->getAll("SELECT id_room, days, number FROM position_reck WHERE schet=?i", $id);
+	foreach ($rows as $row) {
+      $days = $row["days"];
+      $number_turist = $row['number'];
+      $number_turist.= " (".$prop[$number_turist].")";
+      $index++;
+      $room = get_room($connect, $row["id_room"]);
+      $putevka = naimenovanie($id_obj, $room, $date_z, $date_v, $days);
 
-	if($id == 53740) {
-		$putevka .="<br />".$note_bid;
-	}
+      if($id == 53740) {
+        $putevka .="<br />".$note_bid;
+      }
 
-	$table.= "<tr>";
-	$table.= "<td width='50' align='center'>".$index."</td>";
-	$table.= "<td width='380'>".$putevka."</td>";
-	$table.= "<td width='100' align='center'>".number($id_obj)."</td>";
-	$table.= "<td width='130' align='center'>".$number_turist."</td>";
-	$table.= "</tr>";
+      $table.= "<tr>";
+      $table.= "<td width='50' align='center'>".$index."</td>";
+      $table.= "<td width='380'>".$putevka."</td>";
+      $table.= "<td width='100' align='center'>".number($id_obj)."</td>";
+      $table.= "<td width='130' align='center'>".$number_turist."</td>";
+      $table.= "</tr>";
+    }
+
 	if($id_obj == 57){
 		$service = $connect->getOne("SELECT id_service FROM position_reck WHERE schet=?i AND id_room=0", $id);
 		if($service){
