@@ -285,6 +285,8 @@ function save_site($connect) {
     $main_link_color = isset($_POST['main_link_color'])?mb_strtolower(trim($_POST['main_link_color'])):"#356d33";
 
     $head_code = isset($_POST['head_code'])?trim($_POST['head_code']):"";
+    $pre_body_code = isset($_POST['pre_body_code'])?trim($_POST['pre_body_code']):"";
+    $post_body_code = isset($_POST['post_body_code'])?trim($_POST['post_body_code']):"";
     $robots = isset($_POST['robots'])?trim($_POST['robots']):"";
 
 
@@ -308,10 +310,10 @@ function save_site($connect) {
                 remove_bounds($connect,$entity,'favicon');
                 set_bounds($connect,$boundsArrayFavicon,'favicon');
 
-                $connect->query("UPDATE `sites` SET `name` = ?s, `branding_name` = ?s, `branding_slogan` = ?s, `domain` = ?s, `main_bg_color` = ?s, `main_bg_color2` = ?s, `main_font_color` = ?s, `main_font_color2` = ?s, `main_link_color` = ?s, `head_code` =?s, `robots` = ?s WHERE `id`=?i",$siteName,$branding_name,$branding_slogan,$siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$head_code, $robots,$id);
+                $connect->query("UPDATE `sites` SET `name` = ?s, `branding_name` = ?s, `branding_slogan` = ?s, `domain` = ?s, `main_bg_color` = ?s, `main_bg_color2` = ?s, `main_font_color` = ?s, `main_font_color2` = ?s, `main_link_color` = ?s, `head_code` =?s, `pre_body_code` =?s, `post_body_code` =?s, `robots` = ?s WHERE `id`=?i",$siteName,$branding_name,$branding_slogan,$siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$head_code, $pre_body_code, $post_body_code,$robots,$id);
             }
             else {
-                $connect->query("INSERT INTO `sites` (`status`,`created`,`changed`,`name`, `branding_name`, `branding_slogan`, `domain`,`main_bg_color`,`main_bg_color2`,`main_font_color`,`main_font_color2`,`main_link_color`,`head_code`, `robots`) VALUES (1, ?i, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $datetime, $datetime, $siteName, $branding_name, $branding_slogan, $siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$head_code, $robots);
+                $connect->query("INSERT INTO `sites` (`status`,`created`,`changed`,`name`, `branding_name`, `branding_slogan`, `domain`,`main_bg_color`,`main_bg_color2`,`main_font_color`,`main_font_color2`,`main_link_color`,`head_code`, `pre_body_code`, `post_body_code`, `robots`) VALUES (1, ?i, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $datetime, $datetime, $siteName, $branding_name, $branding_slogan, $siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$head_code, $pre_body_code, $post_body_code, $robots);
 
                 $entity = [
                     'id' => $connect->insertId(),
@@ -824,7 +826,7 @@ function edit_site($connect) {
   $id = isset($_POST['id'])?(int)$_POST['id']:0;
   $site = NULL;
   if($id)
-    $site = $connect->getRow("SELECT `id`, `status`, `name`, `branding_name`, `branding_slogan`,  `domain`, `main_bg_color`, `main_bg_color2`, `main_font_color`, `main_font_color2`, `main_link_color`, `head_code`, `robots` FROM `sites` WHERE `id` =?i",$id);
+    $site = $connect->getRow("SELECT `id`, `status`, `name`, `branding_name`, `branding_slogan`,  `domain`, `main_bg_color`, `main_bg_color2`, `main_font_color`, `main_font_color2`, `main_link_color`, `head_code`, `pre_body_code`, `post_body_code`, `robots` FROM `sites` WHERE `id` =?i",$id);
   ob_start();
   if($site) {
       $entity = [
@@ -915,6 +917,18 @@ function edit_site($connect) {
                           <label class="col-sm-4 control-label">Код в блоке head</label>
                           <div class="col-sm-8">
                               <textarea class="form-control" name="head_code"><?=htmlspecialchars($site['head_code']);?></textarea>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Код в начале элемента body</label>
+                          <div class="col-sm-8">
+                              <textarea class="form-control" name="pre_body_code"><?=htmlspecialchars($site['pre_body_code']);?></textarea>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Код в конце элемента body</label>
+                          <div class="col-sm-8">
+                              <textarea class="form-control" name="post_body_code"><?=htmlspecialchars($site['post_body_code']);?></textarea>
                           </div>
                       </div>
                       <div class="form-group">

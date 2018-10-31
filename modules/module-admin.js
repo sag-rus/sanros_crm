@@ -1562,6 +1562,18 @@ function add_new_site() {
                           '</div>' +
                       '</div>' +
 											'<div class="form-group">' +
+                          '<label class="col-sm-4 control-label">Код в начале элемента body</label>' +
+                          '<div class="col-sm-8">' +
+                              '<textarea class="form-control" name="pre_body_code"></textarea>' +
+                          '</div>' +
+                      '</div>' +
+											'<div class="form-group">' +
+                          '<label class="col-sm-4 control-label">Код в конце элемента body</label>' +
+                          '<div class="col-sm-8">' +
+                              '<textarea class="form-control" name="post_body_code"></textarea>' +
+                          '</div>' +
+                      '</div>' +
+											'<div class="form-group">' +
                           '<label class="col-sm-4 control-label">Robots.txt</label>' +
                           '<div class="col-sm-8">' +
                               '<textarea class="form-control" name="robots"></textarea>' +
@@ -1617,6 +1629,10 @@ function save_site() {
   $faviconMsg.html("").removeClass('with-bottom-margin');
 
   var head_code = $modalBody.find('*[name="head_code"]').val();
+  var pre_body_code = $modalBody.find('*[name="pre_body_code"]').val();
+  var post_body_code = $modalBody.find('*[name="post_body_code"]').val();
+
+
   var robots = $modalBody.find('*[name="robots"]').val();
 
   var domain = $domain.val().trim();
@@ -1672,6 +1688,8 @@ function save_site() {
       main_font_color2: main_font_color2,
 			main_link_color: main_link_color,
 			head_code: head_code,
+			pre_body_code: pre_body_code,
+			post_body_code: post_body_code,
 			branding_name: branding_name,
 			branding_slogan: branding_slogan
     };
