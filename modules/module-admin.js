@@ -1561,6 +1561,12 @@ function add_new_site() {
                               '<textarea class="form-control" name="head_code"></textarea>' +
                           '</div>' +
                       '</div>' +
+											'<div class="form-group">' +
+                          '<label class="col-sm-4 control-label">Robots.txt</label>' +
+                          '<div class="col-sm-8">' +
+                              '<textarea class="form-control" name="robots"></textarea>' +
+                          '</div>' +
+                      '</div>' +
 										'</div>' +
 										'<div class="modal-loader"></div>'+
 										'<div class="modal-footer">' +
@@ -1611,6 +1617,7 @@ function save_site() {
   $faviconMsg.html("").removeClass('with-bottom-margin');
 
   var head_code = $modalBody.find('*[name="head_code"]').val();
+  var robots = $modalBody.find('*[name="robots"]').val();
 
   var domain = $domain.val().trim();
   $nameMsg.html('');
@@ -1656,6 +1663,7 @@ function save_site() {
     	func: "save_site",
 			name: name,
 			domain: domain,
+			robots: robots,
 			favicon: favicon,
 			id: id,
 			main_bg_color: main_bg_color,
