@@ -920,7 +920,7 @@ function edit_site($connect) {
                       <div class="form-group">
                           <label class="col-sm-4 control-label">Robots.txt</label>
                           <div class="col-sm-8">
-                              <textarea class="form-control" name="head_code"><?=htmlspecialchars($site['robots']);?></textarea>
+                              <textarea class="form-control" name="robots"><?=htmlspecialchars($site['robots']);?></textarea>
                           </div>
                       </div>
                   </div>
