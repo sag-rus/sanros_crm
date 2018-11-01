@@ -509,7 +509,7 @@ function edit_sites_content($connect) {
   $content_id = isset($_POST['id'])?(int)$_POST['id']:0;
   $content = NULL;
   if($content_id)
-      $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `summary`, `body`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block` FROM `sites_contents` WHERE `id` =?i",$content_id);
+      $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `summary`, `body`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block`, `second_bg` FROM `sites_contents` WHERE `id` =?i",$content_id);
       $entity = $content;
       $entity['type'] = 'content';
   ob_start();
@@ -600,6 +600,13 @@ function edit_sites_content($connect) {
                           <div class="col-sm-10">
                               <div class="input-message-block" data-for="page_bg"></div>
                               <input type="file" name="page_bg" value="<?=htmlspecialchars(json_encode((object)bounds_to_files($connect,load_bounds($connect,$entity,'page_bg'))));?>">
+                          </div>
+                      </div>
+                      <div class="form-group<?php if($content['type'] !== 'landing') { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Двухуровневый фон</label>
+                          <div class="col-sm-10">
+                              <input type="checkbox" name="second_bg" class="form-control"<?php if($content['second_bg'] == 1) {?> checked<?php } ?>>
+                              </div>
                           </div>
                       </div>
                       <div class="form-group">
@@ -987,6 +994,7 @@ function set_sites_content($connect) {
   $published = isset($_POST['published'])?(strtotime($_POST['published'])-3600*3):$timestamp;
   $content_id = isset($_POST['content_id'])?(int)$_POST['content_id']:0;
   $status = isset($_POST['status'])?(int)$_POST['status']:0;
+  $second_bg = isset($_POST['second_bg'])?(int)$_POST['second_bg']:0;
   $module_object_id = isset($_POST['module_object_id'])?(int)$_POST['module_object_id']:0;
   $module_block = isset($_POST['module_block'])?mb_strtolower(trim($_POST['module_block'])):"";
 
@@ -1044,12 +1052,12 @@ function set_sites_content($connect) {
               set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
 
 
-              $connect->query("UPDATE `sites_contents` SET `title`=?s, `path`=?s, `description`=?s, `body`=?s, `summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `module_object_id` = ?i, `module_block` =?s WHERE `id`=?i",$title,$path,$description,$body,$summary,$keywords,$type,$timestamp,$published,$status,0,$weight,$module_object_id,$module_block,$content_id);
+              $connect->query("UPDATE `sites_contents` SET `title`=?s, `path`=?s, `description`=?s, `body`=?s, `summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i WHERE `id`=?i",$title,$path,$description,$body,$summary,$keywords,$type,$timestamp,$published,$status,0,$weight,$module_object_id,$module_block,$second_bg, $content_id);
             }
             else {
               $respAr['success'] = 1;
               $respAr['msg'] = "Контент успешно добавлен";
-              $connect->query("INSERT INTO `sites_contents` (`title`, `path`, `description`, `body`, `summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`,`module_object_id`, `module_block`) VALUES (?s,?s,?s,?s,?s,?s,?s,?i,?i,?i,?i,?i,?i,?s,?i,?s)",$title,$path,$description,$body,$summary,$keywords,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight,$module_object_id,$module_block);
+              $connect->query("INSERT INTO `sites_contents` (`title`, `path`, `description`, `body`, `summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`,`module_object_id`, `module_block`, `second_bg`) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?i, ?s, ?i)",$title,$path,$description,$body,$summary,$keywords,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight,$module_object_id, $module_block, $second_bg);
 
               $entity = [
                 'id' => $connect->insertId(),
@@ -1104,7 +1112,7 @@ function set_sites_content($connect) {
 }
 
 function sync_site_content($connect, $id):bool {
-    $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `summary`, `body`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block` FROM `sites_contents` WHERE `id` =?i",$id);
+    $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `summary`, `body`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block`, `second_bg` FROM `sites_contents` WHERE `id` =?i",$id);
     if($content) {
         try {
           $client = new \GuzzleHttp\Client();

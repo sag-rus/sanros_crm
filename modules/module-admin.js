@@ -1826,6 +1826,12 @@ function add_new_sites_content(site_id) {
                           '</div>' +
                       '</div>' +
 			 								'<div class="form-group">' +
+												'<label class="col-sm-2 control-label">Двухуровневый фон</label>' +
+												'<div class="col-sm-10">' +
+													'<input type="checkbox" name="second_bg" class="form-control">'+
+												'</div>' +
+											'</div>' +
+			 								'<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Мета-описание</label>' +
 												'<div class="col-sm-10">' +
 													'<textarea class="form-control" name="description"></textarea>'+
@@ -2084,6 +2090,13 @@ function set_sites_content() {
   else
   	status = 0;
 
+  var $second_bg = $modalBody.find('*[name="second_bg"]');
+  var second_bg;
+  if($second_bg.prop('checked'))
+    second_bg = 1;
+  else
+    second_bg = 0;
+
   var $summary = $modalBody.find('textarea[name="summary"]');
   var $summaryMsg = $summary.parent().find('.input-message-block');
   var summary = $summary.val().trim();
@@ -2240,6 +2253,7 @@ function set_sites_content() {
         site_id: site_id,
 				image: image,
 				page_bg: page_bg,
+				second_bg: second_bg,
 				type: type,
 				keywords: keywords,
         published: published,
@@ -2508,6 +2522,9 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
   var $page_bg = $('.sites-content-modal *[name="page_bg"]');
   var $page_bgFormG = $page_bg.closest('.form-group');
 
+  var $second_bg = $('.sites-content-modal *[name="second_bg"]');
+  var $second_bgFormG = $second_bg.closest('.form-group');
+
   var $photogallery = $('.sites-content-modal *[name="photogallery"]');
   var $photogalleryFormG = $photogallery.closest('.form-group');
 
@@ -2523,10 +2540,12 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
   if(type === 'landing') {
     $sliderPhotosFormG.removeClass('hidden');
     $page_bgFormG.removeClass('hidden');
+    $second_bgFormG.removeClass('hidden');
   }
   else {
     $sliderPhotosFormG.addClass('hidden');
     $page_bgFormG.addClass('hidden');
+    $second_bgFormG.addClass('hidden');
   }
 
   if(type === 'photogallery' || type === 'landing' || type === 'news' || type === 'page') {
