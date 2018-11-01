@@ -595,6 +595,13 @@ function edit_sites_content($connect) {
                               <input type="file" name="slider_photos" value="<?=htmlspecialchars(json_encode((object)bounds_to_files($connect,load_bounds($connect,$entity,'slider_photos'))));?>">
                           </div>
                       </div>
+                      <div class="form-group<?php if($content['type'] !== 'landing') { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Фото для фона</label>
+                          <div class="col-sm-10">
+                              <div class="input-message-block" data-for="page_bg"></div>
+                              <input type="file" name="page_bg" value="<?=htmlspecialchars(json_encode((object)bounds_to_files($connect,load_bounds($connect,$entity,'page_bg'))));?>">
+                          </div>
+                      </div>
                       <div class="form-group">
                           <label class="col-sm-2 control-label">Мета-описание</label>
                           <div class="col-sm-10">
@@ -1020,15 +1027,19 @@ function set_sites_content($connect) {
               }
 
               $boundsArraySliderPhotos = [];
+              $boundsArrayPageBg = [];
 
               if($type === 'landing') {
                 $boundsArraySliderPhotos = files_to_bounds($connect,$entity,'slider_photos',isset($_POST['slider_photos'])?$_POST['slider_photos']:[]);
+                $boundsArrayPageBg = files_to_bounds($connect,$entity,'page_bg',isset($_POST['page_bg'])?$_POST['page_bg']:[]);
               }
 
               remove_bounds($connect,$entity,'image');
+              remove_bounds($connect,$entity,'page_bg');
               remove_bounds($connect,$entity,'photogallery');
               remove_bounds($connect,$entity,'slider_photos');
               set_bounds($connect,$boundsArrayImage,'image');
+              set_bounds($connect,$boundsArrayPageBg,'page_bg');
               set_bounds($connect,$boundsArrayPhotogallery,'photogallery');
               set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
 
@@ -1049,6 +1060,7 @@ function set_sites_content($connect) {
 
 
               $boundsArrayPhotogallery = [];
+              $boundsArrayPageBg = [];
 
               if(in_array($type,['photogallery','landing','news', 'page'])) {
                 $boundsArrayPhotogallery = files_to_bounds($connect,$entity,'photogallery',isset($_POST['photogallery'])?$_POST['photogallery']:[]);
@@ -1058,9 +1070,11 @@ function set_sites_content($connect) {
 
               if($type === 'landing') {
                 $boundsArraySliderPhotos = files_to_bounds($connect,$entity,'slider_photos',isset($_POST['slider_photos'])?$_POST['slider_photos']:[]);
+                $boundsArrayPageBg = files_to_bounds($connect,$entity,'page_bg',isset($_POST['page_bg'])?$_POST['page_bg']:[]);
               }
 
               set_bounds($connect,$boundsArrayImage,'image');
+              set_bounds($connect,$boundsArrayPageBg,'page_bg');
               set_bounds($connect,$boundsArrayPhotogallery,'photogallery');
               set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
             }

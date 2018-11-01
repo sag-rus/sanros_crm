@@ -1819,6 +1819,13 @@ function add_new_sites_content(site_id) {
                           '</div>' +
                       '</div>' +
 			 								'<div class="form-group">' +
+                          '<label class="col-sm-2 control-label">Фото для фона</label>' +
+                          '<div class="col-sm-10">' +
+                              '<div class="input-message-block" data-for="page_bg"></div>' +
+                              '<input type="file" name="page_bg">' +
+                          '</div>' +
+                      '</div>' +
+			 								'<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Мета-описание</label>' +
 												'<div class="col-sm-10">' +
 													'<textarea class="form-control" name="description"></textarea>'+
@@ -2098,6 +2105,11 @@ function set_sites_content() {
   var image = JSON.parse($image.val().trim());
   $imageMsg.html("").removeClass('with-bottom-margin');
 
+  var $page_bg = $modalBody.find('*[name="page_bg"]');
+  var $page_bgMsg = $page_bg.parent().find('.input-message-block');
+  var page_bg = JSON.parse($page_bg.val().trim());
+  $page_bgMsg.html("").removeClass('with-bottom-margin');
+
   var $module_object_id = $modalBody.find('input[name="module_object_id"]');
   var $module_object_idMsg = $module_object_id.parent().find('.input-message-block');
   var module_object_id = $module_object_id.val().trim();
@@ -2227,6 +2239,7 @@ function set_sites_content() {
         body: body,
         site_id: site_id,
 				image: image,
+				page_bg: page_bg,
 				type: type,
 				keywords: keywords,
         published: published,
@@ -2492,6 +2505,9 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
   var $slider_photos = $('.sites-content-modal *[name="slider_photos"]');
   var $sliderPhotosFormG = $slider_photos.closest('.form-group');
 
+  var $page_bg = $('.sites-content-modal *[name="page_bg"]');
+  var $page_bgFormG = $page_bg.closest('.form-group');
+
   var $photogallery = $('.sites-content-modal *[name="photogallery"]');
   var $photogalleryFormG = $photogallery.closest('.form-group');
 
@@ -2506,9 +2522,11 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 
   if(type === 'landing') {
     $sliderPhotosFormG.removeClass('hidden');
+    $page_bgFormG.removeClass('hidden');
   }
   else {
     $sliderPhotosFormG.addClass('hidden');
+    $page_bgFormG.addClass('hidden');
   }
 
   if(type === 'photogallery' || type === 'landing' || type === 'news' || type === 'page') {
