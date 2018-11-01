@@ -1885,7 +1885,7 @@ function add_new_sites_content(site_id) {
     contentType:['image/jpeg','image/png']
   });
 
-  $('.sites-content-modal *[name="image"]').multUploader({
+  $('.sites-content-modal *[name="image"], .sites-content-modal *[name="page_bg"]').multUploader({
     action:'mysql.php?func=multipart_upload',
     fragmentSize:1024*1024,
 		maxcount: 1,
@@ -2382,7 +2382,7 @@ function edit_sites_content(id) {
         contentType:['image/jpeg','image/png']
       });
 
-      $('.sites-content-modal *[name="image"]').multUploader({
+      $('.sites-content-modal *[name="image"], .sites-content-modal *[name="page_bg"]').multUploader({
         action:'mysql.php?func=multipart_upload',
         fragmentSize:1024*1024,
         maxcount: 1,
