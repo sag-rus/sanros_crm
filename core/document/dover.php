@@ -42,7 +42,7 @@ function review_dover($connect, $type, $id, $turist, $type_PDF = "PDF"){
 	$date_pass = $row["date_pas"];
 	$img = $_COOKIE["img"];
 	$index = 0;
-	$rows = $connect->getAll("SELECT id_room, days, number FROM position_reck WHERE schet=?i", $id);
+	$rows = $connect->getAll("SELECT id_room, days, number, note FROM position_reck WHERE schet=?i", $id);
 	foreach ($rows as $row) {
       $days = $row["days"];
       $number_turist = $row['number'];
@@ -54,6 +54,9 @@ function review_dover($connect, $type, $id, $turist, $type_PDF = "PDF"){
       if($id == 53740) {
         $putevka .="<br />".$note_bid;
       }
+
+      if($row['note'])
+          $putevka .= ' ('.$row['note'].')';
 
       $table.= "<tr>";
       $table.= "<td width='50' align='center'>".$index."</td>";
