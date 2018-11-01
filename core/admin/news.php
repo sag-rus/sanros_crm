@@ -606,7 +606,6 @@ function edit_sites_content($connect) {
                           <label class="col-sm-2 control-label">Двухуровневый фон</label>
                           <div class="col-sm-10">
                               <input type="checkbox" name="second_bg" class="form-control"<?php if($content['second_bg'] == 1) {?> checked<?php } ?>>
-                              </div>
                           </div>
                       </div>
                       <div class="form-group">
