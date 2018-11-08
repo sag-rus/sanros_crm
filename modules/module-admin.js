@@ -1739,6 +1739,18 @@ function show_sites_addresses_list(site_id) {
   });
 }
 
+function show_sites_menu_items_list(site_id) {
+  var str = 'func=show_sites_menu_items_list&site_id='+site_id;
+  $.ajax({
+    type: 'POST',
+    data: str,
+    url: 'mysql.php',
+    success: function(html){
+      $('#body').html(html);
+    }
+  });
+}
+
 function add_new_sites_content(site_id) {
    var html = '<div class="modal fade sites-content-modal">' +
 								'<div class="modal-dialog">' +
@@ -2379,6 +2391,120 @@ function save_sites_address() {
 
 }
 
+function save_sites_menu_item() {
+  var $button = $('.btn-save-sites-menu-item');
+  var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
+  var $modalLoader = $button.closest('.modal-dialog').find('.modal-loader');
+
+  var $name = $modalBody.find('input[name="name"]');
+  var $nameMsg = $name.parent().find('.input-message-block');
+  var name = $name.val().trim();
+  $nameMsg.html('');
+
+  var $href = $modalBody.find('input[name="href"]');
+  var $hrefMsg = $href.parent().find('.input-message-block');
+  var href = $href.val().trim();
+  $hrefMsg.html('');
+
+  var site_id = parseInt($modalBody.find('*[name="site_id"]').val());
+  var menu_id = parseInt($modalBody.find('*[name="menu_id"]').val());
+  var id = parseInt($modalBody.find('*[name="id"]').val());
+
+
+
+  var $sort = $modalBody.find('input[name="sort"]');
+  var $sortMsg = $sort.parent().find('.input-message-block');
+  var sort = $sort.val().trim();
+  $sortMsg.html('');
+
+  var $status = $modalBody.find('*[name="status"]');
+  var status;
+  if($status.prop('checked'))
+    status = 1;
+  else
+    status = 0;
+
+
+  var $main = $modalBody.find('*[name="main"]');
+  var main;
+  if($main.prop('checked'))
+    main = 1;
+  else
+    main = 0;
+
+  var error = false;
+
+  if(name.length === 0) {
+    $nameMsg.html("Это обязательное поле");
+    if(!error) {
+      $name.focus();
+      error = true;
+    }
+  }
+
+  if(href.length === 0) {
+    $hrefMsg.html("Это обязательное поле");
+    if(!error) {
+      $href.focus();
+      error = true;
+    }
+  }
+
+  if(sort.length === 0) {
+    $sortMsg.html("Это обязательное поле");
+    if(!error) {
+      $sort.focus();
+      error = true;
+    }
+  }
+  else {
+    sort = parseInt(sort);
+    if(isNaN(sort)) {
+      $sortMsg.html("Введите любое целое число");
+      if(!error) {
+        $sort.focus();
+        error = true;
+      }
+    }
+  }
+
+
+  if(!error) {
+    show_loader_element($modalLoader);
+    $modalBody.addClass('hidden');
+    $button.prop('disabled',true);
+    $.ajax({
+      type: 'POST',
+      data: {
+        func: 'save_sites_menu_item',
+        name: name,
+        href: href,
+        main: main,
+        id:id,
+        sort: sort,
+        status: status,
+        site_id: site_id,
+        menu_id: menu_id
+      },
+      dataType: 'JSON',
+      url: 'mysql.php',
+      success: function(data){
+        if(data['success']) {
+          remove_all_windows();
+          show_sites_menu_items_list(site_id);
+        }
+        else {
+          $modalLoader.html('');
+          $modalBody.removeClass('hidden');
+          $button.prop('disabled',false);
+          $modalBody.find('*[data-for="'+data['msg_field']+'"]').html(data['msg']);
+        }
+      }
+    });
+  }
+
+}
+
 function edit_sites_content(id) {
   var str = 'func=edit_sites_content&id='+id;
   $.ajax({
@@ -2433,6 +2559,24 @@ function sites_address(id,site_id) {
 		site_id = 0;
 
   var str = 'func=sites_address&id='+id+"&site_id="+site_id;
+  $.ajax({
+    type: 'POST',
+    data: str,
+    url: 'mysql.php',
+    success: function(html){
+      show_modal(html);
+    }
+  });
+}
+
+function sites_menu_item(id,site_id) {
+  if(typeof id === 'undefined')
+    id = 0;
+
+  if(typeof site_id === 'undefined')
+    site_id = 0;
+
+  var str = 'func=sites_menu_item&id='+id+"&site_id="+site_id;
   $.ajax({
     type: 'POST',
     data: str,

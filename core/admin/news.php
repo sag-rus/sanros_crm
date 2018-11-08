@@ -96,6 +96,7 @@ function show_sites_list($connect) {
               <td>
                   <button class="btn btn-default btn-sm" onclick="show_sites_contents_list(<?=$site['id'];?>);">Материалы</button>
                   <button class="btn btn-default btn-sm" onclick="show_sites_addresses_list(<?=$site['id'];?>);">Адреса</button>
+                  <button class="btn btn-default btn-sm" onclick="show_sites_menu_items_list(<?=$site['id'];?>);">Элементы меню</button>
                   <?php if($id_rights > 5)  { ?>
                       <button class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
                   <?php } ?>
@@ -237,7 +238,7 @@ function show_sites_addresses_list($connect) {
                         <td><?=$sites_address['title'];?></td>
                         <td><?=$sites_address['status'] == 1?"Активен":"Не активен";?></td>
                         <td>
-                          <?php if($id_rights > 5) { ?>
+                          <?php if($id_rights > 4) { ?>
                               <button class="btn btn-default btn-sm" onclick="remove_sites_address(<?=$sites_address['id'];?>);"><i class="fa fa-trash-o"></i></button>
                           <?php } ?>
                             <button class="btn btn-default btn-sm" onclick="sites_address(<?=$sites_address['id'];?>);"><i class="fa fa-pencil"></i></button>
@@ -253,6 +254,86 @@ function show_sites_addresses_list($connect) {
             <?php if($id_rights > 4) { ?>
                 <button type="button" class="btn btn-primary btn-sm" onclick="sites_address(null,<?=$site_id;?>);"><i class="fa fa-plus-circle"></i> Добавить адрес</button>
             <?php } ?>
+        </div>
+    </div>
+  <?php
+  return ob_get_clean();
+}
+
+function show_sites_menu_items_list($connect) {
+  global $id_rights;
+  $menuArray = [
+    1 => 'Верхнее основное',
+    2 => 'Верхнее второе',
+    3 => 'Нижнее'
+  ];
+  $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
+  $site = NULL;
+  if($site_id) {
+    $site = $connect->getRow("SELECT `id`, `name`, `domain` FROM `sites` WHERE `id`=?i",$site_id);
+    if($site)
+      $sites_menu_items = $connect->getAll("SELECT * FROM `app_models_site_menu_item` WHERE `site_id`=?i ORDER BY `sort` ASC", $site_id);
+    else
+      $sites_menu_items = [];
+  }
+  else
+    $sites_menu_items = $connect->getAll("SELECT * FROM `app_models_site_menu_item` ORDER BY `sort` ASC");
+
+  ob_start();
+  ?>
+    <div class="panel panel-default sites-menu-items-panel">
+        <div class="panel-heading"><i class="fa fa-list"></i> Элементы меню<?php if($site) { ?> сайта «<?=$site['name'];?>»<?php } ?> <button class="btn btn-success btn-sm btn-sites-sync" onclick="sync_site(<?=($site?$site['id']:0);?>)">Синхронизировать</button> <button class="btn btn-default btn-sm" onclick="show_sites_list();">К списку сайтов</button></div>
+        <div class="panel-body table-body">
+            <table class="table table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        Название
+                    </th>
+                    <th>
+                        Ссылка
+                    </th>
+                    <th>
+                        Меню
+                    </th>
+                    <th>
+                        Статус
+                    </th>
+                    <th>
+                        Действия
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                foreach ($sites_menu_items as $sites_menu_item) {
+                  ?>
+                    <tr>
+                        <td><?=$sites_menu_item['id'];?></td>
+                        <td><?=$sites_menu_item['name'];?></td>
+                        <td><?=$sites_menu_item['href'];?></td>
+                        <td><?=$menuArray[$sites_menu_item['menu_id']];?></td>
+                        <td><?=$sites_menu_item['status'] == 1?"Активен":"Не активен";?></td>
+                        <td>
+                          <?php if($id_rights > 4) { ?>
+                              <button class="btn btn-default btn-sm" onclick="remove_sites_menu_item(<?=$sites_menu_item['id'];?>);"><i class="fa fa-trash-o"></i></button>
+                          <?php } ?>
+                            <button class="btn btn-default btn-sm" onclick="sites_menu_item(<?=$sites_menu_item['id'];?>);"><i class="fa fa-pencil"></i></button>
+                        </td>
+                    </tr>
+                  <?php
+                }
+                ?>
+                </tbody>
+            </table>
+        </div>
+        <div class="panel-footer text-right">
+          <?php if($id_rights > 4) { ?>
+              <button type="button" class="btn btn-primary btn-sm" onclick="sites_menu_item(null,<?=$site_id;?>);"><i class="fa fa-plus-circle"></i> Добавить элемент</button>
+          <?php } ?>
         </div>
     </div>
   <?php
@@ -366,9 +447,9 @@ function save_sites_address($connect) {
 
   if((!$id || $address) && $site && $title && in_array($status,[0,1])) {
     if($address)
-        $oldAddr = $connect->getRow("SELECT `id` FROM `app_models_site_address` WHERE `title`=?s AND `id` <> ?i",$title,$address['id']);
+        $oldAddr = $connect->getRow("SELECT `id` FROM `app_models_site_address` WHERE `title`=?s AND `id` <> ?i AND `site_id` = ?i",$title,$address['id'],$site['id']);
     else
-        $oldAddr = $connect->getRow("SELECT `id` FROM `app_models_site_address` WHERE `title`=?s",$title);
+        $oldAddr = $connect->getRow("SELECT `id` FROM `app_models_site_address` WHERE `title`=?s AND `site_id` = ?i",$title,$site['id']);
 
     if($oldAddr) {
       $respAr['msg'] = 'Адрес с таким заголовком уже есть';
@@ -382,6 +463,63 @@ function save_sites_address($connect) {
             $connect->query("INSERT INTO `app_models_site_address` (`created`,`changed`,`status`,`uid`,`sort`,`title`,`site_id`,`description`) VALUES (?i, ?i, ?i, ?i, ?i, ?s, ?i, ?s)",$timestamp, $timestamp, $status, 1, $sort, $title, $site['id'],$description);
 
         $respAr['success'] = 1;
+    }
+  }
+
+  return json_encode($respAr);
+}
+
+function save_sites_menu_item($connect) {
+  $menuArray = [1,2,3];
+  $respAr = [
+    'success' => 0,
+    'title' => '',
+    'msg' => ''
+  ];
+
+  $id = isset($_POST['id'])?(int)$_POST['id']:0;
+  $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
+  $name = isset($_POST['name'])?trim($_POST['name']):"";
+  $href = isset($_POST['href'])?trim($_POST['href']):"";
+  $status = isset($_POST['status'])?(int)$_POST['status']:0;
+  $main = isset($_POST['main'])?(int)$_POST['main']:0;
+  $sort = isset($_POST['sort'])?(int)$_POST['sort']:0;
+  $menu_id = isset($_POST['menu_id'])?(int)$_POST['menu_id']:0;
+  if($id)
+    $menu_item = $connect->getRow("SELECT `id` FROM `app_models_site_menu_item` WHERE `id` =?i",$id);
+  else
+    $menu_item = NULL;
+
+  if($site_id)
+    $site = $connect->getRow("SELECT `id` FROM `sites` WHERE `id`=?i",$site_id);
+  else
+    $site = NULL;
+
+
+  if((!$id || $menu_item) && $site && $name && in_array($status,[0,1]) && in_array($main,[0,1]) && in_array($menu_id,$menuArray) && $href) {
+    if($main) {
+      if ($menu_item) {
+        $oldMenuItem = $connect->getRow("SELECT `id` FROM `app_models_site_menu_item` WHERE `main`= '1' AND `id` <> ?i AND `site_id` = ?i AND `menu_id` = ?i", $menu_item['id'], $site['id'], $menu_id);
+      }
+      else {
+        $oldMenuItem = $connect->getRow("SELECT `id` FROM `app_models_site_menu_item` WHERE `main`= '1' AND `site_id` = ?i AND `menu_id` = ?i", $site['id'],$menu_id);
+      }
+    }
+    else
+      $oldMenuItem = NULL;
+
+    if($oldMenuItem) {
+      $respAr['msg'] = 'В этом меню уже есть выделенный элемент';
+      $respAr['msg_field'] = 'main';
+    }
+    else {
+      $timestamp = gmdate("U");
+      if($menu_item)
+        $connect->query("UPDATE `app_models_site_menu_item` SET `changed`=?i, `name`=?s, `href`=?s, `main` = ?i, `menu_id` =?i, `status` =?i, `sort` =?i WHERE `id` =?i",$timestamp, $name, $href, $main, $menu_id, $status,$sort,$menu_item['id']);
+      else
+        $connect->query("INSERT INTO `app_models_site_menu_item` (`created`, `changed`, `status`, `uid`, `sort`, `name`, `href`, `main`, `menu_id`, `site_id`) VALUES (?i, ?i, ?i, ?i, ?i, ?s, ?s, ?i, ?i, ?i)",$timestamp, $timestamp, $status, 1, $sort, $name, $href, $main, $menu_id, $site['id']);
+
+      $respAr['success'] = 1;
     }
   }
 
@@ -448,8 +586,15 @@ function sites_address($connect)
         $address = $connect->getRow("SELECT * FROM `app_models_site_address` WHERE `id`=?i",$address_id);
     else
         $address = NULL;
-    $maxSort = $connect->getOne("SELECT MAX(`sort`) FROM `app_models_site_address`");
-    if(is_null($maxSort))
+
+    $maxSort = NULL;
+
+    if($address)
+        $maxSort = $connect->getOne("SELECT MAX(`sort`) FROM `app_models_site_address` WHERE `site_id` = ?i",$address['site_id']);
+    else
+        $maxSort = $connect->getOne("SELECT MAX(`sort`) FROM `app_models_site_address` WHERE `site_id` = ?i",$site_id);
+
+  if(is_null($maxSort))
         $maxSort = -1;
 
     $maxSort++;
@@ -503,6 +648,100 @@ function sites_address($connect)
     </div>
     <?php
     return ob_get_clean();
+}
+
+function sites_menu_item($connect)
+{
+    $menuArray = [
+      1 => 'Верхнее основное',
+      2 => 'Верхнее второе',
+      3 => 'Нижнее'
+    ];
+  $menu_item_id = isset($_POST['id'])?(int)$_POST['id']:0;
+  $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
+  if($menu_item_id )
+    $menu_item = $connect->getRow("SELECT * FROM `app_models_site_menu_item` WHERE `id`=?i",$menu_item_id);
+  else
+    $menu_item = NULL;
+
+  $maxSort = NULL;
+
+  if($menu_item)
+      $maxSort = $connect->getOne("SELECT MAX(`sort`) FROM `app_models_site_menu_item` WHERE `site_id` = ?i AND `menu_id` = ?i", $menu_item['site_id'], $menu_item['menu_id']);
+  else
+      $maxSort = $connect->getOne("SELECT MAX(`sort`) FROM `app_models_site_menu_item` WHERE `site_id` = ?i AND `menu_id` = 1", $site_id);
+
+  if(is_null($maxSort))
+    $maxSort = -1;
+
+  $maxSort++;
+  ob_start();
+  ?>
+    <div class="modal fade sites-content-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+                    <h4 class="modal-title"><?php if($menu_item) { ?>Редактировать элемент меню<?php } else { ?>Добавить элемент меню<?php } ?></h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                  <?php if($menu_item || $site_id) { ?>
+                      <div class="form-group">
+                          <label class="col-sm-2 control-label">Название</label>
+                          <div class="col-sm-10">
+                              <input type="text" class="form-control" name="name" maxlength="255" value="<?=$menu_item?htmlspecialchars($menu_item['name']):"";?>">
+                              <input type="hidden" value="<?=$site_id?$site_id:$menu_item['site_id'];?>" name="site_id">
+                              <input type="hidden" value="<?=$menu_item?$menu_item['id']:0;?>" name="id">
+                              <div class="input-message-block" data-for="name"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-2 control-label">Ссылка</label>
+                          <div class="col-sm-10">
+                              <input type="text" class="form-control" name="href" maxlength="1024" value="<?=$menu_item?htmlspecialchars($menu_item['href']):"";?>">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-2 control-label">Меню</label>
+                          <div class="col-sm-10">
+                              <select class="form-control" name="menu_id">
+                                  <?php foreach ($menuArray as $i => $item) { ?>
+                                    <option value="<?=$i;?>"<?php if($menu_item && $menu_item['menu_id'] == $i) { ?> checked<?php } ?>><?=$item;?></option>
+                                  <?php } ?>
+                              </select>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-2 control-label">Вес</label>
+                          <div class="col-sm-10">
+                              <input type="number" class="form-control" name="sort" value="<?=$menu_item?$menu_item['sort']:$maxSort;?>">
+                              <div class="input-message-block" data-for="sort"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-2 control-label">Выделить</label>
+                          <div class="col-sm-10">
+                              <input type="checkbox" name="main" class="form-control"<?php if($menu_item && $menu_item['main'] == 1) {?> checked<?php } ?>>
+                              <div class="input-message-block" data-for="main"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-2 control-label">Активный</label>
+                          <div class="col-sm-10">
+                              <input type="checkbox" name="status" class="form-control"<?php if($menu_item && $menu_item['status'] == 1) {?> checked<?php } ?>>
+                          </div>
+                      </div>
+                  <?php } ?>
+                </div>
+                <div class="modal-loader"></div>
+                <div class="modal-footer">
+                    <button class="btn btn-success btn-sm btn-save-sites-menu-item" onclick="save_sites_menu_item()" id="btn-save-sites-menu-item"><i class="fa fa-check-circle"></i> Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+  <?php
+  return ob_get_clean();
 }
 
 function edit_sites_content($connect) {
