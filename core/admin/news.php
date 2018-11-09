@@ -759,7 +759,7 @@ function sites_menu_item($connect)
                           <div class="col-sm-10">
                               <select class="form-control" name="menu_id">
                                   <?php foreach ($menuArray as $i => $item) { ?>
-                                    <option value="<?=$i;?>"<?php if($menu_item && $menu_item['menu_id'] == $i) { ?> checked<?php } ?>><?=$item;?></option>
+                                    <option value="<?=$i;?>"<?php if($menu_item && $menu_item['menu_id'] == $i) { ?> selected<?php } ?>><?=$item;?></option>
                                   <?php } ?>
                               </select>
                           </div>
