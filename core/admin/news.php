@@ -210,7 +210,7 @@ function show_sites_addresses_list($connect) {
   ob_start();
   ?>
     <div class="panel panel-default addresses-panel">
-        <div class="panel-heading"><i class="fa fa-list"></i> Адреса<?php if($site) { ?> сайта «<?=$site['name'];?>»<?php } ?> <button class="btn btn-success btn-sm btn-sites-sync" onclick="sync_site(<?=($site?$site['id']:0);?>)">Синхронизировать</button> <button class="btn btn-default btn-sm" onclick="show_sites_list();">К списку сайтов</button></div>
+        <div class="panel-heading"><i class="fa fa-list"></i> Адреса<?php if($site) { ?> сайта «<?=$site['name'];?>»<?php } ?>  <button class="btn btn-default btn-sm" onclick="show_sites_list();">К списку сайтов</button></div>
         <div class="panel-body table-body">
             <table class="table table-hover table-condensed">
                 <thead>
@@ -282,7 +282,7 @@ function show_sites_menu_items_list($connect) {
   ob_start();
   ?>
     <div class="panel panel-default sites-menu-items-panel">
-        <div class="panel-heading"><i class="fa fa-list"></i> Элементы меню<?php if($site) { ?> сайта «<?=$site['name'];?>»<?php } ?> <button class="btn btn-success btn-sm btn-sites-sync" onclick="sync_site(<?=($site?$site['id']:0);?>)">Синхронизировать</button> <button class="btn btn-default btn-sm" onclick="show_sites_list();">К списку сайтов</button></div>
+        <div class="panel-heading"><i class="fa fa-list"></i> Элементы меню<?php if($site) { ?> сайта «<?=$site['name'];?>»<?php } ?> <button class="btn btn-default btn-sm" onclick="show_sites_list();">К списку сайтов</button></div>
         <div class="panel-body table-body">
             <table class="table table-hover table-condensed">
                 <thead>
@@ -550,8 +550,46 @@ function remove_sites_address($connect) {
                 <div class="modal-loader"></div>
                 <div class="modal-footer">
                   <?php if($address) { ?>
-                    <button class="btn btn-success btn-sm btn-remove-sites-address-success" onclick="remove_sites_address_success(<?=$id;?>)" id="btn-remove-sites-address-success"><i class="fa fa-check-circle"></i> Сохранить</button>
+                    <button class="btn btn-success btn-sm btn-remove-sites-address-success" onclick="remove_sites_address_success(<?=$id;?>)" id="btn-remove-sites-address-success"><i class="fa fa-check-circle"></i> Удалить</button>
                     <button class="btn btn-danger btn-sm" data-dismiss="modal" aria-label="Close">Нет</button>
+                  <?php } else { ?>
+                      <button class="btn btn-danger btn-sm" data-dismiss="modal" aria-label="Close">Закрыть</button>
+                  <?php } ?>
+                </div>
+            </div>
+        </div>
+    </div>
+  <?php
+  return ob_get_clean();
+}
+
+
+function remove_sites_menu_item($connect) {
+  $id = isset($_POST['id'])?(int)$_POST['id']:0;
+  $menu_item = $connect->getRow("SELECT `id`, `site_id` FROM `app_models_site_menu_item` WHERE `id` =?i",$id);
+  ob_start();
+  ?>
+    <div class="modal fade remove-sites-menu-item">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+                    <h4 class="modal-title">Удалить элемент меню</h4>
+                </div>
+                <div class="modal-body form-horizontal site-name">
+                  <?php if($menu_item) { ?>
+                      <input type="hidden" name="id" value="<?=$id;?>">
+                      <input type="hidden" name="site_id" value="<?=$menu_item['site_id'];?>">
+                      Вы уверены, что хотите удалить элемент меню?
+                  <?php } else { ?>
+                      Некорректный ID
+                  <?php } ?>
+                </div>
+                <div class="modal-loader"></div>
+                <div class="modal-footer">
+                  <?php if($menu_item) { ?>
+                      <button class="btn btn-success btn-sm btn-remove-sites-menu-item-success" onclick="remove_sites_menu_item_success(<?=$id;?>)" id="btn-remove-sites-menu-item-success"><i class="fa fa-check-circle"></i> Удалить</button>
+                      <button class="btn btn-danger btn-sm" data-dismiss="modal" aria-label="Close">Нет</button>
                   <?php } else { ?>
                       <button class="btn btn-danger btn-sm" data-dismiss="modal" aria-label="Close">Закрыть</button>
                   <?php } ?>
@@ -574,6 +612,21 @@ function remove_sites_address_success($connect) {
   if($address) {
       $connect->query("DELETE FROM `app_models_site_address` WHERE `id` =?i",$id);
       $respAr['success'] = 1;
+  }
+  return json_encode($respAr);
+}
+
+function remove_sites_menu_item_success($connect) {
+  $respAr = [
+    'msg' => '',
+    'title' => '',
+    'success' => 0
+  ];
+  $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
+  $menu_item = $connect->getRow("SELECT `id` FROM `app_models_site_menu_item` WHERE `id` =?i", $id);
+  if($menu_item) {
+    $connect->query("DELETE FROM `app_models_site_menu_item` WHERE `id` =?i",$id);
+    $respAr['success'] = 1;
   }
   return json_encode($respAr);
 }
@@ -1510,6 +1563,30 @@ function sync_site($connect) {
             $respAr['msg'] = $res['msg'];
             if(!$respAr['success']) {
                 break;
+            }
+          }
+          else {
+            $respAr['success'] = 0;
+            $respAr['msg'] = "Что-то пошло не так...";
+            break;
+          }
+        }
+
+        if($respAr['success']) {
+          $menu_items = $connect->getAll("SELECT * FROM `app_models_site_menu_item` WHERE `site_id` = ?i", $site['id']);
+          $res = $client->request('POST',"https://sites.tonia.ru/api/site/".$site['id']."/menu/items/set",[
+            'form_params' => [
+              'menu_items' => $menu_items,
+              'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4'
+            ]
+          ]);
+
+          $res = json_decode($res->getBody(),true);
+          if(array_key_exists('success',$res)) {
+            $respAr['success'] = $res['success'];
+            $respAr['msg'] = $res['msg'];
+            if(!$respAr['success']) {
+              break;
             }
           }
           else {
