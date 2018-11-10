@@ -246,8 +246,8 @@ function show_sites_addresses_list($connect) {
                         <td>
                           <?php if($id_rights > 4) { ?>
                               <button class="btn btn-default btn-sm" onclick="remove_sites_address(<?=$sites_address['id'];?>);"><i class="fa fa-trash-o"></i></button>
+                              <button class="btn btn-default btn-sm" onclick="sites_address(<?=$sites_address['id'];?>);"><i class="fa fa-pencil"></i></button>
                           <?php } ?>
-                            <button class="btn btn-default btn-sm" onclick="sites_address(<?=$sites_address['id'];?>);"><i class="fa fa-pencil"></i></button>
                         </td>
                     </tr>
                   <?php
@@ -326,8 +326,8 @@ function show_sites_menu_items_list($connect) {
                         <td>
                           <?php if($id_rights > 4) { ?>
                               <button class="btn btn-default btn-sm" onclick="remove_sites_menu_item(<?=$sites_menu_item['id'];?>);"><i class="fa fa-trash-o"></i></button>
+                              <button class="btn btn-default btn-sm" onclick="sites_menu_item(<?=$sites_menu_item['id'];?>);"><i class="fa fa-pencil"></i></button>
                           <?php } ?>
-                            <button class="btn btn-default btn-sm" onclick="sites_menu_item(<?=$sites_menu_item['id'];?>);"><i class="fa fa-pencil"></i></button>
                         </td>
                     </tr>
                   <?php
