@@ -1823,7 +1823,14 @@ function add_new_sites_content(site_id) {
                               '<input type="file" name="photogallery">' +
                           '</div>' +
                       '</div>' +
-			 								'<div class="form-group">' +
+                      '<div class="form-group">' +
+												'<label class="col-sm-2 control-label">Адрес для формы поиска</label>' +
+												'<div class="col-sm-10">' +
+													'<input type="text" class="form-control" name="form_action">' +
+													'<div class="input-message-block" data-for="form_action"></div>'+
+                        '</div>' +
+											'</div>' +
+                      '<div class="form-group">' +
                           '<label class="col-sm-2 control-label">Фото слайдера</label>' +
                           '<div class="col-sm-10">' +
                               '<div class="input-message-block" data-for="slider_photos"></div>' +
@@ -2084,6 +2091,11 @@ function set_sites_content() {
   var path = $path.val().trim();
   $pathMsg.html('');
 
+  var $form_action = $modalBody.find('input[name="form_action"]');
+  var $form_actionMsg = $form_action.parent().find('.input-message-block');
+  var form_action = $form_action.val().trim();
+  $form_actionMsg.html('');
+
 
   var $weight = $modalBody.find('input[name="weight"]');
   var $weightMsg = $weight.parent().find('.input-message-block');
@@ -2237,6 +2249,24 @@ function set_sites_content() {
         error = true;
       }
     }
+
+    if(form_action.length === 0) {
+      $form_actionMsg.html("Это обязательное поле");
+      if(!error) {
+        $form_action.focus();
+        error = true;
+      }
+    }
+    else if(form_action[0] !== '/') {
+      $form_actionMsg.html("путь должен начинаться с /");
+      if(!error) {
+        $form_action.focus();
+        error = true;
+      }
+    }
+  }
+  else {
+    form_action = '';
   }
 
   if(type === 'photogallery') {
@@ -2270,6 +2300,7 @@ function set_sites_content() {
 				keywords: keywords,
         published: published,
 				path: path,
+        form_action: form_action,
 				summary: summary,
 				status: status,
 				content_id: content_id,
@@ -2690,13 +2721,16 @@ function sync_site(site_id) {
 $(document).on('change','.sites-content-modal select[name="type"]',function (e) {
 	var type = $(this).val().trim();
 	var $module_object_id = $('.sites-content-modal *[name="module_object_id"]');
-	var $moduleObjectFormG = $module_object_id.closest('.form-group');
+  var $moduleObjectFormG = $module_object_id.closest('.form-group');
 
   var $module_block = $('.sites-content-modal *[name="module_block"]');
   var $moduleBlockFormG = $module_block.closest('.form-group');
 
   var $slider_photos = $('.sites-content-modal *[name="slider_photos"]');
   var $sliderPhotosFormG = $slider_photos.closest('.form-group');
+
+  var $form_action = $('.sites-content-modal *[name="form_action"]');
+  var $form_actionFormG = $form_action.closest('.form-group');
 
   var $page_bg = $('.sites-content-modal *[name="page_bg"]');
   var $page_bgFormG = $page_bg.closest('.form-group');
@@ -2720,11 +2754,13 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
     $sliderPhotosFormG.removeClass('hidden');
     $page_bgFormG.removeClass('hidden');
     $second_bgFormG.removeClass('hidden');
+    $form_actionFormG.removeClass('hidden');
   }
   else {
     $sliderPhotosFormG.addClass('hidden');
     $page_bgFormG.addClass('hidden');
     $second_bgFormG.addClass('hidden');
+    $form_actionFormG.addClass('hidden');
   }
 
   if(type === 'photogallery' || type === 'landing' || type === 'news' || type === 'page') {

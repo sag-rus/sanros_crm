@@ -92,7 +92,7 @@ function show_sites_list($connect) {
           <tr>
               <td><?=$site['id'];?></td>
               <td><?=$site['name'];?></td>
-              <td><?=$site['domain'];?></td>
+              <td><a href="//<?=idn_to_utf8($site['domain']);?>" target="_blank"><?=idn_to_utf8($site['domain']);?></a></td>
               <td>
                   <button class="btn btn-default btn-sm" onclick="show_sites_contents_list(<?=$site['id'];?>);">Материалы</button>
                   <button class="btn btn-default btn-sm" onclick="show_sites_addresses_list(<?=$site['id'];?>);">Адреса</button>
@@ -135,12 +135,12 @@ function show_sites_contents_list($connect) {
   if($site_id) {
     $site = $connect->getRow("SELECT `id`, `name`, `domain` FROM `sites` WHERE `id`=?i",$site_id);
     if($site)
-        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type FROM `sites_contents` WHERE `site_id`=?i ORDER BY id ASC", $site_id);
+        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i ORDER BY id ASC", $site_id);
     else
         $sites_contents = [];
   }
   else
-      $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type FROM `sites_contents` ORDER BY id ASC");
+      $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` ORDER BY id ASC");
 
   ob_start();
   ?>
@@ -160,6 +160,9 @@ function show_sites_contents_list($connect) {
                         Тип материала
                     </th>
                     <th>
+                        Статус
+                    </th>
+                    <th>
                         Действия
                     </th>
                 </tr>
@@ -172,6 +175,9 @@ function show_sites_contents_list($connect) {
                         <td><?=$sites_content['id'];?></td>
                         <td><?=$sites_content['title'];?></td>
                         <td><?=$content_types[$sites_content['type']];?></td>
+                        <td class="<?=$sites_content['status']?"success":"danger";?>">
+                            <?=$sites_content['status']?"Опубликован":"Снят с публикации";?>
+                        </td>
                         <td>
                             <?php if($id_rights > 5) { ?>
                                 <button class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
@@ -801,7 +807,7 @@ function edit_sites_content($connect) {
   $content_id = isset($_POST['id'])?(int)$_POST['id']:0;
   $content = NULL;
   if($content_id)
-      $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `summary`, `body`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block`, `second_bg` FROM `sites_contents` WHERE `id` =?i",$content_id);
+      $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `summary`, `body`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block`, `second_bg`, `form_action` FROM `sites_contents` WHERE `id` =?i",$content_id);
       $entity = $content;
       $entity['type'] = 'content';
   ob_start();
@@ -836,7 +842,7 @@ function edit_sites_content($connect) {
                       <div class="form-group">
                           <label class="col-sm-2 control-label">Адрес страницы</label>
                           <div class="col-sm-10">
-                              <input type="text" class="form-control" name="path" value="<?=$content['path'];?>">
+                              <input type="text" class="form-control" name="path" value="<?=htmlspecialchars($content['path']);?>">
                               <div class="input-message-block" data-for="path"></div>
                           </div>
                       </div>
@@ -878,6 +884,13 @@ function edit_sites_content($connect) {
                           <div class="col-sm-10">
                               <div class="input-message-block" data-for="photogallery"></div>
                               <input type="file" name="photogallery" value="<?=htmlspecialchars(json_encode((object)bounds_to_files($connect,load_bounds($connect,$entity,'photogallery'))));?>">
+                          </div>
+                      </div>
+                      <div class="form-group<?php if($content['type'] !== 'landing') { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Адрес для формы поиска</label>
+                          <div class="col-sm-10">
+                              <input type="text" class="form-control" name="form_action" value="<?=htmlspecialchars($content['form_action']);?>">
+                              <div class="input-message-block" data-for="form_action"></div>
                           </div>
                       </div>
                       <div class="form-group<?php if($content['type'] !== 'landing') { ?> hidden<?php } ?>">
@@ -1264,6 +1277,7 @@ function set_sites_content($connect) {
 
   $title = isset($_POST['title'])?trim($_POST['title']):"";
   $path = isset($_POST['path'])?trim($_POST['path']):"";
+  $form_action = isset($_POST['form_action'])?trim($_POST['form_action']):"";
   $description = isset($_POST['description'])?trim($_POST['description']):"";
   $body = isset($_POST['body'])?$_POST['body']:"";
   $weight = isset($_POST['weight'])?(float)$_POST['weight']:0;
@@ -1343,12 +1357,12 @@ function set_sites_content($connect) {
               set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
 
 
-              $connect->query("UPDATE `sites_contents` SET `title`=?s, `path`=?s, `description`=?s, `body`=?s, `summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i WHERE `id`=?i",$title,$path,$description,$body,$summary,$keywords,$type,$timestamp,$published,$status,0,$weight,$module_object_id,$module_block,$second_bg, $content_id);
+              $connect->query("UPDATE `sites_contents` SET `title`=?s, `path`=?s, `description`=?s, `body`=?s, `summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i, `form_action` = ?s WHERE `id`=?i",$title,$path,$description,$body,$summary,$keywords,$type,$timestamp,$published,$status,0,$weight,$module_object_id,$module_block,$second_bg, $form_action, $content_id);
             }
             else {
               $respAr['success'] = 1;
               $respAr['msg'] = "Контент успешно добавлен";
-              $connect->query("INSERT INTO `sites_contents` (`title`, `path`, `description`, `body`, `summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`,`module_object_id`, `module_block`, `second_bg`) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?i, ?s, ?i)",$title,$path,$description,$body,$summary,$keywords,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight,$module_object_id, $module_block, $second_bg);
+              $connect->query("INSERT INTO `sites_contents` (`title`, `path`, `description`, `body`, `summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`,`module_object_id`, `module_block`, `second_bg`, `form_action`) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?i, ?s, ?i, ?s)",$title,$path,$description,$body,$summary,$keywords,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight,$module_object_id, $module_block, $second_bg, $form_action);
 
               $entity = [
                 'id' => $connect->insertId(),
@@ -1403,7 +1417,7 @@ function set_sites_content($connect) {
 }
 
 function sync_site_content($connect, $id):bool {
-    $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `summary`, `body`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block`, `second_bg` FROM `sites_contents` WHERE `id` =?i",$id);
+    $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `summary`, `body`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block`, `second_bg`, `form_action` FROM `sites_contents` WHERE `id` =?i",$id);
     if($content) {
         try {
           $client = new \GuzzleHttp\Client();
