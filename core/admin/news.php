@@ -370,6 +370,8 @@ function save_site($connect) {
     $main_font_color = isset($_POST['main_font_color'])?mb_strtolower(trim($_POST['main_font_color'])):"#356d33";
     $main_font_color2 = isset($_POST['main_font_color2'])?mb_strtolower(trim($_POST['main_font_color2'])):"#ffffff";
     $main_link_color = isset($_POST['main_link_color'])?mb_strtolower(trim($_POST['main_link_color'])):"#356d33";
+    $interface_style = isset($_POST['interface_style'])?(int)$_POST['interface_style']:1;
+
 
     $head_code = isset($_POST['head_code'])?trim($_POST['head_code']):"";
     $pre_body_code = isset($_POST['pre_body_code'])?trim($_POST['pre_body_code']):"";
@@ -377,7 +379,7 @@ function save_site($connect) {
     $robots = isset($_POST['robots'])?trim($_POST['robots']):"";
 
 
-    if($siteName && $branding_name && $siteDomain && (!$id || $site)) {
+    if($siteName && $branding_name && $siteDomain && (!$id || $site) && in_array($interface_style,[1,2])) {
         $datetime = gmdate("U");
         if($id)
             $oldsite = $connect->getRow("SELECT `id`,`name`,`domain` FROM `sites` WHERE (`name`=?s OR `domain`=?s) AND `id` <> ?i LIMIT 1",$siteName,$siteDomain,$id);
@@ -397,10 +399,10 @@ function save_site($connect) {
                 remove_bounds($connect,$entity,'favicon');
                 set_bounds($connect,$boundsArrayFavicon,'favicon');
 
-                $connect->query("UPDATE `sites` SET `name` = ?s, `branding_name` = ?s, `branding_slogan` = ?s, `domain` = ?s, `main_bg_color` = ?s, `main_bg_color2` = ?s, `main_font_color` = ?s, `main_font_color2` = ?s, `main_link_color` = ?s, `head_code` =?s, `pre_body_code` =?s, `post_body_code` =?s, `robots` = ?s WHERE `id`=?i",$siteName,$branding_name,$branding_slogan,$siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$head_code, $pre_body_code, $post_body_code,$robots,$id);
+                $connect->query("UPDATE `sites` SET `name` = ?s, `branding_name` = ?s, `branding_slogan` = ?s, `domain` = ?s, `main_bg_color` = ?s, `main_bg_color2` = ?s, `main_font_color` = ?s, `main_font_color2` = ?s, `main_link_color` = ?s, `head_code` =?s, `pre_body_code` =?s, `post_body_code` =?s, `robots` = ?s, `interface_style` = ?i WHERE `id`=?i",$siteName,$branding_name,$branding_slogan,$siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$head_code, $pre_body_code, $post_body_code,$robots,$interface_style, $id);
             }
             else {
-                $connect->query("INSERT INTO `sites` (`status`,`created`,`changed`,`name`, `branding_name`, `branding_slogan`, `domain`,`main_bg_color`,`main_bg_color2`,`main_font_color`,`main_font_color2`,`main_link_color`,`head_code`, `pre_body_code`, `post_body_code`, `robots`) VALUES (1, ?i, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $datetime, $datetime, $siteName, $branding_name, $branding_slogan, $siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$head_code, $pre_body_code, $post_body_code, $robots);
+                $connect->query("INSERT INTO `sites` (`status`,`created`,`changed`,`name`, `branding_name`, `branding_slogan`, `domain`,`main_bg_color`,`main_bg_color2`,`main_font_color`,`main_font_color2`,`main_link_color`,`head_code`, `pre_body_code`, `post_body_code`, `robots`, `interface_style`) VALUES (1, ?i, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i)", $datetime, $datetime, $siteName, $branding_name, $branding_slogan, $siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$head_code, $pre_body_code, $post_body_code, $robots, $interface_style);
 
                 $entity = [
                     'id' => $connect->insertId(),
@@ -1151,7 +1153,7 @@ function edit_site($connect) {
   $id = isset($_POST['id'])?(int)$_POST['id']:0;
   $site = NULL;
   if($id)
-    $site = $connect->getRow("SELECT `id`, `status`, `name`, `branding_name`, `branding_slogan`,  `domain`, `main_bg_color`, `main_bg_color2`, `main_font_color`, `main_font_color2`, `main_link_color`, `head_code`, `pre_body_code`, `post_body_code`, `robots` FROM `sites` WHERE `id` =?i",$id);
+    $site = $connect->getRow("SELECT `id`, `status`, `name`, `branding_name`, `branding_slogan`,  `domain`, `main_bg_color`, `main_bg_color2`, `main_font_color`, `main_font_color2`, `main_link_color`, `head_code`, `pre_body_code`, `post_body_code`, `robots`, `interface_style` FROM `sites` WHERE `id` =?i",$id);
   ob_start();
   if($site) {
       $entity = [
@@ -1236,6 +1238,15 @@ function edit_site($connect) {
                           <div class="col-sm-8">
                               <input type="color" class="form-control site-main-link-color" name="main-link-color" value="<?=$site['main_link_color'];?>">
                               <div class="input-message-block" data-for="main-link-color"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Стиль интерфейса</label>
+                          <div class="col-sm-8">
+                              <select class="form-control" name="interface_style">
+                                  <option value="1"<?php if($site['interface_style'] == 1) { ?> selected<?php }?>>Строгий</option>
+                                  <option value="2"<?php if($site['interface_style'] == 2) { ?> selected<?php }?>>Мягкий</option>
+                              </select>
                           </div>
                       </div>
                       <div class="form-group">

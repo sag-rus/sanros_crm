@@ -1556,6 +1556,15 @@ function add_new_site() {
                           '</div>' +
                       '</div>' +
 											'<div class="form-group">' +
+                          '<label class="col-sm-4 control-label">Стиль интерфейса</label>' +
+                          '<div class="col-sm-8">' +
+															 '<select class="form-control" name="interface_style">' +
+                                  '<option value="1">Строгий</option>' +
+                                  '<option value="2">Мягкий</option>' +
+                              '</select>' +
+                          '</div>' +
+                      '</div>' +
+											'<div class="form-group">' +
                           '<label class="col-sm-4 control-label">Код в блоке head</label>' +
                           '<div class="col-sm-8">' +
                               '<textarea class="form-control" name="head_code"></textarea>' +
@@ -1608,6 +1617,7 @@ function save_site() {
 	var $domain = $modalBody.find('input[name="domain"]');
   var $domainMsg = $domain.parent().find('.input-message-block');
   var id = parseInt($modalBody.find('*[name="id"]').val());
+  var interface_style = parseInt($modalBody.find('*[name="interface_style"]').val())
 	var main_bg_color = $modalBody.find('*[name="main-bg-color"]').val();
   var main_bg_color2 = $modalBody.find('*[name="main-bg-color2"]').val();
 
@@ -1687,6 +1697,7 @@ function save_site() {
       main_font_color: main_font_color,
       main_font_color2: main_font_color2,
 			main_link_color: main_link_color,
+			interface_style: interface_style,
 			head_code: head_code,
 			pre_body_code: pre_body_code,
 			post_body_code: post_body_code,
