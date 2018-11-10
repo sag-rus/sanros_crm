@@ -807,7 +807,7 @@ function edit_sites_content($connect) {
   $content_id = isset($_POST['id'])?(int)$_POST['id']:0;
   $content = NULL;
   if($content_id)
-      $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `summary`, `body`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block`, `second_bg`, `form_action` FROM `sites_contents` WHERE `id` =?i",$content_id);
+      $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h2`, `summary`, `body`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block`, `second_bg`, `form_action` FROM `sites_contents` WHERE `id` =?i",$content_id);
       $entity = $content;
       $entity['type'] = 'content';
   ob_start();
@@ -842,7 +842,7 @@ function edit_sites_content($connect) {
                       <div class="form-group">
                           <label class="col-sm-2 control-label">Адрес страницы</label>
                           <div class="col-sm-10">
-                              <input type="text" class="form-control" name="path" value="<?=htmlspecialchars($content['path']);?>">
+                              <input type="text" class="form-control" name="path" value="<?=htmlspecialchars($content['path']);?>" maxlength="512">
                               <div class="input-message-block" data-for="path"></div>
                           </div>
                       </div>
@@ -857,6 +857,13 @@ function edit_sites_content($connect) {
                                   <option value="module"<?php if($content['type'] === 'module') {?> selected<?php } ?>>Модуль бронирования</option>
                               </select>
                               <div class="input-message-block" data-for="type"></div>
+                          </div>
+                      </div>
+                      <div class="form-group<?php if($content['type'] !== 'landing') { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Второй заголовок (h2)</label>
+                          <div class="col-sm-10">
+                              <input type="text" class="form-control" name="title_h2" maxlength="255" value="<?=htmlspecialchars($content['title_h2']);?>">
+                              <div class="input-message-block" data-for="title_h2"></div>
                           </div>
                       </div>
                       <div class="form-group<?php if($content['type'] !== 'module') { ?> hidden<?php } ?>">
@@ -889,7 +896,7 @@ function edit_sites_content($connect) {
                       <div class="form-group<?php if($content['type'] !== 'landing') { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Адрес для формы поиска</label>
                           <div class="col-sm-10">
-                              <input type="text" class="form-control" name="form_action" value="<?=htmlspecialchars($content['form_action']);?>">
+                              <input type="text" class="form-control" name="form_action" value="<?=htmlspecialchars($content['form_action']);?>" maxlength="512">
                               <div class="input-message-block" data-for="form_action"></div>
                           </div>
                       </div>
@@ -1276,6 +1283,7 @@ function set_sites_content($connect) {
   ];
 
   $title = isset($_POST['title'])?trim($_POST['title']):"";
+  $title_h2 = isset($_POST['title_h2'])?trim($_POST['title_h2']):"";
   $path = isset($_POST['path'])?trim($_POST['path']):"";
   $form_action = isset($_POST['form_action'])?trim($_POST['form_action']):"";
   $description = isset($_POST['description'])?trim($_POST['description']):"";
@@ -1357,12 +1365,12 @@ function set_sites_content($connect) {
               set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
 
 
-              $connect->query("UPDATE `sites_contents` SET `title`=?s, `path`=?s, `description`=?s, `body`=?s, `summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i, `form_action` = ?s WHERE `id`=?i",$title,$path,$description,$body,$summary,$keywords,$type,$timestamp,$published,$status,0,$weight,$module_object_id,$module_block,$second_bg, $form_action, $content_id);
+              $connect->query("UPDATE `sites_contents` SET `title`=?s, `title_h2` = ?s, `path`=?s, `description`=?s, `body`=?s, `summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i, `form_action` = ?s WHERE `id`=?i",$title, $title_h2, $path,$description,$body,$summary,$keywords,$type,$timestamp,$published,$status,0,$weight,$module_object_id,$module_block,$second_bg, $form_action, $content_id);
             }
             else {
               $respAr['success'] = 1;
               $respAr['msg'] = "Контент успешно добавлен";
-              $connect->query("INSERT INTO `sites_contents` (`title`, `path`, `description`, `body`, `summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`,`module_object_id`, `module_block`, `second_bg`, `form_action`) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?i, ?s, ?i, ?s)",$title,$path,$description,$body,$summary,$keywords,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight,$module_object_id, $module_block, $second_bg, $form_action);
+              $connect->query("INSERT INTO `sites_contents` (`title`, `title_h2`, `path`, `description`, `body`, `summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`,`module_object_id`, `module_block`, `second_bg`, `form_action`) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?i, ?s, ?i, ?s)",$title, $title_h2, $path,$description,$body,$summary,$keywords,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight,$module_object_id, $module_block, $second_bg, $form_action);
 
               $entity = [
                 'id' => $connect->insertId(),
@@ -1417,7 +1425,7 @@ function set_sites_content($connect) {
 }
 
 function sync_site_content($connect, $id):bool {
-    $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `summary`, `body`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block`, `second_bg`, `form_action` FROM `sites_contents` WHERE `id` =?i",$id);
+    $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h2`, `summary`, `body`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block`, `second_bg`, `form_action` FROM `sites_contents` WHERE `id` =?i",$id);
     if($content) {
         try {
           $client = new \GuzzleHttp\Client();

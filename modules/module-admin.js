@@ -1779,7 +1779,7 @@ function add_new_sites_content(site_id) {
 			 								'<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Адрес страницы</label>' +
 												'<div class="col-sm-10">' +
-													'<input type="text" class="form-control" name="path">' +
+													'<input type="text" class="form-control" name="path" maxlength="512">' +
 													'<div class="input-message-block" data-for="path"></div>'+
 												'</div>' +
 											'</div>' +
@@ -1794,6 +1794,13 @@ function add_new_sites_content(site_id) {
 			 											'<option value="module">Модуль бронирования</option>' +
 			 										'</select>'+
 													'<div class="input-message-block" data-for="type"></div>'+
+												'</div>' +
+											'</div>' +
+                      '<div class="form-group">' +
+												'<label class="col-sm-2 control-label">Второй заголовок (h2)</label>' +
+												'<div class="col-sm-10">' +
+													'<input type="text" class="form-control" name="title_h2" maxlength="255">' +
+													'<div class="input-message-block" data-for="title_h2"></div>'+
 												'</div>' +
 											'</div>' +
 			 								'<div class="form-group hidden">' +
@@ -1826,7 +1833,7 @@ function add_new_sites_content(site_id) {
                       '<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Адрес для формы поиска</label>' +
 												'<div class="col-sm-10">' +
-													'<input type="text" class="form-control" name="form_action">' +
+													'<input type="text" class="form-control" name="form_action" maxlength="512">' +
 													'<div class="input-message-block" data-for="form_action"></div>'+
                         '</div>' +
 											'</div>' +
@@ -2080,11 +2087,18 @@ function set_sites_content() {
   var $button = $('.btn-save-new-sites-content');
   var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
   var $modalLoader = $button.closest('.modal-dialog').find('.modal-loader');
+
   var $title = $modalBody.find('input[name="title"]');
   var $titleMsg = $title.parent().find('.input-message-block');
   var title = $title.val().trim();
-  var content_id = parseInt($modalBody.find('*[name="content_id"]').val());
   $titleMsg.html('');
+
+  var $title_h2 = $modalBody.find('input[name="title_h2"]');
+  var $title_h2Msg = $title_h2.parent().find('.input-message-block');
+  var title_h2 = $title_h2.val().trim();
+  $title_h2Msg.html('');
+
+  var content_id = parseInt($modalBody.find('*[name="content_id"]').val());
 
   var $path = $modalBody.find('input[name="path"]');
   var $pathMsg = $path.parent().find('.input-message-block');
@@ -2242,6 +2256,15 @@ function set_sites_content() {
 	}
 
   if(type === 'landing') {
+
+    if(title_h2.length === 0) {
+      $title_h2Msg.html("Это обязательное поле");
+      if(!error) {
+        $title_h2.focus();
+        error = true;
+      }
+    }
+
     if(jQuery.isEmptyObject(slider_photos)) {
       $slider_photosMsg.html("Нужно внести фотографии!").addClass('with-bottom-margin');
       if(!error) {
@@ -2267,6 +2290,7 @@ function set_sites_content() {
   }
   else {
     form_action = '';
+    title_h2 = '';
   }
 
   if(type === 'photogallery') {
@@ -2288,6 +2312,7 @@ function set_sites_content() {
       data: {
       	func: 'set_sites_content',
 				title: title,
+        title_h2: title_h2,
         description: description,
 				slider_photos: slider_photos,
         photogallery: photogallery,
@@ -2732,6 +2757,9 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
   var $form_action = $('.sites-content-modal *[name="form_action"]');
   var $form_actionFormG = $form_action.closest('.form-group');
 
+  var $title_h2 = $('.sites-content-modal *[name="title_h2"]');
+  var $title_h2FormG = $title_h2.closest('.form-group');
+
   var $page_bg = $('.sites-content-modal *[name="page_bg"]');
   var $page_bgFormG = $page_bg.closest('.form-group');
 
@@ -2755,12 +2783,14 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
     $page_bgFormG.removeClass('hidden');
     $second_bgFormG.removeClass('hidden');
     $form_actionFormG.removeClass('hidden');
+    $title_h2FormG.removeClass('hidden');
   }
   else {
     $sliderPhotosFormG.addClass('hidden');
     $page_bgFormG.addClass('hidden');
     $second_bgFormG.addClass('hidden');
     $form_actionFormG.addClass('hidden');
+    $title_h2FormG.addClass('hidden');
   }
 
   if(type === 'photogallery' || type === 'landing' || type === 'news' || type === 'page') {
