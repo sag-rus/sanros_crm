@@ -97,6 +97,7 @@ function show_sites_list($connect) {
                   <button class="btn btn-default btn-sm" onclick="show_sites_contents_list(<?=$site['id'];?>);">Материалы</button>
                   <button class="btn btn-default btn-sm" onclick="show_sites_addresses_list(<?=$site['id'];?>);">Адреса</button>
                   <button class="btn btn-default btn-sm" onclick="show_sites_menu_items_list(<?=$site['id'];?>);">Элементы меню</button>
+                  <button class="btn btn-default btn-sm" onclick="show_sites_phones_list(<?=$site['id'];?>);">Телефоны</button>
                   <?php if($id_rights > 5)  { ?>
                       <button class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
                   <?php } ?>
@@ -346,6 +347,85 @@ function show_sites_menu_items_list($connect) {
   return ob_get_clean();
 }
 
+function show_sites_phones_list($connect) {
+  global $id_rights;
+  $blocksArray = [
+    'header' => 'Шапка сайта',
+    'footer' => 'Подвал сайта'
+  ];
+  $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
+  $site = NULL;
+  if($site_id) {
+    $site = $connect->getRow("SELECT `id`, `name`, `domain` FROM `sites` WHERE `id`=?i",$site_id);
+    if($site)
+      $sites_phones = $connect->getAll("SELECT * FROM `app_models_site_phone` WHERE `site_id`=?i ORDER BY `sort` ASC", $site_id);
+    else
+      $sites_phones = [];
+  }
+  else
+    $sites_phones = $connect->getAll("SELECT * FROM `app_models_site_phone` ORDER BY `sort` ASC");
+
+  ob_start();
+  ?>
+    <div class="panel panel-default sites-menu-items-panel">
+        <div class="panel-heading"><i class="fa fa-list"></i> Телефоны<?php if($site) { ?> сайта «<?=$site['name'];?>»<?php } ?> <button class="btn btn-default btn-sm" onclick="show_sites_list();">К списку сайтов</button></div>
+        <div class="panel-body table-body">
+            <table class="table table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        Заголовок
+                    </th>
+                    <th>
+                        Номер
+                    </th>
+                    <th>
+                        Блок
+                    </th>
+                    <th>
+                        Статус
+                    </th>
+                    <th>
+                        Действия
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                foreach ($sites_phones as $sites_phone) {
+                  ?>
+                    <tr>
+                        <td><?=$sites_phone['id'];?></td>
+                        <td><?=$sites_phone['title'];?></td>
+                        <td><?=$sites_phone['number'];?></td>
+                        <td><?=$blocksArray[$sites_phone['block']];?></td>
+                        <td><?=$sites_phone['status'] == 1?"Активен":"Не активен";?></td>
+                        <td>
+                          <?php if($id_rights > 4) { ?>
+                              <button class="btn btn-default btn-sm" onclick="remove_sites_phone(<?=$sites_phone['id'];?>);"><i class="fa fa-trash-o"></i></button>
+                              <button class="btn btn-default btn-sm" onclick="sites_phone(<?=$sites_phone['id'];?>);"><i class="fa fa-pencil"></i></button>
+                          <?php } ?>
+                        </td>
+                    </tr>
+                  <?php
+                }
+                ?>
+                </tbody>
+            </table>
+        </div>
+        <div class="panel-footer text-right">
+          <?php if($id_rights > 4) { ?>
+              <button type="button" class="btn btn-primary btn-sm" onclick="sites_phone(null,<?=$site_id;?>);"><i class="fa fa-plus-circle"></i> Добавить телефон</button>
+          <?php } ?>
+        </div>
+    </div>
+  <?php
+  return ob_get_clean();
+}
+
 function save_site($connect) {
     $respAr = [
       'success' => 0,
@@ -534,6 +614,82 @@ function save_sites_menu_item($connect) {
   return json_encode($respAr);
 }
 
+function save_sites_phone($connect) {
+  $blocksArray = ['header', 'footer'];
+  $maxMain = [
+    'header' => 1,
+    'footer' => NULL
+  ];
+  $respAr = [
+    'success' => 0,
+    'title' => '',
+    'msg' => ''
+  ];
+
+  $id = isset($_POST['id'])?(int)$_POST['id']:0;
+  $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
+  $title = isset($_POST['title'])?trim($_POST['title']):"";
+  $number = isset($_POST['number'])?trim($_POST['number']):"";
+  $status = isset($_POST['status'])?(int)$_POST['status']:0;
+  $main = isset($_POST['main'])?(int)$_POST['main']:0;
+  $sort = isset($_POST['sort'])?(int)$_POST['sort']:0;
+  $block = isset($_POST['block'])?trim($_POST['block']):"header";
+  if($id)
+    $phone = $connect->getRow("SELECT `id` FROM `app_models_site_phone` WHERE `id` =?i",$id);
+  else
+    $phone = NULL;
+
+  if($site_id)
+    $site = $connect->getRow("SELECT `id` FROM `sites` WHERE `id`=?i",$site_id);
+  else
+    $site = NULL;
+
+
+  if((!$id || $phone) && $site && in_array($status,[0,1]) && in_array($main,[0,1]) && in_array($block,$blocksArray) && $number) {
+    if($main && !is_null($maxMain[$block])) {
+      if ($phone) {
+        $oldPhonesCount = $connect->getOne("SELECT COUNT(*) FROM `app_models_site_phone` WHERE `main`= '1' AND `id` <> ?i AND `site_id` = ?i AND `block` = ?s", $phone['id'], $site['id'], $block);
+      }
+      else {
+        $oldPhonesCount = $connect->getOne("SELECT COUNT(*) FROM `app_models_site_phone` WHERE `main`= '1' AND `site_id` = ?i AND `block` = ?s", $site['id'], $block);
+      }
+    }
+    else
+      $oldPhonesCount = 0;
+
+    if($block === 'header') {
+      if ($phone) {
+        $oldPhonesCountH = $connect->getOne("SELECT COUNT(*) FROM `app_models_site_phone` WHERE `id` <> ?i AND `site_id` = ?i AND `block` = ?s", $phone['id'], $site['id'], $block);
+      }
+      else {
+        $oldPhonesCountH = $connect->getOne("SELECT COUNT(*) FROM `app_models_site_phone` WHERE `site_id` = ?i AND `block` = ?s", $site['id'], $block);
+      }
+    }
+    else
+      $oldPhonesCountH = 0;
+
+    if(!is_null($maxMain[$block]) && $oldPhonesCount > $maxMain[$block]-1) {
+      $respAr['msg'] = 'Максимальное количество выделенных телефонов для этого блока: '.$maxMain[$block];
+      $respAr['msg_field'] = 'main';
+    }
+    elseif ($oldPhonesCountH > 1) {
+      $respAr['msg'] = 'В шапке сайта может быть не более 2 телефонов';
+      $respAr['msg_field'] = 'block';
+    }
+    else {
+      $timestamp = gmdate("U");
+      if($phone)
+        $connect->query("UPDATE `app_models_site_phone` SET `changed`=?i, `title`=?s, `number`=?s, `main` = ?i, `block` =?s, `status` =?i, `sort` =?i WHERE `id` =?i",$timestamp, $title, $number, $main, $block, $status,$sort,$phone['id']);
+      else
+        $connect->query("INSERT INTO `app_models_site_phone` (`created`, `changed`, `status`, `uid`, `sort`, `title`, `number`, `main`, `block`, `site_id`) VALUES (?i, ?i, ?i, ?i, ?i, ?s, ?s, ?i, ?s, ?i)",$timestamp, $timestamp, $status, 1, $sort, $title, $number, $main, $block, $site['id']);
+
+      $respAr['success'] = 1;
+    }
+  }
+
+  return json_encode($respAr);
+}
+
 function remove_sites_address($connect) {
     $id = isset($_POST['id'])?(int)$_POST['id']:0;
     $address = $connect->getRow("SELECT `id`, `site_id` FROM `app_models_site_address` WHERE `id` =?i",$id);
@@ -609,6 +765,44 @@ function remove_sites_menu_item($connect) {
   return ob_get_clean();
 }
 
+function remove_sites_phone($connect) {
+  $id = isset($_POST['id'])?(int)$_POST['id']:0;
+  $phone = $connect->getRow("SELECT `id`, `site_id` FROM `app_models_site_phone` WHERE `id` =?i",$id);
+  ob_start();
+  ?>
+    <div class="modal fade remove-sites-phone">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+                    <h4 class="modal-title">Удалить телефон</h4>
+                </div>
+                <div class="modal-body form-horizontal site-name">
+                  <?php if($phone) { ?>
+                      <input type="hidden" name="id" value="<?=$id;?>">
+                      <input type="hidden" name="site_id" value="<?=$phone['site_id'];?>">
+                      Вы уверены, что хотите удалить этот телефон?
+                  <?php } else { ?>
+                      Некорректный ID
+                  <?php } ?>
+                </div>
+                <div class="modal-loader"></div>
+                <div class="modal-footer">
+                  <?php if($phone) { ?>
+                      <button class="btn btn-success btn-sm btn-remove-sites-phone-success" onclick="remove_sites_phone_success(<?=$id;?>)" id="btn-remove-sites-phone-success"><i class="fa fa-check-circle"></i> Удалить</button>
+                      <button class="btn btn-danger btn-sm" data-dismiss="modal" aria-label="Close">Нет</button>
+                  <?php } else { ?>
+                      <button class="btn btn-danger btn-sm" data-dismiss="modal" aria-label="Close">Закрыть</button>
+                  <?php } ?>
+                </div>
+            </div>
+        </div>
+    </div>
+  <?php
+  return ob_get_clean();
+}
+
+
 function remove_sites_address_success($connect) {
   $respAr = [
     'msg' => '',
@@ -634,6 +828,21 @@ function remove_sites_menu_item_success($connect) {
   $menu_item = $connect->getRow("SELECT `id` FROM `app_models_site_menu_item` WHERE `id` =?i", $id);
   if($menu_item) {
     $connect->query("DELETE FROM `app_models_site_menu_item` WHERE `id` =?i",$id);
+    $respAr['success'] = 1;
+  }
+  return json_encode($respAr);
+}
+
+function remove_sites_phone_success($connect) {
+  $respAr = [
+    'msg' => '',
+    'title' => '',
+    'success' => 0
+  ];
+  $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
+  $phone = $connect->getRow("SELECT `id` FROM `app_models_site_phone` WHERE `id` =?i", $id);
+  if($phone) {
+    $connect->query("DELETE FROM `app_models_site_phone` WHERE `id` =?i",$id);
     $respAr['success'] = 1;
   }
   return json_encode($respAr);
@@ -760,6 +969,7 @@ function sites_menu_item($connect)
                           <label class="col-sm-2 control-label">Ссылка</label>
                           <div class="col-sm-10">
                               <input type="text" class="form-control" name="href" maxlength="1024" value="<?=$menu_item?htmlspecialchars($menu_item['href']):"";?>">
+                              <div class="input-message-block" data-for="href"></div>
                           </div>
                       </div>
                       <div class="form-group">
@@ -797,6 +1007,101 @@ function sites_menu_item($connect)
                 <div class="modal-loader"></div>
                 <div class="modal-footer">
                     <button class="btn btn-success btn-sm btn-save-sites-menu-item" onclick="save_sites_menu_item()" id="btn-save-sites-menu-item"><i class="fa fa-check-circle"></i> Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+  <?php
+  return ob_get_clean();
+}
+
+function sites_phone($connect)
+{
+  $blocksArray = [
+    'header' => 'Шапка сайта',
+    'footer' => 'Подвал сайта'
+  ];
+  $phone_id = isset($_POST['id'])?(int)$_POST['id']:0;
+  $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
+  if($phone_id)
+    $phone = $connect->getRow("SELECT * FROM `app_models_site_phone` WHERE `id`=?i",$phone_id);
+  else
+    $phone = NULL;
+
+  $maxSort = NULL;
+
+  if($phone)
+    $maxSort = $connect->getOne("SELECT MAX(`sort`) FROM `app_models_site_phone` WHERE `site_id` = ?i", $phone['site_id']);
+  else
+    $maxSort = $connect->getOne("SELECT MAX(`sort`) FROM `app_models_site_phone` WHERE `site_id` = ?i", $site_id);
+
+  if(is_null($maxSort))
+    $maxSort = -1;
+
+  $maxSort++;
+  ob_start();
+  ?>
+    <div class="modal fade sites-content-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+                    <h4 class="modal-title"><?php if($phone) { ?>Редактировать телефон<?php } else { ?>Добавить телефон<?php } ?></h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                  <?php if($phone || $site_id) { ?>
+                      <div class="form-group">
+                          <label class="col-sm-2 control-label">Заголовок</label>
+                          <div class="col-sm-10">
+                              <input type="text" class="form-control" name="title" maxlength="255" value="<?=$phone?htmlspecialchars($phone['title']):"";?>">
+                              <input type="hidden" value="<?=$site_id?$site_id:$phone['site_id'];?>" name="site_id">
+                              <input type="hidden" value="<?=$phone?$phone['id']:0;?>" name="id">
+                              <div class="input-message-block" data-for="title"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-2 control-label">Номер</label>
+                          <div class="col-sm-10">
+                              <input type="text" class="form-control" name="number" maxlength="255" value="<?=$phone?htmlspecialchars($phone['number']):"";?>">
+                              <div class="input-message-block" data-for="number"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-2 control-label">Блок</label>
+                          <div class="col-sm-10">
+                              <select class="form-control" name="block">
+                                <?php foreach ($blocksArray as $block => $label) { ?>
+                                    <option value="<?=$block;?>"<?php if($phone && $phone['block'] == $block) { ?> selected<?php } ?>><?=$label;?></option>
+                                <?php } ?>
+                              </select>
+                              <div class="input-message-block" data-for="block"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-2 control-label">Вес</label>
+                          <div class="col-sm-10">
+                              <input type="number" class="form-control" name="sort" value="<?=$phone?$phone['sort']:$maxSort;?>">
+                              <div class="input-message-block" data-for="sort"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-2 control-label">Выделить</label>
+                          <div class="col-sm-10">
+                              <input type="checkbox" name="main" class="form-control"<?php if($phone && $phone['main'] == 1) {?> checked<?php } ?>>
+                              <div class="input-message-block" data-for="main"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-2 control-label">Активный</label>
+                          <div class="col-sm-10">
+                              <input type="checkbox" name="status" class="form-control"<?php if($phone && $phone['status'] == 1) {?> checked<?php } ?>>
+                          </div>
+                      </div>
+                  <?php } ?>
+                </div>
+                <div class="modal-loader"></div>
+                <div class="modal-footer">
+                    <button class="btn btn-success btn-sm btn-save-sites-phone" onclick="save_sites_phone()" id="btn-save-sites-phone"><i class="fa fa-check-circle"></i> Сохранить</button>
                 </div>
             </div>
         </div>
@@ -1628,6 +1933,31 @@ function sync_site($connect) {
             break;
           }
         }
+
+        if($respAr['success']) {
+          $phones = $connect->getAll("SELECT * FROM `app_models_site_phone` WHERE `site_id` = ?i", $site['id']);
+          $res = $client->request('POST',"https://sites.tonia.ru/api/site/".$site['id']."/phones/set",[
+            'form_params' => [
+              'phones' => $phones,
+              'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4'
+            ]
+          ]);
+
+          $res = json_decode($res->getBody(),true);
+          if(array_key_exists('success',$res)) {
+            $respAr['success'] = $res['success'];
+            $respAr['msg'] = $res['msg'];
+            if(!$respAr['success']) {
+              break;
+            }
+          }
+          else {
+            $respAr['success'] = 0;
+            $respAr['msg'] = "Что-то пошло не так...";
+            break;
+          }
+        }
+
       }
 
       if(!sync_files($connect)) {

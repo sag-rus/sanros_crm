@@ -1762,6 +1762,18 @@ function show_sites_menu_items_list(site_id) {
   });
 }
 
+function show_sites_phones_list(site_id) {
+  var str = 'func=show_sites_phones_list&site_id='+site_id;
+  $.ajax({
+    type: 'POST',
+    data: str,
+    url: 'mysql.php',
+    success: function(html){
+      $('#body').html(html);
+    }
+  });
+}
+
 function add_new_sites_content(site_id) {
    var html = '<div class="modal fade sites-content-modal">' +
 								'<div class="modal-dialog">' +
@@ -2572,6 +2584,123 @@ function save_sites_menu_item() {
 
 }
 
+function save_sites_phone() {
+  var $button = $('.btn-save-sites-phone');
+  var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
+  var $modalLoader = $button.closest('.modal-dialog').find('.modal-loader');
+
+  var $title = $modalBody.find('input[name="title"]');
+  var $titleMsg = $title.parent().find('.input-message-block');
+  var title = $title.val().trim();
+  $titleMsg.html('');
+
+  var $number = $modalBody.find('input[name="number"]');
+  var $numberMsg = $number.parent().find('.input-message-block');
+  var number = $number.val().trim();
+  $numberMsg.html('');
+
+  var site_id = parseInt($modalBody.find('*[name="site_id"]').val());
+  var block = $modalBody.find('*[name="block"]').val();
+  var id = parseInt($modalBody.find('*[name="id"]').val());
+
+
+
+  var $sort = $modalBody.find('input[name="sort"]');
+  var $sortMsg = $sort.parent().find('.input-message-block');
+  var sort = $sort.val().trim();
+  $sortMsg.html('');
+
+  var $status = $modalBody.find('*[name="status"]');
+  var status;
+  if($status.prop('checked'))
+    status = 1;
+  else
+    status = 0;
+
+
+  var $main = $modalBody.find('*[name="main"]');
+  var main;
+  if($main.prop('checked'))
+    main = 1;
+  else
+    main = 0;
+
+  var error = false;
+
+  if(block === 'footer') {
+    if(title.length === 0) {
+      $titleMsg.html("Это обязательное поле для телефонов в подвале");
+      if(!error) {
+        $title.focus();
+        error = true;
+      }
+    }
+	}
+
+  if(number.length === 0) {
+    $numberMsg.html("Это обязательное поле");
+    if(!error) {
+      $number.focus();
+      error = true;
+    }
+  }
+
+  if(sort.length === 0) {
+    $sortMsg.html("Это обязательное поле");
+    if(!error) {
+      $sort.focus();
+      error = true;
+    }
+  }
+  else {
+    sort = parseInt(sort);
+    if(isNaN(sort)) {
+      $sortMsg.html("Введите любое целое число");
+      if(!error) {
+        $sort.focus();
+        error = true;
+      }
+    }
+  }
+
+
+  if(!error) {
+    show_loader_element($modalLoader);
+    $modalBody.addClass('hidden');
+    $button.prop('disabled',true);
+    $.ajax({
+      type: 'POST',
+      data: {
+        func: 'save_sites_phone',
+        title: title,
+        number: number,
+        main: main,
+        id:id,
+        sort: sort,
+        status: status,
+        site_id: site_id,
+        block: block
+      },
+      dataType: 'JSON',
+      url: 'mysql.php',
+      success: function(data){
+        if(data['success']) {
+          remove_all_windows();
+          show_sites_phones_list(site_id);
+        }
+        else {
+          $modalLoader.html('');
+          $modalBody.removeClass('hidden');
+          $button.prop('disabled',false);
+          $modalBody.find('*[data-for="'+data['msg_field']+'"]').html(data['msg']);
+        }
+      }
+    });
+  }
+
+}
+
+
 function edit_sites_content(id) {
   var str = 'func=edit_sites_content&id='+id;
   $.ajax({
@@ -2654,6 +2783,24 @@ function sites_menu_item(id,site_id) {
   });
 }
 
+function sites_phone(id,site_id) {
+  if(typeof id === 'undefined')
+    id = 0;
+
+  if(typeof site_id === 'undefined')
+    site_id = 0;
+
+  var str = 'func=sites_phone&id='+id+"&site_id="+site_id;
+  $.ajax({
+    type: 'POST',
+    data: str,
+    url: 'mysql.php',
+    success: function(html){
+      show_modal(html);
+    }
+  });
+}
+
 function remove_sites_address(id) {
   var str = 'func=remove_sites_address&id='+id;
   $.ajax({
@@ -2668,6 +2815,18 @@ function remove_sites_address(id) {
 
 function remove_sites_menu_item(id) {
   var str = 'func=remove_sites_menu_item&id='+id;
+  $.ajax({
+    type: 'POST',
+    data: str,
+    url: 'mysql.php',
+    success: function(html){
+      show_modal(html);
+    }
+  });
+}
+
+function remove_sites_phone(id) {
+  var str = 'func=remove_sites_phone&id='+id;
   $.ajax({
     type: 'POST',
     data: str,
@@ -2723,6 +2882,30 @@ function remove_sites_menu_item_success(id) {
     }
   });
 }
+
+function remove_sites_phone_success(id) {
+  var $button = $('.btn-remove-sites-phone-success');
+  var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
+  var $modalLoader = $button.closest('.modal-dialog').find('.modal-loader');
+  var site_id = $modalBody.find('*[name="site_id"]');
+  var str = 'func=remove_sites_phone_success&id='+id+"&site_id="+site_id;
+  $modalBody.addClass('hidden');
+  show_loader_element($modalLoader);
+  $.ajax({
+    type: 'POST',
+    data: str,
+    dataType: 'JSON',
+    url: 'mysql.php',
+    success: function(data){
+      if(data['success']) {
+        show_sites_phones_list(site_id);
+      }
+      else alert("Ошибка при удалении");
+      remove_all_windows();
+    }
+  });
+}
+
 
 function sync_site(site_id) {
   if(typeof site_id === 'undefined')
