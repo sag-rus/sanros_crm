@@ -1658,8 +1658,9 @@ function check_promotional_code($code, $object, $sum, $dates, $client_id = NULL,
 		//"bonus" => array("sum" => 100),
 		//"quota" => array("sum" => 300)
         'ufa2017' => ["sum" => 500],
-        'sAnAtA2019' => [
-            "sum" => 500
+        'sanata2019' => [
+            "sum" => 500,
+            "min-sum" => 10000
         ]
 	];
 	if(isset($promotional_code[$code])){
