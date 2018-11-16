@@ -1657,7 +1657,8 @@ function check_promotional_code($code, $object, $sum, $dates, $client_id = NULL,
 	$promotional_code = [
 		//"bonus" => array("sum" => 100),
 		//"quota" => array("sum" => 300)
-        'ufa2017' => ["sum" => 500]
+        'ufa2017' => ["sum" => 500],
+        'sAnAtA2019' => ["sum" => 500]
 	];
 	if(isset($promotional_code[$code])){
 		if(isset($promotional_code[$code]["min-sum"]) AND $promotional_code[$code]["min-sum"] > $sum)
