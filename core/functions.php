@@ -1664,8 +1664,10 @@ function check_promotional_code($code, $object, $sum, $dates, $client_id = NULL,
         ]
 	];
 	if(isset($promotional_code[$code])){
-		if(isset($promotional_code[$code]["min-sum"]) AND $promotional_code[$code]["min-sum"] > $sum)
-			return FALSE;
+		if(isset($promotional_code[$code]["min-sum"]) && $promotional_code[$code]["min-sum"] > $sum)
+			return [
+			   'msg' => "Использование промокода ".$code." невозможно: сумма заявки меньше ".$promotional_code[$code]["min-sum"]." рублей"
+            ];
 		$data = $promotional_code[$code];
 		$sum = $data["sum"];
 		if(isset($data["access"]) AND !in_array($object, $data["access"])){

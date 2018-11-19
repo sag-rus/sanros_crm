@@ -150,13 +150,16 @@ var_dump($data_booking_JSON);
 				$promo_code = mb_strtolower($data_booking->promo_code);
 				$itog = $connect->getOne("SELECT sum FROM reckoning WHERE id=?i", $id);
 				$bonus = check_promotional_code($promo_code, $id_obj, $itog, array("arrival" => $date_z, "days" => $days), $last_id, $connect);
-				if($bonus){
+				if(!is_array($bonus) && $bonus){
 					$connect->query("INSERT INTO bonus(date, turist, sum, type, note, promocode) VALUES (?s, ?i, ?s, 3, ?s, ?s)", $today, $last_id, $bonus, "Подарочный бонус", $promo_code);
 					$connect->query("INSERT INTO bonus(date, schet, turist, sum, cause) VALUES (?s, ?i, ?i, ?i, 1)", $today, $id, $last_id, $bonus * (-1));
 					$connect->query("UPDATE reckoning SET promo_code=?s WHERE id=?i", $promo_code, $id);
           $connect->query("INSERT INTO promo_code_using(`promo_code`, `client_id`, `reck_id`, `timestamp`) VALUES (?s, ?i, ?i, ?i)", $promo_code, $last_id, $id, gmdate("U"));
 					save_schet_to_history($connect, $id, "Использование промокода");
 				}
+				elseif(is_array($bonus)) {
+          save_schet_to_history($connect, $id, $bonus['msg']);
+        }
 			}
 
 			echo " Client ID = ".$last_id." ";
