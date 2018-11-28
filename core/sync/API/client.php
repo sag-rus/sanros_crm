@@ -720,7 +720,8 @@ function new_booking_turist_cabinet($connect, $data){
 				else
 					$sale = $max;
 
-				$sale = $sale * (-1);
+				$sale = (int)$sale * (-1);
+
 				$connect->query("INSERT INTO bonus(date, turist, schet, sum) VALUES(?s, ?i, ?i, ?s)", $today, $client, $booking, $sale);
 			}
 		}

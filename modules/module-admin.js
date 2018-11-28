@@ -1905,6 +1905,18 @@ function add_new_sites_content(site_id) {
 												'</div>' +
 											'</div>' +
 			 								'<div class="form-group">' +
+                          '<label class="col-sm-2 control-label">Код карты</label>' +
+                          '<div class="col-sm-10">' +
+                              '<textarea class="form-control" name="map_code"></textarea>' +
+                          '</div>' +
+                      '</div>' +
+			 								'<div class="form-group">' +
+                          '<label class="col-sm-2 control-label">Вводный текст</label>' +
+                          '<div class="col-sm-10">' +
+                              '<textarea class="form-control" name="landing_info"></textarea>' +
+                          '</div>' +
+                      '</div>' +
+			 								'<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Дата и время публикации</label>' +
 												'<div class="col-sm-10">' +
 													'<input type="datetime-local" name="published" class="form-control">'+
@@ -2163,6 +2175,12 @@ function set_sites_content() {
   var summary = $summary.val().trim();
   $summaryMsg.html("");
 
+  var $map_code = $modalBody.find('textarea[name="map_code"]');
+  var map_code = $map_code.val().trim();
+
+  var $landing_info = $modalBody.find('textarea[name="landing_info"]');
+  var landing_info = $landing_info.val().trim();
+
 
   var $slider_photos = $modalBody.find('*[name="slider_photos"]');
   var $slider_photosMsg = $slider_photos.parent().find('.input-message-block');
@@ -2354,7 +2372,9 @@ function set_sites_content() {
 				content_id: content_id,
 				weight: weight,
         module_object_id: module_object_id,
-        module_block: module_block
+        module_block: module_block,
+				map_code: map_code,
+        landing_info: landing_info
 			},
       dataType: 'JSON',
       url: 'mysql.php',
@@ -2954,6 +2974,9 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
   var $title_h2 = $('.sites-content-modal *[name="title_h2"]');
   var $title_h2FormG = $title_h2.closest('.form-group');
 
+  var $landing_info = $('.sites-content-modal *[name="landing_info"]');
+  var $landing_infoFormG = $landing_info.closest('.form-group');
+
   var $page_bg = $('.sites-content-modal *[name="page_bg"]');
   var $page_bgFormG = $page_bg.closest('.form-group');
 
@@ -2978,6 +3001,7 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
     $second_bgFormG.removeClass('hidden');
     $form_actionFormG.removeClass('hidden');
     $title_h2FormG.removeClass('hidden');
+    $landing_infoFormG.removeClass('hidden');
   }
   else {
     $sliderPhotosFormG.addClass('hidden');
@@ -2985,6 +3009,7 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
     $second_bgFormG.addClass('hidden');
     $form_actionFormG.addClass('hidden');
     $title_h2FormG.addClass('hidden');
+    $landing_infoFormG.addClass('hidden');
   }
 
   if(type === 'photogallery' || type === 'landing' || type === 'news' || type === 'page') {
