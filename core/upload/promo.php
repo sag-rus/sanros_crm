@@ -8,8 +8,8 @@ function upload_promo_object_on_server($connect, $id = NULL){
 	if(!$id)
 		$id = $_POST["id"];
 	$connect_server = connect_to_server_directory();
-//	if($connect_server == 1)
-//		return "<div class='alert alert-danger'>Ошибка соединения</div>";
+	if($connect_server == 1)
+		return "<div class='alert alert-danger'>Ошибка соединения</div>";
 
 	if($connect_server == 2)
 		return "<div class='alert alert-danger'>Не удалось авторизироваться</div>";
@@ -30,15 +30,17 @@ function upload_promo_object_on_server($connect, $id = NULL){
 	}
 	save_primary_promo_XML($connect);
 	save_VIP_promo_XML($connect);
-	save_all_promo_XML($connect);
-	ftp_put($connect_server, $ftp_folder."overall/VIPpromo.xml", $rootPath."/temp/VIPpromo.xml", FTP_ASCII);
-	ftp_put($connect_server, $ftp_folder."overall/PrimaryPromo.xml", $rootPath."/temp/PrimaryPromo.xml", FTP_ASCII);
-	ftp_put($connect_server, $ftp_folder."overall/promotions.xml", $rootPath."/temp/promotions.xml", FTP_ASCII);
-	ftp_chmod($connect_server, 0644, $ftp_folder."overall/VIPpromo.xml");
-	ftp_chmod($connect_server, 0644, $ftp_folder."overall/PrimaryPromo.xml");
-	ftp_chmod($connect_server, 0644, $ftp_folder."overall/promotions.xml");
-	ftp_quit($connect_server);
-	if(!isset($_POST["id"]) || !$_POST["id"])
+  save_all_promo_XML($connect);
+
+  ftp_put($connect_server, $ftp_folder."overall/VIPpromo.xml", $rootPath."/temp/VIPpromo.xml", FTP_ASCII);
+  ftp_put($connect_server, $ftp_folder."overall/PrimaryPromo.xml", $rootPath."/temp/PrimaryPromo.xml", FTP_ASCII);
+  ftp_put($connect_server, $ftp_folder."overall/promotions.xml", $rootPath."/temp/promotions.xml", FTP_ASCII);
+  ftp_chmod($connect_server, 0644, $ftp_folder."overall/VIPpromo.xml");
+  ftp_chmod($connect_server, 0644, $ftp_folder."overall/PrimaryPromo.xml");
+  ftp_chmod($connect_server, 0644, $ftp_folder."overall/promotions.xml");
+  ftp_quit($connect_server);
+
+  if(!isset($_POST["id"]) || !$_POST["id"])
 		return "<div class='alert alert-success'>Загрузка завершена!</div>";
 	return "<div class='alert alert-success'>Загрузка завершена!<br /><a class='alert-link' href='http://xn----dtbmnhpbbghbyj0jwa2c.xn--p1ai/price.html#object/".$id."/promo' target='_blank'><i class='fa fa-smile-o'></i> Посмотреть как это выглядит на сайте</a></div>";
 }
@@ -78,6 +80,9 @@ function save_promo_XML_object($connect, $id){
 	if(count($rating) > 0)
 		$promotions->setAttribute("rating", json_encode($rating));
 	$xml->formatOutput = true;
+	if(!file_exists($rootPath."/temp/xml/promo/"))
+		mkdir($rootPath."/temp/xml/promo/",0777,true);
+
 	$xml->save($rootPath."/temp/xml/promo/".$id.".xml");
 }
 

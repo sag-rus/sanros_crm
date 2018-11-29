@@ -14,7 +14,7 @@ function upload_price_on_server($connect, $id=false, $nthChild = NULL,$showProcc
 	if($connect_server == 2)
 		return "Не удалось авторизироваться";
 
-	if(!$id) {
+  if(!$id) {
     if(!in_array($nthChild,["n","2n","3n","4n","5n","6n","7n","8n","9n","10n","11n","12n","13n","14n","15n","16n","17n","18n","19n","20n","21n","22n","23n","24n","25n","26n","27n","28n","29n","30n","31n","32n","33n","34n","35n","36n","37n","38n","39n","40n"]))
     	$data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE object.active=0 OR object.active=1");
     elseif ($nthChild === "n") {

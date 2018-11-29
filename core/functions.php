@@ -70,7 +70,7 @@ function connect_to_server(){
 }
 
 function connect_to_server_directory(){
-	global $directory;
+	global $directory, $crm_ftp_connect;
 	include_once($directory."/config.php");
 
 	$conf = new JConfig;
@@ -78,12 +78,21 @@ function connect_to_server_directory(){
 	$user_ftp = $conf->ftp_server_user;
 	$pass_ftp = $conf->ftp_server_pass;
 
-	$connect_server = ftp_connect($server);
-	if(!$connect_server)
-		return 1;
-	if(!ftp_login($connect_server, $user_ftp, $pass_ftp))
-		return 2;
-	ftp_pasv($connect_server, TRUE);
+	if(!isset($crm_ftp_connect)) {
+      $connect_server = ftp_connect($server);
+
+      if(!$connect_server)
+        return 1;
+      if(!ftp_login($connect_server, $user_ftp, $pass_ftp))
+        return 2;
+      ftp_pasv($connect_server, TRUE);
+
+      $crm_ftp_connect = $connect_server;
+    }
+	else {
+	    $connect_server = $crm_ftp_connect;
+    }
+
 	return $connect_server;
 }
 

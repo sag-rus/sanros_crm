@@ -713,6 +713,9 @@ function save_primary_promo_XML($connect){
 	}
 
 	$xml->formatOutput = true;
+	if(!file_exists($directory."/temp"))
+		mkdir($directory."/temp",0777,true);
+
 	$xml->save($directory."/temp/PrimaryPromo.xml");
 }
 
@@ -741,6 +744,9 @@ function save_VIP_promo_XML($connect){
 	}
 
 	$xml->formatOutput = true;
+  if(!file_exists($directory."/temp"))
+    mkdir($directory."/temp",0777,true);
+
 	$xml->save($directory."/temp/VIPpromo.xml");
 }
 
@@ -780,6 +786,8 @@ function save_all_promo_XML($connect){
 	}
 
 	$xml->formatOutput = true;
+  if(!file_exists($directory."/temp"))
+    mkdir($directory."/temp",0777,true);
 	$xml->save($directory."/temp/promotions.xml");
 }
 
