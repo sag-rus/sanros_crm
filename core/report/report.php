@@ -269,9 +269,9 @@ function filter_payment($connect){
 	}else
 		$th_pay = "<th width='70'>Способ<br />платежа</th><th width='70'>Номер<br />плат.пор.</th>";
 	if(mb_strlen($zapros_for_mysql) > 0)
-	    $zapros_for_mysql .= " AND `payment`.`status` != 0";
+	    $zapros_for_mysql .= " AND `payment`.`status` != 0 AND `payment`.`pay_method` != 3 AND `payment`.`class` != 'cert'";
 	else
-        $zapros_for_mysql .= " `payment`.`status` != 0";
+        $zapros_for_mysql .= " `payment`.`status` != 0 AND `payment`.`pay_method` != 3 AND `payment`.`class` != 'cert'";
 
 	$zapros_for_mysql_cond = $zapros_for_mysql;
 	$zapros_for_mysql = "SELECT `payment`.`id`, `payment`.`processed`, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, `users`.`office`, `payment`.`status` AS payment_status, `payment`.`type`, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san FROM payment LEFT JOIN reckoning ON reckoning.id=payment.schet LEFT JOIN users ON `reckoning`.`id_user`=`users`.`id` WHERE ".$zapros_for_mysql." ORDER BY payment.id";
@@ -466,7 +466,10 @@ function filter_payment($connect){
 
 
 			//блок расчета прибыли по платежу - начало
-            $pay_reward = 0;
+            if($class == "cert")
+                $pay_reward = $row['sum'];
+            else
+                $pay_reward = 0;
             $all_pays = $connect->getAll("SELECT id FROM payment WHERE (type = 1 OR type = 2 OR type = 6) AND schet = ?i AND `payment`.`status` != 0", $id);
             $all_pays_count = count($all_pays);
               $pay_ar1 = [];
@@ -766,12 +769,12 @@ function filter_payment_month($connect){
 			$date1t = strtotime($date);
 			$date2t = $date1t+86400;
 			$array = array("sum_opl" => 0, "count_opl" => 0, "sum_opl_san" => 0, "count_opl_san" => 0);
-			$data = $connect->getAll("SELECT payment.sum FROM payment, reckoning WHERE payment.schet=reckoning.id AND (payment.type=1 OR payment.type=2) AND ((`payment`.`processed` IS NULL AND `payment`.`date`=?s AND `payment`.`status` = 2) OR (`payment`.`processed` IS NOT NULL AND `payment`.`processed`>= ?i AND `payment`.`processed`< ?i AND `payment`.`status` = 2)) AND `payment`.`status` != 0".$query, $date,$date1t,$date2t);
+			$data = $connect->getAll("SELECT payment.sum FROM payment, reckoning WHERE payment.schet=reckoning.id AND (payment.type=1 OR payment.type=2) AND ((`payment`.`processed` IS NULL AND `payment`.`date`=?s AND `payment`.`status` = 2) OR (`payment`.`processed` IS NOT NULL AND `payment`.`processed`>= ?i AND `payment`.`processed`< ?i AND `payment`.`status` = 2)) AND `payment`.`status` != 0 AND `payment`.`pay_method` != 3".$query, $date,$date1t,$date2t);
 			foreach($data as $row){
 				$array["sum_opl"]+= $row["sum"];
 				$array["count_opl"]++;
 			}
-			$data = $connect->getAll("SELECT payment.sum FROM payment, reckoning WHERE payment.schet=reckoning.id AND (payment.type=3 OR payment.type=4) AND ((`payment`.`processed` IS NULL AND `payment`.`date`=?s AND `payment`.`status` = 2) OR (`payment`.`processed` IS NOT NULL AND `payment`.`processed`>= ?i AND `payment`.`processed`< ?i AND `payment`.`status` = 2)) AND `payment`.`status` != 0".$query, $date,$date1t,$date2t);
+			$data = $connect->getAll("SELECT payment.sum FROM payment, reckoning WHERE payment.schet=reckoning.id AND (payment.type=3 OR payment.type=4) AND ((`payment`.`processed` IS NULL AND `payment`.`date`=?s AND `payment`.`status` = 2) OR (`payment`.`processed` IS NOT NULL AND `payment`.`processed`>= ?i AND `payment`.`processed`< ?i AND `payment`.`status` = 2)) AND `payment`.`status` != 0 AND `payment`.`pay_method` != 3".$query, $date,$date1t,$date2t);
 			foreach($data as $row){
 				$array["sum_opl_san"]+= $row["sum"];
 				$array["count_opl_san"]++;
