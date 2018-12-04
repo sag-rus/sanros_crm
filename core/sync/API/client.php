@@ -437,6 +437,13 @@ function show_tour_bid_account($connect, $data){
 				$array['fast_booking'] = 0;
 			}
 		}
+		elseif ($array['fast_booking']) {
+      $reward = get_reward_schet($connect, $array['id']);
+      if (!((($reward / $answer["sum"] * 100) >= 4 || $array['id'] == 43125 || $array['id'] == 58509 || $array['id'] = 66300) && !$array['holding_sum'])) {
+      	$array['fast_booking'] = 0;
+      }
+    }
+		
 		if($answer["status"] == 5)
 			$array["doc"] = 3;
 		if($answer["status"] == 1 OR $answer["status"] == 2)
