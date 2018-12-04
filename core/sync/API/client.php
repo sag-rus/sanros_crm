@@ -424,7 +424,7 @@ function show_tour_bid_account($connect, $data){
     	$array["voucher"] = 0;
 		}
 
-		if($answer["status"] == 3 OR $answer["status"] == 4){
+		if($array["status_int"] == 3 OR $array["status_int"] == 4){
 			$array["doc"] = 2;
 			$reward = get_reward_schet($connect, $array['id']);
 			if(($array['sum'] && ($reward / $array["sum"] * 100) >= 4 || $array['id'] == 43125 || $array['id'] == 58509 || $array['id'] = 66300) && !$array['holding_sum']){
@@ -444,9 +444,9 @@ function show_tour_bid_account($connect, $data){
       }
     }
 
-		if($answer["status"] == 5)
+		if($array["status_int"] == 5)
 			$array["doc"] = 3;
-		if($answer["status"] == 1 OR $answer["status"] == 2)
+		if($array["status_int"] == 1 OR $array["status_int"] == 2)
 			$array["doc"] = 1;
 		$answer = $connect->getAll("SELECT id, id_room, id_service, date_z, days, sum, number, type, note FROM position_reck WHERE schet=?i", $data['id']);
 		foreach($answer as $a){
