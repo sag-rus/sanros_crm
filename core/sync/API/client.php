@@ -427,7 +427,7 @@ function show_tour_bid_account($connect, $data){
 		if($answer["status"] == 3 OR $answer["status"] == 4){
 			$array["doc"] = 2;
 			$reward = get_reward_schet($connect, $array['id']);
-			if((($reward / $answer["sum"] * 100) >= 4 || $array['id'] == 43125 || $array['id'] == 58509 || $array['id'] = 66300) && !$array['holding_sum']){
+			if(($answer['sum'] && ($reward / $answer["sum"] * 100) >= 4 || $array['id'] == 43125 || $array['id'] == 58509 || $array['id'] = 66300) && !$array['holding_sum']){
 				$array["pay_button"] = 1;
 				$check = $connect->getOne("SELECT sum FROM time_payment WHERE type=2 AND id_schet=?i", $array['id']);
 				if($check AND ($answer["status"] == 3 OR $answer["status"] == 4))
@@ -439,9 +439,9 @@ function show_tour_bid_account($connect, $data){
 		}
 		elseif ($array['fast_booking']) {
       $reward = get_reward_schet($connect, $array['id']);
-      //if (!((($reward / $answer["sum"] * 100) >= 4 || $array['id'] == 43125 || $array['id'] == 58509 || $array['id'] = 66300) && !$array['holding_sum'])) {
+      if (!(($answer['sum'] && ($reward / $answer["sum"] * 100) >= 4 || $array['id'] == 43125 || $array['id'] == 58509 || $array['id'] = 66300) && !$array['holding_sum'])) {
       	$array['fast_booking'] = 0;
-      //}
+      }
     }
 
 		if($answer["status"] == 5)
