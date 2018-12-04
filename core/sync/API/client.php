@@ -433,6 +433,9 @@ function show_tour_bid_account($connect, $data){
 				if($check AND ($answer["status"] == 3 OR $answer["status"] == 4))
 					$array["prepay_sum"] = $check;
 			}
+			else {
+				$array['fast_booking'] = 0;
+			}
 		}
 		if($answer["status"] == 5)
 			$array["doc"] = 3;
