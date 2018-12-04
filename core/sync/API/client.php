@@ -379,7 +379,7 @@ function show_tour_bid_account($connect, $data){
 		$array["id"] = $data["id"];
 		$object = get_object($connect, $answer["id_obj"], "type_and_fast_booking");
 		$array["object"] = $object['type'];
-		$array['fast_booking'] = $object['fast_booking'];
+		$array['fast_booking'] = (int)$object['fast_booking'];
 		$array["date_z"] = month_transform(date_change($answer["date_z"]));
 		$array["date_z_format"] = $answer["date_z"];
 		$array["date_v"] = month_transform(date_change($answer["date_v"]));
@@ -443,7 +443,7 @@ function show_tour_bid_account($connect, $data){
       	$array['fast_booking'] = 0;
       }
     }
-		
+
 		if($answer["status"] == 5)
 			$array["doc"] = 3;
 		if($answer["status"] == 1 OR $answer["status"] == 2)
