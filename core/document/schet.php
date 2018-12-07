@@ -90,8 +90,11 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 		$id_service = $row["id_service"];
 		if($type_date == "today")
 			$date = date("d-m-Y");
-		else
+		elseif($type_date == "create")
 			$date = date_change($row["date"]);
+		else
+		    $date = date("d-m-Y",strtotime($type_date));
+		
 		$date = month_transform($date);
 		$date_z = date_change($row["date_z"]);
 		$date2 = strToTime($date_z);
