@@ -1755,7 +1755,7 @@ function set_sites_content($connect) {
 }
 
 function sync_site_content($connect, $id):bool {
-    $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h2`, `summary`, `body`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block`, `second_bg`, `form_action` FROM `sites_contents` WHERE `id` =?i",$id);
+    $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h2`, `summary`, `body`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code` FROM `sites_contents` WHERE `id` =?i",$id);
     if($content) {
         try {
           $client = new \GuzzleHttp\Client();

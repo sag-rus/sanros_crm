@@ -92,7 +92,7 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 			$date = date("d-m-Y");
 		elseif($type_date == "create")
 			$date = date_change($row["date"]);
-		else
+		else 
 		    $date = date("d-m-Y",strtotime($type_date));
 		
 		$date = month_transform($date);
