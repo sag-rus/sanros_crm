@@ -646,10 +646,11 @@ function filter_do($connect){
 			if($surname != "")
 				$turist_row = $connect->getRow("SELECT surname, name, otch FROM klient WHERE id=?i AND surname LIKE ?s", $tur, "%".$surname."%");
 			else
-				$turist_row = $connect->getRow("SELECT surname, name, otch FROM klient WHERE id=?i", $tur);
-			if($all_fio AND $turist_row["name"])
+			    $turist_row = $connect->getRow("SELECT surname, name, otch FROM klient WHERE id=?i", $tur);
+
+			if($all_fio AND ($turist_row["name"] || $turist_row['surname']))
 				$all_fio.= "<br />";
-			if($turist_row["name"])
+			if($turist_row["name"] || $turist_row['surname'])
 				$all_fio.= $turist_row["surname"]." ".$turist_row["name"]." ".$turist_row["otch"];
 		}
 		if($all_fio){
