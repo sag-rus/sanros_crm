@@ -266,6 +266,8 @@ function upload_image_object_server($connect){
 	$object = (int)$_POST["object"];
 	$object_row = $connect->getRow("SELECT id_reg, image FROM object WHERE id=?i", $object);
 
+
+
 	if($object_row) {
       $region = $object_row['id_reg'];
       $image_cont = base64_decode($object_row['image']);
@@ -329,6 +331,38 @@ function upload_image_object_server($connect){
 
         do_upload_images($connect_server, $local_dir, $ftp_folder);
         ftp_close($connect_server);
+      }
+
+      $rooms = $connect->getAll("SELECT `id` FROM `room` WHERE `id_obj` =?i AND `active` = 0",$object);
+      foreach ($rooms as $room) {
+        $entity = [
+          'id' => $room['id'],
+          'type' => 'room'
+        ];
+        $images = bounds_to_files($connect,load_bounds($connect,$entity,'image'));
+        $ftp_folder_room = $ftp_folder.'/rooms';
+        if (ftp_nlist($connect_server, $ftp_folder_room) == FALSE) {
+          @ftp_mkdir($connect_server, $ftp_folder_room);
+          ftp_chmod($connect_server, 0777, $ftp_folder_room);
+        }
+
+        $ftp_folder_room .= '/'.$room['id'];
+        if (ftp_nlist($connect_server, $ftp_folder_room) == FALSE) {
+          @ftp_mkdir($connect_server, $ftp_folder_room);
+          ftp_chmod($connect_server, 0777, $ftp_folder_room);
+        }
+
+        $local_dir_room = $directory.'/temp/object/rooms';
+        if(!file_exists($local_dir_room))
+            mkdir($local_dir_room,0777,true);
+
+        file_put_contents($local_dir_room.'/image.json',json_encode($images));
+
+        ftp_put($connect_server,$ftp_folder_room.'/image.json',$local_dir_room.'/image.json', FTP_BINARY);
+        ftp_chmod($connect_server, 0777, $ftp_folder_room.'/image.json');
+
+
+
       }
 
       return "<div class='alert alert-success'><i class='fa fa-picture-o'></i> Картинки загружены</div>";

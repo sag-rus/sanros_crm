@@ -909,8 +909,12 @@ function save_new_room($connect){
 }
 
 function edit_room($connect){
-	$id = $_POST["id"];
+	$id = (int)$_POST["id"];
 	$row = $connect->getRow("SELECT id_obj, name, id_comfort, id_best_comfort, note, main_place, add_place, housing, food, square FROM room WHERE id=?i", $id);
+	$entity = [
+	  'id' => $id,
+      'type' => 'room'
+    ];
 	ob_start();
 ?>
 <tr class="edit-room"><td colspan="7">
@@ -958,6 +962,13 @@ function edit_room($connect){
 			<?php echo break_columns($connect, "comfort", 5, $row["id_comfort"], "WHERE type=0 ORDER BY name"); ?>
 		</div>
 	</div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Фото</label>
+        <div class="col-sm-10">
+            <input type="file" class="form-control" name="image" value="<?=htmlspecialchars(json_encode((object)bounds_to_files($connect,load_bounds($connect,$entity,'image'))));?>">
+            <div class="input-message-block" data-for="image"></div>
+        </div>
+    </div>
 	<div class="form-group">
 		<div class="col-sm-offset-9 col-sm-3">
 			<button type="button" class="btn btn-success btn-sm" onclick="update_room('<?php echo $id; ?>')"><i class="fa fa-check-circle"></i> Сохранить</button>
@@ -972,7 +983,7 @@ function edit_room($connect){
 }
 
 function update_room($connect){
-	$id = $_POST["id"];
+	$id = (int)$_POST["id"];
 	$note = $_POST["note"];
 	$main_place = $_POST["main_place"];
 	$add_place = $_POST["add_place"];
@@ -982,7 +993,14 @@ function update_room($connect){
 	$housing = (int)$_POST["housing"];
 	$square = $_POST["square"];
 	$food = $_POST["food"];
-	$connect->query("UPDATE room SET name=?s, id_comfort=?s, id_best_comfort=?s, note=?s, main_place=?i, add_place=?i, housing=?s, food=?s, square=?s WHERE id=?i", $name_room, $comfort, $best_comfort, $note, $main_place, $add_place, $housing, $food, $square, $id);
+        $entity = [
+        'id' => $id,
+        'type' => 'room'
+        ];
+    $boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);
+    remove_bounds($connect,$entity,'image');
+    set_bounds($connect,$boundsArrayImage,'image');
+    $connect->query("UPDATE room SET name=?s, id_comfort=?s, id_best_comfort=?s, note=?s, main_place=?i, add_place=?i, housing=?s, food=?s, square=?s WHERE id=?i", $name_room, $comfort, $best_comfort, $note, $main_place, $add_place, $housing, $food, $square, $id);
 }
 
 function object_check_archive($connect){

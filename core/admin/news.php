@@ -1304,7 +1304,8 @@ function set_bounds($connect,$boundsArray,String $boundsName)
 {
     $entity1_types = [
       'site',
-      'content'
+      'content',
+      'room'
     ];
 
     $entity2_types = [
@@ -1668,7 +1669,7 @@ function set_sites_content($connect) {
                   'type' => 'content'
               ];
 
-              $boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);;
+              $boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);
 
 
               $boundsArrayPhotogallery = [];

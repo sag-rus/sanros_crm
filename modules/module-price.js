@@ -782,11 +782,17 @@ function edit_room(id){
 		url: 'mysql.php',
 		success: function(html){
 			$('#str'+id).after(html);
+      $('.edit-room-div *[name="image"]').multUploader({
+        action:'mysql.php?func=multipart_upload',
+        fragmentSize:1024*1024,
+        contentType:['image/jpeg','image/png']
+      });
 		}
 	});
 }
 
 function update_room(id){
+	var $modalBody = $('.edit-room-div');
 	var name = $('#name').val();
 	var note = $('#note').val();
 	var main_place = $('#main_place').val();
@@ -794,16 +800,31 @@ function update_room(id){
 	var housing = $('#housing_object').val();
 	var square = $('#square').val();
 	var food = $('#food').val();
-	var str = 'func=update_room&name_room=' + name + '&id=' + id + '&note=' + note + '&main_place=' + main_place + '&add_place=' + add_place + '&housing=' + housing + '&food=' + food + '&square=' + square + '&comfort=';
-	str += select_checkbox('comfort', 'comfort');
-	str += '&best_comfort=' + select_checkbox('comfort', 'best_comfort');
+  var $image = $modalBody.find('*[name="image"]');
+  var image = JSON.parse($image.val().trim());
+
+	var data = {
+		func: 'update_room',
+		name_room: name,
+		id: id,
+		note: note,
+		main_place: main_place,
+		add_place: add_place,
+		housing: housing,
+		food: food,
+		square: square,
+		comfort: '',
+    image: image
+  };
+	data.comfort = select_checkbox('comfort', 'comfort');
+	data.best_comfort = select_checkbox('comfort', 'best_comfort');
 	if(!name)
 		show_warning('.edit-room-div', 'Введите назнание номера');
 	else{
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
-			data: str,
+			data: data,
 			success: function(){
 				select_object_room();
 				show_alert('Номер изменен...');
