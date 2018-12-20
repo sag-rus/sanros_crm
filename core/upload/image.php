@@ -278,7 +278,7 @@ function upload_image_object_server($connect){
 
       file_put_contents($directory."/temp/object-head/images/".$object.".jpg",$image_cont);
 
-      $connect_server = connect_to_server();
+      $connect_server = connect_to_server_directory();
 
       if(file_exists($directory."/temp/object-head/images/".$object.".jpg")) {
         @ftp_put($connect_server,"/var/www/default-site/public_html/price/object/head/".$object.".jpg",$directory."/temp/object-head/images/".$object.".jpg", FTP_BINARY);
@@ -330,11 +330,9 @@ function upload_image_object_server($connect){
         }
 
         do_upload_images($connect_server, $local_dir, $ftp_folder);
-        ftp_close($connect_server);
       }
 
       $rooms = $connect->getAll("SELECT `id` FROM `room` WHERE `id_obj` =?i AND `active` = 0",$object);
-      $connect_server = connect_to_server_directory();
       foreach ($rooms as $room) {
         $entity = [
           'id' => $room['id'],
