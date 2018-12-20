@@ -281,8 +281,8 @@ function upload_image_object_server($connect){
       $connect_server = connect_to_server_directory();
 
       if(file_exists($directory."/temp/object-head/images/".$object.".jpg")) {
-        ftp_put($connect_server,"/var/www/default-site/public_html/price/object/head/".$object.".jpg",$directory."/temp/object-head/images/".$object.".jpg", FTP_BINARY);
-        ftp_chmod($connect_server, 0777, "/var/www/default-site/public_html/price/object/head/".$object.".jpg");
+        @ftp_put($connect_server,"/var/www/default-site/public_html/price/object/head/".$object.".jpg",$directory."/temp/object-head/images/".$object.".jpg", FTP_BINARY);
+        @ftp_chmod($connect_server, 0777, "/var/www/default-site/public_html/price/object/head/".$object.".jpg");
       }
 
       $ftp_folder = "/var/www/default-site/public_html/price/images";
@@ -292,14 +292,14 @@ function upload_image_object_server($connect){
       $ftp = $ftp_folder . "/" . $region . "/" . $object;
 
       if (ftp_nlist($connect_server, $ftp_folder . "/" . $region) == FALSE) {
-        ftp_mkdir($connect_server, $ftp_folder . "/" . $region);
+        @ftp_mkdir($connect_server, $ftp_folder . "/" . $region);
       }
 
       ftp_chmod($connect_server, 0777, $ftp_folder . "/" . $region);
 
       if (ftp_nlist($connect_server, $ftp_folder . "/" . $region . "/" . $object) == FALSE) {
         @ftp_mkdir($connect_server, $ftp_folder . "/" . $region . "/" . $object);
-        ftp_chmod($connect_server, 0777, $ftp_folder . "/" . $region . "/" . $object);
+        @ftp_chmod($connect_server, 0777, $ftp_folder . "/" . $region . "/" . $object);
       }
 
       do_upload_images($connect_server, $local, $ftp);
@@ -311,10 +311,10 @@ function upload_image_object_server($connect){
       ftp_rdel($connect_server, $ftp_folder);
 
       if (ftp_nlist($connect_server, $ftp_folder) == FALSE) {
-        ftp_mkdir($connect_server, $ftp_folder);
+        @ftp_mkdir($connect_server, $ftp_folder);
       }
 
-      ftp_chmod($connect_server, 0777, $ftp_folder);
+      @ftp_chmod($connect_server, 0777, $ftp_folder);
 
       if (is_dir($local_dir)) {
         $folder = opendir($local_dir);
@@ -323,8 +323,8 @@ function upload_image_object_server($connect){
             $local_file = $local_dir . "/" . $file;
 
             if ((int) is_dir($local_file)) {
-              ftp_mkdir($connect_server, $ftp_folder . '/' . $file);
-              ftp_chmod($connect_server, 0777, $ftp_folder . '/' . $file);
+              @ftp_mkdir($connect_server, $ftp_folder . '/' . $file);
+              @ftp_chmod($connect_server, 0777, $ftp_folder . '/' . $file);
             }
           }
         }
@@ -343,13 +343,13 @@ function upload_image_object_server($connect){
         $ftp_folder_room = $ftp_folder.'/rooms';
         if (ftp_nlist($connect_server, $ftp_folder_room) == FALSE) {
           @ftp_mkdir($connect_server, $ftp_folder_room);
-          ftp_chmod($connect_server, 0777, $ftp_folder_room);
+          @ftp_chmod($connect_server, 0777, $ftp_folder_room);
         }
 
         $ftp_folder_room .= '/'.$room['id'];
         if (ftp_nlist($connect_server, $ftp_folder_room) == FALSE) {
           @ftp_mkdir($connect_server, $ftp_folder_room);
-          ftp_chmod($connect_server, 0777, $ftp_folder_room);
+          @ftp_chmod($connect_server, 0777, $ftp_folder_room);
         }
 
         $local_dir_room = $directory.'/temp/object/rooms';
@@ -358,8 +358,8 @@ function upload_image_object_server($connect){
 
         file_put_contents($local_dir_room.'/image.json',json_encode($images));
 
-        ftp_put($connect_server,$ftp_folder_room.'/image.json',$local_dir_room.'/image.json', FTP_BINARY);
-        ftp_chmod($connect_server, 0777, $ftp_folder_room.'/image.json');
+        @ftp_put($connect_server,$ftp_folder_room.'/image.json',$local_dir_room.'/image.json', FTP_BINARY);
+        @ftp_chmod($connect_server, 0777, $ftp_folder_room.'/image.json');
 
 
 
@@ -382,8 +382,8 @@ function do_upload_images(&$connect_server, $local_dir, $ftp_dir){
       $ftp_file = $ftp_dir."/".$file;
       if(is_file($local_file))
       {
-          ftp_put($connect_server, $ftp_file, $local_file, FTP_BINARY);
-          ftp_chmod($connect_server, 0777, $ftp_file);
+          @ftp_put($connect_server, $ftp_file, $local_file, FTP_BINARY);
+          @ftp_chmod($connect_server, 0777, $ftp_file);
       }
       else {
         do_upload_images($connect_server, $local_file, $ftp_file);
