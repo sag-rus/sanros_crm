@@ -370,7 +370,7 @@ function upload_image_object_server($connect){
     return "<div class='alert alert-danger'><i class='fa fa-picture-o'></i> Объект не найден</div>";
 }
 
-function do_upload_images($connect_server, $local_dir, $ftp_dir){
+function do_upload_images(&$connect_server, $local_dir, $ftp_dir){
   $folder = opendir($local_dir);
   $check = '';
   @ftp_mkdir($connect_server, $ftp_dir);
