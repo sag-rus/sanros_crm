@@ -334,6 +334,7 @@ function upload_image_object_server($connect){
       }
 
       $rooms = $connect->getAll("SELECT `id` FROM `room` WHERE `id_obj` =?i AND `active` = 0",$object);
+      $connect_server = connect_to_server_directory();
       foreach ($rooms as $room) {
         $entity = [
           'id' => $room['id'],
