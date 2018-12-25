@@ -1347,8 +1347,10 @@ function bounds_to_files($connect,array $bounds):array
             'uri' => $file['uri'],
             'uri_thumbnail' => in_array($file['mime'],['image/png','image/jpeg'])?imageUriStyle($file['uri'],"thumbnail"):(in_array($file['mime'],['image/vnd.microsoft.icon','image/x-icon'])?$file['uri']:""),
             'uri_preview' => in_array($file['mime'],['image/png','image/jpeg'])?imageUriStyle($file['uri'],"preview"):(in_array($file['mime'],['image/vnd.microsoft.icon','image/x-icon'])?$file['uri']:""),
+            'uri_large' => in_array($file['mime'],['image/png','image/jpeg'])?imageUriStyle($file['uri'],"large"):(in_array($file['mime'],['image/vnd.microsoft.icon','image/x-icon'])?$file['uri']:""),
             'mime' => $file['mime'],
-            'ext' => $file['ext']
+            'ext' => $file['ext'],
+            'cache' => substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15)
           ];
         }
     }
