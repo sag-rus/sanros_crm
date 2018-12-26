@@ -23,7 +23,7 @@ function check_menu_count($connect){
 
 function check_new_bid_count($connect){
 	$data = array();
-	$data["reckoning"] = $connect->getOne("SELECT COUNT(*) FROM reckoning WHERE (id_user='' OR id_user IS NULL OR status=10 OR status=11) AND active!=3");
+	$data["reckoning"] = $connect->getOne("SELECT COUNT(*) FROM reckoning WHERE (id_user='' OR id_user IS NULL) AND active!=3");
 	$data["call"] = $connect->getOne("SELECT COUNT(*) FROM order_call_back WHERE (id_user='' OR id_user IS NULL) AND active!=3");
 	return $data;
 }

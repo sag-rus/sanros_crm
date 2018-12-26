@@ -18,8 +18,12 @@ function show_my_bid_menu($connect){
 	<?php if($new > 0){ ?>
 		<li class="new-bid-page" onclick="get_my_reckoning('new')"><a>Новые</a></li>
 	<?php } ?>
-	<?php if($cancel > 0){ ?>
-		<li class="cancel-bid-page" onclick="get_my_reckoning('cancel')"><a>Запросы аннуляции</a></li>
+	<?php if($cancel > 0){
+	    $annulate_request = $connect->getOne("SELECT COUNT(*) FROM `reckoning` WHERE (`status`=10 OR `status`=11) AND `active` !=3");
+	    ?>
+		<li class="cancel-bid-page" onclick="get_my_reckoning('cancel')">
+            <a>Запросы аннуляции<?php if($annulate_request) { ?> <span class="badge"><?=$annulate_request;?></span><?php } ?></a>
+        </li>
 	<?php } ?>
 <?php
 	$data = $connect->getAll("SELECT id, name_menu FROM status");
