@@ -772,16 +772,22 @@ function save_new_room(){
 	}
 }
 
-function edit_room(id){
+function edit_room(id,manager){
+	if(typeof manager === 'undefined')
+		manager = false;
+	manager *=1;
 	$('.edit-room').remove();
 	$('.new-room').remove();
-	var str = 'func=edit_room&id=' + id;
+	var str = 'func=edit_room&id=' + id+'&manager='+manager;
 	$.ajax({
 		type: 'POST',
 		data: str,
 		url: 'mysql.php',
 		success: function(html){
-			$('#str'+id).after(html);
+			if(manager) {
+				$('.div-room-'+id+' .form-group').after(html);
+			}
+			else $('#str'+id).after(html);
       $('.edit-room-div *[name="image"]').multUploader({
         action:'mysql.php?func=multipart_upload',
         fragmentSize:1024*1024,
@@ -791,7 +797,9 @@ function edit_room(id){
 	});
 }
 
-function update_room(id){
+function update_room(id,manager){
+	if(typeof manager === 'undefined')
+		manager = false;
 	var $modalBody = $('.edit-room-div');
 	var name = $('#name').val();
 	var note = $('#note').val();
@@ -826,7 +834,12 @@ function update_room(id){
 			type: 'POST',
 			data: data,
 			success: function(){
-				select_object_room();
+				if(manager) {
+          view_object_rooms($('.nav-object').attr('data-object-id'));
+				}
+				else {
+          select_object_room();
+        }
 				show_alert('Номер изменен...');
 			}
 		});

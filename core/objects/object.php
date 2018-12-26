@@ -421,7 +421,7 @@ function select_object($connect){
 		</div>
 	</div>
 	<div class="panel-footer">
-		<div class="btn-group btn-group-justified nav-object">
+		<div class="btn-group btn-group-justified nav-object" data-object-id="<?=$id;?>">
 			<div class="btn-group">
 				<button type="button" class="btn btn-default desc-object" onclick="view_description_object('<?php echo $id; ?>')"><i class="fa fa-pencil-square-o"></i> Описание</button>
 			</div>
@@ -957,7 +957,8 @@ function view_object_rooms($connect){
 			</div>
 			<div class="col-sm-7 name-room-<?php echo $room; ?>">
 				<?php echo $name; ?>
-			</div>
+                <button class="btn btn-default btn-xs" onclick="edit_room('<?=$room;?>',true)" title="Редактировать"><i class="fa fa-pencil"></i></button>
+            </div>
 		</div>
 	</div>
 	<?php

@@ -911,6 +911,7 @@ function save_new_room($connect){
 function edit_room($connect){
 	$id = (int)$_POST["id"];
 	$row = $connect->getRow("SELECT id_obj, name, id_comfort, id_best_comfort, note, main_place, add_place, housing, food, square FROM room WHERE id=?i", $id);
+	$manager = isset($_POST['manager'])?(int)$_POST['manager']:0;
 	$entity = [
 	  'id' => $id,
       'type' => 'room'
@@ -971,7 +972,7 @@ function edit_room($connect){
     </div>
 	<div class="form-group">
 		<div class="col-sm-offset-9 col-sm-3">
-			<button type="button" class="btn btn-success btn-sm" onclick="update_room('<?php echo $id; ?>')"><i class="fa fa-check-circle"></i> Сохранить</button>
+			<button type="button" class="btn btn-success btn-sm" onclick="update_room('<?php echo $id; ?>',<?=$manager?'true':'false'?>)"><i class="fa fa-check-circle"></i> Сохранить</button>
 			<button type="button" class="btn btn-danger btn-sm" onclick="$('.edit-room').remove()"><i class="fa fa-times-circle"></i> Отмена</button>
 		</div>
 	</div>
