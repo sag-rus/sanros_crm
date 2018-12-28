@@ -157,7 +157,7 @@ function get_address_by_ip($ip){
 		return FALSE;
 	$url = "http://ipgeobase.ru:7020/geo?ip=".$ip;
 	$xml =  simplexml_load_file($url);
-	if($xml->ip->region){
+	if(isset($xml->ip) && isset($xml->ip->region) && $xml->ip->region){
 		$address = $xml->ip->region;
 		//if($xml->ip->city)
 		//	$address.= ", ".$xml->ip->city;

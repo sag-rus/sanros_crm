@@ -63,22 +63,21 @@
 			$data_booking->$index = $value;
 			$data_booking_JSON[$index] = $value;
 		}
-var_dump($data_booking_JSON);
 		if($function == "booking_object"){
 			$booking_source = "";
-			$website = $data_booking->site;
-			$id_obj = $data_booking->id_obj;
-			$email = $data_booking_JSON["email"];
+			$website = isset($data_booking->site)?$data_booking->site:"";
+			$id_obj = isset($data_booking->id_obj)?$data_booking->id_obj:0;
+			$email = isset($data_booking_JSON["email"])?$data_booking_JSON["email"]:"";
 			if(isset($data_booking->source))
 				$booking_source = $data_booking->source;
 
 			$client_info = array(
-				"surname" => $data_booking_JSON["sur"],
-				"name" => $data_booking_JSON["name"],
-				"otch" => $data_booking_JSON["otch"],
-				"telephone" => $data_booking_JSON["tel"],
+				"surname" => isset($data_booking_JSON["sur"])?$data_booking_JSON["sur"]:"",
+				"name" => isset($data_booking_JSON["name"])?$data_booking_JSON["name"]:"",
+				"otch" => isset($data_booking_JSON["otch"])?$data_booking_JSON["otch"]:"",
+				"telephone" => isset($data_booking_JSON["tel"])?$data_booking_JSON["tel"]:"",
 				"email" => $email,
-				"ip" => $data_booking_JSON["ip"]
+				"ip" => isset($data_booking_JSON["ip"])?$data_booking_JSON["ip"]:""
 			);
 
 			if(isset($data_booking_JSON['sex'])) {
@@ -90,8 +89,8 @@ var_dump($data_booking_JSON);
 
 			$today = date("Y-m-d");
 			$hash = md5(uniqid());
-			$days = $data_booking->days;
-			$date_z = date_change($data_booking_JSON["date"], "-", ".");
+			$days = isset($data_booking->days)?(int)$data_booking->days:1;
+			$date_z = isset($data_booking_JSON["date"])?date_change($data_booking_JSON["date"], "-", "."):date_change($today, "-", ".");
 			$reward = get_reward_object($connect, $id_obj, $date_z);
 
 			$source = select_index_source($booking_source);
@@ -108,7 +107,7 @@ var_dump($data_booking_JSON);
 
 			$check_quota = 0;
 
-			if($data_booking->position){
+			if(isset($data_booking->position) && $data_booking->position){
 				$positions = json_decode($data_booking->position, TRUE);
 				foreach($positions as $position){
 					$type_index = 1;
@@ -117,10 +116,10 @@ var_dump($data_booking_JSON);
 						if($type_index == 3)
 							$type_index = 2;
 					}
-					$id_room = $position["id_room"];
-					$note = $position["place"];
-					$price = (int)$position["price"];
-					$number = $position["number"];
+					$id_room = isset($position["id_room"])?(int)$position["id_room"]:0;
+					$note = isset($position["place"])?$position["place"]:"";
+					$price = isset($position["price"])?(float)$position["price"]:0;
+					$number = isset($position["number"])?(int)$position["number"]:1;
 					$connect->query("INSERT INTO position_reck(id_room, schet, days, date_z, number, sum, type, note, reward, add_one_day) VALUES (?i, ?i, ?i, ?s, ?s, ?s, ?i, ?s, ?s, ?i)", $id_room, $id, $days, $date_z, $number, $price, $type_index, $note, $reward, (int)$add_one_day);
 					if(isset($position["ratePlan"]) AND $position["ratePlan"] > 0){
 						if($connect->getOne("SELECT id FROM object WHERE id=?i AND (check_places=1 OR check_places=2)", $id_obj)){
@@ -135,7 +134,7 @@ var_dump($data_booking_JSON);
 					$connect->query("UPDATE reckoning SET form_booking='quota' WHERE id=?i", $id);
 				}
 			}else{
-				$note_booking = $data_booking->note;
+				$note_booking = isset($data_booking->note)?$data_booking->note:"";
 				$connect->query("INSERT INTO position_reck(schet, id_room, days, date_z, number, type, reward, add_one_day) VALUES (?i, 0, ?i, ?s, 1, 1, ?s, ?i)", $id, $days, $date_z, $reward, (int)$add_one_day);
 				$connect->query("UPDATE reckoning SET note=?s, form_booking='default-form' WHERE id=?i", $note_booking, $id);
 			}
@@ -146,7 +145,7 @@ var_dump($data_booking_JSON);
 			recalculation_sum($connect, $id);
 			save_schet_to_history($connect, $id, "Новая заявка от клиента");
 
-			if(isset($data_booking->promo_code) AND $data_booking->promo_code != ""){
+			if(isset($data_booking->promo_code) && $data_booking->promo_code != ""){
 				$promo_code = mb_strtolower($data_booking->promo_code);
 				$itog = $connect->getOne("SELECT sum FROM reckoning WHERE id=?i", $id);
 				$bonus = check_promotional_code($promo_code, $id_obj, $itog, array("arrival" => $date_z, "days" => $days), $last_id, $connect);
@@ -192,12 +191,12 @@ var_dump($data_booking_JSON);
 				$form_id = (int)$data_booking_JSON['form_id'];
 
 			$client_info = array(
-				"surname" => $data_booking_JSON["surname"],
-				"name" => $data_booking_JSON["name"],
+				"surname" => isset($data_booking_JSON["surname"])?$data_booking_JSON["surname"]:"",
+				"name" => isset($data_booking_JSON["name"])?$data_booking_JSON["name"]:"",
 				"otch" => "",
-				"telephone" => $data_booking_JSON["telephone"],
+				"telephone" => isset($data_booking_JSON["telephone"])?$data_booking_JSON["telephone"]:"",
 				"email" => "",
-				"ip" => $data_booking_JSON["ip"]
+				"ip" => isset($data_booking_JSON["ip"])?$data_booking_JSON["ip"]:""
 			);
 
 			$fio = "";
