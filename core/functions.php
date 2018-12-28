@@ -137,7 +137,7 @@ function request_to_url($url, $params){
 
 function connect_config(){
 	global $directory;
-	include_once($directory . _DS_ ."config.php");
+	//include_once($directory . _DS_ ."config.php");
 	$conf = new JConfig;
 	return $conf;
 }
