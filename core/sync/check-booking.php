@@ -230,11 +230,11 @@
 				$id = $data_booking_JSON["id"];
 			}
 			$question = $data_booking_JSON["question"];
-			$arrival = $data_booking_JSON["arrival"];
-			$days = $data_booking_JSON["days"];
-			$type = $data_booking_JSON["type"];
-			$page = $data_booking_JSON["page"];
-			$object = $data_booking_JSON["object"];
+			$arrival = isset($data_booking_JSON["arrival"])?$data_booking_JSON["arrival"]:"";
+			$days = isset($data_booking_JSON["days"])?(int)$data_booking_JSON["days"]:1;
+			$type = isset($data_booking_JSON["type"])?$data_booking_JSON["type"]:"";
+			$page = isset($data_booking_JSON["page"])?$data_booking_JSON["page"]:"";
+			$object = isset($data_booking_JSON["object"])?(int)$data_booking_JSON["object"]:0;
 			$chat_id = NULL;
 
 			//if(isset($data_booking_JSON["chat_id"]))
