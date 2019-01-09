@@ -129,6 +129,7 @@ function save_manager_to_reck(id){
 }
 
 function save_new_position(id){
+	var $modalBody = $('.model-reconing .modal-body');
 	var room = $('.select_room').val();
 	var add_one_day = $('#add_one_day input:checked').val();
 	if(typeof add_one_day === 'undefined') add_one_day = 0;
@@ -140,6 +141,7 @@ function save_new_position(id){
 	var note = $('#note').val();
 	var type = $('#type').val();
 	var reck_type = parseInt($('#reck_type').val());
+	var id_rights = parseInt($modalBody.find('*[name="id_rights"]').val());
 	var str;
 
 	var services = new Array();
@@ -157,7 +159,7 @@ function save_new_position(id){
         show_warning('.new-position', 'Не введено поле: Дней', false);
       else if(date_z == '')
         show_warning('.new-position', 'Не введено поле: Заезд', false);
-      else if(!check_true_dates(date_z))
+      else if(!check_true_dates(date_z) && id_rights < 6)
         show_warning('.new-position', 'Дата заезда введена неправильно', false);
       else{
         str = 'func=save_new_position&id=' + id + '&services=' + JSON.stringify(services) + '&id_room=' + room + '&sum=' + sum + '&number=' + number + '&note=' + note + '&type=' + type + '&days=' + days + '&date_z=' + date_z + '&add_one_day=' + add_one_day + '&reward=' + reward+'&reck_type='+reck_type;
@@ -418,6 +420,8 @@ function edit_position_reck(id, reck){
 }
 
 function update_position(id){
+	var $modalBody = $('.model-reconing .modal-body');
+
 	var room = $('.select_room').val();
 	if(typeof room === 'undefined')
 		room = 0;
@@ -431,6 +435,8 @@ function update_position(id){
   var reck_type = parseInt($('#reck_type').val());
 	var add_one_day = $('#add_one_day input:checked').val();
 	if(typeof add_one_day === 'undefined') add_one_day = 1;
+	var id_rights = parseInt($modalBody.find('*[name="id_rights"]').val());
+
 
 	var services = new Array();
 	$('.services:checkbox:checked').each(function () {
@@ -447,7 +453,7 @@ function update_position(id){
         show_warning('.edit-position', 'Не введено поле: Дней', false);
       else if(date_z == '')
         show_warning('.edit-position', 'Не введено поле: Заезд', false);
-      else if(!check_true_dates(date_z))
+      else if(!check_true_dates(date_z) && id_rights < 6)
         show_warning('.edit-position', 'Дата заезда введена неправильно', false);
       else{
         note = note.replace("+", "plus");

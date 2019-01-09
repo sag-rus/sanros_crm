@@ -512,6 +512,7 @@ function update_schet($connect){
 }
 
 function add_new_position($connect){
+    global $id_rights;
 	$id = $_POST["id"];
 	$data = $connect->getRow("SELECT add_one_day, reward FROM position_reck WHERE schet=?i", $id);
 	$reward = $data["reward"];
@@ -533,6 +534,9 @@ function add_new_position($connect){
 
 	$service_reckoning = explode("_", $connect->getOne("SELECT id_services FROM reckoning WHERE id=?i", $id));
 	$service = $connect->getAll("SELECT id, name, type FROM price_includes ORDER BY head DESC, type, id");
+	$html_services_1 = "";
+    $html_services_2 = "";
+
 	foreach($service as $row){
 		$checked = "";
 		if(in_array($row["id"], $service_reckoning))
@@ -569,6 +573,7 @@ function add_new_position($connect){
 								<label class="col-sm-4 control-label">Цена</label>
 								<div class="col-sm-8">
 									<input type="text" class="form-control" id="sum" onKeyPress="validate_sum()">
+                                    <input type="hidden" name="id_rights" value="<?=($id_rights?$id_rights:0);?>">
 								</div>
 							</div>
 
@@ -700,6 +705,7 @@ function save_new_position($connect){
 }
 
 function edit_position($connect){
+    global $id_rights;
 	$id = $_POST["id"];
 	$data = $connect->getRow("SELECT id_room, sum, number, note, type, days, date_z, add_one_day, reward, schet, id_service FROM position_reck WHERE id=?i", $id);
 	$reck = $data["schet"];
@@ -768,7 +774,8 @@ function edit_position($connect){
 								<label class="col-sm-4 control-label">Цена</label>
 								<div class="col-sm-8">
 									<input type="text" class="form-control" id="sum" value="<?php echo $data['sum']; ?>" onKeyPress="validate_sum()">
-								</div>
+                                    <input type="hidden" name="id_rights" value="<?=($id_rights?$id_rights:0);?>">
+                                </div>
 							</div>
                             <?php if($obj_row['type'] == 0) { ?>
 							<div class="form-group">
