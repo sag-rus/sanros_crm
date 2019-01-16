@@ -1180,6 +1180,13 @@ function edit_sites_content($connect) {
                               <div class="input-message-block" data-for="module_object_id"></div>
                           </div>
                       </div>
+                      <div class="form-group<?php if($content['type'] !== 'landing') { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">ID объекта для отзывов</label>
+                          <div class="col-sm-10">
+                              <input type="text" class="form-control" name="reviews_objects" value="<?=implode(", ",bounds_to_ids($connect,load_bounds($connect,$entity,'reviews_objects')));?>">
+                              <div class="input-message-block" data-for="reviews_objects"></div>
+                          </div>
+                      </div>
                       <div class="form-group<?php if($content['type'] !== 'module') { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Блок модуля</label>
                           <div class="col-sm-10">
@@ -1309,7 +1316,8 @@ function set_bounds($connect,$boundsArray,String $boundsName)
     ];
 
     $entity2_types = [
-      'file'
+      'file',
+      'object'
     ];
 
     $timestamp = gmdate("U");
@@ -1320,7 +1328,14 @@ function set_bounds($connect,$boundsArray,String $boundsName)
             $connect->query("UPDATE `core_models_file_file` SET `usages` = `usages`+1 WHERE `id` = ?i",$bound['entity2_id']);
           }
 
-          $connect->query("INSERT INTO `app_models_site_bound` (`created`,`changed`,`status`,`uid`, `sort`, `name`,`entity1_type`,`entity1_id`,`entity2_type`,`entity2_id`, `title`, `description`) VALUES (?i,?i,?i,?i,?i,?s,?s,?i,?s,?i,?s,?s)",$timestamp,$timestamp,1,1,$i,$boundsName,$bound['entity1_type'],$bound['entity1_id'],$bound['entity2_type'],$bound['entity2_id'],$bound['title'],$bound['description']);
+          if($bound['entity2_type'] === 'object') {
+              if($connect->getOne("SELECT `id` FROM `object` WHERE `id` = ?i",$bound['entity2_id'])) {
+                $connect->query("INSERT INTO `app_models_site_bound` (`created`,`changed`,`status`,`uid`, `sort`, `name`,`entity1_type`,`entity1_id`,`entity2_type`,`entity2_id`, `title`, `description`) VALUES (?i,?i,?i,?i,?i,?s,?s,?i,?s,?i,?s,?s)",$timestamp,$timestamp,1,1,$i,$boundsName,$bound['entity1_type'],$bound['entity1_id'],$bound['entity2_type'],$bound['entity2_id'],$bound['title'],$bound['description']);
+              }
+          }
+          else {
+            $connect->query("INSERT INTO `app_models_site_bound` (`created`,`changed`,`status`,`uid`, `sort`, `name`,`entity1_type`,`entity1_id`,`entity2_type`,`entity2_id`, `title`, `description`) VALUES (?i,?i,?i,?i,?i,?s,?s,?i,?s,?i,?s,?s)",$timestamp,$timestamp,1,1,$i,$boundsName,$bound['entity1_type'],$bound['entity1_id'],$bound['entity2_type'],$bound['entity2_id'],$bound['title'],$bound['description']);
+          }
       }
       $i++;
     }
@@ -1332,6 +1347,17 @@ function load_bounds($connect,$entity,String $boundsName = NULL)
         return $connect->getAll("SELECT * FROM `app_models_site_bound` WHERE  `status` = 1 AND `entity1_type`=?s AND `entity1_id` = ?i AND `name`=?s ORDER BY `sort` ASC",$entity['type'],$entity['id'],$boundsName);
     else
         return $connect->getAll("SELECT * FROM `app_models_site_bound` WHERE `status` = 1 AND `entity1_type`=?s AND `entity1_id` = ?i ORDER BY `sort` ASC",$entity['type'],$entity['id']);
+}
+
+function bounds_to_ids($connect, array $bounds):array
+{
+    $idsArray = [];
+
+    foreach ($bounds as $bound) {
+        $idsArray[] = $bound['entity2_id'];
+    }
+
+    return $idsArray;
 }
 
 function bounds_to_files($connect,array $bounds):array
@@ -1355,6 +1381,41 @@ function bounds_to_files($connect,array $bounds):array
         }
     }
     return $filesAr;
+}
+
+function ids_to_bounds($connect,$entity, String $name, array $ids):array
+{
+    $boundsAr = [];
+    $timestamp = gmdate("U");
+    $i = 0;
+    foreach ($ids as $id) {
+      $boundsAr[] = [
+        'created' => $timestamp,
+        'changed' => $timestamp,
+        'status' => 1,
+        'uid' => 1,
+        'name' => $name,
+        'entity1_type' => $entity['type'],
+        'entity1_id' => $entity['id'],
+        'entity2_type' => 'object',
+        'entity2_id' => $id,
+        'title' => "",
+        'description' => "",
+        'sort' => $i
+      ];
+      $i++;
+    }
+    return $boundsAr;
+}
+
+function ids_string_to_ids(String $ids_string):array {
+    $ids_string_ar = explode(",",$ids_string);
+
+    for($i = 0; $i < count($ids_string_ar); $i++) {
+        $ids_string_ar[$i] = (int)trim($ids_string_ar[$i]);
+    }
+
+    return $ids_string_ar;
 }
 
 function files_to_bounds($connect,$entity,String $name, array $files):array
@@ -1682,20 +1743,24 @@ function set_sites_content($connect) {
 
               $boundsArraySliderPhotos = [];
               $boundsArrayPageBg = [];
+              $boundsArrayReviewsObjects = [];
 
               if($type === 'landing') {
                 $boundsArraySliderPhotos = files_to_bounds($connect,$entity,'slider_photos',isset($_POST['slider_photos'])?$_POST['slider_photos']:[]);
                 $boundsArrayPageBg = files_to_bounds($connect,$entity,'page_bg',isset($_POST['page_bg'])?$_POST['page_bg']:[]);
+                $boundsArrayReviewsObjects = ids_to_bounds($connect,$entity,'reviews_objects',isset($_POST['reviews_objects'])?ids_string_to_ids($_POST['reviews_objects']):[]);
               }
 
               remove_bounds($connect,$entity,'image');
               remove_bounds($connect,$entity,'page_bg');
               remove_bounds($connect,$entity,'photogallery');
               remove_bounds($connect,$entity,'slider_photos');
+              remove_bounds($connect,$entity,'reviews_objects');
               set_bounds($connect,$boundsArrayImage,'image');
               set_bounds($connect,$boundsArrayPageBg,'page_bg');
               set_bounds($connect,$boundsArrayPhotogallery,'photogallery');
               set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
+              set_bounds($connect,$boundsArrayReviewsObjects,'reviews_objects');
 
 
               $connect->query("UPDATE `sites_contents` SET `title`=?s, `title_h2` = ?s, `path`=?s, `description`=?s, `body`=?s, `summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i, `form_action` = ?s, `map_code` = ?s, `landing_info` = ?s WHERE `id`=?i",$title, $title_h2, $path,$description,$body,$summary,$keywords,$type,$timestamp,$published,$status,0,$weight,$module_object_id,$module_block,$second_bg, $form_action, $map_code, $landing_info, $content_id);
@@ -1715,6 +1780,8 @@ function set_sites_content($connect) {
 
               $boundsArrayPhotogallery = [];
               $boundsArrayPageBg = [];
+              $boundsArrayReviewsObjects = [];
+
 
               if(in_array($type,['photogallery','landing','news', 'page'])) {
                 $boundsArrayPhotogallery = files_to_bounds($connect,$entity,'photogallery',isset($_POST['photogallery'])?$_POST['photogallery']:[]);
@@ -1725,12 +1792,15 @@ function set_sites_content($connect) {
               if($type === 'landing') {
                 $boundsArraySliderPhotos = files_to_bounds($connect,$entity,'slider_photos',isset($_POST['slider_photos'])?$_POST['slider_photos']:[]);
                 $boundsArrayPageBg = files_to_bounds($connect,$entity,'page_bg',isset($_POST['page_bg'])?$_POST['page_bg']:[]);
+                $boundsArrayReviewsObjects = ids_to_bounds($connect,$entity,'reviews_objects',isset($_POST['reviews_objects'])?ids_string_to_ids($_POST['reviews_objects']):[]);
               }
 
               set_bounds($connect,$boundsArrayImage,'image');
               set_bounds($connect,$boundsArrayPageBg,'page_bg');
               set_bounds($connect,$boundsArrayPhotogallery,'photogallery');
               set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
+              set_bounds($connect,$boundsArrayReviewsObjects,'reviews_objects');
+
             }
           }
           else {

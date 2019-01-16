@@ -1847,6 +1847,13 @@ function add_new_sites_content(site_id) {
                           '</div>' +
                       '</div>' +
 			 								'<div class="form-group">' +
+                          '<label class="col-sm-2 control-label">ID объекта для отзывов</label>' +
+                          '<div class="col-sm-10">' +
+                              '<input type="text" class="form-control" name="reviews_objects" value="">' +
+                              '<div class="input-message-block" data-for="reviews_objects"></div>' +
+                          '</div>' +
+                      '</div>' +
+			 								'<div class="form-group">' +
                           '<label class="col-sm-2 control-label">Фотографии</label>' +
                           '<div class="col-sm-10">' +
                               '<div class="input-message-block" data-for="photogallery"></div>' +
@@ -2220,6 +2227,11 @@ function set_sites_content() {
   var keywords = $modalBody.find('*[name="keywords"]').val();
   var published = $modalBody.find('*[name="published"]').val();
 
+	var $reviews_objects = $modalBody.find('input[name="reviews_objects"]');
+	var $reviews_objectsMsg = $reviews_objects.parent().find('.input-message-block');
+	var reviews_objects = $reviews_objects.val().trim();
+	$reviews_objectsMsg.html('');
+
   var error = false;
 
   if(title.length === 0) {
@@ -2374,7 +2386,8 @@ function set_sites_content() {
         module_object_id: module_object_id,
         module_block: module_block,
 				map_code: map_code,
-        landing_info: landing_info
+        landing_info: landing_info,
+				reviews_objects: reviews_objects
 			},
       dataType: 'JSON',
       url: 'mysql.php',
@@ -2986,6 +2999,9 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
   var $photogallery = $('.sites-content-modal *[name="photogallery"]');
   var $photogalleryFormG = $photogallery.closest('.form-group');
 
+	var $reviews_objects = $('.sites-content-modal *[name="reviews_objects"]');
+	var $reviews_objectsFormG = $reviews_objects.closest('.form-group');
+
 	if(type === 'module') {
 		$moduleObjectFormG.removeClass('hidden');
     $moduleBlockFormG.removeClass('hidden');
@@ -3002,6 +3018,7 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
     $form_actionFormG.removeClass('hidden');
     $title_h2FormG.removeClass('hidden');
     $landing_infoFormG.removeClass('hidden');
+    $reviews_objectsFormG.removeClass('hidden');
   }
   else {
     $sliderPhotosFormG.addClass('hidden');
@@ -3010,6 +3027,7 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
     $form_actionFormG.addClass('hidden');
     $title_h2FormG.addClass('hidden');
     $landing_infoFormG.addClass('hidden');
+		$reviews_objectsFormG.addClass('hidden');
   }
 
   if(type === 'photogallery' || type === 'landing' || type === 'news' || type === 'page') {
