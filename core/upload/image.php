@@ -356,11 +356,13 @@ function upload_image_object_server($connect){
             mkdir($local_dir_room,0777,true);
 
         file_put_contents($local_dir_room.'/image.json',json_encode($images));
+        file_put_contents($local_dir_room.'/image.cache',substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15));
 
         @ftp_put($connect_server,$ftp_folder_room.'/image.json',$local_dir_room.'/image.json', FTP_BINARY);
         @ftp_chmod($connect_server, 0777, $ftp_folder_room.'/image.json');
 
-
+        @ftp_put($connect_server,$ftp_folder_room.'/image.cache',$local_dir_room.'/image.cache', FTP_BINARY);
+        @ftp_chmod($connect_server, 0777, $ftp_folder_room.'/image.cache');
 
       }
 
