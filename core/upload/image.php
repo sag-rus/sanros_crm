@@ -333,38 +333,39 @@ function upload_image_object_server($connect){
       }
 
       $rooms = $connect->getAll("SELECT `id` FROM `room` WHERE `id_obj` =?i AND `active` = 0",$object);
+      $ftp_folder_room_base = $ftp_folder.'/rooms';
+
+      if (ftp_nlist($connect_server, $ftp_folder_room_base) == FALSE) {
+        @ftp_mkdir($connect_server, $ftp_folder_room_base);
+        @ftp_chmod($connect_server, 0777, $ftp_folder_room_base);
+      }
+
+      $local_dir_room = $directory.'/temp/object/rooms/';
+      if(!file_exists($local_dir_room))
+        mkdir($local_dir_room,0777,true);
+
       foreach ($rooms as $room) {
         $entity = [
           'id' => $room['id'],
           'type' => 'room'
         ];
         $images = bounds_to_files($connect,load_bounds($connect,$entity,'image'));
-        $ftp_folder_room = $ftp_folder.'/rooms';
+
+        $ftp_folder_room = $ftp_folder_room_base.'/'.$room['id'];
         if (ftp_nlist($connect_server, $ftp_folder_room) == FALSE) {
           @ftp_mkdir($connect_server, $ftp_folder_room);
           @ftp_chmod($connect_server, 0777, $ftp_folder_room);
         }
-
-        $ftp_folder_room .= '/'.$room['id'];
-        if (ftp_nlist($connect_server, $ftp_folder_room) == FALSE) {
-          @ftp_mkdir($connect_server, $ftp_folder_room);
-          @ftp_chmod($connect_server, 0777, $ftp_folder_room);
-        }
-
-        $local_dir_room = $directory.'/temp/object/rooms';
-        if(!file_exists($local_dir_room))
-            mkdir($local_dir_room,0777,true);
 
         file_put_contents($local_dir_room.'/image.json',json_encode($images));
-        file_put_contents($local_dir_room.'/image.cache',substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15));
 
         @ftp_put($connect_server,$ftp_folder_room.'/image.json',$local_dir_room.'/image.json', FTP_BINARY);
         @ftp_chmod($connect_server, 0777, $ftp_folder_room.'/image.json');
-
-        @ftp_put($connect_server,$ftp_folder_room.'/image.cache',$local_dir_room.'/image.cache', FTP_BINARY);
-        @ftp_chmod($connect_server, 0777, $ftp_folder_room.'/image.cache');
-
       }
+
+      file_put_contents($local_dir_room.'/image.cache',substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15));
+      @ftp_put($connect_server,$ftp_folder_room_base.'/image.cache',$local_dir_room.'/image.cache', FTP_BINARY);
+      @ftp_chmod($connect_server, 0777, $ftp_folder_room_base.'/image.cache');
 
       return "<div class='alert alert-success'><i class='fa fa-picture-o'></i> Картинки загружены</div>";
     }
