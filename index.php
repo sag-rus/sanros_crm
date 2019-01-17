@@ -1,5 +1,5 @@
 <?php
-	$version = "18-09-2017";
+	$version = "19-09-2017";
     $loader = require( __DIR__ . '/vendor/autoload.php');
     /*$payment = new \App\lib\payment\Sberbank\BookingPayment([
 
@@ -17,7 +17,7 @@
     <script type="text/javascript" src="js/ckeditor-4/ckeditor.js"></script>
     <script type="text/javascript" src="js/highcharts.js"></script>
 	<script type="text/javascript" src="js/ajaxupload.js"></script>
-	<script type="text/javascript" src="js/jquery-ui.js"></scriptS
+	<script type="text/javascript" src="js/jquery-ui.js"></script>
 	<script type="text/javascript" src="js/jquery.tablesorter.js"></script>
 	<script type="text/javascript" src="js/jquery.metadata.js"></script>
 	<script type="text/javascript" src="js/fullcalendar.js"></script>
