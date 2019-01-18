@@ -29,7 +29,9 @@
 	$tables = array("object", "room", "housing", "date_price", "ranges", "price", "rate_plan");//, "date_price", "ranges", "price"
 	$tables = array("object", "room", "housing");
 	$file = $directory."/core/sync/file/dump.txt";
+	$file2 = $directory."/core/sync/file/dump2.txt";
 	$fp = fopen($file, "w");
+	$fp2 = fopen($file2, "w");
 
 	foreach($tables as $table){
 		$query = "";
@@ -46,7 +48,7 @@
 		$i = 1;
 		$row_insert = $connect->getAll("SELECT * FROM `".$table."`");
 		foreach($row_insert as $row){
-
+			$rid = $row['id'];
 			if($table == "object"){
 				$row["image"] = "";
 				$row["service_info"] = "";
@@ -57,7 +59,7 @@
 				if(is_null($field))
 					$field = "NULL";
 				else
-					$field = "'".addslashes($field)."'";
+					$field = "'".addslashes(str_replace([";\n",";\r"],"; ",$field))."'";
 				if($query == "")
 					$query = $field;
 				else
@@ -65,20 +67,38 @@
 			}
 			if($i > $insert_records){
 				$query_ins = ";\nINSERT INTO `".$table."` VALUES ";
-				fwrite($fp, $query_ins);
+
+				if($table !== 'room' || $rid < 3000) {
+					fwrite($fp, $query_ins);
+
+				}
+				else {
+					fwrite($fp2,$query_ins);
+				}
 				$i = 1;
 			}
 			if($i == 1)
 				$q = "(".$query.")";
 			else
 				$q=",(".$query.")";
-			fwrite($fp, $q);
+
+			if($table !== 'room' || $rid < 3000) {
+				fwrite($fp, $q);
+
+			}
+			else {
+				fwrite($fp2, $q);
+			}
+
 			$i++;
 		}
 		fwrite($fp, ";\n");
+		fwrite($fp2, ";\n");
+
 	}
 
 	fclose($fp);
+	fclose($fp2);
 
 	$name = "dump-base";
 
@@ -91,5 +111,18 @@
 	ftp_quit($connect_server);
 
 	$data = request_to_sync(array("func" => "imports_mysql_base", "name" => $name));
+
+	$name = "dump-base2";
+
+	$server_file = "/var/www/default-site/public_html/sync/file/".$name.".txt";
+
+	if(!ftp_put($connect_server, $server_file, $file2, FTP_ASCII))
+		echo "Не удалось загрузить файл на сервер";
+	ftp_chmod($connect_server, 0777, $server_file);
+	ftp_quit($connect_server);
+
+	$data = request_to_sync(array("func" => "imports_mysql_base", "name" => $name));
+	return $data;
+
 
 ?>
