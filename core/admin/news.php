@@ -1574,7 +1574,31 @@ function edit_site($connect) {
           'type' => 'site'
       ];
     ?>
-      
+      <div class="modal fade site-modal">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+                      <h4 class="modal-title"><? if($site) { ?>Основная информация сайта<?php } else { ?>Добавление нового сайта<?php } ?></h4>
+                      </div>
+                  <div class="modal-body form-horizontal site-name">
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Название</label>
+                          <div class="col-sm-8">
+                              <input type="text" class="form-control" name="name" value="<?=$site?$site['name']:"";?>">
+                              <input type="hidden" name="id" value="<?=$id;?>">
+                              <div class="input-message-block" data-for="name"></div>
+                          </div>
+                      </div>
+                      
+                  </div>
+                  <div class="modal-loader"></div>
+                  <div class="modal-footer">
+                      <button class="btn btn-success btn-sm btn-save-new-site" onclick="save_site()" id="btn-save-new-site"><i class="fa fa-check-circle"></i> Сохранить</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
     <?php
   }
   return ob_get_clean();
