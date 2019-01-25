@@ -1707,7 +1707,7 @@ function edit_site($connect) {
                               </select>
                           </div>
                       </div>
-                      <div class="form-group region-form-group<?php if(!$site || $site['type'] !== 'global' || !$site['direction_id']) { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(!$site || $site['type'] !== 'global' || !$site['direction_id']) { ?> hidden<?php } ?>">
                           <label class="col-sm-4 control-label">Регион</label>
                           <div class="col-sm-8">
                               <select class="form-control" name="region_id">
