@@ -1476,135 +1476,21 @@ function show_sites_list(){
 }
 
 function add_new_site() {
-  var html = '<div class="modal fade site-modal">' +
-								'<div class="modal-dialog">' +
-									'<div class="modal-content">' +
-										'<div class="modal-header">' +
-											'<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>' +
-											'<h4 class="modal-title">Новый сайт</h4>' +
-										'</div>' +
-										'<div class="modal-body form-horizontal site-name">' +
-											'<div class="form-group">' +
-												'<label class="col-sm-4 control-label">Название</label>' +
-												'<div class="col-sm-8">' +
-													'<input type="text" class="form-control" name="name">' +
-													'<input type="hidden" name="id" value="0">' +
-													'<div class="input-message-block" data-for="name"></div>'+
-												'</div>' +
-											'</div>' +
-											'<div class="form-group">' +
-												'<label class="col-sm-4 control-label">Название бренда</label>' +
-												'<div class="col-sm-8">' +
-													'<input type="text" class="form-control" name="branding_name">' +
-													'<div class="input-message-block" data-for="branding_name"></div>'+
-												'</div>' +
-											'</div>' +
-											'<div class="form-group">' +
-												'<label class="col-sm-4 control-label">Слоган бренда</label>' +
-												'<div class="col-sm-8">' +
-													'<input type="text" class="form-control" name="branding_slogan">' +
-													'<div class="input-message-block" data-for="branding_slogan"></div>'+
-												'</div>' +
-											'</div>' +
-											'<div class="form-group">' +
-                          '<label class="col-sm-4 control-label">Favicon</label>' +
-                          '<div class="col-sm-8">' +
-                              '<div class="input-message-block" data-for="favicon"></div>' +
-                              '<input type="file" name="favicon">' +
-                          '</div>' +
-                      '</div>' +
-											'<div class="form-group">' +
-												'<label class="col-sm-4 control-label">Домен</label>' +
-												'<div class="col-sm-8">' +
-													'<input type="text" class="form-control site-domain" name="domain">' +
-													'<div class="input-message-block" data-for="domain"></div>'+
-												'</div>' +
-											'</div>' +
-      								'<div class="form-group">' +
-												'<label class="col-sm-4 control-label">Основной цвет интерфейса</label>' +
-												'<div class="col-sm-8">' +
-													'<input type="color" class="form-control site-main-bg-color" name="main-bg-color" value="#ffffff">' +
-													'<div class="input-message-block" data-for="main-bg-color"></div>' +
-												'</div>' +
-											'</div>' +
-											'<div class="form-group">' +
-												'<label class="col-sm-4 control-label">Основной цвет интерфейса 2</label>' +
-												'<div class="col-sm-8">' +
-													'<input type="color" class="form-control site-main-bg-color2" name="main-bg-color2" value="#356d33">' +
-													'<div class="input-message-block" data-for="main-bg-color2"></div>' +
-												'</div>' +
-											'</div>' +
-											'<div class="form-group">' +
-                          '<label class="col-sm-4 control-label">Основной цвет текста</label>' +
-                          '<div class="col-sm-8">' +
-                              '<input type="color" class="form-control site-main-font-color" name="main-font-color" value="#356d33">' +
-                              '<div class="input-message-block" data-for="main-font-color"></div>' +
-                          '</div>' +
-                      '</div>' +
-                      '<div class="form-group">' +
-                          '<label class="col-sm-4 control-label">Основной цвет текста 2</label>' +
-                          '<div class="col-sm-8">' +
-                              '<input type="color" class="form-control site-main-font-color2" name="main-font-color2" value="#ffffff">' +
-                              '<div class="input-message-block" data-for="main-font-color2"></div>' +
-                          '</div>' +
-                      '</div>' +
-                      '<div class="form-group">' +
-                          '<label class="col-sm-4 control-label">Основной цвет ссылок</label>' +
-                          '<div class="col-sm-8">' +
-                              '<input type="color" class="form-control site-main-link-color" name="main-link-color" value="#356d33">' +
-                              '<div class="input-message-block" data-for="main-link-color"></div>' +
-                          '</div>' +
-                      '</div>' +
-											'<div class="form-group">' +
-                          '<label class="col-sm-4 control-label">Стиль интерфейса</label>' +
-                          '<div class="col-sm-8">' +
-															 '<select class="form-control" name="interface_style">' +
-                                  '<option value="1">Строгий</option>' +
-                                  '<option value="2">Мягкий</option>' +
-                              '</select>' +
-                          '</div>' +
-                      '</div>' +
-											'<div class="form-group">' +
-                          '<label class="col-sm-4 control-label">Код в блоке head</label>' +
-                          '<div class="col-sm-8">' +
-                              '<textarea class="form-control" name="head_code"></textarea>' +
-                          '</div>' +
-                      '</div>' +
-											'<div class="form-group">' +
-                          '<label class="col-sm-4 control-label">Код в начале элемента body</label>' +
-                          '<div class="col-sm-8">' +
-                              '<textarea class="form-control" name="pre_body_code"></textarea>' +
-                          '</div>' +
-                      '</div>' +
-											'<div class="form-group">' +
-                          '<label class="col-sm-4 control-label">Код в конце элемента body</label>' +
-                          '<div class="col-sm-8">' +
-                              '<textarea class="form-control" name="post_body_code"></textarea>' +
-                          '</div>' +
-                      '</div>' +
-											'<div class="form-group">' +
-                          '<label class="col-sm-4 control-label">Robots.txt</label>' +
-                          '<div class="col-sm-8">' +
-                              '<textarea class="form-control" name="robots"></textarea>' +
-                          '</div>' +
-                      '</div>' +
-										'</div>' +
-										'<div class="modal-loader"></div>'+
-										'<div class="modal-footer">' +
-											'<button class="btn btn-success btn-sm btn-save-new-site" onclick="save_site()" id="btn-save-new-site"><i class="fa fa-check-circle"></i> Добавить</button>' +
-										'</div>' +
-									'</div>' +
-								'</div>' +
-							'</div>';
-
-
-	show_modal(html);
-  $('.site-modal *[name="favicon"]').multUploader({
-    action:'mysql.php?func=multipart_upload',
-    fragmentSize:1024*1024,
-    maxcount: 1,
-    contentType:['image/vnd.microsoft.icon','image/x-icon']
-  });
+	var str = 'func=edit_site';
+	$.ajax({
+		type: 'POST',
+		data: str,
+		url: 'mysql.php',
+		success: function(html){
+			show_modal(html);
+			$('.site-modal *[name="favicon"]').multUploader({
+				action:'mysql.php?func=multipart_upload',
+				fragmentSize:1024*1024,
+				maxcount: 1,
+				contentType:['image/vnd.microsoft.icon','image/x-icon']
+			});
+		}
+	});
 }
 
 function save_site() {
@@ -1647,6 +1533,18 @@ function save_site() {
 
   var domain = $domain.val().trim();
   $nameMsg.html('');
+
+	var $type = $modalBody.find('select[name="type"]');
+	var $typeMsg = $type.parent().find('.input-message-block');
+	var type = $type.val().trim();
+
+	var $direction_id = $modalBody.find('select[name="direction_id"]');
+	var $direction_idMsg = $direction_id.parent().find('.input-message-block');
+	var direction_id = $direction_id.val().trim();
+
+	var $region_id = $modalBody.find('select[name="region_id"]');
+	var $region_idMsg = $region_id.parent().find('.input-message-block');
+	var region_id = $region_id.val().trim();
 
   var error = false;
 
@@ -1702,7 +1600,10 @@ function save_site() {
 			pre_body_code: pre_body_code,
 			post_body_code: post_body_code,
 			branding_name: branding_name,
-			branding_slogan: branding_slogan
+			branding_slogan: branding_slogan,
+			type: type,
+			direction_id: direction_id,
+			region_id: region_id
     };
     $.ajax({
       type: 'POST',
@@ -3036,5 +2937,55 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
   else {
     $photogalleryFormG.addClass('hidden');
   }
+
+});
+
+$(document).on('change','.site-modal select[name="type"]',function (e) {
+	var type = $(this).val().trim();
+	var $direction_id = $('.site-modal *[name="direction_id"]');
+	var direction_id = parseInt($direction_id.val());
+	var $direction_idFormG = $direction_id.closest('.form-group');
+	var $region_id = $('.site-modal *[name="region_id"]');
+	var $region_idFormG = $region_id.closest('.form-group');
+
+	if(type !== 'global') {
+		$direction_idFormG.addClass('hidden');
+		$region_idFormG.addClass('hidden');
+	}
+	else {
+		$direction_idFormG.removeClass('hidden');
+		if(direction_id > 0) {
+			$region_idFormG.removeClass('hidden');
+		}
+	}
+
+});
+
+$(document).on('change','.site-modal select[name="direction_id"]',function (e) {
+	var $direction_id = $(this);
+	var direction_id = parseInt($direction_id.val());
+	var $direction_idFormG = $direction_id.closest('.form-group');
+	var $region_id = $('.site-modal *[name="region_id"]');
+	var $region_idFormG = $region_id.closest('.form-group');
+
+	$region_idFormG.addClass('hidden');
+	if(direction_id > 0) {
+		$.ajax({
+			type: 'GET',
+			data: {
+				func: 'get_regions_options',
+				direction_id: direction_id
+			},
+			dataType: 'html',
+			url: 'mysql.php',
+			success: function (data) {
+				$region_id.html(data);
+				$region_idFormG.removeClass('hidden');
+			}
+		});
+	}
+	else {
+		$region_id.val(0);
+	}
 
 });
