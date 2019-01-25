@@ -1686,38 +1686,7 @@ function edit_site($connect) {
                               <textarea class="form-control" name="robots"><?=$site?htmlspecialchars($site['robots']):"";?></textarea>
                           </div>
                       </div>
-                      <div class="form-group">
-                          <label class="col-sm-4 control-label">Тип сайта</label>
-                          <div class="col-sm-8">
-                              <select class="form-control" name="type">
-                                  <?php foreach ($site_types as $type_key => $site_type) { ?>
-                                    <option value="<?=$type_key;?>"<?php if($site['type'] === $type_key) { ?> selected<?php } ?>><?=$site_type;?></option>
-                                  <?php } ?>
-                              </select>
-                          </div>
-                      </div>
-                      <div class="form-group<?php if(!$site || $site['type'] !== 'global') { ?> hidden<?php } ?>">
-                          <label class="col-sm-4 control-label">Направление</label>
-                          <div class="col-sm-8">
-                              <select class="form-control direction-selector" name="direction_id">
-                                  <option value="0"<?php if($site && $site['direction_id'] == 0) { ?> selected<?php } ?>>Без направления</option>
-                                  <?php foreach ($directions as $direction) { ?>
-                                    <option value="<?=$direction['id'];?>"<?php if($site && $site['direction_id'] == $direction['id']) { ?> selected<?php } ?>><?=$direction['name'];?></option>
-                                  <?php } ?>
-                              </select>
-                          </div>
-                      </div>
-                      <div class="form-group<?php if(!$site || $site['type'] !== 'global' || !$site['direction_id']) { ?> hidden<?php } ?>">
-                          <label class="col-sm-4 control-label">Регион</label>
-                          <div class="col-sm-8">
-                              <select class="form-control" name="region_id">
-                                  <option value="0"<?php if($site && $site['region_id'] == 0) { ?> selected<?php } ?>>Без региона</option>
-                                  <?php foreach ($regions as $region) { ?>
-                                      <option value="<?=$region['id'];?>"<?php if($site && $site['region_id'] == $region['id']) { ?> selected<?php } ?>><?=$region['name'];?></option>
-                                  <?php } ?>
-                              </select>
-                          </div>
-                      </div>
+                     
                   </div>
                   <div class="modal-loader"></div>
                   <div class="modal-footer">
