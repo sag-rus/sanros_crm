@@ -1579,7 +1579,7 @@ function edit_site($connect) {
               <div class="modal-content">
                   <div class="modal-header">
                       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
-                      <h4 class="modal-title"><? if($site) { ?>Основная информация сайта<?php } else { ?>Добавление нового сайта<?php } ?></h4>
+                      <h4 class="modal-title"><?php if($site) { ?>Основная информация сайта<?php } else { ?>Добавление нового сайта<?php } ?></h4>
                       </div>
                   <div class="modal-body form-horizontal site-name">
                       <div class="form-group">
@@ -1590,7 +1590,134 @@ function edit_site($connect) {
                               <div class="input-message-block" data-for="name"></div>
                           </div>
                       </div>
-                      
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Название бренда</label>
+                          <div class="col-sm-8">
+                              <input type="text" class="form-control" name="branding_name" value="<?=$site?$site['branding_name']:"";?>">
+                              <div class="input-message-block" data-for="branding_name"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Слоган бренда</label>
+                          <div class="col-sm-8">
+                              <input type="text" class="form-control" name="branding_slogan" value="<?=$site?$site['branding_slogan']:"";?>">
+                              <div class="input-message-block" data-for="branding_slogan"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Favicon</label>
+                          <div class="col-sm-8">
+                              <div class="input-message-block" data-for="favicon"></div>
+                              <input type="file" name="favicon" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'favicon')):[]));?>">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Домен</label>
+                          <div class="col-sm-8">
+                              <input type="text" class="form-control site-domain" name="domain" value="<?=$site?$site['domain']:"";?>">
+                              <div class="input-message-block" data-for="domain"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Основной цвет интерфейса</label>
+                          <div class="col-sm-8">
+                              <input type="color" class="form-control site-main-bg-color" name="main-bg-color" value="<?=$site?$site['main_bg_color']:"#ffffff";?>">
+                              <div class="input-message-block" data-for="main-bg-color"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Основной цвет интерфейса 2</label>
+                          <div class="col-sm-8">
+                              <input type="color" class="form-control site-main-bg-color2" name="main-bg-color2" value="<?=$site?$site['main_bg_color2']:"#356d33";?>">
+                              <div class="input-message-block" data-for="main-bg-color2"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Основной цвет текста</label>
+                          <div class="col-sm-8">
+                              <input type="color" class="form-control site-main-font-color" name="main-font-color" value="<?=$site?$site['main_font_color']:"#356d33";?>">
+                              <div class="input-message-block" data-for="main-font-color"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Основной цвет текста 2</label>
+                          <div class="col-sm-8">
+                              <input type="color" class="form-control site-main-font-color2" name="main-font-color2" value="<?=$site?$site['main_font_color2']:"#ffffff";?>">
+                              <div class="input-message-block" data-for="main-font-color2"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Основной цвет ссылок</label>
+                          <div class="col-sm-8">
+                              <input type="color" class="form-control site-main-link-color" name="main-link-color" value="<?=$site?$site['main_link_color']:"#356d33";?>">
+                              <div class="input-message-block" data-for="main-link-color"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Стиль интерфейса</label>
+                          <div class="col-sm-8">
+                              <select class="form-control" name="interface_style">
+                                  <option value="1"<?php if($site && $site['interface_style'] == 1) { ?> selected<?php }?>>Строгий</option>
+                                  <option value="2"<?php if($site && $site['interface_style'] == 2) { ?> selected<?php }?>>Мягкий</option>
+                              </select>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Код в блоке head</label>
+                          <div class="col-sm-8">
+                              <textarea class="form-control" name="head_code"><?=$site?htmlspecialchars($site['head_code']):"";?></textarea>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Код в начале элемента body</label>
+                          <div class="col-sm-8">
+                              <textarea class="form-control" name="pre_body_code"><?=$site?htmlspecialchars($site['pre_body_code']):"";?></textarea>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Код в конце элемента body</label>
+                          <div class="col-sm-8">
+                              <textarea class="form-control" name="post_body_code"><?=$site?htmlspecialchars($site['post_body_code']):"";?></textarea>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Robots.txt</label>
+                          <div class="col-sm-8">
+                              <textarea class="form-control" name="robots"><?=$site?htmlspecialchars($site['robots']):"";?></textarea>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Тип сайта</label>
+                          <div class="col-sm-8">
+                              <select class="form-control" name="type">
+                                  <?php foreach ($site_types as $type_key => $site_type) { ?>
+                                    <option value="<?=$type_key;?>"<?php if($site['type'] === $type_key) { ?> selected<?php } ?>><?=$site_type;?></option>
+                                  <?php } ?>
+                              </select>
+                          </div>
+                      </div>
+                      <div class="form-group<?php if(!$site || $site['type'] !== 'global') { ?> hidden<?php } ?>">
+                          <label class="col-sm-4 control-label">Направление</label>
+                          <div class="col-sm-8">
+                              <select class="form-control direction-selector" name="direction_id">
+                                  <option value="0"<?php if($site && $site['direction_id'] == 0) { ?> selected<?php } ?>>Без направления</option>
+                                  <?php foreach ($directions as $direction) { ?>
+                                    <option value="<?=$direction['id'];?>"<?php if($site && $site['direction_id'] == $direction['id']) { ?> selected<?php } ?>><?=$direction['name'];?></option>
+                                  <?php } ?>
+                              </select>
+                          </div>
+                      </div>
+                      <div class="form-group<?php if(!$site || $site['type'] !== 'global' || !$site['direction_id']) { ?> hidden<?php } ?>">
+                          <label class="col-sm-4 control-label">Регион</label>
+                          <div class="col-sm-8">
+                              <select class="form-control" name="region_id">
+                                  <option value="0"<?php if($site && $site['region_id'] == 0) { ?> selected<?php } ?>>Без региона</option>
+                                  <?php foreach ($regions as $region) { ?>
+                                      <option value="<?=$region['id'];?>"<?php if($site && $site['region_id'] == $region['id']) { ?> selected<?php } ?>><?=$region['name'];?></option>
+                                  <?php } ?>
+                              </select>
+                          </div>
+                      </div>
                   </div>
                   <div class="modal-loader"></div>
                   <div class="modal-footer">
