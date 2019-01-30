@@ -595,7 +595,7 @@ function update_object_info($connect){
 	$website = $_POST["website"];
 	if(!substr_count($website, "http"))
 		$website = "http://".$website;
-	$connect->query("UPDATE object SET full_name=?s, telephone=?s, email=?s, fax=?s, address=?s, arrival=?s, leaving=?s, add_one_day=?s, note_reward=?s, website=?s WHERE id=?i", $_POST["name"], $_POST["telephone"], $_POST["email"], $_POST["fax"], $_POST["address"], $_POST["arrival"], $_POST["leaving"], $_POST["add_one_day"], $_POST["note_reward"], $website, $id);
+	$connect->query("UPDATE object SET full_name=?s, telephone=?s, email=?s, fax=?s, address=?s, arrival=?s, leaving=?s, add_one_day=?s, note_reward=?s, website=?s, synchronized=0 WHERE id=?i", $_POST["name"], $_POST["telephone"], $_POST["email"], $_POST["fax"], $_POST["address"], $_POST["arrival"], $_POST["leaving"], $_POST["add_one_day"], $_POST["note_reward"], $website, $id);
 }
 
 function select_name_object($connect){
@@ -1035,7 +1035,7 @@ function update_object_sync_info($connect){
 	$inn = trim($_POST["inn"]);
 	$nomenclature = $_POST["nomenclature"];
 	$bank_login = $_POST["login"];
-	$connect->query("UPDATE object SET 1C_full_name=?s, inn=?s, 1C_code=?s, nomenclature=?s, bank_login=?s WHERE id=?i", $full, $code, $inn, $nomenclature, $bank_login, $id);
+	$connect->query("UPDATE object SET 1C_full_name=?s, inn=?s, 1C_code=?s, nomenclature=?s, bank_login=?s, synchronized=0 WHERE id=?i", $full, $code, $inn, $nomenclature, $bank_login, $id);
 }
 
 function edit_service_information_object($connect){
@@ -1069,7 +1069,7 @@ function edit_service_information_object($connect){
 function update_service_information_object($connect){
 	$id = $_POST["id"];
 	$info = strip_tags($_POST["info"]);
-	$connect->query("UPDATE object SET service_info=?s WHERE id=?i", $info, $id);
+	$connect->query("UPDATE object SET service_info=?s, synchronized=0 WHERE id=?i", $info, $id);
 }
 
 function view_all_commission_object($connect){
@@ -1103,7 +1103,7 @@ function update_commission_object($connect){
 	$regular = $_POST["regular"];
 	$reward = $_POST["reward"];
 	$note_reward = $_POST["note_reward"];
-	$connect->query("UPDATE object SET regular_com=?s, reward=?s, note_reward=?s WHERE id=?i", $regular, $reward, $note_reward, $object);
+	$connect->query("UPDATE object SET regular_com=?s, reward=?s, note_reward=?s, synchronized=0 WHERE id=?i", $regular, $reward, $note_reward, $object);
 	$row = $connect->getRow("SELECT regular_com, reward, note_reward FROM object WHERE id=?i", $object);
 	if(is_null($row['note_reward']))
       $row['note_reward'] = '';

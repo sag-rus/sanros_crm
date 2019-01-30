@@ -31,7 +31,7 @@ function select_object_profkurort($connect){
 function update_object_profkurort_id($connect){
   $object = $_POST["object"];
   $id = $_POST["id"];
-  $connect->query("UPDATE object SET sync_id=?i WHERE id=?i", $id, $object);
+  $connect->query("UPDATE object SET sync_id=?i, synchronized=0 WHERE id=?i", $id, $object);
   $update = $connect->getOne("SELECT sync_id FROM object WHERE id=?i", $object);
   return json_encode($update);
 }

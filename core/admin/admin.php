@@ -710,7 +710,7 @@ function save_photo_profile($connect){
 		if($type == "user" OR $type == "chat")
 			$connect->query("UPDATE users SET photo=?s WHERE id=?i", $base64, $id);
 		else
-			$connect->query("UPDATE object SET image=?s WHERE id=?i", $base64, $id);
+			$connect->query("UPDATE object SET image=?s, synchronized=0 WHERE id=?i", $base64, $id);
 		return "data:image/jpg;base64,".$base64;
 	}else
 		return FALSE;
@@ -853,7 +853,7 @@ function save_new_object_account($connect){
 	$id = $_POST["id"];
 	$object = $_POST["object"];
 	if(!$connect->getOne("SELECT id_account FROM object WHERE id=?i", $object)){
-		$connect->query("UPDATE object SET id_account=?i WHERE id=?i", $id, $object);
+		$connect->query("UPDATE object SET id_account=?i, synchronized=0 WHERE id=?i", $id, $object);
 		return 1;
 	}
 	return FALSE;
@@ -861,7 +861,7 @@ function save_new_object_account($connect){
 
 function delete_object_account($connect){
 	$id = $_POST["id"];
-	$connect->query("UPDATE object SET id_account='' WHERE id=?i", $id);
+	$connect->query("UPDATE object SET id_account='', synchronized=0 WHERE id=?i", $id);
 }
 
 function check_changes_cabinet_object($connect){
@@ -1002,13 +1002,13 @@ function update_description_object_account($connect){
 	$id = $_POST["id"];
 	$desc = $_POST["desc"];
 	$service = $_POST["service"];
-	$connect->query("UPDATE object SET description=?s, id_services=?s WHERE id=?i", $desc, $service, $id);
+	$connect->query("UPDATE object SET description=?s, id_services=?s, synchronized=0 WHERE id=?i", $desc, $service, $id);
 }
 
 function confirm_description_object_account($connect){
 	$id = $_POST["id"];
 	$desc = $connect->getOne("SELECT description FROM object WHERE id=?i", $id);
-	$connect->query("UPDATE object SET status=1, description_check=?s WHERE id=?i", $desc, $id);
+	$connect->query("UPDATE object SET status=1, description_check=?s, synchronized=0 WHERE id=?i", $desc, $id);
 }
 
 function history_object_account(){

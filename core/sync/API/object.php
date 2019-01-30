@@ -53,7 +53,7 @@ function update_contact_object_account($connect, $data){
 		$address = $data["address"];
 		$fax = $data["fax"];
 		$website = $data["website"];
-		$connect->query("UPDATE object SET address=?s, fax=?s, website=?s WHERE id=?i", $address, $fax, $website, $object);
+		$connect->query("UPDATE object SET address=?s, fax=?s, website=?s, synchronized=0 WHERE id=?i", $address, $fax, $website, $object);
 		save_history_object("Изменение контактов");
 	}
 	return FALSE;
@@ -64,7 +64,7 @@ function update_treatment_object_account($connect, $data){
 		$object = $data["object"];
 		$method = $data["method"];
 		$profile = $data["profile"];
-		$connect->query("UPDATE object SET id_methods=?s, id_profile=?s, status=2 WHERE id=?i", $method, $profile, $object);
+		$connect->query("UPDATE object SET id_methods=?s, id_profile=?s, status=2, synchronized=0 WHERE id=?i", $method, $profile, $object);
 		save_history_object("Изменение описания лечения");
 	}
 	return FALSE;
@@ -74,7 +74,7 @@ function update_infrastructure_object_account($connect, $data){
 	if(CheckAuthObjectCabinet::check_authorization()){
 		$object = $data["object"];
 		$infrastructure = $data["infrastructure"];
-		$connect->query("UPDATE object SET id_infa=?s, status=2 WHERE id=?i", $infrastructure, $object);
+		$connect->query("UPDATE object SET id_infa=?s, status=2, synchronized=0 WHERE id=?i", $infrastructure, $object);
 		save_history_object("Изменение инфраструктуры");
 	}
 	return FALSE;
@@ -84,7 +84,7 @@ function update_description_object_account($connect, $data){
 	if(CheckAuthObjectCabinet::check_authorization()){
 		$object = $data["object"];
 		$description = $data["description"];
-		$connect->query("UPDATE object SET description_check=?s, status=2 WHERE id=?i", $description, $object);
+		$connect->query("UPDATE object SET description_check=?s, status=2, synchronized=0 WHERE id=?i", $description, $object);
 		save_history_object("Изменение текстового описания");
 	}
 	return FALSE;
@@ -94,7 +94,7 @@ function update_services_object_account($connect, $data){
 	if(CheckAuthObjectCabinet::check_authorization()){
 		$object = $data["object"];
 		$service = $data["service"];
-		$connect->query("UPDATE object SET id_services=?s, status=2 WHERE id=?i", $service, $object);
+		$connect->query("UPDATE object SET id_services=?s, status=2, synchronized=0 WHERE id=?i", $service, $object);
 		save_history_object("Изменение услуг");
 	}
 	return FALSE;
@@ -105,7 +105,7 @@ function update_map_marker_object_account($connect, $data){
 		$object = $data["object"];
 		$latitude = $data["latitude"];
 		$longitude = $data["longitude"];
-		$connect->query("UPDATE object SET latitude=?s, longitude=?s, status=2 WHERE id=?i", $latitude, $longitude, $object);
+		$connect->query("UPDATE object SET latitude=?s, longitude=?s, status=2, synchronized=0 WHERE id=?i", $latitude, $longitude, $object);
 		save_history_object("Изменение координат");
 	}
 	return FALSE;
@@ -118,7 +118,7 @@ function save_new_category_housing_account($connect, $data){
 		if($name){
 			$connect->query("INSERT INTO housing(name, id_obj) VALUES (?s, ?i)", $name, $object);
 			$insert = $connect->insertId();
-			#$connect->query("UPDATE object SET status=2 WHERE id=?i", $object);
+			#$connect->query("UPDATE object SET status=2, synchronized=0 WHERE id=?i", $object);
 			save_history_object("Добавление нового корпуса");
 			return $insert;
 		}
@@ -151,7 +151,7 @@ function save_new_category_room_account($connect, $data){
 		if($name){
 			$connect->query("INSERT INTO room(name, id_obj) VALUES (?s, ?i)", $name, $object);
 			$insert = $connect->insertId();
-			$connect->query("UPDATE object SET status=2 WHERE id=?i", $object);
+			$connect->query("UPDATE object SET status=2, synchronized=0 WHERE id=?i", $object);
 			save_history_object("Добавление новой категории");
 			return $insert;
 		}
@@ -173,7 +173,7 @@ function update_category_room_account($connect, $data){
 		if(!$data['housing']) $data['housing'] = NULL;
 
 		$connect->query("UPDATE room SET name=?s, housing=?s, main_place=?i, add_place=?i, square=?s, food=?s, note=?s, id_comfort=?s, id_best_comfort=?s, number=?i, description=?s WHERE id=?i AND id_obj=?i", $data["name"], $data["housing"], $data["main"], $data["add"], $data["square"], $data["food"], $data["note"], $data["comf"], $data["best"], (int)$data["num"], $data["description"], $room, $object);
-		$connect->query("UPDATE object SET status=2 WHERE id=?i", $object);
+		$connect->query("UPDATE object SET status=2, synchronized=0 WHERE id=?i", $object);
     $responseArray['success'] = 1;
 		save_history_object("Изменение категории ".$data["name"]);
 	}
@@ -211,7 +211,7 @@ function save_price_object_account($connect, $data){
 				}
 			}
 		}
-		$connect->query("UPDATE object SET status=2 WHERE id=?i", $object);
+		$connect->query("UPDATE object SET status=2, synchronized=0 WHERE id=?i", $object);
 		save_history_object("Сохранение цен");
 	}
 }
@@ -224,7 +224,7 @@ function save_new_date_price_account($connect, $data){
 		if($start AND $end){
 			$connect->query("INSERT INTO date_price(id_obj, start, end) VALUES (?i, ?s, ?s)", $object, $start, $end);
 			$insert = $connect->insertId();
-			$connect->query("UPDATE object SET status=2 WHERE id=?i", $object);
+			$connect->query("UPDATE object SET status=2, synchronized=0 WHERE id=?i", $object);
 			save_history_object("Добавление нового интервала цен");
 			return $insert;
 		}
@@ -239,7 +239,7 @@ function update_date_price_account($connect, $data){
 		$start = $data["start"];
 		$end = $data["end"];
 		$connect->query("UPDATE date_price SET start=?s, end=?s WHERE id=?i AND id_obj=?i", $start, $end, $id_date, $object);
-		$connect->query("UPDATE object SET status=2 WHERE id=?i", $object);
+		$connect->query("UPDATE object SET status=2, synchronized=0 WHERE id=?i", $object);
 		save_history_object("Изменение интервала цен");
 	}
 	return FALSE;
@@ -255,7 +255,7 @@ function save_new_range_account($connect, $data){
 		$rate_plan = $data["rate_plan"];
 		$connect->query("INSERT INTO ranges(name, id_obj, type, place, id_date, rate_plan) VALUES (?s, ?i, ?i, ?i, ?i, ?i)", $name, $object, $type, $place, $id_date, $rate_plan);
 		$insert = $connect->insertId();
-		$connect->query("UPDATE object SET status=2 WHERE id=?i", $object);
+		$connect->query("UPDATE object SET status=2, synchronized=0 WHERE id=?i", $object);
 		save_history_object("Добавление нового столбца цен");
 		return $insert;
 	}
@@ -270,7 +270,7 @@ function update_range_account($connect, $data){
 		$type = $data["type"];
 		$rate_plan = $data["rate_plan"];
 		$connect->query("UPDATE ranges SET name=?s, type=?i, place=?i, rate_plan=?i WHERE id=?i AND id_obj=?i", $name, $type, $place, $rate_plan, $id_range, $object);
-		$connect->query("UPDATE object SET status=2 WHERE id=?i", $object);
+		$connect->query("UPDATE object SET status=2, synchronized=0 WHERE id=?i", $object);
 		save_history_object("Добавление столбца цен");
 	}
 }
@@ -335,7 +335,7 @@ function send_question_object($connect, $data){
 function open_quota_object($connect, $data){
 	if(CheckAuthObjectCabinet::check_authorization()){
 		$object = $data["object"];
-		$connect->query("UPDATE object SET check_places=2 WHERE id=?i", $object);
+		$connect->query("UPDATE object SET check_places=2, synchronized=0 WHERE id=?i", $object);
 		return 1;
 	}
 }
@@ -347,7 +347,7 @@ function save_new_rate_plan_account($connect, $data){
 		if($name){
 			$connect->query("INSERT INTO rate_plan(name, object, description) VALUES (?s, ?i, '')", $name, $object);
 			$insert = $connect->insertId();
-			$connect->query("UPDATE object SET status=2 WHERE id=?i", $object);
+			$connect->query("UPDATE object SET status=2, synchronized=0 WHERE id=?i", $object);
 			save_history_object("Добавление нового тарифного плана");
 			return $insert;
 		}
@@ -371,7 +371,7 @@ function update_rate_plan_account($connect, $data){
       $responseArray['success'] = 1;
 
       $connect->query("UPDATE rate_plan SET name=?s, food=?s, description=?s, days=?i, status=?i WHERE id=?i AND object=?i", $data["name"], $data["food"], $data["desc"], $data["days"], $data['status'], $data["id"],$object);
-      $connect->query("UPDATE object SET status=2 WHERE id=?i", $object);
+      $connect->query("UPDATE object SET status=2, synchronized=0 WHERE id=?i", $object);
       save_history_object("Изменение тарифного плана ".$data["name"]);
 		}
 		else {
@@ -394,7 +394,7 @@ function create_booking_module_object($connect, $data){
 			$today = date("Y-m-d");
 			$connect->query("INSERT INTO booking_module_object(object, uniq_key, date_create) VALUES(?i, ?s, ?s)", $object, $uniq_key, $today);
 			$module = $connect->insertId();
-			$connect->query("UPDATE object SET status=2 WHERE id=?i", $object);
+			$connect->query("UPDATE object SET status=2, synchronized=0 WHERE id=?i", $object);
 			save_history_object("Создание модуля бронирования на сайт");
 			return $module;
 		}
@@ -412,7 +412,7 @@ function update_booking_module_object($connect, $data){
 		$add_one_day = $data["add-one-day"];
 		$prepay = $data["prepay"];
 		$connect->query("UPDATE booking_module_object SET telephone=?s, email=?s, website=?s, payment_methods=?s, show_rooms=?i, prepay=?i WHERE object=?i", $telephone, $email, $website, $payment_methods, $show_rooms, $prepay, $object);
-		$connect->query("UPDATE object SET add_one_day=?i, status=2 WHERE id=?i", $add_one_day, $object);
+		$connect->query("UPDATE object SET add_one_day=?i, status=2, synchronized=0 WHERE id=?i", $add_one_day, $object);
 		save_history_object("Изменение модуля бронирования на сайт");
 	}
 }

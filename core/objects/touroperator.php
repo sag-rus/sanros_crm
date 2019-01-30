@@ -444,7 +444,7 @@ function select_objects_of_tour_operator($connect){
 function set_default_tour_operator($connect){
 	$id_obj = $_POST["id_obj"];
 	$id_tour = $_POST["id_tour"];
-	$connect->query("UPDATE object SET id_tour=?i WHERE id=?i", $id_tour, $id_obj);
+	$connect->query("UPDATE object SET id_tour=?i, synchronized=0 WHERE id=?i", $id_tour, $id_obj);
 }
 
 function delete_object_tour_operator($connect){
@@ -456,7 +456,7 @@ function delete_object_tour_operator($connect){
 	unset($objects[array_search($id_obj, $objects)]);
 	$save = implode("_", $objects);
 	$connect->query("UPDATE tour_operator SET id_obj=?s WHERE id=?i", $save, $id_tour);
-	$connect->query("UPDATE object SET id_tour='' WHERE id=?i AND id_tour=?i", $id_obj, $id_tour);
+	$connect->query("UPDATE object SET id_tour='', synchronized=0 WHERE id=?i AND id_tour=?i", $id_obj, $id_tour);
 }
 
 function select_tour_operator_object($connect, $id = ""){

@@ -18,7 +18,7 @@
     if(count($similar) > 0)
       $similar_string = implode("_", $similar);
     if($similar_string != "")
-  	 $connect->query("UPDATE object SET similar=?s WHERE id=?i", $similar_string, $id);
+  	 $connect->query("UPDATE object SET similar=?s, synchronized=0 WHERE id=?i", $similar_string, $id);
   }
 
 ?>

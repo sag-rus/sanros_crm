@@ -104,7 +104,7 @@ function select_region_country($connect){
 
 
 function update_object_admin($connect){
-	$connect->query("UPDATE object SET name=?s, id_reg=?i, city=?s WHERE id=?i", $_POST["name"], $_POST["region"], $_POST["city"], $_POST["id"]);
+	$connect->query("UPDATE object SET name=?s, id_reg=?i, city=?s, synchronized=0 WHERE id=?i", $_POST["name"], $_POST["region"], $_POST["city"], $_POST["id"]);
 }
 
 function check_object($connect){

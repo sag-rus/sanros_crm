@@ -95,7 +95,7 @@ function delete_method($connect){
 			}
 		}
 		if($change == 1)
-			$connect->query("UPDATE object SET id_methods=?s WHERE id=?i", implode("_", $methods), $object);
+			$connect->query("UPDATE object SET id_methods=?s, synchronized=0 WHERE id=?i", implode("_", $methods), $object);
 	}
 	$connect->query("DELETE FROM methods WHERE id=?i", $id);
 }

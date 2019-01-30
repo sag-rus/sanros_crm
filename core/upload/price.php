@@ -141,7 +141,7 @@ function upload_price_on_server($connect, $id=false, $nthChild = NULL,$showProcc
 	else{
 		$data = $connect->getAll("SELECT id, url_name, website, source_booking FROM object WHERE id=?i LIMIT 1", $id);
 		$desc = $connect->getOne("SELECT description FROM object WHERE id=?i LIMIT 1", $id);
-		$connect->query("UPDATE object SET status=1, description_check=?s WHERE id=?i LIMIT 1", $desc, $id);
+		$connect->query("UPDATE object SET status=1, description_check=?s, synchronized=0 WHERE id=?i LIMIT 1", $desc, $id);
 	}
 	foreach($data as $row){
 		$id = $row["id"];
