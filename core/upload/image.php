@@ -372,6 +372,40 @@ function upload_image_object_server($connect){
     return "<div class='alert alert-danger'><i class='fa fa-picture-o'></i> Объект не найден</div>";
 }
 
+function resetObjectImagesCache($connect, int $object_id) {
+  $directory = __DIR__.'/../..';
+
+  $object = $connect->getRow("SELECT id_reg, image FROM object WHERE id=?i", $object_id);
+  $local_dir_room = $directory.'/temp/object/'.$object_id.'/rooms';
+  $ftp_folder = "/var/www/default-site/public_html/price/object/images/" . $object_id;
+  $ftp_folder_room_base = $ftp_folder.'/rooms';
+
+
+  if($object) {
+    $connect_server = connect_to_server_directory();
+    if(!file_exists($local_dir_room))
+        mkdir($local_dir_room,0777,true);
+
+    if (ftp_nlist($connect_server, $ftp_folder) == FALSE) {
+      @ftp_mkdir($connect_server, $ftp_folder);
+      @ftp_chmod($connect_server, 0777, $ftp_folder);
+    }
+
+    if (ftp_nlist($connect_server, $ftp_folder_room_base) == FALSE) {
+      @ftp_mkdir($connect_server, $ftp_folder_room_base);
+      @ftp_chmod($connect_server, 0777, $ftp_folder_room_base);
+    }
+
+    file_put_contents($local_dir_room.'/image.cache',substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15));
+    @ftp_put($connect_server,$ftp_folder_room_base.'/image.cache',$local_dir_room.'/image.cache', FTP_BINARY);
+    @ftp_chmod($connect_server, 0777, $ftp_folder_room_base.'/image.cache');
+
+    return "<div class='alert alert-success'><i class='fa fa-picture-o'></i> Кэш изображений для объекта сброшен</div>".PHP_EOL;
+  }
+
+  return "<div class='alert alert-danger'><i class='fa fa-picture-o'></i> Объект не найден</div>".PHP_EOL;
+}
+
 function do_upload_images(&$connect_server, $local_dir, $ftp_dir){
   $folder = opendir($local_dir);
   $check = '';
