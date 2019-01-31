@@ -1554,7 +1554,7 @@ function edit_site($connect) {
   $id = isset($_POST['id'])?(int)$_POST['id']:0;
   $site = NULL;
   $site_types = [
-    'no_object' => 'Без объектов',
+    'no_objects' => 'Без объектов',
     'objects' => 'С отдельными объектами',
     'global' => 'Региональный'
   ];
