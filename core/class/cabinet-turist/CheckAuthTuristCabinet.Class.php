@@ -10,15 +10,17 @@ class CheckAuthTuristCabinet{
     $connect = $config->connect;
     $session = $config->session;
     $login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s", $session);
-  	$client = $connect->getOne("SELECT id FROM klient WHERE login=?s", $login);
-    if($client){
-      $config->account = $client;
-      $configNew->account = $client;
-      $config->typeAuth = "turist";
-      $configNew->typeAuth =  "turist";
-      $config->turist = $client;
-      $configNew->turist = $client;
-      return TRUE;
+    if($login) {
+      $client = $connect->getOne("SELECT id FROM klient WHERE login=?s", $login);
+      if($client){
+        $config->account = $client;
+        $configNew->account = $client;
+        $config->typeAuth = "turist";
+        $configNew->typeAuth =  "turist";
+        $config->turist = $client;
+        $configNew->turist = $client;
+        return TRUE;
+      }
     }
     return FALSE;
   }
