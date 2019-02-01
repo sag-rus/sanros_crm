@@ -9,7 +9,7 @@ class CheckAuthTuristCabinet{
     $configNew = App\lib\CRM\Config\Client::getInstance();
     $connect = $config->connect;
     $session = $config->session;
-    $login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s", $session);
+    $login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s AND `type` = 1", $session);
     if($login) {
       $client = $connect->getOne("SELECT id FROM klient WHERE login=?s", $login);
       if($client){
