@@ -368,135 +368,137 @@ function show_tour_bid_account($connect, $data){
 	$data['id'] = (int)$data['id'];
 	$id = $data["id"];
 	$originID = $data['id'];
-	$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s", $data["session"]);
-	$client = $connect->getOne("SELECT id FROM klient WHERE login=?s", $login);
-	if($login AND $client)
-		$true = $connect->getOne("SELECT id FROM reckoning WHERE id=?i AND turist=?i AND active!=3 LIMIT 1", $id, $client);
-	if($true == $id){
-		$array = array("check" => 1);
-		$answer = $connect->getRow("SELECT id, id_obj, date_z, date_v, sum, status, status_san, rest, changes, id_user, id_dis FROM reckoning WHERE id=?i LIMIT 1", $data['id']);
-		$rest = $answer["rest"];
-		$array["id"] = $data["id"];
-		$object = get_object($connect, $answer["id_obj"], "type_and_fast_booking");
-		$array["object"] = $object['type'];
-		$array['fast_booking'] = (int)$object['fast_booking'];
-		$array["date_z"] = month_transform(date_change($answer["date_z"]));
-		$array["date_z_format"] = $answer["date_z"];
-		$array["date_v"] = month_transform(date_change($answer["date_v"]));
-		$array["sum"] = $answer["sum"];
-		$array["changes"] = $answer["changes"];
-		$array["status"] = $connect->getOne("SELECT name FROM status WHERE id=?i", $answer["status"]);
-		$array["status_int"] = $answer["status"];
-		$array["bonus"] = ABS($connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND sum<0", $id));
-		$array["manager"] = "";
-    $array["holding_sum"] = 0;
-    $array["payment_sum"] = 0;
+	$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s AND `type` = 1", $data["session"]);
+	if($login) {
+		$client = $connect->getOne("SELECT id FROM klient WHERE login=?s", $login);
+		if($client)
+			$true = $connect->getOne("SELECT id FROM reckoning WHERE id=?i AND turist=?i AND active!=3 LIMIT 1", $id, $client);
+		if($true == $id){
+			$array = array("check" => 1);
+			$answer = $connect->getRow("SELECT id, id_obj, date_z, date_v, sum, status, status_san, rest, changes, id_user, id_dis FROM reckoning WHERE id=?i LIMIT 1", $data['id']);
+			$rest = $answer["rest"];
+			$array["id"] = $data["id"];
+			$object = get_object($connect, $answer["id_obj"], "type_and_fast_booking");
+			$array["object"] = $object['type'];
+			$array['fast_booking'] = (int)$object['fast_booking'];
+			$array["date_z"] = month_transform(date_change($answer["date_z"]));
+			$array["date_z_format"] = $answer["date_z"];
+			$array["date_v"] = month_transform(date_change($answer["date_v"]));
+			$array["sum"] = $answer["sum"];
+			$array["changes"] = $answer["changes"];
+			$array["status"] = $connect->getOne("SELECT name FROM status WHERE id=?i", $answer["status"]);
+			$array["status_int"] = $answer["status"];
+			$array["bonus"] = ABS($connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND sum<0", $id));
+			$array["manager"] = "";
+			$array["holding_sum"] = 0;
+			$array["payment_sum"] = 0;
 
-		$payment_rows = $connect->getAll("SELECT `sum`, `status` FROM payment WHERE `schet`=?i AND (`status` = 1  OR `status` = 2) AND (`type` = 1 OR `type` = 2 OR `type` = 6)", $answer["id"]);
-    foreach ($payment_rows as $payment_row) {
-    	if($payment_row['status'] == 1) {
-    		$array["holding_sum"] += $payment_row["sum"];
+			$payment_rows = $connect->getAll("SELECT `sum`, `status` FROM payment WHERE `schet`=?i AND (`status` = 1  OR `status` = 2) AND (`type` = 1 OR `type` = 2 OR `type` = 6)", $answer["id"]);
+			foreach ($payment_rows as $payment_row) {
+				if($payment_row['status'] == 1) {
+					$array["holding_sum"] += $payment_row["sum"];
+				}
+				else {
+					$array["payment_sum"] += $payment_row["sum"];
+				}
 			}
-			else {
-        $array["payment_sum"] += $payment_row["sum"];
-			}
-		}
 
-		if($answer["id_user"]){
-			$manager = $connect->getRow("SELECT name, photo FROM users WHERE id=?i", $answer["id_user"]);
-			$array["manager"] = $manager["name"];
-			if($manager["photo"])
-				$array["manager-photo"] = "data:image/jpg;base64,".$manager["photo"];
-		}
-		if($answer["id_dis"]){
-    	$discount = $connect->getRow("SELECT `value`, `type` FROM discount WHERE id=?i", $answer["id_dis"]);
-			$array["discount"] = $discount['value'];
-			$array['discount_type'] = $discount['type'];
-			if($discount['type'] == 1)
-				$array["sum-discount"] = ($array["discount"] / 100) * $answer["sum"];
-			else
-        $array["sum-discount"] = $array['discount'];
-		}
-		$array["doc"] = 0;
-    $array["voucher"] = 1;
+			if($answer["id_user"]){
+				$manager = $connect->getRow("SELECT name, photo FROM users WHERE id=?i", $answer["id_user"]);
+				$array["manager"] = $manager["name"];
+				if($manager["photo"])
+					$array["manager-photo"] = "data:image/jpg;base64,".$manager["photo"];
+			}
+			if($answer["id_dis"]){
+				$discount = $connect->getRow("SELECT `value`, `type` FROM discount WHERE id=?i", $answer["id_dis"]);
+				$array["discount"] = $discount['value'];
+				$array['discount_type'] = $discount['type'];
+				if($discount['type'] == 1)
+					$array["sum-discount"] = ($array["discount"] / 100) * $answer["sum"];
+				else
+					$array["sum-discount"] = $array['discount'];
+			}
+			$array["doc"] = 0;
+			$array["voucher"] = 1;
 
-    if($answer["id_obj"] == 45) {
-    	$array["voucher"] = 0;
-		}
+			if($answer["id_obj"] == 45) {
+				$array["voucher"] = 0;
+			}
 
-		if($array["status_int"] == 3 OR $array["status_int"] == 4){
-			$array["doc"] = 2;
-			$reward = get_reward_schet($connect, $array['id']);
-			if(($array['sum'] && ($reward / $array["sum"] * 100) >= 4 || $array['id'] == 43125 || $array['id'] == 58509 || $array['id'] == 66300) && !$array['holding_sum']){
-				$array["pay_button"] = 1;
-				$check = $connect->getOne("SELECT sum FROM time_payment WHERE type=2 AND id_schet=?i", $array['id']);
-				if($check AND ($answer["status"] == 3 OR $answer["status"] == 4))
-					$array["prepay_sum"] = $check;
+			if($array["status_int"] == 3 OR $array["status_int"] == 4){
+				$array["doc"] = 2;
+				$reward = get_reward_schet($connect, $array['id']);
+				if(($array['sum'] && ($reward / $array["sum"] * 100) >= 4 || $array['id'] == 43125 || $array['id'] == 58509 || $array['id'] == 66300) && !$array['holding_sum']){
+					$array["pay_button"] = 1;
+					$check = $connect->getOne("SELECT sum FROM time_payment WHERE type=2 AND id_schet=?i", $array['id']);
+					if($check AND ($answer["status"] == 3 OR $answer["status"] == 4))
+						$array["prepay_sum"] = $check;
+				}
+				else {
+					$array['fast_booking'] = 0;
+				}
 			}
-			else {
-				$array['fast_booking'] = 0;
+			elseif ($array['fast_booking']) {
+				$reward = get_reward_schet($connect, $array['id']);
+				if (!(($array['sum'] && ($reward / $array["sum"] * 100) >= 4 || $array['id'] == 43125 || $array['id'] == 58509 || $array['id'] == 66300) && !$array['holding_sum'])) {
+					$array['fast_booking'] = 0;
+				}
 			}
-		}
-		elseif ($array['fast_booking']) {
-      $reward = get_reward_schet($connect, $array['id']);
-      if (!(($array['sum'] && ($reward / $array["sum"] * 100) >= 4 || $array['id'] == 43125 || $array['id'] == 58509 || $array['id'] == 66300) && !$array['holding_sum'])) {
-      	$array['fast_booking'] = 0;
-      }
-    }
 
-		if($array["status_int"] == 5)
-			$array["doc"] = 3;
-		if($array["status_int"] == 1 OR $array["status_int"] == 2)
-			$array["doc"] = 1;
-		$answer = $connect->getAll("SELECT id, id_room, id_service, date_z, days, sum, number, type, note FROM position_reck WHERE schet=?i", $data['id']);
-		foreach($answer as $a){
-			$array["position"][$a["id"]]["date_z"] = month_transform(date_change($a["date_z"]));
-			$array["position"][$a["id"]]["days"] = $a["days"];
-			$array["position"][$a["id"]]["type"] = $a["type"];
-			$array["position"][$a["id"]]["note"] = $a["note"];
-			$array["position"][$a["id"]]["number"] = $a["number"];
-			if($a["id_room"])
-				$array["position"][$a["id"]]["room"] = get_room($connect, $a["id_room"], "full");
-			else
-				$array["position"][$a["id"]]["room"] = $connect->getOne("SELECT name FROM service_schet WHERE id=?i", $a["id_service"]);
-			if($a["sum"] > 0){
-				$array["position"][$a["id"]]["sum"] = $a["sum"]." рублей";
-				$array["position"][$a["id"]]["all_sum"] = calculate_position($a["sum"], $a["number"], $a["type"], $a["days"]);
-				$array["position"][$a["id"]]["all_sum"] = add_null($array["position"][$a["id"]]["all_sum"])." рублей";
-			}else{
-				$array["position"][$a["id"]]["sum"] = "уточняется";
-				$array["position"][$a["id"]]["all_sum"] = "уточняется";
+			if($array["status_int"] == 5)
+				$array["doc"] = 3;
+			if($array["status_int"] == 1 OR $array["status_int"] == 2)
+				$array["doc"] = 1;
+			$answer = $connect->getAll("SELECT id, id_room, id_service, date_z, days, sum, number, type, note FROM position_reck WHERE schet=?i", $data['id']);
+			foreach($answer as $a){
+				$array["position"][$a["id"]]["date_z"] = month_transform(date_change($a["date_z"]));
+				$array["position"][$a["id"]]["days"] = $a["days"];
+				$array["position"][$a["id"]]["type"] = $a["type"];
+				$array["position"][$a["id"]]["note"] = $a["note"];
+				$array["position"][$a["id"]]["number"] = $a["number"];
+				if($a["id_room"])
+					$array["position"][$a["id"]]["room"] = get_room($connect, $a["id_room"], "full");
+				else
+					$array["position"][$a["id"]]["room"] = $connect->getOne("SELECT name FROM service_schet WHERE id=?i", $a["id_service"]);
+				if($a["sum"] > 0){
+					$array["position"][$a["id"]]["sum"] = $a["sum"]." рублей";
+					$array["position"][$a["id"]]["all_sum"] = calculate_position($a["sum"], $a["number"], $a["type"], $a["days"]);
+					$array["position"][$a["id"]]["all_sum"] = add_null($array["position"][$a["id"]]["all_sum"])." рублей";
+				}else{
+					$array["position"][$a["id"]]["sum"] = "уточняется";
+					$array["position"][$a["id"]]["all_sum"] = "уточняется";
+				}
 			}
-		}
-		$rest = explode(",", $rest);
-		$rest = array_diff($rest, array(""));
-		foreach($rest as $turist){
-			$answer = $connect->getRow("SELECT id, name, surname, otch, passport, date, date_pas, output, birth_certificate FROM klient WHERE id=?i", $turist);
-			$array["rest"][$answer["id"]]["fio"] = $answer["surname"]." ".$answer["name"]." ".$answer["otch"];
-			$array["rest"][$answer["id"]]["date"] = date_change($answer["date"], ".");
-			$document = "";
-			if(!$answer["passport"] AND $answer["birth_certificate"])
-				$document = "Свид. о рожд. ".$answer["birth_certificate"];
-			elseif($answer["passport"]){
-				//$document = "Паспорт ".substr_replace($answer["passport"], " ", 4, 0);
-				$document = "Паспорт ".$answer["passport"];
-				if($answer["date_pas"])
-					$document.= " выдан ".date_change($answer["date_pas"], ".")." ".$answer["output"];
+			$rest = explode(",", $rest);
+			$rest = array_diff($rest, array(""));
+			foreach($rest as $turist){
+				$answer = $connect->getRow("SELECT id, name, surname, otch, passport, date, date_pas, output, birth_certificate FROM klient WHERE id=?i", $turist);
+				$array["rest"][$answer["id"]]["fio"] = $answer["surname"]." ".$answer["name"]." ".$answer["otch"];
+				$array["rest"][$answer["id"]]["date"] = date_change($answer["date"], ".");
+				$document = "";
+				if(!$answer["passport"] AND $answer["birth_certificate"])
+					$document = "Свид. о рожд. ".$answer["birth_certificate"];
+				elseif($answer["passport"]){
+					//$document = "Паспорт ".substr_replace($answer["passport"], " ", 4, 0);
+					$document = "Паспорт ".$answer["passport"];
+					if($answer["date_pas"])
+						$document.= " выдан ".date_change($answer["date_pas"], ".")." ".$answer["output"];
+				}
+				$array["rest"][$answer["id"]]["document"] = $document;
 			}
-			$array["rest"][$answer["id"]]["document"] = $document;
+			$talk = $connect->getOne("SELECT id FROM talk WHERE client=?i AND type='turist' AND id_reck=?i", $turist, $array['id']);
+			$data = $connect->getAll("SELECT id, DATE_FORMAT(date, '%H:%i:%s %d.%m.%Y') as date, text, type, user FROM message_talk WHERE talk=?i ORDER BY id", $talk);
+			foreach($data as $row){
+				$array["message"][$row["id"]]["date"] = $row["date"];
+				$array["message"][$row["id"]]["text"] = $row["text"];
+				$array["message"][$row["id"]]["type"] = $row["type"];
+				if($row["user"])
+					$array["message"][$row["id"]]["manager"] = $connect->getOne("SELECT name FROM users WHERE id=?i", $row["user"]);
+			}
+			$connect->query("UPDATE message_talk SET active=1 WHERE talk=?i AND type='manager'", $talk);
+			$array["id"] = $originID;
+			return $array;
 		}
-		$talk = $connect->getOne("SELECT id FROM talk WHERE client=?i AND type='turist' AND id_reck=?i", $turist, $array['id']);
-		$data = $connect->getAll("SELECT id, DATE_FORMAT(date, '%H:%i:%s %d.%m.%Y') as date, text, type, user FROM message_talk WHERE talk=?i ORDER BY id", $talk);
-		foreach($data as $row){
-			$array["message"][$row["id"]]["date"] = $row["date"];
-			$array["message"][$row["id"]]["text"] = $row["text"];
-			$array["message"][$row["id"]]["type"] = $row["type"];
-			if($row["user"])
-				$array["message"][$row["id"]]["manager"] = $connect->getOne("SELECT name FROM users WHERE id=?i", $row["user"]);
-		}
-		$connect->query("UPDATE message_talk SET active=1 WHERE talk=?i AND type='manager'", $talk);
-    $array["id"] = $originID;
-		return $array;
 	}
 	return FALSE;
 }
