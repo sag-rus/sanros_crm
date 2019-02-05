@@ -242,7 +242,7 @@ function upload_information_object($connect){
 	}
 	$xml->formatOutput = true;
 	$xml->save("temp/region.xml");
-	file_put_contents($rootPath.'/temp/region.cache');
+	file_put_contents($rootPath.'/temp/regions.cache',substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15));
 
 
 	$xml = new DomDocument("1.0", "utf-8");
@@ -533,7 +533,7 @@ function upload_information_object($connect){
 	}
 	$xml->formatOutput = true;
 	$xml->save("temp/all-region.xml");
-	file_put_contents($rootPath.'/temp/all-region.cache',substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15));
+	file_put_contents($rootPath.'/temp/all-regions.cache',substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15));
 
 	$xml = new DomDocument("1.0", "utf-8");
 	$images = $xml->appendChild($xml->createElement("images"));
@@ -592,14 +592,14 @@ function upload_information_object($connect){
 		$file = "temp/all-region.xml";
 		if(!ftp_put($connect_server, $ftp_folder."all-region.xml", $file, FTP_ASCII))
 			echo "Ошибка загрузки";
-		if(!ftp_put($connect_server, $ftp_folder."all-region.cache", $rootPath.'/temp/all-region.cache', FTP_ASCII))
+		if(!ftp_put($connect_server, $ftp_folder."all-regions.cache", $rootPath.'/temp/all-regions.cache', FTP_ASCII))
 			echo "Ошибка загрузки";
 
 
 		$file = "temp/region.xml";
 		if(!ftp_put($connect_server, $ftp_folder."region.xml", $file, FTP_ASCII))
 			echo "Ошибка загрузки";
-		if(!ftp_put($connect_server, $ftp_folder."region.cache", $rootPath.'/temp/region.cache', FTP_ASCII))
+		if(!ftp_put($connect_server, $ftp_folder."regions.cache", $rootPath.'/temp/regions.cache', FTP_ASCII))
 			echo "Ошибка загрузки";
 
 		$file = "temp/direction.xml";
@@ -638,10 +638,10 @@ function upload_information_object($connect){
 		ftp_chmod($connect_server, 0644, $ftp_folder."all-object.xml");
 
 		ftp_chmod($connect_server, 0644, $ftp_folder."all-region.xml");
-		ftp_chmod($connect_server, 0644, $ftp_folder."all-region.cache");
+		ftp_chmod($connect_server, 0644, $ftp_folder."all-regions.cache");
 
 		ftp_chmod($connect_server, 0644, $ftp_folder."region.xml");
-		ftp_chmod($connect_server, 0644, $ftp_folder."region.cache");
+		ftp_chmod($connect_server, 0644, $ftp_folder."regions.cache");
 
 		ftp_chmod($connect_server, 0644, $ftp_folder."direction.xml");
 		ftp_chmod($connect_server, 0644, $ftp_folder."directions.cache");
