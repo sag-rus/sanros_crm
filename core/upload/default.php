@@ -685,7 +685,10 @@ function upload_information_object($connect){
 		ftp_chmod($connect_server, 0644, $ftp_folder."method.xml");
 		ftp_chmod($connect_server, 0644, $ftp_folder."infa.xml");
 		ftp_chmod($connect_server, 0644, $ftp_folder."comfort.xml");
+
 		ftp_chmod($connect_server, 0644, $ftp_folder."object.xml");
+		ftp_chmod($connect_server, 0644, $ftp_folder."objects.json");
+		ftp_chmod($connect_server, 0644, $ftp_folder."objects.cache");
 		ftp_chmod($connect_server, 0644, $ftp_folder."all-object.xml");
 
 		ftp_chmod($connect_server, 0644, $ftp_folder."all-region.xml");
