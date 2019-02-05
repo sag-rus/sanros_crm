@@ -304,13 +304,19 @@ function upload_information_object($connect){
 		if(!is_null($min_treatment))
       $direction->setAttribute("min_treatment", $min_treatment);
 
-		$directionsArray[] = [
+		$directionItem = [
 			'id' => $id,
 			'name' => $name_direction,
 			'name_rod' => $name_direction_rod,
 			'name_url' => $name_direction_url,
-			'desc' => $description
+			'desc' => $description,
+			'min' => $min
 		];
+
+		if(!is_null($min_treatment))
+			$directionItem["min_treatment"] = $min_treatment;
+
+		$directionsArray[] = $directionItem;
 
 	}
 	$xml->formatOutput = true;
