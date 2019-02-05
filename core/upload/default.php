@@ -2,6 +2,7 @@
 
 function upload_information_object($connect){
 	global $directory;
+	$rootPath = __DIR__.'/../..';
 	$array_region = array();
 	$price_region = array();
 	$today = date("Y-m-d");
@@ -92,6 +93,7 @@ function upload_information_object($connect){
 	}
 	$xml->formatOutput = true;
 	$xml->save("temp/services.xml");
+
 
 	$xml = new DomDocument("1.0", "utf-8");
 	$objects = $xml->appendChild($xml->createElement("objects"));
@@ -240,10 +242,12 @@ function upload_information_object($connect){
 	}
 	$xml->formatOutput = true;
 	$xml->save("temp/region.xml");
+	file_put_contents($rootPath.'/temp/region.cache');
 
 
 	$xml = new DomDocument("1.0", "utf-8");
 	$directions = $xml->appendChild($xml->createElement("directions"));
+	$directionsArray = [];
 	$data = $connect->getAll("SELECT id, name, meta_desc, name_rod FROM direction_object WHERE id_country=1");
 	foreach($data as $row){
 		$id = $row["id"];
@@ -299,9 +303,21 @@ function upload_information_object($connect){
 		$direction->setAttribute("min", $min);
 		if(!is_null($min_treatment))
       $direction->setAttribute("min_treatment", $min_treatment);
+
+		$directionsArray[] = [
+			'id' => $id,
+			'name' => $name_direction,
+			'name_rod' => $name_direction_rod,
+			'name_url' => $name_direction_url,
+			'desc' => $description
+		];
+
 	}
 	$xml->formatOutput = true;
 	$xml->save("temp/direction.xml");
+
+	file_put_contents($rootPath.'/temp/directions.json',json_encode($directionsArray));
+	file_put_contents($rootPath.'/temp/directions.cache',substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15));
 
 
 
@@ -511,11 +527,7 @@ function upload_information_object($connect){
 	}
 	$xml->formatOutput = true;
 	$xml->save("temp/all-region.xml");
-
-
-
-
-
+	file_put_contents($rootPath.'/temp/all-region.cache',substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15));
 
 	$xml = new DomDocument("1.0", "utf-8");
 	$images = $xml->appendChild($xml->createElement("images"));
@@ -570,15 +582,30 @@ function upload_information_object($connect){
 		$file = "temp/all-object.xml";
 		if(!ftp_put($connect_server, $ftp_folder."all-object.xml", $file, FTP_ASCII))
 			echo "Ошибка загрузки";
+
 		$file = "temp/all-region.xml";
 		if(!ftp_put($connect_server, $ftp_folder."all-region.xml", $file, FTP_ASCII))
 			echo "Ошибка загрузки";
+		if(!ftp_put($connect_server, $ftp_folder."all-region.cache", $rootPath.'/temp/all-region.cache', FTP_ASCII))
+			echo "Ошибка загрузки";
+
+
 		$file = "temp/region.xml";
 		if(!ftp_put($connect_server, $ftp_folder."region.xml", $file, FTP_ASCII))
 			echo "Ошибка загрузки";
+		if(!ftp_put($connect_server, $ftp_folder."region.cache", $rootPath.'/temp/region.cache', FTP_ASCII))
+			echo "Ошибка загрузки";
+
 		$file = "temp/direction.xml";
 		if(!ftp_put($connect_server, $ftp_folder."direction.xml", $file, FTP_ASCII))
 			echo "Ошибка загрузки";
+		if(!ftp_put($connect_server, $ftp_folder."directions.json", $rootPath.'/temp/directions.json', FTP_ASCII))
+			echo "Ошибка загрузки";
+		if(!ftp_put($connect_server, $ftp_folder."directions.cache", $rootPath.'/temp/directions.cache', FTP_ASCII))
+			echo "Ошибка загрузки";
+
+
+
 		$file = "temp/services.xml";
 		if(!ftp_put($connect_server, $ftp_folder."services.xml", $file, FTP_ASCII))
 			echo "Ошибка загрузки";
@@ -603,9 +630,17 @@ function upload_information_object($connect){
 		ftp_chmod($connect_server, 0644, $ftp_folder."comfort.xml");
 		ftp_chmod($connect_server, 0644, $ftp_folder."object.xml");
 		ftp_chmod($connect_server, 0644, $ftp_folder."all-object.xml");
+
 		ftp_chmod($connect_server, 0644, $ftp_folder."all-region.xml");
+		ftp_chmod($connect_server, 0644, $ftp_folder."all-region.cache");
+
 		ftp_chmod($connect_server, 0644, $ftp_folder."region.xml");
+		ftp_chmod($connect_server, 0644, $ftp_folder."region.cache");
+
 		ftp_chmod($connect_server, 0644, $ftp_folder."direction.xml");
+		ftp_chmod($connect_server, 0644, $ftp_folder."directions.cache");
+		ftp_chmod($connect_server, 0644, $ftp_folder."directions.json");
+
 		ftp_chmod($connect_server, 0644, $ftp_folder."services.xml");
 		ftp_chmod($connect_server, 0644, $ftp_folder."PrimaryPromo.xml");
 		ftp_chmod($connect_server, 0644, $ftp_folder."VIPpromo.xml");
