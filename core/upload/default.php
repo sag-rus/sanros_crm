@@ -659,8 +659,9 @@ function upload_information_object($connect){
 	//}
 
 	ftp_quit($connect_server);
-	if($mis == 0)
-		return FALSE;
+
+
+	return "<div class='alert alert-success'><i class='fa fa-picture-o'></i> Информация успешно выгружена!</div>";
 
 }
 
