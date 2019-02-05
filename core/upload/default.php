@@ -97,6 +97,7 @@ function upload_information_object($connect){
 
 	$xml = new DomDocument("1.0", "utf-8");
 	$objects = $xml->appendChild($xml->createElement("objects"));
+	$objectsArray = [];
 	$sights = $connect->getAll("SELECT latitude, longitude FROM sights");
 	$data = $connect->getAll("SELECT object.name as object, object.id, object.image, object.id_reg, object.direction, object.city, object.id_profile, object.id_methods, object.id_infa, object.type, object.check_places, object.description, object.similar, object.add_one_day, object.latitude, object.longitude, object.weather, object.url_name, object.reward, object.source_booking, object.booking_uri, object.fast_booking, region.name as region, region.name_rod as region_rod FROM region, object WHERE region.id_country=1 AND (object.active=0) AND object.id_reg=region.id AND object.url_name!='' ORDER BY region.name");
 	foreach($data as $row){
@@ -168,17 +169,59 @@ function upload_information_object($connect){
 			$object->setAttribute("quota", $check_places);
 			$object->setAttribute("min", $prices["min"]);
 			$object->setAttribute("fast_booking", $fast_booking);
-			if(isset($prices["min_treatment"]))
-				$object->setAttribute("min_treatment",$prices["min_treatment"]);
+
+			$objectItem = [
+				'id' => $id,
+				"name" => $name,
+				"name_url" => $url_name,
+				"profile" => $id_profile,
+				"infa" => $id_infa,
+				"method" => $id_method,
+				"type" => $type,
+				"count_rating" => $count_rating,
+				"average_rating" => $average_rating,
+				"reward" => $reward,
+				"add_one_day" => $add_one_day,
+				"id_reg" => $id_reg,
+				"id_country" => $connect->getOne("SELECT id_country FROM region WHERE id=?i", $id_reg),
+				"id_dir" => $id_dir,
+				"direction" => $direction,
+				"region" => $region,
+				"region_rod" => $region_rod,
+				"region_url" => change_text_url($region),
+				"city" => $city,
+				"similar" => $similar,
+				"quota" => $check_places,
+				"min" => $prices["min"],
+				"fast_booking" => $fast_booking
+			];
+
+
+			if(isset($prices["min_treatment"])) {
+				$object->setAttribute("min_treatment", $prices["min_treatment"]);
+				$objectItem["min_treatment"] = $prices["min_treatment"];
+			}
+
 			$object->setAttribute("page", intval($array_region[$id_reg]/10) + 1);
 			$object->setAttribute("source_booking", $source_booking);
 			$object->setAttribute("booking_uri",$booking_uri);
+
+			$objectItem["page"] = intval($array_region[$id_reg]/10) + 1;
+			$objectItem["source_booking"] = $source_booking;
+			$objectItem["booking_uri"] = $booking_uri;
+
+
 			if($latitude > 0){
 				$object->setAttribute("latitude", $latitude);
 				$object->setAttribute("longitude", $longitude);
+
+				$objectItem["latitude"] = $latitude;
+				$objectItem["longitude"] = $longitude;
+
 				foreach($sights as $sight){
 					if(calculate_distance($latitude, $longitude, $sight["latitude"], $sight["longitude"]) <= 50){
 						$object->setAttribute("sights", "1");
+						$objectItem["sights"] = 1;
 						break;
 					}
 				}
@@ -195,6 +238,7 @@ function upload_information_object($connect){
 					$min_price->setAttribute("treatment",$min_row['treatment']);
 				}
 			}
+
 			if(!isset($price_region[$id_reg]))
 				$price_region[$id_reg] = array("min" => 0, "max" => 0);
 
@@ -210,9 +254,14 @@ function upload_information_object($connect){
         	$price_region[$id_reg]["max_treatment"] = $prices["min_treatment"];
       }
 		//}
+
+		$objectsArray[] = $objectItem;
 	}
 	$xml->formatOutput = true;
 	$xml->save("temp/object.xml");
+
+	file_put_contents($rootPath.'/temp/objects.json',json_encode($objectsArray));
+	file_put_contents($rootPath.'/temp/objects.cache',substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15));
 
 	$xml = new DomDocument("1.0", "utf-8");
 	$regions = $xml->appendChild($xml->createElement("regions"));
@@ -432,10 +481,6 @@ function upload_information_object($connect){
 
 
 
-
-
-
-
 	$xml = new DomDocument("1.0", "utf-8");
 	$all = $xml->appendChild($xml->createElement("data"));
 	$region = $all->appendChild($xml->createElement("region"));
@@ -582,9 +627,15 @@ function upload_information_object($connect){
 		$file = "temp/comfort.xml";
 		if(!ftp_put($connect_server, $ftp_folder."comfort.xml", $file, FTP_ASCII))
 			echo "Ошибка загрузки";
+
 		$file = "temp/object.xml";
 		if(!ftp_put($connect_server, $ftp_folder."object.xml", $file, FTP_ASCII))
 			echo "Ошибка загрузки";
+		if(!ftp_put($connect_server, $ftp_folder."objects.json", $rootPath.'/temp/objects.json', FTP_ASCII))
+			echo "Ошибка загрузки";
+		if(!ftp_put($connect_server, $ftp_folder."objects.cache", $rootPath.'/temp/objects.cache', FTP_ASCII))
+			echo "Ошибка загрузки";
+
 		$file = "temp/all-object.xml";
 		if(!ftp_put($connect_server, $ftp_folder."all-object.xml", $file, FTP_ASCII))
 			echo "Ошибка загрузки";
