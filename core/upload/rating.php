@@ -42,6 +42,7 @@ function upload_rating_object($connect){
 
 	if(!ftp_put($connect_server,$server_file3,$fileJSONCache,FTP_ASCII))
 		return "<div class='alert alert-danger'>Не удалось загрузить файл на сервер</div>";
+	ftp_chmod($connect_server, 0644, $server_file3);
 
 	ftp_quit($connect_server);
 
@@ -190,7 +191,7 @@ function save_rating_XML_object($connect, $id){
 
 			$company = $rating->appendChild($xml->createElement("company"));
 			$company->appendChild($xml->createTextNode($row["company_rating"]));
-			$ratingAssoc['company_rating'] = $row["company_rating"];
+			$ratingAssoc['company_rating'] = "".$row["company_rating"];
 
 			if($row["site_from"] != ""){
 				$site_from = $rating->appendChild($xml->createElement("site_from"));
