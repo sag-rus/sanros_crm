@@ -18,12 +18,30 @@ function upload_rating_object($connect){
 		$id = $row["id"];
 		if(save_rating_XML_object($connect, $id)){
 			$file = "temp/xml/rating/".$id.".xml";
+			$fileJSON = __DIR__.'/../../temp/json/rating/'.$id.'.json';
 			$server_file = "/var/www/default-site/public_html/price/XML/rating/".$id.".xml";
+			$server_file2 = "/var/www/default-site/public_html/price/json/rating/".$id.".json";
+
 			if(!ftp_put($connect_server, $server_file, $file, FTP_ASCII))
 				return "<div class='alert alert-danger'>Не удалось загрузить файл на сервер</div>";
+
+			if(!ftp_put($connect_server,$server_file2,$fileJSON))
+				return "<div class='alert alert-danger'>Не удалось загрузить файл на сервер</div>";
+
 			ftp_chmod($connect_server, 0644, $server_file);
+			ftp_chmod($connect_server, 0644, $server_file2);
 		}
 	}
+
+	$fileJSONCache = __DIR__.'/../../temp/json/rating/rating.cache';
+	$server_file3 = "/var/www/default-site/public_html/price/json/rating/rating.cache";
+	if(!file_exists(__DIR__.'/../../temp/json'))
+		mkdir(__DIR__.'/../../temp/json',0777,true);
+
+	file_put_contents($fileJSONCache,substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15));
+
+	if(!ftp_put($connect_server,$server_file3,$fileJSONCache))
+		return "<div class='alert alert-danger'>Не удалось загрузить файл на сервер</div>";
 
 	ftp_quit($connect_server);
 
@@ -31,21 +49,50 @@ function upload_rating_object($connect){
 }
 
 function save_rating_XML_object($connect, $id){
+	$tempDir = __DIR__.'/../../temp/json/rating';
+
+	if(!file_exists($tempDir))
+		mkdir($tempDir,0777,true);
+
 	$count = $connect->getOne("SELECT COUNT(*) FROM rating WHERE id_obj=?i AND status=3", $id);
 	if($count > 0){
 		$page = 1;
 		$count_page = 0;
 		$xml = new DomDocument("1.0", "utf-8");
 		$object = $xml->appendChild($xml->createElement("object"));
+		$objectAssoc = [];
 		$row = $connect->getRow("SELECT name, type FROM object WHERE id=?i", $id);
+
+		$objectAssoc['id'] = $id;
 		$object->setAttribute("name", $row["name"]);
-		$object->setAttribute("type", $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]));
+		$objectAssoc["name"] =  $row["name"];
+
+		$type = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]);
+		$object->setAttribute("type", $type);
+		$objectAssoc["type"] =  $type;
+
 		$object->setAttribute("count", $count);
+		$objectAssoc["count"] =  $count;
+
 		$object->setAttribute("name_url", change_text_url($row["name"]));
+		$objectAssoc["name_url"] =  change_text_url($row["name"]);
+
 		$positive = mb_substr($connect->getOne("SELECT positive FROM rating WHERE status=3 AND id_obj=?i AND positive!='' ORDER BY date_send DESC", $id), 0, 80, "UTF-8");
 		$object->setAttribute("positive", $positive);
+		$objectAssoc["positive"] =  $positive;
+
+
 		$data = $connect->getAll("SELECT id, schet, DATE_FORMAT(date_send, '%d.%m.%Y') as date, clean, comfort, location, treatment, staff, leisure, ratio, positive, negative, advice, photos, company_rating, turist, site_from FROM rating WHERE status=3 AND id_obj=?i ORDER BY date_send DESC", $id);
 		$average_object = 0;
+		$average_clean = 0;
+		$average_comfort = 0;
+		$average_leisure = 0;
+		$average_ratio = 0;
+		$average_location = 0;
+		$average_staff = 0;
+		$average_treatment = 0;
+
+		$objectAssoc["rating"] = [];
 		foreach($data as $row){
 			$schet = $row["schet"];
 			$date = month_transform($row["date"]);
@@ -71,6 +118,11 @@ function save_rating_XML_object($connect, $id){
 			$rating->setAttribute("number", $row["id"]);
 			$rating->setAttribute("average", $average);
 
+			$ratingAssoc = [
+				"number" => $row["id"],
+				"average" => $average
+			];
+
 			if($average >= 9)
 				$average_text = "Превосходно";
 			elseif($average >= 8)
@@ -85,42 +137,75 @@ function save_rating_XML_object($connect, $id){
 				$average_text = "Плохо";
 			$rating->setAttribute("average_text", $average_text);
 
+			$ratingAssoc["average_text"] = $average_text;
+
 			$turist = $rating->appendChild($xml->createElement("turist"));
 			$turist->appendChild($xml->createTextNode($klient));
+
+			$ratingAssoc['turist'] = $klient;
+
 			$date_send = $rating->appendChild($xml->createElement("date"));
 			$date_send->appendChild($xml->createTextNode($date));
+			$ratingAssoc['date'] = $date;
+
 			$clean = $rating->appendChild($xml->createElement("clean"));
+			$ratingAssoc['clean'] = $row["clean"] * 2;
 			$clean->appendChild($xml->createTextNode($row["clean"] * 2));
+
 			$comfort = $rating->appendChild($xml->createElement("comfort"));
 			$comfort->appendChild($xml->createTextNode($row["comfort"] * 2));
+			$ratingAssoc['comfort'] = $row["comfort"] * 2;
+
 			$location = $rating->appendChild($xml->createElement("location"));
 			$location->appendChild($xml->createTextNode($row["location"] * 2));
+			$ratingAssoc['location'] = $row["location"] * 2;
+
 			$treatment = $rating->appendChild($xml->createElement("treatment"));
 			$treatment->appendChild($xml->createTextNode($row["treatment"] * 2));
+			$ratingAssoc['treatment'] = $row["treatment"] * 2;
+
 			$staff = $rating->appendChild($xml->createElement("staff"));
 			$staff->appendChild($xml->createTextNode($row["staff"] * 2));
+			$ratingAssoc['staff'] = $row["staff"] * 2;
+
 			$leisure = $rating->appendChild($xml->createElement("leisure"));
 			$leisure->appendChild($xml->createTextNode($row["leisure"] * 2));
+			$ratingAssoc['leisure'] = $row["leisure"] * 2;
+
 			$ratio = $rating->appendChild($xml->createElement("ratio"));
 			$ratio->appendChild($xml->createTextNode($row["ratio"] * 2));
+			$ratingAssoc['ratio'] = $row["ratio"] * 2;
+
 			$positive = $rating->appendChild($xml->createElement("positive"));
 			$positive->appendChild($xml->createTextNode($row["positive"]));
+			$ratingAssoc['positive'] = $row["positive"];
+
 			$negative = $rating->appendChild($xml->createElement("negative"));
 			$negative->appendChild($xml->createTextNode($row["negative"]));
+			$ratingAssoc['negative'] = $row["negative"];
+
 			$advice = $rating->appendChild($xml->createElement("advice"));
 			$advice->appendChild($xml->createTextNode($row["advice"]));
+			$ratingAssoc['advice'] = $row["advice"];
+
 			$company = $rating->appendChild($xml->createElement("company"));
 			$company->appendChild($xml->createTextNode($row["company_rating"]));
+			$ratingAssoc['company_rating'] = $row["company_rating"];
+
 			if($row["site_from"] != ""){
 				$site_from = $rating->appendChild($xml->createElement("site_from"));
 				$site_from->appendChild($xml->createTextNode($row["site_from"]));
+				$ratingAssoc['site_from'] = $row["site_from"];
 			}
 			if($row["photos"] != ""){
 				$photos = $rating->appendChild($xml->createElement("photos"));
 				$photos->appendChild($xml->createTextNode($row["photos"]));
+				$ratingAssoc['photos'] = $row["photos"];
 			}
 			$count_page++;
 			$rating->setAttribute("page", $page);
+			$ratingAssoc["page"] = $page;
+
 			if($count_page >= 30){
 				$count_page = 0;
 				$page++;
@@ -130,8 +215,13 @@ function save_rating_XML_object($connect, $id){
 				$comments_rating = $rating->appendChild($xml->createElement("comments"));
 				$comments_rating->setAttribute("count", count($comments));
 				$comments_rating->appendChild($xml->createTextNode(json_encode($comments)));
+				$ratingAssoc["comments_count"] = count($comments);
+				$ratingAssoc["comments"] = $comments;
 			}
+
+			$objectAssoc['rating'][] = $ratingAssoc;
 		}
+
 		$average = round($average_object / $count, 1);
 		if($average >= 9)
 			$average_text = "Превосходно";
@@ -145,19 +235,40 @@ function save_rating_XML_object($connect, $id){
 			$average_text = "Посредственно";
 		else
 			$average_text = "Плохо";
+
 		$object->setAttribute("treatment", round($average_treatment * 2 / $count, 1));
+		$objectAssoc['treatment'] = round($average_treatment * 2 / $count, 1);
+
 		$object->setAttribute("clean", round($average_clean * 2 / $count, 1));
+		$objectAssoc['clean'] = round($average_clean * 2 / $count, 1);
+
 		$object->setAttribute("comfort", round($average_comfort * 2 / $count, 1));
+		$objectAssoc['comfort'] = round($average_comfort * 2 / $count, 1);
+
 		$object->setAttribute("leisure", round($average_leisure * 2 / $count, 1));
+		$objectAssoc['leisure'] = round($average_leisure * 2 / $count, 1);
+
 		$object->setAttribute("ratio", round($average_ratio * 2 / $count, 1));
+		$objectAssoc['ratio'] = round($average_ratio * 2 / $count, 1);
+
 		$object->setAttribute("location", round($average_location * 2 / $count, 1));
+		$objectAssoc['location'] = round($average_location * 2 / $count, 1);
+
 		$object->setAttribute("staff", round($average_staff * 2 / $count, 1));
+		$objectAssoc['staff'] = round($average_staff * 2 / $count, 1);
 
 		$object->setAttribute("average", $average);
+		$objectAssoc['average'] = $average;
+
 		$object->setAttribute("average_text", $average_text);
+		$objectAssoc['average_text'] = $average_text;
+
 		$object->setAttribute("page", $page);
+		$objectAssoc['page'] = $page;
+
 		$xml->formatOutput = true;
 		$xml->save("temp/xml/rating/".$id.".xml");
+		file_put_contents(__DIR__.'/../../temp/json/rating/'.$id.'.json',json_encode($objectAssoc));
 		return 1;
 	}
 	return FALSE;
