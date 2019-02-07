@@ -25,7 +25,7 @@ function upload_rating_object($connect){
 			if(!ftp_put($connect_server, $server_file, $file, FTP_ASCII))
 				return "<div class='alert alert-danger'>Не удалось загрузить файл на сервер</div>";
 
-			if(!ftp_put($connect_server,$server_file2,$fileJSON))
+			if(!ftp_put($connect_server,$server_file2,$fileJSON,FTP_ASCII))
 				return "<div class='alert alert-danger'>Не удалось загрузить файл на сервер</div>";
 
 			ftp_chmod($connect_server, 0644, $server_file);
@@ -40,7 +40,7 @@ function upload_rating_object($connect){
 
 	file_put_contents($fileJSONCache,substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15));
 
-	if(!ftp_put($connect_server,$server_file3,$fileJSONCache))
+	if(!ftp_put($connect_server,$server_file3,$fileJSONCache,FTP_ASCII))
 		return "<div class='alert alert-danger'>Не удалось загрузить файл на сервер</div>";
 
 	ftp_quit($connect_server);
