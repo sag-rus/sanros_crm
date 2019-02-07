@@ -189,6 +189,8 @@ function upload_information_object($connect){
 				"region" => $region,
 				"region_rod" => $region_rod,
 				"region_url" => change_text_url($region),
+				"name_direction" => $name_direction,
+				"direction_url" => change_text_url($name_direction),
 				"city" => $city,
 				"similar" => $similar,
 				"quota" => $check_places,
