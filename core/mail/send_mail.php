@@ -283,10 +283,25 @@ function send_mail_confirm_rating($connect){
 	$connect_server = connect_to_server();
 	if(save_rating_XML_object($connect, $id_obj)){
 		$file = "temp/xml/rating/".$id_obj.".xml";
+		$fileJSON = __DIR__.'/../../temp/json/rating/'.$id_obj.'.json';
+		$fileCache = __DIR__.'/../../temp/json/rating/'.$id_obj.'.cache';
+
 		$server_file = "/var/www/default-site/public_html/price/XML/rating/".$id_obj.".xml";
+		$server_file_json = "/var/www/default-site/public_html/price/json/rating/".$id_obj.".json";
+		$server_file_cache = "/var/www/default-site/public_html/price/json/rating/".$id_obj.".cache";
+
+
 		if(!ftp_put($connect_server, $server_file, $file, FTP_ASCII))
 			return "Не удалось загрузить файл на сервер";
+		if(!ftp_put($connect_server, $server_file_json, $fileJSON, FTP_ASCII))
+			return "Не удалось загрузить файл на сервер";
+		if(!ftp_put($connect_server, $server_file_cache, $fileCache, FTP_ASCII))
+			return "Не удалось загрузить файл на сервер";
+
 		ftp_chmod($connect_server, 0644, $server_file);
+		ftp_chmod($connect_server, 0644, $server_file_json);
+		ftp_chmod($connect_server, 0644, $server_file_cache);
+
 	}
 	ftp_quit($connect_server);
 }

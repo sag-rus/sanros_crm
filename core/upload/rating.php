@@ -19,8 +19,10 @@ function upload_rating_object($connect){
 		if(save_rating_XML_object($connect, $id)){
 			$file = "temp/xml/rating/".$id.".xml";
 			$fileJSON = __DIR__.'/../../temp/json/rating/'.$id.'.json';
+			$fileCache = __DIR__.'/../../temp/json/rating/'.$id.'.cache';
 			$server_file = "/var/www/default-site/public_html/price/XML/rating/".$id.".xml";
 			$server_file2 = "/var/www/default-site/public_html/price/json/rating/".$id.".json";
+			$server_file3 = "/var/www/default-site/public_html/price/json/rating/".$id.".cache";
 
 			if(!ftp_put($connect_server, $server_file, $file, FTP_ASCII))
 				return "<div class='alert alert-danger'>Не удалось загрузить файл на сервер</div>";
@@ -28,21 +30,25 @@ function upload_rating_object($connect){
 			if(!ftp_put($connect_server,$server_file2,$fileJSON,FTP_ASCII))
 				return "<div class='alert alert-danger'>Не удалось загрузить файл на сервер</div>";
 
+			if(!ftp_put($connect_server,$server_file3,$fileCache,FTP_ASCII))
+				return "<div class='alert alert-danger'>Не удалось загрузить файл на сервер</div>";
+
 			ftp_chmod($connect_server, 0644, $server_file);
 			ftp_chmod($connect_server, 0644, $server_file2);
+			ftp_chmod($connect_server, 0644, $server_file3);
 		}
 	}
 
 	$fileJSONCache = __DIR__.'/../../temp/json/rating/rating.cache';
-	$server_file3 = "/var/www/default-site/public_html/price/json/rating/rating.cache";
+	$server_file4 = "/var/www/default-site/public_html/price/json/rating/rating.cache";
 	if(!file_exists(__DIR__.'/../../temp/json'))
 		mkdir(__DIR__.'/../../temp/json',0777,true);
 
 	file_put_contents($fileJSONCache,substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15));
 
-	if(!ftp_put($connect_server,$server_file3,$fileJSONCache,FTP_ASCII))
+	if(!ftp_put($connect_server,$server_file4,$fileJSONCache,FTP_ASCII))
 		return "<div class='alert alert-danger'>Не удалось загрузить файл на сервер</div>";
-	ftp_chmod($connect_server, 0644, $server_file3);
+	ftp_chmod($connect_server, 0644, $server_file4);
 
 	ftp_quit($connect_server);
 
@@ -270,6 +276,7 @@ function save_rating_XML_object($connect, $id){
 		$xml->formatOutput = true;
 		$xml->save("temp/xml/rating/".$id.".xml");
 		file_put_contents(__DIR__.'/../../temp/json/rating/'.$id.'.json',json_encode($objectAssoc));
+		file_put_contents(__DIR__.'/../../temp/json/rating/'.$id.'.cache',substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15));
 		return 1;
 	}
 	return FALSE;
