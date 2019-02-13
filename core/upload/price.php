@@ -583,7 +583,7 @@ function save_price_XML_object($connect, $id){
 
 	$xml->formatOutput = true;
 	$xml->save($directory."/temp/xml/price/".$id.".xml");
-	if(file_exists(__DIR__.'/../../temp/json/price'))
+	if(!file_exists(__DIR__.'/../../temp/json/price'))
 		mkdir(__DIR__.'/../../temp/json/price',0777,true);
 
 	file_put_contents(__DIR__.'/../../temp/json/price/'.$id.".json",json_encode($objectArray));
