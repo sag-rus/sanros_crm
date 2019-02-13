@@ -617,9 +617,15 @@ function upload_information_object($connect){
 		$file = "temp/profile.xml";
 		if(!ftp_put($connect_server, $ftp_folder."profile.xml", $file, FTP_ASCII))
 			echo "Ошибка загрузки";
+
 		$file = "temp/rateplan.xml";
 		if(!ftp_put($connect_server, $ftp_folder."rateplan.xml", $file, FTP_ASCII))
 			echo "Ошибка загрузки";
+
+		$file = __DIR__.'/../../temp/json/rateplan.json';
+		if(!ftp_put($connect_server, $ftp_folder."rateplan.json", $file, FTP_ASCII))
+			echo "Ошибка загрузки";
+
 		$file = "temp/method.xml";
 		if(!ftp_put($connect_server, $ftp_folder."method.xml", $file, FTP_ASCII))
 			echo "Ошибка загрузки";
@@ -684,6 +690,8 @@ function upload_information_object($connect){
 		if(!ftp_put($connect_server, $ftp_folder."rating-company.xml", $file, FTP_ASCII))
 			echo "Ошибка загрузки";
 		ftp_chmod($connect_server, 0644, $ftp_folder."profile.xml");
+		ftp_chmod($connect_server, 0644, $ftp_folder."rateplan.xml");
+		ftp_chmod($connect_server, 0644, $ftp_folder."rateplan.json");
 		ftp_chmod($connect_server, 0644, $ftp_folder."method.xml");
 		ftp_chmod($connect_server, 0644, $ftp_folder."infa.xml");
 		ftp_chmod($connect_server, 0644, $ftp_folder."comfort.xml");
@@ -763,6 +771,7 @@ function save_methods_XML($connect){
 function save_ratePlan_XML($connect){
 	$xml = new DomDocument("1.0", "utf-8");
 	$ratePlans = $xml->appendChild($xml->createElement("ratePlans"));
+	$ratePlansArray = [];
 	$data = $connect->getAll("SELECT id, name, object, description, food, days FROM rate_plan");
 	$i = 0;
 	foreach($data as $row){
@@ -774,9 +783,23 @@ function save_ratePlan_XML($connect){
 		$ratePlan->setAttribute("days", $row["days"]);
 		$ratePlan->setAttribute("object", $row["object"]);
 		$ratePlan->appendChild($xml->createTextNode(str_replace("\"", "", $row["description"])));
+		$ratePlansArray[] = [
+			"id" => $row["id"],
+			"name" => str_replace("\"", "", $row["name"]),
+			"food" => str_replace("\"", "", $row["food"]),
+			"days" => $row["days"],
+			"object" => $row["object"],
+			"description" => str_replace("\"", "", $row["description"])
+		];
 	}
 	$xml->formatOutput = true;
 	$xml->save("temp/rateplan.xml");
+
+	if(!file_exists(__DIR__.'/../../temp/json'))
+		mkdir(__DIR__.'/../../temp/json',0777,true);
+
+	file_put_contents(__DIR__.'/../../temp/json/rateplan.json',json_encode($ratePlansArray));
+
 }
 
 function save_primary_promo_XML($connect){

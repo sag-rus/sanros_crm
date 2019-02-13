@@ -151,16 +151,26 @@ function upload_price_on_server($connect, $id=false, $nthChild = NULL,$showProcc
 		$website = $row['website'];
 		save_price_XML_object($connect, $id);
 		save_desc_XML_object($connect, $id);
+
 		$file = $directory."/temp/xml/price/".$id.".xml";
 		$server_file = "/var/www/default-site/public_html/price/XML/price/".$id.".xml";
-		ftp_chmod($connect_server, 0777, $server_file);
 		if(!ftp_put($connect_server, $server_file, $file, FTP_ASCII))
 			return "Не удалось загрузить файл на сервер";
+		@ftp_chmod($connect_server, 0777, $server_file);
+
+
+		$file = $directory."/temp/json/price/".$id.".json";
+		$server_file = "/var/www/default-site/public_html/price/json/price/".$id.".json";
+		if(!ftp_put($connect_server, $server_file, $file, FTP_ASCII))
+			return "Не удалось загрузить файл на сервер";
+		@ftp_chmod($connect_server, 0777, $server_file);
+
+
 		$file = $directory."/temp/xml/desc/".$id.".xml";
 		$server_file = "/var/www/default-site/public_html/price/XML/desc/".$id.".xml";
 		if(!ftp_put($connect_server, $server_file, $file, FTP_ASCII))
 			return "Не удалось загрузить файл на сервер";
-		ftp_chmod($connect_server, 0777, $server_file);
+		@ftp_chmod($connect_server, 0777, $server_file);
 		if($showProccess)
 			echo $id.PHP_EOL;
 	}
@@ -199,14 +209,55 @@ function save_price_XML_object($connect, $id){
 
 	$check_price = 0;
 	$object = $xml->appendChild($xml->createElement("object"));
+	$objectType = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]);
+	$objectArray = [
+		'name' => $row['name'],
+		'id_reg' => $row['id_reg'],
+		'profile' => $row['id_profile'],
+		'infa' => $row['id_infa'],
+		'factors' => $row['medical_factors'],
+		'method' => $row['id_methods'],
+		'type' => $objectType,
+		'description' => $row['description'],
+		'add_one_day' => $row['add_one_day'],
+		'regular_com' => $row['regular_com'],
+		'up_com' => $row['up_com'],
+		'bonus' => $bonus,
+		'weather' => $row['weather'],
+		'city' => $row['city'],
+		'quota' => $quota,
+		'website' => $row['website'],
+		'source_booking' => $row['source_booking'],
+		'booking_uri' => $row['booking_uri'],
+		'rooms' => []
+	];
+
+	if($row["arrival"])
+		$objectArray["arrival"] = $row["arrival"];
+
+	if($row["leaving"])
+		$objectArray["leaving"] = $row["leaving"];
+
+	if($row["latitude"] > 0) {
+		$objectArray["latitude"] = $row["latitude"];
+		$objectArray["longitude"] = $row["longitude"];
+		$sights = $connect->getAll("SELECT latitude, longitude FROM sights");
+		foreach($sights as $sight){
+			if(calculate_distance($row["latitude"], $row["longitude"], $sight["latitude"], $sight["longitude"]) <= 50){
+				$objectArray["sights"] = "1";
+				break;
+			}
+		}
+	}
 
 	$object->setAttribute("name", $row["name"]);
+
 	$object->setAttribute("id_reg", $row["id_reg"]);
 	$object->setAttribute("profile", $row["id_profile"]);
 	$object->setAttribute("infa", $row["id_infa"]);
 	$object->setAttribute("factors", $row["medical_factors"]);
 	$object->setAttribute("method", $row["id_methods"]);
-	$object->setAttribute("type", $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]));
+	$object->setAttribute("type", $objectType);
 	$object->setAttribute("description", $row["description"]);
 	$object->setAttribute("add_one_day", $row["add_one_day"]);
 	$object->setAttribute("regular_com", $row["regular_com"]);
@@ -260,6 +311,7 @@ function save_price_XML_object($connect, $id){
 		$housing = "";
 		if($row["housing"])
 			$housing = $connect->getOne("SELECT name FROM housing WHERE id=?i", $row["housing"]);
+
 		$room = $object->appendChild($xml->createElement("room"));
 		$room->setAttribute("id", $id_room);
 		$room->setAttribute("note", $note);
@@ -273,11 +325,31 @@ function save_price_XML_object($connect, $id){
 		$room->setAttribute("square", $square);
 		$room->setAttribute("food", $food);
 
-		if($quota != 1 OR $id == 42 OR $id == 34 OR $id == 59 OR $id == 20){
+		$roomArray = [
+			"id" => $id_room,
+			"note" => $note,
+			"housing" => $housing,
+			"id_housing" => $row["housing"],
+			"name" => $name_room,
+			"main_place" => $main_place,
+			"add_place" => $add_place,
+			"comfort" => $comfort,
+			"best_comfort" => $best_comfort,
+			"square" => $square,
+			"food" => $food,
+			'dates' => []
+		];
+
+		if($quota != 1 || $id == 42 || $id == 34 || $id == 59 || $id == 20){
 			$min_array = get_min_price($connect, $id_room);
 			$room->setAttribute("min_price", $min_array["price"]);
 			$room->setAttribute("min_price_type", $min_array["type"]);
 			$room->setAttribute("min_price_treatment",$min_array["treatment"]);
+
+			$roomArray["min_price"] = $min_array["price"];
+			$roomArray["min_price_type"] = $min_array["type"];
+			$roomArray["min_price_treatment"] = $min_array["treatment"];
+
 			$data2 = $connect->getAll("SELECT id, start, end FROM date_price WHERE id_obj=?i AND end>=?s ORDER BY start", $id, $today);
 			$index_date = 0;
 			foreach($data2 as $row){
@@ -286,6 +358,12 @@ function save_price_XML_object($connect, $id){
 				$id_date = $row["id"];
 				if(have_price($connect, $id_date, $id_room)){
 					$index_date++;
+					$datePriceItem = [
+						"start" => $date_s,
+						"end" => $date_e,
+						"index" => $id_date,
+						'prices' => []
+					];
 					$date_price = $room->appendChild($xml->createElement("date"));
 					$date_price->setAttribute("start", $date_s);
 					$date_price->setAttribute("end", $date_e);
@@ -341,8 +419,23 @@ function save_price_XML_object($connect, $id){
 
 						$price_treatment = $price->appendChild($xml->createElement("treatment"));
 						$price_treatment->appendChild($xml->createTextNode("$treatment"));
+
+						$datePriceItem['prices'][] = [
+							'id' => $id_price,
+							'name' => $name_price,
+							'value' => $value,
+							'type' => $type_price,
+							'type_index' => $row['type'],
+							'show_date' => $show_date,
+							'place' => $place,
+							'place_name' => $place_name,
+							'place_type' => $place_type,
+							'range' => $id_range,
+							'treatment' => $treatment
+						];
 					}
 				}
+				$roomArray['dates'][] = $datePriceItem;
 			}
 
 		}else{
@@ -357,15 +450,15 @@ function save_price_XML_object($connect, $id){
 						$date = $prices["dt"];
 						$days = $prices["d"];
 						$end = $date + ($days * 86400);
-						if($current_time <= $end AND !isset($array[$date])){
+						if($current_time <= $end && !isset($array[$date])){
 							$check = 0;
 							foreach($array as $check_start => $array_date){
-								if($check_start < $date AND $array_date["end"] > $date)
+								if($check_start < $date && $array_date["end"] > $date)
 									$check = 0;
 							}
 							if($check == 0 and 0){
 								foreach($array as $check_start => $array_date){
-									if(($array_date["end"] + 86400) == $date OR $array_date["end"] == $date){
+									if(($array_date["end"] + 86400) == $date || $array_date["end"] == $date){
 										if($array_date["p"][$ratePlan][1] == $prices["p"][$ratePlan][1]){
 											$array[$check_start]["end"] = $end;
 											$check = 1;
@@ -392,6 +485,14 @@ function save_price_XML_object($connect, $id){
 				$date_price->setAttribute("start", date("Y-m-d", $start));
 				$date_price->setAttribute("end", date("Y-m-d", $array_price["end"]));
 				$date_price->setAttribute("index", $start);
+
+				$datePriceItem = [
+					"start" => date("Y-m-d", $start),
+					"end" => date("Y-m-d", $array_price["end"]),
+					"index" => $start,
+					'prices' => []
+				];
+
 				foreach($array_price["price"] as $ratePlanId => $row){
 					foreach($row as $index_place => $price_room){
 						$price_room = (int)$price_room;
@@ -409,6 +510,20 @@ function save_price_XML_object($connect, $id){
 								$place_type = 2;
 							}elseif($min_array["price"] == 0 OR $min_array["price"] > $price_room)
 								$min_array["price"] = $price_room;
+
+							$datePriceItem['prices'][] = [
+								'id' => $count_index_place,
+								'name' => $ratePlanDATA[$ratePlanId]["name"],
+								'value' => $price_room,
+								'type' => $type_price,
+								"place" => $index_place,
+								"type_index" => $type_index_place,
+								'place_name' => $place_name,
+								'place_type' => $place_type,
+								'range' => $ratePlanId.$index_place,
+								'ratePlan' => $ratePlanId
+							];
+
 							$price = $date_price->appendChild($xml->createElement("price"));
 
 							$name_id = $price->appendChild($xml->createElement("id"));
@@ -443,18 +558,29 @@ function save_price_XML_object($connect, $id){
 						}
 					}
 				}
+				$roomArray['dates'][] = $datePriceItem;
 			}
 
 			$room->setAttribute("min_price", $min_array["price"]);
 			$room->setAttribute("min_price_type", $min_array["type"]);
 
+			$roomArray['min_price'] = $min_array["price"];
+			$roomArray['min_price_type'] = $min_array["type"];
+
 		}
+
+		$objectArray['rooms'][] = $roomArray;
 	}
 
 	$object->setAttribute("check_price", $check_price);
+	$objectArray['check_price'] = $check_price;
 
 	$xml->formatOutput = true;
 	$xml->save($directory."/temp/xml/price/".$id.".xml");
+	if(file_exists(__DIR__.'/../../temp/json/price'))
+		mkdir(__DIR__.'/../../temp/json/price',0777,true);
+
+	file_put_contents(__DIR__.'/../../temp/json/price/'.$id.".json",json_encode($objectArray));
 	return TRUE;
 }
 
