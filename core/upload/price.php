@@ -165,6 +165,12 @@ function upload_price_on_server($connect, $id=false, $nthChild = NULL,$showProcc
 			return "Не удалось загрузить файл на сервер";
 		@ftp_chmod($connect_server, 0777, $server_file);
 
+		$file = $directory."/temp/json/price/".$id.".cache";
+		$server_file = "/var/www/default-site/public_html/price/json/price/".$id.".cache";
+		if(!ftp_put($connect_server, $server_file, $file, FTP_ASCII))
+			return "Не удалось загрузить файл на сервер";
+		@ftp_chmod($connect_server, 0777, $server_file);
+
 
 		$file = $directory."/temp/xml/desc/".$id.".xml";
 		$server_file = "/var/www/default-site/public_html/price/XML/desc/".$id.".xml";
@@ -581,6 +587,7 @@ function save_price_XML_object($connect, $id){
 		mkdir(__DIR__.'/../../temp/json/price',0777,true);
 
 	file_put_contents(__DIR__.'/../../temp/json/price/'.$id.".json",json_encode($objectArray));
+	file_put_contents(__DIR__.'/../../temp/json/price/'.$id.".cache",substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15));
 	return TRUE;
 }
 

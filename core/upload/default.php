@@ -626,6 +626,10 @@ function upload_information_object($connect){
 		if(!ftp_put($connect_server, $ftp_folder."rateplan.json", $file, FTP_ASCII))
 			echo "Ошибка загрузки";
 
+		$file = __DIR__.'/../../temp/json/rateplan.cache';
+		if(!ftp_put($connect_server, $ftp_folder."rateplan.cache", $file, FTP_ASCII))
+			echo "Ошибка загрузки";
+
 		$file = "temp/method.xml";
 		if(!ftp_put($connect_server, $ftp_folder."method.xml", $file, FTP_ASCII))
 			echo "Ошибка загрузки";
@@ -690,8 +694,11 @@ function upload_information_object($connect){
 		if(!ftp_put($connect_server, $ftp_folder."rating-company.xml", $file, FTP_ASCII))
 			echo "Ошибка загрузки";
 		ftp_chmod($connect_server, 0644, $ftp_folder."profile.xml");
+
 		ftp_chmod($connect_server, 0644, $ftp_folder."rateplan.xml");
 		ftp_chmod($connect_server, 0644, $ftp_folder."rateplan.json");
+		ftp_chmod($connect_server, 0644, $ftp_folder."rateplan.cache");
+
 		ftp_chmod($connect_server, 0644, $ftp_folder."method.xml");
 		ftp_chmod($connect_server, 0644, $ftp_folder."infa.xml");
 		ftp_chmod($connect_server, 0644, $ftp_folder."comfort.xml");
@@ -799,7 +806,7 @@ function save_ratePlan_XML($connect){
 		mkdir(__DIR__.'/../../temp/json',0777,true);
 
 	file_put_contents(__DIR__.'/../../temp/json/rateplan.json',json_encode($ratePlansArray));
-
+	file_put_contents(__DIR__.'/../../temp/json/rateplan.cache',substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15));
 }
 
 function save_primary_promo_XML($connect){
