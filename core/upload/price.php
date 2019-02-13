@@ -160,6 +160,12 @@ function upload_price_on_server($connect, $id=false, $nthChild = NULL,$showProcc
 
 
 		$file = $directory."/temp/json/price/".$id.".json";
+
+		if(ftp_nlist($connect_server,"/var/www/default-site/public_html/price/json/price") == false) {
+			@ftp_mkdir($connect_server, "/var/www/default-site/public_html/price/json/price");
+			@ftp_chmod($connect_server,0777,"/var/www/default-site/public_html/price/json/price");
+		}
+
 		$server_file = "/var/www/default-site/public_html/price/json/price/".$id.".json";
 		if(!ftp_put($connect_server, $server_file, $file, FTP_ASCII))
 			return "Не удалось загрузить файл на сервер";
