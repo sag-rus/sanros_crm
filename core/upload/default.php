@@ -52,6 +52,7 @@ function upload_information_object($connect){
 
 	$xml = new DomDocument("1.0", "utf-8");
 	$comforts = $xml->appendChild($xml->createElement("comforts"));
+	$comfortArray = [];
 	$data = $connect->getAll("SELECT id, name, icon, type FROM comfort");
 	foreach($data as $row){
 		$comfort = $comforts->appendChild($xml->createElement("comfort"));
@@ -59,9 +60,19 @@ function upload_information_object($connect){
 		$comfort->setAttribute("icon", $row["icon"]);
 		$comfort->setAttribute("type", $row["type"]);
 		$comfort->appendChild($xml->createTextNode($row["name"]));
+		$comfortArray[] = [
+			'id' => $row['id'],
+			'icon' => $row['icon'],
+			'type' => $row['type'],
+			'name' => $row['name']
+		];
 	}
 	$xml->formatOutput = true;
 	$xml->save("temp/comfort.xml");
+	file_put_contents($rootPath.'/temp/comfort.json',json_encode($comfortArray));
+	file_put_contents($rootPath.'/temp/comfort.cache',substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15));
+
+
 
 	$xml = new DomDocument("1.0", "utf-8");
 	$objects = $xml->appendChild($xml->createElement("objects"));
@@ -636,8 +647,17 @@ function upload_information_object($connect){
 		$file = "temp/infa.xml";
 		if(!ftp_put($connect_server, $ftp_folder."infa.xml", $file, FTP_ASCII))
 			echo "Ошибка загрузки";
+
 		$file = "temp/comfort.xml";
 		if(!ftp_put($connect_server, $ftp_folder."comfort.xml", $file, FTP_ASCII))
+			echo "Ошибка загрузки";
+
+		$file = "temp/comfort.json";
+		if(!ftp_put($connect_server, $ftp_folder."comfort.json", $file, FTP_ASCII))
+			echo "Ошибка загрузки";
+
+		$file = "temp/comfort.cache";
+		if(!ftp_put($connect_server, $ftp_folder."comfort.cache", $file, FTP_ASCII))
 			echo "Ошибка загрузки";
 
 		$file = "temp/object.xml";
@@ -702,6 +722,8 @@ function upload_information_object($connect){
 		ftp_chmod($connect_server, 0644, $ftp_folder."method.xml");
 		ftp_chmod($connect_server, 0644, $ftp_folder."infa.xml");
 		ftp_chmod($connect_server, 0644, $ftp_folder."comfort.xml");
+		ftp_chmod($connect_server, 0644, $ftp_folder."comfort.cache");
+		ftp_chmod($connect_server, 0644, $ftp_folder."comfort.json");
 
 		ftp_chmod($connect_server, 0644, $ftp_folder."object.xml");
 		ftp_chmod($connect_server, 0644, $ftp_folder."objects.json");
