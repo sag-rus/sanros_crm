@@ -113,9 +113,8 @@ if(file_exists($directory."/core/sync/file/fast-time-0.txt")) {
 }
 
 if(is_null($last_time) || time() > $last_time + 60) {
-  file_put_contents($directory."/core/sync/file/fast-time-0.txt", time());
-  for($i = 0; $i <3000; $i++) {
-
+  while(1) {
+    file_put_contents($directory."/core/sync/file/fast-time-0.txt", time());
     if(!$connect) {
       echo 'Database connection exception';
       break;
@@ -192,6 +191,7 @@ if(is_null($last_time) || time() > $last_time + 60) {
       echo $e->getMessage();
       break;
     }
+
 
     if(!file_exists($directory."/core/sync/file/fast-kill.txt")){
       break;

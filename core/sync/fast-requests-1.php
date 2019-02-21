@@ -104,7 +104,6 @@ define("CABINET", "http://xn----7sba6aaba8akdsdekah.xn--p1ai/client/");
 
 $token = "d9954a2ef753a0a688cd0dd07ceda98b83d6eb803731a633e9e16967fe767e00";
 
-
 $client = new GuzzleHttp\Client();
 
 $last_time = NULL;
@@ -114,9 +113,8 @@ if(file_exists($directory."/core/sync/file/fast-time-1.txt")) {
 }
 
 if(is_null($last_time) || time() > $last_time + 60) {
-  file_put_contents($directory."/core/sync/file/fast-time-1.txt", time());
-  for($i = 0; $i <3000; $i++) {
-
+  while(1) {
+    file_put_contents($directory."/core/sync/file/fast-time-1.txt", time());
     if(!$connect) {
       echo 'Database connection exception';
       break;
@@ -193,6 +191,7 @@ if(is_null($last_time) || time() > $last_time + 60) {
       echo $e->getMessage();
       break;
     }
+
 
     if(!file_exists($directory."/core/sync/file/fast-kill.txt")){
       break;
