@@ -580,7 +580,8 @@ function ref_sort_predicate($ref1,$ref2) {
 function show_affiliate_program($connect, $data){
 	$array = [
     "hash" => "",
-		"ref" => []
+		"ref" => [],
+		'ref_count' => 0
 	];
 	$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s AND type = 1", $data["session"]);
 	$account = $connect->getRow("SELECT id, hash FROM klient WHERE login=?s LIMIT 1", $login);
@@ -588,6 +589,7 @@ function show_affiliate_program($connect, $data){
 		$hash = $account['hash'];
 		$account = $account['id'];
 		$answer = $connect->getAll("SELECT date_reg, id, name, surname FROM klient WHERE invited=?i ORDER BY `date_reg` DESC", $account);
+		$all_ref = [];
 		foreach($answer as $a){
 			$date = date_change($a["date_reg"]);
 
@@ -602,9 +604,14 @@ function show_affiliate_program($connect, $data){
 			foreach($res as $b){
 				$referal["bonus"]+= $connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND type=4 AND turist=?i", $b["id"], $account);
 			}
-			$array['ref'][] = $referal;
+			$all_ref = $referal;
+			$array['ref_count']++;
 		}
 		usort($array['ref'],'ref_sort_predicate');
+
+		for($i = 0; $i < count($all_ref) && $i < 50; $i++) {
+			$array['ref'][] = $all_ref[$i];
+		}
 		$array['hash'] = $hash;
 		return $array;
 	}
