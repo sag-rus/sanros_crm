@@ -607,7 +607,7 @@ function show_affiliate_program($connect, $data){
 			$all_ref[] = $referal;
 			$array['ref_count']++;
 		}
-		usort($array['ref'],'ref_sort_predicate');
+		usort($all_ref,'ref_sort_predicate');
 
 		for($i = 0; $i < count($all_ref) && $i < 50; $i++) {
 			$array['ref'][] = $all_ref[$i];
