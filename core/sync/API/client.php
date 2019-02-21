@@ -604,6 +604,7 @@ function show_affiliate_program($connect, $data){
 			}
 			$array['ref'][] = $referal;
 		}
+		usort($array['ref'],'ref_sort_predicate');
 		$array['hash'] = $hash;
 		return $array;
 	}
