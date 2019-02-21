@@ -161,7 +161,7 @@ if(is_null($last_time) || time() > $last_time + 60) {
                 $respAr['success'] = 1;
               }
               catch (Exception $e) {
-                echo $e->getMessage();
+                file_put_contents($directory."/core/sync/file/fast-requests-error.log",$e->getMessage().PHP_EOL,FILE_APPEND);
                 //break 2;
               }
             }
@@ -179,6 +179,7 @@ if(is_null($last_time) || time() > $last_time + 60) {
               ]);
             }
             catch (Exception $e) {
+              file_put_contents($directory."/core/sync/file/fast-requests-error.log",$e->getMessage().PHP_EOL,FILE_APPEND);
               break 2;
             }
 
@@ -188,7 +189,7 @@ if(is_null($last_time) || time() > $last_time + 60) {
 
     }
     catch (Exception $e) {
-      echo $e->getMessage();
+      file_put_contents($directory."/core/sync/file/fast-requests-error.log",$e->getMessage().PHP_EOL,FILE_APPEND);
       break;
     }
 
