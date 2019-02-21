@@ -123,7 +123,7 @@ if(is_null($last_time) || time() > $last_time + 60) {
     }
 
     try {
-      $res = $client->request('POST',"https://sync.tonia.ru/api/request/list/4n",[
+      $res = $client->request('POST',"https://sync.tonia.ru/api/request/list/3",[
         'form_params' => [
           'token' => $token
         ]
