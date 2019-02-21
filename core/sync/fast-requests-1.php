@@ -116,7 +116,18 @@ if(is_null($last_time) || time() > $last_time + 60) {
   while(1) {
     file_put_contents($directory."/core/sync/file/fast-time-1.txt", time());
     if(!$connect) {
-      echo 'Database connection exception';
+      file_put_contents($directory."/core/sync/file/fast-requests-error.log",'Database connection exception'.PHP_EOL,FILE_APPEND);
+      break;
+    }
+
+    if(!$connect->getRow("SELECT `id` FROM `object` LIMIT 1")) {
+      $connect = connect_to_MySQL_directory();
+      $config->connect = $connect;
+      $configNew->connect = $connect;
+    }
+
+    if(!$connect || !$connect->getRow("SELECT `id` FROM `object` LIMIT 1")) {
+      file_put_contents($directory."/core/sync/file/fast-requests-error.log",'Database connection exception'.PHP_EOL,FILE_APPEND);
       break;
     }
 

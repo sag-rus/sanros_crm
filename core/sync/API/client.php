@@ -573,6 +573,10 @@ function show_bonus_account($connect, $data){
 	return 0;
 }
 
+function ref_sort_predicate($ref1,$ref2) {
+	return ($ref1['bonus'] < $ref2['bonus']) ? 1 : -1;
+}
+
 function show_affiliate_program($connect, $data){
 	$array = [
     "hash" => "",
