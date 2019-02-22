@@ -107,6 +107,7 @@ $token = "d9954a2ef753a0a688cd0dd07ceda98b83d6eb803731a633e9e16967fe767e00";
 $client = new GuzzleHttp\Client();
 
 $last_time = NULL;
+$start_time = time();
 
 if(file_exists($directory."/core/sync/file/fast-time-0.txt")) {
   $last_time = (int)file_get_contents($directory."/core/sync/file/fast-time-0.txt");
@@ -206,6 +207,11 @@ if(is_null($last_time) || time() > $last_time + 60) {
 
 
     if(!file_exists($directory."/core/sync/file/fast-kill.txt")){
+      break;
+    }
+
+    if(time() - $start_time > 60) {
+      file_put_contents($directory."/core/sync/file/fast-killing-time-0.txt",(time()-$start_time));
       break;
     }
 
