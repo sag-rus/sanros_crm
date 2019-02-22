@@ -113,7 +113,8 @@ if(file_exists($directory."/core/sync/file/fast-time-1.txt")) {
   $last_time = (int)file_get_contents($directory."/core/sync/file/fast-time-1.txt");
 }
 
-if(is_null($last_time) || time() > $last_time + 60) {
+if(is_null($last_time) || file_exists($directory."/core/sync/file/fast-killing-time-1.txt")) {
+  unlink($directory."/core/sync/file/fast-killing-time-1.txt");
   while(1) {
     file_put_contents($directory."/core/sync/file/fast-time-1.txt", time());
     if(!$connect) {
