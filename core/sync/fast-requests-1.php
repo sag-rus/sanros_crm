@@ -210,7 +210,7 @@ if(is_null($last_time) || time() > $last_time + 60) {
       break;
     }
 
-    if(time() - $start_time > 60) {
+    if(time() - $start_time > 56) {
       file_put_contents($directory."/core/sync/file/fast-killing-time-1.txt",(time()-$start_time));
       break;
     }
