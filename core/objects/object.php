@@ -860,7 +860,17 @@ function find_object($connect){
 	$object = "";
 	$direction_html = "";
 	if($region){
-
+      $data = $connect->getAll("SELECT id, name FROM direction_object WHERE id_reg=?i", $region);
+      foreach($data as $row){
+        $id_dir = $row["id"];
+        ob_start();
+        ?>
+          <div class="col-sm-4 well well-sm pointer direction-<?php echo $id_dir; ?>" onclick="find_object_by_direction('<?php echo $id_dir; ?>')">
+            <?php echo $row["name"]; ?>
+          </div>
+        <?php
+        $direction_html.= ob_get_clean();
+      }
 	}elseif($country){
 		$data = $connect->getAll("SELECT id, name FROM direction_object WHERE id_country=?i", $country);
 		foreach($data as $row){
@@ -901,12 +911,12 @@ function find_object($connect){
 		</div>
 		<div class="clearfix"></div>
 		<div class="div-object">
-	<?php }else{ ?>
+	<?php } ?>
 		<div class="alert alert-info well-sm">Объекты</div>
 		<div>
 			<?php echo $object; ?>
 		</div>
-	<?php } ?>
+	<?php ?>
 	</div>
 <?php }else{ ?>
 	<div class="alert alert-info well-sm">Объекты</div>
