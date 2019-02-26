@@ -3,7 +3,7 @@ include_once __DIR__.'/promo.php';
 $array_type = array(1 => "за чел/сутки", 2 => "за дом/сутки", 3 => "за номер/сутки", 4 => "за заезд");
 
 function upload_price_on_server($connect, $id=false, $nthChild = NULL,$showProccess = false){
-	global $directory;
+	$directory = __DIR__."/../..";
 	$url = false;
 
 	if(!$id && isset($_POST['id']))
@@ -200,7 +200,8 @@ function upload_price_on_server($connect, $id=false, $nthChild = NULL,$showProcc
 }
 
 function save_price_XML_object($connect, $id){
-	global $array_type, $directory;
+	global $array_type;
+	$directory = __DIR__.'/../..';
 	$today = date("Y-m-d");
 	$current_time = time();
 	$row = $connect->getRow("SELECT id, name, id_reg, city, id_profile, id_methods, id_infa, medical_factors, type, description, add_one_day, latitude, longitude, weather, regular_com, up_com, reward, arrival, leaving, check_places, website, source_booking, booking_uri, default_price_type FROM object WHERE id=?i AND (active=0 OR active=1) LIMIT 1", $id);
@@ -598,7 +599,7 @@ function save_price_XML_object($connect, $id){
 }
 
 function save_desc_XML_object($connect, $id){
-	global $directory;
+	$directory = __DIR__.'/../..';
 	$row = $connect->getRow("SELECT id, id_reg, name, id_profile, id_methods, id_infa, medical_factors, description, id_services FROM object WHERE id=?i AND (active=0 OR active=1) LIMIT 1", $id);
 	$name_object = $row["name"];
 	$region = $row["id_reg"];
