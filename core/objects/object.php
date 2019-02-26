@@ -188,6 +188,9 @@ function show_head_page_object($connect){
 				<?php echo $row["name"]; ?>
 			</div>
 	<?php } ?>
+            <div class="col-sm-4 well well-sm region-<?php echo $id_reg; ?> pointer" onclick="find_object_by_region(0);">
+              Регион не указан
+            </div>
 		</div>
 		<div class="clearfix"></div>
 		<div class="well-sm alert-info">Страны</div>
@@ -848,6 +851,8 @@ function find_object($connect){
 		$direction = $_POST["direction"];
 	if($region)
 		$zapros_for_mysql = " id_reg=".$region;
+	elseif ($region === '0')
+        $zapros_for_mysql = " id_reg IS NULL";
 	elseif($head)
 		$zapros_for_mysql = " name LIKE '$head%' ";
 	elseif($direction)
@@ -855,17 +860,7 @@ function find_object($connect){
 	$object = "";
 	$direction_html = "";
 	if($region){
-		$data = $connect->getAll("SELECT id, name FROM direction_object WHERE id_reg=?i", $region);
-		foreach($data as $row){
-			$id_dir = $row["id"];
-			ob_start();
-	?>
-		<div class="col-sm-4 well well-sm pointer direction-<?php echo $id_dir; ?>" onclick="find_object_by_direction('<?php echo $id_dir; ?>')">
-			<?php echo $row["name"]; ?>
-		</div>
-	<?php
-			$direction_html.= ob_get_clean();
-		}
+
 	}elseif($country){
 		$data = $connect->getAll("SELECT id, name FROM direction_object WHERE id_country=?i", $country);
 		foreach($data as $row){
