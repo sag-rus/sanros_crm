@@ -399,6 +399,10 @@ function filter_do($connect){
 	$office = "";
 	if(isset($_POST["office"]))
 		$office = $_POST["office"];
+
+	if(!$office)
+	    $office = "";
+
 	$str = "";
 	$zapros_for_mysql = "";
 	$html = "";
@@ -539,6 +543,7 @@ function filter_do($connect){
 		if($zapros_for_mysql) $zapros_for_mysql.= " AND ";
 		$zapros_for_mysql.= " (website != '') ";
 	}
+
 	if($region != "")
 		$zapros_for_mysql.= " ".get_objects_by_region($connect, $region, "reckoning")." ";
 	if($place_object != ""){
@@ -567,6 +572,8 @@ function filter_do($connect){
 		}
 		$zapros_for_mysql.= $zapros.")";
 	}
+
+
 	if(!$surname AND !$id_schet AND !$date_z AND $id_rights < 4){
 		if($zapros_for_mysql)
 			$zapros_for_mysql.= " AND ";
@@ -581,10 +588,12 @@ function filter_do($connect){
 		}
 		$zapros_for_mysql.= $zapros.")";
 	}
+
 	if($zapros_for_mysql)
 		$zapros_for_mysql = " WHERE ".$zapros_for_mysql;
-	$zapros_for_mysql = "SELECT id, rest, turist, agency, date, id_user, sum, id_obj, date_z, date_v, status, status_san, status_agent, active, website, guaranteed, source, promo_code, form_booking FROM reckoning " .$zapros_for_mysql." ORDER BY id";
-	if($id_schet){
+	$zapros_for_mysql = "SELECT id, rest, turist, agency, date, id_user, sum, id_obj, date_z, date_v, status, status_san, status_agent, active, website, guaranteed, `source`, promo_code, form_booking FROM reckoning " .$zapros_for_mysql." ORDER BY id";
+
+    if($id_schet){
 		$zapros_for_mysql = "SELECT id, rest, turist, agency, id_user, date, sum, id_obj, date_z, date_v, status, status_san, status_agent, active, website, guaranteed, source, promo_code, form_booking FROM reckoning WHERE (";
 		$id_schet = str_replace(".", "#", $id_schet);
 		$id_schet = str_replace(",", "#", $id_schet);

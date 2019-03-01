@@ -361,20 +361,23 @@ function get_object_image($connect, $id){
 }
 
 function get_objects_by_region($connect, $id_reg, $add = "", $and = " AND "){
-	if($id_reg == "all")
-		return "";
-	if($add)
-		$add.= ".";
-	$answer = "";
-	$data = $connect->getAll("SELECT id FROM object WHERE id_reg=?i", $id_reg);
-	foreach($data as $row){
-		$id = $row["id"];
-		if($answer)
-			$answer.= " OR ";
-		$answer.= $add."id_obj=".$id;
-	}
-	$answer = $and."(".$answer.")";
-	return $answer;
+    if($id_reg) {
+      if($id_reg == "all")
+        return "";
+      if($add)
+        $add.= ".";
+      $answer = "";
+      $data = $connect->getAll("SELECT id FROM object WHERE id_reg=?i", $id_reg);
+      foreach($data as $row){
+        $id = $row["id"];
+        if($answer)
+          $answer.= " OR ";
+        $answer.= $add."id_obj=".$id;
+      }
+      $answer = $and."(".$answer.")";
+      return $answer;
+    }
+    else return "";
 }
 
 function get_room($connect, $id, $type = "", $view = ""){
