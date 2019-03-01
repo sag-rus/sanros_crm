@@ -685,15 +685,15 @@ function get_select_table($connect, $table, $where, $select, $id, $first = "", $
 	$zapros = "SELECT id, name FROM ".$table;
 	if($where)
 		$zapros.= " WHERE ".$where;
-	$html = "<select class='form-control' id='".$id."' ".$func.">";
+	$html = '<select class="form-control" id="'.$id.'" '.$func.'>';
 	if($first == 1)
-		$html.= "<option value=''>не выбран</option>";
+		$html.= "<option value='0'>Не выбрано</option>";
 	$data = $connect->getAll($zapros);
 	foreach($data as $row){
 		$sel = "";
 		if($row["id"] == $select)
 			$sel = " SELECTED ";
-		$html.= "<option value='".$row["id"]."' ".$sel.">".$row["name"]."</option>";
+		$html.= '<option value="'.$row["id"].'" '.$sel.'>'.$row["name"].'</option>';
 	}
 	$html.= "</select>";
 	return $html;

@@ -1747,6 +1747,21 @@ function get_regions_options($connect) {
     return ob_get_clean();
 }
 
+function get_regions_directions_options($connect) {
+  $region_id = isset($_GET['region_id'])?(int)$_GET['region_id']:0;
+  $regions_directions = $connect->getAll("SELECT `id`, `name` FROM `direction_object` WHERE `id_reg` = ?i", $region_id);
+  ob_start();
+  ?>
+    <option value="0">Не выбрано</option>
+  <?php
+  foreach ($regions_directions as $region_direction) {
+    ?>
+      <option value="<?=$region_direction['id'];?>"><?=$region_direction['name'];?></option>
+    <?php
+  }
+  return ob_get_clean();
+}
+
 function set_sites_content($connect) {
   $respAr = [
     'success' => 0,

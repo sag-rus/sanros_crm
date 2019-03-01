@@ -926,6 +926,8 @@ function update_main_data_object(id){
 		"longitude": $('#longitude').val(),
 		"weather": $('#weather').val(),
 		"direction": $('#direction-object').val(),
+		"region_id": $('#object_region').val(),
+		"region_direction_id": $('#region_direction_id').val(),
 		"source_booking": parseInt($('#source_booking').prop('checked')*1),
 		"fast_booking": parseInt($('#fast_booking').prop('checked')*1),
 		"booking_uri": $("#booking_uri").val().trim(),
@@ -952,7 +954,7 @@ function update_main_data_object(id){
 			success: function(){
 				select_object_about(id);
 				show_alert('Объект изменен...');
-			},
+			}
 		});
 	}
 }

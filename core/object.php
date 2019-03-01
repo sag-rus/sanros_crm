@@ -467,10 +467,20 @@ function select_object_about($connect){
 function edit_main_data_object($connect){
     global $array_type;
     $id = $_POST["id"];
-	$row = $connect->getRow("SELECT name, similar, full_name, id_reg, type, city, direction, latitude, longitude, weather, direction, source_booking, booking_uri, description, fast_booking, main_post_name, main_post_fio, default_price_type FROM object WHERE id='$id'");
+	$row = $connect->getRow("SELECT name, similar, full_name, id_reg, type, city, direction, region_direction_id, latitude, longitude, weather, direction, source_booking, booking_uri, description, fast_booking, main_post_name, main_post_fio, default_price_type FROM object WHERE id='$id'");
 	$similar = explode("_", $row["similar"]);
 	$type = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]);
 	$country = $connect->getOne("SELECT id_country FROM region WHERE id=?i", $row["id_reg"]);
+	$regions = [];
+
+	if($row['direction']) {
+	    $regions = $connect->getAll("SELECT `id`, `name` FROM `region` WHERE `id_direction` = ?i", $row['direction']);
+    }
+
+	$region_directions = [];
+	if($row['id_reg']) {
+      $region_directions = $connect->getAll("SELECT `id`, `name` FROM `direction_object` WHERE `id_reg` = ?i",$row['id_reg']);
+    }
 	ob_start();
 ?>
 <div class="form-horizontal panel panel-info edit-object">
@@ -515,9 +525,31 @@ function edit_main_data_object($connect){
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Направление</label>
 			<div class="col-sm-9">
-				<?php echo get_select_table($connect, "direction_object", "id_reg=".$row["id_reg"]." OR id_country=".$country, $row["direction"], "direction-object", 1, ""); ?>
+				<?=get_select_table($connect, "direction_object", "(`id_reg` IS NULL OR `id_reg` = 0) AND `id_country` = 1", $row["direction"], "direction-object", 1, "");?>
 			</div>
 		</div>
+        <div class="form-group<?php if(!$row['direction']) { ?> hidden<?php } ?>">
+            <label class="col-sm-3 control-label">Регион</label>
+            <div class="col-sm-9">
+                <select class="form-control" id="object_region">
+                    <option value="0"<?php if(!$row['id_reg']) { ?> selected<?php } ?>>Не выбран</option>
+                    <?php foreach ($regions as $region) { ?>
+                      <option value="<?=$region['id'];?>"<?php if($row['id_reg'] == $region['id']) { ?> selected<?php } ?>><?=$region['name'];?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+        <div class="form-group<?php if(!$row['id_reg'] || count($region_directions) === 0) { ?> hidden<?php } ?>">
+            <label class="col-sm-3 control-label">Региональное направление</label>
+            <div class="col-sm-9">
+                <select class="form-control" id="region_direction_id">
+                    <option value="0"<?php if(!$row['region_direction_id']) { ?> selected<?php } ?>>Не выбрано</option>
+                  <?php foreach ($region_directions as $region_direction) { ?>
+                      <option value="<?=$region_direction['id'];?>"<?php if($row['region_direction_id'] == $region_direction['id']) { ?> selected<?php } ?>><?=$region_direction['name'];?></option>
+                  <?php } ?>
+                </select>
+            </div>
+        </div>
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Широта</label>
 			<div class="col-sm-9">
@@ -626,6 +658,18 @@ function update_main_data_object($connect){
 	$full_name = $_POST["full_name"];
 	$city = $_POST["city"];
 	$direction = (int)$_POST["direction"];
+    $id_reg = (int)$_POST["region_id"];
+    $region_direction_id = (int)$_POST['region_direction_id'];
+
+    if(!$direction) {
+        $id_reg = 0;
+        $region_direction_id = 0;
+    }
+
+    if(!$id_reg) {
+        $region_direction_id = 0;
+    }
+
 	$similar = $_POST["similar"];
 	$weather = $_POST["weather"];
 	$description = $connect->escapeString($_POST["description"]);
@@ -639,7 +683,7 @@ function update_main_data_object($connect){
     if(!array_key_exists($default_price_type,$array_type))
         $default_price_type = 1;
 
-    $connect->query("UPDATE object SET name=?s, full_name=?s, city=?s, direction=?s, type=?s, latitude=?s, longitude=?s, similar=?s, weather=?s, description=?s, source_booking=?i, description_check=?s, booking_uri=?s, fast_booking=?i, main_post_name = ?s, main_post_fio = ?s, default_price_type = ?i, synchronized=0 WHERE id=?i", $name, $full_name, $city, $direction, $type, $latitude, $longitude, $similar, $weather, $description, $source_booking, $description, $booking_uri, $fast_booking, $main_post_name, $main_post_fio, $default_price_type, $id);
+    $connect->query("UPDATE object SET name=?s, full_name=?s, city=?s, direction=?s, type=?s, latitude=?s, longitude=?s, similar=?s, weather=?s, description=?s, source_booking=?i, description_check=?s, booking_uri=?s, fast_booking=?i, main_post_name = ?s, main_post_fio = ?s, default_price_type = ?i, id_reg = ?i, region_direction_id = ?i, synchronized=0 WHERE id=?i", $name, $full_name, $city, $direction, $type, $latitude, $longitude, $similar, $weather, $description, $source_booking, $description, $booking_uri, $fast_booking, $main_post_name, $main_post_fio, $default_price_type, $id_reg, $region_direction_id,$id);
 }
 
 function edit_desc_object($connect){

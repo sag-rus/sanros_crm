@@ -1905,3 +1905,70 @@ function update_status_contract_object(id, status){
 		}
 	});
 }
+
+$(document).on('change','.edit-object #direction-object',function (e) {
+	var $obj = $(this);
+	var direction = parseInt($obj.val());
+	var $form = $obj.closest('.edit-object');
+	var $object_region = $form.find('#object_region');
+	var $object_regionFormG = $object_region.closest('.form-group');
+	var object_region = parseInt($object_region.val());
+
+	var $object_region_direction = $form.find('#object_region_direction');
+	var $object_region_directionFormG = $object_region_direction.closest('.form-group');
+	var object_region_direction = parseInt($object_region_direction.val());
+	$object_region_directionFormG.addClass('hidden');
+	$object_region_direction.val(0);
+	$object_region_direction.find('*[value!="0"]').remove();
+
+	$object_region.val(0);
+	if(direction === 0) {
+		$object_regionFormG.addClass('hidden');
+		object_region = 0;
+		$object_region.find('*[value!="0"]').remove();
+	}
+	else {
+		$.ajax({
+			type: 'GET',
+			data: {
+				func: 'get_regions_options',
+				direction_id: direction
+			},
+			dataType: 'html',
+			url: 'mysql.php',
+			success: function (data) {
+				$object_region.html(data);
+				$object_regionFormG.removeClass('hidden');
+			}
+		});
+	}
+});
+
+$(document).on('change','.edit-object #object_region',function (e) {
+	var $obj = $(this);
+	var region = parseInt($obj.val());
+	var $form = $obj.closest('.edit-object');
+	var $object_region_direction = $form.find('#region_direction_id');
+	var $object_region_directionFormG = $object_region_direction.closest('.form-group');
+	var object_region_direction = parseInt($object_region_direction.val());
+	$object_region_direction.val(0);
+	$object_region_direction.find('*[value!="0"]').remove();
+	$object_region_directionFormG.addClass('hidden');
+	if(region > 0) {
+		$.ajax({
+			type: 'GET',
+			data: {
+				func: 'get_regions_directions_options',
+				region_id: region
+			},
+			dataType: 'html',
+			url: 'mysql.php',
+			success: function (data) {
+				$object_region_direction.html(data);
+				if($object_region_direction.find('option').length > 1)
+					$object_region_directionFormG.removeClass('hidden');
+			}
+		});
+	}
+});
+
