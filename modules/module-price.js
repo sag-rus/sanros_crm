@@ -321,6 +321,22 @@ function upload_information_object(){
 	});
 }
 
+function sync_objects_api(){
+	show_loader_element('.object-infa');
+	var str = 'func=sync_objects_api&cache='+Math.random();
+	$.ajax({
+		type: 'POST',
+		data: str,
+		url: 'mysql.php',
+		success: function(answer){
+			if(answer)
+				$('.object-infa').html(answer);
+			else
+				$('.menu-object .label-success').trigger('click');
+		}
+	});
+}
+
 function upload_images_object(object){
 	show_loader_element('.object-infa');
 	var str = 'func=upload_image_object_server&object=' + object;
