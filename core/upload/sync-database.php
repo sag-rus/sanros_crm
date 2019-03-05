@@ -102,7 +102,7 @@ function sync_server_database($connect){
 		ftp_quit($connect_server);
 
   	$data = request_to_sync(array("func" => "imports_mysql_base", "name" => $name));
-    return $data;
+    return "Выгрузка завершена";
 
 }
 
