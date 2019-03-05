@@ -1,7 +1,7 @@
 <?php
 
 function sync_server_database($connect){
-  global $directory;
+  $directory = __DIR__."/../..";
 
   $insert_records = 1;
 
