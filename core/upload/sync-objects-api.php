@@ -125,6 +125,8 @@ function sync_objects_api($connect){
 			$objectAr['uri'] = $object['url_name'];
 
 
+			print_r($objectAr);
+
 			$res = $client->request('POST',"https://sites.tonia.ru/api/object/set/".$object['id'],[
 				'form_params' => $objectAr
 			]);
