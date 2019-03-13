@@ -87,7 +87,6 @@ function sync_objects_api($connect){
 				'form_params' => $regionalDirectionAr
 			]);
 
-			print_r($regionalDirectionAr);
 
 			$res = json_decode($res->getBody(),true);
 			if(array_key_exists('success',$res)) {
@@ -95,6 +94,9 @@ function sync_objects_api($connect){
 				if($success) {
 					$connect->query("UPDATE `direction_object` SET `synchronized` = '1' WHERE `id` = ?i",$regional_direction['id']);
 					$connect->query("UPDATE `object` SET `synchronized` = '0' WHERE `region_direction_id` = ?i", $regional_direction['id']);
+				}
+				else {
+					print_r($regionalDirectionAr);
 				}
 			}
 
