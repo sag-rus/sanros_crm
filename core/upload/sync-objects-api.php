@@ -50,7 +50,8 @@ function sync_objects_api($connect){
 				'name_genitive' => $direction['name_rod'],
 				'parent_id' => 0,
 				'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4',
-				'uri' => '/направления/'.change_text_url($direction['name'])
+				'uri' => '/направления/'.change_text_url($direction['name']),
+				'status' => 1
 			];
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/location/direction/set/".$direction['id'],[
