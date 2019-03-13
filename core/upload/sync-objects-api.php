@@ -41,6 +41,33 @@ function sync_objects_api($connect){
 				}
 			}
 		}
+
+		$directions = $connect->getAll("SELECT `id`, `name`, `name_rod` FROM `direction_object` WHERE `id_country` = 1 AND `synchronized` = 0");
+
+		foreach ($directions as $direction) {
+			$directionAr = [
+				'name' => $direction['name'],
+				'name_genitive' => $direction['name_rod'],
+				'parent_id' => 0,
+				'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4',
+				'uri' => '/направления/'.change_text_url($direction['name'])
+			];
+
+			$res = $client->request('POST',"https://sites.tonia.ru/api/location/direction/set/".$direction['id'],[
+				'form_params' => $directionAr
+			]);
+
+			$res = json_decode($res->getBody(),true);
+			if(array_key_exists('success',$res)) {
+				$success = (bool)(int)$res['success'];
+				if($success) {
+						$connect->query("UPDATE `direction_object` SET `synchronized` = '1' WHERE `id` = ?i",$direction['id']);
+				}
+			}
+
+
+		}
+
 		return true;
 	}
 	catch (Exception $e) {

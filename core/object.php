@@ -1506,7 +1506,7 @@ function update_direction($connect){
 	$name = $_POST["name"];
 	$description = strip_tags($_POST["description"]);
 	$meta_desc = strip_tags($_POST["meta_desc"]);
-	$connect->query("UPDATE direction_object SET name=?s, description=?s, meta_desc=?s WHERE id=?i", $name, $description, $meta_desc, $id);
+	$connect->query("UPDATE direction_object SET name=?s, description=?s, meta_desc=?s, `synchronized` = 0 WHERE id=?i", $name, $description, $meta_desc, $id);
 }
 
 function create_uniq_link_object($connect){
