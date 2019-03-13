@@ -124,6 +124,7 @@ function sync_objects_api($connect){
 			$objectAr['address'] = $object['address'];
 			$objectAr['uri'] = $object['url_name'];
 
+			print_r($objectAr);
 
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/object/set/".$object['id'],[
@@ -139,9 +140,6 @@ function sync_objects_api($connect){
 					else
 						$connect->query("UPDATE `object` SET `synchronized` = '1' WHERE `id` = ?i AND `name` = ?s AND `full_name` = ?s AND `type` = ?i AND `active` = ?i AND `id_reg` = ?i AND `note` = ?s AND `address` = ?s AND `url_name` = ?s",$object['id'],$object['name'],$object['full_name'],$object['type'],$object['active'],$object['region_id'],$object['note'],$object['address'],$object['url_name']);
 
-				}
-				else {
-					print_r($objectAr);
 				}
 			}
 		}
