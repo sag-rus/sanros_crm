@@ -70,6 +70,35 @@ function sync_objects_api($connect){
 
 		}
 
+		$regional_directions = $connect->getAll("SELECT `direction_object`.`id` AS `id`, `direction_object`.`name` AS `name`, `direction_object`.`name_rod` AS `name_rod`, `region`.`name` AS `name_reg`, `region`.`id_direction` AS `region_direction_id`, `direction_object2`.`name` AS `dir_name` FROM `direction_object` INNER JOIN `region` ON `region`.`id` = `direction_object`.`id_reg` INNER JOIN `direction_object` AS `direction_object2` ON `direction_object2`.`id` = `region`.`id_direction` WHERE (`direction_object`.`id_country` = 0 OR `direction_object`.`id_country` IS NULL)  AND `direction_object`.`id_reg` > 0 AND `direction_object`.`synchronized` = 0");
+
+
+		foreach ($regional_directions as $regional_direction) {
+			$regionalDirectionAr = [
+				'name' => $regional_direction['name'],
+				'name_genitive' => $regional_direction['name_rod'],
+				'parent_id' => $regional_direction['id_reg'],
+				'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4',
+				'uri' => '/направления/'.change_text_url($regional_direction['dir_name']).'/'.change_text_url($regional_direction['name_reg']).'/'.change_text_url($regional_direction['name']),
+				'status' => 1
+			];
+
+			$res = $client->request('POST',"https://sites.tonia.ru/api/location/regional_direction/set/".$region['id'],[
+				'form_params' => $regionalDirectionAr
+			]);
+
+			$res = json_decode($res->getBody(),true);
+			if(array_key_exists('success',$res)) {
+				$success = (bool)(int)$res['success'];
+				if($success) {
+					$connect->query("UPDATE `direction_object` SET `synchronized` = '1' WHERE `id` = ?i",$regional_direction['id']);
+					$connect->query("UPDATE `object` SET `synchronized` = '0' WHERE `region_direction_id` = ?i", $regional_direction['id']);
+				}
+			}
+
+
+		}
+
 		$objects = $connect->getAll("SELECT `object`.`id` AS `id`, `object`.`name` AS `name`, `object`.`url_name` AS `url_name`, `object`.`id_reg` AS `region_id`, `object`.`region_direction_id` AS `region_direction_id`, `object`.`direction` AS `direction`, `object`.`active` AS `active`, `object`.`note` AS `note`, `object`.`type` AS `type`, `object`.`full_name` AS `full_name`, `object`.`address` AS `address`, `object`.`telephone` AS `telephone` FROM `object` WHERE `object`.`synchronized` = 0 AND `object`.`type` IS NOT NULL AND `object`.`region_id` > 0");
 
 		foreach ($objects as $object) {
