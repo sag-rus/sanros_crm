@@ -83,11 +83,10 @@ function sync_objects_api($connect){
 				'status' => 1
 			];
 
-			$res = $client->request('POST',"https://sites.tonia.ru/api/location/regional_direction/set/".$region['id'],[
+			$res = $client->request('POST',"https://sites.tonia.ru/api/location/regional_direction/set/".$regional_direction['id'],[
 				'form_params' => $regionalDirectionAr
 			]);
 
-			echo $regionalDirectionAr['uri']."<br />";
 
 			$res = json_decode($res->getBody(),true);
 			if(array_key_exists('success',$res)) {
