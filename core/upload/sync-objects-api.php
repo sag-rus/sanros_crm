@@ -8,40 +8,6 @@ function sync_objects_api($connect){
 	try {
 
 		$client = new \GuzzleHttp\Client();
-		$objects = $connect->getAll("SELECT `id`, `name`, `url_name`, `id_reg` AS `region_id`, `active`, `note`, `type`, `full_name`, `address`, `telephone` FROM `object` WHERE `synchronized` = 0 AND `type` IS NOT NULL");
-
-		foreach ($objects as $object) {
-			$objectAr = [];
-			$objectAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
-			$objectAr["id"] = $object['id'];
-			$objectAr["name"] = $object['name'];
-			$objectAr['full_name'] = $object['full_name'];
-			$objectAr['type'] = $object['type'];
-			$objectAr['status'] = (int)(!$object['active']);
-			$objectAr['region_id'] = $object['region_id'];
-			$objectAr['note'] = $object['note'];
-			$objectAr['address'] = $object['address'];
-			$objectAr['uri'] = $object['url_name'];
-
-
-
-			$res = $client->request('POST',"https://sites.tonia.ru/api/object/set/".$object['id'],[
-				'form_params' => $objectAr
-			]);
-
-			$res = json_decode($res->getBody(),true);
-				if(array_key_exists('success',$res)) {
-				$success = (bool)(int)$res['success'];
-				if($success) {
-					if(is_null($object['url_name']))
-						$connect->query("UPDATE `object` SET `synchronized` = '1' WHERE `id` = ?i AND `name` = ?s AND `full_name` = ?s AND `type` = ?i AND `active` = ?i AND `id_reg` = ?i AND `note` = ?s AND `address` = ?s AND `url_name` IS NULL",$object['id'],$object['name'],$object['full_name'],$object['type'],$object['active'],$object['region_id'],$object['note'],$object['address']);
-					else
-						$connect->query("UPDATE `object` SET `synchronized` = '1' WHERE `id` = ?i AND `name` = ?s AND `full_name` = ?s AND `type` = ?i AND `active` = ?i AND `id_reg` = ?i AND `note` = ?s AND `address` = ?s AND `url_name` = ?s",$object['id'],$object['name'],$object['full_name'],$object['type'],$object['active'],$object['region_id'],$object['note'],$object['address'],$object['url_name']);
-
-				}
-			}
-		}
-
 		$directions = $connect->getAll("SELECT `id`, `name`, `name_rod` FROM `direction_object` WHERE `id_country` = 1 AND `synchronized` = 0");
 		$directionsCond = "";
 		foreach ($directions as $direction) {
@@ -69,6 +35,7 @@ function sync_objects_api($connect){
 				$success = (bool)(int)$res['success'];
 				if($success) {
 						$connect->query("UPDATE `direction_object` SET `synchronized` = '1' WHERE `id` = ?i",$direction['id']);
+						$connect->query("UPDATE `object` SET `synchronized` = '0' WHERE `direction` = ?i", $direction['id']);
 				}
 			}
 
@@ -96,10 +63,54 @@ function sync_objects_api($connect){
 				$success = (bool)(int)$res['success'];
 				if($success) {
 					$connect->query("UPDATE `region` SET `synchronized` = '1' WHERE `id` = ?i",$region['id']);
+					$connect->query("UPDATE `object` SET `synchronized` = '0' WHERE `id_reg` = ?i", $region['id']);
 				}
 			}
 
 
+		}
+
+		$objects = $connect->getAll("SELECT `object`.`id` AS `id`, `object`.`name` AS `name`, `object`.`url_name` AS `url_name`, `object`.`id_reg` AS `region_id`, `object`.`region_direction_id` AS `region_direction_id`, `object`.`direction` AS `direction`, `object`.`active` AS `active`, `object`.`note` AS `note`, `object`.`type` AS `type`, `object`.`full_name` AS `full_name`, `object`.`address` AS `address`, `object`.`telephone` AS `telephone` FROM `object` WHERE `object`.`synchronized` = 0 AND `object`.`type` IS NOT NULL AND `object`.`region_id` > 0");
+
+		foreach ($objects as $object) {
+			$objectAr = [];
+			$objectAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+			$objectAr["id"] = $object['id'];
+			$objectAr["name"] = $object['name'];
+			$objectAr['full_name'] = $object['full_name'];
+			$objectAr['type'] = $object['type'];
+			$objectAr['status'] = (int)(!$object['active']);
+			$objectAr['region_id'] = $object['region_id'];
+
+			if(!is_null($object['direction'])) {
+				$objectAr['direction_id'] = $object['direction'];
+			}
+
+			if(!is_null($object['region_direction_id'])) {
+				$objectAr['regional_direction_id'] = $object['region_direction_id'];
+			}
+
+			$objectAr['note'] = $object['note'];
+			$objectAr['address'] = $object['address'];
+			$objectAr['uri'] = $object['url_name'];
+
+
+
+			$res = $client->request('POST',"https://sites.tonia.ru/api/object/set/".$object['id'],[
+				'form_params' => $objectAr
+			]);
+
+			$res = json_decode($res->getBody(),true);
+			if(array_key_exists('success',$res)) {
+				$success = (bool)(int)$res['success'];
+				if($success) {
+					if(is_null($object['url_name']))
+						$connect->query("UPDATE `object` SET `synchronized` = '1' WHERE `id` = ?i AND `name` = ?s AND `full_name` = ?s AND `type` = ?i AND `active` = ?i AND `id_reg` = ?i AND `note` = ?s AND `address` = ?s AND `url_name` IS NULL",$object['id'],$object['name'],$object['full_name'],$object['type'],$object['active'],$object['region_id'],$object['note'],$object['address']);
+					else
+						$connect->query("UPDATE `object` SET `synchronized` = '1' WHERE `id` = ?i AND `name` = ?s AND `full_name` = ?s AND `type` = ?i AND `active` = ?i AND `id_reg` = ?i AND `note` = ?s AND `address` = ?s AND `url_name` = ?s",$object['id'],$object['name'],$object['full_name'],$object['type'],$object['active'],$object['region_id'],$object['note'],$object['address'],$object['url_name']);
+
+				}
+			}
 		}
 
 		return true;
