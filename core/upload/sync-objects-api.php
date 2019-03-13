@@ -70,7 +70,7 @@ function sync_objects_api($connect){
 
 		}
 
-		$regional_directions = $connect->getAll("SELECT `direction_object`.`id` AS `id`, `direction_object`.`name` AS `name`, `direction_object`.`name_rod` AS `name_rod`, `region`.`name` AS `name_reg`, `region`.`id_direction` AS `region_direction_id`, `direction_object2`.`name` AS `dir_name` FROM `direction_object` INNER JOIN `region` ON `region`.`id` = `direction_object`.`id_reg` INNER JOIN `direction_object` AS `direction_object2` ON `direction_object2`.`id` = `region`.`id_direction` WHERE (`direction_object`.`id_country` = 0 OR `direction_object`.`id_country` IS NULL)  AND `direction_object`.`id_reg` > 0 AND `direction_object`.`synchronized` = 0");
+		$regional_directions = $connect->getAll("SELECT `direction_object`.`id` AS `id`, `direction_object`.`name` AS `name`, `direction_object`.`name_rod` AS `name_rod`, `direction_object`.`id_reg` AS `id_reg`, `region`.`name` AS `name_reg`, `region`.`id_direction` AS `region_direction_id`, `direction_object2`.`name` AS `dir_name` FROM `direction_object` INNER JOIN `region` ON `region`.`id` = `direction_object`.`id_reg` INNER JOIN `direction_object` AS `direction_object2` ON `direction_object2`.`id` = `region`.`id_direction` WHERE (`direction_object`.`id_country` = 0 OR `direction_object`.`id_country` IS NULL)  AND `direction_object`.`id_reg` > 0 AND `direction_object`.`synchronized` = 0");
 
 
 		foreach ($regional_directions as $regional_direction) {
