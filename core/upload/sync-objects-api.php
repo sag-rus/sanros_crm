@@ -75,7 +75,7 @@ function sync_objects_api($connect){
 
 		}
 
-		$regions = $connect->getAll("SELECT `region`.`id` AS `id`, `region`.`name` AS `name`, `region`.`name_rod` AS `name_rod`, `region`.`id_direction` AS `id_direction`, `direction_object`.`name` AS `direction_name` FROM `region` INNER JOIN `direction_object` ON `region`.`id_direction` = `direction_object`.`id` WHERE `region`.`id_country` = 1 AND (".$directionsCond.") AND `region`.`synchronized` = 0");
+		$regions = $connect->getAll("SELECT `region`.`id` AS `id`, `region`.`name` AS `name`, `region`.`name_rod` AS `name_rod`, `region`.`id_direction` AS `id_direction`, `direction_object`.`name` AS `direction_name` FROM `region` INNER JOIN `direction_object` ON `region`.`id_direction` = `direction_object`.`id` WHERE `region`.`id_country` = 1 AND `region`.`synchronized` = 0");
 
 		foreach ($regions as $region) {
 			$regionAr = [
