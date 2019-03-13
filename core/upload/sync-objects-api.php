@@ -100,7 +100,7 @@ function sync_objects_api($connect){
 
 		}
 
-		$objects = $connect->getAll("SELECT `object`.`id` AS `id`, `object`.`name` AS `name`, `object`.`url_name` AS `url_name`, `object`.`id_reg` AS `region_id`, `object`.`region_direction_id` AS `region_direction_id`, `object`.`direction` AS `direction`, `object`.`active` AS `active`, `object`.`note` AS `note`, `object`.`type` AS `type`, `object`.`full_name` AS `full_name`, `object`.`address` AS `address`, `object`.`telephone` AS `telephone` FROM `object` WHERE `object`.`synchronized` = 0 AND `object`.`type` IS NOT NULL AND `object`.`region_id` > 0");
+		$objects = $connect->getAll("SELECT `object`.`id` AS `id`, `object`.`name` AS `name`, `object`.`url_name` AS `url_name`, `object`.`id_reg` AS `region_id`, `object`.`region_direction_id` AS `region_direction_id`, `object`.`direction` AS `direction`, `object`.`active` AS `active`, `object`.`note` AS `note`, `object`.`type` AS `type`, `object`.`full_name` AS `full_name`, `object`.`address` AS `address`, `object`.`telephone` AS `telephone` FROM `object` WHERE `object`.`synchronized` = 0 AND `object`.`type` IS NOT NULL AND `object`.`id_reg` > 0");
 
 		foreach ($objects as $object) {
 			$objectAr = [];
@@ -123,8 +123,6 @@ function sync_objects_api($connect){
 			$objectAr['note'] = $object['note'];
 			$objectAr['address'] = $object['address'];
 			$objectAr['uri'] = $object['url_name'];
-
-			print_r($objectAr);
 
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/object/set/".$object['id'],[
