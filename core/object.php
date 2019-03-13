@@ -1453,9 +1453,9 @@ function update_region($connect){
 	$meta_desc = strip_tags($_POST["meta_desc"]);
 	$man_reward_scheme = (int)$_POST['man_reward_scheme'];
 
-	$connect->query("UPDATE region SET name=?s, description=?s, meta_desc=?s, man_reward_scheme=?i WHERE id=?i", $name, $description, $meta_desc, $man_reward_scheme,$id);
+	$connect->query("UPDATE region SET name=?s, description=?s, meta_desc=?s, man_reward_scheme=?i, synchronized = 0 WHERE id=?i", $name, $description, $meta_desc, $man_reward_scheme,$id);
 	if($direction)
-		$connect->query("UPDATE region SET id_direction=?i WHERE id=?i", $direction, $id);
+		$connect->query("UPDATE region SET id_direction=?i, synchronized = 0 WHERE id=?i", $direction, $id);
 }
 
 function edit_direction($connect){
