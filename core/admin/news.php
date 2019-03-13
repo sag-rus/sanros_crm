@@ -454,6 +454,7 @@ function save_site($connect) {
 
 
     $head_code = isset($_POST['head_code'])?trim($_POST['head_code']):"";
+    $theme = isset($_POST['theme'])?trim($_POST['theme']):"";
     $pre_body_code = isset($_POST['pre_body_code'])?trim($_POST['pre_body_code']):"";
     $post_body_code = isset($_POST['post_body_code'])?trim($_POST['post_body_code']):"";
     $robots = isset($_POST['robots'])?trim($_POST['robots']):"";
@@ -478,7 +479,13 @@ function save_site($connect) {
     elseif ($region_id && !$connect->getOne("SELECT `id` FROM `region` WHERE `id` =?i AND `id_direction` = ?i",$region_id,$direction_id))
       $region_id = 0;
 
-    if($siteName && $branding_name && $siteDomain && (!$id || $site) && in_array($interface_style,[1,2]) && in_array($type,$types)) {
+
+    $themes = [
+        'default',
+        'sanrussia'
+    ];
+
+    if($siteName && $branding_name && $siteDomain && (!$id || $site) && in_array($interface_style,[1,2]) && in_array($type,$types) && in_array($theme,$themes)) {
         $datetime = gmdate("U");
         if($id)
             $oldsite = $connect->getRow("SELECT `id`,`name`,`domain` FROM `sites` WHERE (`name`=?s OR `domain`=?s) AND `id` <> ?i LIMIT 1",$siteName,$siteDomain,$id);
@@ -499,10 +506,10 @@ function save_site($connect) {
                 remove_bounds($connect,$entity,'favicon');
                 set_bounds($connect,$boundsArrayFavicon,'favicon');
 
-                $connect->query("UPDATE `sites` SET `name` = ?s, `branding_name` = ?s, `branding_slogan` = ?s, `domain` = ?s, `main_bg_color` = ?s, `main_bg_color2` = ?s, `main_font_color` = ?s, `main_font_color2` = ?s, `main_link_color` = ?s, `head_code` =?s, `pre_body_code` =?s, `post_body_code` =?s, `robots` = ?s, `interface_style` = ?i, `type` = ?s, `direction_id` = ?i, `region_id` = ?i WHERE `id`=?i",$siteName,$branding_name,$branding_slogan,$siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$head_code, $pre_body_code, $post_body_code,$robots,$interface_style, $type, $direction_id, $region_id, $id);
+                $connect->query("UPDATE `sites` SET `name` = ?s, `branding_name` = ?s, `branding_slogan` = ?s, `domain` = ?s, `main_bg_color` = ?s, `main_bg_color2` = ?s, `main_font_color` = ?s, `main_font_color2` = ?s, `main_link_color` = ?s, `head_code` =?s, `pre_body_code` =?s, `post_body_code` =?s, `robots` = ?s, `interface_style` = ?i, `type` = ?s, `direction_id` = ?i, `region_id` = ?i, `theme` = ?s WHERE `id`=?i",$siteName,$branding_name,$branding_slogan,$siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$head_code, $pre_body_code, $post_body_code,$robots,$interface_style, $type, $direction_id, $region_id, $theme, $id);
             }
             else {
-                $connect->query("INSERT INTO `sites` (`status`,`created`,`changed`,`name`, `branding_name`, `branding_slogan`, `domain`,`main_bg_color`,`main_bg_color2`,`main_font_color`,`main_font_color2`,`main_link_color`,`head_code`, `pre_body_code`, `post_body_code`, `robots`, `interface_style`, `type`, `direction_id`, `region_id`) VALUES (1, ?i, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?s, ?i, ?i)", $datetime, $datetime, $siteName, $branding_name, $branding_slogan, $siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$head_code, $pre_body_code, $post_body_code, $robots, $interface_style, $type, $direction_id, $region_id);
+                $connect->query("INSERT INTO `sites` (`status`,`created`,`changed`,`name`, `branding_name`, `branding_slogan`, `domain`,`main_bg_color`,`main_bg_color2`,`main_font_color`,`main_font_color2`,`main_link_color`,`head_code`, `pre_body_code`, `post_body_code`, `robots`, `interface_style`, `type`, `direction_id`, `region_id`, `theme`) VALUES (1, ?i, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?s, ?i, ?i, ?s)", $datetime, $datetime, $siteName, $branding_name, $branding_slogan, $siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$head_code, $pre_body_code, $post_body_code, $robots, $interface_style, $type, $direction_id, $region_id, $theme);
 
                 $entity = [
                     'id' => $connect->insertId(),
@@ -1559,7 +1566,7 @@ function edit_site($connect) {
     'global' => 'Региональный'
   ];
   if($id)
-    $site = $connect->getRow("SELECT `id`, `status`, `name`, `branding_name`, `branding_slogan`,  `domain`, `main_bg_color`, `main_bg_color2`, `main_font_color`, `main_font_color2`, `main_link_color`, `head_code`, `pre_body_code`, `post_body_code`, `robots`, `interface_style`, `type`, `direction_id`, `region_id` FROM `sites` WHERE `id` =?i",$id);
+    $site = $connect->getRow("SELECT `id`, `status`, `name`, `branding_name`, `branding_slogan`,  `domain`, `main_bg_color`, `main_bg_color2`, `main_font_color`, `main_font_color2`, `main_link_color`, `head_code`, `pre_body_code`, `post_body_code`, `robots`, `interface_style`, `type`, `direction_id`, `region_id`, `theme` FROM `sites` WHERE `id` =?i",$id);
   ob_start();
   if($site || !$id) {
       $directions = $connect->getAll("SELECT `id`, `name` FROM `direction_object` WHERE (`id_reg` IS NULL OR `id_reg` = 0) AND `id_country` = 1 ORDER BY `name` ASC");
@@ -1616,6 +1623,15 @@ function edit_site($connect) {
                           <div class="col-sm-8">
                               <input type="text" class="form-control site-domain" name="domain" value="<?=$site?$site['domain']:"";?>">
                               <div class="input-message-block" data-for="domain"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Тема</label>
+                          <div class="col-sm-8">
+                              <select class="form-control" name="theme">
+                                  <option value="default"<?php if(!$site || $site['theme'] === 'default') { ?> selected<?php } ?>>По умолчанию</option>
+                                  <option value="sanrussia"<?php if($site['theme'] === 'sanrussia') { ?> selected<?php } ?>>Санатории России</option>
+                              </select>
                           </div>
                       </div>
                       <div class="form-group">

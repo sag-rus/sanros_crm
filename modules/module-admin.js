@@ -1528,6 +1528,7 @@ function save_site() {
   var pre_body_code = $modalBody.find('*[name="pre_body_code"]').val();
   var post_body_code = $modalBody.find('*[name="post_body_code"]').val();
 
+	var theme = $modalBody.find('*[name="theme"]').val();
 
   var robots = $modalBody.find('*[name="robots"]').val();
 
@@ -1603,7 +1604,8 @@ function save_site() {
 			branding_slogan: branding_slogan,
 			type: type,
 			direction_id: direction_id,
-			region_id: region_id
+			region_id: region_id,
+			theme: theme
     };
     $.ajax({
       type: 'POST',
