@@ -43,8 +43,14 @@ function sync_objects_api($connect){
 		}
 
 		$directions = $connect->getAll("SELECT `id`, `name`, `name_rod` FROM `direction_object` WHERE `id_country` = 1 AND `synchronized` = 0");
-
+		$directionsCond = "";
 		foreach ($directions as $direction) {
+
+			if($directionsCond)
+				$directionsCond .= ' OR ';
+
+			$directionsCond .= '`region`.`id_direction` = '.$direction['id'];
+
 			$directionAr = [
 				'name' => $direction['name'],
 				'name_genitive' => $direction['name_rod'],
@@ -63,6 +69,33 @@ function sync_objects_api($connect){
 				$success = (bool)(int)$res['success'];
 				if($success) {
 						$connect->query("UPDATE `direction_object` SET `synchronized` = '1' WHERE `id` = ?i",$direction['id']);
+				}
+			}
+
+
+		}
+
+		$regions = $connect->getAll("SELECT `region`.`id` AS `id`, `region`.`name` AS `name`, `region`.`name_rod` AS `name_rod`, `region`.`id_direction` AS `id_direction`, `direction_object`.`name` AS `direction_name` FROM `region` INNER JOIN `direction_object` ON `region`.`id_direction` = `direction_object`.`id` WHERE `region`.`id_country` = 1 AND (".$directionsCond.") AND `region`.`synchronized` = 0");
+
+		foreach ($regions as $region) {
+			$regionAr = [
+				'name' => $region['name'],
+				'name_genitive' => $region['name_rod'],
+				'parent_id' => $region['id_direction'],
+				'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4',
+				'uri' => '/направления/'.change_text_url($region['direction_name']).'/'.change_text_url($region['name']),
+				'status' => 1
+			];
+
+			$res = $client->request('POST',"https://sites.tonia.ru/api/location/region/set/".$region['id'],[
+				'form_params' => $regionAr
+			]);
+
+			$res = json_decode($res->getBody(),true);
+			if(array_key_exists('success',$res)) {
+				$success = (bool)(int)$res['success'];
+				if($success) {
+					$connect->query("UPDATE `region` SET `synchronized` = '1' WHERE `id` = ?i",$region['id']);
 				}
 			}
 
