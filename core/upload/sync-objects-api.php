@@ -107,6 +107,7 @@ function sync_objects_api($connect){
 			$typeAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
 			$typeAr["id"] = $type['id'];
 			$typeAr["name"] = $type['name'];
+			$typeAr['status'] = 1;
 
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/type/set/".$type['id'],[
