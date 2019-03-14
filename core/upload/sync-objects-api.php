@@ -100,7 +100,31 @@ function sync_objects_api($connect){
 
 		}
 
-		$objects = $connect->getAll("SELECT `object`.`id` AS `id`, `object`.`name` AS `name`, `object`.`url_name` AS `url_name`, `object`.`id_reg` AS `region_id`, `object`.`region_direction_id` AS `region_direction_id`, `object`.`direction` AS `direction`, `object`.`active` AS `active`, `object`.`note` AS `note`, `object`.`type` AS `type`, `object`.`full_name` AS `full_name`, `object`.`address` AS `address`, `object`.`telephone` AS `telephone` FROM `object` WHERE `object`.`synchronized` = 0 AND `object`.`type` IS NOT NULL AND `object`.`id_reg` > 0");
+		$types = $connect->getAll("SELECT `id`, `name` FROM `type_object` WHERE `synchronized` = 0");
+
+		foreach ($types as $type) {
+			$typeAr = [];
+			$typeAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+			$typeAr["id"] = $type['id'];
+			$typeAr["name"] = $type['name'];
+
+
+			$res = $client->request('POST',"https://sites.tonia.ru/api/type/set/".$type['id'],[
+				'form_params' => $typeAr
+			]);
+
+			$res = json_decode($res->getBody(),true);
+			if(array_key_exists('success',$res)) {
+				$success = (bool)(int)$res['success'];
+				if($success) {
+					$connect->query("UPDATE `type_object` SET `synchronized` = '1' WHERE `id` = ?i",$type['id']);
+					$connect->query("UPDATE `object` SET `synchronized` = '0' WHERE `type` = ?i",$type['id']);
+				}
+			}
+		}
+
+
+		$objects = $connect->getAll("SELECT `object`.`id` AS `id`, `object`.`name` AS `name`, `object`.`url_name` AS `url_name`, `object`.`id_reg` AS `region_id`, `object`.`region_direction_id` AS `region_direction_id`, `object`.`direction` AS `direction`, `object`.`active` AS `active`, `object`.`note` AS `note`, `object`.`type` AS `type`, `object`.`full_name` AS `full_name`, `object`.`address` AS `address`, `object`.`telephone` AS `telephone`, `type_object`.`name` AS `type_name` FROM `object` LEFT JOIN `type_object` ON `object`.`type` = `type_object`.`id` WHERE `object`.`synchronized` = 0 AND `object`.`type` IS NOT NULL AND `object`.`id_reg` > 0");
 
 		foreach ($objects as $object) {
 			$objectAr = [];
@@ -112,6 +136,10 @@ function sync_objects_api($connect){
 			$objectAr['status'] = (int)(!$object['active']);
 			$objectAr['region_id'] = $object['region_id'];
 
+			if(is_null($object['type_name'])) {
+				$object['type_name'] = 'Санаторий';
+			}
+
 			if(!is_null($object['direction'])) {
 				$objectAr['direction_id'] = $object['direction'];
 			}
@@ -122,9 +150,9 @@ function sync_objects_api($connect){
 
 			$objectAr['note'] = $object['note'];
 			$objectAr['address'] = $object['address'];
-			$objectAr['uri'] = $object['url_name'];
+			$objectAr['uri'] = change_text_url($object['type_name']).'-'.$object['url_name'];
 
-			
+
 			$res = $client->request('POST',"https://sites.tonia.ru/api/object/set/".$object['id'],[
 				'form_params' => $objectAr
 			]);
