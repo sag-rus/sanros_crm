@@ -124,6 +124,31 @@ function sync_objects_api($connect){
 			}
 		}
 
+		$profiles = $connect->getAll("SELECT `id`, `name`, `description` FROM `profile` WHERE `synchronized` = 0");
+
+		foreach ($profiles as $profile) {
+			$profileAr = [];
+			$profileAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+			$profileAr["id"] = $profile['id'];
+			$profileAr["name"] = $profile['name'];
+			$profileAr["description"] = $profile['description'];
+			$profileAr['status'] = 1;
+
+
+			$res = $client->request('POST',"https://sites.tonia.ru/api/object/profile/set/".$profile['id'],[
+				'form_params' => $profileAr
+			]);
+
+			$res = json_decode($res->getBody(),true);
+			if(array_key_exists('success',$res)) {
+				$success = (bool)(int)$res['success'];
+				if($success) {
+					$connect->query("UPDATE `profile` SET `synchronized` = '1' WHERE `id` = ?i",$profile['id']);
+					//$connect->query("UPDATE `object` SET `synchronized` = '0' WHERE `type` = ?i",$type['id']);
+				}
+			}
+		}
+
 
 		$objects = $connect->getAll("SELECT `object`.`id` AS `id`, `object`.`name` AS `name`, `object`.`url_name` AS `url_name`, `object`.`id_reg` AS `region_id`, `object`.`region_direction_id` AS `region_direction_id`, `object`.`direction` AS `direction`, `object`.`active` AS `active`, `object`.`note` AS `note`, `object`.`type` AS `type`, `object`.`full_name` AS `full_name`, `object`.`address` AS `address`, `object`.`telephone` AS `telephone`, `type_object`.`name` AS `type_name` FROM `object` LEFT JOIN `type_object` ON `object`.`type` = `type_object`.`id` WHERE `object`.`synchronized` = 0 AND `object`.`type` IS NOT NULL AND `object`.`id_reg` > 0");
 
