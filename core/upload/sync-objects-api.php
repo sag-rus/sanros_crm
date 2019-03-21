@@ -132,6 +132,7 @@ function sync_objects_api($connect){
 			$profileAr["id"] = $profile['id'];
 			$profileAr["name"] = $profile['name'];
 			$profileAr["description"] = $profile['description'];
+			$profileAr['uri'] = '/профили-лечения/'.change_text_url($profile['name']);
 			$profileAr['status'] = 1;
 
 
