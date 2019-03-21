@@ -23,6 +23,8 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 	$booker = $conf->booker;
 	$reestr = $conf->reestr;
 	$pay_days = isset($_GET['pay_days'])?(int)$_GET['pay_days']:1;
+    $pay_date = $connect->getOne("SELECT DATE_FORMAT(date, '%d.%m.%Y') as date FROM time_payment WHERE id_schet=?i AND type=1", $id);
+
 
 	$pay_days_strings = [
         '0' => 'банковских дней',
@@ -202,7 +204,9 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 	<table cellpadding="5" cellspacing="0">
 	<tr>
 		<td style="border: none; text-align: right; width: 730px;">
+            <?php if(!$pay_date) { ?>
 			<span class="bold_head" style="color: #DB0E0E;">ДЕЙСТВИТЕЛЕН В ТЕЧЕНИЕ <?=$pay_days;?> <?=mb_strtoupper($pay_days_strings2[$pay_days_last_char]);?></span><br />
+            <?php } ?>
 			<span class="bold_head" style="color: #DB0E0E;">При оплате обязательно указывайте номер счета</span>
 		</td>
 	</tr>
@@ -322,7 +326,6 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 			<div style=" width: 200px">
 			<strong>Аванс(<?php echo $prepay_time["sum"]; ?> рублей) внести до <?php echo $prepay_time["date"]; ?>.</strong>
 <?php
-		$pay_date = $connect->getOne("SELECT DATE_FORMAT(date, '%d.%m.%Y') as date FROM time_payment WHERE id_schet=?i AND type=1", $id);
 		if($pay_date){
 ?>
 			<br /><strong>Окончательный расчет не позднее <?php echo $pay_date; ?></strong>
