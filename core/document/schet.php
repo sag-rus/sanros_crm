@@ -318,13 +318,15 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 	</tr>
 <?php
 	$prepay_time = $connect->getRow("SELECT sum, DATE_FORMAT(date, '%d.%m.%Y') as date FROM time_payment WHERE id_schet=?i AND type=2", $id);
-	if($prepay_time){
+	if($prepay_time || $pay_date){
 		$col_str--;
 ?>
 	<tr>
 		<td colspan="3" style="border: none;">
 			<div style=" width: 200px">
+            <?php if($prepay_time) { ?>
 			<strong>Аванс(<?php echo $prepay_time["sum"]; ?> рублей) внести до <?php echo $prepay_time["date"]; ?>.</strong>
+            <?php } ?>
 <?php
 		if($pay_date){
 ?>
