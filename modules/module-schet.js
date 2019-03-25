@@ -1194,7 +1194,7 @@ function edit_individual_payer(id){
 function update_individual_payer(id){
 	var name = $('#name').val();
 	var date_b = $('#date_b').val();
-	var address = $('#payer_address');
+	var address = $('#payer_address').val();
 	if(typeof date_b === 'undefined')
 		date_b = '';
 	var passport = $('#passport').val();
