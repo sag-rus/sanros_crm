@@ -771,7 +771,7 @@ function save_new_individual_payer($connect){
 
 function edit_individual_payer($connect){
 	$id = $_POST["id"];
-	$row = $connect->getRow("SELECT name, date_b, passport FROM payer WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT name, date_b, passport, address FROM payer WHERE id=?i", $id);
 	ob_start();
 ?>
 	<div class="modal-header">
@@ -797,6 +797,12 @@ function edit_individual_payer($connect){
 				<input type="text" class="form-control" id="passport" value="<?php echo $row['passport']; ?>" />
 			</div>
 		</div>
+        <div class="form-group form-group-margin">
+            <label class="col-sm-4 control-label">Адрес: </label>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" id="payer_address" value="<?php echo $row['address']; ?>" />
+            </div>
+        </div>
 	</div>
 	<div class="modal-footer">
 		<button type="button" class="btn btn-success btn-sm" onclick="update_individual_payer('<?php echo $id; ?>')"><i class="fa fa-check-circle"></i> Сохранить</button>
@@ -810,6 +816,7 @@ function update_individual_payer($connect){
 	$id = $_POST["id"];
 	$name = $_POST["name"];
 	$date_b = $_POST["date_b"];
+	$address = $_POST['address'];
 	if(empty($date_b))
 	    $date_b = NULL;
 	else {
@@ -820,7 +827,7 @@ function update_individual_payer($connect){
 	if(empty($passport))
 	    $passport = NULL;
 
-	$connect->query("UPDATE payer SET name=?s, date_b=?s, passport=?s WHERE id=?i", $name, $date_b, $passport, $id);
+	$connect->query("UPDATE payer SET name=?s, date_b=?s, passport=?s, address = ?s WHERE id=?i", $name, $date_b, $passport, $address, $id);
 }
 
 function add_new_legal_payer(){

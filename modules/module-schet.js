@@ -1194,13 +1194,14 @@ function edit_individual_payer(id){
 function update_individual_payer(id){
 	var name = $('#name').val();
 	var date_b = $('#date_b').val();
+	var address = $('#payer_address');
 	if(typeof date_b === 'undefined')
 		date_b = '';
 	var passport = $('#passport').val();
 	if(!name)
 		show_warning('.edit-payer', 'Введите имя', false);
 	else{
-		var str = 'func=update_individual_payer&name=' + name + '&date_b=' + date_b + '&passport=' + passport + '&id=' + id;
+		var str = 'func=update_individual_payer&name=' + name + '&date_b=' + date_b + '&passport=' + passport + '&id=' + id+'&address='+address;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',

@@ -415,9 +415,9 @@ function review_contract($connect, $type, $id){
 						if(isset($payers['telephone']) && $payers["telephone"])
 							echo "<strong>ТЕЛЕФОН:</strong> ".$payers["telephone"]."<br />";
 						if(isset($payers['email']) && $payers["email"])
-							echo "<strong>EMAIL:</strong> ".$payers["email"];
+							echo "<strong>EMAIL:</strong> ".$payers["email"]."<br />";
 					}
-					echo "<br /><strong>АДРЕС:</strong> ".$payers['address'];
+					echo "<strong>АДРЕС:</strong> ".$payers['address'];
 					echo "<br /><br /><br /><strong>ПОДПИСЬ:</strong> ____________</p>";
 				}
 			?>
