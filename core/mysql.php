@@ -791,7 +791,9 @@ function write_body($connect){
 							<li onclick="select_object_profkurort()" id="profkurort-menu"><a><i class="fa fa-product-hunt"></i> Профкурорт</a></li>
 						</ul>
 					</li>
-                  <?php if($id_rights > 4){ ?>
+                <?php } ?>
+
+                    <?php if($id_rights > 4 || $session_login == 62) { ?>
 
                       <li><a onclick="$('.show-menu-sites').toggle()">Сайты</a>
                         <ul class="nav nav-pills nav-stacked second-level-menu show-menu-sites" style="display: none">
@@ -799,7 +801,6 @@ function write_body($connect){
                         </ul>
                     </li>
                   <?php } ?>
-			<?php } ?>
 				</ul>
 
 			</div>

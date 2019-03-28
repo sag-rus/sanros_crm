@@ -816,9 +816,17 @@ function filter_do($connect){
 			<td width="80" valign="top"><?php echo $date_z; ?></td>
 			<td width="80" valign="top"><?php echo $date_v; ?></td>
 			<td width="200" valign="top" data-toggle="tooltip" title="<?php echo $full_object; ?>"><?php echo $object; ?></td>
-			<td width="70" valign="top"><?php echo $summa; ?></td>
+			<?php if($id_rights > 1) { ?>
+                <td width="70" valign="top"><?php echo $summa; ?></td>
+            <?php } else { ?>
+                <td width="70" valign="top">Скрыто</td>
+            <?php } ?>
 			<?php if($type_filter != "manager"){ ?>
-				<td width="70" valign="top"><?php echo $reward; ?></td>
+                <?php if($id_rights > 1) { ?>
+				    <td width="70" valign="top"><?php echo $reward; ?></td>
+                <?php } else { ?>
+                    <td width="70" valign="top">Скрыто</td>
+                <?php } ?>
 			<?php } ?>
 			<td width="80" valign="top"><?php echo $manager; ?></td>
 			<td width="120" valign="top"><?php echo $status.$append_status; ?></td>
@@ -860,18 +868,26 @@ function filter_do($connect){
 				</div>
 				<div class="col-sm-3">
 					Всего: <strong><?php echo $index; ?></strong>
+                    <?php if($id_rights > 1) { ?>
 					на сумму <strong><?php echo number_format($statistics["all_sum"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
+                    <?php } ?>
 				</div>
 				<div class="col-sm-3">
-					Предопл. <strong><?php echo $statistics["num_prepay"]; ?></strong>
+                    <?php if($id_rights > 1) { ?>
+                    Предопл. <strong><?php echo $statistics["num_prepay"]; ?></strong>
 					на сумму <strong><?php echo number_format($statistics["sum_prepay"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
-				</div>
+                    <?php } ?>
+                </div>
 				<div class="col-sm-2">
-					Прибыль ожид. <strong><?php echo number_format($statistics["all_reward"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
-				</div>
+                    <?php if($id_rights > 1) { ?>
+                    Прибыль ожид. <strong><?php echo number_format($statistics["all_reward"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
+                    <?php } ?>
+                </div>
 
                 <div class="col-sm-2">
+                    <?php if($id_rights > 1) { ?>
                     Прибыль факт. <strong><?php echo number_format($statistics["all_reward_fact"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
+                    <?php } ?>
                 </div>
 			</div>
 		</div>
@@ -891,18 +907,26 @@ function filter_do($connect){
 				</div>
 				<div class="col-sm-3">
 					Всего: <strong><?php echo $office["index"]; ?></strong>
-					на сумму <strong><?php echo number_format($office["all_sum"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
+                    <?php if($id_rights > 1) { ?>
+                    на сумму <strong><?php echo number_format($office["all_sum"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
+                    <?php } ?>
 				</div>
 				<div class="col-sm-3">
-					Предопл. <strong><?php echo $office["num_prepay"]; ?></strong>
+                    <?php if($id_rights > 1) { ?>
+                    Предопл. <strong><?php echo $office["num_prepay"]; ?></strong>
 					на сумму <strong><?php echo number_format($office["sum_prepay"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
+                    <?php } ?>
 				</div>
 				<div class="col-sm-2">
-					Прибыль ожид. <strong><?php echo number_format($office["all_reward"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
-				</div>
+                    <?php if($id_rights > 1) { ?>
+                    Прибыль ожид. <strong><?php echo number_format($office["all_reward"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
+                    <?php } ?>
+                </div>
 
                 <div class="col-sm-2">
+                    <?php if($id_rights > 1) { ?>
                     Прибыль факт. <strong><?php echo number_format($office["all_reward_fact"], 2, ",", " "); ?> <i class="fa fa-rub"></i></strong>
+                    <?php } ?>
                 </div>
 			</div>
 		</div>

@@ -61,7 +61,7 @@ function show_news_website($connect){
 }
 
 function show_sites_list($connect) {
-    global $id_rights;
+    global $id_rights, $session_login;
 	$sites = $connect->getAll("SELECT id, name, domain FROM sites ORDER BY id ASC");
 	ob_start();
 	?>
@@ -101,7 +101,7 @@ function show_sites_list($connect) {
                   <?php if($id_rights > 5)  { ?>
                       <button class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
                   <?php } ?>
-                  <?php if($id_rights > 4)  { ?>
+                  <?php if($id_rights > 4 || $session_login == 62)  { ?>
                       <button class="btn btn-default btn-sm" onclick="edit_site(<?=$site['id'];?>);"><i class="fa fa-pencil"></i></button>
                   <?php } ?>
               </td>
