@@ -1,12 +1,14 @@
 <?php
 
 function show_report_menu(){
+    global $id_rights;
 	ob_start();
 ?>
 <div class="btn-group btn-group-justified head-menu-report">
 	<div class="btn-group">
 		<button type="button" class="btn btn-default btn-general" onclick="general_report()"><i class="fa fa-tasks"></i> Общий</button>
 	</div>
+    <?php if($id_rights > 1) { ?>
 	<div class="btn-group">
 		<button type="button" class="btn btn-default btn-calendar" onclick="calendar_report()"><i class="fa fa-calendar"></i> Календарь</button>
 	</div>
@@ -19,7 +21,8 @@ function show_report_menu(){
 	<div class="btn-group">
 		<button type="button" class="btn btn-default btn-bonus" onclick="bonus_report()"><i class="fa fa-gift"></i> Бонусы</button>
 	</div>
-	<div class="btn-group">
+    <?php } ?>
+    <div class="btn-group">
 		<button type="button" class="btn btn-default btn-graphics" onclick="graphics_report()"><i class="fa fa-bar-chart"></i> Графики</button>
 	</div>
 	<div class="btn-group">
@@ -163,6 +166,7 @@ function show_filter_manager($connect){
 }
 
 function show_filter_report($connect){
+    global $id_rights;
 	$conf = connect_config();
 	$source_array = $conf->source_array;
 	ob_start();
@@ -299,7 +303,9 @@ function show_filter_report($connect){
 		<div class="form-group form-group-margin">
 			<div class="col-sm-offset-0 col-sm-12 right">
 				<button type="button" class="btn btn-success btn-sm btn-search" data-loading-text="<i class='fa fa-spinner fa-spin'></i> Подождите, идет поиск..." onclick="filter_do_report()"><i class="fa fa-search"></i> Применить</button>
-				<button type="button" class="btn btn-info btn-hide btn-sm" id="button_mass" disabled onclick="menu_mass_action()"><i class="fa fa-angle-double-down"></i> Мас.действия</button>
+                <?php if($id_rights > 1) { ?>
+                    <button type="button" class="btn btn-info btn-hide btn-sm" id="button_mass" disabled onclick="menu_mass_action()"><i class="fa fa-angle-double-down"></i> Мас.действия</button>
+                <?php } ?>
 				<button type="button" class="btn btn-warning btn-hide btn-sm" disabled onclick="filter_do_update()"><i class="fa fa-spinner"></i> Обновить</button>
 			</div>
 		</div>
@@ -791,7 +797,11 @@ function filter_do($connect){
 				$img_del = "<span style='position: absolute; right: 1px; top: 1px;'>".$img_del."</span>";
 			ob_start();
 		?>
-			<tr id="tr_<?php echo $id_schet; ?>" class="tr_reck" onclick="show_turist('<?php echo $type; ?>', '<?php echo $id_schet; ?>', '<?php echo $param; ?>')">
+            <?php if($id_rights > 1) { ?>
+                <tr id="tr_<?php echo $id_schet; ?>" class="tr_reck" onclick="show_turist('<?php echo $type; ?>', '<?php echo $id_schet; ?>', '<?php echo $param; ?>')">
+            <?php } else { ?>
+                <tr id="tr_<?php echo $id_schet; ?>" class="tr_reck">
+            <?php } ?>
 			<?php if($type_filter != "manager"){ ?>
 				<td width="20" valign="top" onclick="event.stopPropagation();"><input type="checkbox" class="check_mass" value="<?php echo $id_schet; ?>" /></td>
 			<?php } ?>

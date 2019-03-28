@@ -671,9 +671,11 @@ function write_body($connect){
 ?>
 	<div class="wrapper">
 		<div class="main-header">
+            <?php if($id_rights > 1) { ?>
 			<span>
 				<input type="text" class="form-control input-sm number-reckoning" style="width: 150px; margin: 7px; display: inline" placeholder="Поиск по заявке" onKeyPress="if(event.keyCode == 13) select_by_number_reckoning()" />
 			</span>
+            <?php } ?>
 			<div class="pull-right">
 				<ul class="nav navbar-nav">
 					<li class="messages-menu chat-menu" title="Новые сообщения" onclick="open_my_chat()">
@@ -713,16 +715,18 @@ function write_body($connect){
 				</div>
 
 				<ul class="nav nav-pills nav-stacked head-menu">
+                  <?php if($id_rights > 1) { ?>
 					<li onclick="head_page()" id="reckoning-menu"><a>Заявки</a></li>
 					<li onclick="show_call_back_menu()" id="call-back-menu"><a>Заказы звонка</a></li>
-					<li id="new_klient_menu" onclick="add_klient()"><a>Клиент</a></li>
+                    <li id="new_klient_menu" onclick="add_klient()"><a>Клиент</a></li>
 					<li id="agency_menu" onclick="agency()"><a>Агентства</a></li>
 					<li id="touroperator_menu" onclick="touroperator()"><a>Туроператоры</a></li>
 					<li id="obj_menu" onclick="objects()"><a>Объекты</a></li>
 					<li id="reminder_menu" onclick="my_reminder()"><a>Напоминания</a></li>
-			<?php if($id_rights > 3 || $session_login == 21 || $session_login == 55){ ?>
-					<li id="report_menu" onclick="show_reports()"><a>Отчеты</a></li>
-			<?php }else{ ?>
+                  <?php } ?>
+			<?php if($id_rights == 1 || $id_rights > 3 || $session_login == 21 || $session_login == 55){ ?>
+					<li id="report_menu" onclick="show_reports()" data-id-rights="<?=$id_rights;?>"><a>Отчеты</a></li>
+			<?php }elseif($id_rights > 1) { ?>
 					<li id="filter_menu" onclick="show_filter()"><a>Поиск</a></li>
 			<?php } ?>
 			<?php if($id_rights > 3){ ?>
@@ -733,7 +737,9 @@ function write_body($connect){
 						</ul>
 					</li>
 			<?php } ?>
+                  <?php if($id_rights > 1) { ?>
 					<li onclick="show_certificate()" id="certificate_menu"><a>Сертификаты</a></li>
+                  <?php } ?>
 					<li class="question-menu"><a onclick="$('.menu-question').toggle()">Вопросы</a>
 						<ul class="nav nav-pills nav-stacked second-level-menu menu-question" style="display: none">
 							<li onclick="show_question_client()" id="question-turist" class="question-turist"><a><i class="fa fa-circle-o"></i> Турист</a></li>
@@ -743,7 +749,7 @@ function write_body($connect){
 					</li>
 					<li><a onclick="$('.menu-profile').toggle()">Профиль</a>
 						<ul class="nav nav-pills nav-stacked second-level-menu menu-profile" style="display: none">
-							<?php if($id_rights <= 3){ ?>
+							<?php if($id_rights > 1 && $id_rights <= 3){ ?>
 							<li onclick="show_profit()" id="commission_menu"><a><i class="fa fa-rub"></i> Мой доход</a></li>
 							<?php } ?>
 							<li onclick="show_change_password()" id="my-password"><a><i class="fa fa-key"></i> Сменить пароль</a></li>
