@@ -1718,6 +1718,7 @@ function add_new_sites_content(site_id) {
 			 											'<option value="news">Новость</option>'+
 			 											'<option value="photogallery">Фотогалерея</option>'+
 			 											'<option value="module">Модуль бронирования</option>' +
+			 											'<option value="settings">Настройки</option>' +
 			 										'</select>'+
 													'<div class="input-message-block" data-for="type"></div>'+
 												'</div>' +
@@ -2914,26 +2915,31 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
     $moduleBlockFormG.addClass('hidden');
 	}
 
-  if(type === 'landing') {
+	if(type === 'landing') {
+		$form_actionFormG.removeClass('hidden');
+		$reviews_objectsFormG.removeClass('hidden');
+	}
+	else {
+		$form_actionFormG.addClass('hidden');
+		$reviews_objectsFormG.addClass('hidden');
+	}
+
+  if(type === 'landing' || type === 'settings') {
     $sliderPhotosFormG.removeClass('hidden');
     $page_bgFormG.removeClass('hidden');
     $second_bgFormG.removeClass('hidden');
-    $form_actionFormG.removeClass('hidden');
     $title_h2FormG.removeClass('hidden');
     $landing_infoFormG.removeClass('hidden');
-    $reviews_objectsFormG.removeClass('hidden');
   }
   else {
     $sliderPhotosFormG.addClass('hidden');
     $page_bgFormG.addClass('hidden');
     $second_bgFormG.addClass('hidden');
-    $form_actionFormG.addClass('hidden');
     $title_h2FormG.addClass('hidden');
     $landing_infoFormG.addClass('hidden');
-		$reviews_objectsFormG.addClass('hidden');
   }
 
-  if(type === 'photogallery' || type === 'landing' || type === 'news' || type === 'page') {
+  if(type === 'photogallery' || type === 'landing' || type === 'news' || type === 'page' || type === 'settings') {
     $photogalleryFormG.removeClass('hidden');
   }
   else {

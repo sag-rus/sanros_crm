@@ -129,7 +129,8 @@ function show_sites_contents_list($connect) {
     'photogallery' => 'Фотогалерея',
     'news' => 'Новость',
     'page' => 'Страница',
-    'module' => 'Модуль бронирования'
+    'module' => 'Модуль бронирования',
+    'settings' => 'Настройки'
   ];
   $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
   $site = NULL;
@@ -1189,11 +1190,12 @@ function edit_sites_content($connect) {
                                   <option value="news"<?php if($content['type'] === 'news') {?> selected<?php } ?>>Новость</option>
                                   <option value="photogallery"<?php if($content['type'] === 'photogallery') {?> selected<?php } ?>>Фотогалерея</option>
                                   <option value="module"<?php if($content['type'] === 'module') {?> selected<?php } ?>>Модуль бронирования</option>
+                                  <option value="settings"<?php if($content['type'] === 'settings') {?> selected<?php } ?>>Настройки</option>
                               </select>
                               <div class="input-message-block" data-for="type"></div>
                           </div>
                       </div>
-                      <div class="form-group<?php if($content['type'] !== 'landing') { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(!in_array($content['type'],['landing','settings'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Второй заголовок (h2)</label>
                           <div class="col-sm-10">
                               <input type="text" class="form-control" name="title_h2" maxlength="255" value="<?=htmlspecialchars($content['title_h2']);?>">
@@ -1227,7 +1229,7 @@ function edit_sites_content($connect) {
                               <div class="input-message-block" data-for="module_block"></div>
                           </div>
                       </div>
-                      <div class="form-group<?php if(!in_array($content['type'],['photogallery','landing','news', 'page'])) { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(!in_array($content['type'],['photogallery','landing','news', 'page','settings'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Фотографии</label>
                           <div class="col-sm-10">
                               <div class="input-message-block" data-for="photogallery"></div>
@@ -1241,21 +1243,21 @@ function edit_sites_content($connect) {
                               <div class="input-message-block" data-for="form_action"></div>
                           </div>
                       </div>
-                      <div class="form-group<?php if($content['type'] !== 'landing') { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(!in_array($content['type'],['landing','settings'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Фото слайдера</label>
                           <div class="col-sm-10">
                               <div class="input-message-block" data-for="slider_photos"></div>
                               <input type="file" name="slider_photos" value="<?=htmlspecialchars(json_encode((object)bounds_to_files($connect,load_bounds($connect,$entity,'slider_photos'))));?>">
                           </div>
                       </div>
-                      <div class="form-group<?php if($content['type'] !== 'landing') { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(!in_array($content['type'],['landing','settings'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Фото для фона</label>
                           <div class="col-sm-10">
                               <div class="input-message-block" data-for="page_bg"></div>
                               <input type="file" name="page_bg" value="<?=htmlspecialchars(json_encode((object)bounds_to_files($connect,load_bounds($connect,$entity,'page_bg'))));?>">
                           </div>
                       </div>
-                      <div class="form-group<?php if($content['type'] !== 'landing') { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(!in_array($content['type'],['landing','settings'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Двухуровневый фон</label>
                           <div class="col-sm-10">
                               <input type="checkbox" name="second_bg" class="form-control"<?php if($content['second_bg'] == 1) {?> checked<?php } ?>>
@@ -1806,7 +1808,7 @@ function set_sites_content($connect) {
   $keywords = isset($_POST['keywords'])?trim($_POST['keywords']):"";
   $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
   $type = isset($_POST['type'])?trim($_POST['type']):"page";
-  $typesAr = ['page','news', 'module', 'landing', "photogallery"];
+  $typesAr = ['page','news', 'module', 'landing', "photogallery", "settings"];
   $moduleBlocks = ["rooms","desc","promo","rating"];
   $timestamp = gmdate("U");
   $published = isset($_POST['published'])?(strtotime($_POST['published'])-3600*3):$timestamp;
@@ -1848,7 +1850,7 @@ function set_sites_content($connect) {
 
               $boundsArrayPhotogallery = [];
 
-              if(in_array($type,['photogallery','landing','news', 'page'])) {
+              if(in_array($type,['photogallery','landing','news', 'page', 'settings'])) {
                   $boundsArrayPhotogallery = files_to_bounds($connect,$entity,'photogallery',isset($_POST['photogallery'])?$_POST['photogallery']:[]);
               }
 
@@ -1856,7 +1858,7 @@ function set_sites_content($connect) {
               $boundsArrayPageBg = [];
               $boundsArrayReviewsObjects = [];
 
-              if($type === 'landing') {
+              if(in_array($type,['landing','settings'])) {
                 $boundsArraySliderPhotos = files_to_bounds($connect,$entity,'slider_photos',isset($_POST['slider_photos'])?$_POST['slider_photos']:[]);
                 $boundsArrayPageBg = files_to_bounds($connect,$entity,'page_bg',isset($_POST['page_bg'])?$_POST['page_bg']:[]);
                 $boundsArrayReviewsObjects = ids_to_bounds($connect,$entity,'reviews_objects',isset($_POST['reviews_objects'])?ids_string_to_ids($_POST['reviews_objects']):[]);
@@ -1894,13 +1896,13 @@ function set_sites_content($connect) {
               $boundsArrayReviewsObjects = [];
 
 
-              if(in_array($type,['photogallery','landing','news', 'page'])) {
+              if(in_array($type,['photogallery','landing','news', 'page', 'settings'])) {
                 $boundsArrayPhotogallery = files_to_bounds($connect,$entity,'photogallery',isset($_POST['photogallery'])?$_POST['photogallery']:[]);
               }
 
               $boundsArraySliderPhotos = [];
 
-              if($type === 'landing') {
+              if(in_array($type,['landing','settings'])) {
                 $boundsArraySliderPhotos = files_to_bounds($connect,$entity,'slider_photos',isset($_POST['slider_photos'])?$_POST['slider_photos']:[]);
                 $boundsArrayPageBg = files_to_bounds($connect,$entity,'page_bg',isset($_POST['page_bg'])?$_POST['page_bg']:[]);
                 $boundsArrayReviewsObjects = ids_to_bounds($connect,$entity,'reviews_objects',isset($_POST['reviews_objects'])?ids_string_to_ids($_POST['reviews_objects']):[]);
