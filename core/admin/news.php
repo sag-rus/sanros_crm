@@ -280,12 +280,12 @@ function show_sites_menu_items_list($connect) {
   if($site_id) {
     $site = $connect->getRow("SELECT `id`, `name`, `domain` FROM `sites` WHERE `id`=?i",$site_id);
     if($site)
-      $sites_menu_items = $connect->getAll("SELECT * FROM `app_models_site_menu_item` WHERE `site_id`=?i ORDER BY `sort` ASC", $site_id);
+      $sites_menu_items = $connect->getAll("SELECT * FROM `app_models_site_menu_item` WHERE `site_id`=?i AND `parent_id` = 0 ORDER BY `sort` ASC", $site_id);
     else
       $sites_menu_items = [];
   }
   else
-    $sites_menu_items = $connect->getAll("SELECT * FROM `app_models_site_menu_item` ORDER BY `sort` ASC");
+    $sites_menu_items = $connect->getAll("SELECT * FROM `app_models_site_menu_item` WHERE `parent_id` = 0 ORDER BY `sort` ASC");
 
   ob_start();
   ?>
@@ -295,9 +295,6 @@ function show_sites_menu_items_list($connect) {
             <table class="table table-hover table-condensed">
                 <thead>
                 <tr>
-                    <th>
-                        ID
-                    </th>
                     <th>
                         Название
                     </th>
@@ -319,8 +316,7 @@ function show_sites_menu_items_list($connect) {
                 <?php
                 foreach ($sites_menu_items as $sites_menu_item) {
                   ?>
-                    <tr>
-                        <td><?=$sites_menu_item['id'];?></td>
+                    <tr class="main-menu-item">
                         <td><?=$sites_menu_item['name'];?></td>
                         <td><?=$sites_menu_item['href'];?></td>
                         <td><?=$menuArray[$sites_menu_item['menu_id']];?></td>
@@ -329,9 +325,29 @@ function show_sites_menu_items_list($connect) {
                           <?php if($id_rights > 4) { ?>
                               <button class="btn btn-default btn-sm" onclick="remove_sites_menu_item(<?=$sites_menu_item['id'];?>);"><i class="fa fa-trash-o"></i></button>
                               <button class="btn btn-default btn-sm" onclick="sites_menu_item(<?=$sites_menu_item['id'];?>);"><i class="fa fa-pencil"></i></button>
+                              <button class="btn btn-default btn-sm" onclick="sites_menu_item(null,<?=$site_id;?>,<?=$sites_menu_item['id'];?>);"><i class="fa fa-plus"></i></button>
                           <?php } ?>
                         </td>
                     </tr>
+                    <?php
+                    $sites_menu_items_sub  = $connect->getAll("SELECT * FROM `app_models_site_menu_item` WHERE `site_id`=?i AND `parent_id` = ?i ORDER BY `sort` ASC", $site_id, $sites_menu_item['id']);
+                    foreach ($sites_menu_items_sub as $sites_menu_item_sub) {
+                        ?>
+                        <tr class="simple-row">
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?=$sites_menu_item_sub['name'];?></td>
+                            <td><?=$sites_menu_item_sub['href'];?></td>
+                            <td><?=$menuArray[$sites_menu_item_sub['menu_id']];?></td>
+                            <td><?=$sites_menu_item_sub['status'] == 1?"Активен":"Не активен";?></td>
+                            <td>
+                              <?php if($id_rights > 4) { ?>
+                                  <button class="btn btn-default btn-sm" onclick="remove_sites_menu_item(<?=$sites_menu_item_sub['id'];?>);"><i class="fa fa-trash-o"></i></button>
+                                  <button class="btn btn-default btn-sm" onclick="sites_menu_item(<?=$sites_menu_item_sub['id'];?>,<?=$site_id;?>,<?=$sites_menu_item['id'];?>);"><i class="fa fa-pencil"></i></button>
+                              <?php } ?>
+                            </td>
+                        </tr>
+                      <?php
+                    }
+                    ?>
                   <?php
                 }
                 ?>
@@ -601,6 +617,7 @@ function save_sites_menu_item($connect) {
   $main = isset($_POST['main'])?(int)$_POST['main']:0;
   $sort = isset($_POST['sort'])?(int)$_POST['sort']:0;
   $menu_id = isset($_POST['menu_id'])?(int)$_POST['menu_id']:0;
+  $parent_id = isset($_POST['parent_id'])?(int)$_POST['parent_id']:0;
   if($id)
     $menu_item = $connect->getRow("SELECT `id` FROM `app_models_site_menu_item` WHERE `id` =?i",$id);
   else
@@ -611,8 +628,14 @@ function save_sites_menu_item($connect) {
   else
     $site = NULL;
 
+  if($parent_id)
+      $parent = $connect->getRow("SELECT `id` FROM `app_models_site_menu_item` WHERE `id` =?i AND `parent_id` = 0 AND `site_id` = ?i AND `menu_id` = ?i",$parent_id,$site_id, $menu_id);
+  else
+      $parent = NULL;
 
-  if((!$id || $menu_item) && $site && $name && in_array($status,[0,1]) && in_array($main,[0,1]) && in_array($menu_id,$menuArray) && $href) {
+
+
+  if((!$id || $menu_item) && (!$parent_id || $parent) && $site && $name && in_array($status,[0,1]) && in_array($main,[0,1]) && in_array($menu_id,$menuArray) && $href) {
     if($main) {
       if ($menu_item) {
         $oldMenuItem = $connect->getRow("SELECT `id` FROM `app_models_site_menu_item` WHERE `main`= '1' AND `id` <> ?i AND `site_id` = ?i AND `menu_id` = ?i", $menu_item['id'], $site['id'], $menu_id);
@@ -631,11 +654,12 @@ function save_sites_menu_item($connect) {
     else {
       $timestamp = gmdate("U");
       if($menu_item)
-        $connect->query("UPDATE `app_models_site_menu_item` SET `changed`=?i, `name`=?s, `href`=?s, `main` = ?i, `menu_id` =?i, `status` =?i, `sort` =?i WHERE `id` =?i",$timestamp, $name, $href, $main, $menu_id, $status,$sort,$menu_item['id']);
+        $connect->query("UPDATE `app_models_site_menu_item` SET `changed`=?i, `name`=?s, `href`=?s, `main` = ?i, `menu_id` =?i, `status` =?i, `sort` =?i, `parent_id` = ?i WHERE `id` =?i",$timestamp, $name, $href, $main, $menu_id, $status,$sort,$parent_id,$menu_item['id']);
       else
-        $connect->query("INSERT INTO `app_models_site_menu_item` (`created`, `changed`, `status`, `uid`, `sort`, `name`, `href`, `main`, `menu_id`, `site_id`) VALUES (?i, ?i, ?i, ?i, ?i, ?s, ?s, ?i, ?i, ?i)",$timestamp, $timestamp, $status, 1, $sort, $name, $href, $main, $menu_id, $site['id']);
+        $connect->query("INSERT INTO `app_models_site_menu_item` (`created`, `changed`, `status`, `uid`, `sort`, `name`, `href`, `main`, `menu_id`, `site_id`, `parent_id`) VALUES (?i, ?i, ?i, ?i, ?i, ?s, ?s, ?i, ?i, ?i, ?i)",$timestamp, $timestamp, $status, 1, $sort, $name, $href, $main, $menu_id, $site['id'], $parent_id);
 
       $respAr['success'] = 1;
+      $respAr['site_id'] = (int)$site_id;
     }
   }
 
@@ -856,6 +880,7 @@ function remove_sites_menu_item_success($connect) {
   $menu_item = $connect->getRow("SELECT `id` FROM `app_models_site_menu_item` WHERE `id` =?i", $id);
   if($menu_item) {
     $connect->query("DELETE FROM `app_models_site_menu_item` WHERE `id` =?i",$id);
+    $connect->query("DELETE FROM `app_models_site_menu_item` WHERE `parent_id` =?i",$id);
     $respAr['success'] = 1;
   }
   return json_encode($respAr);
@@ -957,17 +982,28 @@ function sites_menu_item($connect)
     ];
   $menu_item_id = isset($_POST['id'])?(int)$_POST['id']:0;
   $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
-  if($menu_item_id )
+  $parent_id = isset($_POST['parent_id'])?(int)$_POST['parent_id']:0;
+  if($menu_item_id)
     $menu_item = $connect->getRow("SELECT * FROM `app_models_site_menu_item` WHERE `id`=?i",$menu_item_id);
   else
     $menu_item = NULL;
 
+  if($menu_item) {
+      $parent_id = $menu_item['parent_id'];
+  }
+
+  if($parent_id)
+      $parent = $connect->getRow("SELECT * FROM `app_models_site_menu_item` WHERE `id`=?i AND `parent_id` = 0 AND `site_id` = ?i",$parent_id,$site_id);
+  else
+      $parent = NULL;
+
+
   $maxSort = NULL;
 
   if($menu_item)
-      $maxSort = $connect->getOne("SELECT MAX(`sort`) FROM `app_models_site_menu_item` WHERE `site_id` = ?i AND `menu_id` = ?i", $menu_item['site_id'], $menu_item['menu_id']);
+      $maxSort = $connect->getOne("SELECT MAX(`sort`) FROM `app_models_site_menu_item` WHERE `site_id` = ?i AND `menu_id` = ?i AND `parent_id` = ?i", $menu_item['site_id'], $menu_item['menu_id'],$parent_id);
   else
-      $maxSort = $connect->getOne("SELECT MAX(`sort`) FROM `app_models_site_menu_item` WHERE `site_id` = ?i AND `menu_id` = 1", $site_id);
+      $maxSort = $connect->getOne("SELECT MAX(`sort`) FROM `app_models_site_menu_item` WHERE `site_id` = ?i AND `menu_id` = 1 AND `parent_id` = ?i", $site_id, $parent_id);
 
   if(is_null($maxSort))
     $maxSort = -1;
@@ -983,13 +1019,14 @@ function sites_menu_item($connect)
                     <h4 class="modal-title"><?php if($menu_item) { ?>Редактировать элемент меню<?php } else { ?>Добавить элемент меню<?php } ?></h4>
                 </div>
                 <div class="modal-body form-horizontal">
-                  <?php if($menu_item || $site_id) { ?>
+                  <?php if(($menu_item || $site_id) && ($parent || !$parent_id)) { ?>
                       <div class="form-group">
                           <label class="col-sm-2 control-label">Название</label>
                           <div class="col-sm-10">
                               <input type="text" class="form-control" name="name" maxlength="255" value="<?=$menu_item?htmlspecialchars($menu_item['name']):"";?>">
                               <input type="hidden" value="<?=$site_id?$site_id:$menu_item['site_id'];?>" name="site_id">
                               <input type="hidden" value="<?=$menu_item?$menu_item['id']:0;?>" name="id">
+                              <input type="hidden" value="<?=$parent?$parent['id']:0;?>" name="parent_id">
                               <div class="input-message-block" data-for="name"></div>
                           </div>
                       </div>
@@ -1000,12 +1037,12 @@ function sites_menu_item($connect)
                               <div class="input-message-block" data-for="href"></div>
                           </div>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group<?php if($parent) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Меню</label>
                           <div class="col-sm-10">
                               <select class="form-control" name="menu_id">
                                   <?php foreach ($menuArray as $i => $item) { ?>
-                                    <option value="<?=$i;?>"<?php if($menu_item && $menu_item['menu_id'] == $i) { ?> selected<?php } ?>><?=$item;?></option>
+                                    <option value="<?=$i;?>"<?php if(($menu_item && $menu_item['menu_id'] == $i) || ($parent && $parent['menu_id'] == $i)) { ?> selected<?php } ?>><?=$item;?></option>
                                   <?php } ?>
                               </select>
                           </div>
@@ -1030,11 +1067,15 @@ function sites_menu_item($connect)
                               <input type="checkbox" name="status" class="form-control"<?php if($menu_item && $menu_item['status'] == 1) {?> checked<?php } ?>>
                           </div>
                       </div>
+                  <?php } else { ?>
+                    Родительский элемент не найден. Возможно он был недавно удалён...
                   <?php } ?>
                 </div>
                 <div class="modal-loader"></div>
                 <div class="modal-footer">
+                  <?php if(($menu_item || $site_id) && ($parent || !$parent_id)) { ?>
                     <button class="btn btn-success btn-sm btn-save-sites-menu-item" onclick="save_sites_menu_item()" id="btn-save-sites-menu-item"><i class="fa fa-check-circle"></i> Сохранить</button>
+                  <?php } ?>
                 </div>
             </div>
         </div>
