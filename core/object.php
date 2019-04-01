@@ -1479,6 +1479,12 @@ function edit_direction($connect){
 						<input type="text" class="form-control name-direction" value="<?php echo $row['name']; ?>" />
 					</div>
 				</div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Название в род. падеже</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control name-direction-rod" value="<?=$row['name_rod'];?>" />
+                    </div>
+                </div>
 				<div class="form-group">
 					<label class="col-sm-4 control-label">Описание</label>
 					<div class="col-sm-8">
@@ -1503,10 +1509,11 @@ function edit_direction($connect){
 
 function update_direction($connect){
 	$id = $_POST["id"];
-	$name = $_POST["name"];
+	$name = trim($_POST["name"]);
+	$name_rod = trim($_POST['name_rod']);
 	$description = strip_tags($_POST["description"]);
 	$meta_desc = strip_tags($_POST["meta_desc"]);
-	$connect->query("UPDATE direction_object SET name=?s, description=?s, meta_desc=?s, `synchronized` = 0 WHERE id=?i", $name, $description, $meta_desc, $id);
+	$connect->query("UPDATE direction_object SET name=?s, name_rod = ?s, description=?s, meta_desc=?s, `synchronized` = 0 WHERE id=?i", $name, $name_rod, $description, $meta_desc, $id);
 }
 
 function create_uniq_link_object($connect){

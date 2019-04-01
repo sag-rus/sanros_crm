@@ -1390,12 +1390,13 @@ function edit_direction(type){
 
 function update_direction(id, type){
 	var name = $('.edit-direction .name-direction').val();
+	var name_rod = $('.edit-direction .name-direction-rod').val();
 	var desc = $('.edit-direction .description-direction').val();
 	var meta_desc = $('.edit-direction .meta-desc-direction').val();
 	if(!name)
 		show_warning('.edit-direction', 'Укажите название направления', false);
 	else{
-		var str = 'func=update_direction&id=' + id + '&name=' + name + '&description=' + desc + '&meta_desc=' + meta_desc;
+		var str = 'func=update_direction&id=' + id + '&name=' + name + '&description=' + desc + '&meta_desc=' + meta_desc+'&name_rod='+name_rod;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
