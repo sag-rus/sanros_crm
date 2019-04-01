@@ -42,7 +42,7 @@ function sync_objects_api($connect){
 
 		}
 
-		$regions = $connect->getAll("SELECT `region`.`id` AS `id`, `region`.`name` AS `name`, `region`.`name_rod` AS `name_rod`, `region`.`id_direction` AS `id_direction`, `direction_object`.`name` AS `direction_name` FROM `region` INNER JOIN `direction_object` ON `region`.`id_direction` = `direction_object`.`id` WHERE `region`.`id_country` = 1 AND `region`.`synchronized` = 0");
+		$regions = $connect->getAll("SELECT `region`.`id` AS `id`, `region`.`name` AS `name`, `region`.`name_rod` AS `name_rod`, `region`.`id_direction` AS `id_direction`, `direction_object`.`name` AS `direction_name`, `region`.`description` AS `description` FROM `region` INNER JOIN `direction_object` ON `region`.`id_direction` = `direction_object`.`id` WHERE `region`.`id_country` = 1 AND `region`.`synchronized` = 0");
 
 		foreach ($regions as $region) {
 			$regionAr = [
@@ -50,6 +50,7 @@ function sync_objects_api($connect){
 				'name_genitive' => $region['name_rod'],
 				'parent_id' => $region['id_direction'],
 				'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4',
+				'description' => $region['description'],
 				'uri' => '/направления/'.change_text_url($region['direction_name']).'/'.change_text_url($region['name']),
 				'status' => 1
 			];
