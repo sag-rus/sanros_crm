@@ -8,7 +8,7 @@ function sync_objects_api($connect){
 	try {
 
 		$client = new \GuzzleHttp\Client();
-		$directions = $connect->getAll("SELECT `id`, `name`, `name_rod`, `description` FROM `direction_object` WHERE `id_country` = 1 AND `synchronized` = 0");
+		$directions = $connect->getAll("SELECT `id`, `name`, `name_rod`, `description`, `meta_desc` FROM `direction_object` WHERE `id_country` = 1 AND `synchronized` = 0");
 		$directionsCond = "";
 		foreach ($directions as $direction) {
 
@@ -21,7 +21,7 @@ function sync_objects_api($connect){
 				'name' => $direction['name'],
 				'name_genitive' => $direction['name_rod'],
 				'parent_id' => 0,
-				'description' => $direction['description'],
+				'description' => $direction['description']?$direction['description']:$direction['meta_desc'],
 				'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4',
 				'uri' => '/направления/'.change_text_url($direction['name']),
 				'status' => 1
