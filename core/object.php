@@ -1463,7 +1463,7 @@ function edit_direction($connect){
 	$type = $_POST["type"];
 	if(!$id)
 		return FALSE;
-	$row = $connect->getRow("SELECT name, description, meta_desc FROM direction_object WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT name, name_rod, description, meta_desc FROM direction_object WHERE id=?i", $id);
 ?>
 <div class="modal fade">
 	<div class="modal-dialog">
