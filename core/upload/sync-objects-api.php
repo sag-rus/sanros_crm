@@ -154,7 +154,7 @@ function sync_objects_api($connect){
 		}
 
 
-		$objects = $connect->getAll("SELECT `object`.`id` AS `id`, `object`.`name` AS `name`, `object`.`url_name` AS `url_name`, `object`.`id_reg` AS `region_id`, `object`.`region_direction_id` AS `region_direction_id`, `object`.`direction` AS `direction`, `object`.`active` AS `active`, `object`.`note` AS `note`, `object`.`type` AS `type`, `object`.`full_name` AS `full_name`, `object`.`address` AS `address`, `object`.`telephone` AS `telephone`, `type_object`.`name` AS `type_name` FROM `object` LEFT JOIN `type_object` ON `object`.`type` = `type_object`.`id` WHERE `object`.`synchronized` = 0 AND `object`.`type` IS NOT NULL AND `object`.`id_reg` > 0");
+		$objects = $connect->getAll("SELECT `object`.`id` AS `id`, `object`.`name` AS `name`, `object`.`url_name` AS `url_name`, `object`.`id_reg` AS `region_id`, `object`.`region_direction_id` AS `region_direction_id`, `object`.`direction` AS `direction`, `object`.`active` AS `active`, `object`.`note` AS `note`, `object`.`type` AS `type`, `object`.`full_name` AS `full_name`, `object`.`address` AS `address`, `object`.`telephone` AS `telephone`, `object`.`id_profile` AS `id_profile`, `type_object`.`name` AS `type_name` FROM `object` LEFT JOIN `type_object` ON `object`.`type` = `type_object`.`id` WHERE `object`.`synchronized` = 0 AND `object`.`type` IS NOT NULL AND `object`.`id_reg` > 0");
 
 		foreach ($objects as $object) {
 			$objectAr = [];
@@ -196,6 +196,15 @@ function sync_objects_api($connect){
 					else
 						$connect->query("UPDATE `object` SET `synchronized` = '1' WHERE `id` = ?i AND `name` = ?s AND `full_name` = ?s AND `type` = ?i AND `active` = ?i AND `id_reg` = ?i AND `note` = ?s AND `address` = ?s AND `url_name` = ?s",$object['id'],$object['name'],$object['full_name'],$object['type'],$object['active'],$object['region_id'],$object['note'],$object['address'],$object['url_name']);
 
+					$connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type` = 'resort' AND `entity1_id` = ?i AND `name` = 'treatment_profile'");
+					$objectProfiles = explode("_",trim($object['id_profile']));
+					foreach ($objectProfiles as $objectProfile) {
+						$objectProfile = (int)$objectProfile;
+						if($objectProfile > 0) {
+							$timestamp = gmdate("U");
+							$connect->query("INSERT INTO `app_models_site_bound` (`created`, `changed`, `status`, `uid`, `sort`, `name`, `entity1_type`, `entity1_id`, `entity2_type`, `entity2_id`, `title`, `description`) VALUES (?i, ?i, ?i, ?i, ?i, ?s, ?s, ?i, ?s, ?i, ?s, ?s)", $timestamp, $timestamp, 1, 1, 0, 'treatment_profile', 'resort', $object['id'], 'treatment_profile', $objectProfile, '', '');
+						}
+					}
 				}
 			}
 		}
