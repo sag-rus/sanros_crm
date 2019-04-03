@@ -148,7 +148,31 @@ function sync_objects_api($connect){
 				$success = (bool)(int)$res['success'];
 				if($success) {
 					$connect->query("UPDATE `profile` SET `synchronized` = '1' WHERE `id` = ?i",$profile['id']);
-					//$connect->query("UPDATE `object` SET `synchronized` = '0' WHERE `type` = ?i",$type['id']);
+				}
+			}
+		}
+
+		$methods = $connect->getAll("SELECT `id`, `name`, `description` FROM `methods` WHERE `synchronized` = 0");
+
+		foreach ($methods as $method) {
+			$methodAr = [];
+			$methodAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+			$methodAr["id"] = $method['id'];
+			$methodAr["name"] = $method['name'];
+			$methodAr["description"] = $method['description'];
+			$methodAr['uri'] = '/методы-лечения/'.change_text_url($method['name']);
+			$methodAr['status'] = 1;
+
+
+			$res = $client->request('POST',"https://sites.tonia.ru/api/object/method/set/".$method['id'],[
+				'form_params' => $methodAr
+			]);
+
+			$res = json_decode($res->getBody(),true);
+			if(array_key_exists('success',$res)) {
+				$success = (bool)(int)$res['success'];
+				if($success) {
+					$connect->query("UPDATE `methods` SET `synchronized` = '1' WHERE `id` = ?i",$method['id']);
 				}
 			}
 		}

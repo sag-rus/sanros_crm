@@ -107,7 +107,7 @@ function update_profile($connect){
 	$id = $_POST["id"];
 	$name = $_POST["name"];
 	$description = $_POST["description"];
-	$connect->query("UPDATE profile SET name=?s, description=?s WHERE id=?i", $name, $description, $id);
+	$connect->query("UPDATE profile SET name=?s, description=?s, synchronized = 0 WHERE id=?i", $name, $description, $id);
 }
 
 function show_infrastructure($connect){
