@@ -286,6 +286,8 @@ function select_object_upload(object){
 //	html+= "<a href='upload.php?func=download_price_object&id=" +object+ "' class='btn btn-info btn-sm' target='_blank' style='text-decoration: none'><i class='fa fa-download'></i> Скачать цены HTML</a><br /><br />";
 //	html+= "<button type='button' class='btn btn-danger btn-sm' onclick='delete_photo_from_server(\"" +object+ "\")'><i class='fa fa-times-circle'></i> Удалить все фото на сервере</button>";
 	html += '<button type="button" class="btn btn-success"  data-toggle="tooltip" data-placement="bottom" title="Выгрузить информацию об объектах в новое API" onclick="sync_objects_api();"><i class="fa fa-refresh"></i> Синхронизировать объекты</button>';
+	html += '<button type="button" class="btn btn-success"  data-toggle="tooltip" data-placement="bottom" title="Синхронизировать отзывы через API" onclick="sync_objects_ratings_api();"><i class="fa fa-refresh"></i> Синхронизировать отзывы</button>';
+
 	$('.object-infa').html(html);
 }
 
@@ -324,6 +326,22 @@ function upload_information_object(){
 function sync_objects_api(){
 	show_loader_element('.object-infa');
 	var str = 'func=sync_objects_api&cache='+Math.random();
+	$.ajax({
+		type: 'POST',
+		data: str,
+		url: 'mysql.php',
+		success: function(answer){
+			if(answer)
+				$('.object-infa').html(answer);
+			else
+				$('.menu-object .label-success').trigger('click');
+		}
+	});
+}
+
+function sync_objects_ratings_api(){
+	show_loader_element('.object-infa');
+	var str = 'func=sync_objects_ratings_api&cache='+Math.random();
 	$.ajax({
 		type: 'POST',
 		data: str,

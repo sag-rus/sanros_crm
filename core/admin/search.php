@@ -150,7 +150,7 @@ function unite_objects($connect){
 	$new_id = $_POST["new_id"];
 	$connect->query("UPDATE reckoning SET id_obj=?i WHERE id_obj=?i", $new_id, $id);
 	$connect->query("UPDATE room SET id_obj=?i WHERE id_obj=?i", $new_id, $id);
-	$connect->query("UPDATE rating SET id_obj=?i WHERE id_obj=?i", $new_id, $id);
+	$connect->query("UPDATE rating SET id_obj=?i, synchronized = 0 WHERE id_obj=?i", $new_id, $id);
 }
 
 function select_similar_client_admin($connect){

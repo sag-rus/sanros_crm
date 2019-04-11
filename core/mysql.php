@@ -58,6 +58,7 @@ include_once("upload/sights.php");
 // include_once("upload/news.php");
 include_once("upload/sync-database.php");
 include_once("upload/sync-objects-api.php");
+include_once("upload/sync-objects-ratings-api.php");
 
 include_once("price/calendar.php");
 include_once("price/search-engine.php");

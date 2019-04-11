@@ -11,7 +11,7 @@ function upload_rating_object($connect){
 		$id = $row["id"];
 		$id_room = $connect->getOne("SELECT id_room FROM position_reck WHERE schet=?i", $row["schet"]);
 		$id_obj = $connect->getOne("SELECT id_obj FROM room WHERE id=?i", $id_room);
-		$connect->query("UPDATE rating SET id_obj=?i WHERE id=?i", $id_obj, $id);
+		$connect->query("UPDATE rating SET id_obj=?i, synchronized = 0 WHERE id=?i", $id_obj, $id);
 	}
 	$data = $connect->getAll("SELECT object.id FROM object, region WHERE region.id=object.id_reg AND (object.active=0 OR object.active=1) GROUP BY object.id");
 	foreach($data as $row){

@@ -561,19 +561,19 @@ function update_rating($connect){
 	$leisure = $_POST["leisure"];	
 	$ratio = $_POST["ratio"];
 	$comfort = $_POST["comfort"];
-	$connect->query("UPDATE rating SET clean=?i, staff=?i, location=?i, leisure=?i, ratio=?i, comfort=?i, positive=?s, negative=?s, advice=?s, company_rating=?s WHERE id=?i", $clean, $staff, $location, $leisure, $ratio, $comfort, $positive, $negative, $advice, $company, $id);
+	$connect->query("UPDATE rating SET clean=?i, staff=?i, location=?i, leisure=?i, ratio=?i, comfort=?i, positive=?s, negative=?s, advice=?s, company_rating=?s, synchronized = 0 WHERE id=?i", $clean, $staff, $location, $leisure, $ratio, $comfort, $positive, $negative, $advice, $company, $id);
 	if($treatment)
-		$connect->query("UPDATE rating SET treatment=?i WHERE id=?i", $treatment, $id);
+		$connect->query("UPDATE rating SET treatment=?i, synchronized = 0 WHERE id=?i", $treatment, $id);
 }
 
 function confirm_rating($connect){
-	$connect->query("UPDATE rating SET status=3 WHERE id=?i", $_POST["id"]);
+	$connect->query("UPDATE rating SET status=3, synchronized = 0 WHERE id=?i", $_POST["id"]);
 	$data = check_rating_count($connect);
 	return json_encode($data);
 }
 
 function delete_rating($connect){
-	$connect->query("UPDATE rating SET status=4 WHERE id=?i", $_POST["id"]);
+	$connect->query("UPDATE rating SET status=4, synchronized = 0 WHERE id=?i", $_POST["id"]);
 }
 
 function show_rating_comment($connect){

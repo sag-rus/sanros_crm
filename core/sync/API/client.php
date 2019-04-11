@@ -1220,7 +1220,7 @@ function save_rating_tour_client($connect, $data){
 		$negative = $data["negative"];
 		$advice = $data["advice"];
 		$from = $data["from"];
-		$connect->query("UPDATE rating SET date_send=?s, clean=?s, staff=?s, comfort=?s, location=?s, ratio=?s, leisure=?s, treatment=?s, company_rating=?s, photos=?s, positive=?s, negative=?s, advice=?s, status=2, hash='', from_whence=?s WHERE id=?i", $today, $clean, $staff, $comfort, $location, $ratio, $leisure, $treatment, $company, $photos, $positive, $negative, $advice, $from, $rating);
+		$connect->query("UPDATE rating SET date_send=?s, clean=?s, staff=?s, comfort=?s, location=?s, ratio=?s, leisure=?s, treatment=?s, company_rating=?s, photos=?s, positive=?s, negative=?s, advice=?s, status=2, hash='', from_whence=?s, synchronized = 0 WHERE id=?i", $today, $clean, $staff, $comfort, $location, $ratio, $leisure, $treatment, $company, $photos, $positive, $negative, $advice, $from, $rating);
 	}
 	return FALSE;
 }

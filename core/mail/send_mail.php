@@ -319,7 +319,7 @@ function send_mail_confirm_rating_comment($connect){
 	$object = get_object($connect, $id_obj, "type");
 	if(!$row["hash"]){
 		$hash = md5(uniqid());
-		$connect->query("UPDATE rating SET hash=?s WHERE id=?i", $hash, $rating);
+		$connect->query("UPDATE rating SET hash=?s, synchronized = 0 WHERE id=?i", $hash, $rating);
 	}
 	$image = $sync_host."/price/object/head/default.jpg";
 	if($connect->getOne("SELECT image FROM object WHERE id=?i", $id_obj))

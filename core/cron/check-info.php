@@ -87,7 +87,7 @@ function check_average_rating($connect){
 		if($row["treatment"] != 0)
 			$count_rating++;
 		$average = round($average / $count_rating * 2, 1);
-		$connect->query("UPDATE rating SET average=?s WHERE id=?i", $average, $id);
+		$connect->query("UPDATE rating SET average=?s, synchronized = 0 WHERE id=?i", $average, $id);
 	}
 }
 
