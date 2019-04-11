@@ -7,7 +7,7 @@ function sync_objects_ratings_api($connect){
 	try {
 
 		$client = new \GuzzleHttp\Client();
-		$ratings = $connect->getAll("SELECT `id`, `status`, `clean`, `comfort`, `location`, `staff`, `ratio`, `leisure`, `treatment`, `id_obj`, `positive`, `negative`, `date_send`, `company_rating`, `turist`, `advice` WHERE `date_send` IS NOT NULL AND `average` > 0 AND `synchronized` = 0 AND `id_obj` > 0");
+		$ratings = $connect->getAll("SELECT `id`, `status`, `clean`, `comfort`, `location`, `staff`, `ratio`, `leisure`, `treatment`, `id_obj`, `positive`, `negative`, `date_send`, `company_rating`, `turist`, `advice` FROM `rating` WHERE `date_send` IS NOT NULL AND `average` > 0 AND `synchronized` = 0 AND `id_obj` > 0");
 		foreach ($ratings as $rating) {
 			$ratingAr = [
 				'status' => $rating['status'] > 2?1:0,
