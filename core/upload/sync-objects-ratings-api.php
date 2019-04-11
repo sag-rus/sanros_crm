@@ -24,6 +24,7 @@ function sync_objects_ratings_api($connect){
 				'uid' => 1
 			];
 
+			echo $rating['id'];
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/rating/set/".$rating['id'],[
 				'form_params' => $ratingAr
