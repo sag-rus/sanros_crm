@@ -24,15 +24,12 @@ function sync_objects_ratings_api($connect){
 				'uid' => 1
 			];
 
-			echo $rating['id'];
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/rating/set/".$rating['id'],[
 				'form_params' => $ratingAr
 			]);
 
-			print_r($res->getBody()->getContents());
-
-			$res = json_decode($res->getBody(),true);
+			$res = json_decode($res->getBody()->getContents(),true);
 
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
@@ -40,7 +37,6 @@ function sync_objects_ratings_api($connect){
 						$connect->query("UPDATE `rating` SET `synchronized` = '1' WHERE `id` = ?i", $rating['id']);
 				}
 			}
-			break;
 
 		}
 
