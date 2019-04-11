@@ -28,16 +28,18 @@ function sync_objects_ratings_api($connect){
 			]);
 
 			$res = json_decode($res->getBody(),true);
+			print_r($res);
+
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
 				if($success) {
 						$connect->query("UPDATE `rating` SET `synchronized` = '1' WHERE `id` = ?i", $rating['id']);
 				}
 				else {
-					print_r($res);
+
 				}
 			}
-
+			break;
 
 		}
 
