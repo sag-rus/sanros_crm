@@ -32,6 +32,9 @@ function sync_objects_ratings_api($connect){
 				if($success) {
 						$connect->query("UPDATE `rating` SET `synchronized` = '1' WHERE `id` = ?i", $rating['id']);
 				}
+				else {
+					print_r($res);
+				}
 			}
 
 
