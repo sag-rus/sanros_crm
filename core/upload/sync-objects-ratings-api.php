@@ -30,7 +30,7 @@ function sync_objects_ratings_api($connect){
 				'form_params' => $ratingAr
 			]);
 
-			print_r($res->getBody());
+			print_r($res->getBody()->getContents());
 
 			$res = json_decode($res->getBody(),true);
 
