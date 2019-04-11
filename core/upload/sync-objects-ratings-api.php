@@ -19,7 +19,8 @@ function sync_objects_ratings_api($connect){
 				'advice' => $rating['advice'],
 				'author_name' => $rating['turist'],
 				'average' => round(($rating['clean']+$rating['comfort']+$rating['location']+$rating['staff']+$rating['ratio']+$rating['leisure']+$rating['treatment'])/14,1),
-				'company_rating' => $rating['company_rating']
+				'company_rating' => $rating['company_rating'],
+				'uid' => 1
 			];
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/rating/set/".$rating['id'],[
