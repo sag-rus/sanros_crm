@@ -39,6 +39,8 @@ function sync_objects_ratings_api($connect){
 				}
 			}
 
+			break;
+
 		}
 
 
