@@ -69,7 +69,7 @@ function review_contract($connect, $type, $id){
 		if($row["type"] == 1){
 			$sale+= $sum_pay * ($row["value"] / 100);
 		}else
-			$sum = $sum - $row["value"];
+			$sale+= $row["value"];
 	}
 	$sum_pay-= $sale;
 	$sale = add_null($sale);
