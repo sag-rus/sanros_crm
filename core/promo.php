@@ -254,7 +254,7 @@ function update_promotion($connect){
 	$text = $_POST["text"];
 	$type = $_POST["type"];
 	$room = (int)$_POST["room"];
-	$connect->query("UPDATE promotions SET type=?s, id_room=?i, date_end=?s, title=?s, text=?s WHERE id=?i", $type, $room, $end, $title, $text, $id);
+	$connect->query("UPDATE promotions SET type=?s, id_room=?i, date_end=?s, title=?s, text=?s, synchronized = 0 WHERE id=?i", $type, $room, $end, $title, $text, $id);
 	return selection_promotion($connect, $id);
 }
 
@@ -263,16 +263,16 @@ function check_status_promotion($connect){
 	$status = $_POST["status"];
 	$object = $connect->getOne("SELECT id_obj FROM promotions WHERE id=?i", $id);
 	if($status == "standart")
-		$connect->query("UPDATE promotions SET active=1 WHERE id=?i", $id);
+		$connect->query("UPDATE promotions SET active=1, synchronized = 0 WHERE id=?i", $id);
 	elseif($status == "trash")
-		$connect->query("UPDATE promotions SET active=0 WHERE id=?i", $id);
+		$connect->query("UPDATE promotions SET active=0, synchronized = 0 WHERE id=?i", $id);
 	elseif($status == "star"){
 		if(!$connect->getOne("SELECT id FROM promotions WHERE active=2 AND id_obj=?i", $object))
-			$connect->query("UPDATE promotions SET active=2 WHERE id=?i", $id);
+			$connect->query("UPDATE promotions SET active=2, synchronized = 0 WHERE id=?i", $id);
 	}elseif($status == "VIP"){
 		$count = $connect->getOne("SELECT COUNT(*) FROM promotions WHERE active=3");
 		if($count < 6)
-			$connect->query("UPDATE promotions SET active=3 WHERE id=?i", $id);
+			$connect->query("UPDATE promotions SET active=3, synchronized = 0 WHERE id=?i", $id);
 	}
 	return selection_promotion($connect, $id);
 }

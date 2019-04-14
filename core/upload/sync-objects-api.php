@@ -177,6 +177,33 @@ function sync_objects_api($connect){
 			}
 		}
 
+		$promotions = $connect->getAll("SELECT `id`, `title`, `text`, `id_obj`, `id_room`, `active`, `date`, `date_end` FROM `promotions` WHERE `synchronized` = 0");
+
+		foreach ($promotions as $promotion) {
+			$promotionAr = [];
+			$promotionAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+			$promotionAr["id"] = $promotion['id'];
+			$promotionAr["resort_id"] = $promotion['id_obj'];
+			$promotionAr["room_id"] = $promotion['id_room'];
+			$promotionAr["title"] = $promotion['title'];
+			$promotionAr["body"] = $promotion['text'];
+			$promotionAr['status'] = ($promotion['active'] > 0)?1:0;
+			$promotionAr['start_timestamp'] = strtotime($promotion['date']);
+			$promotionAr['end_timestamp'] = strtotime($promotion['date_end']);
+
+			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/promo/set/".$promotion['id'],[
+				'form_params' => $promotionAr
+			]);
+
+			$res = json_decode($res->getBody(),true);
+			if(array_key_exists('success',$res)) {
+				$success = (bool)(int)$res['success'];
+				if($success) {
+					$connect->query("UPDATE `promotions` SET `synchronized` = '1' WHERE `id` = ?i",$promotion['id']);
+				}
+			}
+		}
+
 
 		$objects = $connect->getAll("SELECT `object`.`id` AS `id`, `object`.`name` AS `name`, `object`.`url_name` AS `url_name`, `object`.`id_reg` AS `region_id`, `object`.`region_direction_id` AS `region_direction_id`, `object`.`direction` AS `direction`, `object`.`active` AS `active`, `object`.`note` AS `note`, `object`.`type` AS `type`, `object`.`full_name` AS `full_name`, `object`.`address` AS `address`, `object`.`telephone` AS `telephone`, `object`.`id_profile` AS `id_profile`, `object`.`id_methods` AS `id_methods`, `type_object`.`name` AS `type_name` FROM `object` LEFT JOIN `type_object` ON `object`.`type` = `type_object`.`id` WHERE `object`.`synchronized` = 0 AND `object`.`type` IS NOT NULL AND `object`.`id_reg` > 0");
 
