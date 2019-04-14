@@ -278,6 +278,7 @@ function sync_objects_api($connect){
 		foreach ($comforts as $comfort) {
 			$comfortAr = [];
 			$comfortAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+			$comfortAr['id'] = $comfort['id'];
 			$comfortAr['status'] = 1;
 			$comfortAr['name'] = $comfort['name'];
 			$comfortAr['icon'] = $comfort['icon'];
