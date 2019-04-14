@@ -1467,7 +1467,7 @@ function ids_to_bounds($connect,$entity, String $name, array $ids):array
         'name' => $name,
         'entity1_type' => $entity['type'],
         'entity1_id' => $entity['id'],
-        'entity2_type' => 'object',
+        'entity2_type' => 'resort',
         'entity2_id' => $id,
         'title' => "",
         'description' => "",
