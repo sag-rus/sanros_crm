@@ -190,6 +190,7 @@ function sync_objects_api($connect){
 			$promotionAr['status'] = ($promotion['active'] > 0)?1:0;
 			$promotionAr['start_timestamp'] = strtotime($promotion['date']);
 			$promotionAr['end_timestamp'] = strtotime($promotion['date_end']);
+			$promotionAr['uid'] = 1;
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/promo/set/".$promotion['id'],[
 				'form_params' => $promotionAr
