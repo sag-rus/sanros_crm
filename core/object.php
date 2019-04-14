@@ -1181,7 +1181,7 @@ function update_housing($connect){
 	$id = $_POST["id"];
 	$name = $_POST["name"];
 	$desc = $_POST["desc"];
-	$connect->query("UPDATE housing SET name=?s, description=?s WHERE id=?i", $name, $desc, $id);
+	$connect->query("UPDATE housing SET name=?s, description=?s, synchronized = 0 WHERE id=?i", $name, $desc, $id);
 }
 
 

@@ -130,7 +130,7 @@ function update_category_housing_account($connect, $data){
 	if(CheckAuthObjectCabinet::check_authorization()){
 		$object = $data["object"];
 		$housing = $data["id"];
-		$connect->query("UPDATE housing SET name=?s WHERE id=?i AND id_obj=?i", $data["name"], $housing, $object);
+		$connect->query("UPDATE housing SET name=?s, synchronized = 0 WHERE id=?i AND id_obj=?i", $data["name"], $housing, $object);
 		save_history_object("Изменение корпуса ".$data["name"]);
 	}
 }
