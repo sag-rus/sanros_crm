@@ -196,11 +196,16 @@ function sync_objects_api($connect){
 				'form_params' => $promotionAr
 			]);
 
-			$res = json_decode($res->getBody(),true);
+			$res = json_decode($res->getBody()->getContents(),true);
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
 				if($success) {
 					$connect->query("UPDATE `promotions` SET `synchronized` = '1' WHERE `id` = ?i",$promotion['id']);
+				}
+				else {
+					echo $res['msg'];
+					print_r($res['fail_messages']);
+					break;
 				}
 			}
 		}
