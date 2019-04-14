@@ -203,7 +203,7 @@ function sync_objects_api($connect){
 					$connect->query("UPDATE `promotions` SET `synchronized` = '1' WHERE `id` = ?i",$promotion['id']);
 				}
 				else {
-					echo $res['msg'];
+					echo $res['msg'].": ".$promotion['id'].'<br>';
 					print_r($res['fail_messages']);
 					break;
 				}
