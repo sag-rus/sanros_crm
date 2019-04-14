@@ -335,17 +335,17 @@ function update_comfort($connect){
 	$id = $_POST["id"];
 	$name = $_POST["name"];
 	$icon = $_POST["icon"];
-	$connect->query("UPDATE comfort SET name=?s, icon=?s WHERE id=?i", $name, $icon, $id);
+	$connect->query("UPDATE comfort SET name=?s, icon=?s, synchronized = 0 WHERE id=?i", $name, $icon, $id);
 }
 
 function change_type_comfort($connect){
 	$id = $_POST["id"];
 	$type = $connect->getOne("SELECT type FROM comfort WHERE id=?i", $id);
 	if($type == 0){
-		$connect->query("UPDATE comfort SET type=1 WHERE id=?i LIMIT 1", $id);
+		$connect->query("UPDATE comfort SET type=1, synchronized = 0 WHERE id=?i LIMIT 1", $id);
 		return 1;
 	}else
-		$connect->query("UPDATE comfort SET type=0 WHERE id=?i LIMIT 1", $id);
+		$connect->query("UPDATE comfort SET type=0, synchronized = 0 WHERE id=?i LIMIT 1", $id);
 	return 0;
 }
 

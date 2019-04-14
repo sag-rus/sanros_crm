@@ -273,6 +273,35 @@ function sync_objects_api($connect){
 			}
 		}
 
+		$comforts = $connect->getAll("SELECT `id`, `name`, `icon`, `type` FROM `comfort` WHERE `synchronized` = 0");
+
+		foreach ($comforts as $comfort) {
+			$comfortAr = [];
+			$comfortAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+			$comfortAr['status'] = 1;
+			$comfortAr['name'] = $comfort['name'];
+			$comfortAr['icon'] = $comfort['icon'];
+			$comfortAr['type'] = $comfort['type'];
+			$comfortAr['uid'] = 1;
+
+			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/room/comfort/set/".$comfort['id'],[
+				'form_params' => $comfortAr
+			]);
+
+			$res = json_decode($res->getBody()->getContents(),true);
+			if(array_key_exists('success',$res)) {
+				$success = (bool)(int)$res['success'];
+				if($success) {
+					$connect->query("UPDATE `comfort` SET `synchronized` = '1' WHERE `id` = ?i",$comfort['id']);
+				}
+				else {
+					echo $res['msg'].": ".$comfort['id'].'<br>';
+					print_r($res['fail_messages']);
+					break;
+				}
+			}
+		}
+
 
 		$objects = $connect->getAll("SELECT `object`.`id` AS `id`, `object`.`name` AS `name`, `object`.`url_name` AS `url_name`, `object`.`id_reg` AS `region_id`, `object`.`region_direction_id` AS `region_direction_id`, `object`.`direction` AS `direction`, `object`.`active` AS `active`, `object`.`note` AS `note`, `object`.`type` AS `type`, `object`.`full_name` AS `full_name`, `object`.`address` AS `address`, `object`.`telephone` AS `telephone`, `object`.`id_profile` AS `id_profile`, `object`.`id_methods` AS `id_methods`, `type_object`.`name` AS `type_name` FROM `object` LEFT JOIN `type_object` ON `object`.`type` = `type_object`.`id` WHERE `object`.`synchronized` = 0 AND `object`.`type` IS NOT NULL AND `object`.`id_reg` > 0");
 
