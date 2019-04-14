@@ -1592,7 +1592,7 @@ function update_rate_plan($connect){
 	$desc = $_POST["desc"];
 	$food = $_POST["food"];
 	$days = (int)$_POST["days"];
-	$connect->query("UPDATE rate_plan SET name=?s, description=?s, food=?s, days=?s WHERE id=?i", $name, $desc, $food, $days, $id);
+	$connect->query("UPDATE rate_plan SET name=?s, description=?s, food=?s, days=?s, synchronized = 0 WHERE id=?i", $name, $desc, $food, $days, $id);
 }
 
 ?>
