@@ -475,6 +475,7 @@ function sync_objects_api($connect){
 					break;
 				}
 			}
+			break;
 		}
 
 		return true;
