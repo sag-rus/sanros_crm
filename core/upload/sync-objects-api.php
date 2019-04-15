@@ -448,7 +448,6 @@ function sync_objects_api($connect){
 
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
-				print_r($res);
 				if($success) {
 					$connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type` = 'room' AND `entity1_id` = ?i AND `name` = 'comfort'", $room['id']);
 					$roomComforts = explode("_",trim($room['id_comfort'].$room['id_best_comfort']));
@@ -465,6 +464,7 @@ function sync_objects_api($connect){
 						'type' => 'room',
 						'id' => $room['id']
 					])) {
+						print_r($res);
 						return FALSE;
 					}
 					else {
