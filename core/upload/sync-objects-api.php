@@ -5,6 +5,10 @@ require_once __DIR__.'/../../vendor/autoload.php';
 function sync_objects_api($connect){
 	global $directory;
 
+	if(!sync_files($connect)) {
+		return FALSE;
+	}
+
 	try {
 
 		$client = new \GuzzleHttp\Client();
