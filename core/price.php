@@ -210,7 +210,7 @@ function edit_infrastructure($connect){
 function update_infrastructure($connect){
 	$id = $_POST["id"];
 	$name = $_POST["name"];
-	$connect->query("UPDATE infa SET name=?s WHERE id=?i", $name, $id);
+	$connect->query("UPDATE infa SET name=?s, synchronized = 0 WHERE id=?i", $name, $id);
 }
 
 function see_comfort($connect){
