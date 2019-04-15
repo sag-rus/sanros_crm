@@ -444,6 +444,8 @@ function sync_objects_api($connect){
 				'form_params' => $roomAr
 			]);
 
+			print_r($res);
+
 			$res = json_decode($res->getBody()->getContents(),true);
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
