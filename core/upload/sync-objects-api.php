@@ -444,11 +444,11 @@ function sync_objects_api($connect){
 				'form_params' => $roomAr
 			]);
 
-			print_r($res->getBody()->getContents());
 			$res = json_decode($res->getBody()->getContents(),true);
 
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
+				print_r($res);
 				if($success) {
 					$connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type` = 'room' AND `entity1_id` = ?i AND `name` = 'comfort'", $room['id']);
 					$roomComforts = explode("_",trim($room['id_comfort'].$room['id_best_comfort']));
