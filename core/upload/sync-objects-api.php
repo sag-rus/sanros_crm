@@ -3,7 +3,6 @@
 require_once __DIR__.'/../../vendor/autoload.php';
 
 function sync_objects_api($connect){
-	global $directory;
 
 	if(!sync_files($connect)) {
 		return FALSE;
@@ -373,11 +372,6 @@ function sync_objects_api($connect){
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
 				if($success) {
-					if(is_null($object['url_name']))
-						$connect->query("UPDATE `object` SET `synchronized` = '1' WHERE `id` = ?i AND `name` = ?s AND `full_name` = ?s AND `type` = ?i AND `active` = ?i AND `id_reg` = ?i AND `note` = ?s AND `address` = ?s AND `url_name` IS NULL",$object['id'],$object['name'],$object['full_name'],$object['type'],$object['active'],$object['region_id'],$object['note'],$object['address']);
-					else
-						$connect->query("UPDATE `object` SET `synchronized` = '1' WHERE `id` = ?i AND `name` = ?s AND `full_name` = ?s AND `type` = ?i AND `active` = ?i AND `id_reg` = ?i AND `note` = ?s AND `address` = ?s AND `url_name` = ?s",$object['id'],$object['name'],$object['full_name'],$object['type'],$object['active'],$object['region_id'],$object['note'],$object['address'],$object['url_name']);
-
 					$connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type` = 'resort' AND `entity1_id` = ?i AND `name` = 'treatment_profile'", $object['id']);
 					$connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type` = 'resort' AND `entity1_id` = ?i AND `name` = 'treatment_method'", $object['id']);
 					$connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type` = 'resort' AND `entity1_id` = ?i AND `name` = 'infrastructure'", $object['id']);
@@ -416,6 +410,69 @@ function sync_objects_api($connect){
 					])) {
 						return FALSE;
 					}
+					else {
+						if(is_null($object['url_name']))
+							$connect->query("UPDATE `object` SET `synchronized` = '1' WHERE `id` = ?i AND `name` = ?s AND `full_name` = ?s AND `type` = ?i AND `active` = ?i AND `id_reg` = ?i AND `note` = ?s AND `address` = ?s AND `url_name` IS NULL",$object['id'],$object['name'],$object['full_name'],$object['type'],$object['active'],$object['region_id'],$object['note'],$object['address']);
+						else
+							$connect->query("UPDATE `object` SET `synchronized` = '1' WHERE `id` = ?i AND `name` = ?s AND `full_name` = ?s AND `type` = ?i AND `active` = ?i AND `id_reg` = ?i AND `note` = ?s AND `address` = ?s AND `url_name` = ?s",$object['id'],$object['name'],$object['full_name'],$object['type'],$object['active'],$object['region_id'],$object['note'],$object['address'],$object['url_name']);
+					}
+				}
+			}
+		}
+
+
+		$rooms = $connect->getAll("SELECT `id`, `name`, `active`, `id_obj`, `housing`, `square`, `food`, `note`, `description`, `main_place`, `add_place`, `priority`, `id_comfort`, `id_best_comfort` FROM `room` WHERE `synchronized` = 0");
+
+		foreach ($rooms as $room) {
+			$roomAr = [];
+			$roomAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+			$roomAr['id'] = $room['id'];
+			$roomAr['status'] = (int)(!$room['active']);
+			$roomAr['name'] = $room['name'];
+			$roomAr['resort_id'] = $room['id_obj'];
+			$roomAr['housing_id'] = $room['housing'];
+			$roomAr['square'] = $room['square'];
+			$roomAr['food'] = $room['food'];
+			$roomAr['note'] = $room['note'];
+			$roomAr['description'] = $room['description'];
+			$roomAr['main_places_count'] = $room['main_place'];
+			$roomAr['add_places_count'] = $room['add_place'];
+			$roomAr['sort'] = $room['priority'];
+			$roomAr['uid'] = 1;
+
+			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/room/set/".$room['id'],[
+				'form_params' => $roomAr
+			]);
+
+			$res = json_decode($res->getBody()->getContents(),true);
+			if(array_key_exists('success',$res)) {
+				$success = (bool)(int)$res['success'];
+				if($success) {
+					$connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type` = 'room' AND `entity1_id` = ?i AND `name` = 'comfort'", $room['id']);
+					$roomComforts = explode("_",trim($room['id_comfort'].$room['id_best_comfort']));
+
+					foreach ($roomComforts as $roomComfort) {
+						$roomComfort = (int)$roomComfort;
+						if($roomComfort > 0) {
+							$timestamp = gmdate("U");
+							$connect->query("INSERT INTO `app_models_site_bound` (`created`, `changed`, `status`, `uid`, `sort`, `name`, `entity1_type`, `entity1_id`, `entity2_type`, `entity2_id`, `title`, `description`) VALUES (?i, ?i, ?i, ?i, ?i, ?s, ?s, ?i, ?s, ?i, ?s, ?s)", $timestamp, $timestamp, 1, 1, 0, 'comfort', 'room', $room['id'], 'comfort', $roomComfort, '', '');
+						}
+					}
+
+					if(!sync_bounds($connect,[
+						'type' => 'room',
+						'id' => $room['id']
+					])) {
+						return FALSE;
+					}
+					else {
+						$connect->query("UPDATE `room` SET `synchronized` = '1' WHERE `id` = ?i",$room['id']);
+					}
+				}
+				else {
+					echo $res['msg'].": ".$room['id'].'<br>';
+					print_r($res['fail_messages']);
+					break;
 				}
 			}
 		}
