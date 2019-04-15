@@ -464,7 +464,6 @@ function sync_objects_api($connect){
 						'type' => 'room',
 						'id' => $room['id']
 					])) {
-						print_r($res);
 						return FALSE;
 					}
 					else {
@@ -477,7 +476,6 @@ function sync_objects_api($connect){
 					break;
 				}
 			}
-			break;
 		}
 
 		return true;
