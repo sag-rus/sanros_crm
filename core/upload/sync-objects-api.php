@@ -431,7 +431,7 @@ function sync_objects_api($connect){
 			$roomAr['name'] = $room['name'];
 			$roomAr['resort_id'] = $room['id_obj'];
 			$roomAr['housing_id'] = $room['housing'];
-			$roomAr['square'] = $room['square'];
+			$roomAr['square'] = (float)$room['square'];
 			$roomAr['food'] = $room['food'];
 			$roomAr['note'] = $room['note'];
 			$roomAr['description'] = $room['description'];
