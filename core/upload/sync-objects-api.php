@@ -486,6 +486,36 @@ function sync_objects_api($connect){
 			}
 		}
 
+		$dateRanges = $connect->getAll("SELECT `id`, `start`, `end`, `id_obj`, `active` FROM `date_price` WHERE `synchronized` = 0");
+
+		foreach ($dateRanges as $dateRange) {
+			$dateRangeAr = [];
+			$dateRangeAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+			$dateRangeAr['id'] = $dateRange['id'];
+			$dateRangeAr['status'] = (int)(!$dateRange['active']);
+			$dateRangeAr['start_timestamp'] = strtotime($dateRange['start']);
+			$dateRangeAr['end_timestamp'] = strtotime($dateRange['end']);
+			$dateRangeAr['resort_id'] = $dateRange['id_obj'];
+			$dateRangeAr['uid'] = 1;
+
+			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/daterange/set/".$dateRange['id'],[
+				'form_params' => $dateRangeAr
+			]);
+
+			$res = json_decode($res->getBody()->getContents(),true);
+			if(array_key_exists('success',$res)) {
+				$success = (bool)(int)$res['success'];
+				if($success) {
+					$connect->query("UPDATE `date_price` SET `synchronized` = '1' WHERE `id` = ?i",$dateRange['id']);
+				}
+				else {
+					echo $res['msg'].": ".$dateRange['id'].'<br>';
+					print_r($res['fail_messages']);
+					break;
+				}
+			}
+		}
+
 		return true;
 	}
 	catch (Exception $e) {

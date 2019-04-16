@@ -15,7 +15,7 @@ function upload_information_object($connect){
 			$connect->query("UPDATE price SET active=1 WHERE id_range=?i", $range["id"]);
 		$connect->query("UPDATE ranges SET active=1 WHERE id_date=?i", $id_date);
 	}
-	$connect->query("UPDATE date_price SET active=1 WHERE end<?s AND active=0", $today);
+	$connect->query("UPDATE date_price SET active=1, synchronized = 0 WHERE end<?s AND active=0", $today);
 
 	$array_type = array(1 => "за чел/сутки", 2 => "за дом/сутки", 3 => "за номер/сутки", 4 => "за заезд");
 

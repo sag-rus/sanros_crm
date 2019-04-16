@@ -583,7 +583,7 @@ function save_date_price_manager($connect){
 
 function update_date_price_manager($connect){
 	$id = $_POST["id"];
-	$connect->query("UPDATE date_price SET start=?s, end=?s WHERE id=?i", $_POST["start"], $_POST["end"], $id);
+	$connect->query("UPDATE date_price SET start=?s, end=?s, synchronized = 0 WHERE id=?i", $_POST["start"], $_POST["end"], $id);
 	return $connect->getOne("SELECT id_obj FROM date_price WHERE id=?i", $id);
 }
 
@@ -1049,7 +1049,7 @@ function save_new_room_manager($connect){
 
 function reestablish_price_date($connect){
 	$date = $_POST["date"];
-	$connect->query("UPDATE date_price SET active=0 WHERE id=?i", $date);
+	$connect->query("UPDATE date_price SET active=0, synchronized = 0 WHERE id=?i", $date);
 	$data = $connect->getAll("SELECT id FROM ranges WHERE id_date=?i", $date);
 	foreach($data as $row)
 		$connect->query("UPDATE price SET active=0 WHERE id_range=?i", $row["id"]);

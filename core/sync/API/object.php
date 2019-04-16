@@ -238,7 +238,7 @@ function update_date_price_account($connect, $data){
 		$object = $data["object"];
 		$start = $data["start"];
 		$end = $data["end"];
-		$connect->query("UPDATE date_price SET start=?s, end=?s WHERE id=?i AND id_obj=?i", $start, $end, $id_date, $object);
+		$connect->query("UPDATE date_price SET start=?s, end=?s, synchronized = 0 WHERE id=?i AND id_obj=?i", $start, $end, $id_date, $object);
 		$connect->query("UPDATE object SET status=2, synchronized=0 WHERE id=?i", $object);
 		save_history_object("Изменение интервала цен");
 	}
