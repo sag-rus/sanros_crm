@@ -421,7 +421,7 @@ function sync_objects_api($connect){
 		}
 
 
-		$rooms = $connect->getAll("SELECT `id`, `name`, `active`, `id_obj`, `housing`, `square`, `food`, `note`, `description`, `main_place`, `add_place`, `priority`, `id_comfort`, `id_best_comfort` FROM `room` WHERE `synchronized` = 0");
+		$rooms = $connect->getAll("SELECT `id`, `name`, `active`, `id_obj`, `housing`, `square`, `food`, `note`, `description`, `main_place`, `add_place`, `priority`, `id_comfort`, `id_best_comfort`, `price_places` FROM `room` WHERE `synchronized` = 0");
 
 		foreach ($rooms as $room) {
 			$roomAr = [];
@@ -438,6 +438,7 @@ function sync_objects_api($connect){
 			$roomAr['main_places_count'] = $room['main_place'];
 			$roomAr['add_places_count'] = $room['add_place'];
 			$roomAr['sort'] = $room['priority'];
+			$roomAr['travelline_prices_json'] = $room['price_places'];
 			$roomAr['uid'] = 1;
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/room/set/".$room['id'],[
@@ -449,10 +450,10 @@ function sync_objects_api($connect){
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
 				if($success) {
-					$connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type` = 'room' AND `entity1_id` = ?i AND `name` = 'comfort'", $room['id']);
+					//$connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type` = 'room' AND `entity1_id` = ?i AND `name` = 'comfort'", $room['id']);
 					$roomComforts = explode("_",trim($room['id_comfort'].$room['id_best_comfort']));
 
-					foreach ($roomComforts as $roomComfort) {
+					/*foreach ($roomComforts as $roomComfort) {
 						$roomComfort = (int)$roomComfort;
 						if($roomComfort > 0) {
 							$timestamp = gmdate("U");
@@ -468,7 +469,8 @@ function sync_objects_api($connect){
 					}
 					else {
 						$connect->query("UPDATE `room` SET `synchronized` = '1' WHERE `id` = ?i",$room['id']);
-					}
+					}*/
+					$connect->query("UPDATE `room` SET `synchronized` = '1' WHERE `id` = ?i",$room['id']);
 				}
 				else {
 					echo $res['msg'].": ".$room['id'].'<br>';
