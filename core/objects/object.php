@@ -976,7 +976,7 @@ function view_object_rooms($connect){
 function update_priority_room($connect){
 	$data = json_decode($_POST["data"], TRUE);
 	foreach($data as $index => $room)
-		$connect->query("UPDATE room SET priority=?i WHERE id=?i", $index + 1, $room);
+		$connect->query("UPDATE room SET priority=?i, synchronized = 0 WHERE id=?i", $index + 1, $room);
 }
 
 function edit_object_sync_info($connect){

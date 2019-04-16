@@ -1010,7 +1010,7 @@ function update_room_manager($connect){
 	$housing = $_POST["housing"];
 	$comfort = $_POST["comfort"];
 	$best_comfort = $_POST["best_comfort"];
-	$connect->query("UPDATE room SET name=?s, main_place=?i, add_place=?i, housing=?s, note=?s, id_comfort=?s, id_best_comfort=?s, food=?s, square=?s WHERE id=?i", $name, $main, $add, $housing, $note, $comfort, $best_comfort, $food, $square, $id);
+	$connect->query("UPDATE room SET name=?s, main_place=?i, add_place=?i, housing=?s, note=?s, id_comfort=?s, id_best_comfort=?s, food=?s, square=?s, synchronized = 0 WHERE id=?i", $name, $main, $add, $housing, $note, $comfort, $best_comfort, $food, $square, $id);
 	return get_room($connect, $id, "full");
 }
 

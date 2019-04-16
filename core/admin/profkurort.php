@@ -56,7 +56,7 @@ function select_rooms_object_profkurort($connect){
 function update_rooms_object_profkurort($connect){
   $data = json_decode($_POST["data"], TRUE);
   foreach($data as $room => $sync){
-    $connect->query("UPDATE room SET sync_id=?i WHERE id=?i", $sync, $room);
+    $connect->query("UPDATE room SET sync_id=?i, synchronized = 0 WHERE id=?i", $sync, $room);
   }
 }
 

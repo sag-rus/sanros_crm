@@ -172,7 +172,7 @@ function update_category_room_account($connect, $data){
 		if(!$data['square']) $data['square'] = NULL;
 		if(!$data['housing']) $data['housing'] = NULL;
 
-		$connect->query("UPDATE room SET name=?s, housing=?s, main_place=?i, add_place=?i, square=?s, food=?s, note=?s, id_comfort=?s, id_best_comfort=?s, number=?i, description=?s WHERE id=?i AND id_obj=?i", $data["name"], $data["housing"], $data["main"], $data["add"], $data["square"], $data["food"], $data["note"], $data["comf"], $data["best"], (int)$data["num"], $data["description"], $room, $object);
+		$connect->query("UPDATE room SET name=?s, housing=?s, main_place=?i, add_place=?i, square=?s, food=?s, note=?s, id_comfort=?s, id_best_comfort=?s, number=?i, description=?s, synchronized = 0 WHERE id=?i AND id_obj=?i", $data["name"], $data["housing"], $data["main"], $data["add"], $data["square"], $data["food"], $data["note"], $data["comf"], $data["best"], (int)$data["num"], $data["description"], $room, $object);
 		$connect->query("UPDATE object SET status=2, synchronized=0 WHERE id=?i", $object);
     $responseArray['success'] = 1;
 		save_history_object("Изменение категории ".$data["name"]);

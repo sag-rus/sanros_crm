@@ -1045,7 +1045,7 @@ function update_room($connect){
     $boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);
     remove_bounds($connect,$entity,'image');
     set_bounds($connect,$boundsArrayImage,'image');
-    $connect->query("UPDATE room SET name=?s, id_comfort=?s, id_best_comfort=?s, note=?s, main_place=?i, add_place=?i, housing=?s, food=?s, square=?s WHERE id=?i", $name_room, $comfort, $best_comfort, $note, $main_place, $add_place, $housing, $food, $square, $id);
+    $connect->query("UPDATE room SET name=?s, id_comfort=?s, id_best_comfort=?s, note=?s, main_place=?i, add_place=?i, housing=?s, food=?s, square=?s, synchronized = 0 WHERE id=?i", $name_room, $comfort, $best_comfort, $note, $main_place, $add_place, $housing, $food, $square, $id);
 }
 
 function object_check_archive($connect){
@@ -1060,7 +1060,7 @@ function room_check_archive($connect){
 	$new = 0;
 	if($active == 0)
 		$new = 1;
-	$connect->query("UPDATE room SET active=?i WHERE id=?i", $new, $id);
+	$connect->query("UPDATE room SET active=?i, synchronized = 0 WHERE id=?i", $new, $id);
 	return $new;
 }
 
