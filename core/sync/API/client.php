@@ -124,46 +124,50 @@ function register_new_account($connect, $data){
 }
 
 function authorization_account($connect, $data){
-	$login = $data["login"];
-	$pass = $data["pass"];
-	$row = $connect->getRow("SELECT id, password, active, favorites, hash, name, surname, otch, photo FROM klient WHERE login=?s", $login);
-	$id = $row["id"];
-	$true_pass = $row["password"];
-	$activate = $row["active"];
-	$favorites = json_decode($row["favorites"], TRUE);
-	if($pass == $true_pass AND $true_pass){
-		if($activate == 1){
-			$no_pay = array();
-			$no_rating = array();
-			$name = convert_name($row["name"]);
-			$surname = convert_name($row["surname"]);
-			$otch = convert_name($row["otch"]);
-			$hash = $row["hash"];
-			$photo = $row["photo"];
-			$session = md5(uniqid());
-			$time = time();
-			if($connect->getOne("SELECT id FROM session_account WHERE login=?s", $login))
-				$connect->query("UPDATE session_account SET `id_session` = ?s, `changed` = ?i WHERE login=?s", $session, $time, $login);
-			else
-				$connect->query("INSERT INTO session_account(`login`, `id_session`, `created`, `changed`) VALUES (?s, ?s, ?i, ?i)", $login, $session, $time, $time);
+	$login = trim($data["login"]);
+	if(mb_strlen($login) > 0) {
+		$pass = $data["pass"];
+		$row = $connect->getRow("SELECT id, password, active, favorites, hash, name, surname, otch, photo FROM klient WHERE login=?s", $login);
+		if($row) {
+			$id = $row["id"];
+			$true_pass = $row["password"];
+			$activate = $row["active"];
+			$favorites = json_decode($row["favorites"], TRUE);
+			if($pass == $true_pass && $true_pass){
+				if($activate == 1){
+					$no_pay = array();
+					$no_rating = array();
+					$name = convert_name($row["name"]);
+					$surname = convert_name($row["surname"]);
+					$otch = convert_name($row["otch"]);
+					$hash = $row["hash"];
+					$photo = $row["photo"];
+					$session = md5(uniqid());
+					$time = time();
+					if($connect->getOne("SELECT id FROM session_account WHERE login=?s", $login))
+						$connect->query("UPDATE session_account SET `id_session` = ?s, `changed` = ?i WHERE login=?s", $session, $time, $login);
+					else
+						$connect->query("INSERT INTO session_account(`login`, `id_session`, `created`, `changed`) VALUES (?s, ?s, ?i, ?i)", $login, $session, $time, $time);
 
-			$data = $connect->getAll("SELECT reckoning.id AS id FROM reckoning LEFT OUTER JOIN object ON reckoning.id_obj = object.id WHERE (reckoning.status=3 OR reckoning.status=4 OR (reckoning.status IN (1,2) AND object.fast_booking IS NOT NULL AND object.fast_booking = 1)) AND reckoning.active != 3 AND reckoning.turist=?i", $id);
-			foreach($data as $row){
-				$no_pay[] = $row["id"];
+					$data = $connect->getAll("SELECT reckoning.id AS id FROM reckoning LEFT OUTER JOIN object ON reckoning.id_obj = object.id WHERE (reckoning.status=3 OR reckoning.status=4 OR (reckoning.status IN (1,2) AND object.fast_booking IS NOT NULL AND object.fast_booking = 1)) AND reckoning.active != 3 AND reckoning.turist=?i", $id);
+					foreach($data as $row){
+						$no_pay[] = $row["id"];
+					}
+
+					$data = $connect->getAll("SELECT id FROM reckoning WHERE status=5 AND date_v<?s AND turist=?i", date("Y-m-d"), $id);
+					foreach($data as $row){
+						if(!$connect->getOne("SELECT id FROM rating WHERE (status=3 OR status=2) AND schet=?i", $row["id"]))
+							$no_rating[] = $row["id"];
+					}
+
+					$array = array("session" => $session, "status" => 1, "id" => $id, "name" => $name, "surname" => $surname, "otch" => $otch, "photo" => $photo, "favorites" => $favorites, "hash" => $hash, "no-pay" => $no_pay, "no-rating" => $no_rating);
+					$array["bonus"] = all_klient_bonus($connect, $id);
+					save_client_to_history($connect, $id, "Авторизация в Личном кабинете");
+				}else
+					$array = array("status" => 2);
+				return $array;
 			}
-
-			$data = $connect->getAll("SELECT id FROM reckoning WHERE status=5 AND date_v<?s AND turist=?i", date("Y-m-d"), $id);
-			foreach($data as $row){
-				if(!$connect->getOne("SELECT id FROM rating WHERE (status=3 OR status=2) AND schet=?i", $row["id"]))
-					$no_rating[] = $row["id"];
-			}
-
-			$array = array("session" => $session, "status" => 1, "id" => $id, "name" => $name, "surname" => $surname, "otch" => $otch, "photo" => $photo, "favorites" => $favorites, "hash" => $hash, "no-pay" => $no_pay, "no-rating" => $no_rating);
-			$array["bonus"] = all_klient_bonus($connect, $id);
-			save_client_to_history($connect, $id, "Авторизация в Личном кабинете");
-		}else
-			$array = array("status" => 2);
-		return $array;
+		}
 	}
 	return FALSE;
 }
@@ -1011,83 +1015,103 @@ function request_contract_account($connect, $data){
 }
 
 function show_question_account($connect, $data){
-	$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s", $data["session"]);
-	$client = $connect->getOne("SELECT id FROM klient WHERE login=?s", $login);
-	if($client){
-		$answer = array("check" => 1);
-		$data = $connect->getAll("SELECT id, category, id_reck FROM talk WHERE client=?i AND type='turist'", $client);
-		foreach($data as $row){
-			$talk = $row["id"];
-			$answer["talk"][$talk]["category"] = $connect->getOne("SELECT name FROM question_category WHERE id=?i", $row["category"]);
-			$answer["talk"][$talk]["count"] = $connect->getOne("SELECT COUNT(*) FROM message_talk WHERE talk=?i", $talk);
-			$answer["talk"][$talk]["bid"] = $row["id_reck"];
+	if(mb_strlen($data['session']) > 0) {
+		$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s", $data["session"]);
+		if(mb_strlen($login) > 0) {
+			$client = $connect->getOne("SELECT id FROM klient WHERE login=?s", $login);
+			if($client){
+				$answer = array("check" => 1);
+				$data = $connect->getAll("SELECT id, category, id_reck FROM talk WHERE client=?i AND type='turist'", $client);
+				foreach($data as $row){
+					$talk = $row["id"];
+					$answer["talk"][$talk]["category"] = $connect->getOne("SELECT name FROM question_category WHERE id=?i", $row["category"]);
+					$answer["talk"][$talk]["count"] = $connect->getOne("SELECT COUNT(*) FROM message_talk WHERE talk=?i", $talk);
+					$answer["talk"][$talk]["bid"] = $row["id_reck"];
+				}
+				return $answer;
+			}
 		}
-		return $answer;
 	}
 	return FALSE;
 }
 
 function show_talk_account($connect, $data){
-	$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s", $data["session"]);
-	$client = $connect->getOne("SELECT id FROM klient WHERE login=?s", $login);
-	if($client){
-		$talk = $data["id"];
-		if(!$connect->getOne("SELECT id FROM talk WHERE id=?i AND Client=?i AND type='turist'", $talk, $client))
-			return FALSE;
-		$answer = array("check" => 1);
-		$category = $connect->getOne("SELECT category FROM talk WHERE id=?i AND Client=?i AND type='turist'", $talk, $client);
-		$answer["category"] = $connect->getOne("SELECT name FROM question_category WHERE id=?i", $category);
-		$array = $connect->getAll("SELECT id, DATE_FORMAT(date, '%H:%i:%s %d.%m.%Y') as date, text, type, user FROM message_talk WHERE talk=?i ORDER BY id", $talk);
-		foreach($array as $message){
-			$answer["message"][$message["id"]]["date"] = $message["date"];
-			$answer["message"][$message["id"]]["text"] = $message["text"];
-			$answer["message"][$message["id"]]["type"] = $message["type"];
-			if($message["user"])
-				$answer["message"][$message["id"]]["manager"] = $connect->getOne("SELECT name FROM users WHERE id=?i", $message["user"]);
+	if(mb_strlen($data['session']) > 0) {
+		$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s", $data["session"]);
+		if(mb_strlen($login) > 0) {
+			$client = $connect->getOne("SELECT id FROM klient WHERE login=?s", $login);
+			if($client){
+				$talk = $data["id"];
+				if(!$connect->getOne("SELECT id FROM talk WHERE id=?i AND Client=?i AND type='turist'", $talk, $client))
+					return FALSE;
+				$answer = array("check" => 1);
+				$category = $connect->getOne("SELECT category FROM talk WHERE id=?i AND Client=?i AND type='turist'", $talk, $client);
+				$answer["category"] = $connect->getOne("SELECT name FROM question_category WHERE id=?i", $category);
+				$array = $connect->getAll("SELECT id, DATE_FORMAT(date, '%H:%i:%s %d.%m.%Y') as date, text, type, user FROM message_talk WHERE talk=?i ORDER BY id", $talk);
+				foreach($array as $message){
+					$answer["message"][$message["id"]]["date"] = $message["date"];
+					$answer["message"][$message["id"]]["text"] = $message["text"];
+					$answer["message"][$message["id"]]["type"] = $message["type"];
+					if($message["user"])
+						$answer["message"][$message["id"]]["manager"] = $connect->getOne("SELECT name FROM users WHERE id=?i", $message["user"]);
+				}
+				$connect->query("UPDATE message_talk SET active=1 WHERE talk=?i AND type='manager'", $talk);
+				return $answer;
+			}
 		}
-		$connect->query("UPDATE message_talk SET active=1 WHERE talk=?i AND type='manager'", $talk);
-		return $answer;
 	}
 	return FALSE;
 }
 
 function send_question_account($connect, $data){
-	$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s", $data["session"]);
-	$client = $connect->getOne("SELECT id FROM klient WHERE login=?s", $login);
-	$text = $data["text"];
-	$category = $data["category"];
-	if($client AND $text){
-		$connect->query("INSERT INTO talk(client, category) VALUES(?i, ?i)", $client, $category);
-		$talk = $connect->insertId();
-		$connect->query("INSERT INTO message_talk(talk, text, type) VALUES(?i, ?s, 'client')", $talk, $text);
+	if(mb_strlen($data['session']) > 0) {
+		$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s", $data["session"]);
+		if(mb_strlen($login) > 0) {
+			$client = $connect->getOne("SELECT id FROM klient WHERE login=?s", $login);
+			$text = $data["text"];
+			$category = $data["category"];
+			if($client AND $text){
+				$connect->query("INSERT INTO talk(client, category) VALUES(?i, ?i)", $client, $category);
+				$talk = $connect->insertId();
+				$connect->query("INSERT INTO message_talk(talk, text, type) VALUES(?i, ?s, 'client')", $talk, $text);
+			}
+		}
 	}
 }
 
 function send_message_talk_account($connect, $data){
-	$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s", $data["session"]);
-	$client = $connect->getOne("SELECT id FROM klient WHERE login=?s", $login);
-	$text = $data["text"];
-	$talk = $connect->getOne("SELECT id FROM talk WHERE id=?i AND type='turist'", $data["talk"]);
-	if($client AND $text AND $talk){
-		$connect->query("INSERT INTO message_talk(talk, text, type) VALUES(?i, ?s, 'client')", $talk, $text);
-		return $connect->getOne("SELECT DATE_FORMAT(date, '%H:%i:%s %d.%m.%Y') as date FROM message_talk WHERE id=?i", $connect->insertId());
+	if(mb_strlen($data['session']) > 0) {
+		$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s", $data["session"]);
+		if(mb_strlen($login) > 0) {
+			$client = $connect->getOne("SELECT id FROM klient WHERE login=?s", $login);
+			$text = $data["text"];
+			$talk = $connect->getOne("SELECT id FROM talk WHERE id=?i AND type='turist'", $data["talk"]);
+			if($client AND $text AND $talk){
+				$connect->query("INSERT INTO message_talk(talk, text, type) VALUES(?i, ?s, 'client')", $talk, $text);
+				return $connect->getOne("SELECT DATE_FORMAT(date, '%H:%i:%s %d.%m.%Y') as date FROM message_talk WHERE id=?i", $connect->insertId());
+			}
+		}
 	}
 }
 
 function send_new_message_bid_account($connect, $data){
-	$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s", $data["session"]);
-	$client = $connect->getOne("SELECT id FROM klient WHERE login=?s", $login);
-	if($client){
-		$id = $data["id"];
-		$message = $data["message"];
-		if($connect->getOne("SELECT id FROM reckoning WHERE id=?i AND turist=?i", $id, $client) AND $message){
-			$talk = $connect->getOne("SELECT id FROM talk WHERE id_reck=?i", $id);
-			if(!$talk){
-				$connect->query("INSERT INTO talk(client, category, type, id_reck) VALUES(?i, 6, 'turist', ?i)", $client, $id);
-				$talk = $connect->insertId();
+	if(mb_strlen($data['session']) > 0) {
+		$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s", $data["session"]);
+		if(mb_strlen($login) > 0) {
+			$client = $connect->getOne("SELECT id FROM klient WHERE login=?s", $login);
+			if($client){
+				$id = $data["id"];
+				$message = $data["message"];
+				if($connect->getOne("SELECT id FROM reckoning WHERE id=?i AND turist=?i", $id, $client) AND $message){
+					$talk = $connect->getOne("SELECT id FROM talk WHERE id_reck=?i", $id);
+					if(!$talk){
+						$connect->query("INSERT INTO talk(client, category, type, id_reck) VALUES(?i, 6, 'turist', ?i)", $client, $id);
+						$talk = $connect->insertId();
+					}
+					$connect->query("INSERT INTO message_talk(talk, text, type) VALUES(?i, ?s, 'client')", $talk, $message);
+					return $connect->getOne("SELECT DATE_FORMAT(date, '%H:%i:%s %d.%m.%Y') as date FROM message_talk WHERE id=?i", $connect->insertId());
+				}
 			}
-			$connect->query("INSERT INTO message_talk(talk, text, type) VALUES(?i, ?s, 'client')", $talk, $message);
-			return $connect->getOne("SELECT DATE_FORMAT(date, '%H:%i:%s %d.%m.%Y') as date FROM message_talk WHERE id=?i", $connect->insertId());
 		}
 	}
 }
