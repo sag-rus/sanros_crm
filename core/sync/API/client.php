@@ -428,8 +428,8 @@ function show_tour_bid_account($connect, $data){
 			if($array["status_int"] == 3 OR $array["status_int"] == 4){
 				$array["doc"] = 2;
 				$reward = get_reward_schet($connect, $array['id']);
-				$finalReward = $reward/2-$array['bonus']/2-0.018*($array['sum']-$array['payment_sum']);
-				if($array['sum'] && ($finalReward > 0 || $array['id'] == 43125 || $array['id'] == 58509 || $array['id'] == 66300) && !$array['holding_sum']){
+				$array['final_reward'] = $reward/2-$array['bonus']/2-0.018*($array['sum']-$array['payment_sum']);
+				if($array['sum'] && ($array['final_reward'] > 0 || $array['id'] == 43125 || $array['id'] == 58509 || $array['id'] == 66300) && !$array['holding_sum']){
 					$array["pay_button"] = 1;
 					$check = $connect->getOne("SELECT sum FROM time_payment WHERE type=2 AND id_schet=?i", $array['id']);
 					if($check AND ($answer["status"] == 3 OR $answer["status"] == 4))
