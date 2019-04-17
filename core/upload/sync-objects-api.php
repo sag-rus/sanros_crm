@@ -516,6 +516,72 @@ function sync_objects_api($connect){
 			}
 		}
 
+		$places = $connect->getAll("SELECT `id`, `id_obj`, `name`, `type` FROM `place` WHERE `synchronized` = 0");
+
+		foreach ($places as $place) {
+			$placeAr = [];
+			$placeAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+			$placeAr['id'] = $place['id'];
+			$placeAr['name'] = $place['name'];
+			$placeAr['type'] = $place['type'];
+			$placeAr['status'] = 1;
+			$placeAr['resort_id'] = $place['id_obj'];
+			$placeAr['uid'] = 1;
+
+			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/place/set/".$place['id'],[
+				'form_params' => $placeAr
+			]);
+
+			$res = json_decode($res->getBody()->getContents(),true);
+			if(array_key_exists('success',$res)) {
+				$success = (bool)(int)$res['success'];
+				if($success) {
+					$connect->query("UPDATE `place` SET `synchronized` = '1' WHERE `id` = ?i",$place['id']);
+				}
+				else {
+					echo $res['msg'].": ".$place['id'].'<br>';
+					print_r($res['fail_messages']);
+					break;
+				}
+			}
+		}
+
+		$ranges = $connect->getAll("SELECT `id`, `id_obj`, `name`, `type`, `active`, `show_date`, `place`, `id_date`, `counter`, `rate_plan`, `treatment` FROM `ranges` WHERE `synchronized` = 0");
+
+		foreach ($ranges as $range) {
+			$rangeAr = [];
+			$rangeAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+			$rangeAr['id'] = $range['id'];
+			$rangeAr['name'] = $range['name'];
+			$rangeAr['type'] = $range['type'];
+			$rangeAr['status'] = (int)(!$range['active']);
+			$rangeAr['resort_id'] = $range['id_obj'];
+			$rangeAr['show_date'] = $range['show_date'];
+			$rangeAr['place_id'] = $range['place'];
+			$rangeAr['daterange_id'] = $range['id_date'];
+			$rangeAr['counter'] = $range['counter'];
+			$rangeAr['rate_id'] = $range['rate_plan'];
+			$rangeAr['treatment'] = $range['treatment'];
+			$rangeAr['uid'] = 1;
+
+			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/range/set/".$range['id'],[
+				'form_params' => $rangeAr
+			]);
+
+			$res = json_decode($res->getBody()->getContents(),true);
+			if(array_key_exists('success',$res)) {
+				$success = (bool)(int)$res['success'];
+				if($success) {
+					$connect->query("UPDATE `ranges` SET `synchronized` = '1' WHERE `id` = ?i",$range['id']);
+				}
+				else {
+					echo $res['msg'].": ".$range['id'].'<br>';
+					print_r($res['fail_messages']);
+					break;
+				}
+			}
+		}
+
 		return true;
 	}
 	catch (Exception $e) {

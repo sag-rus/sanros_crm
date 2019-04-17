@@ -816,7 +816,7 @@ function update_range_manager($connect){
 	$treatment = $_POST["treatment"];
 	$name = str_replace("plus", "+", $name);
 	$old_date = $connect->getOne("SELECT id_date FROM ranges WHERE id=?i", $id);
-	$connect->query("UPDATE ranges SET id_date=?i, name=?s, type=?i, place=?i, treatment=?i WHERE id=?i", $date, $name, $type, $place, $treatment, $id);
+	$connect->query("UPDATE ranges SET id_date=?i, name=?s, type=?i, place=?i, treatment=?i, synchronized = 0 WHERE id=?i", $date, $name, $type, $place, $treatment, $id);
 	$return = "";
 	if($old_date == $date){
 		$type_place = $connect->getOne("SELECT type FROM place WHERE id=?i", $place);
@@ -1053,7 +1053,7 @@ function reestablish_price_date($connect){
 	$data = $connect->getAll("SELECT id FROM ranges WHERE id_date=?i", $date);
 	foreach($data as $row)
 		$connect->query("UPDATE price SET active=0 WHERE id_range=?i", $row["id"]);
-	$connect->query("UPDATE ranges SET active=0 WHERE id_date=?i", $date);
+	$connect->query("UPDATE ranges SET active=0, synchronized = 0 WHERE id_date=?i", $date);
 	return $connect->getOne("SELECT id_obj FROM date_price WHERE id=?i", $date);
 }
 
@@ -1064,7 +1064,7 @@ function update_range_counter($connect){
 		$counter = 999;
 	elseif($counter < 1)
 		$counter = 1;
-	$connect->query("UPDATE ranges SET counter=?i WHERE id=?i", $counter, $id);
+	$connect->query("UPDATE ranges SET counter=?i, synchronized = 0 WHERE id=?i", $counter, $id);
 }
 
 ?>

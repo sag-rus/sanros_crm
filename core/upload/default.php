@@ -13,7 +13,7 @@ function upload_information_object($connect){
 		$array = $connect->getAll("SELECT id FROM ranges WHERE id_date=?i", $id_date);
 		foreach($array as $range)
 			$connect->query("UPDATE price SET active=1 WHERE id_range=?i", $range["id"]);
-		$connect->query("UPDATE ranges SET active=1 WHERE id_date=?i", $id_date);
+		$connect->query("UPDATE ranges SET active=1, synchronized = 0 WHERE id_date=?i", $id_date);
 	}
 	$connect->query("UPDATE date_price SET active=1, synchronized = 0 WHERE end<?s AND active=0", $today);
 

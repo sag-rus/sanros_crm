@@ -269,7 +269,7 @@ function update_range_account($connect, $data){
 		$place = $data["place"];
 		$type = $data["type"];
 		$rate_plan = $data["rate_plan"];
-		$connect->query("UPDATE ranges SET name=?s, type=?i, place=?i, rate_plan=?i WHERE id=?i AND id_obj=?i", $name, $type, $place, $rate_plan, $id_range, $object);
+		$connect->query("UPDATE ranges SET name=?s, type=?i, place=?i, rate_plan=?i, synchronized = 0 WHERE id=?i AND id_obj=?i", $name, $type, $place, $rate_plan, $id_range, $object);
 		$connect->query("UPDATE object SET status=2, synchronized=0 WHERE id=?i", $object);
 		save_history_object("Добавление столбца цен");
 	}
