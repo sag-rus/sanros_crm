@@ -456,7 +456,7 @@ function sync_objects_api($connect){
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
 				if($success) {
-					/*$connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type` = 'room' AND `entity1_id` = ?i AND `name` = 'comfort'", $room['id']);
+					$connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type` = 'room' AND `entity1_id` = ?i AND `name` = 'comfort'", $room['id']);
 					$roomComforts = explode("_",trim($room['id_comfort'].$room['id_best_comfort']));
 
 					foreach ($roomComforts as $roomComfort) {
@@ -475,8 +475,8 @@ function sync_objects_api($connect){
 					}
 					else {
 						$connect->query("UPDATE `room` SET `synchronized` = '1' WHERE `id` = ?i",$room['id']);
-					}*/
-					$connect->query("UPDATE `room` SET `synchronized` = '1' WHERE `id` = ?i",$room['id']);
+					}
+					//$connect->query("UPDATE `room` SET `synchronized` = '1' WHERE `id` = ?i",$room['id']);
 				}
 				else {
 					echo $res['msg'].": ".$room['id'].'<br>';
