@@ -10,9 +10,9 @@ function upload_information_object($connect){
 	$data = $connect->getAll("SELECT id FROM date_price WHERE end<?s AND active=0", $today);
 	foreach($data as $row){
 		$id_date = $row["id"];
-		$array = $connect->getAll("SELECT id FROM ranges WHERE id_date=?i", $id_date);
+		$array = $connect->getAll("SELECT id FROM ranges WHERE id_date=?i AND active = 0", $id_date);
 		foreach($array as $range)
-			$connect->query("UPDATE price SET active=1 WHERE id_range=?i", $range["id"]);
+			$connect->query("UPDATE price SET active=1, synchronized = 0 WHERE id_range=?i", $range["id"]);
 		$connect->query("UPDATE ranges SET active=1, synchronized = 0 WHERE id_date=?i", $id_date);
 	}
 	$connect->query("UPDATE date_price SET active=1, synchronized = 0 WHERE end<?s AND active=0", $today);
@@ -942,10 +942,10 @@ function save_all_promo_XML($connect){
 }
 
 function have_price($connect, $id_date, $id_room){
-	$data = $connect->getAll("SELECT id FROM ranges WHERE id_date=?i", $id_date);
+	$data = $connect->getAll("SELECT id FROM ranges WHERE id_date=?i AND active = 0", $id_date);
 	foreach($data as $row){
 		$id_range = $row["id"];
-		$have = $connect->getOne("SELECT id FROM price WHERE id_range=?i AND id_room=?i", $id_range, $id_room);
+		$have = $connect->getOne("SELECT id FROM price WHERE id_range=?i AND id_room=?i AND active = 0", $id_range, $id_room);
 		if($have)
 			return 1;
 	}

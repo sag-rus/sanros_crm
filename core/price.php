@@ -590,12 +590,12 @@ function update_date_price_manager($connect){
 function delete_date_price_manager($connect){
 	$id = $_POST["id"];
 	$object = $connect->getOne("SELECT id_obj FROM date_price WHERE id=?i", $id);
-	$data = $connect->getAll("SELECT id FROM ranges WHERE id_date=?i", $id);
+	$data = $connect->getAll("SELECT id FROM ranges WHERE id_date=?i AND active = 0", $id);
 	foreach($data as $row){
-		$connect->query("DELETE FROM price WHERE id_range=?i", $row["id"]);
-		$connect->query("DELETE FROM ranges WHERE id=?i", $row["id"]);
+		$connect->query("UPDATE price SET active = 1, synchronized = 0 WHERE id_range=?i", $row["id"]);
+		$connect->query("UPDATE ranges SET active = 1, synchronized = 0 WHERE id=?i", $row["id"]);
 	}
-	$connect->query("DELETE FROM date_price WHERE id=?i", $id);
+	$connect->query("UPDATE date_price SET active = 1, synchronized = 0 WHERE id=?i", $id);
 	return $object;
 }
 
@@ -608,7 +608,7 @@ function view_prices_object($connect){
 	$TC = "";
 	$TH = "";
 	$object = $connect->getOne("SELECT id_obj FROM date_price WHERE id=?i", $id_date);
-	$data = $connect->getAll("SELECT ranges.counter, ranges.id, ranges.name, ranges.type, place.name as place, ranges.treatment, place.type as place_type FROM ranges, place WHERE ranges.id_obj=?i AND (ranges.place=place.id) AND ranges.id_date=?i ORDER BY ranges.counter, place.type", $object, $id_date);
+	$data = $connect->getAll("SELECT ranges.counter, ranges.id, ranges.name, ranges.type, place.name as place, ranges.treatment, place.type as place_type FROM ranges, place WHERE ranges.id_obj=?i AND (ranges.place=place.id) AND ranges.id_date=?i AND ranges.active = 0 ORDER BY ranges.counter, place.type", $object, $id_date);
 	foreach($data as $row){
 		$id = $row["id"];
 		$ranges[$id] = 1;
@@ -714,11 +714,11 @@ function update_price_manager($connect){
 	$price = $_POST["price"];
 	if(is_numeric($price) AND $price != 0){
 		$date = date('d.m.Y H:m:s');
-		if($connect->getOne("SELECT id FROM price WHERE id=?i", $id)){
-			$connect->query("UPDATE price SET price=?s, date_last_save=?s, manager=?s WHERE id=?i", $price, $date, $name_user, $id);
-			$html = $connect->getOne("SELECT price FROM price WHERE id=?i", $id);
+		if($connect->getOne("SELECT id FROM price WHERE id=?i AND active = 0", $id)){
+			$connect->query("UPDATE price SET price=?s, date_last_save=?s, manager=?s, synchronized = 0 WHERE id=?i", $price, $date, $name_user, $id);
+			$html = $connect->getOne("SELECT price FROM price WHERE id=?i AND active = 0", $id);
 		}elseif($connect->getOne("SELECT id FROM price WHERE id_range=?i AND id_room=?i AND active=0", $range, $room)){
-			$connect->query("UPDATE price SET price=?s, date_last_save=?s, manager=?s WHERE id_range=?i AND id_room=?i AND active=0", $price, $date, $name_user, $range, $room);
+			$connect->query("UPDATE price SET price=?s, date_last_save=?s, manager=?s, synchronized = 0 WHERE id_range=?i AND id_room=?i", $price, $date, $name_user, $range, $room);
 			$html = $connect->getOne("SELECT price FROM price WHERE id_range=?i AND id_room=?i AND active=0", $range, $room);
 		}else{
 			$connect->query("INSERT INTO price(price, id_room, id_range, date_last_save, manager) VALUES(?s, ?i, ?i, ?s, ?s)", $price, $room, $range, $date, $name_user);
@@ -726,7 +726,7 @@ function update_price_manager($connect){
 		}
 	}else{
 		if($connect->getOne("SELECT id FROM price WHERE id_range=?i AND id_room=?i AND active=0", $range, $room))
-			$connect->query("DELETE FROM price WHERE id_range=?i AND id_room=?i AND active=0", $range, $room);
+			$connect->query("UPDATE price SET active = 1, synchronized = 0 WHERE id_range=?i AND id_room=?i AND active=0", $range, $room);
 		$html = "";
 	}
 	return $html;
@@ -735,8 +735,7 @@ function update_price_manager($connect){
 function edit_range_manager($connect){
 	if(isset($_POST["id"])){
 		$id = $_POST["id"];
-		$row = $connect->getRow("SELECT id_obj, name, id_date, place, type, treatment
-		 FROM ranges WHERE id=?i", $id);
+		$row = $connect->getRow("SELECT id_obj, name, id_date, place, type, treatment FROM ranges WHERE active = 0 AND id=?i", $id);
 		$place = get_place_object($connect, $row["id_obj"], $row["place"]);
 		$dates = get_dates_object($connect, $row["id_obj"], $row["id_date"]);
 	}else{
@@ -815,7 +814,7 @@ function update_range_manager($connect){
 	$place = $_POST["place"];
 	$treatment = $_POST["treatment"];
 	$name = str_replace("plus", "+", $name);
-	$old_date = $connect->getOne("SELECT id_date FROM ranges WHERE id=?i", $id);
+	$old_date = $connect->getOne("SELECT id_date FROM ranges WHERE id=?i AND active = 0", $id);
 	$connect->query("UPDATE ranges SET id_date=?i, name=?s, type=?i, place=?i, treatment=?i, synchronized = 0 WHERE id=?i", $date, $name, $type, $place, $treatment, $id);
 	$return = "";
 	if($old_date == $date){
@@ -861,8 +860,8 @@ function save_range_manager($connect){
 
 function delete_range_manager($connect){
 	$id = $_POST["id"];
-	$connect->query("DELETE FROM price WHERE id_range=?i", $id);
-	$connect->query("DELETE FROM ranges WHERE id=?i", $id);
+	$connect->query("UPDATE price SET active = 1, synchronized = 0 WHERE id_range=?i", $id);
+	$connect->query("UPDATE ranges SET active = 1, synchronized = 0 WHERE id=?i", $id);
 }
 
 function show_dates_copy_prices($connect){
@@ -1050,9 +1049,9 @@ function save_new_room_manager($connect){
 function reestablish_price_date($connect){
 	$date = $_POST["date"];
 	$connect->query("UPDATE date_price SET active=0, synchronized = 0 WHERE id=?i", $date);
-	$data = $connect->getAll("SELECT id FROM ranges WHERE id_date=?i", $date);
+	$data = $connect->getAll("SELECT id FROM ranges WHERE id_date=?i AND active = 0", $date);
 	foreach($data as $row)
-		$connect->query("UPDATE price SET active=0 WHERE id_range=?i", $row["id"]);
+		$connect->query("UPDATE price SET active=0, synchronized = 0 WHERE id_range=?i", $row["id"]);
 	$connect->query("UPDATE ranges SET active=0, synchronized = 0 WHERE id_date=?i", $date);
 	return $connect->getOne("SELECT id_obj FROM date_price WHERE id=?i", $date);
 }

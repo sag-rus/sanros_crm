@@ -203,9 +203,9 @@ function save_price_object_account($connect, $data){
 				foreach($room as $id_range => $value){
 					$id_price = $connect->getOne("SELECT id FROM price WHERE id_room=?i AND id_range=?i", $id_room, $id_range);
 					if($id_price AND $value > 0)
-						$connect->query("UPDATE price SET active=0, price=?s WHERE id=?i", (int)$value, $id_price);
+						$connect->query("UPDATE price SET active=0, price=?s, synchronized = 0 WHERE id=?i", (int)$value, $id_price);
 					elseif($id_price)
-						$connect->query("DELETE FROM price WHERE id=?i", $id_price);
+						$connect->query("UPDATE price SET active = 1, synchronized = 0 WHERE id=?i", $id_price);
 					elseif($value > 0)
 						$connect->query("INSERT INTO price(id_room, id_range, price, date_last_save) VALUES (?i, ?i, ?s, ?s)", $id_room, $id_range, (int)$value, $date_last_save);
 				}

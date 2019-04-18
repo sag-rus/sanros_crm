@@ -101,7 +101,7 @@ function save_arrival_XML_object($connect, $id){
 				$row = $connect->getRow("SELECT id FROM date_price WHERE id_obj=?i AND start<=?s AND end>=?s", $id, $date, date("Y-m-d", $end));
 				$data2 = $connect->getAll("SELECT ranges.id, ranges.type, place.type as place_type, place.name as place_name, ranges.place, ranges.name FROM ranges, place WHERE ranges.id_date=?i AND ranges.active=0 AND ranges.place=place.id ORDER BY place.type, place.id", $row["id"]);
 				foreach($data2 as $row){
-					$price = $connect->getOne("SELECT price FROM price WHERE id_room=?i AND id_range=?i", $id_room, $row["id"]);
+					$price = $connect->getOne("SELECT price FROM price WHERE id_room=?i AND id_range=?i AND active = 0", $id_room, $row["id"]);
 					if($price){
 						$place_price = $arrival->appendChild($xml->createElement("price"));
 						$place_price->setAttribute("price", $price);
