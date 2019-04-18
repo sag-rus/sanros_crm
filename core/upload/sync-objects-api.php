@@ -583,16 +583,20 @@ function sync_objects_api($connect){
 		}
 
 		$pricesStartYear = 2018;
-		$pricesYearWhere = " (";
+		$pricesYearWhere = "";
 		for($i = $pricesStartYear; $i < date("Y")+1; $i++) {
 			if(mb_strlen($pricesYearWhere) > 0) {
 				$pricesYearWhere .= " OR";
 			}
+			else {
+				$pricesYearWhere .= " (";
+			}
 
 			$pricesYearWhere .= " (date_last_save LIKE '%.".$i."%' OR date_last_save LIKE '%-".$i."%')";
+			if($i == date("Y")) {
+				$pricesYearWhere .= ") ";
+			}
 		}
-
-		$pricesYearWhere .= ") ";
 
 		echo $pricesYearWhere;
 
