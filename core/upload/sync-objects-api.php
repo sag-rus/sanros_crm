@@ -597,9 +597,7 @@ function sync_objects_api($connect){
 				$pricesYearWhere .= ") ";
 			}
 		}
-
-		echo $pricesYearWhere;
-
+		
 		$prices = $connect->getAll("SELECT `id`, `id_room`, `price`, `id_range`, `active` FROM `price` WHERE `synchronized` = 0 AND ".$pricesYearWhere);
 
 		foreach ($prices as $price) {
