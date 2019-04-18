@@ -456,7 +456,7 @@ function sync_objects_api($connect){
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
 				if($success) {
-					/*$connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type` = 'room' AND `entity1_id` = ?i AND `name` = 'comfort'", $room['id']);
+					$connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type` = 'room' AND `entity1_id` = ?i AND `name` = 'comfort'", $room['id']);
 					$roomComforts = explode("_",trim($room['id_comfort'].$room['id_best_comfort']));
 
 					foreach ($roomComforts as $roomComfort) {
@@ -475,8 +475,8 @@ function sync_objects_api($connect){
 					}
 					else {
 						$connect->query("UPDATE `room` SET `synchronized` = '1' WHERE `id` = ?i",$room['id']);
-					}*/
-					$connect->query("UPDATE `room` SET `synchronized` = '1' WHERE `id` = ?i",$room['id']);
+					}
+					//$connect->query("UPDATE `room` SET `synchronized` = '1' WHERE `id` = ?i",$room['id']);
 				}
 				else {
 					echo $res['msg'].": ".$room['id'].'<br>';
@@ -576,6 +576,48 @@ function sync_objects_api($connect){
 				}
 				else {
 					echo $res['msg'].": ".$range['id'].'<br>';
+					print_r($res['fail_messages']);
+					break;
+				}
+			}
+		}
+
+		$pricesStartYear = 2018;
+		$pricesYearWhere = " (";
+		for($i = $pricesStartYear; $i < date("Y")+1; $i++) {
+			if(mb_strlen($pricesYearWhere) > 0) {
+				$pricesYearWhere .= " OR";
+			}
+
+			$pricesYearWhere .= " (date_last_save LIKE '%.".$i."%' OR date_last_save LIKE '%-".$i."%')";
+		}
+
+		$pricesYearWhere .= ") ";
+
+		$prices = $connect->getAll("SELECT `id`, `id_room`, `price`, `id_range`, `active` FROM `price` WHERE `synchronized` = 0 AND ".$pricesYearWhere);
+
+		foreach ($prices as $price) {
+			$priceAr = [];
+			$priceAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+			$priceAr['id'] = $price['id'];
+			$priceAr['room_id'] = $price['id_room'];
+			$priceAr['value'] = (float)$price['price'];
+			$priceAr['range_id'] = $price['id_range'];
+			$priceAr['status'] = (int)(!$price['active']);
+			$priceAr['uid'] = 1;
+
+			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/set/".$price['id'],[
+				'form_params' => $priceAr
+			]);
+
+			$res = json_decode($res->getBody()->getContents(),true);
+			if(array_key_exists('success',$res)) {
+				$success = (bool)(int)$res['success'];
+				if($success) {
+					$connect->query("UPDATE `price` SET `synchronized` = '1' WHERE `id` = ?i",$price['id']);
+				}
+				else {
+					echo $res['msg'].": ".$price['id'].'<br>';
 					print_r($res['fail_messages']);
 					break;
 				}
