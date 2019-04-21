@@ -10,6 +10,7 @@ include_once($directory."/core/lib/Mysql.Class.php");
 include_once $directory."/core/upload/price.php";
 include_once $directory."/core/upload/default.php";
 include_once($directory."/core/admin/news.php");
+include_once($directory."/core/upload/sync-objects-api.php");
 $connect = connect_to_MySQL_directory();
 
 sync_objects_api($connect);
