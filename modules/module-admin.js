@@ -2666,7 +2666,7 @@ function edit_sites_content(id) {
 
 			var sites_content_body2 = $('#sites_content_body2').val();
 			CKEDITOR.replace('sites_content_body2');
-			CKEDITOR.instances.sites_content_body.setData(sites_content_body2);
+			CKEDITOR.instances.sites_content_body2.setData(sites_content_body2);
 
       $('.sites-content-modal *[name="slider_photos"], .sites-content-modal *[name="photogallery"]').multUploader({
         action:'mysql.php?func=multipart_upload',
