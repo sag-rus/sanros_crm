@@ -1183,7 +1183,7 @@ function edit_sites_content($connect) {
   $content_id = isset($_POST['id'])?(int)$_POST['id']:0;
   $content = NULL;
   if($content_id)
-      $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h2`, `summary`, `body`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code` FROM `sites_contents` WHERE `id` =?i",$content_id);
+      $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h2`, `summary`, `body`, `body2`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code` FROM `sites_contents` WHERE `id` =?i",$content_id);
       $entity = $content;
       $entity['type'] = 'content';
   ob_start();
@@ -1326,6 +1326,12 @@ function edit_sites_content($connect) {
                           <label class="col-sm-2 control-label">Содержимое</label>
                           <div class="col-sm-10">
                               <textarea class="form-control resizable-textarea" name="body" id="sites_content_body"><?=htmlspecialchars($content['body']);?></textarea>
+                          </div>
+                      </div>
+                      <div class="form-group<?php if(!in_array($content['type'],['landing','settings'])) { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Доп. содержимое</label>
+                          <div class="col-sm-10">
+                              <textarea class="form-control resizable-textarea" name="body2" id="sites_content_body2"><?=htmlspecialchars($content['body2']);?></textarea>
                           </div>
                       </div>
                       <div class="form-group">
@@ -1834,6 +1840,7 @@ function set_sites_content($connect) {
   $form_action = isset($_POST['form_action'])?trim($_POST['form_action']):"";
   $description = isset($_POST['description'])?trim($_POST['description']):"";
   $body = isset($_POST['body'])?$_POST['body']:"";
+  $body2 = isset($_POST['body2'])?$_POST['body2']:"";
   $map_code = isset($_POST['map_code'])?$_POST['map_code']:"";
   $landing_info = isset($_POST['landing_info'])?$_POST['landing_info']:"";
   $weight = isset($_POST['weight'])?(float)$_POST['weight']:0;
@@ -1849,7 +1856,13 @@ function set_sites_content($connect) {
   $keywords = isset($_POST['keywords'])?trim($_POST['keywords']):"";
   $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
   $type = isset($_POST['type'])?trim($_POST['type']):"page";
+
   $typesAr = ['page','news', 'module', 'landing', "photogallery", "settings"];
+
+  if(!in_array($type,['landing', 'settings'])) {
+      $body2 = "";
+  }
+
   $moduleBlocks = ["rooms","desc","promo","rating"];
   $timestamp = gmdate("U");
   $published = isset($_POST['published'])?(strtotime($_POST['published'])-3600*3):$timestamp;
@@ -1917,12 +1930,12 @@ function set_sites_content($connect) {
               set_bounds($connect,$boundsArrayReviewsObjects,'reviews_objects');
 
 
-              $connect->query("UPDATE `sites_contents` SET `title`=?s, `title_h2` = ?s, `path`=?s, `description`=?s, `body`=?s, `summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i, `form_action` = ?s, `map_code` = ?s, `landing_info` = ?s WHERE `id`=?i",$title, $title_h2, $path,$description,$body,$summary,$keywords,$type,$timestamp,$published,$status,0,$weight,$module_object_id,$module_block,$second_bg, $form_action, $map_code, $landing_info, $content_id);
+              $connect->query("UPDATE `sites_contents` SET `title`=?s, `title_h2` = ?s, `path`=?s, `description`=?s, `body`=?s, `body2` =?s, `summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i, `form_action` = ?s, `map_code` = ?s, `landing_info` = ?s WHERE `id`=?i",$title, $title_h2, $path,$description,$body, $body2,$summary,$keywords,$type,$timestamp,$published,$status,0,$weight,$module_object_id,$module_block,$second_bg, $form_action, $map_code, $landing_info, $content_id);
             }
             else {
               $respAr['success'] = 1;
               $respAr['msg'] = "Контент успешно добавлен";
-              $connect->query("INSERT INTO `sites_contents` (`title`, `title_h2`, `path`, `description`, `body`, `summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`,`module_object_id`, `module_block`, `second_bg`, `form_action`, `map_code`, `landing_info`) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?i, ?s, ?i, ?s, ?s, ?s)",$title, $title_h2, $path,$description,$body,$summary,$keywords,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight,$module_object_id, $module_block, $second_bg, $form_action, $map_code, $landing_info);
+              $connect->query("INSERT INTO `sites_contents` (`title`, `title_h2`, `path`, `description`, `body`, `body2`, `summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`,`module_object_id`, `module_block`, `second_bg`, `form_action`, `map_code`, `landing_info`) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?i, ?s, ?i, ?s, ?s, ?s)",$title, $title_h2, $path,$description,$body,$body2,$summary,$keywords,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight,$module_object_id, $module_block, $second_bg, $form_action, $map_code, $landing_info);
 
               $entity = [
                 'id' => $connect->insertId(),
@@ -1982,7 +1995,7 @@ function set_sites_content($connect) {
 }
 
 function sync_site_content($connect, $id):bool {
-    $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h2`, `summary`, `body`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code` FROM `sites_contents` WHERE `id` =?i",$id);
+    $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h2`, `summary`, `body`, `body2`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code` FROM `sites_contents` WHERE `id` =?i",$id);
     if($content) {
         try {
           $client = new \GuzzleHttp\Client();

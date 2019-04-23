@@ -1816,6 +1816,12 @@ function add_new_sites_content(site_id) {
 												'</div>' +
 											'</div>' +
 			 								'<div class="form-group">' +
+												'<label class="col-sm-2 control-label">Доп. содержимое</label>' +
+												'<div class="col-sm-10">' +
+													'<textarea class="form-control resizable-textarea" name="body2" id="sites_content_body2"></textarea>'+
+												'</div>' +
+											'</div>' +
+			 								'<div class="form-group">' +
                           '<label class="col-sm-2 control-label">Код карты</label>' +
                           '<div class="col-sm-10">' +
                               '<textarea class="form-control" name="map_code"></textarea>' +
@@ -1857,6 +1863,7 @@ function add_new_sites_content(site_id) {
 
 	show_modal(html);
   CKEDITOR.replace('sites_content_body');
+	CKEDITOR.replace('sites_content_body2');
   $('.sites-content-modal *[name="slider_photos"], .sites-content-modal *[name="photogallery"]').multUploader({
     action:'mysql.php?func=multipart_upload',
     fragmentSize:1024*1024,
@@ -2125,6 +2132,7 @@ function set_sites_content() {
 
 
   var body = CKEDITOR.instances.sites_content_body.getData();
+	var body2 = CKEDITOR.instances.sites_content_body2.getData();
 
   var site_id = $modalBody.find('*[name="site_id"]').val();
   var type = $modalBody.find('*[name="type"]').val();
@@ -2274,6 +2282,7 @@ function set_sites_content() {
 				slider_photos: slider_photos,
         photogallery: photogallery,
         body: body,
+				body2: body2,
         site_id: site_id,
 				image: image,
 				page_bg: page_bg,
@@ -2654,6 +2663,11 @@ function edit_sites_content(id) {
       var sites_content_body = $('#sites_content_body').val();
       CKEDITOR.replace('sites_content_body');
       CKEDITOR.instances.sites_content_body.setData(sites_content_body);
+
+			var sites_content_body2 = $('#sites_content_body2').val();
+			CKEDITOR.replace('sites_content_body2');
+			CKEDITOR.instances.sites_content_body.setData(sites_content_body2);
+
       $('.sites-content-modal *[name="slider_photos"], .sites-content-modal *[name="photogallery"]').multUploader({
         action:'mysql.php?func=multipart_upload',
         fragmentSize:1024*1024,
@@ -2914,6 +2928,9 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 	var $reviews_objects = $('.sites-content-modal *[name="reviews_objects"]');
 	var $reviews_objectsFormG = $reviews_objects.closest('.form-group');
 
+	var $body2 = $('.sites-content-modal *[name="body2"]');
+	var $body2FormG = $body2.closest('.form-group');
+
 	if(type === 'module') {
 		$moduleObjectFormG.removeClass('hidden');
     $moduleBlockFormG.removeClass('hidden');
@@ -2938,13 +2955,16 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
     $second_bgFormG.removeClass('hidden');
     $title_h2FormG.removeClass('hidden');
     $landing_infoFormG.removeClass('hidden');
-  }
+		$body2FormG.removeClass('hidden');
+
+	}
   else {
     $sliderPhotosFormG.addClass('hidden');
     $page_bgFormG.addClass('hidden');
     $second_bgFormG.addClass('hidden');
     $title_h2FormG.addClass('hidden');
     $landing_infoFormG.addClass('hidden');
+		$body2FormG.addClass('hidden');
   }
 
   if(type === 'photogallery' || type === 'landing' || type === 'news' || type === 'page' || type === 'settings') {
