@@ -7,8 +7,20 @@ function sync_objects_ratings_api($connect){
 	try {
 
 		$client = new \GuzzleHttp\Client();
-		$ratings = $connect->getAll("SELECT `id`, `status`, `clean`, `comfort`, `location`, `staff`, `ratio`, `leisure`, `treatment`, `id_obj`, `positive`, `negative`, `date_send`, `company_rating`, `turist`, `advice` FROM `rating` WHERE `date_send` IS NOT NULL AND `average` > 0 AND `synchronized` = 0 AND `id_obj` > 0");
+		$ratings = $connect->getAll("SELECT `rating`.`id` AS `id`, `rating`.`status` AS `status`, `rating`.`clean` AS `clean`, `rating`.`comfort` AS `comfort`, `rating`.`location` AS `location`, `rating`.`staff` AS `staff`, `rating`.`ratio` AS `ratio`, `rating`.`leisure` AS `leisure`, `rating`.`treatment` AS `treatment`, `rating`.`id_obj` AS `id_obj`, `rating`.`positive` AS `positive`, `rating`.`negative` AS `negative`, `rating`.`date_send` AS `date_send`, `rating`.`company_rating` AS `company_rating`, `rating`.`turist` AS `turist`, `rating`.`advice` AS `advice`, `klient`.`name` AS `klient_name` FROM `rating` LEFT JOIN `reckoning` ON `rating`.`schet` = `reckoning`.`id` LEFT JOIN `klient` ON `reckoning`.`turist` = `klient`.`id` WHERE `date_send` IS NOT NULL AND `average` > 0 AND `synchronized` = 0 AND `id_obj` > 0");
 		foreach ($ratings as $rating) {
+			$ratingSum = $rating['clean']+$rating['comfort']+$rating['location']+$rating['staff']+$rating['ratio']+$rating['leisure']+$rating['treatment'];
+
+			$ratingDel = 6;
+			if($rating['treatment'] > 0)
+				$ratingDel++;
+
+			$turistName = (string)$rating['turist'];
+
+			if(mb_strlen($turistName) === 0) {
+				$turistName = (string)$rating['klient_name'];
+			}
+
 			$ratingAr = [
 				'id' => $rating['id'],
 				'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4',
@@ -18,8 +30,8 @@ function sync_objects_ratings_api($connect){
 				'positive' => (string)$rating['positive'],
 				'negative' => (string)$rating['negative'],
 				'advice' => (string)$rating['advice'],
-				'author_name' => (string)$rating['turist'],
-				'average' => round(($rating['clean']+$rating['comfort']+$rating['location']+$rating['staff']+$rating['ratio']+$rating['leisure']+$rating['treatment'])/7,1),
+				'author_name' => $turistName,
+				'average' => round($ratingSum/$ratingDel,1),
 				'company_rating' => (string)$rating['company_rating'],
 				'uid' => 1
 			];
