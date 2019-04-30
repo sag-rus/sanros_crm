@@ -478,7 +478,12 @@ function view_dates_price_object($connect){
 	$html = "";
 	$quota = $connect->getOne("SELECT check_places FROM object WHERE id=?i", $id);
 
-	$today = date("Y-m-d", strToTime("-2 week"));
+    $ratePlans = $connect->getAll("SELECT `id`, `name` FROM `rate_plan` WHERE `object` = ?i AND `status` = 1",$id);
+    if(count($ratePlans) === 0)
+        $ratePlans = $connect->getAll("SELECT `id`, `name` FROM `rate_plan` WHERE id = ?i",1);
+
+
+    $today = date("Y-m-d", strToTime("-2 week"));
 	$data = $connect->getAll("SELECT id, DATE_FORMAT(start, '%e.%m.%Y') as date_start, DATE_FORMAT(end, '%e.%m.%Y') as end FROM date_price WHERE id_obj=?i AND active=0 AND end>=?s ORDER BY start", $id, $today);
 	foreach($data as $row){
 		$dates = $row["date_start"]." - ".$row["end"];
@@ -504,20 +509,28 @@ function view_dates_price_object($connect){
 				<select class="form-control id-date-price" onchange="view_prices_object()"><?php echo $html; ?></select>
 		<?php } ?>
 			</div>
-			<div class="col-sm-9">
+			<div class="col-sm-3">
 		<?php if($id == 59 || $id == 42 || $quota != 1){ ?>
 			<?php if($html){ ?>
 				<button type="button" class="btn btn-default btn-sm" onclick="edit_date_price_manager()"><i class="fa fa-pencil"></i> Редактировать</button>
 			<?php } ?>
 				<button type="button" class="btn btn-info btn-sm" onclick="add_new_date_manager(<?php echo $id; ?>)"><i class="fa fa-calendar"></i> Новые даты</button>
 		<?php } ?>
-				<div class="pull-right">
+            </div>
+            <div class="col-sm-3">
+                <select class="form-control price-rate-plan" onchange="view_prices_object();">
+                  <?php foreach ($ratePlans as $ratePlan) { ?>
+                      <option value="<?=$ratePlan['id'];?>"><?=$ratePlan['name'];?></option>
+                  <?php } ?>
+                </select>
+            </div>
+            <div class="col-sm-3 pull-right">
 			<?php if($reestablish == 1){ ?>
 					<button type="button" class="btn btn-primary btn-sm" onclick="reestablish_price_date()"><i class="fa fa-angle-double-up"></i> Восстановить цены</button>
 			<?php } ?>
 					<button type="button" class="btn btn-success btn-sm" onclick="upload_object_price_on_server(<?php echo $id; ?>)" title="Загрузить на сайты цены номеров объекта по датам"><i class="fa fa-cloud-upload"></i> Загрузить цены на сайты</button>
-				</div>
-			</div>
+            </div>
+
 		</div>
 	</div>
 	<div class="panel-body html-price">
@@ -604,11 +617,12 @@ function view_prices_object($connect){
 	$TH = "";
 	$have_price = 0;
 	$id_date = $_POST["date"];
+	$rate_plan_id = (int)$_POST['rate_plan_id'];
 	$type_view = $_POST["type"];
 	$TC = "";
 	$TH = "";
 	$object = $connect->getOne("SELECT id_obj FROM date_price WHERE id=?i", $id_date);
-	$data = $connect->getAll("SELECT ranges.counter, ranges.id, ranges.name, ranges.type, place.name as place, ranges.treatment, place.type as place_type FROM ranges, place WHERE ranges.id_obj=?i AND (ranges.place=place.id) AND ranges.id_date=?i AND ranges.active = 0 ORDER BY ranges.counter, place.type", $object, $id_date);
+	$data = $connect->getAll("SELECT ranges.counter, ranges.id, ranges.name, ranges.type, place.name as place, ranges.treatment, place.type as place_type FROM ranges, place WHERE ranges.id_obj=?i AND (ranges.place=place.id) AND ranges.id_date=?i AND ranges.active = 0 AND ranges.rate_plan = ?i ORDER BY ranges.counter, place.type", $object, $id_date, $rate_plan_id);
 	foreach($data as $row){
 		$id = $row["id"];
 		$ranges[$id] = 1;
@@ -733,17 +747,25 @@ function update_price_manager($connect){
 }
 
 function edit_range_manager($connect){
-	if(isset($_POST["id"])){
+    $rate_plan_id = 0;
+    if(isset($_POST["id"])){
 		$id = $_POST["id"];
 		$row = $connect->getRow("SELECT id_obj, name, id_date, place, type, treatment FROM ranges WHERE active = 0 AND id=?i", $id);
 		$place = get_place_object($connect, $row["id_obj"], $row["place"]);
 		$dates = get_dates_object($connect, $row["id_obj"], $row["id_date"]);
+        $ratePlans = $connect->getAll("SELECT `id`, `name` FROM `rate_plan` WHERE `object` = ?i AND `status` = 1",$row['id_obj']);
+        if(count($ratePlans) === 0)
+            $ratePlans = $connect->getAll("SELECT `id`, `name` FROM `rate_plan` WHERE id = ?i",1);
 	}else{
 		$row = array("name" => "", "type" => "", "treatment" => 0);
 		$object = $_POST["object"];
 		$id_date = $_POST["date"];
 		$place = get_place_object($connect, $object);
+		$rate_plan_id = isset($_POST['rate_plan_id'])?(int)$_POST['rate_plan_id']:0;
 		$dates = get_dates_object($connect, $object, $id_date);
+        $ratePlans = $connect->getAll("SELECT `id`, `name` FROM `rate_plan` WHERE `object` = ?i AND `status` = 1",$object);
+        if(count($ratePlans) === 0)
+            $ratePlans = $connect->getAll("SELECT `id`, `name` FROM `rate_plan` WHERE id = ?i",1);
 	}
 	$type = get_type_price($row["type"]);
 	$treatment = get_treatment_price($row["treatment"]);
@@ -770,6 +792,16 @@ function edit_range_manager($connect){
 							<?php echo $dates; ?>
 						</div>
 					</div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Тарифный план</label>
+                        <div class="col-sm-8">
+                          <select class="form-control" id="price-range-rate-plan">
+                            <?php foreach ($ratePlans as $ratePlan) { ?>
+                                <option value="<?=$ratePlan['id'];?>"<?php if($rate_plan_id > 0 && $rate_plan_id == $ratePlan['id']) { ?> selected<?php } ?>><?=$ratePlan['name'];?></option>
+                            <?php } ?>
+                          </select>
+                        </div>
+                    </div>
 					<div class="form-group">
 						<label class="col-sm-4 control-label">Место</label>
 						<div class="col-sm-8">
@@ -813,9 +845,10 @@ function update_range_manager($connect){
 	$type = $_POST["type"];
 	$place = $_POST["place"];
 	$treatment = $_POST["treatment"];
+	$rate_plan_id = $_POST['rate_plan_id'];
 	$name = str_replace("plus", "+", $name);
 	$old_date = $connect->getOne("SELECT id_date FROM ranges WHERE id=?i AND active = 0", $id);
-	$connect->query("UPDATE ranges SET id_date=?i, name=?s, type=?i, place=?i, treatment=?i, synchronized = 0 WHERE id=?i", $date, $name, $type, $place, $treatment, $id);
+	$connect->query("UPDATE ranges SET id_date=?i, name=?s, type=?i, place=?i, treatment=?i, rate_plan = ?i, synchronized = 0 WHERE id=?i", $date, $name, $type, $place, $treatment, $rate_plan_id, $id);
 	$return = "";
 	if($old_date == $date){
 		$type_place = $connect->getOne("SELECT type FROM place WHERE id=?i", $place);
@@ -855,7 +888,8 @@ function save_range_manager($connect){
 	$place = $_POST["place"];
 	$id_obj = $_POST["object"];
 	$treatment = $_POST['treatment'];
-	$connect->query("INSERT INTO ranges(id_date, name, type, place, id_obj, treatment) VALUES (?i, ?s, ?i, ?i, ?i, ?i)", $date, $name, $type, $place, $id_obj, $treatment);
+	$rate_plan_id = $_POST['rate_plan_id'];
+	$connect->query("INSERT INTO ranges(id_date, name, type, place, id_obj, treatment, rate_plan) VALUES (?i, ?s, ?i, ?i, ?i, ?i, ?i)", $date, $name, $type, $place, $id_obj, $treatment, $rate_plan_id);
 }
 
 function delete_range_manager($connect){

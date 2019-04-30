@@ -505,9 +505,10 @@ function update_range_manager(id){
 	var date = $('#range_date').val();
 	var type = $('#range_type').val();
 	var place = $('#range_place').val();
+	var rate_plan_id = $('#price-range-rate-plan').val();
 	var treatment = $('#treatment_type').val();
 	name = name.replace(/\+/g, 'plus');
-	var str = 'func=update_range_manager&name=' + name + '&date=' + date + '&id=' + id + '&type=' + type + '&place=' + place + '&treatment=' + treatment;
+	var str = 'func=update_range_manager&name=' + name + '&date=' + date + '&id=' + id + '&type=' + type + '&place=' + place + '&treatment=' + treatment+'&rate_plan_id='+rate_plan_id;
 	$.ajax({
 		url: 'mysql.php',
 		type: 'POST',
@@ -545,7 +546,8 @@ function delete_range_manager(id){
 
 function add_new_range_manager(object){
 	var date = $('.id-date-price').val();
-	var str = 'func=edit_range_manager&object=' + object + '&date=' + date;
+	var rate_plan_id = $('.price-rate-plan').val();
+	var str = 'func=edit_range_manager&object=' + object + '&date=' + date+'&rate_plan_id='+rate_plan_id;
 	$.ajax({
 		url: 'mysql.php',
 		type: 'POST',
@@ -562,7 +564,8 @@ function save_range_manager(object){
 	var type = $('#range_type').val();
 	var place = $('#range_place').val();
 	var treatment = $('#treatment_type').val();
-	var str = 'func=save_range_manager&name=' + name + '&date=' + date + '&object=' + object + '&type=' + type + '&place=' + place+'&treatment='+treatment;
+	var rate_plan_id = $('#price-range-rate-plan').val();
+	var str = 'func=save_range_manager&name=' + name + '&date=' + date + '&object=' + object + '&type=' + type + '&place=' + place+'&treatment='+treatment+'&rate_plan_id='+rate_plan_id;
 	$.ajax({
 		url: 'mysql.php',
 		type: 'POST',
@@ -676,7 +679,8 @@ function view_prices_object(id_date, type){
 		if(id_date)
 			$('.id-date-price').val(id_date);
 		var id_date = $('.id-date-price').val();
-		var str = 'func=view_prices_object&date=' + id_date + '&type=' + type;
+		var rate_plan_id = $('.price-rate-plan').val();
+		var str = 'func=view_prices_object&date=' + id_date + '&type=' + type+'&rate_plan_id='+rate_plan_id;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
