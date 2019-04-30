@@ -98,7 +98,9 @@
 			$last_id = $create_client->create_client($client_info);
 
 			save_client_to_history($connect, $last_id, "Создание клиента");
-			$connect->query("INSERT INTO reckoning(date, turist, id_obj, rest, hash, website, source, form_booking) VALUES (?s, ?i, ?i, ?i, ?s, ?s, ?i, 'module')", $today, $last_id, $id_obj, $last_id, $hash, $website, $source);
+			$note_booking = isset($data_booking->note)?trim($data_booking->note):"";
+
+			$connect->query("INSERT INTO reckoning(date, turist, id_obj, rest, hash, website, source, form_booking, note) VALUES (?s, ?i, ?i, ?i, ?s, ?s, ?i, 'module',?s)", $today, $last_id, $id_obj, $last_id, $hash, $website, $source, $note_booking);
 			$id = $connect->insertId();
 			$id_tour = $connect->getOne("SELECT id_tour FROM object WHERE id=?i", $id_obj);
 			if($id_tour)
@@ -134,7 +136,6 @@
 					$connect->query("UPDATE reckoning SET form_booking='quota' WHERE id=?i", $id);
 				}
 			}else{
-				$note_booking = isset($data_booking->note)?$data_booking->note:"";
 				$connect->query("INSERT INTO position_reck(schet, id_room, days, date_z, number, type, reward, add_one_day) VALUES (?i, 0, ?i, ?s, 1, 1, ?s, ?i)", $id, $days, $date_z, $reward, (int)$add_one_day);
 				$connect->query("UPDATE reckoning SET note=?s, form_booking='default-form' WHERE id=?i", $note_booking, $id);
 			}
