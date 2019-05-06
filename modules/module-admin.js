@@ -1696,6 +1696,13 @@ function add_new_sites_content(site_id) {
 												'</div>' +
 											'</div>' +
 			 								'<div class="form-group">' +
+                          '<label class="col-sm-2 control-label">Заголовок к крошкам</label>' +
+                          '<div class="col-sm-10">' +
+                              '<input type="text" class="form-control" name="breadcrumb_title" maxlength="255">' +
+                              '<div class="input-message-block" data-for="breadcrumb_title"></div>' +
+                          '</div>' +
+                      '</div>'+
+			 								'<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Основная картинка</label>' +
 												'<div class="col-sm-10">' +
 													'<input type="file" class="form-control" name="image">' +
@@ -1762,6 +1769,23 @@ function add_new_sites_content(site_id) {
                           '<div class="col-sm-10">' +
                               '<div class="input-message-block" data-for="photogallery"></div>' +
                               '<input type="file" name="photogallery">' +
+                          '</div>' +
+                      '</div>' +
+			 								'<div class="form-group">' +
+                          '<label class="col-sm-2 control-label">Заголовок к фото</label>' +
+                          '<div class="col-sm-10">' +
+                              '<input type="text" class="form-control" name="photogallery_title" maxlength="255">' +
+                              '<div class="input-message-block" data-for="photogallery_title"></div>' +
+                          '</div>' +
+                      '</div>' +
+			 								'<div class="form-group">' +
+                          '<label class="col-sm-2 control-label">Ориентация фото</label>'+
+                          '<div class="col-sm-10">' +
+                              '<select class="form-control" name="photogallery_orientation">' +
+                                  '<option value="album">Альбомная</option>' +
+                                  '<option value="book">Книжная</option>' +
+                              '</select>' +
+			 												'<div class="input-message-block" data-for="photogallery_orientation"></div>'+
                           '</div>' +
                       '</div>' +
                       '<div class="form-group">' +
@@ -2144,6 +2168,21 @@ function set_sites_content() {
 	var reviews_objects = $reviews_objects.val().trim();
 	$reviews_objectsMsg.html('');
 
+	var $photogallery_title = $modalBody.find('input[name="photogallery_title"]');
+	var $photogallery_titleMsg = $photogallery_title.parent().find('.input-message-block');
+	var photogallery_title = $photogallery_title.val().trim();
+	$photogallery_titleMsg.html('');
+
+	var $breadcrumb_title = $modalBody.find('input[name="breadcrumb_title"]');
+	var $breadcrumb_titleMsg = $breadcrumb_title.parent().find('.input-message-block');
+	var breadcrumb_title = $breadcrumb_title.val().trim();
+	$breadcrumb_titleMsg.html('');
+
+	var $photogallery_orientation = $modalBody.find('*[name="photogallery_orientation"]');
+	var $photogallery_orientationMsg = $photogallery_orientation.parent().find('.input-message-block');
+	var photogallery_orientation = $photogallery_orientation.val().trim();
+	$photogallery_orientationMsg.html('');
+
   var error = false;
 
   if(title.length === 0) {
@@ -2281,6 +2320,9 @@ function set_sites_content() {
         description: description,
 				slider_photos: slider_photos,
         photogallery: photogallery,
+				photogallery_title: photogallery_title,
+				photogallery_orientation: photogallery_orientation,
+				breadcrumb_title: breadcrumb_title,
         body: body,
 				body2: body2,
         site_id: site_id,
@@ -2925,6 +2967,12 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
   var $photogallery = $('.sites-content-modal *[name="photogallery"]');
   var $photogalleryFormG = $photogallery.closest('.form-group');
 
+	var $photogallery_title = $('.sites-content-modal *[name="photogallery_title"]');
+	var $photogallery_titleFormG = $photogallery_title.closest('.form-group');
+
+	var $photogallery_orientation = $('.sites-content-modal *[name="photogallery_orientation"]');
+	var $photogallery_orientationFormG = $photogallery_orientation.closest('.form-group');
+
 	var $reviews_objects = $('.sites-content-modal *[name="reviews_objects"]');
 	var $reviews_objectsFormG = $reviews_objects.closest('.form-group');
 
@@ -2969,9 +3017,13 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 
   if(type === 'photogallery' || type === 'landing' || type === 'news' || type === 'page' || type === 'settings') {
     $photogalleryFormG.removeClass('hidden');
+		$photogallery_titleFormG.removeClass('hidden');
+		$photogallery_orientationFormG.removeClass('hidden');
   }
   else {
     $photogalleryFormG.addClass('hidden');
+		$photogallery_titleFormG.addClass('hidden');
+		$photogallery_orientationFormG.addClass('hidden');
   }
 
 });

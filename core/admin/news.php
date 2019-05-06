@@ -1183,7 +1183,7 @@ function edit_sites_content($connect) {
   $content_id = isset($_POST['id'])?(int)$_POST['id']:0;
   $content = NULL;
   if($content_id)
-      $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h2`, `summary`, `body`, `body2`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code` FROM `sites_contents` WHERE `id` =?i",$content_id);
+      $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h2`, `summary`, `body`, `body2`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `photogallery_title`, `photogallery_orientation`, `breadcrumb_title` FROM `sites_contents` WHERE `id` =?i",$content_id);
       $entity = $content;
       $entity['type'] = 'content';
   ob_start();
@@ -1206,6 +1206,13 @@ function edit_sites_content($connect) {
                               <input type="hidden" value="<?=$content['site_id'];?>" name="site_id">
                               <input type="hidden" value="<?=$content['id'];?>" name="content_id">
                               <div class="input-message-block" data-for="title"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-2 control-label">Заголовок к крошкам</label>
+                          <div class="col-sm-10">
+                              <input type="text" class="form-control" name="breadcrumb_title" maxlength="255" value="<?=htmlspecialchars($content['breadcrumb_title']);?>">
+                              <div class="input-message-block" data-for="breadcrumb_title"></div>
                           </div>
                       </div>
                       <div class="form-group">
@@ -1275,6 +1282,23 @@ function edit_sites_content($connect) {
                           <div class="col-sm-10">
                               <div class="input-message-block" data-for="photogallery"></div>
                               <input type="file" name="photogallery" value="<?=htmlspecialchars(json_encode((object)bounds_to_files($connect,load_bounds($connect,$entity,'photogallery'))));?>">
+                          </div>
+                      </div>
+                      <div class="form-group<?php if(!in_array($content['type'],['photogallery','landing','news', 'page','settings'])) { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Заголовок к фото</label>
+                          <div class="col-sm-10">
+                              <div class="input-message-block" data-for="photogallery"></div>
+                              <input type="text" class="form-control" name="photogallery_title" value="<?=htmlspecialchars($content['photogallery_title']);?>">
+                          </div>
+                      </div>
+                      <div class="form-group<?php if(!in_array($content['type'],['photogallery','landing','news', 'page','settings'])) { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Ориентация фото</label>
+                          <div class="col-sm-10">
+                              <select class="form-control" name="photogallery_orientation">
+                                  <option value="album"<?php if($content['photogallery_orientation'] === 'album') { ?> selected<?php } ?>>Альбомная</option>
+                                  <option value="book"<?php if($content['photogallery_orientation'] === 'book') { ?> selected<?php } ?>>Книжная</option>
+                              </select>
+                              <div class="input-message-block" data-for="photogallery_orientation"></div>
                           </div>
                       </div>
                       <div class="form-group<?php if($content['type'] !== 'landing') { ?> hidden<?php } ?>">
@@ -1835,6 +1859,9 @@ function set_sites_content($connect) {
   ];
 
   $title = isset($_POST['title'])?trim($_POST['title']):"";
+  $breadcrumb_title = isset($_POST['breadcrumb_title'])?trim($_POST['breadcrumb_title']):"";
+  $photogallery_title = isset($_POST['photogallery_title'])?trim($_POST['photogallery_title']):"";
+  $photogallery_orientation = isset($_POST['photogallery_orientation'])?trim($_POST['photogallery_orientation']):"album";
   $title_h2 = isset($_POST['title_h2'])?trim($_POST['title_h2']):"";
   $path = isset($_POST['path'])?trim($_POST['path']):"";
   $form_action = isset($_POST['form_action'])?trim($_POST['form_action']):"";
@@ -1858,6 +1885,7 @@ function set_sites_content($connect) {
   $type = isset($_POST['type'])?trim($_POST['type']):"page";
 
   $typesAr = ['page','news', 'module', 'landing', "photogallery", "settings"];
+  $photogallery_orientations = ['album', 'book'];
 
   if(!in_array($type,['landing', 'settings'])) {
       $body2 = "";
@@ -1875,7 +1903,7 @@ function set_sites_content($connect) {
   if($status !== 0 && $status !== 1)
       $status = 0;
 
-  if(in_array($type,$typesAr) && (($module_object_id === 0 && $module_block === "" && $type !== 'module') || ($module_object_id > 0 && in_array($module_block,$moduleBlocks) && $type === 'module'))) {
+  if(in_array($type,$typesAr) && in_array($photogallery_orientation,$photogallery_orientations) && (($module_object_id === 0 && $module_block === "" && $type !== 'module') || ($module_object_id > 0 && in_array($module_block,$moduleBlocks) && $type === 'module'))) {
     if($site_id) {
       if($title && $path) {
 
@@ -1930,12 +1958,12 @@ function set_sites_content($connect) {
               set_bounds($connect,$boundsArrayReviewsObjects,'reviews_objects');
 
 
-              $connect->query("UPDATE `sites_contents` SET `title`=?s, `title_h2` = ?s, `path`=?s, `description`=?s, `body`=?s, `body2` =?s, `summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i, `form_action` = ?s, `map_code` = ?s, `landing_info` = ?s WHERE `id`=?i",$title, $title_h2, $path,$description,$body, $body2,$summary,$keywords,$type,$timestamp,$published,$status,0,$weight,$module_object_id,$module_block,$second_bg, $form_action, $map_code, $landing_info, $content_id);
+              $connect->query("UPDATE `sites_contents` SET `title`=?s, `title_h2` = ?s, `path`=?s, `description`=?s, `body`=?s, `body2` =?s, `summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i, `form_action` = ?s, `map_code` = ?s, `landing_info` = ?s, `breadcrumb_title` = ?s, `photogallery_title` = ?s, `photogallery_orientation` = ?s WHERE `id`=?i",$title, $title_h2, $path,$description,$body, $body2,$summary,$keywords,$type,$timestamp,$published,$status,0,$weight,$module_object_id,$module_block,$second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $content_id);
             }
             else {
               $respAr['success'] = 1;
               $respAr['msg'] = "Контент успешно добавлен";
-              $connect->query("INSERT INTO `sites_contents` (`title`, `title_h2`, `path`, `description`, `body`, `body2`, `summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`,`module_object_id`, `module_block`, `second_bg`, `form_action`, `map_code`, `landing_info`) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?i, ?s, ?i, ?s, ?s, ?s)",$title, $title_h2, $path,$description,$body,$body2,$summary,$keywords,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight,$module_object_id, $module_block, $second_bg, $form_action, $map_code, $landing_info);
+              $connect->query("INSERT INTO `sites_contents` (`title`, `title_h2`, `path`, `description`, `body`, `body2`, `summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`,`module_object_id`, `module_block`, `second_bg`, `form_action`, `map_code`, `landing_info`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation`) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?i, ?s, ?i, ?s, ?s, ?s, ?s, ?s, ?s)",$title, $title_h2, $path,$description,$body,$body2,$summary,$keywords,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight,$module_object_id, $module_block, $second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation);
 
               $entity = [
                 'id' => $connect->insertId(),
@@ -1995,7 +2023,7 @@ function set_sites_content($connect) {
 }
 
 function sync_site_content($connect, $id):bool {
-    $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h2`, `summary`, `body`, `body2`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code` FROM `sites_contents` WHERE `id` =?i",$id);
+    $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h2`, `summary`, `body`, `body2`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation` FROM `sites_contents` WHERE `id` =?i",$id);
     if($content) {
         try {
           $client = new \GuzzleHttp\Client();
