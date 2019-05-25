@@ -33,6 +33,7 @@ function sync_objects_ratings_api($connect){
 				'author_name' => $turistName,
 				'average' => round($ratingSum/$ratingDel,1),
 				'company_rating' => (string)$rating['company_rating'],
+				'has_company_rating' => (int)(mb_strlen((string)$rating['company_rating']) > 0),
 				'uid' => 1
 			];
 
