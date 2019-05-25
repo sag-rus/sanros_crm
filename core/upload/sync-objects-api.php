@@ -382,9 +382,10 @@ function sync_objects_api($connect){
 				$objectAr['uri'] = change_text_url($object['type_name']) . '-' . $object['url_name'];
 				$objectAr['uri_type'] = 1;
 			}
-			else
-				$objectAr['uri'] = '/объект/'.$object['url_name'];
-
+			else {
+        $objectAr['uri'] = '/объект/' . $object['url_name'];
+        $objectAr['uri_type'] = 0;
+      }
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/object/set/".$object['id'],[
 				'form_params' => $objectAr
