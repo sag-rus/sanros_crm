@@ -159,6 +159,7 @@
 				}
 				elseif(is_array($bonus)) {
           save_schet_to_history($connect, $id, $bonus['msg']);
+					$connect->query("UPDATE reckoning SET promo_code=?s WHERE id=?i", $promo_code, $id);
         }
 			}
 

@@ -1667,14 +1667,22 @@ function select_index_source($code){
 
 function check_promotional_code($code, $object, $sum, $dates, $client_id = NULL, $connect = NULL){
 	$promotional_code = [
-		//"bonus" => array("sum" => 100),
-		//"quota" => array("sum" => 300)
-        'ufa2017' => ["sum" => 500],
         'sanata2019' => [
             "sum" => 500,
             "min-sum" => 10000
         ]
 	];
+
+	if(!isset($promotional_code[$code]) && !is_null($connect) && mb_strlen($code) > 4 && mb_substr($code,0,4) === 'doc_') {
+	    $doctorCard = $connect->getRow("SELECT * FROM `doctor_card` WHERE status = 3 AND promo = ?s",$code);
+	    if($doctorCard) {
+	        $promotional_code[$code] = [
+	          'sum' => 500,
+              'min-sum' => 20000
+            ];
+        }
+    }
+
 	if(isset($promotional_code[$code])){
 		if(isset($promotional_code[$code]["min-sum"]) && $promotional_code[$code]["min-sum"] > $sum)
 			return [
