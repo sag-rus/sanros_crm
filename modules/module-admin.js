@@ -1703,6 +1703,13 @@ function add_new_sites_content(site_id) {
                           '</div>' +
                       '</div>'+
 			 								'<div class="form-group">' +
+                          '<label class="col-sm-2 control-label">Заголовок h1</label>' +
+                          '<div class="col-sm-10">' +
+                              '<input type="text" class="form-control" name="title_h1" maxlength="255">' +
+                              '<div class="input-message-block" data-for="title_h1"></div>' +
+                          '</div>' +
+                      '</div>'	+
+			 								'<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Основная картинка</label>' +
 												'<div class="col-sm-10">' +
 													'<input type="file" class="form-control" name="image">' +
@@ -2070,6 +2077,12 @@ function set_sites_content() {
   var title = $title.val().trim();
   $titleMsg.html('');
 
+
+	var $title_h1 = $modalBody.find('input[name="title_h1"]');
+	var $title_h1Msg = $title_h1.parent().find('.input-message-block');
+	var title_h1 = $title_h1.val().trim();
+	$title_h1Msg.html('');
+
   var $title_h2 = $modalBody.find('input[name="title_h2"]');
   var $title_h2Msg = $title_h2.parent().find('.input-message-block');
   var title_h2 = $title_h2.val().trim();
@@ -2316,6 +2329,7 @@ function set_sites_content() {
       data: {
       	func: 'set_sites_content',
 				title: title,
+				title_h1: title_h1,
         title_h2: title_h2,
         description: description,
 				slider_photos: slider_photos,
