@@ -1478,10 +1478,10 @@ function select_object_rate_plan(){
 			var html = '<div class="panel panel-default form-horizontal"><div class="panel-body">';
 			for(var index in data){
 				var rate_plan = data[index];
-				if(data['status'] == 1)
-					html+= '<div class="form-group"><div class="rate-plan-item in-archieve-element clearfix"><div class="col-sm-3">' +rate_plan['name']+ '</div><div class="col-sm-4">' +rate_plan['description']+ '</div><div class="col-sm-3">' +rate_plan['food']+ '</div><div class="col-sm-2"><button type="button" class="btn btn-default btn-xs" onclick="edit_rate_plan(' +index+ ')"><i class="fa fa-pencil"></i> изменить</button></div></div></div>';
+				if(rate_plan['status'] == 1)
+					html+= '<div class="form-group"><div class="rate-plan-item clearfix"><div class="rate-plan-item-container clearfix"><div class="col-sm-3">' +rate_plan['name']+ '</div><div class="col-sm-4">' +rate_plan['description']+ '</div><div class="col-sm-3">' +rate_plan['food']+ '</div><div class="col-sm-2"><button type="button" class="btn btn-default btn-xs" onclick="edit_rate_plan(' +index+ ')"><i class="fa fa-pencil"></i> изменить</button></div></div></div></div>';
 				else
-					html+= '<div class="form-group"><div class="rate-plan-item in-archieve-element clearfix"><div class="col-sm-3">' +rate_plan['name']+ '</div><div class="col-sm-4">' +rate_plan['description']+ '</div><div class="col-sm-3">' +rate_plan['food']+ '</div><div class="col-sm-2"><button type="button" class="btn btn-default btn-xs" onclick="edit_rate_plan(' +index+ ')"><i class="fa fa-pencil"></i> изменить</button></div></div></div>';
+					html+= '<div class="form-group"><div class="rate-plan-item in-archieve-element clearfix"><div class="rate-plan-item-container clearfix"><div class="col-sm-3">' +rate_plan['name']+ '</div><div class="col-sm-4">' +rate_plan['description']+ '</div><div class="col-sm-3">' +rate_plan['food']+ '</div><div class="col-sm-2"><button type="button" class="btn btn-default btn-xs" onclick="edit_rate_plan(' +index+ ')"><i class="fa fa-pencil"></i> изменить</button></div></div></div></div>';
 			}
 			html+= '</div><div class="panel-footer text-right"><button type="button" class="btn btn-primary btn-sm" onclick="add_new_rate_place(' +object+ ')"><i class="fa fa-plus-circle"></i> Новый тариф</button></div></div>';
 			$('.object-infa').html(html);
@@ -1522,7 +1522,51 @@ function edit_rate_plan(id){
 		success: function(data){
 			if(!data['days'])
 				data['days'] = '';
-			var html = '<div class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button><h4 class="modal-title">Изменить тариф</h4></div><div class="modal-body form-horizontal edit-rate-plan"><div class="form-group"><label class="col-sm-4 control-label">Тариф</label><div class="col-sm-8"><input type="text" class="form-control name-rate-plan" value="' +data['name']+ '" /></div></div><div class="form-group"><label class="col-sm-4 control-label">Питание</label><div class="col-sm-8"><input type="text" class="form-control food-rate-plan" value="' +data['food']+ '" /></div></div><div class="form-group"><label class="col-sm-4 control-label">Мин кол-во дней</label><div class="col-sm-8"><input type="text" class="form-control days-rate-plan" value="' +data['days']+ '" /></div></div><div class="form-group"><label class="col-sm-4 control-label">Описание</label><div class="col-sm-8"><textarea class="form-control desc-rate-plan">' +data['description']+ '</textarea></div></div></div><div class="modal-footer"><button type="button" class="btn btn-success btn-sm" onclick="update_rate_plan(' +id+ ')"><i class="fa fa-check-circle"></i> Сохранить</button></div></div></div></div>';
+			var html = '<div class="modal fade">' +
+											'<div class="modal-dialog">' +
+												'<div class="modal-content">' +
+													'<div class="modal-header">' +
+														'<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>' +
+														'<h4 class="modal-title">Изменить тариф</h4>' +
+													'</div>' +
+													'<div class="modal-body form-horizontal edit-rate-plan">' +
+														'<div class="form-group">' +
+															'<label class="col-sm-4 control-label">Тариф</label>' +
+															'<div class="col-sm-8">' +
+																'<input type="text" class="form-control name-rate-plan" value="' +data['name']+ '" />' +
+															'</div>' +
+														'</div>' +
+														'<div class="form-group">' +
+															'<label class="col-sm-4 control-label">Питание</label>' +
+															'<div class="col-sm-8">' +
+																'<input type="text" class="form-control food-rate-plan" value="' +data['food']+ '" />' +
+															'</div>' +
+														'</div>' +
+														'<div class="form-group">' +
+																'<label class="col-sm-4 control-label">Мин кол-во дней</label>' +
+																'<div class="col-sm-8">' +
+																	'<input type="text" class="form-control days-rate-plan" value="' +data['days']+ '" />' +
+																'</div>' +
+														'</div>' +
+														'<div class="form-group">' +
+																'<label class="col-sm-4 control-label">Описание</label>' +
+																'<div class="col-sm-8">' +
+																	'<textarea class="form-control desc-rate-plan">' +data['description']+ '</textarea>' +
+																'</div>' +
+														'</div>' +
+														'<div class="form-group">' +
+																'<label class="col-sm-4 control-label">Активен</label>' +
+																'<div class="col-sm-8">' +
+																	'<input class="form-control status-rate-plan" type="checkbox"'+((data['status'] == 1)?' checked':'')+' name="status">' +
+																'</div>' +
+														'</div>' +
+													'</div>' +
+													'<div class="modal-footer">' +
+															'<button type="button" class="btn btn-success btn-sm" onclick="update_rate_plan(' +id+ ')"><i class="fa fa-check-circle"></i> Сохранить</button>' +
+													'</div>' +
+												'</div>' +
+											'</div>' +
+									'</div>';
 			show_modal(html);
 		}
 	});
@@ -1533,10 +1577,11 @@ function update_rate_plan(id){
 	var desc = $('.desc-rate-plan').val();
 	var food = $('.food-rate-plan').val();
 	var days = $('.days-rate-plan').val();
+	var status = 1*$('.status-rate-plan').prop('checked');
 	if(!name)
 		show_warning('.edit-rate-plan', 'Укажите название тарифа', false);
 	else{
-		var str = 'func=update_rate_plan&id=' + id + '&name=' + name + '&desc=' + desc + '&food=' + food + '&days=' + days;
+		var str = 'func=update_rate_plan&id=' + id + '&name=' + name + '&desc=' + desc + '&food=' + food + '&days=' + days+'&status='+status;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',

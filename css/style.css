@@ -1657,3 +1657,13 @@ tr.simple-row {
 	padding-right: 5px;
 	padding-left: 5px;
 }
+
+.rate-plan-item-container {
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
+.in-archieve-element .rate-plan-item-container {
+	background: rgb(242, 222, 222);
+	color: #a94442;
+}

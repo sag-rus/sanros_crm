@@ -1583,7 +1583,7 @@ function save_new_rate_plan($connect){
 
 function edit_rate_plan($connect){
 	$id = $_POST["id"];
-	$row = $connect->getRow("SELECT name, description, food, days FROM rate_plan WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT name, description, food, days, status FROM rate_plan WHERE id=?i", $id);
 	return json_encode($row);
 }
 
@@ -1593,7 +1593,11 @@ function update_rate_plan($connect){
 	$desc = $_POST["desc"];
 	$food = $_POST["food"];
 	$days = (int)$_POST["days"];
-	$connect->query("UPDATE rate_plan SET name=?s, description=?s, food=?s, days=?s, synchronized = 0 WHERE id=?i", $name, $desc, $food, $days, $id);
+	$status = (int)$_POST['status'];
+	if($status !== 0 && $status !== 1)
+	    $status = 1;
+
+	$connect->query("UPDATE rate_plan SET name=?s, description=?s, food=?s, days=?s, status = ?i, synchronized = 0 WHERE id=?i", $name, $desc, $food, $days, $status, $id);
 }
 
 ?>
