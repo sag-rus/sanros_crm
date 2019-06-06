@@ -1478,7 +1478,10 @@ function select_object_rate_plan(){
 			var html = '<div class="panel panel-default form-horizontal"><div class="panel-body">';
 			for(var index in data){
 				var rate_plan = data[index];
-				html+= '<div class="form-group"><div class="col-sm-3">' +rate_plan['name']+ '</div><div class="col-sm-4">' +rate_plan['description']+ '</div><div class="col-sm-3">' +rate_plan['food']+ '</div><div class="col-sm-2"><button type="button" class="btn btn-default btn-xs" onclick="edit_rate_plan(' +index+ ')"><i class="fa fa-pencil"></i> изменить</button></div></div>';
+				if(data['status'] == 1)
+					html+= '<div class="form-group"><div class="rate-plan-item in-archieve-element clearfix"><div class="col-sm-3">' +rate_plan['name']+ '</div><div class="col-sm-4">' +rate_plan['description']+ '</div><div class="col-sm-3">' +rate_plan['food']+ '</div><div class="col-sm-2"><button type="button" class="btn btn-default btn-xs" onclick="edit_rate_plan(' +index+ ')"><i class="fa fa-pencil"></i> изменить</button></div></div></div>';
+				else
+					html+= '<div class="form-group"><div class="rate-plan-item in-archieve-element clearfix"><div class="col-sm-3">' +rate_plan['name']+ '</div><div class="col-sm-4">' +rate_plan['description']+ '</div><div class="col-sm-3">' +rate_plan['food']+ '</div><div class="col-sm-2"><button type="button" class="btn btn-default btn-xs" onclick="edit_rate_plan(' +index+ ')"><i class="fa fa-pencil"></i> изменить</button></div></div></div>';
 			}
 			html+= '</div><div class="panel-footer text-right"><button type="button" class="btn btn-primary btn-sm" onclick="add_new_rate_place(' +object+ ')"><i class="fa fa-plus-circle"></i> Новый тариф</button></div></div>';
 			$('.object-infa').html(html);

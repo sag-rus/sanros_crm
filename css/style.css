@@ -1652,3 +1652,8 @@ tr.main-menu-item {
 tr.simple-row {
 	background-color: #FFF;
 }
+
+.rate-plan-item {
+	padding-right: 5px;
+	padding-left: 5px;
+}

@@ -1563,13 +1563,14 @@ function update_status_qouta_object($connect){
 function select_object_rate_plan($connect){
 	$object = $_POST["object"];
 	$array = array();
-	$data = $connect->getAll("SELECT id, name, description, food FROM rate_plan WHERE object=?i", $object);
+	$data = $connect->getAll("SELECT id, name, description, food, status FROM rate_plan WHERE object=?i", $object);
 	foreach($data as $row){
 		$id = $row["id"];
 		$array[$id] = array();
 		$array[$id]["name"] = $row["name"];
 		$array[$id]["food"] = $row["food"];
 		$array[$id]["description"] = $row["description"];
+		$array[$id]["status"] = $row['status'];
 	}
 	return json_encode($array);
 }

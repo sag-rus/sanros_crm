@@ -553,7 +553,7 @@ function get_type_price($type){
 	$html.= "<option value='1' ".$array[1].">за чел/сутки</option>";
 	$html.= "<option value='2' ".$array[2].">за дом</option>";
 	$html.= "<option value='3' ".$array[3].">за номер</option>";
-//	$html.= "<option value='4' ".$array[4].">за заезд</option>";
+	$html.= "<option value='4' ".$array[4].">за заезд</option>";
 	$html.= "</select>";
 	return $html;
 }
