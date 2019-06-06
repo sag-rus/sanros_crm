@@ -1479,9 +1479,9 @@ function select_object_rate_plan(){
 			for(var index in data){
 				var rate_plan = data[index];
 				if(rate_plan['status'] == 1)
-					html+= '<div class="form-group"><div class="rate-plan-item clearfix"><div class="rate-plan-item-container clearfix"><div class="col-sm-3">' +rate_plan['name']+ '</div><div class="col-sm-4">' +rate_plan['description']+ '</div><div class="col-sm-3">' +rate_plan['food']+ '</div><div class="col-sm-2"><button type="button" class="btn btn-default btn-xs" onclick="edit_rate_plan(' +index+ ')"><i class="fa fa-pencil"></i> изменить</button></div></div></div></div>';
+					html+= '<div class="form-group"><div class="rate-plan-item clearfix"><div class="rate-plan-item-container clearfix"><div class="col-sm-3">' +rate_plan['name']+ '</div><div class="col-sm-4">' +rate_plan['description']+ '</div><div class="col-sm-3">' +rate_plan['food']+ '</div><div class="col-sm-2"><button type="button" class="btn btn-default btn-xs" onclick="edit_rate_plan(' +rate_plan['id']+ ')"><i class="fa fa-pencil"></i> изменить</button></div></div></div></div>';
 				else
-					html+= '<div class="form-group"><div class="rate-plan-item in-archieve-element clearfix"><div class="rate-plan-item-container clearfix"><div class="col-sm-3">' +rate_plan['name']+ '</div><div class="col-sm-4">' +rate_plan['description']+ '</div><div class="col-sm-3">' +rate_plan['food']+ '</div><div class="col-sm-2"><button type="button" class="btn btn-default btn-xs" onclick="edit_rate_plan(' +index+ ')"><i class="fa fa-pencil"></i> изменить</button></div></div></div></div>';
+					html+= '<div class="form-group"><div class="rate-plan-item in-archieve-element clearfix"><div class="rate-plan-item-container clearfix"><div class="col-sm-3">' +rate_plan['name']+ '</div><div class="col-sm-4">' +rate_plan['description']+ '</div><div class="col-sm-3">' +rate_plan['food']+ '</div><div class="col-sm-2"><button type="button" class="btn btn-default btn-xs" onclick="edit_rate_plan(' +rate_plan['id']+ ')"><i class="fa fa-pencil"></i> изменить</button></div></div></div></div>';
 			}
 			html+= '</div><div class="panel-footer text-right"><button type="button" class="btn btn-primary btn-sm" onclick="add_new_rate_place(' +object+ ')"><i class="fa fa-plus-circle"></i> Новый тариф</button></div></div>';
 			$('.object-infa').html(html);
