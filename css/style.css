@@ -1667,3 +1667,21 @@ tr.simple-row {
 	background: rgb(242, 222, 222);
 	color: #a94442;
 }
+
+.cke_reset {
+	z-index: 100000000000 !important;
+}
+
+.cke_panel {
+	z-index: 1000000000000000000 !important;
+}
+
+.cke_dialog_background_cover {
+	z-index: 1000000000000000001 !important;
+}
+.cke_reset_all,
+.cke_reset_all *,
+.cke_reset_all a,
+.cke_reset_all textarea {
+	z-index: 10000000000000 !important;
+}
