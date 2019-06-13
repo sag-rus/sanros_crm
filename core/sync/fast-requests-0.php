@@ -119,6 +119,7 @@ if(is_null($last_time) || file_exists($directory."/core/sync/file/fast-killing-t
     file_put_contents($directory."/core/sync/file/fast-time-0.txt", time());
     if(!$connect) {
       file_put_contents($directory."/core/sync/file/fast-requests-error.log",'Database connection exception'.PHP_EOL,FILE_APPEND);
+      unlink($directory."/core/sync/file/fast-time-0.txt");
       break;
     }
 
@@ -130,6 +131,7 @@ if(is_null($last_time) || file_exists($directory."/core/sync/file/fast-killing-t
 
     if(!$connect || !$connect->getRow("SELECT `id` FROM `object` LIMIT 1")) {
       file_put_contents($directory."/core/sync/file/fast-requests-error.log",'Database connection exception'.PHP_EOL,FILE_APPEND);
+      unlink($directory."/core/sync/file/fast-time-0.txt");
       break;
     }
 
@@ -193,6 +195,7 @@ if(is_null($last_time) || file_exists($directory."/core/sync/file/fast-killing-t
             }
             catch (Exception $e) {
               file_put_contents($directory."/core/sync/file/fast-requests-error.log",$e->getMessage().PHP_EOL,FILE_APPEND);
+              unlink($directory."/core/sync/file/fast-time-0.txt");
               break 2;
             }
 
@@ -203,6 +206,7 @@ if(is_null($last_time) || file_exists($directory."/core/sync/file/fast-killing-t
     }
     catch (Exception $e) {
       file_put_contents($directory."/core/sync/file/fast-requests-error.log",$e->getMessage().PHP_EOL,FILE_APPEND);
+      unlink($directory."/core/sync/file/fast-time-0.txt");
       break;
     }
 
