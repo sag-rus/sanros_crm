@@ -231,13 +231,14 @@ function see_accounts($connect){
                 <th>ФИО</th>
                 <th>E-MAIL (login)</th>
                 <th>Моб. телефон</th>
+                <th>Промо-код</th>
                 <th>Статус</th>
                 <th>Действия</th>
             </tr>
           </thead>
           <tbody>
           <?php
-          $data = $connect->getAll("SELECT `klient`.`id` AS `account_id`, `klient`.`name` AS `account_name`, `klient`.`surname` AS `account_surname`, `klient`.`otch` AS `account_otch`, `login`, `klient`.`phone` AS `account_phone`, `doctor_card`.`status` AS `card_status` FROM klient INNER JOIN `doctor_card` ON `doctor_card`.`uid` = `klient`.`id` WHERE `type` = 2 AND `login` IS NOT NULL AND login !='' ORDER BY (`doctor_card`.`status` = 1) DESC");
+          $data = $connect->getAll("SELECT `klient`.`id` AS `account_id`, `klient`.`name` AS `account_name`, `klient`.`surname` AS `account_surname`, `klient`.`otch` AS `account_otch`, `login`, `klient`.`phone` AS `account_phone`, `doctor_card`.`status` AS `card_status`, `doctor_card`.`promo` AS `promo` FROM klient INNER JOIN `doctor_card` ON `doctor_card`.`uid` = `klient`.`id` WHERE `type` = 2 AND `login` IS NOT NULL AND login !='' ORDER BY (`doctor_card`.`status` = 1) DESC");
           foreach($data as $user){
             ?>
               <tr>
@@ -245,6 +246,7 @@ function see_accounts($connect){
                   <td><?=$user['account_surname'];?> <?=$user['account_name'];?> <?=$user['account_otch'];?></td>
                   <td><?=$user['login'];?></td>
                   <td>+<?=$user['account_phone'];?></td>
+                  <td><?=$user['promo'];?></td>
                   <td>
                       <?php
                       switch ((int)$user['card_status']) {
