@@ -1829,7 +1829,7 @@ function password_restore($connect,$data) {
 	if($action === 'password-restore') {
 		if(mb_strlen($token) === 6 && mb_strlen($secret_hash) > 0) {
 			if(mb_strlen($password) > 6 && mb_strlen($password) < 21) {
-				$token_confirm = $connect->getRow("SELECT `id`, `created`, `requests_count`, `token`, `number` FROM `phone_token` WHERE `hash` = ?s AND `status` = 2 AND `action` = ?s ORDER BY created DESC LIMIT 1",$secret_hash, $action);
+				$token_confirm = $connect->getRow("SELECT `id`, `created`, `requests_count`, `token`, `number`, `status` FROM `phone_token` WHERE `hash` = ?s AND `action` = ?s ORDER BY created DESC LIMIT 1",$secret_hash, $action);
 				if($token_confirm) {
 					if($token_confirm['status'] == 2) {
 						if($token_confirm['token'] === hash("sha256",$token)) {
@@ -1845,7 +1845,7 @@ function password_restore($connect,$data) {
 							}
 						}
 						else {
-							$result['msg'] = 'Некорректные входные данные!';
+							$result['msg'] = 'Некорректный проверочный код!';
 
 						}
 					}
