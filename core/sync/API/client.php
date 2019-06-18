@@ -1841,7 +1841,7 @@ function password_restore($connect,$data) {
 								$result['success'] = 1;
 							}
 							else {
-								$result['msg'] = 'Некорректные входные данные!';
+								$result['msg'] = 'Не найден пользователь!';
 							}
 						}
 						else {
