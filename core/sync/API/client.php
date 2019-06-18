@@ -1818,7 +1818,7 @@ function password_restore($connect,$data) {
 		'success' => 0
 	];
 
-	$token = isset($data['token'])?trim($data['token']):"";
+	$token = isset($data['phone_token'])?trim($data['phone_token']):"";
 	$action = "password-restore";
 	$secret_hash = isset($data['secret_hash'])?trim($data['secret_hash']):"";
 	if(isset($data['password']))
