@@ -1553,41 +1553,50 @@ function registration($connect, $data) {
               $email_row = $connect->getOne("SELECT id FROM klient WHERE login IS NOT NULL AND login != '' AND login = ?s LIMIT 1",$email);
               $phone_row = $connect->getOne("SELECT id FROM klient WHERE login IS NOT NULL AND login != '' AND phone = ?s LIMIT 1",$phone);
               if(!$phone_row && !$email_row) {
-                $token_confirm = $connect->getRow("SELECT id, created FROM phone_token WHERE `number` = ?s AND `token` = ?s AND `hash` = ?s AND status = 1 AND `action` = 'registration' ORDER BY created DESC LIMIT 1",$phone,hash("sha256",$token),$secret_hash);
-                if($token_confirm) {
-                	$time = time();
-                  if($token_confirm['created'] > $time-300) {
-                    $hash = uniqid();
-                    $promo = "doc_".bin2hex(random_bytes(3));
-                  	$original_data = [
-                  		'name' => $name,
-											'surname' => $lname,
-											'otch' => $fname,
-											'email' => $email,
-											'login' => $email
-										];
-                    $connect->query("UPDATE phone_token SET status = 2 WHERE id = ?i",$token_confirm['id']);
-                    $connect->query("INSERT INTO klient (`type`, `surname`, `name`, `otch`, `phone`, `email`, `login`, `password`, `hash`,`invited`, `date_reg`, `active`,	`original_data`) VALUES(2,?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, 0, ?s, 0, ?s)",$lname,$name,$fname,$phone, $email, $email,	md5($password), $hash, date("Y-m-d"),json_encode($original_data));
-                    $uid = $connect->insertId();
-                    if($uid > 0) {
-                      $connect->query("INSERT INTO doctor_card (`status`,`created`, `changed`, `uid`, `promo`) VALUES (?i, ?i, ?i, ?i, ?s)",1,$time,$time,$uid,$promo);
-                      if($connect->insertId() > 0) {
-                        $result['success'] = 1;
+                $token_confirm = $connect->getRow("SELECT id, created, token, requests_count FROM phone_token WHERE `number` = ?s AND `hash` = ?s AND status = 1 AND `action` = 'registration' ORDER BY created DESC LIMIT 1",$phone,$secret_hash);
+								if($token_confirm) {
+                	if($token_confirm['requests_count'] < 3) {
+										$connect->query("UPDATE phone_token SET `requests_count` = `requests_count` + 1 WHERE `hash` = ?s",$secret_hash);
+										$time = time();
+										if($token_confirm['created'] > $time-300 && $token_confirm['token'] === hash("sha256",$token)) {
+											$connect->query("UPDATE phone_token SET `success_count` = `success_count` + 1 WHERE `hash` = ?s",$secret_hash);
+
+											$hash = uniqid();
+											$promo = "doc_".bin2hex(random_bytes(3));
+											$original_data = [
+												'name' => $name,
+												'surname' => $lname,
+												'otch' => $fname,
+												'email' => $email,
+												'login' => $email
+											];
+											$connect->query("UPDATE phone_token SET status = 2 WHERE id = ?i",$token_confirm['id']);
+											$connect->query("INSERT INTO klient (`type`, `surname`, `name`, `otch`, `phone`, `email`, `login`, `password`, `hash`,`invited`, `date_reg`, `active`,	`original_data`) VALUES(2,?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, 0, ?s, 0, ?s)",$lname,$name,$fname,$phone, $email, $email,	md5($password), $hash, date("Y-m-d"),json_encode($original_data));
+											$uid = $connect->insertId();
+											if($uid > 0) {
+												$connect->query("INSERT INTO doctor_card (`status`,`created`, `changed`, `uid`, `promo`) VALUES (?i, ?i, ?i, ?i, ?s)",1,$time,$time,$uid,$promo);
+												if($connect->insertId() > 0) {
+													$result['success'] = 1;
+												}
+												else {
+													$result['title'] = 'Error';
+													$result['msg'] = "Doctor card creating error";
+												}
 											}
-                      else {
-                        $result['title'] = 'Error';
-                        $result['msg'] = "Doctor card creating error";
-                      }
+											else {
+												$result['title'] = 'Error';
+												$result['msg'] = "User creating error";
+											}
 										}
 										else {
-                      $result['title'] = 'Error';
-                      $result['msg'] = "User creating error";
+											$result['title'] = 'Error';
+											$result['msg'] = "Incorrect phone confirmation code";
 										}
-                  }
-                  else {
-                    $result['title'] = 'Error';
-                    $result['msg'] = "Incorrect phone confirmation code";
-                  }
+									}
+									else {
+										$result['title'] = 'Error';
+										$result['msg'] = "Incorrect phone confirmation code";
+									}
                 }
                 else {
                   $result['title'] = 'Error';
@@ -1659,10 +1668,11 @@ function check_token($connect, $data) {
 
   if($action === 'password-restore' && mb_strlen($token) === 6 && mb_strlen($secret_hash) > 0) {
 		$token_confirm = $connect->getRow("SELECT id, created, requests_count, token FROM phone_token WHERE `hash` = ?s AND status = 1 AND `action` = ?s ORDER BY created DESC LIMIT 1",$secret_hash, $action);
-		$connect->query("UPDATE phone_token SET `requests_count` = `requests_count` + 1 WHERE `hash` = ?s",$secret_hash);
 		if($token_confirm) {
 			if($token_confirm['requests_count'] < 3) {
+				$connect->query("UPDATE phone_token SET `requests_count` = `requests_count` + 1 WHERE `hash` = ?s",$secret_hash);
 				if($token_confirm['token'] === hash("sha256",$token)) {
+					$connect->query("UPDATE phone_token SET `success_count` = `success_count` + 1 WHERE `hash` = ?s",$secret_hash);
 					$result['success'] = 1;
 				}
 				else {
@@ -1801,5 +1811,23 @@ function change_fio($connect, $data) {
 	return $respAr;
 }
 
+
+function password_restore($connect,$data) {
+	$result = [
+		'msg' => '',
+		'title' => '',
+		'success' => 0
+	];
+
+	$token = isset($data['token'])?trim($data['token']):"";
+	$action = "password-restore";
+	$secret_hash = isset($data['secret_hash'])?trim($data['secret_hash']):"";
+
+	if($action === 'password-restore' && mb_strlen($token) === 6 && mb_strlen($secret_hash) > 0) {
+
+	}
+
+	return $result;
+}
 
 ?>
