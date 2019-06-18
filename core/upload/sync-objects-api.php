@@ -151,7 +151,7 @@ function sync_objects_api($connect){
 				$success = (bool)(int)$res['success'];
 				if($success) {
 					if(!sync_bounds($connect,[
-						'type' => 'profile',
+						'type' => 'treatment_profile',
 						'id' => $profile['id']
 					])) {
 						return FALSE;

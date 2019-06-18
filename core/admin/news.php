@@ -1420,7 +1420,7 @@ function set_bounds($connect,$boundsArray,String $boundsName)
       'site',
       'content',
       'room',
-      'profile'
+      'treatment_profile'
     ];
 
     $entity2_types = [

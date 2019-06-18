@@ -72,7 +72,7 @@ function edit_profile($connect){
 	$row = $connect->getRow("SELECT name, description FROM profile WHERE id=?i", $id);
 	$entity = [
 	  'id' => $id,
-      'type' => 'profile'
+      'type' => 'treatment_profile'
     ];
 ?>
 <div class="modal fade edit-profile-modal">
@@ -120,7 +120,7 @@ function update_profile($connect){
 
 	$entity = [
 	  'id' => $id,
-      'type' => 'profile'
+      'type' => 'treatment_profile'
     ];
 
     $boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);
