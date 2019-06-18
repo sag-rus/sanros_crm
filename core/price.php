@@ -70,8 +70,12 @@ function save_new_profile($connect){
 function edit_profile($connect){
 	$id = $_POST["id"];
 	$row = $connect->getRow("SELECT name, description FROM profile WHERE id=?i", $id);
+	$entity = [
+	  'id' => $id,
+      'type' => 'profile'
+    ];
 ?>
-<div class="modal fade">
+<div class="modal fade edit-profile-modal">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -86,6 +90,12 @@ function edit_profile($connect){
 							<input type="text" class="form-control name" value="<?php echo $row['name']; ?>">
 						</div>
 					</div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Иконка</label>
+                        <div class="col-sm-8">
+                            <input type="file" name="image" value="<?=htmlspecialchars(json_encode((object)bounds_to_files($connect,load_bounds($connect,$entity,'image'))));?>">
+                        </div>
+                    </div>
 					<div class="form-group form-group-margin">
 						<label class="col-sm-4 control-label">Описание</label>
 						<div class="col-sm-8">
@@ -95,7 +105,7 @@ function edit_profile($connect){
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-success" onclick="update_profile('<?php echo $id; ?>')"><i class="fa fa-check-circle"></i> Сохранить</button>
+				<button type="button" class="btn btn-success btn-update-profile" onclick="update_profile('<?php echo $id; ?>')"><i class="fa fa-check-circle"></i> Сохранить</button>
 			</div>
 		</div>
 	</div>
@@ -107,7 +117,16 @@ function update_profile($connect){
 	$id = $_POST["id"];
 	$name = $_POST["name"];
 	$description = $_POST["description"];
-	$connect->query("UPDATE profile SET name=?s, description=?s, synchronized = 0 WHERE id=?i", $name, $description, $id);
+
+	$entity = [
+	  'id' => $id,
+      'type' => 'profile'
+    ];
+
+    $boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);
+    remove_bounds($connect,$entity,'image');
+    set_bounds($connect,$boundsArrayImage,'image');
+    $connect->query("UPDATE profile SET name=?s, description=?s, synchronized = 0 WHERE id=?i", $name, $description, $id);
 }
 
 function show_infrastructure($connect){

@@ -509,22 +509,44 @@ function edit_profile(id){
 		type: 'POST',
 		data: str,
 		success: function(html){
+			remove_all_windows();
 			show_modal(html);
+			$('.edit-profile-modal *[name="image"]').multUploader({
+				action:'mysql.php?func=multipart_upload',
+				fragmentSize:1024*1024,
+				maxcount: 1,
+				contentType:['image/svg+xml']
+			});
 		}
 	});
 }
 
 function update_profile(id){
+	var $button = $('.btn-update-profile');
 	var name = $('.edit-profile .name').val();
 	var description = $('.edit-profile .description').val();
+
+	var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
+
+
+	var $image = $modalBody.find('*[name="image"]');
+	var $imageMsg = $image.parent().find('.input-message-block');
+	var image = JSON.parse($image.val().trim());
+	$imageMsg.html("").removeClass('with-bottom-margin');
+
 	if(!name)
 		show_warning('.edit-profile', 'Укажите название', false);
 	else{
-		var str = 'func=update_profile&name=' + name + '&id=' + id + '&description=' + description;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
-			data: str,
+			data: {
+				func: 'update_profile',
+				name: name,
+				id: id,
+				description: description,
+				image: image
+			},
 			success: function(){
 				profile();
 			}
