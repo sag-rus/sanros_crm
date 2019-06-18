@@ -1826,34 +1826,45 @@ function password_restore($connect,$data) {
 	else
 		$password = "";
 
-	if($action === 'password-restore' && mb_strlen($token) === 6 && mb_strlen($secret_hash) > 0 && mb_strlen($password) > 6 && mb_strlen($password) < 21) {
-		$token_confirm = $connect->getRow("SELECT `id`, `created`, `requests_count`, `token`, `number` FROM `phone_token` WHERE `hash` = ?s AND `status` = 1 AND `action` = ?s ORDER BY created DESC LIMIT 1",$secret_hash, $action);
-		if($token_confirm) {
-			if($token_confirm['status'] == 2) {
-				if($token_confirm['token'] === hash("sha256",$token)) {
-					$connect->query("UPDATE phone_token SET `status` = 3 WHERE `hash` = ?s",$secret_hash);
-					$phone_row = $connect->getOne("SELECT id FROM klient WHERE login IS NOT NULL AND login != '' AND phone = ?s AND `type` = 2 LIMIT 1",$token_confirm['number']);
+	if($action === 'password-restore') {
+		if(mb_strlen($token) === 6 && mb_strlen($secret_hash) > 0) {
+			if(mb_strlen($password) > 6 && mb_strlen($password) < 21) {
+				$token_confirm = $connect->getRow("SELECT `id`, `created`, `requests_count`, `token`, `number` FROM `phone_token` WHERE `hash` = ?s AND `status` = 1 AND `action` = ?s ORDER BY created DESC LIMIT 1",$secret_hash, $action);
+				if($token_confirm) {
+					if($token_confirm['status'] == 2) {
+						if($token_confirm['token'] === hash("sha256",$token)) {
+							$connect->query("UPDATE phone_token SET `status` = 3 WHERE `hash` = ?s",$secret_hash);
+							$phone_row = $connect->getOne("SELECT id FROM klient WHERE login IS NOT NULL AND login != '' AND phone = ?s AND `type` = 2 LIMIT 1",$token_confirm['number']);
 
-					if($phone_row) {
-						$connect->query("UPDATE `klient` SET `password` = ?s WHERE `id` = ?i", md5($password),$phone_row['id']);
-						$result['success'] = 1;
+							if($phone_row) {
+								$connect->query("UPDATE `klient` SET `password` = ?s WHERE `id` = ?i", md5($password),$phone_row['id']);
+								$result['success'] = 1;
+							}
+							else {
+								$result['msg'] = 'Некорректные входные данные!';
+							}
+						}
+						else {
+							$result['msg'] = 'Некорректные входные данные!';
+
+						}
 					}
 					else {
 						$result['msg'] = 'Некорректные входные данные!';
+
 					}
 				}
 				else {
 					$result['msg'] = 'Некорректные входные данные!';
-
 				}
 			}
 			else {
-				$result['msg'] = 'Некорректные входные данные!';
-
+				$result['msg'] = 'Некорректный пароль!';
 			}
 		}
 		else {
 			$result['msg'] = 'Некорректные входные данные!';
+
 		}
 	}
 
