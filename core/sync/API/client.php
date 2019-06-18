@@ -1559,7 +1559,6 @@ function registration($connect, $data) {
 										$connect->query("UPDATE phone_token SET `requests_count` = `requests_count` + 1 WHERE `hash` = ?s",$secret_hash);
 										$time = time();
 										if($token_confirm['created'] > $time-300 && $token_confirm['token'] === hash("sha256",$token)) {
-											$connect->query("UPDATE phone_token SET `success_count` = `success_count` + 1 WHERE `hash` = ?s",$secret_hash);
 
 											$hash = uniqid();
 											$promo = "doc_".bin2hex(random_bytes(3));
@@ -1570,7 +1569,7 @@ function registration($connect, $data) {
 												'email' => $email,
 												'login' => $email
 											];
-											$connect->query("UPDATE phone_token SET status = 2 WHERE id = ?i",$token_confirm['id']);
+											$connect->query("UPDATE phone_token SET status = 3 WHERE id = ?i",$token_confirm['id']);
 											$connect->query("INSERT INTO klient (`type`, `surname`, `name`, `otch`, `phone`, `email`, `login`, `password`, `hash`,`invited`, `date_reg`, `active`,	`original_data`) VALUES(2,?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, 0, ?s, 0, ?s)",$lname,$name,$fname,$phone, $email, $email,	md5($password), $hash, date("Y-m-d"),json_encode($original_data));
 											$uid = $connect->insertId();
 											if($uid > 0) {
@@ -1672,7 +1671,7 @@ function check_token($connect, $data) {
 			if($token_confirm['requests_count'] < 3) {
 				$connect->query("UPDATE phone_token SET `requests_count` = `requests_count` + 1 WHERE `hash` = ?s",$secret_hash);
 				if($token_confirm['token'] === hash("sha256",$token)) {
-					$connect->query("UPDATE phone_token SET `success_count` = `success_count` + 1 WHERE `hash` = ?s",$secret_hash);
+					$connect->query("UPDATE phone_token SET `status` = 2 WHERE `hash` = ?s",$secret_hash);
 					$result['success'] = 1;
 				}
 				else {
