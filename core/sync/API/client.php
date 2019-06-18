@@ -1657,21 +1657,18 @@ function check_token($connect, $data) {
   if(isset($data['action']))
     $action = trim($data['action']);
 
-  if($action === 'password-restore' && mb_strlen($token) > 0 && mb_strlen($secret_hash) > 0) {
-    $login = "";
-    if(isset($data['login']))
-      $login = mb_strtolower(trim($data['login']));
-
-    if(mb_strlen($login) > 5) {
-			$user = $connect->getRow("SELECT `id`, `login`, `phone` FROM `klient` WHERE `login` IS NOT NULL AND `phone` IS NOT NULL AND (`login` = ?s OR `phone` = ?s) LIMIT 1", $login, $login);
-			if($user) {
-				$token_confirm = $connect->getRow("SELECT id, created FROM phone_token WHERE `number` = ?s AND `token` = ?s AND `hash` = ?s AND status = 1 AND `action` = ?s ORDER BY created DESC LIMIT 1",$user['phone'],hash("sha256",$token),$secret_hash, $action);
-				if($token_confirm) {
-					$result['success'] = 1;
-				}
-			}
+  if($action === 'password-restore' && mb_strlen($token) === 6 && mb_strlen($secret_hash) > 0) {
+		$token_confirm = $connect->getRow("SELECT id, created FROM phone_token WHERE `token` = ?s AND `hash` = ?s AND status = 1 AND `action` = ?s ORDER BY created DESC LIMIT 1", hash("sha256",$token),$secret_hash, $action);
+		if($token_confirm) {
+			$result['success'] = 1;
+		}
+		else {
+			$result['msg'] = 'Token not found';
 		}
   }
+  else {
+		$result['msg'] = 'Incorrect action name';
+	}
 
   return $result;
 }
