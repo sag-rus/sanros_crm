@@ -150,7 +150,15 @@ function sync_objects_api($connect){
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
 				if($success) {
-					$connect->query("UPDATE `profile` SET `synchronized` = '1' WHERE `id` = ?i",$profile['id']);
+					if(!sync_bounds($connect,[
+						'type' => 'profile',
+						'id' => $profile['id']
+					])) {
+						return FALSE;
+					}
+					else {
+						$connect->query("UPDATE `profile` SET `synchronized` = '1' WHERE `id` = ?i",$profile['id']);
+					}
 				}
 			}
 		}
