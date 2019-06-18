@@ -1658,7 +1658,8 @@ function check_token($connect, $data) {
     $action = trim($data['action']);
 
   if($action === 'password-restore' && mb_strlen($token) === 6 && mb_strlen($secret_hash) > 0) {
-		$token_confirm = $connect->getRow("SELECT id, created FROM phone_token WHERE `token` = ?s AND `hash` = ?s AND status = 1 AND `action` = ?s ORDER BY created DESC LIMIT 1", hash("sha256",$token),$secret_hash, $action);
+		$token_confirm = $connect->getRow("SELECT id, created FROM phone_token WHERE `token` = ?s AND `hash` = ?s AND status = 1 AND `action` = ?s AND requests_count < 3 ORDER BY created DESC LIMIT 1", hash("sha256",$token),$secret_hash, $action);
+		$connect->query("UPDATE phone_token SET `requests_count` = `requests_count` + 1 WHERE `hash` = ?s",$secret_hash);
 		if($token_confirm) {
 			$result['success'] = 1;
 		}
