@@ -1649,6 +1649,7 @@ function check_token($connect, $data) {
 
   $token = "";
   $action = "";
+  $secret_hash = isset($data['secret_hash'])?trim($data['secret_hash']):"";
 
   if(isset($data['phone_token']))
     $token = trim($data['phone_token']);
@@ -1656,14 +1657,20 @@ function check_token($connect, $data) {
   if(isset($data['action']))
     $action = trim($data['action']);
 
-  if($action === 'password-restore') {
+  if($action === 'password-restore' && mb_strlen($token) > 0 && mb_strlen($secret_hash) > 0) {
     $login = "";
     if(isset($data['login']))
       $login = mb_strtolower(trim($data['login']));
 
-    if(mb_strlen($login) > 5)
-      $user = $connect->getRow("SELECT `id`, `login`, `phone` FROM `klient` WHERE `login` IS NOT NULL AND `phone` IS NOT NULL AND (`login` = ?s OR `phone` = ?s) LIMIT 1",$login, $login);
-
+    if(mb_strlen($login) > 5) {
+			$user = $connect->getRow("SELECT `id`, `login`, `phone` FROM `klient` WHERE `login` IS NOT NULL AND `phone` IS NOT NULL AND (`login` = ?s OR `phone` = ?s) LIMIT 1", $login, $login);
+			if($user) {
+				$token_confirm = $connect->getRow("SELECT id, created FROM phone_token WHERE `number` = ?s AND `token` = ?s AND `hash` = ?s AND status = 1 AND `action` = ?s ORDER BY created DESC LIMIT 1",$user['phone'],hash("sha256",$token),$secret_hash, $action);
+				if($token_confirm) {
+					$result['success'] = 1;
+				}
+			}
+		}
   }
 
   return $result;
