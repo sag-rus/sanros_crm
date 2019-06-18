@@ -1855,7 +1855,7 @@ function password_restore($connect,$data) {
 					}
 				}
 				else {
-					$result['msg'] = 'Некорректные входные данные!';
+					$result['msg'] = 'Некорректные конечные входные данные!';
 				}
 			}
 			else {
@@ -1863,7 +1863,7 @@ function password_restore($connect,$data) {
 			}
 		}
 		else {
-			$result['msg'] = 'Некорректные входные данные!';
+			$result['msg'] = 'Некорректные начальные входные данные!';
 
 		}
 	}
