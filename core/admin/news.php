@@ -1574,7 +1574,7 @@ function imageUriStyle(String $uri, String $style) {
     return $newUri;
 }
 
-function multipart_upload($connect) {
+function multipart_upload($connect, $customData = NULL) {
   $respAr = [
     'msg' => "Неизвестная ошибка",
     'title' => 'Error',
@@ -1582,10 +1582,27 @@ function multipart_upload($connect) {
   ];
   try {
     $client = new \GuzzleHttp\Client();
-    $postCopy = $_POST;
+    if(is_null($customData)) {
+      $postCopy = $_POST;
+    }
+    else {
+      $postCopy  = [
+          'format' => 'jpg',
+          'type' => 'image/jpeg',
+          'name' => 'temp-file.jpg',
+          'partnum' => 0,
+          'plength' => 1
+      ];
+    }
     $postCopy["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
-    $respAr['partnum'] = (int)$_POST['partnum'];
-    $respAr['plength'] = (int)$_POST['plength'];
+    if(is_null($customData)) {
+      $respAr['partnum'] = (int)$_POST['partnum'];
+      $respAr['plength'] = (int)$_POST['plength'];
+    }
+    else {
+      $respAr['partnum'] = 0;
+      $respAr['plength'] = 1;
+    }
 
     if($respAr['partnum'] == $respAr['plength']-1)
         $postCopy['used'] = 1;
@@ -1595,7 +1612,7 @@ function multipart_upload($connect) {
       [
         'Content-type' => 'multipart/form-data',
         'name' => 'upload',
-        'contents' => fopen($_FILES['upload']['tmp_name'],"r")
+        'contents' => is_null($customData)?fopen($_FILES['upload']['tmp_name'],"r"):fopen($customData,"r")
       ]
     ];
 
@@ -1623,6 +1640,10 @@ function multipart_upload($connect) {
       if($respAr['loaded']) {
         $respAr['uri'] = 'https://cdn.tonia.ru'.$respAr['uri'];
         $connect->query("INSERT INTO `core_models_file_file` (`id`, `created`, `changed`, `status`, `uid`, `title`, `description`, `uri`, `mime`, `ext`, `usages`) VALUES (?i,?i,?i,?i,?i,?s,?s,?s,?s,?s,?i)",$respAr['fid'],$respAr['created'],$respAr['changed'],1,$respAr['uid'],'','',$respAr['uri'],$respAr['mime'],$respAr['ext'],0);
+        if(!is_null($customData))
+          return [
+            'id' => $respAr['fid']
+          ];
         $respAr['uri_thumbnail'] = 'https://cdn.tonia.ru'.$respAr['uri_thumbnail'];
         $respAr['uri_preview'] = 'https://cdn.tonia.ru'.$respAr['uri_preview'];
       }
