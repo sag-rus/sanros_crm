@@ -34,7 +34,15 @@ require_once __DIR__."/../../vendor/autoload.php";
 	$config->directory = $directory;
 	$config->clientCabinet = $clientCabinet;
 	$config->objectCabinet = $objectCabinet;
+
+	$configNew = \App\lib\CRM\Config\Client::getInstance();
+	$configNew->connect = $connect;
+	$configNew->directory = $directory;
+	$configNew->clientCabinet = $clientCabinet;
+	$configNew->objectCabinet = $objectCabinet;
+
 	$create_client = new CreateClient;
+
 
 	if(!$connect)
 		return;
@@ -190,6 +198,13 @@ require_once __DIR__."/../../vendor/autoload.php";
 			$config = ConfigCRM::getInstance();
 			$config->booking = $id;
 			$config->turist = $last_id;
+			$config->connect = $connect;
+
+			$configNew = \App\lib\CRM\Config\Client::getInstance();
+			$configNew->connect = $connect;
+			$configNew->directory = $directory;
+			$configNew->clientCabinet = $clientCabinet;
+			$configNew->objectCabinet = $objectCabinet;
 
 			$send = new SendMailTurist;
       $send->send_login();
