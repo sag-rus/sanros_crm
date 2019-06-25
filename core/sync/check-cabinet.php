@@ -2,7 +2,7 @@
 	$loader = require( __DIR__ . '/../../vendor/autoload.php');
 	date_default_timezone_set("Asia/Baghdad");
 
-	$directory = dirname(__FILE__)."/../..";
+	$directory = __DIR__.'/../..';
 	define("_FOLDERSITE_", $directory);
 
 	$last_time = file_get_contents(_FOLDERSITE_."/core/sync/file/time.txt");
@@ -104,13 +104,11 @@
 
 	//define("CABINET", $clientCabinet);
 	define("CABINET", "http://xn----7sba6aaba8akdsdekah.xn--p1ai/client/");
+	$t = 0;
+	$array_request = [];
 
-	$array_request = array();
-
-	while($t != 1){
-
+	while(!$t) {
 		$index++;
-
 		if(!$connect){
 			$t = 1;
 		}
@@ -129,7 +127,7 @@
 			$query = json_decode(base64_decode($query["query"]), TRUE);
 			$func = $query["func"];
 			$check = $connect->getOne("SELECT id FROM cabinet_request WHERE request=?i LIMIT 1", $id);
-			if(!$check AND function_exists($func)){
+			if(!$check && function_exists($func)){
 				echo " ".$func." ";
 				$config = ConfigCRM::getInstance();
 				$configNew = App\lib\CRM\Config\Client::getInstance();
@@ -154,8 +152,12 @@
 			}
 		}
 
-		if($answer)
-			request_to_sync(array("func" => "answer_query_cabinet", "data" => json_encode($answer)));
+		if($answer) {
+			request_to_sync([
+				"func" => "answer_query_cabinet",
+				"data" => json_encode($answer)
+			]);
+		}
 
 		$bookings = check_new_update_booking($connect);
 		if($bookings["check"] == 1){

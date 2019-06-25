@@ -1,6 +1,6 @@
 <?php
 
-	$directory = dirname(__FILE__)."/../..";
+	$directory = __DIR__.'/../..';
 	date_default_timezone_set("Asia/Baghdad");
 
 	$last_time = file_get_contents($directory."/core/sync/file/time.txt");
@@ -50,7 +50,7 @@
 	$index = 0;
 	$t = 0;
 
-	while($t != 1){
+	while(!$t){
 
 		$index++;
 
@@ -70,7 +70,6 @@
 		$data = request_to_sync(array("func" => "get_query_cabinet"));
 
 		$answer = array();
-
 		foreach($data as $query){
 			$id = $query["id"];
 			$query = json_decode(base64_decode($query["query"]), TRUE);
