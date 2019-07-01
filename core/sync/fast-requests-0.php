@@ -202,7 +202,7 @@ if(is_null($last_time) || file_exists($directory."/core/sync/file/fast-killing-t
           }
         }
       }
-
+      sleep(1);
     }
     catch (Exception $e) {
       file_put_contents($directory."/core/sync/file/fast-requests-error.log",$e->getMessage().PHP_EOL,FILE_APPEND);
