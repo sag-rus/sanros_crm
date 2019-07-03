@@ -1733,6 +1733,9 @@ function add_new_sites_content(site_id) {
 			 											'<option value="photogallery">Фотогалерея</option>'+
 			 											'<option value="module">Модуль бронирования</option>' +
 			 											'<option value="settings">Настройки</option>' +
+														'<option value="article">Статья</option>' +
+			 											'<option value="info">Полезная информация</option>' +
+			 											'<option value="aggregator">Агрегатор</option>' +
 			 										'</select>'+
 													'<div class="input-message-block" data-for="type"></div>'+
 												'</div>' +
@@ -3029,7 +3032,7 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 		$body2FormG.addClass('hidden');
   }
 
-  if(type === 'photogallery' || type === 'landing' || type === 'news' || type === 'page' || type === 'settings') {
+  if(type === 'photogallery' || type === 'landing' || type === 'news' || type === 'page' || type === 'settings' || type === 'article' || type === 'info') {
     $photogalleryFormG.removeClass('hidden');
 		$photogallery_titleFormG.removeClass('hidden');
 		$photogallery_orientationFormG.removeClass('hidden');

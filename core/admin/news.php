@@ -124,14 +124,16 @@ function show_sites_list($connect) {
 
 function show_sites_contents_list($connect) {
   global $id_rights;
+
+  $contentTypesRows = $connect->getAll("SELECT * FROM `app_models_site_contenttype` WHERE `status` = 1");
+
   $content_types = [
-    'landing' => 'Лэндинг',
-    'photogallery' => 'Фотогалерея',
-    'news' => 'Новость',
-    'page' => 'Страница',
-    'module' => 'Модуль бронирования',
-    'settings' => 'Настройки'
   ];
+
+  foreach ($contentTypesRows as $contentTypesRow) {
+      $content_types[$contentTypesRow['machine_name']] = $contentTypesRow['name'];
+  }
+
   $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
   $site = NULL;
   if($site_id) {
@@ -1190,6 +1192,7 @@ function edit_sites_content($connect) {
   if($content) {
       if(!$content['module_object_id'])
           $content['module_object_id'] = NULL;
+      $contentTypesRows = $connect->getAll("SELECT * FROM `app_models_site_contenttype` WHERE `status` = 1");
     ?>
       <div class="modal fade sites-content-modal">
           <div class="modal-dialog">
@@ -1240,12 +1243,9 @@ function edit_sites_content($connect) {
                           <label class="col-sm-2 control-label">Тип</label>
                           <div class="col-sm-10">
                               <select class="form-control" name="type">
-                                  <option value="landing"<?php if($content['type'] === 'landing') {?> selected<?php } ?>>Лэндинг</option>
-                                  <option value="page"<?php if($content['type'] === 'page') {?> selected<?php } ?>>Страница</option>
-                                  <option value="news"<?php if($content['type'] === 'news') {?> selected<?php } ?>>Новость</option>
-                                  <option value="photogallery"<?php if($content['type'] === 'photogallery') {?> selected<?php } ?>>Фотогалерея</option>
-                                  <option value="module"<?php if($content['type'] === 'module') {?> selected<?php } ?>>Модуль бронирования</option>
-                                  <option value="settings"<?php if($content['type'] === 'settings') {?> selected<?php } ?>>Настройки</option>
+                                  <?php foreach ($contentTypesRows as $contentTypesRow) { ?>
+                                      <option value="<?=$contentTypesRow['machine_name'];?>"<?php if($content['type'] === $contentTypesRow['machine_name']) {?> selected<?php } ?>><?=$contentTypesRow['name'];?></option>
+                                  <?php } ?>
                               </select>
                               <div class="input-message-block" data-for="type"></div>
                           </div>
@@ -1284,21 +1284,21 @@ function edit_sites_content($connect) {
                               <div class="input-message-block" data-for="module_block"></div>
                           </div>
                       </div>
-                      <div class="form-group<?php if(!in_array($content['type'],['photogallery','landing','news', 'page','settings'])) { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(!in_array($content['type'],['photogallery','landing','news', 'page','settings', 'article', 'info'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Фотографии</label>
                           <div class="col-sm-10">
                               <div class="input-message-block" data-for="photogallery"></div>
                               <input type="file" name="photogallery" value="<?=htmlspecialchars(json_encode((object)bounds_to_files($connect,load_bounds($connect,$entity,'photogallery'))));?>">
                           </div>
                       </div>
-                      <div class="form-group<?php if(!in_array($content['type'],['photogallery','landing','news', 'page','settings'])) { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(!in_array($content['type'],['photogallery','landing','news', 'page','settings', 'article', 'info'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Заголовок к фото</label>
                           <div class="col-sm-10">
                               <div class="input-message-block" data-for="photogallery"></div>
                               <input type="text" class="form-control" name="photogallery_title" value="<?=htmlspecialchars($content['photogallery_title']);?>">
                           </div>
                       </div>
-                      <div class="form-group<?php if(!in_array($content['type'],['photogallery','landing','news', 'page','settings'])) { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(!in_array($content['type'],['photogallery','landing','news', 'page','settings', 'article', 'info'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Ориентация фото</label>
                           <div class="col-sm-10">
                               <select class="form-control" name="photogallery_orientation">
@@ -1914,7 +1914,7 @@ function set_sites_content($connect) {
   $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
   $type = isset($_POST['type'])?trim($_POST['type']):"page";
 
-  $typesAr = ['page','news', 'module', 'landing', "photogallery", "settings"];
+  $typesAr = ['page','news', 'module', 'landing', "photogallery", "settings", 'article', 'info', 'aggregator'];
   $photogallery_orientations = ['album', 'book'];
 
   if(!in_array($type,['landing', 'settings'])) {
@@ -1962,7 +1962,7 @@ function set_sites_content($connect) {
 
               $boundsArrayPhotogallery = [];
 
-              if(in_array($type,['photogallery','landing','news', 'page', 'settings'])) {
+              if(in_array($type,['photogallery','landing','news', 'page', 'settings', 'article', 'info'])) {
                   $boundsArrayPhotogallery = files_to_bounds($connect,$entity,'photogallery',isset($_POST['photogallery'])?$_POST['photogallery']:[]);
               }
 
@@ -2008,7 +2008,7 @@ function set_sites_content($connect) {
               $boundsArrayReviewsObjects = [];
 
 
-              if(in_array($type,['photogallery','landing','news', 'page', 'settings'])) {
+              if(in_array($type,['photogallery','landing','news', 'page', 'settings', 'article', 'info'])) {
                 $boundsArrayPhotogallery = files_to_bounds($connect,$entity,'photogallery',isset($_POST['photogallery'])?$_POST['photogallery']:[]);
               }
 
@@ -2142,48 +2142,30 @@ function sync_site($connect) {
     $respAr = [
       'title' => '',
       'msg' => '',
-      'success' => 0
+      'success' => 1
     ];
     $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
-    if($site_id) {
-      $contents = $connect->getAll("SELECT `id` FROM `sites_contents` WHERE `site_id` = ?i AND `synchronized` = 0", $site_id);
-      $sites = $connect->getAll("SELECT * FROM `sites` WHERE `id` = ?i LIMIT 1",$site_id);
-    }
-    else {
-      $contents = $connect->getAll("SELECT `id` FROM `sites_contents` WHERE `synchronized` = 0");
-      $sites = $connect->getAll("SELECT * FROM `sites`");
-    }
-    $respAr['success'] = 1;
 
-    foreach ($contents as $content) {
-        if(!sync_site_content($connect,$content['id'])) {
-            $respAr['success'] = 0;
-            $respAr['msg'] = "Что-то пошло не так...";
-        }
-        elseif (!sync_bounds($connect,[
-            'type' => 'content',
-            'id' => $content['id']
-        ])) {
-          $respAr['success'] = 0;
-          $respAr['msg'] = "Что-то пошло не так...";
-        }
-    }
+    $contentTypes = $connect->getAll("SELECT * FROM `app_models_site_contenttype` WHERE `synchronized` = 0");
 
-    if($respAr['success']) {
-      foreach ($sites as $site) {
+      foreach ($contentTypes as $contentType) {
         try {
           $client = new \GuzzleHttp\Client();
-          $site["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
-          $res = $client->request('POST',"https://sites.tonia.ru/api/site/set/".$site['id'],[
-            'form_params' => $site
+          $contentType["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+          $res = $client->request('POST',"https://sites.tonia.ru/api/content/type/set/".$contentType['id'],[
+            'form_params' => $contentType
           ]);
 
           $res = json_decode($res->getBody(),true);
           if(array_key_exists('success',$res)) {
             $respAr['success'] = $res['success'];
             $respAr['msg'] = $res['msg'];
-            if(!sync_bounds($connect,['type' => 'site', 'id' => $site['id']])) {
-              throw new Exception("Bounds sync error");
+            if($respAr['success']) {
+                $connect->query("UPDATE `app_models_site_contenttype` SET `synchronized` = 1 WHERE `id` = ?i",$contentType['id']);
+            }
+            else {
+                $respAr['msg'] = "Что-то пошло не так...";
+                break;
             }
           }
           else {
@@ -2197,84 +2179,141 @@ function sync_site($connect) {
           $respAr['msg'] = "Что-то пошло не так: ".$e->getMessage();
           break;
         }
-
-        if($respAr['success']) {
-          $addresses = $connect->getAll("SELECT * FROM `app_models_site_address` WHERE `site_id` = ?i", $site['id']);
-          $res = $client->request('POST',"https://sites.tonia.ru/api/site/".$site['id']."/addresses/set",[
-            'form_params' => [
-                'addresses' => $addresses,
-                'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4'
-            ]
-          ]);
-
-          $res = json_decode($res->getBody(),true);
-          if(array_key_exists('success',$res)) {
-            $respAr['success'] = $res['success'];
-            $respAr['msg'] = $res['msg'];
-            if(!$respAr['success']) {
-                break;
-            }
-          }
-          else {
-            $respAr['success'] = 0;
-            $respAr['msg'] = "Что-то пошло не так...";
-            break;
-          }
-        }
-
-        if($respAr['success']) {
-          $menu_items = $connect->getAll("SELECT * FROM `app_models_site_menu_item` WHERE `site_id` = ?i", $site['id']);
-          $res = $client->request('POST',"https://sites.tonia.ru/api/site/".$site['id']."/menu/items/set",[
-            'form_params' => [
-              'menu_items' => $menu_items,
-              'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4'
-            ]
-          ]);
-
-          $res = json_decode($res->getBody(),true);
-          if(array_key_exists('success',$res)) {
-            $respAr['success'] = $res['success'];
-            $respAr['msg'] = $res['msg'];
-            if(!$respAr['success']) {
-              break;
-            }
-          }
-          else {
-            $respAr['success'] = 0;
-            $respAr['msg'] = "Что-то пошло не так...";
-            break;
-          }
-        }
-
-        if($respAr['success']) {
-          $phones = $connect->getAll("SELECT * FROM `app_models_site_phone` WHERE `site_id` = ?i", $site['id']);
-          $res = $client->request('POST',"https://sites.tonia.ru/api/site/".$site['id']."/phones/set",[
-            'form_params' => [
-              'phones' => $phones,
-              'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4'
-            ]
-          ]);
-
-          $res = json_decode($res->getBody(),true);
-          if(array_key_exists('success',$res)) {
-            $respAr['success'] = $res['success'];
-            $respAr['msg'] = $res['msg'];
-            if(!$respAr['success']) {
-              break;
-            }
-          }
-          else {
-            $respAr['success'] = 0;
-            $respAr['msg'] = "Что-то пошло не так...";
-            break;
-          }
-        }
-
       }
 
-      if(!sync_files($connect)) {
-        $respAr['success'] = 0;
-        $respAr['msg'] = "Что-то пошло не так...";
+
+    if($respAr['success'])  {
+      if($site_id) {
+        $contents = $connect->getAll("SELECT `id` FROM `sites_contents` WHERE `site_id` = ?i AND `synchronized` = 0", $site_id);
+        $sites = $connect->getAll("SELECT * FROM `sites` WHERE `id` = ?i LIMIT 1",$site_id);
+      }
+      else {
+        $contents = $connect->getAll("SELECT `id` FROM `sites_contents` WHERE `synchronized` = 0");
+        $sites = $connect->getAll("SELECT * FROM `sites`");
+      }
+      $respAr['success'] = 1;
+
+      foreach ($contents as $content) {
+        if(!sync_site_content($connect,$content['id'])) {
+          $respAr['success'] = 0;
+          $respAr['msg'] = "Что-то пошло не так...";
+        }
+        elseif (!sync_bounds($connect,[
+          'type' => 'content',
+          'id' => $content['id']
+        ])) {
+          $respAr['success'] = 0;
+          $respAr['msg'] = "Что-то пошло не так...";
+        }
+      }
+
+      if($respAr['success']) {
+        foreach ($sites as $site) {
+          try {
+            $client = new \GuzzleHttp\Client();
+            $site["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+            $res = $client->request('POST',"https://sites.tonia.ru/api/site/set/".$site['id'],[
+              'form_params' => $site
+            ]);
+
+            $res = json_decode($res->getBody(),true);
+            if(array_key_exists('success',$res)) {
+              $respAr['success'] = $res['success'];
+              $respAr['msg'] = $res['msg'];
+              if(!sync_bounds($connect,['type' => 'site', 'id' => $site['id']])) {
+                throw new Exception("Bounds sync error");
+              }
+            }
+            else {
+              $respAr['success'] = 0;
+              $respAr['msg'] = "Что-то пошло не так...";
+              break;
+            }
+          }
+          catch (Exception $e) {
+            $respAr['success'] = 0;
+            $respAr['msg'] = "Что-то пошло не так: ".$e->getMessage();
+            break;
+          }
+
+          if($respAr['success']) {
+            $addresses = $connect->getAll("SELECT * FROM `app_models_site_address` WHERE `site_id` = ?i", $site['id']);
+            $res = $client->request('POST',"https://sites.tonia.ru/api/site/".$site['id']."/addresses/set",[
+              'form_params' => [
+                'addresses' => $addresses,
+                'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4'
+              ]
+            ]);
+
+            $res = json_decode($res->getBody(),true);
+            if(array_key_exists('success',$res)) {
+              $respAr['success'] = $res['success'];
+              $respAr['msg'] = $res['msg'];
+              if(!$respAr['success']) {
+                break;
+              }
+            }
+            else {
+              $respAr['success'] = 0;
+              $respAr['msg'] = "Что-то пошло не так...";
+              break;
+            }
+          }
+
+          if($respAr['success']) {
+            $menu_items = $connect->getAll("SELECT * FROM `app_models_site_menu_item` WHERE `site_id` = ?i", $site['id']);
+            $res = $client->request('POST',"https://sites.tonia.ru/api/site/".$site['id']."/menu/items/set",[
+              'form_params' => [
+                'menu_items' => $menu_items,
+                'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4'
+              ]
+            ]);
+
+            $res = json_decode($res->getBody(),true);
+            if(array_key_exists('success',$res)) {
+              $respAr['success'] = $res['success'];
+              $respAr['msg'] = $res['msg'];
+              if(!$respAr['success']) {
+                break;
+              }
+            }
+            else {
+              $respAr['success'] = 0;
+              $respAr['msg'] = "Что-то пошло не так...";
+              break;
+            }
+          }
+
+          if($respAr['success']) {
+            $phones = $connect->getAll("SELECT * FROM `app_models_site_phone` WHERE `site_id` = ?i", $site['id']);
+            $res = $client->request('POST',"https://sites.tonia.ru/api/site/".$site['id']."/phones/set",[
+              'form_params' => [
+                'phones' => $phones,
+                'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4'
+              ]
+            ]);
+
+            $res = json_decode($res->getBody(),true);
+            if(array_key_exists('success',$res)) {
+              $respAr['success'] = $res['success'];
+              $respAr['msg'] = $res['msg'];
+              if(!$respAr['success']) {
+                break;
+              }
+            }
+            else {
+              $respAr['success'] = 0;
+              $respAr['msg'] = "Что-то пошло не так...";
+              break;
+            }
+          }
+
+        }
+
+        if(!sync_files($connect)) {
+          $respAr['success'] = 0;
+          $respAr['msg'] = "Что-то пошло не так...";
+        }
       }
     }
 
