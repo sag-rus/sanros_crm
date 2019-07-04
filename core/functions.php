@@ -687,7 +687,7 @@ function get_select_table($connect, $table, $where, $select, $id, $first = "", $
 	$zapros = "SELECT id, name FROM ".$table;
 	if($where)
 		$zapros.= " WHERE ".$where;
-	$html = '<select class="form-control" id="'.$id.'" '.$func.'>';
+	$html = '<select class="form-control" id="'.$id.'" '.$func.' name="'.$id.'">';
 	if($first == 1)
 		$html.= "<option value='0'>Не выбрано</option>";
 	$data = $connect->getAll($zapros);

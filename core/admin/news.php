@@ -1185,7 +1185,7 @@ function edit_sites_content($connect) {
   $content_id = isset($_POST['id'])?(int)$_POST['id']:0;
   $content = NULL;
   if($content_id)
-      $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h1`, `title_h2`, `summary`, `body`, `body2`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `photogallery_title`, `photogallery_orientation`, `breadcrumb_title` FROM `sites_contents` WHERE `id` =?i",$content_id);
+      $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h1`, `title_h2`, `summary`, `body`, `body2`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `photogallery_title`, `photogallery_orientation`, `breadcrumb_title`, `direction_id`, `region_id`, `regional_direction_id` FROM `sites_contents` WHERE `id` =?i",$content_id);
       $entity = $content;
       $entity['type'] = 'content';
   ob_start();
@@ -1193,6 +1193,17 @@ function edit_sites_content($connect) {
       if(!$content['module_object_id'])
           $content['module_object_id'] = NULL;
       $contentTypesRows = $connect->getAll("SELECT * FROM `app_models_site_contenttype` WHERE `status` = 1");
+
+    $regions = [];
+
+    if($content['direction_id']) {
+      $regions = $connect->getAll("SELECT `id`, `name` FROM `region` WHERE `id_direction` = ?i", $content['direction_id']);
+    }
+
+    $region_directions = [];
+    if($content['region_id']) {
+      $region_directions = $connect->getAll("SELECT `id`, `name` FROM `direction_object` WHERE `id_reg` = ?i",$content['region_id']);
+    }
     ?>
       <div class="modal fade sites-content-modal">
           <div class="modal-dialog">
@@ -1363,6 +1374,34 @@ function edit_sites_content($connect) {
                           <label class="col-sm-2 control-label">Доп. содержимое</label>
                           <div class="col-sm-10">
                               <textarea class="form-control resizable-textarea" name="body2" id="sites_content_body2"><?=htmlspecialchars($content['body2']);?></textarea>
+                          </div>
+                      </div>
+                      <div class="form-group<?php if(!in_array($content['type'],['article','news','info'])) { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Направление</label>
+                          <div class="col-sm-10">
+                            <?=get_select_table($connect, "direction_object", "(`id_reg` IS NULL OR `id_reg` = 0) AND `id_country` = 1", $content["direction_id"], "direction_id", 1, "");?>
+                          </div>
+                      </div>
+                      <div class="form-group<?php if(!$content['direction_id'] || !in_array($content['type'],['article','news','info'])) { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Регион</label>
+                          <div class="col-sm-10">
+                              <select class="form-control" name="region_id">
+                                  <option value="0"<?php if(!$content['region_id']) { ?> selected<?php } ?>>Не выбран</option>
+                                <?php foreach ($regions as $region) { ?>
+                                    <option value="<?=$region['id'];?>"<?php if($content['region_id'] == $region['id']) { ?> selected<?php } ?>><?=$region['name'];?></option>
+                                <?php } ?>
+                              </select>
+                          </div>
+                      </div>
+                      <div class="form-group<?php if(!$content['region_id'] || count($region_directions) === 0 || !in_array($content['type'],['article','news','info'])) { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Рег. направление</label>
+                          <div class="col-sm-10">
+                              <select class="form-control" name="regional_direction_id">
+                                  <option value="0"<?php if(!$content['regional_direction_id']) { ?> selected<?php } ?>>Не выбрано</option>
+                                <?php foreach ($region_directions as $region_direction) { ?>
+                                    <option value="<?=$region_direction['id'];?>"<?php if($content['regional_direction_id'] == $region_direction['id']) { ?> selected<?php } ?>><?=$region_direction['name'];?></option>
+                                <?php } ?>
+                              </select>
                           </div>
                       </div>
                       <div class="form-group">
@@ -1902,6 +1941,21 @@ function set_sites_content($connect) {
   $landing_info = isset($_POST['landing_info'])?$_POST['landing_info']:"";
   $weight = isset($_POST['weight'])?(float)$_POST['weight']:0;
   $connect->query("SET CHARSET utf8");
+  $direction_id = isset($_POST['direction_id'])?(int)$_POST['direction_id']:0;
+  $region_id = isset($_POST['region_id'])?(int)$_POST['region_id']:0;
+  $regional_direction_id = isset($_POST['regional_direction_id'])?(int)$_POST['regional_direction_id']:0;
+
+  if($direction_id < 0) {
+      $direction_id = 0;
+  }
+
+  if($region_id < 0 || $direction_id === 0) {
+      $region_id = 0;
+  }
+
+  if($regional_direction_id < 0 || $region_id === 0) {
+      $regional_direction_id = 0;
+  }
 
   if($weight < 0)
       $weight = 0;
@@ -1919,6 +1973,12 @@ function set_sites_content($connect) {
 
   if(!in_array($type,['landing', 'settings'])) {
       $body2 = "";
+  }
+
+  if(!in_array($type,['news','article','info'])) {
+      $direction_id = 0;
+      $region_id = 0;
+      $regional_direction_id = 0;
   }
 
   $moduleBlocks = ["rooms","desc","promo","rating"];
@@ -1988,12 +2048,12 @@ function set_sites_content($connect) {
               set_bounds($connect,$boundsArrayReviewsObjects,'reviews_objects');
 
 
-              $connect->query("UPDATE `sites_contents` SET `title`=?s, `title_h1`=?s, `title_h2` = ?s, `path`=?s, `description`=?s, `body`=?s, `body2` =?s, `summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i, `form_action` = ?s, `map_code` = ?s, `landing_info` = ?s, `breadcrumb_title` = ?s, `photogallery_title` = ?s, `photogallery_orientation` = ?s WHERE `id`=?i",$title, $title_h1, $title_h2, $path,$description,$body, $body2,$summary,$keywords,$type,$timestamp,$published,$status,0,$weight,$module_object_id,$module_block,$second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $content_id);
+              $connect->query("UPDATE `sites_contents` SET `title`=?s, `title_h1`=?s, `title_h2` = ?s, `path`=?s, `description`=?s, `body`=?s, `body2` =?s, `summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i, `form_action` = ?s, `map_code` = ?s, `landing_info` = ?s, `breadcrumb_title` = ?s, `photogallery_title` = ?s, `photogallery_orientation` = ?s, `direction_id` = ?i, `region_id` = ?i, `regional_direction_id` = ?i WHERE `id`=?i",$title, $title_h1, $title_h2, $path,$description,$body, $body2,$summary,$keywords,$type,$timestamp,$published,$status,0,$weight,$module_object_id,$module_block,$second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $direction_id, $region_id, $regional_direction_id, $content_id);
             }
             else {
               $respAr['success'] = 1;
               $respAr['msg'] = "Контент успешно добавлен";
-              $connect->query("INSERT INTO `sites_contents` (`title`, `title_h1`, `title_h2`, `path`, `description`, `body`, `body2`, `summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`,`module_object_id`, `module_block`, `second_bg`, `form_action`, `map_code`, `landing_info`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation`) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?i, ?s, ?i, ?s, ?s, ?s, ?s, ?s, ?s)",$title, $title_h1, $title_h2, $path,$description,$body,$body2,$summary,$keywords,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight,$module_object_id, $module_block, $second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation);
+              $connect->query("INSERT INTO `sites_contents` (`title`, `title_h1`, `title_h2`, `path`, `description`, `body`, `body2`, `summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`,`module_object_id`, `module_block`, `second_bg`, `form_action`, `map_code`, `landing_info`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation`, `direction_id`, `region_id`, `regional_direction_id`) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?i, ?s, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i)",$title, $title_h1, $title_h2, $path,$description,$body,$body2,$summary,$keywords,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight,$module_object_id, $module_block, $second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $direction_id, $region_id, $regional_direction_id);
 
               $entity = [
                 'id' => $connect->insertId(),
@@ -2053,7 +2113,7 @@ function set_sites_content($connect) {
 }
 
 function sync_site_content($connect, $id):bool {
-    $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h1`, `title_h2`, `summary`, `body`, `body2`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation` FROM `sites_contents` WHERE `id` =?i",$id);
+    $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h1`, `title_h2`, `summary`, `body`, `body2`, `path`, `description`, `keywords`, `weight`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation`, `direction_id`, `region_id`, `regional_direction_id` FROM `sites_contents` WHERE `id` =?i",$id);
     if($content) {
         try {
           $client = new \GuzzleHttp\Client();

@@ -1855,6 +1855,39 @@ function add_new_sites_content(site_id) {
 													'<textarea class="form-control resizable-textarea" name="body2" id="sites_content_body2"></textarea>'+
 												'</div>' +
 											'</div>' +
+			                 '<div class="form-group hidden">' +
+			                     '<label class="col-sm-2 control-label">Направление</label>' +
+													 '<div class="col-sm-10">' +
+															'<select class="form-control direction-selector" name="direction_id">' +
+																'<option value="0">Без направления</option>' +
+			 													'<option value="32">Дальний Восток</option>' +
+																'<option value="24">Крым</option>' +
+																'<option value="21">Поволжье</option>' +
+																'<option value="25">Северный Кавказ</option>' +
+																'<option value="28">Северо-Запад</option>' +
+																'<option value="29">Сибирь</option>' +
+																'<option value="22">Урал</option>' +
+																'<option value="26">Центр России</option>' +
+																'<option value="23">Юг России</option>' +
+															'</select>'+
+													 '</div>' +
+											'</div>' +
+			                '<div class="form-group hidden">' +
+													'<label class="col-sm-2 control-label">Регион</label>' +
+													'<div class="col-sm-10">' +
+											 				'<select class="form-control" name="region_id">' +
+											 					'<option value="0">Без региона</option>' +
+											 				'</select>' +
+											 		'</div>' +
+										 	'</div>' +
+			 								'<div class="form-group hidden">' +
+													'<label class="col-sm-2 control-label">Рег. направление</label>' +
+													'<div class="col-sm-10">' +
+															'<select class="form-control" name="regional_direction_id">' +
+																	 '<option value="0">Не выбрано</option>' +
+															'</select>' +
+													'</div>' +
+											'</div>' +
 			 								'<div class="form-group">' +
                           '<label class="col-sm-2 control-label">Код карты</label>' +
                           '<div class="col-sm-10">' +
@@ -2165,6 +2198,21 @@ function set_sites_content() {
   var module_object_id = $module_object_id.val().trim();
   $module_object_idMsg.html('');
 
+	var $direction_id = $modalBody.find('*[name="direction_id"]');
+	var $direction_idMsg = $direction_id.parent().find('.input-message-block');
+	var direction_id = parseInt($direction_id.val(),10);
+	$direction_idMsg.html('');
+
+	var $region_id = $modalBody.find('*[name="region_id"]');
+	var $region_idMsg = $region_id.parent().find('.input-message-block');
+	var region_id = parseInt($region_id.val(),10);
+	$region_idMsg.html('');
+
+	var $regional_direction_id = $modalBody.find('*[name="regional_direction_id"]');
+	var $regional_direction_idMsg = $regional_direction_id.parent().find('.input-message-block');
+	var regional_direction_id = parseInt($regional_direction_id.val(),10);
+	$regional_direction_idMsg.html('');
+
   var $module_block = $modalBody.find('select[name="module_block"]');
   var $module_blockMsg = $module_block.parent().find('.input-message-block');
   var module_block = $module_block.val().trim();
@@ -2336,6 +2384,9 @@ function set_sites_content() {
         title_h2: title_h2,
         description: description,
 				slider_photos: slider_photos,
+				direction_id: direction_id,
+				region_id: region_id,
+				regional_direction_id: regional_direction_id,
         photogallery: photogallery,
 				photogallery_title: photogallery_title,
 				photogallery_orientation: photogallery_orientation,
@@ -2996,6 +3047,12 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 	var $body2 = $('.sites-content-modal *[name="body2"]');
 	var $body2FormG = $body2.closest('.form-group');
 
+	var $direction_id = $('.sites-content-modal *[name="direction_id"]');
+	var $direction_idFormG = $direction_id.closest('.form-group');
+
+	var $region_id = $('.sites-content-modal *[name="region_id"]');
+	var $region_idFormG = $region_id.closest('.form-group');
+
 	if(type === 'module') {
 		$moduleObjectFormG.removeClass('hidden');
     $moduleBlockFormG.removeClass('hidden');
@@ -3042,6 +3099,20 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 		$photogallery_titleFormG.addClass('hidden');
 		$photogallery_orientationFormG.addClass('hidden');
   }
+
+  if(type === 'article' || type === 'news' || type === 'info') {
+		$direction_idFormG.removeClass('hidden');
+		if($direction_id.val() > 0) {
+			$region_idFormG.removeClass('hidden');
+		}
+		else {
+			$region_idFormG.addClass('hidden');
+		}
+	}
+  else {
+		$direction_idFormG.addClass('hidden');
+		$region_idFormG.addClass('hidden');
+	}
 
 });
 
@@ -3093,4 +3164,72 @@ $(document).on('change','.site-modal select[name="direction_id"]',function (e) {
 		$region_id.val(0);
 	}
 
+});
+
+
+$(document).on('change','.sites-content-modal select[name="direction_id"]',function (e) {
+	var $obj = $(this);
+	var direction = parseInt($obj.val());
+	var $form = $obj.closest('.sites-content-modal');
+	var $region_id = $form.find('select[name="region_id"]');
+	var $region_idFormG = $region_id.closest('.form-group');
+	var region_id = parseInt($region_id.val());
+
+	var $regional_direction_id = $form.find('select[name="regional_direction_id"]');
+	var $regional_direction_idFormG = $regional_direction_id.closest('.form-group');
+	var regional_direction_id = parseInt($regional_direction_id.val(),10);
+	$regional_direction_idFormG.addClass('hidden');
+	$regional_direction_id.val(0);
+	$regional_direction_id.find('*[value!="0"]').remove();
+
+	$region_id.val(0);
+	if(direction === 0) {
+		$region_idFormG.addClass('hidden');
+		region_id = 0;
+		$region_id.find('*[value!="0"]').remove();
+	}
+	else {
+		$.ajax({
+			type: 'GET',
+			data: {
+				func: 'get_regions_options',
+				direction_id: direction
+			},
+			dataType: 'html',
+			url: 'mysql.php',
+			success: function (data) {
+				$region_id.html(data);
+				$region_idFormG.removeClass('hidden');
+			}
+		});
+	}
+});
+
+$(document).on('change','.sites-content-modal select[name="region_id"]',function (e) {
+	var $obj = $(this);
+	var region = parseInt($obj.val());
+	var $form = $obj.closest('.sites-content-modal');
+
+	var $regional_direction_id = $form.find('select[name="regional_direction_id"]');
+	var $regional_direction_idFormG = $regional_direction_id.closest('.form-group');
+	var regional_direction_id = parseInt($regional_direction_id.val());
+	$regional_direction_id.val(0);
+	$regional_direction_id.find('*[value!="0"]').remove();
+	$regional_direction_idFormG.addClass('hidden');
+	if(region > 0) {
+		$.ajax({
+			type: 'GET',
+			data: {
+				func: 'get_regions_directions_options',
+				region_id: region
+			},
+			dataType: 'html',
+			url: 'mysql.php',
+			success: function (data) {
+				$regional_direction_id.html(data);
+				if($regional_direction_id.find('option').length > 1)
+					$regional_direction_idFormG.removeClass('hidden');
+			}
+		});
+	}
 });
