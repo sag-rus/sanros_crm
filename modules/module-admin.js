@@ -1740,6 +1740,31 @@ function add_new_sites_content(site_id) {
 													'<div class="input-message-block" data-for="type"></div>'+
 												'</div>' +
 											'</div>' +
+											 '<div class="form-group with-bottom-margin hidden">' +
+													'<label class="col-sm-2 control-label">Список материалов</label>' +
+													'<div class="col-sm-10">' +
+													'<div class="checkbox-container">' +
+														'<input type="checkbox" class="form-control" name="aggregate_types" value="1" id="aggregate_types_0"> <label class="control-label" for="aggregate_types_0">Лэндинг</label>' +
+													'</div>' +
+													'<div class="checkbox-container">' +
+														'<input type="checkbox" class="form-control" name="aggregate_types" value="2" id="aggregate_types_1"> <label class="control-label" for="aggregate_types_1">Фотогалерея</label>' +
+													'</div>' +
+													'<div class="checkbox-container">' +
+														'<input type="checkbox" class="form-control" name="aggregate_types" value="3" id="aggregate_types_2"> <label class="control-label" for="aggregate_types_2">Новость</label>' +
+													'</div>' +
+													'<div class="checkbox-container">' +
+														'<input type="checkbox" class="form-control" name="aggregate_types" value="4" id="aggregate_types_3"> <label class="control-label" for="aggregate_types_3">Страница</label>' +
+													'</div>' +
+													'<div class="checkbox-container">' +
+														'<input type="checkbox" class="form-control" name="aggregate_types" value="7" id="aggregate_types_4"> <label class="control-label" for="aggregate_types_4">Статья</label>' +
+													'</div>' +
+													'<div class="checkbox-container">' +
+														'<input type="checkbox" class="form-control" name="aggregate_types" value="8" id="aggregate_types_5"> <label class="control-label" for="aggregate_types_5">Полезная информация</label>' +
+													'</div>' +
+													'<div class="with-bottom-margin"></div>' +
+													'<div class="input-message-block" data-for="aggregate_types"></div>' +
+												'</div>' +
+			                 '</div>' +
                       '<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Второй заголовок (h2)</label>' +
 												'<div class="col-sm-10">' +
@@ -2247,6 +2272,16 @@ function set_sites_content() {
 	var photogallery_orientation = $photogallery_orientation.val().trim();
 	$photogallery_orientationMsg.html('');
 
+	var $aggregate_types = $modalBody.find('*[name="aggregate_types"]:checked');
+	var $aggregate_typesFormG = $aggregate_types.closest('.form-group');
+	var $aggregate_typesMsg = $modalBody.find('*[name="aggregate_types"]').parent().parent().find('.input-message-block');
+	$aggregate_typesMsg.html("");
+	var aggregate_types = [], aggrI;
+
+	for(aggrI = 0; aggrI < $aggregate_types.length; aggrI++) {
+		aggregate_types.push(parseInt($($aggregate_types.get(aggrI)).val(),10));
+	}
+
   var error = false;
 
   if(title.length === 0) {
@@ -2371,6 +2406,16 @@ function set_sites_content() {
     }
   }
 
+  if(type === 'aggregator') {
+  	if($aggregate_types.length === 0) {
+			$aggregate_typesMsg.html("Необходимо выбрать типы материалов для агрегации!");
+  		if(!error) {
+  			$($modalBody.find('*[name="aggregate_types"]').get(0)).focus();
+  			error = true;
+			}
+		}
+	}
+
   if(!error) {
     show_loader_element($modalLoader);
     $modalBody.addClass('hidden');
@@ -2382,6 +2427,7 @@ function set_sites_content() {
 				title: title,
 				title_h1: title_h1,
         title_h2: title_h2,
+				aggregate_types: aggregate_types,
         description: description,
 				slider_photos: slider_photos,
 				direction_id: direction_id,
@@ -3044,6 +3090,9 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 	var $reviews_objects = $('.sites-content-modal *[name="reviews_objects"]');
 	var $reviews_objectsFormG = $reviews_objects.closest('.form-group');
 
+	var $aggregate_types = $('.sites-content-modal *[name="aggregate_types"]');
+	var $aggregate_typesFormG = $aggregate_types.closest('.form-group');
+
 	var $body2 = $('.sites-content-modal *[name="body2"]');
 	var $body2FormG = $body2.closest('.form-group');
 
@@ -3052,6 +3101,13 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 
 	var $region_id = $('.sites-content-modal *[name="region_id"]');
 	var $region_idFormG = $region_id.closest('.form-group');
+
+	if(type === 'aggregator')  {
+		$aggregate_typesFormG.removeClass('hidden');
+	}
+	else {
+		$aggregate_typesFormG.addClass('hidden');
+	}
 
 	if(type === 'module') {
 		$moduleObjectFormG.removeClass('hidden');

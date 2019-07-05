@@ -1261,6 +1261,23 @@ function edit_sites_content($connect) {
                               <div class="input-message-block" data-for="type"></div>
                           </div>
                       </div>
+                      <div class="form-group with-bottom-margin<?php if(!in_array($content['type'],['aggregator'])) { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Список материалов</label>
+                          <div class="col-sm-10">
+                              <?php
+                              $aggregateTypesIds = bounds_to_ids($connect,load_bounds($connect,$entity,'aggregate_types'));
+                              $aggregateTypes = $connect->getAll("SELECT * FROM `app_models_site_contenttype` WHERE `aggregate` = 1 AND `status` = 1");
+                              foreach ($aggregateTypes as $aggrI => $aggregateType) {
+                              ?>
+                              <div class="checkbox-container">
+                                  <input type="checkbox" class="form-control" name="aggregate_types" value="<?=$aggregateType['id'];?>" id="aggregate_types_<?=$aggrI;?>"<?php if(in_array($aggregateType['id'],$aggregateTypesIds)) { ?> checked<?php }?>> <label class="control-label" for="aggregate_types_<?=$aggrI;?>"><?=$aggregateType['name'];?></label>
+                              </div>
+
+                              <?php } ?>
+                              <div class="with-bottom-margin"></div>
+                              <div class="input-message-block" data-for="aggregate_types"></div>
+                          </div>
+                      </div>
                       <div class="form-group<?php if(!in_array($content['type'],['landing','settings'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Второй заголовок (h2)</label>
                           <div class="col-sm-10">
@@ -1464,7 +1481,8 @@ function set_bounds($connect,$boundsArray,String $boundsName)
 
     $entity2_types = [
       'file',
-      'object'
+      'resort',
+      'content_type'
     ];
 
     $timestamp = gmdate("U");
@@ -1530,7 +1548,7 @@ function bounds_to_files($connect,array $bounds):array
     return $filesAr;
 }
 
-function ids_to_bounds($connect,$entity, String $name, array $ids):array
+function ids_to_bounds($connect,$entity, String $name, array $ids, String $entity2_type = 'resort'):array
 {
     $boundsAr = [];
     $timestamp = gmdate("U");
@@ -1544,7 +1562,7 @@ function ids_to_bounds($connect,$entity, String $name, array $ids):array
         'name' => $name,
         'entity1_type' => $entity['type'],
         'entity1_id' => $entity['id'],
-        'entity2_type' => 'resort',
+        'entity2_type' => $entity2_type,
         'entity2_id' => $id,
         'title' => "",
         'description' => "",
@@ -1944,6 +1962,8 @@ function set_sites_content($connect) {
   $direction_id = isset($_POST['direction_id'])?(int)$_POST['direction_id']:0;
   $region_id = isset($_POST['region_id'])?(int)$_POST['region_id']:0;
   $regional_direction_id = isset($_POST['regional_direction_id'])?(int)$_POST['regional_direction_id']:0;
+  $aggregate_types_start = isset($_POST['aggregate_types'])?(array)$_POST['aggregate_types']:[];
+  $aggregate_types = [];
 
   if($direction_id < 0) {
       $direction_id = 0;
@@ -1979,6 +1999,15 @@ function set_sites_content($connect) {
       $direction_id = 0;
       $region_id = 0;
       $regional_direction_id = 0;
+  }
+
+  if(in_array($type,['aggregator'])) {
+    foreach ($aggregate_types_start as $aggregate_types_start_item) {
+      $aggregate_types_start_item = (int)$aggregate_types_start_item;
+      if($aggregate_types_start_item > 0) {
+          $aggregate_types[] = $aggregate_types_start_item;
+      }
+    }
   }
 
   $moduleBlocks = ["rooms","desc","promo","rating"];
@@ -2029,11 +2058,16 @@ function set_sites_content($connect) {
               $boundsArraySliderPhotos = [];
               $boundsArrayPageBg = [];
               $boundsArrayReviewsObjects = [];
+              $boundsArrayAggregateTypes = [];
 
               if(in_array($type,['landing','settings'])) {
                 $boundsArraySliderPhotos = files_to_bounds($connect,$entity,'slider_photos',isset($_POST['slider_photos'])?$_POST['slider_photos']:[]);
                 $boundsArrayPageBg = files_to_bounds($connect,$entity,'page_bg',isset($_POST['page_bg'])?$_POST['page_bg']:[]);
                 $boundsArrayReviewsObjects = ids_to_bounds($connect,$entity,'reviews_objects',isset($_POST['reviews_objects'])?ids_string_to_ids($_POST['reviews_objects']):[]);
+              }
+              
+              if(in_array($type,['aggregator'])) {
+                  $boundsArrayAggregateTypes = ids_to_bounds($connect,$entity,'aggregate_types',$aggregate_types,'content_type');
               }
 
               remove_bounds($connect,$entity,'image');
@@ -2041,11 +2075,13 @@ function set_sites_content($connect) {
               remove_bounds($connect,$entity,'photogallery');
               remove_bounds($connect,$entity,'slider_photos');
               remove_bounds($connect,$entity,'reviews_objects');
+              remove_bounds($connect,$entity,'aggregate_types');
               set_bounds($connect,$boundsArrayImage,'image');
               set_bounds($connect,$boundsArrayPageBg,'page_bg');
               set_bounds($connect,$boundsArrayPhotogallery,'photogallery');
               set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
               set_bounds($connect,$boundsArrayReviewsObjects,'reviews_objects');
+              set_bounds($connect,$boundsArrayAggregateTypes,'aggregate_types');
 
 
               $connect->query("UPDATE `sites_contents` SET `title`=?s, `title_h1`=?s, `title_h2` = ?s, `path`=?s, `description`=?s, `body`=?s, `body2` =?s, `summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i, `form_action` = ?s, `map_code` = ?s, `landing_info` = ?s, `breadcrumb_title` = ?s, `photogallery_title` = ?s, `photogallery_orientation` = ?s, `direction_id` = ?i, `region_id` = ?i, `regional_direction_id` = ?i WHERE `id`=?i",$title, $title_h1, $title_h2, $path,$description,$body, $body2,$summary,$keywords,$type,$timestamp,$published,$status,0,$weight,$module_object_id,$module_block,$second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $direction_id, $region_id, $regional_direction_id, $content_id);
@@ -2066,6 +2102,11 @@ function set_sites_content($connect) {
               $boundsArrayPhotogallery = [];
               $boundsArrayPageBg = [];
               $boundsArrayReviewsObjects = [];
+              $boundsArrayAggregateTypes = [];
+
+              if(in_array($type,['aggregator'])) {
+                $boundsArrayAggregateTypes = ids_to_bounds($connect,$entity,'aggregate_types',$aggregate_types,'content_type');
+              }
 
 
               if(in_array($type,['photogallery','landing','news', 'page', 'settings', 'article', 'info'])) {
@@ -2085,7 +2126,7 @@ function set_sites_content($connect) {
               set_bounds($connect,$boundsArrayPhotogallery,'photogallery');
               set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
               set_bounds($connect,$boundsArrayReviewsObjects,'reviews_objects');
-
+              set_bounds($connect,$boundsArrayAggregateTypes,'aggregate_types');
             }
           }
           else {
