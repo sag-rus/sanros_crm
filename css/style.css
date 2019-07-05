@@ -1685,3 +1685,8 @@ tr.simple-row {
 .cke_reset_all textarea {
 	z-index: 10000000000000 !important;
 }
+
+.sites-content-modal .modal-dialog {
+	width: 800px;
+	max-width: 100%;
+}
