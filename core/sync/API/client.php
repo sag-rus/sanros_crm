@@ -100,7 +100,7 @@ function register_new_account($connect, $data){
 		}
 		save_client_to_history($connect, $account, "Регистрация нового аккаутна");
 		if($invited == "birthday"){
-			$bonus = 1000;
+			$bonus = 300;
       $bonus_days = 30;
 			$last_timestamp = strtotime($today)+$bonus_days*86400;
 			$connect->query("INSERT INTO bonus(turist, type, sum, date, note, `last_timestamp`) VALUES(?i, 3, ?i, ?s, 'Подарочный бонус на день рождения', ?i)", $account, $bonus, $today, $last_timestamp);

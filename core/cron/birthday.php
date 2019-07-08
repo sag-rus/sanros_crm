@@ -14,7 +14,7 @@
 		$id = $row["id"];
 		$name = $row["name"]." ".$row["otch"];
 		$email = $row["login"];
-		$bonus = 1000;
+		$bonus = 300;
 		$connect->query("INSERT INTO bonus(turist, type, sum, date, note,`last_timestamp`) VALUES(?i, 3, ?i, ?s, 'Подарочный бонус на день рождения',?i)", $id, $bonus, $today,$last_timestamp);
 		$message = select_template_letter("cron/birthday-account", "client");
 		$message["content"] = str_replace("<name>", $name, $message["content"]);
