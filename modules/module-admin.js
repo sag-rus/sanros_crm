@@ -1938,6 +1938,13 @@ function add_new_sites_content(site_id) {
 													'<div class="input-message-block" data-for="weight"></div>'+
 												'</div>' +
 											'</div>' +
+											'<div class="form-group">' +
+												'<label class="col-sm-2 control-label">Вес материала (сортировка)</label>' +
+												'<div class="col-sm-10">' +
+													'<input type="number" name="sort" class="form-control" value="0">'+
+													'<div class="input-message-block" data-for="sort"></div>'+
+												'</div>' +
+											'</div>' +
 			 								'<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Опубликовано</label>' +
 												'<div class="col-sm-10">' +
@@ -2166,6 +2173,11 @@ function set_sites_content() {
   var $weightMsg = $weight.parent().find('.input-message-block');
   var weight = $weight.val().trim();
   $weightMsg.html('');
+
+	var $sort = $modalBody.find('input[name="sort"]');
+	var $sortMsg = $sort.parent().find('.input-message-block');
+	var sort = $sort.val().trim();
+	$sortMsg.html('');
 
   var $description = $modalBody.find('textarea[name="description"]');
   var $descriptionMsg = $description.parent().find('.input-message-block');
@@ -2431,6 +2443,7 @@ function set_sites_content() {
         description: description,
 				slider_photos: slider_photos,
 				direction_id: direction_id,
+				sort: sort,
 				region_id: region_id,
 				regional_direction_id: regional_direction_id,
         photogallery: photogallery,
