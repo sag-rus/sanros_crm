@@ -1436,7 +1436,7 @@ function edit_sites_content($connect) {
                       <div class="form-group">
                           <label class="col-sm-2 control-label">Дата и время публикации</label>
                           <div class="col-sm-10">
-                              <input type="datetime-local" name="published" class="form-control" value="<?=gmdate("Y-m-d\TH:i",$content['published']+3600*3);?>">
+                              <input type="datetime-local" name="published" class="form-control" value="<?=gmdate("Y-m-d\TH:i",$content['published']+3600*6);?>">
                           </div>
                       </div>
                       <div class="form-group">
