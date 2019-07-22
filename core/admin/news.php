@@ -1436,7 +1436,7 @@ function edit_sites_content($connect) {
                       <div class="form-group">
                           <label class="col-sm-2 control-label">Дата и время публикации</label>
                           <div class="col-sm-10">
-                              <input type="datetime-local" name="published" class="form-control" value="<?=gmdate("Y-m-d\TH:i",$content['published']+3600*6);?>">
+                              <input type="datetime-local" name="published" class="form-control" value="<?=gmdate("Y-m-d\TH:i",$content['published']+3600*3);?>">
                           </div>
                       </div>
                       <div class="form-group">
@@ -2020,7 +2020,7 @@ function set_sites_content($connect) {
 
   $moduleBlocks = ["rooms","desc","promo","rating"];
   $timestamp = gmdate("U");
-  $published = isset($_POST['published'])?(strtotime($_POST['published'])-3600*3):$timestamp;
+  $published = isset($_POST['published'])?(strtotime($_POST['published'])):$timestamp;
   $content_id = isset($_POST['content_id'])?(int)$_POST['content_id']:0;
   $status = isset($_POST['status'])?(int)$_POST['status']:0;
   $second_bg = isset($_POST['second_bg'])?(int)$_POST['second_bg']:0;
