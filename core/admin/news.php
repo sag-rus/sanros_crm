@@ -2020,7 +2020,7 @@ function set_sites_content($connect) {
 
   $moduleBlocks = ["rooms","desc","promo","rating"];
   $timestamp = gmdate("U");
-  $published = isset($_POST['published'])?(strtotime($_POST['published'])):$timestamp;
+  $published = (isset($_POST['published']) && mb_strlen($_POST['published']) > 0)?(strtotime($_POST['published'])):$timestamp;
   $content_id = isset($_POST['content_id'])?(int)$_POST['content_id']:0;
   $status = isset($_POST['status'])?(int)$_POST['status']:0;
   $second_bg = isset($_POST['second_bg'])?(int)$_POST['second_bg']:0;
