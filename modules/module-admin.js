@@ -1736,6 +1736,7 @@ function add_new_sites_content(site_id) {
 														'<option value="article">Статья</option>' +
 			 											'<option value="info">Полезная информация</option>' +
 			 											'<option value="advice">Советы эксперта</option>' +
+			 											'<option value="blog_post">Публикация в блоге</option>' +
 			 											'<option value="aggregator">Агрегатор</option>' +
 			 										'</select>'+
 													'<div class="input-message-block" data-for="type"></div>'+
@@ -3159,7 +3160,7 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 		$body2FormG.addClass('hidden');
   }
 
-  if(type === 'photogallery' || type === 'landing' || type === 'news' || type === 'page' || type === 'settings' || type === 'article' || type === 'info' || type === 'advice') {
+  if(type === 'photogallery' || type === 'landing' || type === 'news' || type === 'page' || type === 'settings' || type === 'article' || type === 'info' || type === 'advice' || type === 'blog_post') {
     $photogalleryFormG.removeClass('hidden');
 		$photogallery_titleFormG.removeClass('hidden');
 		$photogallery_orientationFormG.removeClass('hidden');
@@ -3170,7 +3171,7 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 		$photogallery_orientationFormG.addClass('hidden');
   }
 
-  if(type === 'article' || type === 'news' || type === 'info' || type === 'advice') {
+  if(type === 'article' || type === 'news' || type === 'info' || type === 'advice' || type === 'blog_post') {
 		$direction_idFormG.removeClass('hidden');
 		if($direction_id.val() > 0) {
 			$region_idFormG.removeClass('hidden');
