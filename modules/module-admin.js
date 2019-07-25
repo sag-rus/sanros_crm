@@ -1763,6 +1763,12 @@ function add_new_sites_content(site_id) {
 													'<div class="checkbox-container">' +
 														'<input type="checkbox" class="form-control" name="aggregate_types" value="8" id="aggregate_types_5"> <label class="control-label" for="aggregate_types_5">Полезная информация</label>' +
 													'</div>' +
+			 										'<div class="checkbox-container">' +
+														'<input type="checkbox" class="form-control" name="aggregate_types" value="10" id="aggregate_types_6"> <label class="control-label" for="aggregate_types_6">Советы эксперта</label>' +
+													'</div>' +
+													'<div class="checkbox-container">' +
+														'<input type="checkbox" class="form-control" name="aggregate_types" value="11" id="aggregate_types_7"> <label class="control-label" for="aggregate_types_7">Публикация в блоге</label>' +
+													'</div>' +
 													'<div class="with-bottom-margin"></div>' +
 													'<div class="input-message-block" data-for="aggregate_types"></div>' +
 												'</div>' +
