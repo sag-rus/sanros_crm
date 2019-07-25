@@ -1312,21 +1312,21 @@ function edit_sites_content($connect) {
                               <div class="input-message-block" data-for="module_block"></div>
                           </div>
                       </div>
-                      <div class="form-group<?php if(!in_array($content['type'],['photogallery','landing','news', 'page','settings', 'article', 'info'])) { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(!in_array($content['type'],['photogallery','landing','news', 'page','settings', 'article', 'info', 'advice'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Фотографии</label>
                           <div class="col-sm-10">
                               <div class="input-message-block" data-for="photogallery"></div>
                               <input type="file" name="photogallery" value="<?=htmlspecialchars(json_encode((object)bounds_to_files($connect,load_bounds($connect,$entity,'photogallery'))));?>">
                           </div>
                       </div>
-                      <div class="form-group<?php if(!in_array($content['type'],['photogallery','landing','news', 'page','settings', 'article', 'info'])) { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(!in_array($content['type'],['photogallery','landing','news', 'page','settings', 'article', 'info', 'advice'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Заголовок к фото</label>
                           <div class="col-sm-10">
                               <div class="input-message-block" data-for="photogallery"></div>
                               <input type="text" class="form-control" name="photogallery_title" value="<?=htmlspecialchars($content['photogallery_title']);?>">
                           </div>
                       </div>
-                      <div class="form-group<?php if(!in_array($content['type'],['photogallery','landing','news', 'page','settings', 'article', 'info'])) { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(!in_array($content['type'],['photogallery','landing','news', 'page','settings', 'article', 'info', 'advice'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Ориентация фото</label>
                           <div class="col-sm-10">
                               <select class="form-control" name="photogallery_orientation">
@@ -1393,13 +1393,13 @@ function edit_sites_content($connect) {
                               <textarea class="form-control resizable-textarea" name="body2" id="sites_content_body2"><?=htmlspecialchars($content['body2']);?></textarea>
                           </div>
                       </div>
-                      <div class="form-group<?php if(!in_array($content['type'],['article','news','info'])) { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(!in_array($content['type'],['article','news','info', 'advice'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Направление</label>
                           <div class="col-sm-10">
                             <?=get_select_table($connect, "direction_object", "(`id_reg` IS NULL OR `id_reg` = 0) AND `id_country` = 1", $content["direction_id"], "direction_id", 1, "");?>
                           </div>
                       </div>
-                      <div class="form-group<?php if(!$content['direction_id'] || !in_array($content['type'],['article','news','info'])) { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(!$content['direction_id'] || !in_array($content['type'],['article','news','info', 'advice'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Регион</label>
                           <div class="col-sm-10">
                               <select class="form-control" name="region_id">
@@ -1410,7 +1410,7 @@ function edit_sites_content($connect) {
                               </select>
                           </div>
                       </div>
-                      <div class="form-group<?php if(!$content['region_id'] || count($region_directions) === 0 || !in_array($content['type'],['article','news','info'])) { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(!$content['region_id'] || count($region_directions) === 0 || !in_array($content['type'],['article','news','info', 'advice'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Рег. направление</label>
                           <div class="col-sm-10">
                               <select class="form-control" name="regional_direction_id">
@@ -1996,14 +1996,14 @@ function set_sites_content($connect) {
   $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
   $type = isset($_POST['type'])?trim($_POST['type']):"page";
 
-  $typesAr = ['page','news', 'module', 'landing', "photogallery", "settings", 'article', 'info', 'aggregator'];
+  $typesAr = ['page','news', 'module', 'landing', "photogallery", "settings", 'article', 'info', 'aggregator', 'advice'];
   $photogallery_orientations = ['album', 'book'];
 
   if(!in_array($type,['landing', 'settings'])) {
       $body2 = "";
   }
 
-  if(!in_array($type,['news','article','info'])) {
+  if(!in_array($type,['news','article','info', 'advice'])) {
       $direction_id = 0;
       $region_id = 0;
       $regional_direction_id = 0;
@@ -2059,7 +2059,7 @@ function set_sites_content($connect) {
 
               $boundsArrayPhotogallery = [];
 
-              if(in_array($type,['photogallery','landing','news', 'page', 'settings', 'article', 'info'])) {
+              if(in_array($type,['photogallery','landing','news', 'page', 'settings', 'article', 'info', 'advice'])) {
                   $boundsArrayPhotogallery = files_to_bounds($connect,$entity,'photogallery',isset($_POST['photogallery'])?$_POST['photogallery']:[]);
               }
 
@@ -2117,7 +2117,7 @@ function set_sites_content($connect) {
               }
 
 
-              if(in_array($type,['photogallery','landing','news', 'page', 'settings', 'article', 'info'])) {
+              if(in_array($type,['photogallery','landing','news', 'page', 'settings', 'article', 'info', 'advice'])) {
                 $boundsArrayPhotogallery = files_to_bounds($connect,$entity,'photogallery',isset($_POST['photogallery'])?$_POST['photogallery']:[]);
               }
 
