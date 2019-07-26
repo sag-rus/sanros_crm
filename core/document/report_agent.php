@@ -58,7 +58,7 @@ function report_agent($connect, $all_id){
 	Агент: <?php echo $agency; ?><br />
 	Юридический адрес: <?php echo $leg_address_agency; ?><br />
 	Агентский договор: №<?php echo $agency_contract["number"]." действующий до ".$agency_contract["date_cont"]; ?></p>
-	<p class="head">ОТЧЕТ АГЕНТА № <?php echo $id; ?> от <?php echo $date_z_trans." г."; ?></p>
+	<p class="head">ОТЧЕТ АГЕНТА № <?php echo $id; ?> от <?php if($id == 80185) { echo "05 июля 2019 г."; } else { echo $date_z_trans." г."; } ?></p>
 	<p align="center" style="margin-bottom: 5px; top: -10px; position: relative;">К счету № <?php echo $id; ?> от <?php echo month_transform($date); ?></p>
 	<table border="1" cellpadding="0" cellspacing="0">
 	<tr>
@@ -100,14 +100,16 @@ function report_agent($connect, $all_id){
 			echo " (".$itog_sum_string.").";
 		?>
 	<br />
-	Агентское вознаграждение составляет: <strong><?php echo $reward; ?> рублей</strong>
-		<?php
-			$arr = explode(".", $reward);
-			$itog_sum_string = convert_number_to_string($arr[0])." рублей ".$arr[1]." копеек";
-			$itog_sum_string = first_symbol_to_title($itog_sum_string);
-			echo " (".$itog_sum_string.").";
-		?>
-	<br />
+    <?php if($id != 80185) { ?>
+      Агентское вознаграждение составляет: <strong><?php echo $reward; ?> рублей</strong>
+      <?php
+      $arr = explode(".", $reward);
+      $itog_sum_string = convert_number_to_string($arr[0])." рублей ".$arr[1]." копеек";
+      $itog_sum_string = first_symbol_to_title($itog_sum_string);
+      echo " (".$itog_sum_string.").";
+      ?>
+      <br />
+    <?php } ?>
 	Вышеперечисленные услуги выполненые полностью и в срок.<br />Стороны претензий по качеству и срокам оканания услуг не имеют.
 	</p>
 
