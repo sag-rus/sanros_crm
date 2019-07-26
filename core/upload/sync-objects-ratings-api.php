@@ -52,6 +52,12 @@ function sync_objects_ratings_api($connect){
 				}
 				else {
 					echo $res['msg'].PHP_EOL;
+
+					if(array_key_exists("fail_messages",$res)) {
+						echo print_r($res['fail_messages'],true).PHP_EOL;
+					}
+
+					echo PHP_EOL;
 				}
 			}
 		}
