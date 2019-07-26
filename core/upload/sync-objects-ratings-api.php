@@ -2,7 +2,7 @@
 
 require_once __DIR__.'/../../vendor/autoload.php';
 
-function sync_objects_ratings_api($connect){
+function sync_objects_ratings_api($connect,$showMessages = FALSE){
 
 	try {
 
@@ -37,7 +37,8 @@ function sync_objects_ratings_api($connect){
 				'uid' => 1
 			];
 
-			echo round($ratingSum/$ratingDel,1).PHP_EOL;
+			if($showMessages)
+				echo round($ratingSum/$ratingDel,1).PHP_EOL;
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/rating/set/".$rating['id'],[
 				'form_params' => $ratingAr
@@ -50,7 +51,7 @@ function sync_objects_ratings_api($connect){
 				if($success) {
 						$connect->query("UPDATE `rating` SET `synchronized` = '1' WHERE `id` = ?i", $rating['id']);
 				}
-				else {
+				elseif($showMessages) {
 					echo $res['msg'].PHP_EOL;
 
 					if(array_key_exists("fail_messages",$res)) {

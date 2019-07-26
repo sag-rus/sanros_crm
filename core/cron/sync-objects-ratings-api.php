@@ -13,4 +13,4 @@ include_once($directory."/core/admin/news.php");
 include_once($directory."/core/upload/sync-objects-ratings-api.php");
 $connect = connect_to_MySQL_directory();
 
-sync_objects_ratings_api($connect);
+sync_objects_ratings_api($connect,true);
