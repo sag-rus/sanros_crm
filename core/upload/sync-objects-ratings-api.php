@@ -52,7 +52,7 @@ function sync_objects_ratings_api($connect,$showMessages = FALSE){
 						$connect->query("UPDATE `rating` SET `synchronized` = '1' WHERE `id` = ?i", $rating['id']);
 				}
 				elseif($showMessages) {
-					echo $res['msg'].PHP_EOL;
+					echo $res['msg'].PHP_EOL." resort_id = ".$rating['id_obj'].PHP_EOL;
 
 					if(array_key_exists("fail_messages",$res)) {
 						echo print_r($res['fail_messages'],true).PHP_EOL;
