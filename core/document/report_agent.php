@@ -88,7 +88,7 @@ function report_agent($connect, $all_id){
     </tr>
     <?php } ?>
 	</table>
-	<p class="head">АКТ ВЫПОЛНЕННЫХ РАБОТ № <?php echo $id; ?> от <?php echo $date_z_trans." г."; ?></p>
+	<p class="head">АКТ ВЫПОЛНЕННЫХ РАБОТ № <?php echo $id; ?> от <?php if($id == 80185) { echo "05 июля 2019 г."; } else { echo $date_z_trans." г."; } ?></p>
 
 	<p>АГЕНТ <strong><?php echo $agency; ?></strong>, в лице <span style="text-decoration: underline;">&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</span><br />
 	и Компания <?php echo $firma; ?>, в лице Генерального директора <?php echo $director_pad; ?>, действуюший на основании «Устава» составили настоящий акт о следующем:<br />
@@ -146,7 +146,7 @@ function report_agent($connect, $all_id){
 		</td>
 	</tr>
 	<tr>
-		<td width="325">Дата: <?php echo $date_z_trans; ?> г.</td>
+		<td width="325">Дата: <?php if($id == 80185) { echo "05 июля 2019 г."; } else { echo $date_z_trans." г."; } ?></td>
 		<td width="325">Дата:</td>
 	</tr>
 	<tr>
