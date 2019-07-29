@@ -1278,7 +1278,7 @@ function edit_sites_content($connect) {
                               <div class="input-message-block" data-for="aggregate_types"></div>
                           </div>
                       </div>
-                      <div class="form-group<?php if(!in_array($content['type'],['landing','settings'])) { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(!in_array($content['type'],['landing','settings', 'news', 'article', 'info', 'advice', 'blog_post'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Второй заголовок (h2)</label>
                           <div class="col-sm-10">
                               <input type="text" class="form-control" name="title_h2" maxlength="255" value="<?=htmlspecialchars($content['title_h2']);?>">
@@ -1387,7 +1387,7 @@ function edit_sites_content($connect) {
                               <textarea class="form-control resizable-textarea" name="body" id="sites_content_body"><?=htmlspecialchars($content['body']);?></textarea>
                           </div>
                       </div>
-                      <div class="form-group<?php if(!in_array($content['type'],['landing','settings'])) { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(!in_array($content['type'],['landing','settings', 'news', 'article', 'info', 'advice', 'blog_post'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Доп. содержимое</label>
                           <div class="col-sm-10">
                               <textarea class="form-control resizable-textarea" name="body2" id="sites_content_body2"><?=htmlspecialchars($content['body2']);?></textarea>
@@ -1960,7 +1960,7 @@ function set_sites_content($connect) {
   $path = isset($_POST['path'])?trim($_POST['path']):"";
   $form_action = isset($_POST['form_action'])?trim($_POST['form_action']):"";
   $description = isset($_POST['description'])?trim($_POST['description']):"";
-  $body = isset($_POST['body'])?$_POST['body']:"";
+  $body = isset($_POST['body'])?addslashes($_POST['body']):"";
   $body2 = isset($_POST['body2'])?$_POST['body2']:"";
   $map_code = isset($_POST['map_code'])?$_POST['map_code']:"";
   $landing_info = isset($_POST['landing_info'])?$_POST['landing_info']:"";
@@ -1999,7 +1999,7 @@ function set_sites_content($connect) {
   $typesAr = ['page','news', 'module', 'landing', "photogallery", "settings", 'article', 'info', 'aggregator', 'advice', 'blog_post'];
   $photogallery_orientations = ['album', 'book'];
 
-  if(!in_array($type,['landing', 'settings'])) {
+  if(!in_array($type,['landing', 'settings', 'news', 'article', 'info', 'advice', 'blog_post'])) {
       $body2 = "";
   }
 

@@ -2411,7 +2411,7 @@ function set_sites_content() {
       }
     }
   }
-  else {
+  else if(type !== 'settings' && type !== 'news' && type !== 'article' && type !== 'info' && type !== 'advice' && type !== 'blog_post') {
     form_action = '';
     title_h2 = '';
   }
@@ -3148,7 +3148,7 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 		$reviews_objectsFormG.addClass('hidden');
 	}
 
-  if(type === 'landing' || type === 'settings') {
+  if(type === 'landing' || type === 'settings' || type === 'news' || type === 'article' || type === 'info' || type === 'advice' || type === 'blog_post') {
     $sliderPhotosFormG.removeClass('hidden');
     $page_bgFormG.removeClass('hidden');
     $second_bgFormG.removeClass('hidden');
