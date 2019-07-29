@@ -1960,7 +1960,7 @@ function set_sites_content($connect) {
   $path = isset($_POST['path'])?trim($_POST['path']):"";
   $form_action = isset($_POST['form_action'])?trim($_POST['form_action']):"";
   $description = isset($_POST['description'])?trim($_POST['description']):"";
-  $body = isset($_POST['body'])?addslashes($_POST['body']):"";
+  $body = isset($_POST['body'])?$_POST['body']:"";
   $body2 = isset($_POST['body2'])?$_POST['body2']:"";
   $map_code = isset($_POST['map_code'])?$_POST['map_code']:"";
   $landing_info = isset($_POST['landing_info'])?$_POST['landing_info']:"";
