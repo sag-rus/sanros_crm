@@ -304,7 +304,10 @@ function get_managers($connect, $type = "", $select = "", $id_rights = NULL, $se
         $selected = "";
         if($select == $id)
           $selected = " SELECTED ";
-        $html.= "<option value='".$id."' ".$selected.">".$row["name"]."</option>";
+        if($id == $session_login)
+            $html.= "<option value='".$id."' ".$selected.">".$row["name"]." (это Вы)</option>";
+        else
+            $html.= "<option value='".$id."' ".$selected.">".$row["name"]."</option>";
       }
       $html.= "</select>";
       return $html;
