@@ -607,6 +607,7 @@ function select_name_object($connect){
 }
 
 function show_review_rating($connect){
+    global $id_rights, $session_login;
 	ob_start();
 ?>
 <div class="form-horizontal panel panel-default edit">
@@ -614,7 +615,7 @@ function show_review_rating($connect){
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Менеджер</label>
 			<div class="col-sm-9">
-				<?php echo get_managers($connect, "filter"); ?>
+				<?php echo get_managers($connect, "filter","", $id_rights, $session_login); ?>
 			</div>
 		</div>
 		<div class="form-group form-group-margin">

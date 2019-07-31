@@ -1435,6 +1435,7 @@ function view_schet_client($connect){
 
 function get_manager_change($connect){
 	$id = $_POST["id"];
+	global $id_rights, $session_login;
 	ob_start();
 ?>
 <div class="modal fade">
@@ -1449,7 +1450,7 @@ function get_manager_change($connect){
 					<div class="form-group form-group-margin">
 						<label class="col-sm-4 control-label">Менеджер</label>
 						<div class="col-sm-8">
-							<?php echo get_managers($connect); ?>
+							<?php echo get_managers($connect,"","",$id_rights,$session_login); ?>
 						</div>
 					</div>
 				</div>

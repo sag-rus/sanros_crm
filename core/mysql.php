@@ -834,7 +834,8 @@ function select_regions($connect){
 }
 
 function select_managers($connect){
-	return get_managers($connect);
+    global $id_rights, $session_login;
+	return get_managers($connect,"","",$id_rights,$session_login);
 }
 
 function show_admin_button_reckoning($connect){

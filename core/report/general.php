@@ -62,7 +62,7 @@ function show_general_report_menu(){
 }
 
 function show_filter_manager($connect){
-	global $session_login;
+	global $session_login, $id_rights;
 	ob_start();
 ?>
 <div class="form-horizontal panel panel-default filter" onkeyup="if(event.keyCode == 13) filter_do()">
@@ -122,7 +122,7 @@ function show_filter_manager($connect){
 				<div class="form-group">
 					<label class="col-sm-3 control-label">Менеджер</label>
 					<div class="col-sm-3">
-						<?php echo get_managers($connect, "filter"); ?>
+						<?php echo get_managers($connect, "filter","",$id_rights,$session_login); ?>
 					</div>
 				</div>
 				<div class="form-group">
@@ -166,7 +166,7 @@ function show_filter_manager($connect){
 }
 
 function show_filter_report($connect){
-    global $id_rights;
+    global $id_rights, $session_login;
 	$conf = connect_config();
 	$source_array = $conf->source_array;
 	ob_start();
@@ -232,7 +232,7 @@ function show_filter_report($connect){
 					</div>
 					<label class="col-sm-3 control-label">Менеджер</label>
 					<div class="col-sm-3">
-						<?php echo get_managers($connect, "filter"); ?>
+						<?php echo get_managers($connect, "filter","",$id_rights,$session_login); ?>
 					</div>
 				</div>
 				<div class="form-group">
@@ -1441,6 +1441,7 @@ function menu_mass_action(){
 }
 
 function show_order_call_back_report($connect){
+    global $id_rights, $session_login;
 ?>
 <div class="form-horizontal panel panel-default form-search-call-back">
 	<div class="panel-body">
@@ -1454,7 +1455,7 @@ function show_order_call_back_report($connect){
 				<input type="text" class="form-control datepicker" id="date-1" value="<?php echo date('Y-m-d'); ?>" />
 			</div>
 			<div class="col-sm-4">
-				<?php echo get_managers($connect, "filter"); ?>
+				<?php echo get_managers($connect, "filter","",$id_rights,$session_login); ?>
 			</div>
 			<div class="col-sm-4">
 				<select class="form-control status-call-back">
