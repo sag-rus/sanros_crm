@@ -869,30 +869,39 @@ function filter_payment_month($connect){
 
 function plan_report($connect){
     global $id_rights, $session_login;
+    $managers = get_managers($connect,"","",$id_rights,$session_login);
 ?>
 <div class="form-horizontal panel panel-default">
 	<div class="panel-body">
-		<div class="form-group">
-			<label class="col-sm-4 control-label">Менеджер</label>
-			<div class="col-sm-8">
-				<?php echo get_managers($connect); ?>
-			</div>
-		</div>
-		<div class="form-group">
-			<label class="col-sm-4 control-label">Месяц</label>
-			<div class="col-sm-8">
-				<?php echo get_month_profit(); ?>
-			</div>
-		</div>
+        <?php if(!is_null($managers)) { ?>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">Менеджер</label>
+                <div class="col-sm-8">
+                    <?php echo $managers; ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">Месяц</label>
+                <div class="col-sm-8">
+                    <?php echo get_month_profit(); ?>
+                </div>
+            </div>
+        <?php } else { ?>
+          <div class="warning">У Вас нет доступа к данной информации...</div>
+        <?php }?>
 	</div>
-	<div class="panel-footer">
-		<div class="form-group form-group-margin">
-			<div class="col-sm-offset-4 col-sm-8">
-				<button type="button" class="btn btn-success btn-sm" onclick="view_my_profit()"><i class="fa fa-search"></i> Показать</button>
-				<button type="button" class="btn btn-success btn-sm" onclick="view_all_profit()"><i class="fa fa-search"></i> По всем</button>
-			</div>
-		</div>
-	</div>
+    <?php if(!is_null($managers)) { ?>
+        <div class="panel-footer">
+            <div class="form-group form-group-margin">
+                <div class="col-sm-offset-4 col-sm-8">
+                    <button type="button" class="btn btn-success btn-sm" onclick="view_my_profit()"><i class="fa fa-search"></i> Показать</button>
+                    <?php if($id_rights > 5)  { ?>
+                    <button type="button" class="btn btn-success btn-sm" onclick="view_all_profit()"><i class="fa fa-search"></i> По всем</button>
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+    <?php }?>
 </div>
 <div id="result"></div>
 <?php

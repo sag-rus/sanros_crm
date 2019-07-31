@@ -278,20 +278,32 @@ function get_status_array($connect, $table){
 	return $array;
 }
 
-function get_managers($connect, $type = "", $select = ""){
+function get_managers($connect, $type = "", $select = "", $id_rights = NULL, $session_login = NULL){
 	$html = "<select class='form-control' id='all_manager'>";
 	if($type == "filter")
 		$html.= "<option value='' SELECTED>Не выбран</option>";
-	$data = $connect->getAll("SELECT name, id FROM users WHERE dostup=1 AND class=1");
-	foreach($data as $row){
-		$id = $row["id"];
-		$selected = "";
-		if($select == $id)
-			$selected = " SELECTED ";
-		$html.= "<option value='".$id."' ".$selected.">".$row["name"]."</option>";
-	}
-	$html.= "</select>";
-	return $html;
+
+	if(!is_null($id_rights) && $id_rights > 5)
+	    $data = $connect->getAll("SELECT name, id FROM users WHERE dostup=1 AND class=1");
+	elseif(!is_null($session_login))
+        $data = $connect->getAll("SELECT name, id FROM users WHERE dostup=1 AND class=1 AND id = ?i",$session_login);
+	else
+	    $data = [];
+
+
+
+	if(count($data) > 0) {
+      foreach($data as $row){
+        $id = $row["id"];
+        $selected = "";
+        if($select == $id)
+          $selected = " SELECTED ";
+        $html.= "<option value='".$id."' ".$selected.">".$row["name"]."</option>";
+      }
+      $html.= "</select>";
+      return $html;
+    }
+	return NULL;
 }
 
 function get_object($connect, $id, $type_view = ""){

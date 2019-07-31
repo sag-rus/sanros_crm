@@ -321,6 +321,7 @@ function view_my_profit($connect){
 		$plan = "не установлен";
 		$excess_plan = "-";
 		$array["raz"] = 0;
+		$excess = 0;
 	}
 	ob_start();
 ?>
