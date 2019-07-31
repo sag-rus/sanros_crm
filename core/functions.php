@@ -283,7 +283,13 @@ function get_managers($connect, $type = "", $select = "", $id_rights = NULL, $se
 	if($type == "filter")
 		$html.= "<option value='' SELECTED>Не выбран</option>";
 
-	if(!is_null($id_rights) && $id_rights > 5)
+	if($session_login)
+	    $user = $connect->getRow("SELECT * FROM users WHERE id = ?i", $session_login);
+	else
+	    $user = NULL;
+
+
+	if(!is_null($id_rights) && ($id_rights > 5 || ($user && $user['class'] != 1)))
 	    $data = $connect->getAll("SELECT name, id FROM users WHERE dostup=1 AND class=1");
 	elseif(!is_null($session_login))
         $data = $connect->getAll("SELECT name, id FROM users WHERE dostup=1 AND class=1 AND id = ?i",$session_login);
