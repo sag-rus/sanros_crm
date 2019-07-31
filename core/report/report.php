@@ -886,6 +886,15 @@ function plan_report($connect){
                     <?php echo get_month_profit(); ?>
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">Тип отчёта</label>
+                <div class="col-sm-8">
+                    <select class="form-control" id="report-type">
+                        <option value="1">Заявки</option>
+                        <option value="2">Платежи</option>
+                    </select>
+                </div>
+            </div>
         <?php } else { ?>
           <div class="warning">У Вас нет доступа к данной информации...</div>
         <?php }?>

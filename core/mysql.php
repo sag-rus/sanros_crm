@@ -727,6 +727,9 @@ function write_body($connect){
                   <?php } ?>
 			<?php if($id_rights == 1 || $id_rights > 2 || $session_login == 21 || $session_login == 55){ ?>
 					<li id="report_menu" onclick="show_reports()" data-id-rights="<?=$id_rights;?>"><a>Отчеты</a></li>
+                    <?php if($id_rights > 1) { ?>
+                    <li id="filter_menu" onclick="show_filter()"><a>Поиск</a></li>
+                    <?php } ?>
 			<?php }elseif($id_rights > 1) { ?>
 					<li id="filter_menu" onclick="show_filter()"><a>Поиск</a></li>
 			<?php } ?>
