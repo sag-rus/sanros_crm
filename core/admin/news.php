@@ -92,7 +92,7 @@ function show_sites_list($connect) {
           <tr>
               <td><?=$site['id'];?></td>
               <td><?=$site['name'];?></td>
-              <td><a href="//<?=idn_to_utf8($site['domain']);?>" target="_blank"><?=idn_to_utf8($site['domain']);?></a></td>
+              <td><a href="//<?=idn_to_utf8($site['domain'],0,INTL_IDNA_VARIANT_UTS46);?>" target="_blank"><?=idn_to_utf8($site['domain'],0,INTL_IDNA_VARIANT_UTS46);?></a></td>
               <td>
                   <button class="btn btn-default btn-sm" onclick="show_sites_contents_list(<?=$site['id'];?>);">Материалы</button>
                   <button class="btn btn-default btn-sm" onclick="show_sites_addresses_list(<?=$site['id'];?>);">Адреса</button>

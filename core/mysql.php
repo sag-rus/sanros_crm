@@ -725,7 +725,7 @@ function write_body($connect){
 					<li id="obj_menu" onclick="objects()"><a>Объекты</a></li>
 					<li id="reminder_menu" onclick="my_reminder()"><a>Напоминания</a></li>
                   <?php } ?>
-			<?php if($id_rights == 1 || $id_rights > 3 || $session_login == 21 || $session_login == 55){ ?>
+			<?php if($id_rights == 1 || $id_rights > 2 || $session_login == 21 || $session_login == 55){ ?>
 					<li id="report_menu" onclick="show_reports()" data-id-rights="<?=$id_rights;?>"><a>Отчеты</a></li>
 			<?php }elseif($id_rights > 1) { ?>
 					<li id="filter_menu" onclick="show_filter()"><a>Поиск</a></li>

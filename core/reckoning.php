@@ -2940,7 +2940,7 @@ function show_menu_bid($connect){
 			$check_payment = $connect->getOne("SELECT id FROM payment WHERE (type=1 OR type=2) AND schet=?i", $id);
 			$check_return = $connect->getOne("SELECT id FROM return_query WHERE id_reck=?i", $id);
 		?>
-			<?php if($check_payment AND !$check_return){ ?>
+			<?php if($check_payment AND (!$check_return || $id_rights > 5)){ ?>
 				<span onclick="return_oplata_query(<?php echo $id; ?>)">Заявка на возврат</span>
 			<?php } ?>
 			<?php if($check_payment){ ?>

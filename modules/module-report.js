@@ -97,13 +97,18 @@ function show_reports(){
 	select_menu('report_menu');
 	var id_rights = parseInt($('*[data-id-rights]').attr('data-id-rights'));
 	var html;
-	if(id_rights > 1)
+	if(id_rights > 3)
 		html = '<div class="btn-group btn-group-justified head-menu-report"><div class="btn-group"><button type="button" class="btn btn-default btn-general" onclick="general_report()"><i class="fa fa-tasks"></i> Общий</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-calendar" onclick="calendar_report()"><i class="fa fa-calendar"></i> Календарь</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-plan" onclick="plan_report()"><i class="fa fa-calculator"></i> План</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-payment" onclick="payment_report()"><i class="fa fa-university"></i> Платежи</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-bonus" onclick="bonus_report()"><i class="fa fa-gift"></i> Бонусы</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-graphics" onclick="graphics_report()"><i class="fa fa-bar-chart"></i> Графики</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-advertising" onclick="report_advertising()"><i class="fa fa-hacker-news"></i> Реклама</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-cabinet-object" onclick="cabinet_object_report()"><i class="fa fa-home"></i> ЛК санатория</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-history" onclick="history_report()";><i class="fa fa-clock-o"></i> История</button></div></div><div id="data" style="margin-top: 10px"></div>';
+	else if(id_rights > 2)
+		html = '<div class="btn-group"><button type="button" class="btn btn-default btn-plan" onclick="plan_report()"><i class="fa fa-calculator"></i> План</button></div><div id="data" style="margin-top: 10px"></div>';
 	else {
 		html = '<div class="btn-group btn-group-justified head-menu-report"><div class="btn-group"><button type="button" class="btn btn-default btn-general" onclick="general_report()"><i class="fa fa-tasks"></i> Общий</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-graphics" onclick="graphics_report()"><i class="fa fa-bar-chart"></i> Графики</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-advertising" onclick="report_advertising()"><i class="fa fa-hacker-news"></i> Реклама</button></div></div><div id="data" style="margin-top: 10px"></div>';
 	}
 	$('#body').html(html);
-	general_report();
+
+	if(id_rights == 3)
+		plan_report();
+	else general_report();
 }
 
 function general_report(){

@@ -868,6 +868,7 @@ function filter_payment_month($connect){
 }
 
 function plan_report($connect){
+    global $id_rights, $session_login;
 ?>
 <div class="form-horizontal panel panel-default">
 	<div class="panel-body">
