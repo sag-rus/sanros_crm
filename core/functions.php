@@ -278,7 +278,7 @@ function get_status_array($connect, $table){
 	return $array;
 }
 
-function get_managers($connect, $type = "", $select = "", $id_rights = NULL, $session_login = NULL){
+function get_managers($connect, $type = "", $select = "", $id_rights = NULL, $session_login = NULL, $noAccessCheck = FALSE){
 	$html = "<select class='form-control' id='all_manager'>";
 	if($type == "filter")
 		$html.= "<option value='' SELECTED>Не выбран</option>";
@@ -289,7 +289,7 @@ function get_managers($connect, $type = "", $select = "", $id_rights = NULL, $se
 	    $user = NULL;
 
 
-	if(!is_null($id_rights) && ($id_rights > 5 || ($user && $user['class'] != 1)))
+	if($noAccessCheck || (!is_null($id_rights) && ($id_rights > 5 || ($user && $user['class'] != 1))))
 	    $data = $connect->getAll("SELECT name, id FROM users WHERE dostup=1 AND class=1");
 	elseif(!is_null($session_login))
         $data = $connect->getAll("SELECT name, id FROM users WHERE dostup=1 AND class=1 AND id = ?i",$session_login);

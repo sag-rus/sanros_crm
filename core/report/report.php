@@ -1,6 +1,7 @@
 <?php
 
 function show_payment_report_menu(){
+    global $id_rights, $session_login;
 	ob_start();
 ?>
 <div class="btn-group small-menu-report">

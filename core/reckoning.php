@@ -1450,7 +1450,7 @@ function get_manager_change($connect){
 					<div class="form-group form-group-margin">
 						<label class="col-sm-4 control-label">Менеджер</label>
 						<div class="col-sm-8">
-							<?php echo get_managers($connect,"","",$id_rights,$session_login); ?>
+							<?php echo get_managers($connect,"","",$id_rights,$session_login,true); ?>
 						</div>
 					</div>
 				</div>
