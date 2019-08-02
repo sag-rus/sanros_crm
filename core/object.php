@@ -13,7 +13,7 @@ function select_country_admin($connect){
 				<input type="text" class="form-control" id="object" onkeyup="find_klient(event, 'object', 'object', 'use_object')" />
 			</div>
 			<div class="col-sm-2">
-				<button class="btn btn-success btn-lt" onclick="select_object_admin()">Выбрать <i class="fa fa-angle-double-right"></i></button>
+				<button class="btn btn-success btn-lt" onclick="select_object_admin(true)">Выбрать <i class="fa fa-angle-double-right"></i></button>
 			</div>
 		</div>
 		<div class="form-group">
@@ -88,7 +88,11 @@ function select_object_admin($connect){
 	$region = $_POST["region"];
 	$direction = $_POST["direction"];
 	$type = $_POST["type"];
-	if($direction AND (!$region OR $type == "region"))
+	$noCheckLocation = isset($_POST['no_check_location'])?(bool)$_POST['no_check_location']:false;
+	if($noCheckLocation || (!$direction && !$region)) {
+      $html = get_select_table($connect, "object", "ORDER BY name", $id, "object-admin", "", "onchange='select_menu_object()'");
+    }
+	elseif($direction AND (!$region OR $type == "region"))
 		$html = get_select_table($connect, "object", "direction=".$direction." ORDER BY name", $id, "object-admin", "", "onchange='select_menu_object()'");
 	else
 		$html = get_select_table($connect, "object", "id_reg=".$region." ORDER BY name", $id, "object-admin", "", "onchange='select_menu_object()'");
@@ -297,12 +301,15 @@ function save_new_object_region($connect){
 function select_menu_object($connect){
 	global $directory;
 	$id = $_POST["id"];
+	$noCheckLocation = isset($_POST['no_check_location'])?(bool)$_POST['no_check_location']:FALSE;
 	$region = $connect->getOne("SELECT id_reg FROM object WHERE id=?i", $id);
-	if(!$region)
-		return '<div class="alert alert-danger" style="margin-bottom: 10px"><i class="fa fa-info-circle"></i> Объектов не найдено</div>';
+	if(!$noCheckLocation) {
+	    if(!$region)
+	        return '<div class="alert alert-danger" style="margin-bottom: 10px"><i class="fa fa-info-circle"></i> Объектов не найдено</div>';
+    }
 	if(!file_exists($directory."/temp/region/".$region.".jpg")){
 ?>
-	<div class="alert alert-danger" style="margin-bottom: 10px"><i class="fa fa-info-circle"></i> Фото региона не добавлена</div>
+	<div class="alert alert-danger" style="margin-bottom: 10px"><i class="fa fa-info-circle"></i> Фото региона не добавлено</div>
 	<?php }
 ?>
 	<div class="alert alert-info" style="margin-bottom: 10px"><a href="document.php?func=promo_document&region=<?php echo $region; ?>" target="_blank" class="text-info"><i class="fa fa-star"></i> Акции региона</a></div>
@@ -408,7 +415,7 @@ function select_object_about($connect){
 			<div class="form-group form-group-margin">
 				<label class="col-sm-3 control-label-element">Услуги объекта</label>
 				<div class="col-sm-9">
-				<?php if(count($services)){ ?>
+				<?php if(is_array($services) && count($services)){ ?>
 					<div class="text-success"><i class="fa fa-check"></i> указаны</div>
 				<?php }else{ ?>
 					<div class="text-danger"><i class="fa fa-times"></i> не указаны</div>

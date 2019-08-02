@@ -201,10 +201,14 @@ function save_new_object_region(region){
 	}
 }
 
-function select_menu_object(object){
+function select_menu_object(object,noCheckLocation){
 	if(!object)
 		var object = $('#object-admin').val();
-	var str = 'func=select_menu_object&id=' + object;
+
+	if(typeof noCheckLocation === 'undefined')
+		noCheckLocation = false;
+
+	var str = 'func=select_menu_object&id=' + object+'&no_check_location='+(noCheckLocation*1);
 	$.ajax({
 		url: 'mysql.php',
 		type: 'POST',
@@ -1465,10 +1469,13 @@ function add_image_direction(type){
 	}
 }
 
-function select_object_admin(){
+function select_object_admin(noCheckLocation){
+	if(typeof noCheckLocation === 'undefined')
+		noCheckLocation = false;
 	var object = $('#object_name .id-object').attr('name');
-	if(object)
-		select_menu_object(object);
+	if(object) {
+		select_menu_object(object, noCheckLocation);
+	}
 }
 
 function create_uniq_link_object(id){
