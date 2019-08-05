@@ -122,7 +122,7 @@ function show_filter_manager($connect){
 				<div class="form-group">
 					<label class="col-sm-3 control-label">Менеджер</label>
 					<div class="col-sm-3">
-						<?php echo get_managers($connect, "filter","",$id_rights,$session_login); ?>
+						<?php echo get_managers($connect, "filter","",$id_rights,$session_login,true); ?>
 					</div>
 				</div>
 				<div class="form-group">
