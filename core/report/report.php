@@ -21,21 +21,22 @@ function show_payment_report_menu(){
 	return $html;
 }
 
-function general_payment_report(){
+function general_payment_report($connect){
+    global $session_login, $id_rights;
 	ob_start();
 ?>
 <div class="form-horizontal panel panel-default">
 	<div class="panel-body">
 		<div class="form-group">
 			<label class="col-sm-2 control-label">Дата оплаты</label>
-			<div class="col-sm-3">
+			<div class="col-sm-2">
 				<input type="text" class="form-control datepicker" id="date_opl" />
 			</div>
-			<div class="col-sm-3">
+			<div class="col-sm-2">
 				<input type="text" class="form-control datepicker" id="date_opl2" />
 			</div>
 			<label class="col-sm-2 control-label">Способ оплаты</label>
-			<div class="col-sm-2">
+			<div class="col-sm-4">
 				<select class="form-control" id="method_opl">
 					<option value="">Не выбран</option>
 					<option value="2">Наличный</option>
@@ -71,6 +72,14 @@ function general_payment_report(){
 			</div>
 		</div>
         <div class="form-group">
+            <label class="col-sm-2 control-label<?php if($id_rights < 6) { ?> hidden<?php } ?>">Менеджер</label>
+            <div class="col-sm-4<?php if($id_rights < 6) { ?> hidden<?php } ?>">
+              <?php if($id_rights > 5) { ?>
+                <?php echo get_managers($connect, "filter","",$id_rights,$session_login); ?>
+              <?php } else { ?>
+                <?php echo get_managers($connect, "","",$id_rights,$session_login); ?>
+              <?php } ?>
+            </div>
             <div class="col-sm-2">
                 <input type="checkbox" id="show-holdings" class="pull-right">
             </div>
@@ -160,6 +169,10 @@ function filter_payment($connect){
 	$date_opl = $_POST["date_opl"];
 	$date_opl2 = $_POST["date_opl2"];
 	$method_opl = (int)$_POST["method_opl"];
+	$manager_id = isset($_POST['manager_id'])?(int)$_POST['manager_id']:0;
+	if($manager_id < 0)
+	    $manager_id = 0;
+
 	$type_opl = $_POST["type_opl"];
 	$type_pay_tbl = $_POST["type_pay"];
 	$showHoldings = (int)$_POST["show_holdings"];
@@ -274,10 +287,21 @@ function filter_payment($connect){
 	else
         $zapros_for_mysql .= " `payment`.`status` != 0 AND `payment`.`pay_method` != 3 AND `payment`.`class` != 'cert'";
 
-	$zapros_for_mysql_cond = $zapros_for_mysql;
-	$zapros_for_mysql = "SELECT `payment`.`id`, `payment`.`processed`, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, `users`.`office`, `payment`.`status` AS payment_status, `payment`.`type`, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san FROM payment LEFT JOIN reckoning ON reckoning.id=payment.schet LEFT JOIN users ON `reckoning`.`id_user`=`users`.`id` WHERE ".$zapros_for_mysql." ORDER BY payment.id";
+	if($manager_id) {
+      if(mb_strlen($zapros_for_mysql) > 0)
+        $zapros_for_mysql .= " AND `users`.`id` = ".$manager_id;
+      else
+        $zapros_for_mysql .= " `users`.`id` = ".$manager_id;
+    }
 
-	$data = $connect->getAll($zapros_for_mysql);
+	$zapros_for_mysql_cond = $zapros_for_mysql;
+	if($manager_id)
+	    $zapros_for_mysql = "SELECT `payment`.`id`, `payment`.`processed`, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, `users`.`office`, `payment`.`status` AS payment_status, `payment`.`type`, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san FROM payment INNER JOIN reckoning ON reckoning.id=payment.schet INNER JOIN users ON `reckoning`.`id_user`=`users`.`id` WHERE ".$zapros_for_mysql." ORDER BY payment.id";
+	else
+        $zapros_for_mysql = "SELECT `payment`.`id`, `payment`.`processed`, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, `users`.`office`, `payment`.`status` AS payment_status, `payment`.`type`, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san FROM payment LEFT JOIN reckoning ON reckoning.id=payment.schet LEFT JOIN users ON `reckoning`.`id_user`=`users`.`id` WHERE ".$zapros_for_mysql." ORDER BY payment.id";
+
+
+  $data = $connect->getAll($zapros_for_mysql);
 
 	$pay_groups = [];
 	$all_reward = 0;

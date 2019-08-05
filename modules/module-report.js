@@ -350,10 +350,11 @@ function filter_payment(){
 	var date_opl = $('#date_opl').attr('date');
 	var date_opl2 = $('#date_opl2').attr('date');
 	var showHoldings = parseInt($('#show-holdings').prop('checked')*1);
+	var managerId = parseInt($('#all_manager').val(),10);
 	if(!date_opl)
 		show_warning('#filter_res', 'Введите дату');
 	else{
-		var str = 'func=filter_payment&date_opl=' + date_opl + '&date_opl2=' + date_opl2 + '&method_opl=' + method_opl + '&type_opl=' + type_opl + '&type_pay=' + type_pay+'&show_holdings='+showHoldings+"&card_payment_types="+card_payment_types;
+		var str = 'func=filter_payment&date_opl=' + date_opl + '&date_opl2=' + date_opl2 + '&method_opl=' + method_opl + '&type_opl=' + type_opl + '&type_pay=' + type_pay+'&show_holdings='+showHoldings+"&card_payment_types="+card_payment_types+'&manager_id='+managerId;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
