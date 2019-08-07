@@ -139,12 +139,12 @@ function show_sites_contents_list($connect) {
   if($site_id) {
     $site = $connect->getRow("SELECT `id`, `name`, `domain` FROM `sites` WHERE `id`=?i",$site_id);
     if($site)
-        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i ORDER BY id ASC", $site_id);
+        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `status` <> 2 ORDER BY id ASC", $site_id);
     else
         $sites_contents = [];
   }
   else
-      $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` ORDER BY id ASC");
+      $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 ORDER BY id ASC");
 
   ob_start();
   ?>
