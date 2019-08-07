@@ -184,7 +184,7 @@ function show_sites_contents_list($connect) {
                         </td>
                         <td>
                             <?php if($id_rights > 5) { ?>
-                                <button class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
+                                <button class="btn btn-default btn-sm" onclick="remove_sites_content(<?=$sites_content['id'];?>);"><i class="fa fa-trash-o"></i></button>
                             <?php } ?>
                             <button class="btn btn-default btn-sm" onclick="edit_sites_content(<?=$sites_content['id'];?>)"><i class="fa fa-pencil"></i></button>
                         </td>
@@ -856,6 +856,43 @@ function remove_sites_phone($connect) {
   return ob_get_clean();
 }
 
+function remove_sites_content($connect) {
+  $id = isset($_POST['id'])?(int)$_POST['id']:0;
+  $content = $connect->getRow("SELECT `id`, `site_id` FROM `sites_contents` WHERE `id` =?i AND `status` <> 2",$id);
+  ob_start();
+  ?>
+    <div class="modal fade remove-sites-phone">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+                    <h4 class="modal-title">Удаление материала</h4>
+                </div>
+                <div class="modal-body form-horizontal site-name">
+                  <?php if($content) { ?>
+                      <input type="hidden" name="id" value="<?=$id;?>">
+                      <input type="hidden" name="site_id" value="<?=$content['site_id'];?>">
+                      Вы уверены, что хотите удалить этот материал?
+                  <?php } else { ?>
+                      Некорректный ID
+                  <?php } ?>
+                </div>
+                <div class="modal-loader"></div>
+                <div class="modal-footer">
+                  <?php if($content) { ?>
+                      <button class="btn btn-success btn-sm btn-remove-sites-content-success" onclick="remove_sites_content_success(<?=$id;?>)" id="btn-remove-sites-content-success"><i class="fa fa-check-circle"></i> Удалить</button>
+                      <button class="btn btn-danger btn-sm" data-dismiss="modal" aria-label="Close">Нет</button>
+                  <?php } else { ?>
+                      <button class="btn btn-danger btn-sm" data-dismiss="modal" aria-label="Close">Закрыть</button>
+                  <?php } ?>
+                </div>
+            </div>
+        </div>
+    </div>
+  <?php
+  return ob_get_clean();
+}
+
 
 function remove_sites_address_success($connect) {
   $respAr = [
@@ -898,6 +935,21 @@ function remove_sites_phone_success($connect) {
   $phone = $connect->getRow("SELECT `id` FROM `app_models_site_phone` WHERE `id` =?i", $id);
   if($phone) {
     $connect->query("DELETE FROM `app_models_site_phone` WHERE `id` =?i",$id);
+    $respAr['success'] = 1;
+  }
+  return json_encode($respAr);
+}
+
+function remove_sites_content_success($connect) {
+  $respAr = [
+    'msg' => '',
+    'title' => '',
+    'success' => 0
+  ];
+  $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
+  $content = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `id` =?i", $id);
+  if($content) {
+    $connect->query("UPDATE `sites_contents` SET `status` = 2 WHERE `id` =?i",$id);
     $respAr['success'] = 1;
   }
   return json_encode($respAr);
@@ -2035,9 +2087,9 @@ function set_sites_content($connect) {
       if($title && $path) {
 
         if($content_id)
-          $oldPath = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `path`=?s AND `id` <> ?i AND `site_id` = ?i",$path,$content_id,$site_id);
+          $oldPath = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `path`=?s AND `id` <> ?i AND `site_id` = ?i AND `status` <> 2",$path,$content_id,$site_id);
         else
-          $oldPath = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `path`=?s AND `site_id` = ?i",$path,$site_id);
+          $oldPath = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `path`=?s AND `site_id` = ?i AND `status` <> 2",$path,$site_id);
 
         if($oldPath) {
           $respAr['msg'] = "Указанный адрес уже используется";
