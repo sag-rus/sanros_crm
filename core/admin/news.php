@@ -2131,6 +2131,8 @@ function set_sites_content($connect) {
               $respAr['success'] = 1;
               $respAr['msg'] = "Контент успешно обновлен";
 
+              $content = $connect->getRow("SELECT `id`,`path`, `site_id` FROM `sites_contents` WHERE `id` = ?i AND `type` != 'redirect'",$content_id);
+
               $entity = [
                   'id' => $content_id,
                   'type' => 'content'
@@ -2178,6 +2180,9 @@ function set_sites_content($connect) {
 
 
               $connect->query("UPDATE `sites_contents` SET `title`=?s, `title_h1`=?s, `title_h2` = ?s, `path`=?s, `redirect_path` = ?s, `description`=?s, `body`=?s, `body2` =?s, `summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `sort` = ?i, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i, `form_action` = ?s, `map_code` = ?s, `landing_info` = ?s, `breadcrumb_title` = ?s, `photogallery_title` = ?s, `photogallery_orientation` = ?s, `direction_id` = ?i, `region_id` = ?i, `regional_direction_id` = ?i WHERE `id`=?i",$title, $title_h1, $title_h2, $path, $redirect_path, $description, $body, $body2,$summary,$keywords,$type,$timestamp,$published,$status,0,$weight, $sort,$module_object_id,$module_block,$second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $direction_id, $region_id, $regional_direction_id, $content_id);
+              if($content && $content['path'] !== $path) {
+                  $connect->query("INSERT INTO `sites_contents` (`title`, `title_h1`, `title_h2`, `path`, `redirect_path`, `description`, `body`, `body2`, `summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `map_code`, `landing_info`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation`, `direction_id`, `region_id`, `regional_direction_id`) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?i, ?i, ?s, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i)","Редирект", "", "", $content['path'], $path, "","","","","",'redirect',$timestamp,$published,1,0,$content['site_id'],$timestamp,0.9, 0,0, '', 0, '','', '', '', '', 'album', 0, 0, 0);
+              }
             }
             else {
               $respAr['success'] = 1;
