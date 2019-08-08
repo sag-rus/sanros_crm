@@ -1717,13 +1717,6 @@ function add_new_sites_content(site_id) {
 												'</div>' +
 											'</div>' +
 			 								'<div class="form-group">' +
-												'<label class="col-sm-2 control-label">Адрес страницы</label>' +
-												'<div class="col-sm-10">' +
-													'<input type="text" class="form-control" name="path" maxlength="512">' +
-													'<div class="input-message-block" data-for="path"></div>'+
-												'</div>' +
-											'</div>' +
-											'<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Тип</label>' +
 												'<div class="col-sm-10">' +
 													'<select class="form-control" name="type">' +
@@ -1738,8 +1731,23 @@ function add_new_sites_content(site_id) {
 			 											'<option value="advice">Советы эксперта</option>' +
 			 											'<option value="blog_post">Публикация в блоге</option>' +
 			 											'<option value="aggregator">Агрегатор</option>' +
+			 											'<option value="redirect">Редирект</option>' +
 			 										'</select>'+
 													'<div class="input-message-block" data-for="type"></div>'+
+												'</div>' +
+											'</div>' +
+			 								'<div class="form-group">' +
+												'<label class="col-sm-2 control-label">Адрес страницы</label>' +
+												'<div class="col-sm-10">' +
+													'<input type="text" class="form-control" name="path" maxlength="512">' +
+													'<div class="input-message-block" data-for="path"></div>'+
+												'</div>' +
+											'</div>' +
+			 								'<div class="form-group hidden">' +
+												'<label class="col-sm-2 control-label">Адрес редиректа</label>' +
+												'<div class="col-sm-10">' +
+													'<input type="text" class="form-control" name="redirect_path" maxlength="512">' +
+													'<div class="input-message-block" data-for="redirect_path"></div>'+
 												'</div>' +
 											'</div>' +
 											 '<div class="form-group with-bottom-margin hidden">' +
@@ -2171,6 +2179,11 @@ function set_sites_content() {
   var path = $path.val().trim();
   $pathMsg.html('');
 
+	var $redirect_path = $modalBody.find('input[name="redirect_path"]');
+	var $redirect_pathMsg = $redirect_path.parent().find('.input-message-block');
+	var redirect_path = $redirect_path.val().trim();
+	$redirect_pathMsg.html('');
+
   var $form_action = $modalBody.find('input[name="form_action"]');
   var $form_actionMsg = $form_action.parent().find('.input-message-block');
   var form_action = $form_action.val().trim();
@@ -2345,6 +2358,17 @@ function set_sites_content() {
 		}
   }
 
+
+  if(type === 'redirect') {
+  	if(redirect_path.length === 0) {
+			$redirect_pathMsg.html("Это обязательное поле");
+			if(!error) {
+				$redirect_path.focus();
+				error = true;
+			}
+		}
+	}
+
 	if(type === 'module') {
     if(module_object_id.length === 0) {
       $module_object_idMsg.html("Это обязательное поле");
@@ -2468,6 +2492,7 @@ function set_sites_content() {
 				keywords: keywords,
         published: published,
 				path: path,
+				redirect_path: redirect_path,
         form_action: form_action,
 				summary: summary,
 				status: status,
@@ -3122,6 +3147,34 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
   var $form_action = $('.sites-content-modal *[name="form_action"]');
   var $form_actionFormG = $form_action.closest('.form-group');
 
+	var $breadcrumb_title = $('.sites-content-modal *[name="breadcrumb_title"]');
+	var $breadcrumb_titleFormG = $breadcrumb_title.closest('.form-group');
+
+	var $description = $('.sites-content-modal *[name="description"]');
+	var $descriptionFormG = $description.closest('.form-group');
+
+	var $summary = $('.sites-content-modal *[name="summary"]');
+	var $summaryFormG = $summary.closest('.form-group');
+
+
+	var $keywords = $('.sites-content-modal *[name="keywords"]');
+	var $keywordsFormG = $keywords.closest('.form-group');
+
+	var $map_code = $('.sites-content-modal *[name="map_code"]');
+	var $map_codeFormG = $map_code.closest('.form-group');
+
+	var $weight = $('.sites-content-modal *[name="weight"]');
+	var $weightFormG = $weight.closest('.form-group');
+
+	var $sort = $('.sites-content-modal *[name="sort"]');
+	var $sortFormG = $sort.closest('.form-group');
+
+	var $title_h1 = $('.sites-content-modal *[name="title_h1"]');
+	var $title_h1FormG = $title_h1.closest('.form-group');
+
+	var $redirect_path = $('.sites-content-modal *[name="redirect_path"]');
+	var $redirect_pathFormG = $redirect_path.closest('.form-group');
+
   var $title_h2 = $('.sites-content-modal *[name="title_h2"]');
   var $title_h2FormG = $title_h2.closest('.form-group');
 
@@ -3137,6 +3190,9 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
   var $photogallery = $('.sites-content-modal *[name="photogallery"]');
   var $photogalleryFormG = $photogallery.closest('.form-group');
 
+	var $image = $('.sites-content-modal *[name="image"]');
+	var $imageFormG = $image.closest('.form-group');
+
 	var $photogallery_title = $('.sites-content-modal *[name="photogallery_title"]');
 	var $photogallery_titleFormG = $photogallery_title.closest('.form-group');
 
@@ -3149,6 +3205,10 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 	var $aggregate_types = $('.sites-content-modal *[name="aggregate_types"]');
 	var $aggregate_typesFormG = $aggregate_types.closest('.form-group');
 
+
+	var $body = $('.sites-content-modal *[name="body"]');
+	var $bodyFormG = $body.closest('.form-group');
+
 	var $body2 = $('.sites-content-modal *[name="body2"]');
 	var $body2FormG = $body2.closest('.form-group');
 
@@ -3157,6 +3217,33 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 
 	var $region_id = $('.sites-content-modal *[name="region_id"]');
 	var $region_idFormG = $region_id.closest('.form-group');
+
+	if(type === 'redirect') {
+		$breadcrumb_titleFormG.addClass('hidden');
+		$title_h1FormG.addClass('hidden');
+		$imageFormG.addClass('hidden');
+		$descriptionFormG.addClass('hidden');
+		$summaryFormG.addClass('hidden');
+		$keywordsFormG.addClass('hidden');
+		$bodyFormG.addClass('hidden');
+		$map_codeFormG.addClass('hidden');
+		$weightFormG.addClass('hidden');
+		$sortFormG.addClass('hidden');
+		$redirect_pathFormG.removeClass('hidden');
+	}
+	else {
+		$breadcrumb_titleFormG.removeClass('hidden');
+		$title_h1FormG.removeClass('hidden');
+		$imageFormG.removeClass('hidden');
+		$descriptionFormG.removeClass('hidden');
+		$summaryFormG.removeClass('hidden');
+		$keywordsFormG.removeClass('hidden');
+		$bodyFormG.removeClass('hidden');
+		$map_code.removeClass('hidden');
+		$weightFormG.removeClass('hidden');
+		$sortFormG.removeClass('hidden');
+		$redirect_pathFormG.addClass('hidden');
+	}
 
 	if(type === 'aggregator')  {
 		$aggregate_typesFormG.removeClass('hidden');

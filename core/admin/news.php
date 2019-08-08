@@ -949,7 +949,7 @@ function remove_sites_content_success($connect) {
   $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
   $content = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `id` =?i", $id);
   if($content) {
-    $connect->query("UPDATE `sites_contents` SET `status` = 2 WHERE `id` =?i",$id);
+    $connect->query("UPDATE `sites_contents` SET `status` = 2, `synchronized` = 0 WHERE `id` =?i",$id);
     $respAr['success'] = 1;
   }
   return json_encode($respAr);
@@ -1237,7 +1237,7 @@ function edit_sites_content($connect) {
   $content_id = isset($_POST['id'])?(int)$_POST['id']:0;
   $content = NULL;
   if($content_id)
-      $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h1`, `title_h2`, `summary`, `body`, `body2`, `path`, `description`, `keywords`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `photogallery_title`, `photogallery_orientation`, `breadcrumb_title`, `direction_id`, `region_id`, `regional_direction_id` FROM `sites_contents` WHERE `id` =?i",$content_id);
+      $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h1`, `title_h2`, `summary`, `body`, `body2`, `path`, `redirect_path`, `description`, `keywords`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `photogallery_title`, `photogallery_orientation`, `breadcrumb_title`, `direction_id`, `region_id`, `regional_direction_id` FROM `sites_contents` WHERE `id` =?i",$content_id);
       $entity = $content;
       $entity['type'] = 'content';
   ob_start();
@@ -1274,25 +1274,36 @@ function edit_sites_content($connect) {
                               <div class="input-message-block" data-for="title"></div>
                           </div>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group<?php if(in_array($content['type'],['redirect'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Заголовок к крошкам</label>
                           <div class="col-sm-10">
                               <input type="text" class="form-control" name="breadcrumb_title" maxlength="255" value="<?=htmlspecialchars($content['breadcrumb_title']);?>">
                               <div class="input-message-block" data-for="breadcrumb_title"></div>
                           </div>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group<?php if(in_array($content['type'],['redirect'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Заголовок h1</label>
                           <div class="col-sm-10">
                               <input type="text" class="form-control" name="title_h1" maxlength="255" value="<?=htmlspecialchars($content['title_h1']);?>">
                               <div class="input-message-block" data-for="title_h1"></div>
                           </div>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group<?php if(in_array($content['type'],['redirect'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Основная картинка</label>
                           <div class="col-sm-10">
                               <input type="file" class="form-control" name="image" value="<?=htmlspecialchars(json_encode((object)bounds_to_files($connect,load_bounds($connect,$entity,'image'))));?>">
                               <div class="input-message-block" data-for="image"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-2 control-label">Тип</label>
+                          <div class="col-sm-10">
+                              <select class="form-control" name="type">
+                                <?php foreach ($contentTypesRows as $contentTypesRow) { ?>
+                                    <option value="<?=$contentTypesRow['machine_name'];?>"<?php if($content['type'] === $contentTypesRow['machine_name']) {?> selected<?php } ?>><?=$contentTypesRow['name'];?></option>
+                                <?php } ?>
+                              </select>
+                              <div class="input-message-block" data-for="type"></div>
                           </div>
                       </div>
                       <div class="form-group">
@@ -1302,15 +1313,11 @@ function edit_sites_content($connect) {
                               <div class="input-message-block" data-for="path"></div>
                           </div>
                       </div>
-                      <div class="form-group">
-                          <label class="col-sm-2 control-label">Тип</label>
+                      <div class="form-group<?php if(!in_array($content['type'],['redirect'])) { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Адрес редиректа</label>
                           <div class="col-sm-10">
-                              <select class="form-control" name="type">
-                                  <?php foreach ($contentTypesRows as $contentTypesRow) { ?>
-                                      <option value="<?=$contentTypesRow['machine_name'];?>"<?php if($content['type'] === $contentTypesRow['machine_name']) {?> selected<?php } ?>><?=$contentTypesRow['name'];?></option>
-                                  <?php } ?>
-                              </select>
-                              <div class="input-message-block" data-for="type"></div>
+                              <input type="text" class="form-control" name="redirect_path" value="<?=htmlspecialchars($content['redirect_path']);?>" maxlength="512">
+                              <div class="input-message-block" data-for="redirect_path"></div>
                           </div>
                       </div>
                       <div class="form-group with-bottom-margin<?php if(!in_array($content['type'],['aggregator'])) { ?> hidden<?php } ?>">
@@ -1415,25 +1422,25 @@ function edit_sites_content($connect) {
                               <input type="checkbox" name="second_bg" class="form-control"<?php if($content['second_bg'] == 1) {?> checked<?php } ?>>
                           </div>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group<?php if(in_array($content['type'],['redirect'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Мета-описание</label>
                           <div class="col-sm-10">
                               <textarea class="form-control" name="description"><?=$content['description'];?></textarea>
                           </div>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group<?php if(in_array($content['type'],['redirect'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Ключевые слова (через запятую)</label>
                           <div class="col-sm-10">
                               <textarea class="form-control" name="keywords"><?=htmlspecialchars($content['keywords']);?></textarea>
                           </div>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group<?php if(in_array($content['type'],['redirect'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Анонс</label>
                           <div class="col-sm-10">
                               <textarea class="form-control" name="summary"><?=htmlspecialchars($content['summary']);?></textarea>
                           </div>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group<?php if(in_array($content['type'],['redirect'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Содержимое</label>
                           <div class="col-sm-10">
                               <textarea class="form-control resizable-textarea" name="body" id="sites_content_body"><?=htmlspecialchars($content['body']);?></textarea>
@@ -1473,7 +1480,7 @@ function edit_sites_content($connect) {
                               </select>
                           </div>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group<?php if(in_array($content['type'],['redirect'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Код карты</label>
                           <div class="col-sm-10">
                               <textarea class="form-control" name="map_code"><?=htmlspecialchars($content['map_code']);?></textarea>
@@ -1491,14 +1498,14 @@ function edit_sites_content($connect) {
                               <input type="datetime-local" name="published" class="form-control" value="<?=gmdate("Y-m-d\TH:i",$content['published']+3600*3);?>">
                           </div>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group<?php if(in_array($content['type'],['redirect'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Вес материала (для Sitemap)</label>
                           <div class="col-sm-10">
                               <input type="number" name="weight" class="form-control" value="<?=$content['weight'];?>">
                               <div class="input-message-block" data-for="weight"></div>
                           </div>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group<?php if(in_array($content['type'],['redirect'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Вес материала (сортировка)</label>
                           <div class="col-sm-10">
                               <input type="number" name="sort" class="form-control" value="<?=$content['sort'];?>">
@@ -2009,7 +2016,8 @@ function set_sites_content($connect) {
   $photogallery_title = isset($_POST['photogallery_title'])?trim($_POST['photogallery_title']):"";
   $photogallery_orientation = isset($_POST['photogallery_orientation'])?trim($_POST['photogallery_orientation']):"album";
   $title_h2 = isset($_POST['title_h2'])?trim($_POST['title_h2']):"";
-  $path = isset($_POST['path'])?trim($_POST['path']):"";
+  $path = isset($_POST['path'])?explode("?",trim($_POST['path']))[0]:"";
+  $redirect_path = isset($_POST['redirect_path'])?explode("?",trim($_POST['redirect_path']))[0]:"";
   $form_action = isset($_POST['form_action'])?trim($_POST['form_action']):"";
   $description = isset($_POST['description'])?trim($_POST['description']):"";
   $body = isset($_POST['body'])?$_POST['body']:"";
@@ -2048,8 +2056,30 @@ function set_sites_content($connect) {
   $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
   $type = isset($_POST['type'])?trim($_POST['type']):"page";
 
-  $typesAr = ['page','news', 'module', 'landing', "photogallery", "settings", 'article', 'info', 'aggregator', 'advice', 'blog_post'];
+  $typesAr = ['page','news', 'module', 'landing', "photogallery", "settings", 'article', 'info', 'aggregator', 'advice', 'blog_post', 'redirect'];
   $photogallery_orientations = ['album', 'book'];
+
+
+  if(in_array($type,['redirect'])) {
+      $breadcrumb_title = "";
+      $body = "";
+      $description = "";
+      $summary = "";
+      $map_code = "";
+      $keywords = "";
+      $body2 = "";
+      $title_h2 = "";
+      $title_h1 = "";
+
+      $contentRedirect = $connect->getRow("SELECT `redirect_path` FROM `sites_contents` WHERE `status` <> 2 AND `type` = 'redirect' AND `path` = ?s",$redirect_path);
+      if($contentRedirect) {
+          $redirect_path = $contentRedirect['redirect_path'];
+      }
+
+  }
+  else {
+      $redirect_path = "";
+  }
 
   if(!in_array($type,['landing', 'settings', 'news', 'article', 'info', 'advice', 'blog_post'])) {
       $body2 = "";
@@ -2106,7 +2136,10 @@ function set_sites_content($connect) {
                   'type' => 'content'
               ];
 
-              $boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);
+              $boundsArrayImage = [];
+
+              if(!in_array($type,['redirect']))
+                  $boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);
 
 
               $boundsArrayPhotogallery = [];
@@ -2144,12 +2177,12 @@ function set_sites_content($connect) {
               set_bounds($connect,$boundsArrayAggregateTypes,'aggregate_types');
 
 
-              $connect->query("UPDATE `sites_contents` SET `title`=?s, `title_h1`=?s, `title_h2` = ?s, `path`=?s, `description`=?s, `body`=?s, `body2` =?s, `summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `sort` = ?i, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i, `form_action` = ?s, `map_code` = ?s, `landing_info` = ?s, `breadcrumb_title` = ?s, `photogallery_title` = ?s, `photogallery_orientation` = ?s, `direction_id` = ?i, `region_id` = ?i, `regional_direction_id` = ?i WHERE `id`=?i",$title, $title_h1, $title_h2, $path,$description,$body, $body2,$summary,$keywords,$type,$timestamp,$published,$status,0,$weight, $sort,$module_object_id,$module_block,$second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $direction_id, $region_id, $regional_direction_id, $content_id);
+              $connect->query("UPDATE `sites_contents` SET `title`=?s, `title_h1`=?s, `title_h2` = ?s, `path`=?s, `redirect_path` = ?s, `description`=?s, `body`=?s, `body2` =?s, `summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `sort` = ?i, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i, `form_action` = ?s, `map_code` = ?s, `landing_info` = ?s, `breadcrumb_title` = ?s, `photogallery_title` = ?s, `photogallery_orientation` = ?s, `direction_id` = ?i, `region_id` = ?i, `regional_direction_id` = ?i WHERE `id`=?i",$title, $title_h1, $title_h2, $path, $redirect_path, $description, $body, $body2,$summary,$keywords,$type,$timestamp,$published,$status,0,$weight, $sort,$module_object_id,$module_block,$second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $direction_id, $region_id, $regional_direction_id, $content_id);
             }
             else {
               $respAr['success'] = 1;
               $respAr['msg'] = "Контент успешно добавлен";
-              $connect->query("INSERT INTO `sites_contents` (`title`, `title_h1`, `title_h2`, `path`, `description`, `body`, `body2`, `summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `map_code`, `landing_info`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation`, `direction_id`, `region_id`, `regional_direction_id`) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?i, ?i, ?s, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i)",$title, $title_h1, $title_h2, $path,$description,$body,$body2,$summary,$keywords,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight, $sort,$module_object_id, $module_block, $second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $direction_id, $region_id, $regional_direction_id);
+              $connect->query("INSERT INTO `sites_contents` (`title`, `title_h1`, `title_h2`, `path`, `redirect_path`, `description`, `body`, `body2`, `summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `map_code`, `landing_info`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation`, `direction_id`, `region_id`, `regional_direction_id`) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?i, ?i, ?s, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i)",$title, $title_h1, $title_h2, $path, $redirect_path, $description,$body,$body2,$summary,$keywords,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight, $sort,$module_object_id, $module_block, $second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $direction_id, $region_id, $regional_direction_id);
 
               $entity = [
                 'id' => $connect->insertId(),
@@ -2214,7 +2247,7 @@ function set_sites_content($connect) {
 }
 
 function sync_site_content($connect, $id):bool {
-    $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h1`, `title_h2`, `summary`, `body`, `body2`, `path`, `description`, `keywords`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation`, `direction_id`, `region_id`, `regional_direction_id` FROM `sites_contents` WHERE `id` =?i",$id);
+    $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h1`, `title_h2`, `summary`, `body`, `body2`, `path`, `redirect_path`, `description`, `keywords`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation`, `direction_id`, `region_id`, `regional_direction_id` FROM `sites_contents` WHERE `id` =?i",$id);
     if($content) {
         try {
           $client = new \GuzzleHttp\Client();
