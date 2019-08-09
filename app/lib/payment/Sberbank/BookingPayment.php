@@ -212,7 +212,7 @@ class BookingPayment extends Client {
         }
 
         if($answer['all_bonus_count'] > 1)
-          $answer["to-pay"] = ($answer["total"] - $answer["bonus"] - $answer["prepay"]-$dis)*$this->bankInfo['commission'];
+          $answer["to-pay"] = ($answer["total"] - $answer["bonus"] - $answer["prepay"]-$dis)*(1+$this->bankInfo['commission']/100);
       }
 
     }
