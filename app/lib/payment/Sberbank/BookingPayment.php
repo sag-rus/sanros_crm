@@ -380,7 +380,13 @@ class BookingPayment extends Client {
       $payment = $connect->getAll("SELECT sum FROM payment WHERE type=1 AND status != 0 AND schet=?i", $booking);
       foreach($payment as $pay)
         $prepay+= $pay["sum"];
+
+      $all_bonus_count = $connect->getOne("SELECT COUNT(*) FROM `bonus` WHERE `turist` = ?i AND `sum` > 0",$turist);
+
       $sum_to_pay = $sum - $bonus - $prepay-$dis;
+
+      if($all_bonus_count > 1)
+        $sum_to_pay *= (1+$this->bankInfo['commission']/100);
 
       if($type == "prepay"){
         $type_pay = 2;
