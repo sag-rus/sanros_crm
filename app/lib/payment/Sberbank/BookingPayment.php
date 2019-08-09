@@ -286,6 +286,7 @@ class BookingPayment extends Client {
 
       $answer["all_sum"] = add_null($sum["total"]);
       $answer["sum"] = add_null($sum["to-pay"]);
+      $answer["sum_no_commission"] = add_null($sum["to-pay-no-com"]);
       $answer["bonus"] = add_null($sum["bonus"]);
       $answer["prepay"] = add_null($sum["prepay"]);
       $answer['all_bonus_count'] = $sum['all_bonus_count'];
