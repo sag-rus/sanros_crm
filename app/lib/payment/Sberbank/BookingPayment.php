@@ -210,7 +210,9 @@ class BookingPayment extends Client {
         foreach($payment as $pay){
           $answer["prepay"]+= $pay["sum"];
         }
-        $answer["to-pay"] = $answer["total"] - $answer["bonus"] - $answer["prepay"]-$dis;
+
+        if($answer['all_bonus_count'] > 1)
+          $answer["to-pay"] = ($answer["total"] - $answer["bonus"] - $answer["prepay"]-$dis)*$this->bankInfo['commission'];
       }
 
     }
