@@ -197,6 +197,8 @@ class BookingPayment extends Client {
         }
 
         $answer['all_bonus_count'] = $connect->getOne("SELECT COUNT(*) FROM `bonus` WHERE `turist` = ?i AND `sum` > 0",$turist);
+        $answer['reckonings_count'] = $connect->getOne("SELECT COUNT(*) FROM `reckoning` WHERE `turist` = ?i AND `status` = 5", $turist);
+
         $answer["bonus"] = abs($connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND sum < 0", $booking));
 
         if($answer["bonus"] > 0){
@@ -214,7 +216,7 @@ class BookingPayment extends Client {
 
         $answer["to-pay-no-com"] = $answer["total"] - $answer["bonus"] - $answer["prepay"]-$dis;
 
-        if($answer['all_bonus_count'] > 1)
+        if($answer['all_bonus_count'] > 1 && $answer['reckonings_count'] > 0)
           $answer["to-pay"] = $answer["to-pay-no-com"]*(1+$this->bankInfo['commission']/100);
         else
           $answer["to-pay"] = $answer["to-pay-no-com"];
@@ -290,6 +292,7 @@ class BookingPayment extends Client {
       $answer["bonus"] = add_null($sum["bonus"]);
       $answer["prepay"] = add_null($sum["prepay"]);
       $answer['all_bonus_count'] = $sum['all_bonus_count'];
+      $answer['reckonings_count'] = $sum['reckonings_count'];
       $turist = new Display($client);
       $answer["turist"] = $turist->selectFio();
       unset($turist);
@@ -382,10 +385,12 @@ class BookingPayment extends Client {
         $prepay+= $pay["sum"];
 
       $all_bonus_count = $connect->getOne("SELECT COUNT(*) FROM `bonus` WHERE `turist` = ?i AND `sum` > 0",$turist);
+      $reckonings_count = $connect->getOne("SELECT COUNT(*) FROM `reckoning` WHERE `turist` = ?i AND `status` = 5", $turist);
+
 
       $sum_to_pay = $sum - $bonus - $prepay-$dis;
 
-      if($all_bonus_count > 1)
+      if($all_bonus_count > 1 && $reckonings_count > 0)
         $sum_to_pay *= (1+$this->bankInfo['commission']/100);
 
       if($type == "prepay"){
