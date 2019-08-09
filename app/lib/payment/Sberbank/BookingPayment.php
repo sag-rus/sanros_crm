@@ -218,7 +218,7 @@ class BookingPayment extends Client {
 
         if($answer['all_bonus_count'] > 1 && $answer['reckonings_count'] > 0) {
           $com = $this->bankInfo['commission'] / 100;
-          $answer["to-pay"] = $answer["to-pay-no-com"] * (1 + ($com/(1-$com)));
+          $answer["to-pay"] = round($answer["to-pay-no-com"] * (1 + ($com/(1-$com))),2);
         }
         else
           $answer["to-pay"] = $answer["to-pay-no-com"];
@@ -395,6 +395,7 @@ class BookingPayment extends Client {
       if($all_bonus_count > 1 && $reckonings_count > 0) {
         $com = $this->bankInfo['commission'] / 100;
         $sum_to_pay *= (1 + ($com/(1-$com)));
+        $sum_to_pay = round($sum_to_pay,2);
       }
 
       if($type == "prepay"){
