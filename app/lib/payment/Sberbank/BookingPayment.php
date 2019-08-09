@@ -196,7 +196,9 @@ class BookingPayment extends Client {
           }
         }
 
+        $answer['all_bonus_count'] = $connect->getOne("SELECT COUNT(*) FROM `bonus` WHERE `turist` = ?i AND `sum` > 0",$turist);
         $answer["bonus"] = abs($connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND sum < 0", $booking));
+        
         if($answer["bonus"] > 0){
           $max_bonus = $this->checkBonusPaymentBankCard();
           if($max_bonus < $answer["bonus"]){

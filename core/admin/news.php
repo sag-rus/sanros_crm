@@ -149,7 +149,25 @@ function show_sites_contents_list($connect) {
   ob_start();
   ?>
     <div class="panel panel-default">
-        <div class="panel-heading"><i class="fa fa-list"></i> Материалы<?php if($site) { ?> сайта «<?=$site['name'];?>»<?php } ?> <button class="btn btn-success btn-sm btn-sites-sync" onclick="sync_site(<?=($site?$site['id']:0);?>)">Синхронизировать</button> <button class="btn btn-default btn-sm" onclick="show_sites_list();">К списку сайтов</button></div>
+        <div class="panel-heading">
+            <i class="fa fa-list"></i> Материалы<?php if($site) { ?> сайта «<?=$site['name'];?>»<?php } ?> <button class="btn btn-success btn-sm btn-sites-sync" onclick="sync_site(<?=($site?$site['id']:0);?>)">Синхронизировать</button> <button class="btn btn-default btn-sm" onclick="show_sites_list();">К списку сайтов</button>
+            <div class="row">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="control-label">
+                            Тип материала
+                        </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <select class="form-control" id="content-type-filter">
+
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="panel-body table-body">
             <table class="table table-hover table-condensed">
                 <thead>
