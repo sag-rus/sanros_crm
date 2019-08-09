@@ -389,6 +389,7 @@ function show_tour_bid_account($connect, $data){
 			$array["date_z_format"] = $answer["date_z"];
 			$array["date_v"] = month_transform(date_change($answer["date_v"]));
 			$array["sum"] = $answer["sum"];
+			$answer['all_bonus_count'] = $connect->getOne("SELECT COUNT(*) FROM `bonus` WHERE `turist` = ?i AND `sum` > 0",$client);
 			$array["changes"] = $answer["changes"];
 			$array["status"] = $connect->getOne("SELECT name FROM status WHERE id=?i", $answer["status"]);
 			$array["status_int"] = $answer["status"];
