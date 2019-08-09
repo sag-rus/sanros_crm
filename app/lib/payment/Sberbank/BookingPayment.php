@@ -211,8 +211,13 @@ class BookingPayment extends Client {
           $answer["prepay"]+= $pay["sum"];
         }
 
+
+        $answer["to-pay-no-com"] = $answer["total"] - $answer["bonus"] - $answer["prepay"]-$dis;
+
         if($answer['all_bonus_count'] > 1)
-          $answer["to-pay"] = ($answer["total"] - $answer["bonus"] - $answer["prepay"]-$dis)*(1+$this->bankInfo['commission']/100);
+          $answer["to-pay"] = $answer["to-pay-no-com"]*(1+$this->bankInfo['commission']/100);
+        else
+          $answer["to-pay"] = $answer["to-pay-no-com"];
       }
 
     }
