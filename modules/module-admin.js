@@ -1634,6 +1634,8 @@ function show_sites_contents_list(site_id) {
 	var $type = $('#content-type-filter');
 	var q = "";
 	var $q = $('#content-text-filter');
+	var sort = 'id';
+	var $sort = $('#content-sort');
 
 	if($type.length > 0) {
 		type = $type.val();
@@ -1643,11 +1645,16 @@ function show_sites_contents_list(site_id) {
 		q = $q.val().trim();
 	}
 
+	if($sort.length > 0) {
+		sort = $sort.val();
+	}
+
 	var str = {
 		func:'show_sites_contents_list',
 		site_id:site_id,
 		type:type,
-		q:q
+		q:q,
+		sort: sort
 	};
 
   $.ajax({
@@ -1748,7 +1755,7 @@ function add_new_sites_content(site_id) {
 														'<option value="article">Статья</option>' +
 			 											'<option value="info">Полезная информация</option>' +
 			 											'<option value="advice">Советы эксперта</option>' +
-			 											'<option value="blog_post">Публикация в блоге</option>' +
+			 											'<option value="blog_post">Блог</option>' +
 			 											'<option value="aggregator">Агрегатор</option>' +
 			 											'<option value="redirect">Редирект</option>' +
 			 										'</select>'+
@@ -1794,7 +1801,7 @@ function add_new_sites_content(site_id) {
 														'<input type="checkbox" class="form-control" name="aggregate_types" value="10" id="aggregate_types_6"> <label class="control-label" for="aggregate_types_6">Советы эксперта</label>' +
 													'</div>' +
 													'<div class="checkbox-container">' +
-														'<input type="checkbox" class="form-control" name="aggregate_types" value="11" id="aggregate_types_7"> <label class="control-label" for="aggregate_types_7">Публикация в блоге</label>' +
+														'<input type="checkbox" class="form-control" name="aggregate_types" value="11" id="aggregate_types_7"> <label class="control-label" for="aggregate_types_7">Блог</label>' +
 													'</div>' +
 													'<div class="with-bottom-margin"></div>' +
 													'<div class="input-message-block" data-for="aggregate_types"></div>' +
@@ -2012,8 +2019,13 @@ function add_new_sites_content(site_id) {
   });
 
   var $typeFilter = $('#content-type-filter');
+  var typeFilter = 'all';
   if($typeFilter.length > 0) {
+  	typeFilter = $typeFilter.val();
+	}
 
+  if(typeFilter !== 'all') {
+		$('.sites-content-modal *[name="type"]').val(typeFilter).change();
 	}
 }
 

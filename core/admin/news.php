@@ -136,6 +136,11 @@ function show_sites_contents_list($connect) {
 
   $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
   $type = isset($_POST['type'])?trim($_POST['type']):'all';
+  $sort = isset($_POST['sort'])?trim($_POST['sort']):'id';
+
+  if(!in_array($sort,['id','created','published','title']))
+      $sort = 'id';
+
   $q = isset($_POST['q'])?$_POST['q']:"";
   $qp = mb_strtolower(trim($q));
   $site = NULL;
@@ -144,22 +149,31 @@ function show_sites_contents_list($connect) {
     if($site) {
       if($type === 'all') {
         if(mb_strlen($qp) > 0)
-            $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `status` <> 2 AND `title` LIKE ?s ORDER BY id ASC", $site_id,"%".$qp."%");
+            $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `status` <> 2 AND `title` LIKE ?s ORDER BY ".$sort." ASC", $site_id,"%".$qp."%");
         else
-            $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `status` <> 2 ORDER BY id ASC", $site_id);
+            $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `status` <> 2 ORDER BY ".$sort." ASC", $site_id);
       }
       else {
-        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `type` = ?s AND `status` <> 2 ORDER BY id ASC", $site_id, $type);
+        if(mb_strlen($qp) > 0)
+            $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `type` = ?s AND `status` <> 2 AND `title` LIKE ?s ORDER BY ".$sort." ASC", $site_id, $type,"%".$qp."%");
+        else
+            $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `type` = ?s AND `status` <> 2 ORDER BY ".$sort." ASC", $site_id, $type);
       }
     }
     else
         $sites_contents = [];
   }
   elseif($type === 'all') {
-    $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 ORDER BY id ASC");
+    if(mb_strlen($qp) > 0)
+        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 AND `title` LIKE ?s ORDER BY ".$sort." ASC","%".$qp."%");
+    else
+        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 ORDER BY ".$sort." ASC");
   }
   else {
-    $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 AND `type` = ?s ORDER BY id ASC", $type);
+    if(mb_strlen($qp) > 0)
+        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 AND `type` = ?s AND `title` LIKE ?s ORDER BY ".$sort." ASC", $type,"%".$qp."%");
+    else
+        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 AND `type` = ?s ORDER BY ".$sort." ASC", $type);
   }
 
   ob_start();
@@ -173,9 +187,14 @@ function show_sites_contents_list($connect) {
                         Заголовок содержит
                     </label>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="control-label admin-label">
                         Тип материала
+                    </label>
+                </div>
+                <div class="col-md-3">
+                    <label class="control-label admin-label">
+                        Сортировка
                     </label>
                 </div>
             </div>
@@ -183,12 +202,20 @@ function show_sites_contents_list($connect) {
                 <div class="col-md-3">
                     <input class="form-control" value="<?=$q;?>" id="content-text-filter" onchange="show_sites_contents_list(<?=$site_id;?>);">
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <select class="form-control" id="content-type-filter" onchange="show_sites_contents_list(<?=$site_id;?>);">
                         <option value="all"<?php if($type === 'all') { ?> selected<?php } ?>>Любой</option>
                         <?php foreach ($content_types as $content_type_machine_name => $content_type) { ?>
                         <option value="<?=$content_type_machine_name;?>"<?php if($type === $content_type_machine_name) { ?> selected<?php } ?>><?=$content_type;?></option>
                         <?php } ?>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-control" id="content-sort" onchange="show_sites_contents_list(<?=$site_id;?>);">
+                        <option value="id"<?php if($sort === 'id') { ?> selected<?php } ?>>ID</option>
+                        <option value="created"<?php if($sort === 'created') { ?> selected<?php } ?>>Дата создания</option>
+                        <option value="published"<?php if($sort === 'published') { ?> selected<?php } ?>>Дата публикации</option>
+                        <option value="title"<?php if($sort === 'title') { ?> selected<?php } ?>>Заголовок</option>
                     </select>
                 </div>
             </div>
