@@ -135,16 +135,32 @@ function show_sites_contents_list($connect) {
   }
 
   $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
+  $type = isset($_POST['type'])?trim($_POST['type']):'all';
+  $q = isset($_POST['q'])?$_POST['q']:"";
+  $qp = mb_strtolower(trim($q));
   $site = NULL;
   if($site_id) {
     $site = $connect->getRow("SELECT `id`, `name`, `domain` FROM `sites` WHERE `id`=?i",$site_id);
-    if($site)
-        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `status` <> 2 ORDER BY id ASC", $site_id);
+    if($site) {
+      if($type === 'all') {
+        if(mb_strlen($qp) > 0)
+            $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `status` <> 2 AND `title` LIKE ?s ORDER BY id ASC", $site_id,"%".$qp."%");
+        else
+            $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `status` <> 2 ORDER BY id ASC", $site_id);
+      }
+      else {
+        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `type` = ?s AND `status` <> 2 ORDER BY id ASC", $site_id, $type);
+      }
+    }
     else
         $sites_contents = [];
   }
-  else
-      $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 ORDER BY id ASC");
+  elseif($type === 'all') {
+    $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 ORDER BY id ASC");
+  }
+  else {
+    $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 AND `type` = ?s ORDER BY id ASC", $type);
+  }
 
   ob_start();
   ?>
@@ -152,19 +168,28 @@ function show_sites_contents_list($connect) {
         <div class="panel-heading">
             <i class="fa fa-list"></i> Материалы<?php if($site) { ?> сайта «<?=$site['name'];?>»<?php } ?> <button class="btn btn-success btn-sm btn-sites-sync" onclick="sync_site(<?=($site?$site['id']:0);?>)">Синхронизировать</button> <button class="btn btn-default btn-sm" onclick="show_sites_list();">К списку сайтов</button>
             <div class="row">
-                <div class="row">
-                    <div class="col-md-4">
-                        <label class="control-label">
-                            Тип материала
-                        </label>
-                    </div>
+                <div class="col-md-3">
+                    <label class="control-label admin-label">
+                        Заголовок содержит
+                    </label>
                 </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <select class="form-control" id="content-type-filter">
-
-                        </select>
-                    </div>
+                <div class="col-md-2">
+                    <label class="control-label admin-label">
+                        Тип материала
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <input class="form-control" value="<?=$q;?>" id="content-text-filter" onchange="show_sites_contents_list(<?=$site_id;?>);">
+                </div>
+                <div class="col-md-2">
+                    <select class="form-control" id="content-type-filter" onchange="show_sites_contents_list(<?=$site_id;?>);">
+                        <option value="all"<?php if($type === 'all') { ?> selected<?php } ?>>Любой</option>
+                        <?php foreach ($content_types as $content_type_machine_name => $content_type) { ?>
+                        <option value="<?=$content_type_machine_name;?>"<?php if($type === $content_type_machine_name) { ?> selected<?php } ?>><?=$content_type;?></option>
+                        <?php } ?>
+                    </select>
                 </div>
             </div>
         </div>

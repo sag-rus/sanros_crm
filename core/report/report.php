@@ -415,7 +415,7 @@ function filter_payment($connect){
 				if($sum <= 100)
 					$sum = add_null($sum - 3.5);
 				else
-					$sum = add_null(((100 - $bank_com)/100) * $sum);
+					$sum = add_null(round(((100 - $bank_com)/100) * $sum,2));
 				$array["pay_card"]+= $sum;
 				if($office_pay > 0){
 					$array["office"][$office_pay]["num_card"]++;

@@ -1690,3 +1690,13 @@ tr.simple-row {
 	width: 800px;
 	max-width: 100%;
 }
+
+.row {
+	margin-right: -15px;
+	margin-left: -15px;
+}
+
+.admin-label {
+	margin-bottom: 5px;
+	display: block;
+}

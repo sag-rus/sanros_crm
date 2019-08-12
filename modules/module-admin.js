@@ -1630,7 +1630,26 @@ function save_site() {
 }
 
 function show_sites_contents_list(site_id) {
-  var str = 'func=show_sites_contents_list&site_id='+site_id;
+	var type = 'all';
+	var $type = $('#content-type-filter');
+	var q = "";
+	var $q = $('#content-text-filter');
+
+	if($type.length > 0) {
+		type = $type.val();
+	}
+
+	if($q.length > 0) {
+		q = $q.val().trim();
+	}
+
+	var str = {
+		func:'show_sites_contents_list',
+		site_id:site_id,
+		type:type,
+		q:q
+	};
+
   $.ajax({
     type: 'POST',
     data: str,
@@ -1991,6 +2010,11 @@ function add_new_sites_content(site_id) {
 		maxcount: 1,
     contentType:['image/jpeg','image/png']
   });
+
+  var $typeFilter = $('#content-type-filter');
+  if($typeFilter.length > 0) {
+
+	}
 }
 
 function b64EncodeUnicode(str) {
