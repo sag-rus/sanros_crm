@@ -474,7 +474,7 @@ function select_object_about($connect){
 function edit_main_data_object($connect){
     global $array_type;
     $id = $_POST["id"];
-	$row = $connect->getRow("SELECT name, similar, full_name, id_reg, type, city, direction, region_direction_id, latitude, longitude, weather, direction, source_booking, booking_uri, description, fast_booking, main_post_name, main_post_fio, default_price_type FROM object WHERE id='$id'");
+	$row = $connect->getRow("SELECT name, similar, full_name, id_reg, type, city, direction, region_direction_id, latitude, longitude, weather, direction, source_booking, booking_uri, uri_schema, description, fast_booking, main_post_name, main_post_fio, default_price_type FROM object WHERE id='$id'");
 	$similar = explode("_", $row["similar"]);
 	$type = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]);
 	$country = $connect->getOne("SELECT id_country FROM region WHERE id=?i", $row["id_reg"]);
@@ -615,6 +615,18 @@ function edit_main_data_object($connect){
                 </select>
             </div>
         </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Адресная схема</label>
+            <div class="col-sm-9">
+                <select class="form-control" id="uri_schema">
+                    <option value="1"<?php if($row['uri_schema'] == 1) { ?> selected<?php } ?>>Старая</option>
+                    <option value="2"<?php if($row['uri_schema'] == 2) { ?> selected<?php } ?>>Новая</option>
+                </select>
+                <div class="std-padding alert-danger">
+                    В случае изменения данного параметра не забудьте изменить адрес в настройках сайта санатории-россии.рф!
+                </div>
+            </div>
+        </div>
 		<div class="form-group form-group-margin">
 			<label class="col-sm-3 control-label">Описание</label>
 			<div class="col-sm-9">
@@ -667,6 +679,10 @@ function update_main_data_object($connect){
 	$direction = (int)$_POST["direction"];
     $id_reg = (int)$_POST["region_id"];
     $region_direction_id = (int)$_POST['region_direction_id'];
+    $uri_schema = isset($_POST["uri_schema"])?(int)$_POST["uri_schema"]:1;
+
+    if(!in_array($uri_schema,[1,2]))
+        $uri_schema = 1;
 
     if(!$direction) {
         $id_reg = 0;
@@ -690,7 +706,7 @@ function update_main_data_object($connect){
     if(!array_key_exists($default_price_type,$array_type))
         $default_price_type = 1;
 
-    $connect->query("UPDATE object SET name=?s, full_name=?s, city=?s, direction=?s, type=?s, latitude=?s, longitude=?s, similar=?s, weather=?s, description=?s, source_booking=?i, description_check=?s, booking_uri=?s, fast_booking=?i, main_post_name = ?s, main_post_fio = ?s, default_price_type = ?i, id_reg = ?i, region_direction_id = ?i, synchronized=0 WHERE id=?i", $name, $full_name, $city, $direction, $type, $latitude, $longitude, $similar, $weather, $description, $source_booking, $description, $booking_uri, $fast_booking, $main_post_name, $main_post_fio, $default_price_type, $id_reg, $region_direction_id,$id);
+    $connect->query("UPDATE object SET name=?s, full_name=?s, city=?s, direction=?s, type=?s, latitude=?s, longitude=?s, similar=?s, weather=?s, description=?s, source_booking=?i, description_check=?s, booking_uri=?s, fast_booking=?i, main_post_name = ?s, main_post_fio = ?s, default_price_type = ?i, id_reg = ?i, region_direction_id = ?i, `uri_schema` = ?i, synchronized=0 WHERE id=?i", $name, $full_name, $city, $direction, $type, $latitude, $longitude, $similar, $weather, $description, $source_booking, $description, $booking_uri, $fast_booking, $main_post_name, $main_post_fio, $default_price_type, $id_reg, $region_direction_id,$uri_schema, $id);
 }
 
 function edit_desc_object($connect){

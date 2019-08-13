@@ -1700,3 +1700,7 @@ tr.simple-row {
 	margin-bottom: 5px;
 	display: block;
 }
+
+.std-padding {
+	padding: 15px;
+}
