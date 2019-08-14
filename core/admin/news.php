@@ -323,6 +323,10 @@ function show_sites_contents_list($connect) {
                                 <button class="btn btn-default btn-sm" onclick="remove_sites_content(<?=$sites_content['id'];?>);"><i class="fa fa-trash-o"></i></button>
                             <?php } ?>
                             <button class="btn btn-default btn-sm" onclick="edit_sites_content(<?=$sites_content['id'];?>)"><i class="fa fa-pencil"></i></button>
+                            <?php if($id_rights > 5) { ?>
+                                <button class="btn btn-default btn-sm" onclick="edit_sites_content(<?=$sites_content['id'];?>,1)"><i class="fa fa-copy"></i></button>
+                            <?php } ?>
+
                         </td>
                     </tr>
                   <?php
@@ -1371,6 +1375,7 @@ function sites_phone($connect)
 
 function edit_sites_content($connect) {
   $content_id = isset($_POST['id'])?(int)$_POST['id']:0;
+  $copy_mode = isset($_POST['copy_mode'])?(int)$_POST['copy_mode']:0;
   $content = NULL;
   if($content_id)
       $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h1`, `title_h2`, `summary`, `body`, `body2`, `path`, `redirect_path`, `description`, `keywords`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `photogallery_title`, `photogallery_orientation`, `breadcrumb_title`, `direction_id`, `region_id`, `regional_direction_id` FROM `sites_contents` WHERE `id` =?i",$content_id);
@@ -1398,7 +1403,7 @@ function edit_sites_content($connect) {
               <div class="modal-content">
                   <div class="modal-header">
                       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
-                      <h4 class="modal-title">Редактировать материал</h4>
+                      <h4 class="modal-title"><?php if($copy_mode) { ?>Копирование материала<?php } else { ?>Редактировать материал<?php } ?></h4>
                   </div>
                   <div class="modal-body form-horizontal site-name">
                       <div class="form-group">
@@ -1406,7 +1411,7 @@ function edit_sites_content($connect) {
                           <div class="col-sm-10">
                               <input type="text" class="form-control" name="title" maxlength="255" value="<?=htmlspecialchars($content['title']);?>">
                               <input type="hidden" value="<?=$content['site_id'];?>" name="site_id">
-                              <input type="hidden" value="<?=$content['id'];?>" name="content_id">
+                              <input type="hidden" value="<?=$copy_mode?0:$content['id'];?>" name="content_id">
                               <div class="input-message-block" data-for="title"></div>
                           </div>
                       </div>

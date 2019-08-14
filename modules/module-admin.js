@@ -2897,8 +2897,23 @@ function save_sites_phone() {
 }
 
 
-function edit_sites_content(id) {
-  var str = 'func=edit_sites_content&id='+id;
+function edit_sites_content(id,copyMode) {
+  if(typeof copyMode === 'undefined')
+  	copyMode = 0;
+  else {
+  	copyMode = parseInt(copyMode,10);
+  	if(copyMode !== 0 && copyMode !== 1) {
+  		copyMode = 0;
+		}
+	}
+
+	var str = {
+  	func:'edit_sites_content',
+		id:id,
+		copy_mode: copyMode
+  };
+
+
   $.ajax({
     type: 'POST',
     data: str,
