@@ -2100,6 +2100,13 @@ function edit_site($connect) {
                               </select>
                           </div>
                       </div>
+                      <div class="form-group<?php if(!$site || $site['type'] !== 'objects') { ?> hidden<?php } ?>">
+                          <label class="col-sm-4 control-label">ID объектов</label>
+                          <div class="col-sm-8">
+                              <input class="form-control" type="text" name="resorts_ids" value="<?=implode(", ",bounds_to_ids($connect,load_bounds($connect,$entity,'resorts_ids')));?>">
+                              <div class="input-message-block" data-for="main-link-color"></div>
+                          </div>
+                      </div>
                   </div>
                   <div class="modal-loader"></div>
                   <div class="modal-footer">

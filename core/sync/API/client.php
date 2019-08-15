@@ -434,7 +434,10 @@ function show_tour_bid_account($connect, $data){
 			if($array["status_int"] == 3 OR $array["status_int"] == 4){
 				$array["doc"] = 2;
 				$reward = get_reward_schet($connect, $array['id']);
-				$array['final_reward'] = $reward/2-$array['bonus']/2-0.018*($array['sum']-$array['payment_sum']);
+				$array['final_reward'] = $reward/2-$array['bonus']/2;
+				if(!($answer['all_bonus_count'] > 1 && $answer['reckonings_count'] > 0)) {
+					$array['final_reward'] -= 0.018*($array['sum']-$array['payment_sum']);
+				}
 				$array['reward'] = $reward;
 				if($array['sum'] && ($array['final_reward'] > 0 || $array['id'] == 43125 || $array['id'] == 58509 || $array['id'] == 66300) && !$array['holding_sum']){
 					$array["pay_button"] = 1;
