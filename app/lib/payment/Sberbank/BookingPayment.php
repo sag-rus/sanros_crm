@@ -147,7 +147,14 @@ class BookingPayment extends Client {
     $reward = round($reward, 2);
     $reck = $connect->getRow("SELECT sum, id_com, correction FROM reckoning WHERE id=?i", $booking);
     $raz = 0;
-    $bank_com = ($bank_com * $reck["sum"]) / 100;
+    $all_bonus_count = $connect->getOne("SELECT COUNT(*) FROM `bonus` WHERE `turist` = ?i AND `sum` > 0",$this->turist);
+    $reckonings_count = $connect->getOne("SELECT COUNT(*) FROM `reckoning` WHERE `turist` = ?i AND `status` = 5", $this->turist);
+
+    if($all_bonus_count > 1 && $reckonings_count > 0) {
+      $bank_com = 0;
+    }
+    else $bank_com = ($bank_com * $reck["sum"]) / 100;
+
     if($reck["correction"])
       $raz-= $reck["correction"];
 
