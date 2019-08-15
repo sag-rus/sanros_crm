@@ -815,6 +815,7 @@ function get_document_bill($connect, $data){
 
 			$check = $connect->getOne("SELECT sum FROM time_payment WHERE type=2 AND id_schet=?i", $id);
 			$prepay_sum = $connect->getOne("SELECT sum(sum) FROM payment WHERE schet=?i AND type=1", $id);
+			$array['prepay_sum'] = 0;
 			if($prepay_sum)
 				$array["prepay_sum"] = $prepay_sum;
 
