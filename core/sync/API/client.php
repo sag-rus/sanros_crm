@@ -852,7 +852,7 @@ function get_document_bill($connect, $data){
 			}
 			$array["all_sum"] = add_null($array["all_sum"]);
 			$array["itog_sum"] = add_null($array["all_sum"] - $array["sum_commission"] - $array["bonus"]);
-			$t = explode(".", $array["itog_sum"]);
+			$t = explode(".", $array["itog_sum"]-$array['prepay_sum']);
 
 			$array["itog"] = $array["itog_sum"];
 			$array["sum3"] = $array["itog_sum"];
