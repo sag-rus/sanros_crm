@@ -814,8 +814,9 @@ function get_document_bill($connect, $data){
 			$array["id_dis"] = $answer["id_dis"];
 
 			$check = $connect->getOne("SELECT sum FROM time_payment WHERE type=2 AND id_schet=?i", $id);
-			if($check AND ($answer["status"] == 3 OR $answer["status"] == 4))
-				$array["prepay_sum"] = $check;
+			$prepay_sum = $connect->getOne("SELECT sum(sum) FROM payment WHERE schet=?i AND type=1", $id);
+			if($prepay_sum)
+				$array["prepay_sum"] = $prepay_sum;
 
 			if($answer["status"] != 3 AND $answer["status"] != 4 AND $answer["status"] != 5)
 				return 0;
