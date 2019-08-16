@@ -1704,3 +1704,7 @@ tr.simple-row {
 .std-padding {
 	padding: 15px;
 }
+
+.site-icons-modal .modal-dialog {
+	width: 800px;
+}

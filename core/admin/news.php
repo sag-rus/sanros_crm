@@ -103,6 +103,8 @@ function show_sites_list($connect) {
                   <?php } ?>
                   <?php if($id_rights > 4 || $session_login == 62)  { ?>
                       <button class="btn btn-default btn-sm" onclick="edit_site(<?=$site['id'];?>);"><i class="fa fa-pencil"></i></button>
+                      <button class="btn btn-default btn-sm" onclick="edit_site_icons(<?=$site['id'];?>);"><i class="fa fa-image"></i> Иконки сайта</button>
+
                   <?php } ?>
               </td>
           </tr>
@@ -701,6 +703,91 @@ function save_site($connect) {
     }
 
     return json_encode($respAr);
+}
+
+function save_site_icons($connect) {
+  $respAr = [
+    'success' => 0,
+    'title' => '',
+    'msg' => ''
+  ];
+
+  $id = isset($_POST['id'])?(int)$_POST['id']:0;
+  $site = NULL;
+  if($id)
+    $site = $connect->getRow("SELECT `id` FROM `sites` WHERE `id` =?i",$id);
+
+
+  if($site) {
+        $respAr['success'] = 1;
+
+        $entity = [
+          'id' => $id,
+          'type' => 'site'
+        ];
+
+        $boundsArrayFavicon = files_to_bounds($connect,$entity,'favicon',isset($_POST['favicon'])?$_POST['favicon']:[]);
+        remove_bounds($connect,$entity,'favicon');
+        set_bounds($connect,$boundsArrayFavicon,'favicon');
+
+        $boundsArrayLogo = files_to_bounds($connect,$entity,'logo',isset($_POST['logo'])?$_POST['logo']:[]);
+        remove_bounds($connect,$entity,'logo');
+        set_bounds($connect,$boundsArrayLogo,'logo');
+
+        $boundsArrayIcon_16x16 = files_to_bounds($connect,$entity,'icon_16x16',isset($_POST['icon_16x16'])?$_POST['icon_16x16']:[]);
+        remove_bounds($connect,$entity,'icon_16x16');
+        set_bounds($connect,$boundsArrayIcon_16x16,'icon_16x16');
+
+        $boundsArrayIcon_32x32 = files_to_bounds($connect,$entity,'icon_32x32',isset($_POST['icon_32x32'])?$_POST['icon_32x32']:[]);
+        remove_bounds($connect,$entity,'icon_32x32');
+        set_bounds($connect,$boundsArrayIcon_32x32,'icon_32x32');
+
+        $boundsArrayIcon_apple_non_retina_57x57 = files_to_bounds($connect,$entity,'icon_apple_57x57',isset($_POST['icon_apple_57x57'])?$_POST['icon_apple_57x57']:[]);
+        remove_bounds($connect,$entity,'icon_apple_57x57');
+        set_bounds($connect,$boundsArrayIcon_apple_non_retina_57x57,'icon_apple_57x57');
+
+        $boundsArrayIcon_apple_60x60 = files_to_bounds($connect,$entity,'icon_apple_60x60',isset($_POST['icon_apple_60x60'])?$_POST['icon_apple_60x60']:[]);
+        remove_bounds($connect,$entity,'icon_apple_60x60');
+        set_bounds($connect,$boundsArrayIcon_apple_60x60,'icon_apple_60x60');
+
+        $boundsArrayIcon_apple_72x72 = files_to_bounds($connect,$entity,'icon_apple_72x72',isset($_POST['icon_apple_72x72'])?$_POST['icon_apple_72x72']:[]);
+        remove_bounds($connect,$entity,'icon_apple_72x72');
+        set_bounds($connect,$boundsArrayIcon_apple_72x72,'icon_apple_72x72');
+
+        $boundsArrayIcon_apple_76x76 = files_to_bounds($connect,$entity,'icon_apple_76x76',isset($_POST['icon_apple_76x76'])?$_POST['icon_apple_76x76']:[]);
+        remove_bounds($connect,$entity,'icon_apple_76x76');
+        set_bounds($connect,$boundsArrayIcon_apple_76x76,'icon_apple_76x76');
+
+        $boundsArrayIcon_96x96 = files_to_bounds($connect,$entity,'icon_96x96',isset($_POST['icon_96x96'])?$_POST['icon_96x96']:[]);
+        remove_bounds($connect,$entity,'icon_96x96');
+        set_bounds($connect,$boundsArrayIcon_96x96,'icon_96x96');
+
+        $boundsArrayIcon_apple_114x114 = files_to_bounds($connect,$entity,'icon_apple_114x114',isset($_POST['icon_apple_114x114'])?$_POST['icon_apple_114x114']:[]);
+        remove_bounds($connect,$entity,'icon_apple_114x114');
+        set_bounds($connect,$boundsArrayIcon_apple_114x114,'icon_apple_114x114');
+
+        $boundsArrayIcon_apple_120x120 = files_to_bounds($connect,$entity,'icon_apple_120x120',isset($_POST['icon_apple_120x120'])?$_POST['icon_apple_120x120']:[]);
+        remove_bounds($connect,$entity,'icon_apple_120x120');
+        set_bounds($connect,$boundsArrayIcon_apple_120x120,'icon_apple_120x120');
+
+        $boundsArrayIcon_apple_144x144 = files_to_bounds($connect,$entity,'icon_apple_144x144',isset($_POST['icon_apple_144x144'])?$_POST['icon_apple_144x144']:[]);
+        remove_bounds($connect,$entity,'icon_apple_144x144');
+        set_bounds($connect,$boundsArrayIcon_apple_144x144,'icon_apple_144x144');
+
+        $boundsArrayIcon_apple_152x152 = files_to_bounds($connect,$entity,'icon_apple_152x152',isset($_POST['icon_apple_152x152'])?$_POST['icon_apple_152x152']:[]);
+        remove_bounds($connect,$entity,'icon_apple_152x152');
+        set_bounds($connect,$boundsArrayIcon_apple_152x152,'icon_apple_152x152');
+
+        $boundsArrayIcon_apple_180x180 = files_to_bounds($connect,$entity,'icon_apple_180x180',isset($_POST['icon_apple_180x180'])?$_POST['icon_apple_180x180']:[]);
+        remove_bounds($connect,$entity,'icon_apple_180x180');
+        set_bounds($connect,$boundsArrayIcon_apple_180x180,'icon_apple_180x180');
+
+        $boundsArrayIcon_192x192 = files_to_bounds($connect,$entity,'icon_192x192',isset($_POST['icon_192x192'])?$_POST['icon_192x192']:[]);
+        remove_bounds($connect,$entity,'icon_192x192');
+        set_bounds($connect,$boundsArrayIcon_192x192,'icon_192x192');
+  }
+
+  return json_encode($respAr);
 }
 
 
@@ -2124,6 +2211,147 @@ function edit_site($connect) {
                   </div>
               </div>
           </div>
+    <?php
+  }
+  return ob_get_clean();
+}
+
+function edit_site_icons($connect) {
+  $id = isset($_POST['id'])?(int)$_POST['id']:0;
+  $site = NULL;
+  if($id)
+    $site = $connect->getRow("SELECT `id`, `status`, `name`, `branding_name`, `branding_slogan`,  `domain`, `main_bg_color`, `main_bg_color2`, `main_font_color`, `main_font_color2`, `main_link_color`, `head_code`, `pre_body_code`, `post_body_code`, `robots`, `interface_style`, `type`, `direction_id`, `region_id`, `theme` FROM `sites` WHERE `id` =?i",$id);
+  ob_start();
+  if($site) {
+    $entity = [
+      'id' => $site['id'],
+      'type' => 'site'
+    ];
+    ?>
+      <div class="modal fade site-icons-modal">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+                      <h4 class="modal-title"><?php if($site) { ?>Иконки сайта<?php } ?></h4>
+                  </div>
+                  <div class="modal-body form-horizontal site-name">
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Favicon</label>
+                          <div class="col-sm-8">
+                              <div class="input-message-block" data-for="favicon"></div>
+                              <input type="hidden" name="id" value="<?=$id;?>">
+                              <input type="file" name="favicon" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'favicon')):[]));?>">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Логотип</label>
+                          <div class="col-sm-8">
+                              <div class="input-message-block" data-for="logo"></div>
+                              <input type="file" name="logo" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'logo')):[]));?>">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Иконка 16x16</label>
+                          <div class="col-sm-8">
+                              <div class="input-message-block" data-for="icon_16x16"></div>
+                              <input type="file" name="icon_16x16" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_16x16')):[]));?>">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Иконка 32x32</label>
+                          <div class="col-sm-8">
+                              <div class="input-message-block" data-for="icon_32x32"></div>
+                              <input type="file" name="icon_32x32" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_32x32')):[]));?>">
+                          </div>
+                      </div>
+
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Иконка 57x57 (Apple non-Retina)</label>
+                          <div class="col-sm-8">
+                              <div class="input-message-block" data-for="icon_apple_57x57"></div>
+                              <input type="file" name="icon_apple_57x57" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_57x57')):[]));?>">
+                          </div>
+                      </div>
+
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Иконка 60x60 (Apple)</label>
+                          <div class="col-sm-8">
+                              <div class="input-message-block" data-for="icon_apple_60x60"></div>
+                              <input type="file" name="icon_apple_60x60" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_60x60')):[]));?>">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Иконка 72x72 (Apple)</label>
+                          <div class="col-sm-8">
+                              <div class="input-message-block" data-for="icon_apple_72x72"></div>
+                              <input type="file" name="icon_apple_72x72" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_72x72')):[]));?>">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Иконка 76x76 (Apple)</label>
+                          <div class="col-sm-8">
+                              <div class="input-message-block" data-for="icon_apple_76x76"></div>
+                              <input type="file" name="icon_apple_76x76" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_76x76')):[]));?>">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Иконка 96x96</label>
+                          <div class="col-sm-8">
+                              <div class="input-message-block" data-for="icon_96x96"></div>
+                              <input type="file" name="icon_96x96" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_96x96')):[]));?>">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Иконка 114x114 (Apple)</label>
+                          <div class="col-sm-8">
+                              <div class="input-message-block" data-for="icon_apple_114x114"></div>
+                              <input type="file" name="icon_apple_114x114" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_114x114')):[]));?>">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Иконка 120x120 (Apple)</label>
+                          <div class="col-sm-8">
+                              <div class="input-message-block" data-for="icon_apple_120x120"></div>
+                              <input type="file" name="icon_apple_120x120" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_120x120')):[]));?>">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Иконка 144x144 (Apple)</label>
+                          <div class="col-sm-8">
+                              <div class="input-message-block" data-for="icon_apple_144x144"></div>
+                              <input type="file" name="icon_apple_144x144" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_144x144')):[]));?>">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Иконка 152x152 (Apple)</label>
+                          <div class="col-sm-8">
+                              <div class="input-message-block" data-for="icon_apple_152x152"></div>
+                              <input type="file" name="icon_apple_152x152" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_152x152')):[]));?>">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Иконка 180x180 (Apple)</label>
+                          <div class="col-sm-8">
+                              <div class="input-message-block" data-for="icon_apple_180x180"></div>
+                              <input type="file" name="icon_apple_180x180" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_180x180')):[]));?>">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Иконка 192x192</label>
+                          <div class="col-sm-8">
+                              <div class="input-message-block" data-for="icon_192x192"></div>
+                              <input type="file" name="icon_192x192" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_192x192')):[]));?>">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="modal-loader"></div>
+                  <div class="modal-footer">
+                      <button class="btn btn-success btn-sm btn-save-site-icons" onclick="save_site_icons();" id="btn-save-site-icons"><i class="fa fa-check-circle"></i> Сохранить</button>
+                  </div>
+              </div>
+          </div>
+      </div>
     <?php
   }
   return ob_get_clean();

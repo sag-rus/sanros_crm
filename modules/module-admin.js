@@ -1634,6 +1634,133 @@ function save_site() {
 
 }
 
+function save_site_icons() {
+	var $button = $('.btn-save-site-icons');
+	var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
+	var $modalLoader = $button.closest('.modal-dialog').find('.modal-loader');
+	var $favicon = $modalBody.find('*[name="favicon"]');
+	var $faviconMsg = $favicon.parent().find('.input-message-block');
+	var favicon = JSON.parse($favicon.val().trim());
+	$faviconMsg.html("").removeClass('with-bottom-margin');
+
+	var $logo = $modalBody.find('*[name="logo"]');
+	var $logoMsg = $logo.parent().find('.input-message-block');
+	var logo = JSON.parse($logo.val().trim());
+	$logoMsg.html("").removeClass('with-bottom-margin');
+
+	var $icon_16x16 = $modalBody.find('*[name="icon_16x16"]');
+	var $icon_16x16Msg = $icon_16x16.parent().find('.input-message-block');
+	var icon_16x16 = JSON.parse($icon_16x16.val().trim());
+	$icon_16x16Msg.html("").removeClass('with-bottom-margin');
+
+	var $icon_32x32 = $modalBody.find('*[name="icon_32x32"]');
+	var $icon_32x32Msg = $icon_32x32.parent().find('.input-message-block');
+	var icon_32x32 = JSON.parse($icon_32x32.val().trim());
+	$icon_32x32Msg.html("").removeClass('with-bottom-margin');
+
+	var $icon_apple_57x57 = $modalBody.find('*[name="icon_apple_57x57"]');
+	var $icon_apple_57x57Msg = $icon_apple_57x57.parent().find('.input-message-block');
+	var icon_apple_57x57 = JSON.parse($icon_apple_57x57.val().trim());
+	$icon_apple_57x57Msg.html("").removeClass('with-bottom-margin');
+
+	var $icon_apple_60x60 = $modalBody.find('*[name="icon_apple_60x60"]');
+	var $icon_apple_60x60Msg = $icon_apple_60x60.parent().find('.input-message-block');
+	var icon_apple_60x60 = JSON.parse($icon_apple_60x60.val().trim());
+	$icon_apple_60x60Msg.html("").removeClass('with-bottom-margin');
+
+	var $icon_apple_72x72 = $modalBody.find('*[name="icon_apple_72x72"]');
+	var $icon_apple_72x72Msg = $icon_apple_72x72.parent().find('.input-message-block');
+	var icon_apple_72x72 = JSON.parse($icon_apple_72x72.val().trim());
+	$icon_apple_72x72Msg.html("").removeClass('with-bottom-margin');
+
+	var $icon_apple_76x76 = $modalBody.find('*[name="icon_apple_76x76"]');
+	var $icon_apple_76x76Msg = $icon_apple_76x76.parent().find('.input-message-block');
+	var icon_apple_76x76 = JSON.parse($icon_apple_76x76.val().trim());
+	$icon_apple_76x76Msg.html("").removeClass('with-bottom-margin');
+
+	var $icon_96x96 = $modalBody.find('*[name="icon_96x96"]');
+	var $icon_96x96Msg = $icon_96x96.parent().find('.input-message-block');
+	var icon_96x96 = JSON.parse($icon_96x96.val().trim());
+	$icon_96x96Msg.html("").removeClass('with-bottom-margin');
+
+	var $icon_apple_114x114 = $modalBody.find('*[name="icon_apple_114x114"]');
+	var $icon_apple_114x114Msg = $icon_apple_114x114.parent().find('.input-message-block');
+	var icon_apple_114x114 = JSON.parse($icon_apple_114x114.val().trim());
+	$icon_apple_114x114Msg.html("").removeClass('with-bottom-margin');
+
+	var $icon_apple_120x120 = $modalBody.find('*[name="icon_apple_120x120"]');
+	var $icon_apple_120x120Msg = $icon_apple_120x120.parent().find('.input-message-block');
+	var icon_apple_120x120 = JSON.parse($icon_apple_120x120.val().trim());
+	$icon_apple_120x120Msg.html("").removeClass('with-bottom-margin');
+
+	var $icon_apple_144x144 = $modalBody.find('*[name="icon_apple_144x144"]');
+	var $icon_apple_144x144Msg = $icon_apple_144x144.parent().find('.input-message-block');
+	var icon_apple_144x144 = JSON.parse($icon_apple_144x144.val().trim());
+	$icon_apple_144x144Msg.html("").removeClass('with-bottom-margin');
+
+	var $icon_apple_152x152 = $modalBody.find('*[name="icon_apple_152x152"]');
+	var $icon_apple_152x152Msg = $icon_apple_152x152.parent().find('.input-message-block');
+	var icon_apple_152x152 = JSON.parse($icon_apple_152x152.val().trim());
+	$icon_apple_152x152Msg.html("").removeClass('with-bottom-margin');
+
+	var $icon_apple_180x180 = $modalBody.find('*[name="icon_apple_180x180"]');
+	var $icon_apple_180x180Msg = $icon_apple_180x180.parent().find('.input-message-block');
+	var icon_apple_180x180 = JSON.parse($icon_apple_180x180.val().trim());
+	$icon_apple_180x180Msg.html("").removeClass('with-bottom-margin');
+
+	var $icon_192x192 = $modalBody.find('*[name="icon_192x192"]');
+	var $icon_192x192Msg = $icon_192x192.parent().find('.input-message-block');
+	var icon_192x192 = JSON.parse($icon_192x192.val().trim());
+	$icon_192x192Msg.html("").removeClass('with-bottom-margin');
+
+	var id = parseInt($modalBody.find('*[name="id"]').val());
+
+	var error = false;
+
+	if(!error) {
+		show_loader_element($modalLoader);
+		$modalBody.addClass('hidden');
+		$button.prop('disabled',true);
+		var obj = {
+			func: "save_site_icons",
+			favicon: favicon,
+			logo: logo,
+			icon_16x16: icon_16x16,
+			icon_32x32: icon_32x32,
+			icon_apple_57x57: icon_apple_57x57,
+			icon_apple_60x60: icon_apple_60x60,
+			icon_apple_72x72: icon_apple_72x72,
+			icon_apple_76x76: icon_apple_76x76,
+			icon_96x96: icon_96x96,
+			icon_apple_114x114: icon_apple_114x114,
+			icon_apple_120x120: icon_apple_120x120,
+			icon_apple_144x144: icon_apple_144x144,
+			icon_apple_152x152: icon_apple_152x152,
+			icon_apple_180x180: icon_apple_180x180,
+			icon_192x192: icon_192x192,
+			id: id
+		};
+		$.ajax({
+			type: 'POST',
+			data: obj,
+			dataType: 'JSON',
+			url: 'mysql.php',
+			success: function(data){
+				if(data['success']) {
+					remove_all_windows();
+				}
+				else {
+					$modalLoader.html('');
+					$button.prop('disabled',false);
+					$modalBody.removeClass('hidden');
+					$modalBody.find('*[data-for="'+data['msg_field']+'"]').html(data['msg']);
+				}
+			}
+		});
+	}
+
+}
+
 function show_sites_contents_list(site_id) {
 	var type = 'all';
 	var $type = $('#content-type-filter');
@@ -2966,6 +3093,121 @@ function edit_site(id) {
       });
     }
   });
+}
+
+function edit_site_icons(id) {
+	var str = 'func=edit_site_icons&id='+id;
+	$.ajax({
+		type: 'POST',
+		data: str,
+		url: 'mysql.php',
+		success: function(html){
+			show_modal(html);
+			$('.site-icons-modal *[name="favicon"]').multUploader({
+				action:'mysql.php?func=multipart_upload',
+				fragmentSize:1024*512,
+				maxcount: 1,
+				contentType:['image/vnd.microsoft.icon','image/x-icon']
+			});
+			$('.site-icons-modal *[name="logo"]').multUploader({
+				action:'mysql.php?func=multipart_upload',
+				fragmentSize:1024*512,
+				maxcount: 1,
+				contentType:['image/png','image/svg+xml']
+			});
+			$('.site-icons-modal *[name="icon_16x16"]').multUploader({
+				action:'mysql.php?func=multipart_upload',
+				fragmentSize:1024*512,
+				maxcount: 1,
+				contentType:['image/png']
+			});
+
+			$('.site-icons-modal *[name="icon_32x32"]').multUploader({
+				action:'mysql.php?func=multipart_upload',
+				fragmentSize:1024*512,
+				maxcount: 1,
+				contentType:['image/png']
+			});
+
+			$('.site-icons-modal *[name="icon_apple_57x57"]').multUploader({
+				action:'mysql.php?func=multipart_upload',
+				fragmentSize:1024*512,
+				maxcount: 1,
+				contentType:['image/png']
+			});
+
+			$('.site-icons-modal *[name="icon_apple_60x60"]').multUploader({
+				action:'mysql.php?func=multipart_upload',
+				fragmentSize:1024*512,
+				maxcount: 1,
+				contentType:['image/png']
+			});
+
+			$('.site-icons-modal *[name="icon_apple_72x72"]').multUploader({
+				action:'mysql.php?func=multipart_upload',
+				fragmentSize:1024*512,
+				maxcount: 1,
+				contentType:['image/png']
+			});
+
+			$('.site-icons-modal *[name="icon_apple_76x76"]').multUploader({
+				action:'mysql.php?func=multipart_upload',
+				fragmentSize:1024*512,
+				maxcount: 1,
+				contentType:['image/png']
+			});
+
+			$('.site-icons-modal *[name="icon_96x96"]').multUploader({
+				action:'mysql.php?func=multipart_upload',
+				fragmentSize:1024*512,
+				maxcount: 1,
+				contentType:['image/png']
+			});
+
+			$('.site-icons-modal *[name="icon_apple_114x114"]').multUploader({
+				action:'mysql.php?func=multipart_upload',
+				fragmentSize:1024*512,
+				maxcount: 1,
+				contentType:['image/png']
+			});
+
+			$('.site-icons-modal *[name="icon_apple_120x120"]').multUploader({
+				action:'mysql.php?func=multipart_upload',
+				fragmentSize:1024*512,
+				maxcount: 1,
+				contentType:['image/png']
+			});
+
+			$('.site-icons-modal *[name="icon_apple_144x144"]').multUploader({
+				action:'mysql.php?func=multipart_upload',
+				fragmentSize:1024*512,
+				maxcount: 1,
+				contentType:['image/png']
+			});
+
+			$('.site-icons-modal *[name="icon_apple_152x152"]').multUploader({
+				action:'mysql.php?func=multipart_upload',
+				fragmentSize:1024*512,
+				maxcount: 1,
+				contentType:['image/png']
+			});
+
+			$('.site-icons-modal *[name="icon_apple_180x180"]').multUploader({
+				action:'mysql.php?func=multipart_upload',
+				fragmentSize:1024*512,
+				maxcount: 1,
+				contentType:['image/png']
+			});
+
+			$('.site-icons-modal *[name="icon_192x192"]').multUploader({
+				action:'mysql.php?func=multipart_upload',
+				fragmentSize:1024*512,
+				maxcount: 1,
+				contentType:['image/png']
+			});
+
+		}
+	});
 }
 
 function sites_address(id,site_id) {
