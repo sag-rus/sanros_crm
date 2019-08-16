@@ -1547,6 +1547,10 @@ function save_site() {
 	var $region_idMsg = $region_id.parent().find('.input-message-block');
 	var region_id = $region_id.val().trim();
 
+	var $resorts_ids = $modalBody.find('input[name="resorts_ids"]');
+	var $resorts_idsMsg = $resorts_ids.parent().find('.input-message-block');
+	var resorts_ids = $resorts_ids.val().trim();
+
   var error = false;
 
   if(name.length > 0) {
@@ -1602,6 +1606,7 @@ function save_site() {
 			post_body_code: post_body_code,
 			branding_name: branding_name,
 			branding_slogan: branding_slogan,
+			resorts_ids: resorts_ids,
 			type: type,
 			direction_id: direction_id,
 			region_id: region_id,
@@ -3380,6 +3385,10 @@ $(document).on('change','.site-modal select[name="type"]',function (e) {
 	var $direction_idFormG = $direction_id.closest('.form-group');
 	var $region_id = $('.site-modal *[name="region_id"]');
 	var $region_idFormG = $region_id.closest('.form-group');
+	var $resorts_ids = $('.site-modal *[name="resorts_ids"]');
+	var $resorts_idsFormG = $resorts_ids.closest('.form-group');
+
+	$region_idFormG.addClass('hidden');
 
 	if(type !== 'global') {
 		$direction_idFormG.addClass('hidden');
@@ -3390,6 +3399,10 @@ $(document).on('change','.site-modal select[name="type"]',function (e) {
 		if(direction_id > 0) {
 			$region_idFormG.removeClass('hidden');
 		}
+	}
+
+	if(type === 'objects') {
+		$resorts_idsFormG.removeClass('hidden');
 	}
 
 });

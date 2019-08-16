@@ -665,10 +665,18 @@ function save_site($connect) {
                 remove_bounds($connect,$entity,'favicon');
                 set_bounds($connect,$boundsArrayFavicon,'favicon');
 
+                $boundsArrayResortsIds = [];
+                if($type === 'objects')
+                    $boundsArrayResortsIds = ids_to_bounds($connect,$entity,'resorts_ids',isset($_POST['resorts_ids'])?ids_string_to_ids($_POST['resorts_ids']):[]);
+
+                remove_bounds($connect,$entity,'resorts_ids');
+                set_bounds($connect,$boundsArrayResortsIds,'resorts_ids');
+
                 $connect->query("UPDATE `sites` SET `name` = ?s, `branding_name` = ?s, `branding_slogan` = ?s, `domain` = ?s, `main_bg_color` = ?s, `main_bg_color2` = ?s, `main_font_color` = ?s, `main_font_color2` = ?s, `main_link_color` = ?s, `head_code` =?s, `pre_body_code` =?s, `post_body_code` =?s, `robots` = ?s, `interface_style` = ?i, `type` = ?s, `direction_id` = ?i, `region_id` = ?i, `theme` = ?s WHERE `id`=?i",$siteName,$branding_name,$branding_slogan,$siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$head_code, $pre_body_code, $post_body_code,$robots,$interface_style, $type, $direction_id, $region_id, $theme, $id);
             }
             else {
                 $connect->query("INSERT INTO `sites` (`status`,`created`,`changed`,`name`, `branding_name`, `branding_slogan`, `domain`,`main_bg_color`,`main_bg_color2`,`main_font_color`,`main_font_color2`,`main_link_color`,`head_code`, `pre_body_code`, `post_body_code`, `robots`, `interface_style`, `type`, `direction_id`, `region_id`, `theme`) VALUES (1, ?i, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?s, ?i, ?i, ?s)", $datetime, $datetime, $siteName, $branding_name, $branding_slogan, $siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$head_code, $pre_body_code, $post_body_code, $robots, $interface_style, $type, $direction_id, $region_id, $theme);
+                $boundsArrayResortsIds = [];
 
                 $entity = [
                     'id' => $connect->insertId(),
@@ -677,6 +685,7 @@ function save_site($connect) {
 
                 $boundsArrayFavicon = files_to_bounds($connect,$entity,'favicon',isset($_POST['favicon'])?$_POST['favicon']:[]);
                 set_bounds($connect,$boundsArrayFavicon,'favicon');
+                set_bounds($connect,$boundsArrayResortsIds,'resorts_ids');
             }
         }
         else {
