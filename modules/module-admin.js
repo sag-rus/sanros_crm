@@ -1506,6 +1506,7 @@ function save_site() {
   var interface_style = parseInt($modalBody.find('*[name="interface_style"]').val())
 	var main_bg_color = $modalBody.find('*[name="main-bg-color"]').val();
   var main_bg_color2 = $modalBody.find('*[name="main-bg-color2"]').val();
+	var main_bg_color3 = $modalBody.find('*[name="main-bg-color3"]').val();
 
   var main_font_color = $modalBody.find('*[name="main-font-color"]').val();
   var main_font_color2 = $modalBody.find('*[name="main-font-color2"]').val();
@@ -1597,6 +1598,7 @@ function save_site() {
 			id: id,
 			main_bg_color: main_bg_color,
 			main_bg_color2: main_bg_color2,
+			main_bg_color3: main_bg_color3,
       main_font_color: main_font_color,
       main_font_color2: main_font_color2,
 			main_link_color: main_link_color,

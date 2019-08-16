@@ -607,6 +607,7 @@ function save_site($connect) {
     $siteDomain = isset($_POST['domain'])?mb_strtolower(trim($_POST['domain'])):"";
     $main_bg_color = isset($_POST['main_bg_color'])?mb_strtolower(trim($_POST['main_bg_color'])):"#ffffff";
     $main_bg_color2 = isset($_POST['main_bg_color2'])?mb_strtolower(trim($_POST['main_bg_color2'])):"#356d33";
+    $main_bg_color3 = isset($_POST['main_bg_color3'])?mb_strtolower(trim($_POST['main_bg_color3'])):"#ba2328";
 
     $main_font_color = isset($_POST['main_font_color'])?mb_strtolower(trim($_POST['main_font_color'])):"#356d33";
     $main_font_color2 = isset($_POST['main_font_color2'])?mb_strtolower(trim($_POST['main_font_color2'])):"#ffffff";
@@ -674,10 +675,10 @@ function save_site($connect) {
                 remove_bounds($connect,$entity,'resorts_ids');
                 set_bounds($connect,$boundsArrayResortsIds,'resorts_ids');
 
-                $connect->query("UPDATE `sites` SET `name` = ?s, `branding_name` = ?s, `branding_slogan` = ?s, `domain` = ?s, `main_bg_color` = ?s, `main_bg_color2` = ?s, `main_font_color` = ?s, `main_font_color2` = ?s, `main_link_color` = ?s, `head_code` =?s, `pre_body_code` =?s, `post_body_code` =?s, `robots` = ?s, `interface_style` = ?i, `type` = ?s, `direction_id` = ?i, `region_id` = ?i, `theme` = ?s WHERE `id`=?i",$siteName,$branding_name,$branding_slogan,$siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$head_code, $pre_body_code, $post_body_code,$robots,$interface_style, $type, $direction_id, $region_id, $theme, $id);
+                $connect->query("UPDATE `sites` SET `name` = ?s, `branding_name` = ?s, `branding_slogan` = ?s, `domain` = ?s, `main_bg_color` = ?s, `main_bg_color2` = ?s, `main_bg_color3` = ?s, `main_font_color` = ?s, `main_font_color2` = ?s, `main_link_color` = ?s, `head_code` =?s, `pre_body_code` =?s, `post_body_code` =?s, `robots` = ?s, `interface_style` = ?i, `type` = ?s, `direction_id` = ?i, `region_id` = ?i, `theme` = ?s WHERE `id`=?i",$siteName,$branding_name,$branding_slogan,$siteDomain,$main_bg_color,$main_bg_color2, $main_bg_color3,$main_font_color,$main_font_color2,$main_link_color,$head_code, $pre_body_code, $post_body_code,$robots,$interface_style, $type, $direction_id, $region_id, $theme, $id);
             }
             else {
-                $connect->query("INSERT INTO `sites` (`status`,`created`,`changed`,`name`, `branding_name`, `branding_slogan`, `domain`,`main_bg_color`,`main_bg_color2`,`main_font_color`,`main_font_color2`,`main_link_color`,`head_code`, `pre_body_code`, `post_body_code`, `robots`, `interface_style`, `type`, `direction_id`, `region_id`, `theme`) VALUES (1, ?i, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?s, ?i, ?i, ?s)", $datetime, $datetime, $siteName, $branding_name, $branding_slogan, $siteDomain,$main_bg_color,$main_bg_color2,$main_font_color,$main_font_color2,$main_link_color,$head_code, $pre_body_code, $post_body_code, $robots, $interface_style, $type, $direction_id, $region_id, $theme);
+                $connect->query("INSERT INTO `sites` (`status`,`created`,`changed`,`name`, `branding_name`, `branding_slogan`, `domain`,`main_bg_color`,`main_bg_color2`,`main_bg_color3`,`main_font_color`,`main_font_color2`,`main_link_color`,`head_code`, `pre_body_code`, `post_body_code`, `robots`, `interface_style`, `type`, `direction_id`, `region_id`, `theme`) VALUES (1, ?i, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?s, ?i, ?i, ?s)", $datetime, $datetime, $siteName, $branding_name, $branding_slogan, $siteDomain,$main_bg_color,$main_bg_color2, $main_bg_color3,$main_font_color,$main_font_color2,$main_link_color,$head_code, $pre_body_code, $post_body_code, $robots, $interface_style, $type, $direction_id, $region_id, $theme);
                 $boundsArrayResortsIds = [];
 
                 $entity = [
@@ -2028,7 +2029,7 @@ function edit_site($connect) {
     'global' => 'Региональный'
   ];
   if($id)
-    $site = $connect->getRow("SELECT `id`, `status`, `name`, `branding_name`, `branding_slogan`,  `domain`, `main_bg_color`, `main_bg_color2`, `main_font_color`, `main_font_color2`, `main_link_color`, `head_code`, `pre_body_code`, `post_body_code`, `robots`, `interface_style`, `type`, `direction_id`, `region_id`, `theme` FROM `sites` WHERE `id` =?i",$id);
+    $site = $connect->getRow("SELECT `id`, `status`, `name`, `branding_name`, `branding_slogan`,  `domain`, `main_bg_color`, `main_bg_color2`, `main_bg_color3`, `main_font_color`, `main_font_color2`, `main_link_color`, `head_code`, `pre_body_code`, `post_body_code`, `robots`, `interface_style`, `type`, `direction_id`, `region_id`, `theme` FROM `sites` WHERE `id` =?i",$id);
   ob_start();
   if($site || !$id) {
       $directions = $connect->getAll("SELECT `id`, `name` FROM `direction_object` WHERE (`id_reg` IS NULL OR `id_reg` = 0) AND `id_country` = 1 ORDER BY `name` ASC");
@@ -2108,6 +2109,13 @@ function edit_site($connect) {
                           <div class="col-sm-8">
                               <input type="color" class="form-control site-main-bg-color2" name="main-bg-color2" value="<?=$site?$site['main_bg_color2']:"#356d33";?>">
                               <div class="input-message-block" data-for="main-bg-color2"></div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">Основной цвет интерфейса 3</label>
+                          <div class="col-sm-8">
+                              <input type="color" class="form-control site-main-bg-color3" name="main-bg-color3" value="<?=$site?$site['main_bg_color3']:"#ba2328";?>">
+                              <div class="input-message-block" data-for="main-bg-color3"></div>
                           </div>
                       </div>
                       <div class="form-group">
