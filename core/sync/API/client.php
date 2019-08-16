@@ -391,6 +391,8 @@ function show_tour_bid_account($connect, $data){
 			$array["sum"] = $answer["sum"];
 			$answer['all_bonus_count'] = $connect->getOne("SELECT COUNT(*) FROM `bonus` WHERE `turist` = ?i AND `sum` > 0",$client);
 			$answer['reckonings_count'] = $connect->getOne("SELECT COUNT(*) FROM `reckoning` WHERE `turist` = ?i AND `status` = 5", $client);
+			$array['all_bonus_count'] = $answer['all_bonus_count'];
+			$array['reckonings_count'] = $answer['reckonings_count'];
 			$array["changes"] = $answer["changes"];
 			$array["status"] = $connect->getOne("SELECT name FROM status WHERE id=?i", $answer["status"]);
 			$array["status_int"] = $answer["status"];
