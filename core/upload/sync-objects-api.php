@@ -69,6 +69,7 @@ function sync_objects_api($connect){
 				if($success) {
 					$connect->query("UPDATE `region` SET `synchronized` = '1' WHERE `id` = ?i",$region['id']);
 					$connect->query("UPDATE `object` SET `synchronized` = '0' WHERE `id_reg` = ?i", $region['id']);
+					$connect->query("UPDATE `direction_object` SET `synchronized` = '0' WHERE `id_reg` = ?i AND (`direction_object`.`id_country` = 0 OR `direction_object`.`id_country` IS NULL)", $region['id']);
 				}
 			}
 
