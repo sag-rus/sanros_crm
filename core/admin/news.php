@@ -2474,7 +2474,7 @@ function set_sites_content($connect) {
       $redirect_path = "";
   }
 
-  if(!in_array($type,['landing', 'settings', 'news', 'article', 'info', 'advice', 'blog_post'])) {
+  if(!in_array($type,['landing', 'settings', 'news', 'article', 'info', 'advice', 'blog_post', 'page'])) {
       $body2 = "";
   }
 
@@ -2585,6 +2585,9 @@ function set_sites_content($connect) {
                     }
 
                   }
+
+                  $connect->getAll("UPDATE `sites_contents` SET `redirect_path` = ?s WHERE `type` = 'redirect' AND `status` <> 2 AND `redirect_path` = ?s",$path, $content['path']);
+
               }
             }
             else {

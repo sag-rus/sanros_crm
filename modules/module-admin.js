@@ -2612,7 +2612,7 @@ function set_sites_content() {
       }
     }
   }
-  else if(type !== 'settings' && type !== 'news' && type !== 'article' && type !== 'info' && type !== 'advice' && type !== 'blog_post') {
+  else if(type !== 'settings' && type !== 'news' && type !== 'article' && type !== 'info' && type !== 'advice' && type !== 'blog_post' && type !== 'page') {
     form_action = '';
     title_h2 = '';
   }
@@ -3577,7 +3577,7 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 		$reviews_objectsFormG.addClass('hidden');
 	}
 
-  if(type === 'landing' || type === 'settings' || type === 'news' || type === 'article' || type === 'info' || type === 'advice' || type === 'blog_post') {
+  if(type === 'landing' || type === 'settings' || type === 'news' || type === 'article' || type === 'info' || type === 'advice' || type === 'blog_post' || type === 'page') {
     $sliderPhotosFormG.removeClass('hidden');
     $page_bgFormG.removeClass('hidden');
     $second_bgFormG.removeClass('hidden');
