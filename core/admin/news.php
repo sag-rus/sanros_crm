@@ -2586,7 +2586,7 @@ function set_sites_content($connect) {
 
                   }
 
-                  $connect->getAll("UPDATE `sites_contents` SET `redirect_path` = ?s WHERE `type` = 'redirect' AND `status` <> 2 AND `redirect_path` = ?s",$path, $content['path']);
+                  $connect->query("UPDATE `sites_contents` SET `redirect_path` = ?s, `synchronized` = 0 WHERE `type` = 'redirect' AND `status` <> 2 AND `redirect_path` = ?s",$path, $content['path']);
 
               }
             }
