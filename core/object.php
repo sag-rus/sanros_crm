@@ -222,12 +222,24 @@ function add_new_direction($connect){
 							<div class="well well-sm"><?php echo $name; ?></div>
 						</div>
 					</div>
-					<div class="form-group form-group-margin">
-						<label class="col-sm-3 control-label">Направление</label>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">Название</label>
 						<div class="col-sm-9">
 							<input type="text" class="form-control name-direction" />
 						</div>
 					</div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Название в родительном падеже</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control name-rod-direction" />
+                        </div>
+                    </div>
+                    <div class="form-group form-group-margin">
+                        <label class="col-sm-3 control-label">Вес (сортировка)</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="form-control name-sort-direction" value="0" />
+                        </div>
+                    </div>
 				</div>
 			</div>
 			<div class="modal-footer">
@@ -242,14 +254,16 @@ function add_new_direction($connect){
 }
 
 function save_new_direction($connect){
-	$name = $_POST["name"];
+	$name = trim($_POST["name"]);
+	$name_rod = trim($_POST["name_rod"]);
+	$sort = (int)$_POST['sort'];
 	$id = $_POST["id"];
 	$type = $_POST["type"];
 	if($type == "region")
 		$column = "id_reg";
 	else
 		$column = "id_country";
-	$connect->query("INSERT INTO direction_object(name, ".$column.") VALUES (?s, ?i)", $name, $id);
+	$connect->query("INSERT INTO direction_object(name, ".$column.",name_rod, sort) VALUES (?s, ?i, ?s, ?i)", $name, $id, $name_rod, $sort);
 }
 
 function add_new_object($connect){
@@ -1486,7 +1500,7 @@ function edit_direction($connect){
 	$type = $_POST["type"];
 	if(!$id)
 		return FALSE;
-	$row = $connect->getRow("SELECT name, name_rod, description, meta_desc FROM direction_object WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT name, name_rod, description, meta_desc, sort FROM direction_object WHERE id=?i", $id);
 ?>
 <div class="modal fade">
 	<div class="modal-dialog">
@@ -1514,12 +1528,18 @@ function edit_direction($connect){
 						<textarea class="form-control description-direction"><?php echo $row["description"]; ?></textarea>
 					</div>
 				</div>
-				<div class="form-group form-group-margin">
+				<div class="form-group">
 					<label class="col-sm-4 control-label">Meta-описание</label>
 					<div class="col-sm-8">
 						<textarea class="form-control meta-desc-direction"><?php echo $row["meta_desc"]; ?></textarea>
 					</div>
 				</div>
+                <div class="form-group form-group-margin">
+                    <label class="col-sm-4 control-label">Вес (сортировка)</label>
+                    <div class="col-sm-8">
+                        <input type="number" class="form-control sort-direction" value="<?=$row['sort'];?>" />
+                    </div>
+                </div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-success btn-sm" onclick="update_direction(<?php echo $id; ?>, '<?php echo $type; ?>')"><i class="fa fa-check"></i> Сохранить</button>
@@ -1534,9 +1554,10 @@ function update_direction($connect){
 	$id = $_POST["id"];
 	$name = trim($_POST["name"]);
 	$name_rod = trim($_POST['name_rod']);
+	$sort = (int)$_POST['sort'];
 	$description = strip_tags($_POST["description"]);
 	$meta_desc = strip_tags($_POST["meta_desc"]);
-	$connect->query("UPDATE direction_object SET name=?s, name_rod = ?s, description=?s, meta_desc=?s, `synchronized` = 0 WHERE id=?i", $name, $name_rod, $description, $meta_desc, $id);
+	$connect->query("UPDATE direction_object SET name=?s, name_rod = ?s, description=?s, meta_desc=?s, sort = ?i, `synchronized` = 0 WHERE id=?i", $name, $name_rod, $description, $meta_desc, $sort, $id);
 }
 
 function create_uniq_link_object($connect){

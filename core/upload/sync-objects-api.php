@@ -11,7 +11,7 @@ function sync_objects_api($connect){
 	try {
 
 		$client = new \GuzzleHttp\Client();
-		$directions = $connect->getAll("SELECT `id`, `name`, `name_rod`, `description`, `meta_desc` FROM `direction_object` WHERE `id_country` = 1 AND `synchronized` = 0");
+		$directions = $connect->getAll("SELECT `id`, `name`, `name_rod`, `description`, `meta_desc`, `sort` FROM `direction_object` WHERE `id_country` = 1 AND `synchronized` = 0");
 		$directionsCond = "";
 		foreach ($directions as $direction) {
 
@@ -26,6 +26,7 @@ function sync_objects_api($connect){
 				'parent_id' => 0,
 				'description' => $direction['description']?$direction['description']:$direction['meta_desc'],
 				'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4',
+				'sort' => $direction['sort'],
 				'uri' => '/направления/'.change_text_url($direction['name']),
 				'status' => 1
 			];
@@ -76,7 +77,7 @@ function sync_objects_api($connect){
 
 		}
 
-		$regional_directions = $connect->getAll("SELECT `direction_object`.`id` AS `id`, `direction_object`.`name` AS `name`, `direction_object`.`name_rod` AS `name_rod`, `direction_object`.`id_reg` AS `id_reg`, `region`.`name` AS `name_reg`, `region`.`id_direction` AS `region_direction_id`, `direction_object2`.`name` AS `dir_name`, `direction_object`.`description` AS `description` FROM `direction_object` INNER JOIN `region` ON `region`.`id` = `direction_object`.`id_reg` INNER JOIN `direction_object` AS `direction_object2` ON `direction_object2`.`id` = `region`.`id_direction` WHERE (`direction_object`.`id_country` = 0 OR `direction_object`.`id_country` IS NULL)  AND `direction_object`.`id_reg` > 0 AND `direction_object`.`synchronized` = 0");
+		$regional_directions = $connect->getAll("SELECT `direction_object`.`id` AS `id`, `direction_object`.`name` AS `name`, `direction_object`.`name_rod` AS `name_rod`, `direction_object`.`id_reg` AS `id_reg`, `region`.`name` AS `name_reg`, `region`.`id_direction` AS `region_direction_id`, `direction_object2`.`name` AS `dir_name`, `direction_object`.`description` AS `description`, `direction_object`.`sort` AS `sort` FROM `direction_object` INNER JOIN `region` ON `region`.`id` = `direction_object`.`id_reg` INNER JOIN `direction_object` AS `direction_object2` ON `direction_object2`.`id` = `region`.`id_direction` WHERE (`direction_object`.`id_country` = 0 OR `direction_object`.`id_country` IS NULL)  AND `direction_object`.`id_reg` > 0 AND `direction_object`.`synchronized` = 0");
 
 
 		foreach ($regional_directions as $regional_direction) {
@@ -86,6 +87,7 @@ function sync_objects_api($connect){
 				'parent_id' => $regional_direction['id_reg'],
 				'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4',
 				'description' => $regional_direction['description'],
+				'sort' => $regional_direction['sort'],
 				'uri' => '/направления/'.change_text_url($regional_direction['dir_name']).'/'.change_text_url($regional_direction['name_reg']).'/'.change_text_url($regional_direction['name']),
 				'status' => 1
 			];

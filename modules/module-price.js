@@ -166,10 +166,12 @@ function save_new_region(country){
 
 function save_new_direction(id, type){
 	var direction = $('.name-direction').val();
+	var name_rod = $('.name-rod-direction').val();
+	var sort = $('.name-sort-direction').val();
 	if(!direction)
 		show_warning('.new-direction', 'Введите название', false);
 	else{
-		var str = 'func=save_new_direction&name=' + direction + '&id=' + id + '&type=' + type;
+		var str = 'func=save_new_direction&name=' + direction + '&id=' + id + '&type=' + type+'&name_rod='+name_rod+'&sort='+sort;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
@@ -1436,12 +1438,13 @@ function edit_direction(type){
 function update_direction(id, type){
 	var name = $('.edit-direction .name-direction').val();
 	var name_rod = $('.edit-direction .name-direction-rod').val();
+	var sort = $('.edit-direction .sort-direction').val();
 	var desc = $('.edit-direction .description-direction').val();
 	var meta_desc = $('.edit-direction .meta-desc-direction').val();
 	if(!name)
 		show_warning('.edit-direction', 'Укажите название направления', false);
 	else{
-		var str = 'func=update_direction&id=' + id + '&name=' + name + '&description=' + desc + '&meta_desc=' + meta_desc+'&name_rod='+name_rod;
+		var str = 'func=update_direction&id=' + id + '&name=' + name + '&description=' + desc + '&meta_desc=' + meta_desc+'&name_rod='+name_rod+'&sort='+sort;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
