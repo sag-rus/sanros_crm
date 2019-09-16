@@ -268,6 +268,8 @@ function naimenovanie($id_obj, $room = "", $date_z = "", $date_v = "", $days = "
       $html = "Санаторий-профилакторий «Бодрость» ".$room." ".$date_z."-".$date_v;
     elseif ($id_obj == 20)
       $html = "Путевка";
+    elseif ($id_obj == 35)
+      $html = "Путевка в санаторий \"Лучезарный\"";
 	return $html;
 }
 
@@ -289,6 +291,8 @@ function full_name($id_obj){
 		$html = "ПАО \"Татнефть\" им.В.Д.Шашина НГДУ \"Лениногорскнефть\" "; // ПАО" Татнефть" им.В.Д.Шашина НГДУ "Лениногорскнефть"
 	elseif($id_obj == 15) //лениногорский
 		$html = "ПАО \"Татнефть\" им.В.Д.Шашина НГДУ \"Джалильнефть\" "; // ПАО" Татнефть" им.В.Д.Шашина НГДУ "Джалильнефть"
+    elseif($id_obj == 35) //лучезарный
+        $html = 'Управление социальными объектами ПАО "Татнефть" им.В.Д.Шашина';
 	elseif($id_obj == 60) //янган-тау
 		$html = "ГУП санаторий \"Янган-Тау\" РБ";
 	elseif($id_obj == 50) //ува
@@ -321,7 +325,7 @@ function full_name($id_obj){
 }
 
 function number($id_obj){
-	if($id_obj == 57 OR $id_obj == 59 OR $id_obj == 3 OR $id_obj == 31 OR $id_obj == 15 OR $id_obj == 28 OR $id_obj == 670 OR $id_obj == 22 OR $id_obj == 492 OR $id_obj == 495 OR $id_obj == 673)
+	if($id_obj == 57 OR $id_obj == 59 OR $id_obj == 3 OR $id_obj == 31 OR $id_obj == 15 OR $id_obj == 28 OR $id_obj == 670 OR $id_obj == 22 OR $id_obj == 492 OR $id_obj == 495 OR $id_obj == 673 OR $id_obj == 35)
 		return "шт";
 	else
 		return "";
