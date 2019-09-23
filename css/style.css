@@ -1708,3 +1708,7 @@ tr.simple-row {
 .site-icons-modal .modal-dialog {
 	width: 800px;
 }
+
+.std-bottom-margin {
+  margin-bottom: 2em;
+}

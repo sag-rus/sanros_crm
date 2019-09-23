@@ -1772,6 +1772,7 @@ function show_sites_contents_list(site_id) {
 	var $sort = $('#content-sort');
 	var body2 = 0;
 	var $body2 = $('#content-body2-filter');
+	var $filterEmptyFieldName = $('#filter-empty-field-name');
 
 	if($type.length > 0) {
 		type = $type.val();
@@ -1795,7 +1796,8 @@ function show_sites_contents_list(site_id) {
 		type:type,
 		q:q,
 		sort: sort,
-		body2: body2
+		body2: body2,
+    filter_empty_field_name: $filterEmptyFieldName.val()
 	};
 
   $.ajax({

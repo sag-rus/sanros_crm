@@ -140,6 +140,21 @@ function show_sites_contents_list($connect) {
   $type = isset($_POST['type'])?trim($_POST['type']):'all';
   $sort = isset($_POST['sort'])?trim($_POST['sort']):'id';
   $body2 = isset($_POST['body2'])?(int)$_POST['body2']:0;
+  $filter_empty_field_name = isset($_POST['filter_empty_field_name'])?$_POST['filter_empty_field_name']:'description';
+
+  $filterEmptyFields = [
+    'description' => 'Мета-описание',
+    'keywords' => 'Ключевые слова',
+    'summary' => 'Анонс',
+    'title_h1' => 'Заголовок H1',
+    'title_h2' => 'Заголовок H2',
+    'breadcrumb_title' => 'Заголовок к крошкам',
+    'body' => 'Содержимое',
+    'body2' => 'Доп. содержимое'
+  ];
+
+  if(!array_key_exists($filter_empty_field_name,$filterEmptyFields))
+      $filter_empty_field_name = "description";
 
   if(!in_array($sort,['id','created','published','title']))
       $sort = 'id';
@@ -153,18 +168,18 @@ function show_sites_contents_list($connect) {
       if($type === 'all') {
         if(mb_strlen($qp) > 0) {
           if($body2 === 1)
-              $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `status` <> 2 AND `title` LIKE ?s AND `body2` = '' ORDER BY " . $sort . " ASC", $site_id, "%" . $qp . "%");
+              $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `status` <> 2 AND `title` LIKE ?s AND `".$filter_empty_field_name."` = '' ORDER BY " . $sort . " ASC", $site_id, "%" . $qp . "%");
           elseif ($body2 === 2)
-              $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `status` <> 2 AND `title` LIKE ?s AND `body2` != '' ORDER BY " . $sort . " ASC", $site_id, "%" . $qp . "%");
+              $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `status` <> 2 AND `title` LIKE ?s AND `".$filter_empty_field_name."` != '' ORDER BY " . $sort . " ASC", $site_id, "%" . $qp . "%");
           else
               $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `status` <> 2 AND `title` LIKE ?s ORDER BY " . $sort . " ASC", $site_id, "%" . $qp . "%");
 
         }
         else {
           if($body2 === 1)
-              $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `status` <> 2 AND `body2` = '' ORDER BY " . $sort . " ASC", $site_id);
+              $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `status` <> 2 AND `".$filter_empty_field_name."` = '' ORDER BY " . $sort . " ASC", $site_id);
           elseif ($body2 === 2)
-              $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `status` <> 2 AND `body2` != '' ORDER BY " . $sort . " ASC", $site_id);
+              $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `status` <> 2 AND `".$filter_empty_field_name."` != '' ORDER BY " . $sort . " ASC", $site_id);
           else
               $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `status` <> 2 ORDER BY " . $sort . " ASC", $site_id);
 
@@ -173,18 +188,18 @@ function show_sites_contents_list($connect) {
       else {
         if(mb_strlen($qp) > 0) {
           if($body2 === 1)
-              $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `type` = ?s AND `status` <> 2 AND `title` LIKE ?s AND `body2` = '' ORDER BY " . $sort . " ASC", $site_id, $type, "%" . $qp . "%");
+              $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `type` = ?s AND `status` <> 2 AND `title` LIKE ?s AND `".$filter_empty_field_name."` = '' ORDER BY " . $sort . " ASC", $site_id, $type, "%" . $qp . "%");
           elseif ($body2 === 2)
-              $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `type` = ?s AND `status` <> 2 AND `title` LIKE ?s AND `body2` != '' ORDER BY " . $sort . " ASC", $site_id, $type, "%" . $qp . "%");
+              $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `type` = ?s AND `status` <> 2 AND `title` LIKE ?s AND `".$filter_empty_field_name."` != '' ORDER BY " . $sort . " ASC", $site_id, $type, "%" . $qp . "%");
           else
               $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `type` = ?s AND `status` <> 2 AND `title` LIKE ?s ORDER BY " . $sort . " ASC", $site_id, $type, "%" . $qp . "%");
 
         }
         else {
           if($body2 === 1)
-            $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `type` = ?s AND `status` <> 2 AND `body2` = '' ORDER BY " . $sort . " ASC", $site_id, $type);
+            $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `type` = ?s AND `status` <> 2 AND `".$filter_empty_field_name."` = '' ORDER BY " . $sort . " ASC", $site_id, $type);
           elseif ($body2 === 2)
-            $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `type` = ?s AND `status` <> 2 AND `body2` != '' ORDER BY " . $sort . " ASC", $site_id, $type);
+            $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `type` = ?s AND `status` <> 2 AND `".$filter_empty_field_name."` != '' ORDER BY " . $sort . " ASC", $site_id, $type);
           else
             $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `site_id`=?i AND `type` = ?s AND `status` <> 2 ORDER BY " . $sort . " ASC", $site_id, $type);
         }
@@ -196,17 +211,17 @@ function show_sites_contents_list($connect) {
   elseif($type === 'all') {
     if(mb_strlen($qp) > 0) {
       if($body2 === 1)
-        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 AND `title` LIKE ?s AND `body2` = '' ORDER BY " . $sort . " ASC", "%" . $qp . "%");
+        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 AND `title` LIKE ?s AND `".$filter_empty_field_name."` = '' ORDER BY " . $sort . " ASC", "%" . $qp . "%");
       elseif ($body2 === 2)
-        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 AND `title` LIKE ?s AND `body2` != '' ORDER BY " . $sort . " ASC", "%" . $qp . "%");
+        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 AND `title` LIKE ?s AND `".$filter_empty_field_name."` != '' ORDER BY " . $sort . " ASC", "%" . $qp . "%");
       else
         $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 AND `title` LIKE ?s ORDER BY " . $sort . " ASC", "%" . $qp . "%");
     }
     else {
       if($body2 === 1)
-        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 AND `body2` = '' ORDER BY " . $sort . " ASC");
+        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 AND `".$filter_empty_field_name."` = '' ORDER BY " . $sort . " ASC");
       elseif ($body2 === 2)
-        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 AND `body2` != '' ORDER BY " . $sort . " ASC");
+        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 AND `".$filter_empty_field_name."` != '' ORDER BY " . $sort . " ASC");
       else
         $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 ORDER BY " . $sort . " ASC");
 
@@ -215,17 +230,17 @@ function show_sites_contents_list($connect) {
   else {
     if(mb_strlen($qp) > 0) {
       if($body2 === 1)
-        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 AND `type` = ?s AND `title` LIKE ?s AND `body2` = '' ORDER BY " . $sort . " ASC", $type, "%" . $qp . "%");
+        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 AND `type` = ?s AND `title` LIKE ?s AND `".$filter_empty_field_name."` = '' ORDER BY " . $sort . " ASC", $type, "%" . $qp . "%");
       elseif ($body2 === 2)
-        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 AND `type` = ?s AND `title` LIKE ?s AND `body2` != '' ORDER BY " . $sort . " ASC", $type, "%" . $qp . "%");
+        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 AND `type` = ?s AND `title` LIKE ?s AND `".$filter_empty_field_name."` != '' ORDER BY " . $sort . " ASC", $type, "%" . $qp . "%");
       else
         $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 AND `type` = ?s AND `title` LIKE ?s ORDER BY " . $sort . " ASC", $type, "%" . $qp . "%");
     }
     else {
       if($body2 === 1)
-        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 AND `type` = ?s AND `body2` = '' ORDER BY " . $sort . " ASC", $type);
+        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 AND `type` = ?s AND `".$filter_empty_field_name."` = '' ORDER BY " . $sort . " ASC", $type);
       elseif ($body2 === 2)
-        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 AND `type` = ?s AND `body2` != '' ORDER BY " . $sort . " ASC", $type);
+        $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 AND `type` = ?s AND `".$filter_empty_field_name."` != '' ORDER BY " . $sort . " ASC", $type);
       else
         $sites_contents = $connect->getAll("SELECT id, title, published, synchronized, type, status FROM `sites_contents` WHERE `status` <> 2 AND `type` = ?s ORDER BY " . $sort . " ASC", $type);
 
@@ -236,7 +251,9 @@ function show_sites_contents_list($connect) {
   ?>
     <div class="panel panel-default">
         <div class="panel-heading">
-            <i class="fa fa-list"></i> Материалы<?php if($site) { ?> сайта «<?=$site['name'];?>»<?php } ?> <button class="btn btn-success btn-sm btn-sites-sync" onclick="sync_site(<?=($site?$site['id']:0);?>)">Синхронизировать</button> <button class="btn btn-default btn-sm" onclick="show_sites_list();">К списку сайтов</button>
+            <i class="fa fa-list"></i> Материалы<?php if($site) { ?> сайта «<?=$site['name'];?>»<?php } ?> <button class="btn btn-success btn-sm btn-sites-sync" onclick="sync_site(<?=($site?$site['id']:0);?>)">Синхронизировать</button> <button class="btn btn-default btn-sm" onclick="show_sites_list();">К списку сайтов</button> <button type="button" class="btn btn-primary btn-sm" onclick="add_new_sites_content(<?=$site_id;?>)"><i class="fa fa-plus-circle"></i> Добавить материал</button>
+
+            <div class="std-bottom-margin"></div>
             <div class="row">
                 <div class="col-md-3">
                     <label class="control-label admin-label">
@@ -244,9 +261,11 @@ function show_sites_contents_list($connect) {
                     </label>
                 </div>
                 <div class="col-md-3">
-                    <label class="control-label admin-label">
-                        Доп. содержимое
-                    </label>
+                    <select class="form-control" id="filter-empty-field-name" onchange="show_sites_contents_list(<?=$site_id;?>);">
+                        <?php foreach ($filterEmptyFields as $filterEmptyFieldsKey => $filterEmptyFieldsValue) { ?>
+                            <option value="<?=$filterEmptyFieldsKey;?>"<?php if($filterEmptyFieldsKey === $filter_empty_field_name) { ?> selected<?php } ?>><?=$filterEmptyFieldsValue;?></option>
+                        <?php } ?>
+                    </select>
                 </div>
                 <div class="col-md-3">
                     <label class="control-label admin-label">
