@@ -145,12 +145,12 @@ class BookingPayment extends Client {
         $reward+= $this->getRewardSchetPosition($row["id"]);
     }
     $reward = round($reward, 2);
-    $reck = $connect->getRow("SELECT sum, id_com, correction FROM reckoning WHERE id=?i", $booking);
+    $reck = $connect->getRow("SELECT sum, id_com, correction, exclude_bank_commission FROM reckoning WHERE id=?i", $booking);
     $raz = 0;
     $all_bonus_count = $connect->getOne("SELECT COUNT(*) FROM `bonus` WHERE `turist` = ?i AND `sum` > 0",$this->turist);
     $reckonings_count = $connect->getOne("SELECT COUNT(*) FROM `reckoning` WHERE `turist` = ?i AND `status` = 5", $this->turist);
 
-    if($all_bonus_count > 1 && $reckonings_count > 0) {
+    if($all_bonus_count > 1 && $reckonings_count > 0 && !$reck['exclude_bank_commission']) {
       $bank_com = 0;
     }
     else $bank_com = ($bank_com * $reck["sum"]) / 100;
@@ -180,7 +180,7 @@ class BookingPayment extends Client {
       "bonus" => 0,
       "prepay" => 0
     );
-    $reck_properties = $connect->getRow("SELECT sum, id_dis FROM reckoning WHERE id=?i AND turist=?i AND (status=3 OR status=4) LIMIT 1", $booking, $turist);
+    $reck_properties = $connect->getRow("SELECT sum, id_dis, exclude_bank_commission FROM reckoning WHERE id=?i AND turist=?i AND (status=3 OR status=4) LIMIT 1", $booking, $turist);
     $answer["total"] = $reck_properties['sum'];
     if($answer["total"] > 0){
       if($type == "prepay"){
@@ -223,7 +223,7 @@ class BookingPayment extends Client {
 
         $answer["to-pay-no-com"] = $answer["total"] - $answer["bonus"] - $answer["prepay"]-$dis;
 
-        if($answer['all_bonus_count'] > 1 && $answer['reckonings_count'] > 0) {
+        if($answer['all_bonus_count'] > 1 && $answer['reckonings_count'] > 0 && !$reck_properties['exclude_bank_commission']) {
           $com = $this->bankInfo['commission'] / 100;
           $answer["to-pay"] = round($answer["to-pay-no-com"] * (1 + ($com/(1-$com))),2);
         }
@@ -291,7 +291,7 @@ class BookingPayment extends Client {
     $answer = array();
     $sum = $this->checkPayment();
     if($sum["to-pay"] > 0){
-      $array = $connect->getRow("SELECT id, sum, id_obj FROM reckoning WHERE id=?i AND turist=?i AND (status=3 OR status=4)", $booking, $client);
+      $array = $connect->getRow("SELECT id, sum, id_obj, exclude_bank_commission FROM reckoning WHERE id=?i AND turist=?i AND (status=3 OR status=4)", $booking, $client);
       $answer["id"] = $array["id"];
       $answer["check"] = 1;
 
@@ -302,6 +302,7 @@ class BookingPayment extends Client {
       $answer["prepay"] = add_null($sum["prepay"]);
       $answer['all_bonus_count'] = $sum['all_bonus_count'];
       $answer['reckonings_count'] = $sum['reckonings_count'];
+      $answer['exclude_bank_commission'] = $array['exclude_bank_commission'];
       $turist = new Display($client);
       $answer["turist"] = $turist->selectFio();
       unset($turist);
@@ -354,7 +355,7 @@ class BookingPayment extends Client {
     $booking = $this->booking;
     $turist = $this->turist;
 
-    $reck_properties = $connect->getRow("SELECT sum, id_dis FROM reckoning WHERE id=?i AND turist=?i AND (status=3 OR status=4) LIMIT 1", $booking, $turist);
+    $reck_properties = $connect->getRow("SELECT sum, id_dis, exclude_bank_commission FROM reckoning WHERE id=?i AND turist=?i AND (status=3 OR status=4) LIMIT 1", $booking, $turist);
 
     $sum = $reck_properties['sum'];
     if($sum > 0){
@@ -399,7 +400,7 @@ class BookingPayment extends Client {
 
       $sum_to_pay = $sum - $bonus - $prepay-$dis;
 
-      if($all_bonus_count > 1 && $reckonings_count > 0) {
+      if($all_bonus_count > 1 && $reckonings_count > 0 && !$reck_properties['exclude_bank_commission']) {
         $com = $this->bankInfo['commission'] / 100;
         $sum_to_pay *= (1 + ($com/(1-$com)));
         $sum_to_pay = round($sum_to_pay,2);

@@ -379,7 +379,7 @@ function show_tour_bid_account($connect, $data){
 			$true = $connect->getOne("SELECT id FROM reckoning WHERE id=?i AND turist=?i AND active!=3 LIMIT 1", $id, $client);
 		if($true == $id){
 			$array = array("check" => 1);
-			$answer = $connect->getRow("SELECT id, id_obj, date_z, date_v, sum, status, status_san, rest, changes, id_user, id_dis FROM reckoning WHERE id=?i LIMIT 1", $data['id']);
+			$answer = $connect->getRow("SELECT id, id_obj, date_z, date_v, sum, status, status_san, rest, changes, id_user, id_dis, exclude_bank_commission FROM reckoning WHERE id=?i LIMIT 1", $data['id']);
 			$rest = $answer["rest"];
 			$array["id"] = $data["id"];
 			$object = get_object($connect, $answer["id_obj"], "type_and_fast_booking");
@@ -393,6 +393,7 @@ function show_tour_bid_account($connect, $data){
 			$answer['reckonings_count'] = $connect->getOne("SELECT COUNT(*) FROM `reckoning` WHERE `turist` = ?i AND `status` = 5", $client);
 			$array['all_bonus_count'] = $answer['all_bonus_count'];
 			$array['reckonings_count'] = $answer['reckonings_count'];
+			$array['exclude_bank_commission'] = $answer['exclude_bank_commission'];
 			$array["changes"] = $answer["changes"];
 			$array["status"] = $connect->getOne("SELECT name FROM status WHERE id=?i", $answer["status"]);
 			$array["status_int"] = $answer["status"];
@@ -437,7 +438,7 @@ function show_tour_bid_account($connect, $data){
 				$array["doc"] = 2;
 				$reward = get_reward_schet($connect, $array['id']);
 				$array['final_reward'] = $reward/2-$array['bonus']/2;
-				if(!($answer['all_bonus_count'] > 1 && $answer['reckonings_count'] > 0)) {
+				if(!($answer['all_bonus_count'] > 1 && $answer['reckonings_count'] > 0) || $answer['exclude_bank_commission']) {
 					$array['final_reward'] -= 0.018*($array['sum']-$array['payment_sum']);
 				}
 				$array['reward'] = $reward;
