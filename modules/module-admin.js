@@ -1907,10 +1907,12 @@ function add_new_sites_content(site_id) {
 											'</div>' +
                       '<div class="form-group hidden">' +
                         '<label class="col-sm-2 control-label">Тип агрегатора</label>' +
-                        '<select class="form-control" name="rss">' +
-                          '<option value="0">Страница</option>' +
-                          '<option value="1">RSS</option>' +
-                        '</select>' +
+                        '<div class="col-sm-10">'+
+                          '<select class="form-control" name="rss">' +
+                            '<option value="0">Страница</option>' +
+                            '<option value="1">RSS</option>' +
+                          '</select>' +
+                        '</div>'+
                       '</div>'+
                       '<div class="form-group hidden">' +
                           '<label class="col-sm-2 control-label">Адрес основного агрегатора</label>' +
