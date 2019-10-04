@@ -1531,14 +1531,14 @@ function edit_sites_content($connect) {
                               <div class="input-message-block" data-for="title"></div>
                           </div>
                       </div>
-                      <div class="form-group<?php if(in_array($content['type'],['redirect'])) { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(in_array($content['type'],['redirect']) || ($content['type'] === 'aggregator' && $content['rss'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Заголовок к крошкам</label>
                           <div class="col-sm-10">
                               <input type="text" class="form-control" name="breadcrumb_title" maxlength="255" value="<?=htmlspecialchars($content['breadcrumb_title']);?>">
                               <div class="input-message-block" data-for="breadcrumb_title"></div>
                           </div>
                       </div>
-                      <div class="form-group<?php if(in_array($content['type'],['redirect'])) { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(in_array($content['type'],['redirect']) || ($content['type'] === 'aggregator' && $content['rss'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Заголовок h1</label>
                           <div class="col-sm-10">
                               <input type="text" class="form-control" name="title_h1" maxlength="255" value="<?=htmlspecialchars($content['title_h1']);?>">
@@ -1565,19 +1565,21 @@ function edit_sites_content($connect) {
                       </div>
                       <div class="form-group<?php if($content['type'] !== 'aggregator') { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Тип агрегатора</label>
-                          <select class="form-control" name="rss">
-                              <option value="0"<?php if(!$rss) { ?> selected<?php } ?>>Страница</option>
-                              <option value="1"<?php if($rss) { ?> selected<?php } ?>>RSS</option>
-                          </select>
+                          <div class="col-sm-10">
+                              <select class="form-control" name="rss">
+                                  <option value="0"<?php if(!$content['rss']) { ?> selected<?php } ?>>Страница</option>
+                                  <option value="1"<?php if($content['rss']) { ?> selected<?php } ?>>RSS</option>
+                              </select>
+                          </div>
                       </div>
-                      <div class="form-group<?php if(!$rss || $content['type'] !== 'aggregator') { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(!$content['rss'] || $content['type'] !== 'aggregator') { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Адрес основного агрегатора</label>
                           <div class="col-sm-10">
                               <input type="text" class="form-control" name="rss_aggregator_link" value="<?=htmlspecialchars($content['rss_aggregator_link']);?>" maxlength="512">
                               <div class="input-message-block" data-for="rss_aggregator_link"></div>
                           </div>
                       </div>
-                      <div class="form-group<?php if(!$rss || $content['type'] !== 'aggregator') { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(!$content['rss'] || $content['type'] !== 'aggregator') { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Дополнения в RSS</label>
                           <div class="col-sm-10">
                               <textarea class="form-control" name="rss_addition"></textarea>
@@ -1717,7 +1719,7 @@ function edit_sites_content($connect) {
                               <textarea class="form-control" name="summary"><?=htmlspecialchars($content['summary']);?></textarea>
                           </div>
                       </div>
-                      <div class="form-group<?php if(in_array($content['type'],['redirect'])) { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(in_array($content['type'],['redirect']) || ($content['type'] === 'aggregator' && $content['rss'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Содержимое</label>
                           <div class="col-sm-10">
                               <textarea class="form-control resizable-textarea" name="body" id="sites_content_body"><?=htmlspecialchars($content['body']);?></textarea>
@@ -1757,7 +1759,7 @@ function edit_sites_content($connect) {
                               </select>
                           </div>
                       </div>
-                      <div class="form-group<?php if(in_array($content['type'],['redirect'])) { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(in_array($content['type'],['redirect']) || ($content['type'] === 'aggregator' && $content['rss'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Код карты</label>
                           <div class="col-sm-10">
                               <textarea class="form-control" name="map_code"><?=htmlspecialchars($content['map_code']);?></textarea>
@@ -1775,14 +1777,14 @@ function edit_sites_content($connect) {
                               <input type="datetime-local" name="published" class="form-control" value="<?=gmdate("Y-m-d\TH:i",$content['published']+3600*3);?>">
                           </div>
                       </div>
-                      <div class="form-group<?php if(in_array($content['type'],['redirect'])) { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(in_array($content['type'],['redirect']) || ($content['type'] === 'aggregator' && $content['rss'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Вес материала (для Sitemap)</label>
                           <div class="col-sm-10">
                               <input type="number" name="weight" class="form-control" value="<?=$content['weight'];?>">
                               <div class="input-message-block" data-for="weight"></div>
                           </div>
                       </div>
-                      <div class="form-group<?php if(in_array($content['type'],['redirect'])) { ?> hidden<?php } ?>">
+                      <div class="form-group<?php if(in_array($content['type'],['redirect']) || ($content['type'] === 'aggregator' && $content['rss'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Вес материала (сортировка)</label>
                           <div class="col-sm-10">
                               <input type="number" name="sort" class="form-control" value="<?=$content['sort'];?>">

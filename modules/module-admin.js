@@ -1905,6 +1905,26 @@ function add_new_sites_content(site_id) {
 													'<div class="input-message-block" data-for="type"></div>'+
 												'</div>' +
 											'</div>' +
+                      '<div class="form-group hidden">' +
+                        '<label class="col-sm-2 control-label">Тип агрегатора</label>' +
+                        '<select class="form-control" name="rss">' +
+                          '<option value="0">Страница</option>' +
+                          '<option value="1">RSS</option>' +
+                        '</select>' +
+                      '</div>'+
+                      '<div class="form-group hidden">' +
+                          '<label class="col-sm-2 control-label">Адрес основного агрегатора</label>' +
+                          '<div class="col-sm-10">' +
+                              '<input type="text" class="form-control" name="rss_aggregator_link" value="" maxlength="512">' +
+                              '<div class="input-message-block" data-for="rss_aggregator_link"></div>' +
+                          '</div>' +
+                      '</div>' +
+                      '<div class="form-group hidden">' +
+                          '<label class="col-sm-2 control-label">Дополнения в RSS</label>' +
+                          '<div class="col-sm-10">' +
+                              '<textarea class="form-control" name="rss_addition"></textarea>' +
+                          '</div>' +
+                      '</div>' +
 			 								'<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Адрес страницы</label>' +
 												'<div class="col-sm-10">' +
@@ -3515,6 +3535,16 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 	var $aggregate_typesFormG = $aggregate_types.closest('.form-group');
 
 
+  var $rss = $('.sites-content-modal *[name="rss"]');
+  var rss = parseInt($rss.val(),10);
+  var $rssFormG = $rss.closest('.form-group');
+
+  var $rss_aggregator_link = $('.sites-content-modal *[name="rss_aggregator_link"]');
+  var $rss_aggregator_linkFormG = $rss_aggregator_link.closest('.form-group');
+
+  var $rss_addition = $('.sites-content-modal *[name="rss_addition"]');
+  var $rss_additionFormG = $rss_addition.closest('.form-group');
+
 	var $body = $('.sites-content-modal *[name="body"]');
 	var $bodyFormG = $body.closest('.form-group');
 
@@ -3556,10 +3586,25 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 
 	if(type === 'aggregator')  {
 		$aggregate_typesFormG.removeClass('hidden');
+    $rssFormG.removeClass('hidden');
 	}
 	else {
 		$aggregate_typesFormG.addClass('hidden');
-	}
+    $rssFormG.addClass('hidden');
+    $rss.val(0);
+    rss = 0;
+  }
+
+	if(rss === 0) {
+	  $rss_aggregator_linkFormG.addClass('hidden');
+    $rss_additionFormG.addClass('hidden');
+
+  }
+	else {
+    $rss_aggregator_linkFormG.removeClass('hidden');
+    $rss_additionFormG.removeClass('hidden');
+  }
+
 
 	if(type === 'module') {
 		$moduleObjectFormG.removeClass('hidden');
@@ -3621,6 +3666,73 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 		$direction_idFormG.addClass('hidden');
 		$region_idFormG.addClass('hidden');
 	}
+
+});
+
+
+$(document).on('change','.sites-content-modal select[name="rss"]',function (e) {
+  var $rss = $('.sites-content-modal *[name="rss"]');
+  var rss = parseInt($rss.val(),10);
+  var $rssFormG = $rss.closest('.form-group');
+
+  var $sort = $('.sites-content-modal *[name="sort"]');
+  var sort = parseInt($sort.val(),10);
+  var $sortFormG = $sort.closest('.form-group');
+
+  var $weight = $('.sites-content-modal *[name="weight"]');
+  var weight = parseInt($weight.val(),10);
+  var $weightFormG = $weight.closest('.form-group');
+
+  var $map_code = $('.sites-content-modal *[name="map_code"]');
+  var map_code = parseInt($map_code.val(),10);
+  var $map_codeFormG = $map_code.closest('.form-group');
+
+  var $rss_aggregator_link = $('.sites-content-modal *[name="rss_aggregator_link"]');
+  var $rss_aggregator_linkFormG = $rss_aggregator_link.closest('.form-group');
+
+  var $rss_addition = $('.sites-content-modal *[name="rss_addition"]');
+  var $rss_additionFormG = $rss_addition.closest('.form-group');
+
+  var $body = $('.sites-content-modal *[name="body"]');
+  var $bodyFormG = $body.closest('.form-group');
+
+  var $summary = $('.sites-content-modal *[name="summary"]');
+  var $summaryFormG = $summary.closest('.form-group');
+
+  var $keywords = $('.sites-content-modal *[name="keywords"]');
+  var $keywordsFormG = $keywords.closest('.form-group');
+
+  var $title_h1 = $('.sites-content-modal *[name="title_h1"]');
+  var $title_h1FormG = $title_h1.closest('.form-group');
+
+  var $breadcrumb_title = $('.sites-content-modal *[name="breadcrumb_title"]');
+  var $breadcrumb_titleFormG = $breadcrumb_title.closest('.form-group');
+
+  if(rss === 0) {
+    $rss_aggregator_linkFormG.addClass('hidden');
+    $rss_additionFormG.addClass('hidden');
+    $sortFormG.removeClass('hidden');
+    $weightFormG.removeClass('hidden');
+    $map_codeFormG.removeClass('hidden');
+    $bodyFormG.removeClass('hidden');
+    $breadcrumb_titleFormG.removeClass('hidden');
+    $title_h1FormG.removeClass('hidden');
+    $keywordsFormG.removeClass('hidden');
+    $summaryFormG.removeClass('hidden');
+
+  }
+  else {
+    $rss_aggregator_linkFormG.removeClass('hidden');
+    $rss_additionFormG.removeClass('hidden');
+    $sortFormG.addClass('hidden');
+    $weightFormG.addClass('hidden');
+    $map_codeFormG.addClass('hidden');
+    $bodyFormG.addClass('hidden');
+    $breadcrumb_titleFormG.addClass('hidden');
+    $title_h1FormG.addClass('hidden');
+    $keywordsFormG.addClass('hidden');
+    $summaryFormG.addClass('hidden');
+  }
 
 });
 
