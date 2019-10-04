@@ -2373,6 +2373,16 @@ function set_sites_content() {
   var title_h2 = $title_h2.val().trim();
   $title_h2Msg.html('');
 
+  var $rss_aggregator_link = $modalBody.find('input[name="rss_aggregator_link"]');
+  var $rss_aggregator_linkMsg = $rss_aggregator_link.parent().find('.input-message-block');
+  var rss_aggregator_link = $rss_aggregator_link.val().trim();
+  $rss_aggregator_linkMsg.html('');
+
+  var $rss_addition = $modalBody.find('textarea[name="rss_addition"]');
+  var $rss_additionMsg = $rss_addition.parent().find('.input-message-block');
+  var rss_addition = $rss_addition.val().trim();
+  $rss_additionMsg.html('');
+
   var content_id = parseInt($modalBody.find('*[name="content_id"]').val());
 
   var $path = $modalBody.find('input[name="path"]');
@@ -2483,6 +2493,7 @@ function set_sites_content() {
 
   var site_id = $modalBody.find('*[name="site_id"]').val();
   var type = $modalBody.find('*[name="type"]').val();
+  var rss = parseInt($modalBody.find('*[name="rss"]').val(),10);
   var keywords = $modalBody.find('*[name="keywords"]').val();
   var published = $modalBody.find('*[name="published"]').val();
 
@@ -2659,6 +2670,25 @@ function set_sites_content() {
   			error = true;
 			}
 		}
+
+  	if(rss) {
+      if(rss_aggregator_link.length === 0) {
+        $rss_aggregator_linkMsg.html("Это обязательное поле");
+        if(!error) {
+          $rss_aggregator_link.focus();
+          error = true;
+        }
+      }
+      else if(rss_aggregator_link[0] !== '/') {
+        $rss_aggregator_linkMsg.html("путь должен начинаться с /");
+        if(!error) {
+          $rss_aggregator_link.focus();
+          error = true;
+        }
+      }
+    }
+
+
 	}
 
   if(!error) {
@@ -2703,7 +2733,10 @@ function set_sites_content() {
         module_block: module_block,
 				map_code: map_code,
         landing_info: landing_info,
-				reviews_objects: reviews_objects
+				reviews_objects: reviews_objects,
+        rss: rss,
+        rss_aggregator_link: rss_aggregator_link,
+        rss_addition: rss_addition
 			},
       dataType: 'JSON',
       url: 'mysql.php',
