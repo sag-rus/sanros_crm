@@ -1582,7 +1582,7 @@ function edit_sites_content($connect) {
                       <div class="form-group<?php if(!$content['rss'] || $content['type'] !== 'aggregator') { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Дополнения в RSS</label>
                           <div class="col-sm-10">
-                              <textarea class="form-control" name="rss_addition"></textarea>
+                              <textarea class="form-control" name="rss_addition"><?=$content['rss_addition'];?></textarea>
                           </div>
                       </div>
                       <div class="form-group">
