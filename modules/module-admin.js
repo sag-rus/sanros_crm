@@ -2429,6 +2429,13 @@ function set_sites_content() {
   else
   	status = 0;
 
+	var $rss_aggregation = $modalBody.find('*[name="rss_aggregation"]');
+	var rss_aggregation;
+	if($rss_aggregation.prop('checked'))
+		rss_aggregation = 1;
+	else
+		rss_aggregation = 0;
+
   var $second_bg = $modalBody.find('*[name="second_bg"]');
   var second_bg;
   if($second_bg.prop('checked'))
@@ -2742,7 +2749,8 @@ function set_sites_content() {
 				reviews_objects: reviews_objects,
         rss: rss,
         rss_aggregator_link: rss_aggregator_link,
-        rss_addition: rss_addition
+        rss_addition: rss_addition,
+				rss_aggregation: rss_aggregation
 			},
       dataType: 'JSON',
       url: 'mysql.php',
