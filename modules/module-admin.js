@@ -2153,6 +2153,12 @@ function add_new_sites_content(site_id) {
 												'</div>' +
 											'</div>' +
 			 								'<div class="form-group">' +
+												'<label class="col-sm-2 control-label">Разрешить RSS-агрегацию</label>' +
+												'<div class="col-sm-10">' +
+													'<input type="checkbox" name="rss_aggregation" class="form-control">'+
+												'</div>' +
+											'</div>' +
+			 								'<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Опубликовано</label>' +
 												'<div class="col-sm-10">' +
 													'<input type="checkbox" name="status" class="form-control">'+
@@ -3580,6 +3586,9 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
   var $rss_addition = $('.sites-content-modal *[name="rss_addition"]');
   var $rss_additionFormG = $rss_addition.closest('.form-group');
 
+	var $rss_aggregation = $('.sites-content-modal *[name="rss_aggregation"]');
+	var $rss_aggregationFormG = $rss_aggregation.closest('.form-group');
+
 	var $body = $('.sites-content-modal *[name="body"]');
 	var $bodyFormG = $body.closest('.form-group');
 
@@ -3701,6 +3710,17 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 		$direction_idFormG.addClass('hidden');
 		$region_idFormG.addClass('hidden');
 	}
+
+    if(type === 'settings' || type === 'article' || type === 'news' || type === 'info' || type === 'advice' || type === 'blog_post') {
+    	$rss_aggregationFormG.removeClass('hidden');
+			if(type === 'article' || type === 'news' || type === 'info' || type === 'advice' || type === 'blog_post') {
+				$rss_aggregation.prop('checked',true);
+			}
+		}
+    else {
+			$rss_aggregationFormG.addClass('hidden');
+			$rss_aggregation.prop('checked',false);
+		}
 
 });
 

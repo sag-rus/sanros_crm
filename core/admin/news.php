@@ -1494,7 +1494,7 @@ function edit_sites_content($connect) {
   $copy_mode = isset($_POST['copy_mode'])?(int)$_POST['copy_mode']:0;
   $content = NULL;
   if($content_id)
-      $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h1`, `title_h2`, `summary`, `body`, `body2`, `path`, `redirect_path`, `description`, `keywords`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `photogallery_title`, `photogallery_orientation`, `breadcrumb_title`, `direction_id`, `region_id`, `regional_direction_id`, `rss`, `rss_aggregator_link`, `rss_addition` FROM `sites_contents` WHERE `id` =?i",$content_id);
+      $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h1`, `title_h2`, `summary`, `body`, `body2`, `path`, `redirect_path`, `description`, `keywords`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `photogallery_title`, `photogallery_orientation`, `breadcrumb_title`, `direction_id`, `region_id`, `regional_direction_id`, `rss`, `rss_aggregator_link`, `rss_addition`, `rss_aggregation` FROM `sites_contents` WHERE `id` =?i",$content_id);
       $entity = $content;
       $entity['type'] = 'content';
   ob_start();
@@ -1791,13 +1791,19 @@ function edit_sites_content($connect) {
                               <div class="input-message-block" data-for="sort"></div>
                           </div>
                       </div>
+                      <div class="form-group<?php if(!in_array($content['type'],['photogallery','news', 'page','settings', 'article', 'info', 'advice', 'blog_post'])) { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Разрешить RSS-агрегацию</label>
+                          <div class="col-sm-10">
+                              <input type="checkbox" name="rss_aggregation" class="form-control"<?php if($content['rss_aggregation'] == 1) {?> checked<?php } ?>>
+                          </div>
+                      </div>
                       <div class="form-group">
                           <label class="col-sm-2 control-label">Опубликовано</label>
                           <div class="col-sm-10">
                               <input type="checkbox" name="status" class="form-control"<?php if($content['status'] == 1) {?> checked<?php } ?>>
-                              </div>
                           </div>
                       </div>
+                  </div>
                   <div class="modal-loader"></div>
                   <div class="modal-footer">
                       <button class="btn btn-success btn-sm btn-save-new-sites-content" onclick="set_sites_content()" id="btn-save-new-sites-content"><i class="fa fa-check-circle"></i> Сохранить</button>
@@ -2492,6 +2498,7 @@ function set_sites_content($connect) {
   $rss = isset($_POST['rss'])?(int)$_POST['rss']:0;
   $rss_aggregator_link = isset($_POST['rss_aggregator_link'])?trim($_POST['rss_aggregator_link']):"";
   $rss_addition = isset($_POST['rss_addition'])?trim($_POST['rss_addition']):"";
+  $rss_aggregation = isset($_POST['rss_aggregation'])?(int)$_POST['rss_aggregation']:0;
 
   $typesAr = ['page','news', 'module', 'landing', "photogallery", "settings", 'article', 'info', 'aggregator', 'advice', 'blog_post', 'redirect'];
   $photogallery_orientations = ['album', 'book'];
@@ -2526,6 +2533,10 @@ function set_sites_content($connect) {
       $direction_id = 0;
       $region_id = 0;
       $regional_direction_id = 0;
+  }
+
+  if(!in_array($type,['photogallery','news', 'page','settings', 'article', 'info', 'advice', 'blog_post'])) {
+     $rss_aggregation = 0;
   }
 
   if(in_array($type,['aggregator'])) {
@@ -2629,7 +2640,7 @@ function set_sites_content($connect) {
               set_bounds($connect,$boundsArrayAggregateTypes,'aggregate_types');
 
 
-              $connect->query("UPDATE `sites_contents` SET `title`=?s, `title_h1`=?s, `title_h2` = ?s, `path`=?s, `redirect_path` = ?s, `description`=?s, `body`=?s, `body2` =?s, `summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `sort` = ?i, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i, `form_action` = ?s, `map_code` = ?s, `landing_info` = ?s, `breadcrumb_title` = ?s, `photogallery_title` = ?s, `photogallery_orientation` = ?s, `direction_id` = ?i, `region_id` = ?i, `regional_direction_id` = ?i, `rss` = ?i, `rss_aggregator_link` = ?s, `rss_addition` = ?s WHERE `id`=?i",$title, $title_h1, $title_h2, $path, $redirect_path, $description, $body, $body2,$summary,$keywords,$type,$timestamp,$published,$status,0,$weight, $sort,$module_object_id,$module_block,$second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $direction_id, $region_id, $regional_direction_id, $rss, $rss_aggregator_link, $rss_addition, $content_id);
+              $connect->query("UPDATE `sites_contents` SET `title`=?s, `title_h1`=?s, `title_h2` = ?s, `path`=?s, `redirect_path` = ?s, `description`=?s, `body`=?s, `body2` =?s, `summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `sort` = ?i, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i, `form_action` = ?s, `map_code` = ?s, `landing_info` = ?s, `breadcrumb_title` = ?s, `photogallery_title` = ?s, `photogallery_orientation` = ?s, `direction_id` = ?i, `region_id` = ?i, `regional_direction_id` = ?i, `rss` = ?i, `rss_aggregator_link` = ?s, `rss_addition` = ?s, `rss_aggregation` = ?i WHERE `id`=?i",$title, $title_h1, $title_h2, $path, $redirect_path, $description, $body, $body2,$summary,$keywords,$type,$timestamp,$published,$status,0,$weight, $sort,$module_object_id,$module_block,$second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $direction_id, $region_id, $regional_direction_id, $rss, $rss_aggregator_link, $rss_addition, $rss_aggregation,$content_id);
               if($content && $content['path'] !== $path && $type !== 'redirect' && !($type === 'aggregator' && $rss)) {
                   $connect->query("INSERT INTO `sites_contents` (`title`, `title_h1`, `title_h2`, `path`, `redirect_path`, `description`, `body`, `body2`, `summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `map_code`, `landing_info`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation`, `direction_id`, `region_id`, `regional_direction_id`) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?i, ?i, ?s, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i)","Редирект", "", "", $content['path'], $path, "","","","","",'redirect',$timestamp,$published,1,0,$content['site_id'],$timestamp,0.9, 0,0, '', 0, '','', '', '', '', 'album', 0, 0, 0);
                   if($site_id == 38) {
@@ -2650,7 +2661,7 @@ function set_sites_content($connect) {
             else {
               $respAr['success'] = 1;
               $respAr['msg'] = "Контент успешно добавлен";
-              $connect->query("INSERT INTO `sites_contents` (`title`, `title_h1`, `title_h2`, `path`, `redirect_path`, `description`, `body`, `body2`, `summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `map_code`, `landing_info`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation`, `direction_id`, `region_id`, `regional_direction_id`, `rss`, `rss_aggregator_link`, `rss_addition`) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?i, ?i, ?s, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?s, ?s)",$title, $title_h1, $title_h2, $path, $redirect_path, $description,$body,$body2,$summary,$keywords,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight, $sort,$module_object_id, $module_block, $second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $direction_id, $region_id, $regional_direction_id, $rss, $rss_aggregator_link, $rss_addition);
+              $connect->query("INSERT INTO `sites_contents` (`title`, `title_h1`, `title_h2`, `path`, `redirect_path`, `description`, `body`, `body2`, `summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `map_code`, `landing_info`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation`, `direction_id`, `region_id`, `regional_direction_id`, `rss`, `rss_aggregator_link`, `rss_addition`, `rss_aggregation`) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?i, ?i, ?s, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?s, ?s, ?i)",$title, $title_h1, $title_h2, $path, $redirect_path, $description,$body,$body2,$summary,$keywords,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight, $sort,$module_object_id, $module_block, $second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $direction_id, $region_id, $regional_direction_id, $rss, $rss_aggregator_link, $rss_addition, $rss_aggregation);
 
               $entity = [
                 'id' => $connect->insertId(),
