@@ -1956,17 +1956,20 @@ function add_new_sites_content(site_id) {
 													'<div class="checkbox-container">' +
 														'<input type="checkbox" class="form-control" name="aggregate_types" value="4" id="aggregate_types_3"> <label class="control-label" for="aggregate_types_3">Страница</label>' +
 													'</div>' +
-													'<div class="checkbox-container">' +
-														'<input type="checkbox" class="form-control" name="aggregate_types" value="7" id="aggregate_types_4"> <label class="control-label" for="aggregate_types_4">Статья</label>' +
+			 										'<div class="checkbox-container">' +
+														'<input type="checkbox" class="form-control" name="aggregate_types" value="6" id="aggregate_types_4"> <label class="control-label" for="aggregate_types_4">Настройки</label>' +
 													'</div>' +
 													'<div class="checkbox-container">' +
-														'<input type="checkbox" class="form-control" name="aggregate_types" value="8" id="aggregate_types_5"> <label class="control-label" for="aggregate_types_5">Полезная информация</label>' +
+														'<input type="checkbox" class="form-control" name="aggregate_types" value="7" id="aggregate_types_5"> <label class="control-label" for="aggregate_types_5">Статья</label>' +
+													'</div>' +
+													'<div class="checkbox-container">' +
+														'<input type="checkbox" class="form-control" name="aggregate_types" value="8" id="aggregate_types_6"> <label class="control-label" for="aggregate_types_6">Полезная информация</label>' +
 													'</div>' +
 			 										'<div class="checkbox-container">' +
-														'<input type="checkbox" class="form-control" name="aggregate_types" value="10" id="aggregate_types_6"> <label class="control-label" for="aggregate_types_6">Советы эксперта</label>' +
+														'<input type="checkbox" class="form-control" name="aggregate_types" value="10" id="aggregate_types_7"> <label class="control-label" for="aggregate_types_7">Советы эксперта</label>' +
 													'</div>' +
 													'<div class="checkbox-container">' +
-														'<input type="checkbox" class="form-control" name="aggregate_types" value="11" id="aggregate_types_7"> <label class="control-label" for="aggregate_types_7">Блог</label>' +
+														'<input type="checkbox" class="form-control" name="aggregate_types" value="11" id="aggregate_types_8"> <label class="control-label" for="aggregate_types_8">Блог</label>' +
 													'</div>' +
 													'<div class="with-bottom-margin"></div>' +
 													'<div class="input-message-block" data-for="aggregate_types"></div>' +
