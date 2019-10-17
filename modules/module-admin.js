@@ -1773,6 +1773,7 @@ function show_sites_contents_list(site_id) {
 	var body2 = 0;
 	var $body2 = $('#content-body2-filter');
 	var $filterEmptyFieldName = $('#filter-empty-field-name');
+	var $filterFieldHasString = $('#filter-field-has-string');
 
 	if($type.length > 0) {
 		type = $type.val();
@@ -1797,7 +1798,8 @@ function show_sites_contents_list(site_id) {
 		q:q,
 		sort: sort,
 		body2: body2,
-    filter_empty_field_name: $filterEmptyFieldName.val()
+    filter_empty_field_name: $filterEmptyFieldName.val(),
+		filter_field_has_string: $filterFieldHasString.val()
 	};
 
   $.ajax({
