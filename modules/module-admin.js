@@ -2081,6 +2081,12 @@ function add_new_sites_content(site_id) {
 												'</div>' +
 											'</div>' +
 			 								'<div class="form-group">' +
+												'<label class="col-sm-2 control-label">Анонс для сниппетов</label>' +
+												'<div class="col-sm-10">' +
+													'<textarea class="form-control" name="snippet_summary"></textarea>'+
+												'</div>' +
+											'</div>' +
+			 								'<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Содержимое</label>' +
 												'<div class="col-sm-10">' +
 													'<textarea class="form-control resizable-textarea" name="body" id="sites_content_body"></textarea>'+
@@ -2453,6 +2459,11 @@ function set_sites_content() {
   var summary = $summary.val().trim();
   $summaryMsg.html("");
 
+	var $snippet_summary = $modalBody.find('textarea[name="snippet_summary"]');
+	var $snippet_summaryMsg = $snippet_summary.parent().find('.input-message-block');
+	var snippet_summary = $snippet_summary.val().trim();
+	$snippet_summaryMsg.html("");
+
   var $map_code = $modalBody.find('textarea[name="map_code"]');
   var map_code = $map_code.val().trim();
 
@@ -2744,6 +2755,7 @@ function set_sites_content() {
 				redirect_path: redirect_path,
         form_action: form_action,
 				summary: summary,
+				snippet_summary: snippet_summary,
 				status: status,
 				content_id: content_id,
 				weight: weight,
@@ -3539,6 +3551,8 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 	var $summary = $('.sites-content-modal *[name="summary"]');
 	var $summaryFormG = $summary.closest('.form-group');
 
+	var $snippet_summary = $('.sites-content-modal *[name="snippet_summary"]');
+	var $snippet_summaryFormG = $snippet_summary.closest('.form-group');
 
 	var $keywords = $('.sites-content-modal *[name="keywords"]');
 	var $keywordsFormG = $keywords.closest('.form-group');
@@ -3620,6 +3634,7 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 		$imageFormG.addClass('hidden');
 		$descriptionFormG.addClass('hidden');
 		$summaryFormG.addClass('hidden');
+		$snippet_summaryFormG.addClass('hidden');
 		$keywordsFormG.addClass('hidden');
 		$bodyFormG.addClass('hidden');
 		$map_codeFormG.addClass('hidden');
@@ -3633,6 +3648,7 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 		$imageFormG.removeClass('hidden');
 		$descriptionFormG.removeClass('hidden');
 		$summaryFormG.removeClass('hidden');
+		$snippet_summaryFormG.removeClass('hidden');
 		$keywordsFormG.removeClass('hidden');
 		$bodyFormG.removeClass('hidden');
 		$map_code.removeClass('hidden');
@@ -3767,6 +3783,9 @@ $(document).on('change','.sites-content-modal select[name="rss"]',function (e) {
   var $summary = $('.sites-content-modal *[name="summary"]');
   var $summaryFormG = $summary.closest('.form-group');
 
+	var $snippet_summary = $('.sites-content-modal *[name="snippet_summary"]');
+	var $snippet_summaryFormG = $snippet_summary.closest('.form-group');
+
   var $keywords = $('.sites-content-modal *[name="keywords"]');
   var $keywordsFormG = $keywords.closest('.form-group');
 
@@ -3787,6 +3806,7 @@ $(document).on('change','.sites-content-modal select[name="rss"]',function (e) {
     $title_h1FormG.removeClass('hidden');
     $keywordsFormG.removeClass('hidden');
     $summaryFormG.removeClass('hidden');
+		$snippet_summaryFormG.removeClass('hidden');
 
   }
   else {
@@ -3800,7 +3820,8 @@ $(document).on('change','.sites-content-modal select[name="rss"]',function (e) {
     $title_h1FormG.addClass('hidden');
     $keywordsFormG.addClass('hidden');
     $summaryFormG.addClass('hidden');
-  }
+		$snippet_summaryFormG.addClass('hidden');
+	}
 
 });
 
