@@ -2175,6 +2175,12 @@ function add_new_sites_content(site_id) {
 													'<input type="checkbox" name="status" class="form-control">'+
 												'</div>' +
 											'</div>' +
+											'<div class="form-group">' +
+												'<label class="col-sm-2 control-label">Закрепить на главной</label>' +
+												'<div class="col-sm-10">' +
+													'<input type="checkbox" name="main_page_fix" class="form-control">'+
+												'</div>' +
+											'</div>' +
 										'</div>' +
 										'<div class="modal-loader"></div>'+
 										'<div class="modal-footer">' +
@@ -2433,12 +2439,20 @@ function set_sites_content() {
   var description = $description.val().trim();
   $descriptionMsg.html('');
 
-  var $status = $modalBody.find('*[name="status"]');
-  var status;
-  if($status.prop('checked'))
-  	status = 1;
+  var $main_page_fix = $modalBody.find('*[name="main_page_fix"]');
+  var main_page_fix;
+  if($main_page_fix.prop('checked'))
+		main_page_fix = 1;
   else
-  	status = 0;
+		main_page_fix = 0;
+
+
+	var $status = $modalBody.find('*[name="status"]');
+	var status;
+	if($status.prop('checked'))
+		status = 1;
+	else
+		status = 0;
 
 	var $rss_aggregation = $modalBody.find('*[name="rss_aggregation"]');
 	var rss_aggregation;
@@ -2767,7 +2781,8 @@ function set_sites_content() {
         rss: rss,
         rss_aggregator_link: rss_aggregator_link,
         rss_addition: rss_addition,
-				rss_aggregation: rss_aggregation
+				rss_aggregation: rss_aggregation,
+				main_page_fix: main_page_fix
 			},
       dataType: 'JSON',
       url: 'mysql.php',
@@ -3607,6 +3622,10 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
   var rss = parseInt($rss.val(),10);
   var $rssFormG = $rss.closest('.form-group');
 
+	var $main_page_fix = $('.sites-content-modal *[name="main_page_fix"]');
+	var main_page_fix = parseInt($rss.val(),10);
+	var $main_page_fixFormG = $main_page_fix.closest('.form-group');
+
   var $rss_aggregator_link = $('.sites-content-modal *[name="rss_aggregator_link"]');
   var $rss_aggregator_linkFormG = $rss_aggregator_link.closest('.form-group');
 
@@ -3728,6 +3747,7 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 
   if(type === 'article' || type === 'news' || type === 'info' || type === 'advice' || type === 'blog_post') {
 		$direction_idFormG.removeClass('hidden');
+		$main_page_fixFormG.removeClass('hidden');
 		if($direction_id.val() > 0) {
 			$region_idFormG.removeClass('hidden');
 		}
@@ -3738,6 +3758,7 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
   else {
 		$direction_idFormG.addClass('hidden');
 		$region_idFormG.addClass('hidden');
+		$main_page_fixFormG.addClass('hidden');
 	}
 
     if(type === 'settings' || type === 'article' || type === 'news' || type === 'info' || type === 'advice' || type === 'blog_post') {
