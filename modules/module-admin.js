@@ -2131,6 +2131,13 @@ function add_new_sites_content(site_id) {
 															'</select>' +
 													'</div>' +
 											'</div>' +
+                      '<div class="form-group hidden">' +
+                        '<label class="col-sm-2 control-label">ID объектов</label>' +
+                        '<div class="col-sm-10">' +
+                          '<input class="form-control" type="text" name="resorts_ids">' +
+                          '<div class="input-message-block" data-for="resorts_ids"></div>' +
+                        '</div>' +
+                      '</div>' +
 			 								'<div class="form-group">' +
                           '<label class="col-sm-2 control-label">Код карты</label>' +
                           '<div class="col-sm-10">' +
@@ -2545,6 +2552,11 @@ function set_sites_content() {
 	var reviews_objects = $reviews_objects.val().trim();
 	$reviews_objectsMsg.html('');
 
+  var $resorts_ids = $modalBody.find('input[name="resorts_ids"]');
+  var $resorts_idsMsg = $resorts_ids.parent().find('.input-message-block');
+  var resorts_ids = $resorts_ids.val().trim();
+  $resorts_idsMsg.html('');
+
 	var $photogallery_title = $modalBody.find('input[name="photogallery_title"]');
 	var $photogallery_titleMsg = $photogallery_title.parent().find('.input-message-block');
 	var photogallery_title = $photogallery_title.val().trim();
@@ -2778,6 +2790,7 @@ function set_sites_content() {
 				map_code: map_code,
         landing_info: landing_info,
 				reviews_objects: reviews_objects,
+        resorts_ids: resorts_ids,
         rss: rss,
         rss_aggregator_link: rss_aggregator_link,
         rss_addition: rss_addition,
@@ -3617,6 +3630,9 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 	var $aggregate_types = $('.sites-content-modal *[name="aggregate_types"]');
 	var $aggregate_typesFormG = $aggregate_types.closest('.form-group');
 
+  var $resorts_ids = $('.sites-content-modal *[name="resorts_ids"]');
+  var $resorts_idsFormG = $resorts_ids.closest('.form-group');
+
 
   var $rss = $('.sites-content-modal *[name="rss"]');
   var rss = parseInt($rss.val(),10);
@@ -3748,6 +3764,7 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
   if(type === 'article' || type === 'news' || type === 'info' || type === 'advice' || type === 'blog_post') {
 		$direction_idFormG.removeClass('hidden');
 		$main_page_fixFormG.removeClass('hidden');
+		$resorts_idsFormG.removeClass('hidden');
 		if($direction_id.val() > 0) {
 			$region_idFormG.removeClass('hidden');
 		}
@@ -3759,6 +3776,7 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 		$direction_idFormG.addClass('hidden');
 		$region_idFormG.addClass('hidden');
 		$main_page_fixFormG.addClass('hidden');
+    $resorts_idsFormG.addClass('hidden');
 	}
 
     if(type === 'settings' || type === 'article' || type === 'news' || type === 'info' || type === 'advice' || type === 'blog_post') {

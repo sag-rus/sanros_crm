@@ -1794,6 +1794,13 @@ function edit_sites_content($connect) {
                               </select>
                           </div>
                       </div>
+                      <div class="form-group<?php if(!in_array($content['type'],['article','news','info', 'advice', 'blog_post'])) { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">ID объектов</label>
+                          <div class="col-sm-10">
+                              <input class="form-control" type="text" name="resorts_ids" value="<?=implode(", ",bounds_to_ids($connect,load_bounds($connect,$entity,'resorts_ids')));?>">
+                              <div class="input-message-block" data-for="resorts_ids"></div>
+                          </div>
+                      </div>
                       <div class="form-group<?php if(in_array($content['type'],['redirect']) || ($content['type'] === 'aggregator' && $content['rss'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Код карты</label>
                           <div class="col-sm-10">
@@ -2662,6 +2669,7 @@ function set_sites_content($connect) {
               $boundsArrayPageBg = [];
               $boundsArrayReviewsObjects = [];
               $boundsArrayAggregateTypes = [];
+              $boundsArrayResortsIds = [];
 
               if(in_array($type,['landing','settings'])) {
                 $boundsArraySliderPhotos = files_to_bounds($connect,$entity,'slider_photos',isset($_POST['slider_photos'])?$_POST['slider_photos']:[]);
@@ -2673,18 +2681,24 @@ function set_sites_content($connect) {
                   $boundsArrayAggregateTypes = ids_to_bounds($connect,$entity,'aggregate_types',$aggregate_types,'content_type');
               }
 
+              if(in_array($type, ['news','article','info', 'advice', 'blog_post'])) {
+                  $boundsArrayResortsIds = ids_to_bounds($connect, $entity, 'resorts_ids',isset($_POST['resorts_ids'])?ids_string_to_ids($_POST['resorts_ids']):[]);
+              }
+
               remove_bounds($connect,$entity,'image');
               remove_bounds($connect,$entity,'page_bg');
               remove_bounds($connect,$entity,'photogallery');
               remove_bounds($connect,$entity,'slider_photos');
               remove_bounds($connect,$entity,'reviews_objects');
               remove_bounds($connect,$entity,'aggregate_types');
+              remove_bounds($connect,$entity, 'resorts_ids');
               set_bounds($connect,$boundsArrayImage,'image');
               set_bounds($connect,$boundsArrayPageBg,'page_bg');
               set_bounds($connect,$boundsArrayPhotogallery,'photogallery');
               set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
               set_bounds($connect,$boundsArrayReviewsObjects,'reviews_objects');
               set_bounds($connect,$boundsArrayAggregateTypes,'aggregate_types');
+              set_bounds($connect,$boundsArrayResortsIds, 'resorts_ids');
 
 
               $connect->query("UPDATE `sites_contents` SET `title`=?s, `title_h1`=?s, `title_h2` = ?s, `path`=?s, `redirect_path` = ?s, `description`=?s, `body`=?s, `body2` =?s, `summary`=?s, `snippet_summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `sort` = ?i, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i, `form_action` = ?s, `map_code` = ?s, `landing_info` = ?s, `breadcrumb_title` = ?s, `photogallery_title` = ?s, `photogallery_orientation` = ?s, `direction_id` = ?i, `region_id` = ?i, `regional_direction_id` = ?i, `rss` = ?i, `rss_aggregator_link` = ?s, `rss_addition` = ?s, `rss_aggregation` = ?i, `main_page_fix` = ?i WHERE `id`=?i",$title, $title_h1, $title_h2, $path, $redirect_path, $description, $body, $body2,$summary, $snippet_summary,$keywords,$type,$timestamp,$published,$status,0,$weight, $sort,$module_object_id,$module_block,$second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $direction_id, $region_id, $regional_direction_id, $rss, $rss_aggregator_link, $rss_addition, $rss_aggregation, $main_page_fix, $content_id);
@@ -2722,6 +2736,7 @@ function set_sites_content($connect) {
               $boundsArrayPageBg = [];
               $boundsArrayReviewsObjects = [];
               $boundsArrayAggregateTypes = [];
+              $boundsArrayResortsIds = [];
 
               if(in_array($type,['aggregator'])) {
                 $boundsArrayAggregateTypes = ids_to_bounds($connect,$entity,'aggregate_types',$aggregate_types,'content_type');
@@ -2740,12 +2755,17 @@ function set_sites_content($connect) {
                 $boundsArrayReviewsObjects = ids_to_bounds($connect,$entity,'reviews_objects',isset($_POST['reviews_objects'])?ids_string_to_ids($_POST['reviews_objects']):[]);
               }
 
+              if(in_array($type, ['news','article','info', 'advice', 'blog_post'])) {
+                  $boundsArrayResortsIds = ids_to_bounds($connect, $entity, 'resorts_ids',isset($_POST['resorts_ids'])?ids_string_to_ids($_POST['resorts_ids']):[]);
+              }
+
               set_bounds($connect,$boundsArrayImage,'image');
               set_bounds($connect,$boundsArrayPageBg,'page_bg');
               set_bounds($connect,$boundsArrayPhotogallery,'photogallery');
               set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
               set_bounds($connect,$boundsArrayReviewsObjects,'reviews_objects');
               set_bounds($connect,$boundsArrayAggregateTypes,'aggregate_types');
+              set_bounds($connect,$boundsArrayResortsIds, 'resorts_ids');
             }
           }
           else {
