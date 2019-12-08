@@ -346,7 +346,7 @@ function sync_objects_api($connect){
 		}
 
 
-		$objects = $connect->getAll("SELECT `object`.`id` AS `id`, `object`.`name` AS `name`, `object`.`url_name` AS `url_name`, `object`.`id_reg` AS `region_id`, `object`.`region_direction_id` AS `region_direction_id`, `object`.`direction` AS `direction`, `object`.`active` AS `active`, `object`.`note` AS `note`, `object`.`type` AS `type`, `object`.`full_name` AS `full_name`, `object`.`address` AS `address`, `object`.`telephone` AS `telephone`, `object`.`email` AS `email`, `object`.`id_profile` AS `id_profile`, `object`.`id_methods` AS `id_methods`, `object`.`id_infa` AS `id_infa`, `object`.`check_places` AS `check_places`, `object`.`default_price_type` AS `default_price_type`, `object`.`description` AS `description`, (`object`.`image` IS NOT NULL) AS `has_thumbnail`, `type_object`.`name` AS `type_name`, `object`.`uri_schema` AS `uri_schema` FROM `object` LEFT JOIN `type_object` ON `object`.`type` = `type_object`.`id` WHERE `object`.`synchronized` = 0 AND `object`.`type` IS NOT NULL AND `object`.`id_reg` > 0");
+		$objects = $connect->getAll("SELECT `object`.`id` AS `id`, `object`.`name` AS `name`, `object`.`url_name` AS `url_name`, `object`.`url_name_origin` AS `url_name_origin`, `object`.`id_reg` AS `region_id`, `object`.`region_direction_id` AS `region_direction_id`, `object`.`direction` AS `direction`, `object`.`active` AS `active`, `object`.`note` AS `note`, `object`.`type` AS `type`, `object`.`full_name` AS `full_name`, `object`.`address` AS `address`, `object`.`telephone` AS `telephone`, `object`.`email` AS `email`, `object`.`id_profile` AS `id_profile`, `object`.`id_methods` AS `id_methods`, `object`.`id_infa` AS `id_infa`, `object`.`check_places` AS `check_places`, `object`.`default_price_type` AS `default_price_type`, `object`.`description` AS `description`, (`object`.`image` IS NOT NULL) AS `has_thumbnail`, `type_object`.`name` AS `type_name`, `object`.`uri_schema` AS `uri_schema` FROM `object` LEFT JOIN `type_object` ON `object`.`type` = `type_object`.`id` WHERE `object`.`synchronized` = 0 AND `object`.`type` IS NOT NULL AND `object`.`id_reg` > 0");
 
 		foreach ($objects as $object) {
 			$objectAr = [];
@@ -406,11 +406,28 @@ function sync_objects_api($connect){
 			if($object['uri_schema'] == 2) {
 				$objectAr['uri'] = change_text_url($object['type_name']) . '-' . $object['url_name'];
 				$objectAr['uri_type'] = 1;
+
+				if(!is_null($object['direction'])) {
+                    $directionUrl = $connect->getOne("SELECT `name` FROM `direction_object` WHERE `id_country` = 1 AND `id` = ?i", $object['direction']);
+                    $objectArFullUri = '/направления/'.change_text_url($directionUrl);
+                    if($objectAr['region_id'] && mb_strlen($object['url_name_origin']) > 0) {
+                        $regionUrl = $connect->getOne("SELECT `name` FROM `region` WHERE `region`.`id_country` = 1 AND `region`.`id` = ?i", $objectAr['region_id']);
+                        $objectArFullUri .= '/' . change_text_url($regionUrl);
+                        if(!is_null($object['region_direction_id'])) {
+                            $regionalDirectionUrl = $connect->getOne("SELECT `name` FROM `direction_object` WHERE (`direction_object`.`id_country` = 0 OR `direction_object`.`id_country` IS NULL)  AND `direction_object`.`id_reg` > 0 AND `direction_object`.`id` = ?i", $object['region_direction_id']);
+                            $objectArFullUri .= '/'. change_text_url($regionalDirectionUrl);
+                        }
+
+                        $objectArFullUri .= '/'.$objectAr['uri'];
+
+                        $content = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `status` <> 2 AND `path` = ?s AND `type` != 'redirect'", $object['url_name_origin']);
+                    }
+                }
 			}
 			else {
-        $objectAr['uri'] = '/объект/' . $object['url_name'];
-        $objectAr['uri_type'] = 0;
-      }
+            $objectAr['uri'] = '/объект/' . $object['url_name'];
+            $objectAr['uri_type'] = 0;
+          }
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/object/set/".$object['id'],[
 				'form_params' => $objectAr
