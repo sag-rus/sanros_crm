@@ -5,7 +5,7 @@ class SendMailDefault extends SendMail{
   public function __construct(){
     $auth = array(
       "login" => "kazangood@gmail.com",
-      "password" => "sanitarka13425",
+      "password" => "Profilaktika-56124",
       "from" => "kazangood@gmail.com",
       "from_name" => "Саната-Тревел",
       "host" => "smtp.gmail.com"
