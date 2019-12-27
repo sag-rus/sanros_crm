@@ -1763,6 +1763,54 @@ function save_site_icons() {
 
 }
 
+
+function save_site_tech() {
+	var $button = $('.btn-save-site-icons');
+	var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
+	var $modalLoader = $button.closest('.modal-dialog').find('.modal-loader');
+
+	var id = parseInt($modalBody.find('*[name="id"]').val());
+
+	var glue_css = parseInt($modalBody.find('*[name="glue_css"]').prop('checked')*1, 10);
+	var glue_js = parseInt($modalBody.find('*[name="glue_js"]').prop('checked')*1, 10);
+	var compress_css = parseInt($modalBody.find('*[name="compress_css"]').prop('checked')*1, 10);
+	var compress_js = parseInt($modalBody.find('*[name="compress_js"]').prop('checked')*1, 10);
+
+	var error = false;
+
+	if(!error) {
+		show_loader_element($modalLoader);
+		$modalBody.addClass('hidden');
+		$button.prop('disabled',true);
+		var obj = {
+			func: "save_site_tech",
+			glue_css: glue_css,
+			glue_js: glue_js,
+			compress_css: compress_css,
+			compress_js: compress_js,
+			id: id
+		};
+		$.ajax({
+			type: 'POST',
+			data: obj,
+			dataType: 'JSON',
+			url: 'mysql.php',
+			success: function(data){
+				if(data['success']) {
+					remove_all_windows();
+				}
+				else {
+					$modalLoader.html('');
+					$button.prop('disabled',false);
+					$modalBody.removeClass('hidden');
+					$modalBody.find('*[data-for="'+data['msg_field']+'"]').html(data['msg']);
+				}
+			}
+		});
+	}
+
+}
+
 function show_sites_contents_list(site_id) {
 	var type = 'all';
 	var $type = $('#content-type-filter');
@@ -3326,6 +3374,18 @@ function edit_site_icons(id) {
 
 		}
 	});
+}
+
+function edit_site_tech(id) {
+  var str = 'func=edit_site_tech&id='+id;
+  $.ajax({
+    type: 'POST',
+    data: str,
+    url: 'mysql.php',
+    success: function(html){
+      show_modal(html);
+    }
+  });
 }
 
 function sites_address(id,site_id) {

@@ -103,6 +103,7 @@ function show_sites_list($connect) {
                   <?php } ?>
                   <?php if($id_rights > 4 || $session_login == 62)  { ?>
                       <button class="btn btn-default btn-sm" onclick="edit_site(<?=$site['id'];?>);"><i class="fa fa-pencil"></i></button>
+                      <button class="btn btn-default btn-sm" onclick="edit_site_tech(<?=$site['id'];?>);"><i class="fa fa-gear"></i></button>
                       <button class="btn btn-default btn-sm" onclick="edit_site_icons(<?=$site['id'];?>);"><i class="fa fa-image"></i> Иконки сайта</button>
 
                   <?php } ?>
@@ -837,6 +838,44 @@ function save_site_icons($connect) {
   }
 
   return json_encode($respAr);
+}
+
+function save_site_tech($connect) {
+    $respAr = [
+        'success' => 0,
+        'title' => '',
+        'msg' => ''
+    ];
+
+    $id = isset($_POST['id'])?(int)$_POST['id']:0;
+    $glue_css = isset($_POST['glue_css'])?(int)$_POST['glue_css']:0;
+    $compress_css = isset($_POST['compress_css'])?(int)$_POST['compress_css']:0;
+    $glue_js = isset($_POST['glue_js'])?(int)$_POST['glue_js']:0;
+    $compress_js = isset($_POST['compress_js'])?(int)$_POST['compress_js']:0;
+
+    if(!in_array($glue_css,[0,1]))
+        $glue_css = 0;
+
+    if(!in_array($compress_css,[0,1]))
+        $compress_css = 0;
+
+    if(!in_array($glue_js,[0,1]))
+        $glue_js = 0;
+
+    if(!in_array($compress_js,[0,1]))
+        $compress_js = 0;
+
+    $site = NULL;
+    if($id)
+        $site = $connect->getRow("SELECT `id` FROM `sites` WHERE `id` =?i",$id);
+
+
+    if($site) {
+        $respAr['success'] = 1;
+        $connect->query("UPDATE `sites` SET `glue_css` = ?i, `compress_css` = ?i, `glue_js` = ?i, `compress_js` = ?i WHERE `id` = ?i", $glue_css, $compress_css, $glue_js, $compress_js, $id);
+    }
+
+    return json_encode($respAr);
 }
 
 
@@ -2461,6 +2500,63 @@ function edit_site_icons($connect) {
   return ob_get_clean();
 }
 
+function edit_site_tech($connect) {
+    $id = isset($_POST['id'])?(int)$_POST['id']:0;
+    $site = NULL;
+    if($id)
+        $site = $connect->getRow("SELECT `id`, `status`, `name`, `branding_name`, `branding_slogan`,  `domain`, `main_bg_color`, `main_bg_color2`, `main_font_color`, `main_font_color2`, `main_link_color`, `head_code`, `pre_body_code`, `post_body_code`, `robots`, `interface_style`, `type`, `direction_id`, `region_id`, `theme`, `glue_css`, `glue_js`, `compress_css`, `compress_js` FROM `sites` WHERE `id` =?i",$id);
+    ob_start();
+    if($site) {
+        ?>
+        <div class="modal fade site-icons-modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+                        <h4 class="modal-title"><?php if($site) { ?> Технические настройки сайта<?php } ?></h4>
+                    </div>
+                    <div class="modal-body form-horizontal site-name">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Объединение CSS</label>
+                            <div class="col-sm-8">
+                                <input type="hidden" name="id" value="<?=$id;?>">
+                                <input type="checkbox" name="glue_css"<?php if($site['glue_css']) { ?> checked<?php } ?>>
+                                <div class="input-message-block" data-for="glue_css"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Сжатие CSS</label>
+                            <div class="col-sm-8">
+                                <input type="checkbox" name="compress_css"<?php if($site['compress_css']) { ?> checked<?php } ?>>
+                                <div class="input-message-block" data-for="compress_css"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Объединение JS</label>
+                            <div class="col-sm-8">
+                                <input type="checkbox" name="glue_js"<?php if($site['glue_js']) { ?> checked<?php } ?>>
+                                <div class="input-message-block" data-for="glue_js"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Сжатие JS</label>
+                            <div class="col-sm-8">
+                                <input type="checkbox" name="compress_js"<?php if($site['compress_js']) { ?> checked<?php } ?>>
+                                <div class="input-message-block" data-for="compress_js"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-loader"></div>
+                    <div class="modal-footer">
+                        <button class="btn btn-success btn-sm btn-save-site-icons" onclick="save_site_tech();" id="btn-save-site-tech"><i class="fa fa-check-circle"></i> Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+    return ob_get_clean();
+}
 
 function get_regions_options($connect) {
     $direction_id = isset($_GET['direction_id'])?(int)$_GET['direction_id']:0;
