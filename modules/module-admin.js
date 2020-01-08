@@ -1,3 +1,5 @@
+CKEDITOR.config.allowedContent=true;
+
 function show_admin(){
 	select_menu('admin_menu', '1');
 	var str = 'func=show_admin_search';
@@ -3219,7 +3221,9 @@ function edit_sites_content(id,copyMode) {
     success: function(html){
       show_modal(html);
       var sites_content_body = $('#sites_content_body').val();
-      CKEDITOR.replace('sites_content_body');
+      CKEDITOR.replace('sites_content_body', {
+
+			});
       CKEDITOR.instances.sites_content_body.setData(sites_content_body);
 
 			var sites_content_body2 = $('#sites_content_body2').val();
