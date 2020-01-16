@@ -126,9 +126,9 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 		}
 		$table.= "<tr><td width='20' align='center'>".$index."</td>";
 		if($id_room != 0)
-			$table.= "<td width='350'>".$object." c ".$date_z." по ".$date_v." (".$days." дн., ".$room.") ".$note."</td>";
+			$table.= "<td width='350' style='max-width: 30%;'>".$object." c ".$date_z." по ".$date_v." (".$days." дн., ".$room.") ".$note."</td>";
 		else
-			$table.= "<td width='350'>".$connect->getOne("SELECT name FROM service_schet WHERE id=?i", $id_service)." ".$note."</td>";
+			$table.= "<td width='350' style='max-width: 30%;'>".$connect->getOne("SELECT name FROM service_schet WHERE id=?i", $id_service)." ".$note."</td>";
 		$table.= "<td width='40' align='center'>шт</td>";
 		$table.= "<td width='40' align='center'>".$number."</td>";
 		$table.= "<td width='60' align='center'>".str_replace(".", "-", $sum)."</td>";
