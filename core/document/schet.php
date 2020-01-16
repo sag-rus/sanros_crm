@@ -363,6 +363,10 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 	margin: 0 auto;
 }
 
+table, tr {
+    max-width: 100%;
+}
+
 td, th{
 	padding: 2px;
 	font-size: 9.5pt;
