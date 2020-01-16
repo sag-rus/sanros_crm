@@ -374,6 +374,7 @@ td, th{
 	vertical-align: middle;
 	border: 1px solid black;
     display: inline-block;
+    max-width: 33% !important;
 }
 
 th{
