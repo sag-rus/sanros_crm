@@ -373,6 +373,7 @@ td, th{
 	font-size: 9.5pt;
 	vertical-align: middle;
 	border: 1px solid black;
+    display: inline-block;
 }
 
 th{
