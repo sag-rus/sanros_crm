@@ -413,14 +413,42 @@ function sync_objects_api($connect){
                     if($objectAr['region_id'] && mb_strlen($object['url_name_origin']) > 0) {
                         $regionUrl = $connect->getOne("SELECT `name` FROM `region` WHERE `region`.`id_country` = 1 AND `region`.`id` = ?i", $objectAr['region_id']);
                         $objectArFullUri .= '/' . change_text_url($regionUrl);
-                        if(!is_null($object['region_direction_id'])) {
+                        if(!is_null($object['region_direction_id']) && $object['region_direction_id']) {
                             $regionalDirectionUrl = $connect->getOne("SELECT `name` FROM `direction_object` WHERE (`direction_object`.`id_country` = 0 OR `direction_object`.`id_country` IS NULL)  AND `direction_object`.`id_reg` > 0 AND `direction_object`.`id` = ?i", $object['region_direction_id']);
                             $objectArFullUri .= '/'. change_text_url($regionalDirectionUrl);
                         }
 
                         $objectArFullUri .= '/'.$objectAr['uri'];
 
-                        $content = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `status` <> 2 AND `path` = ?s AND `type` != 'redirect'", $object['url_name_origin']);
+                        $content = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `status` <> 2 AND `path` = ?s AND `type` != 'redirect' AND `site_id` = '38'", '/объект/'.$object['url_name_origin']);
+
+						if($content) {
+
+							$connect->query("UPDATE `sites_contents` SET `synchronized` = 0, `path` = ?s WHERE id = ?i AND `site_id`", $objectArFullUri, $content['id']);
+                        	$redirectMain = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `status` <> 2 AND `path` = ?s AND `redirect_path` = ?s AND `type` = 'redirect' AND `site_id` = '38'", '/объект/'.$object['url_name_origin'], $objectArFullUri);
+                        	if(!$redirectMain) {
+								$timestamp = gmdate("U");
+                        		$connect->query("INSERT INTO `sites_contents` (`type`, `status`, `created`, `published`, `changed`, `site_id`, `title`, `path`, `redirect_path`) VALUES ('redirect', 1, '".$timestamp."', '".$timestamp."', '".$timestamp."', '38', 'Редирект', ?s, ?s)", '/объект/'.$object['url_name_origin'], $objectArFullUri);
+							}
+
+							$redirectDescription = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `status` <> 2 AND `path` = ?s AND `redirect_path` = ?s AND `type` = 'redirect' AND `site_id` = '38'", '/объект/'.$object['url_name_origin'].'/описание', $objectArFullUri);
+							if(!$redirectDescription) {
+								$timestamp = gmdate("U");
+								$connect->query("INSERT INTO `sites_contents` (`type`, `status`, `created`, `published`, `changed`, `site_id`, `title`, `path`, `redirect_path`) VALUES ('redirect', 1, '".$timestamp."', '".$timestamp."', '".$timestamp."', '38', 'Редирект', ?s, ?s)", '/объект/'.$object['url_name_origin'].'/описание', $objectArFullUri);
+							}
+
+							$redirectPromo = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `status` <> 2 AND `path` = ?s AND `redirect_path` = ?s AND `type` = 'redirect' AND `site_id` = '38'", '/объект/'.$object['url_name_origin'].'/акции', $objectArFullUri);
+							if(!$redirectPromo) {
+								$timestamp = gmdate("U");
+								$connect->query("INSERT INTO `sites_contents` (`type`, `status`, `created`, `published`, `changed`, `site_id`, `title`, `path`, `redirect_path`) VALUES ('redirect', 1, '".$timestamp."', '".$timestamp."', '".$timestamp."', '38', 'Редирект', ?s, ?s)", '/объект/'.$object['url_name_origin'].'/акции', $objectArFullUri);
+							}
+
+							$redirectReviews = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `status` <> 2 AND `path` = ?s AND `redirect_path` = ?s AND `type` = 'redirect' AND `site_id` = '38'", '/объект/'.$object['url_name_origin'].'/отзывы', $objectArFullUri.'/отзывы');
+							if(!$redirectReviews) {
+								$timestamp = gmdate("U");
+								$connect->query("INSERT INTO `sites_contents` (`type`, `status`, `created`, `published`, `changed`, `site_id`, `title`, `path`, `redirect_path`) VALUES ('redirect', 1, '".$timestamp."', '".$timestamp."', '".$timestamp."', '38', 'Редирект', ?s, ?s)", '/объект/'.$object['url_name_origin'].'/отзывы', $objectArFullUri.'/отзывы');
+							}
+						}
                     }
                 }
 			}
