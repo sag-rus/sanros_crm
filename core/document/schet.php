@@ -365,6 +365,7 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 
 table, tr {
     max-width: 100%;
+    display: block;
 }
 
 td, th{
