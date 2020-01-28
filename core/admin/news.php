@@ -1562,7 +1562,7 @@ function edit_sites_content($connect) {
   $copy_mode = isset($_POST['copy_mode'])?(int)$_POST['copy_mode']:0;
   $content = NULL;
   if($content_id)
-      $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h1`, `title_h2`, `summary`, `snippet_summary`, `body`, `body2`, `path`, `redirect_path`, `description`, `keywords`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `photogallery_title`, `photogallery_orientation`, `breadcrumb_title`, `direction_id`, `region_id`, `regional_direction_id`, `rss`, `rss_aggregator_link`, `rss_addition`, `rss_aggregation`, `main_page_fix` FROM `sites_contents` WHERE `id` =?i",$content_id);
+      $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h1`, `title_h2`, `summary`, `snippet_summary`, `body`, `body2`, `path`, `redirect_path`, `description`, `keywords`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `photogallery_title`, `photogallery_orientation`, `breadcrumb_title`, `direction_id`, `region_id`, `regional_direction_id`, `rss`, `rss_aggregator_link`, `rss_addition`, `rss_aggregation`, `main_page_fix`, `aggregation_by_dates`, `aggregation_date_start`, `aggregation_date_end` FROM `sites_contents` WHERE `id` =?i",$content_id);
       $entity = $content;
       $entity['type'] = 'content';
   ob_start();
@@ -1637,6 +1637,15 @@ function edit_sites_content($connect) {
                               <select class="form-control" name="rss">
                                   <option value="0"<?php if(!$content['rss']) { ?> selected<?php } ?>>Страница</option>
                                   <option value="1"<?php if($content['rss']) { ?> selected<?php } ?>>RSS</option>
+                              </select>
+                          </div>
+                      </div>
+                      <div class="form-group<?php if($content['type'] !== 'aggregator') { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Агрегация по датам</label>
+                          <div class="col-sm-10">
+                              <select class="form-control" name="aggregation_by_dates">
+                                  <option value="0"<?php if(!$content['aggregation_by_dates']) { ?> selected<?php } ?>>Нет</option>
+                                  <option value="1"<?php if($content['aggregation_by_dates']) { ?> selected<?php } ?>>Да</option>
                               </select>
                           </div>
                       </div>
@@ -2647,6 +2656,13 @@ function set_sites_content($connect) {
   $rss_aggregator_link = isset($_POST['rss_aggregator_link'])?trim($_POST['rss_aggregator_link']):"";
   $rss_addition = isset($_POST['rss_addition'])?trim($_POST['rss_addition']):"";
   $rss_aggregation = isset($_POST['rss_aggregation'])?(int)$_POST['rss_aggregation']:0;
+  $aggregation_date_start = (isset($_POST['aggregation_date_start']) && mb_strlen($_POST['aggregation_date_start']) > 0)?(strtotime($_POST['aggregation_date_start'])):0;
+  $aggregation_date_end = (isset($_POST['aggregation_date_end']) && mb_strlen($_POST['aggregation_date_end']) > 0)?(strtotime($_POST['aggregation_date_end'])):0;
+  $aggregation_by_dates = isset($_POST['aggregation_by_dates'])?(int)$_POST['aggregation_by_dates']:0;
+
+  if(!in_array($aggregation_by_dates,[0,1])) {
+      $aggregation_by_dates = 0;
+  }
 
   $typesAr = ['page','news', 'module', 'landing', "photogallery", "settings", 'article', 'info', 'aggregator', 'advice', 'blog_post', 'redirect'];
   $photogallery_orientations = ['album', 'book'];
@@ -2689,6 +2705,9 @@ function set_sites_content($connect) {
      $rss_aggregation = 0;
   }
 
+    if(!in_array($aggregate_types_start,[0,1]))
+        $rss = 0;
+
   if(in_array($type,['aggregator'])) {
     foreach ($aggregate_types_start as $aggregate_types_start_item) {
       $aggregate_types_start_item = (int)$aggregate_types_start_item;
@@ -2696,11 +2715,18 @@ function set_sites_content($connect) {
           $aggregate_types[] = $aggregate_types_start_item;
       }
     }
+    if(!$aggregation_by_dates) {
+        $aggregation_date_end = 0;
+        $aggregation_date_start = 0;
+    }
   }
   else {
       $rss = 0;
       $rss_aggregator_link = "";
       $rss_addition = "";
+      $aggregation_by_dates = 0;
+      $aggregation_date_end = 0;
+      $aggregation_date_start = 0;
   }
 
   if(!in_array($rss,[0,1]))
@@ -2797,7 +2823,7 @@ function set_sites_content($connect) {
               set_bounds($connect,$boundsArrayResortsIds, 'resorts_ids');
 
 
-              $connect->query("UPDATE `sites_contents` SET `title`=?s, `title_h1`=?s, `title_h2` = ?s, `path`=?s, `redirect_path` = ?s, `description`=?s, `body`=?s, `body2` =?s, `summary`=?s, `snippet_summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `sort` = ?i, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i, `form_action` = ?s, `map_code` = ?s, `landing_info` = ?s, `breadcrumb_title` = ?s, `photogallery_title` = ?s, `photogallery_orientation` = ?s, `direction_id` = ?i, `region_id` = ?i, `regional_direction_id` = ?i, `rss` = ?i, `rss_aggregator_link` = ?s, `rss_addition` = ?s, `rss_aggregation` = ?i, `main_page_fix` = ?i WHERE `id`=?i",$title, $title_h1, $title_h2, $path, $redirect_path, $description, $body, $body2,$summary, $snippet_summary,$keywords,$type,$timestamp,$published,$status,0,$weight, $sort,$module_object_id,$module_block,$second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $direction_id, $region_id, $regional_direction_id, $rss, $rss_aggregator_link, $rss_addition, $rss_aggregation, $main_page_fix, $content_id);
+              $connect->query("UPDATE `sites_contents` SET `title`=?s, `title_h1`=?s, `title_h2` = ?s, `path`=?s, `redirect_path` = ?s, `description`=?s, `body`=?s, `body2` =?s, `summary`=?s, `snippet_summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `sort` = ?i, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i, `form_action` = ?s, `map_code` = ?s, `landing_info` = ?s, `breadcrumb_title` = ?s, `photogallery_title` = ?s, `photogallery_orientation` = ?s, `direction_id` = ?i, `region_id` = ?i, `regional_direction_id` = ?i, `rss` = ?i, `rss_aggregator_link` = ?s, `rss_addition` = ?s, `rss_aggregation` = ?i, `main_page_fix` = ?i, `aggregation_by_dates` = ?i, `aggregation_date_start` = ?i, `aggregation_date_end` = ?i WHERE `id`=?i",$title, $title_h1, $title_h2, $path, $redirect_path, $description, $body, $body2,$summary, $snippet_summary,$keywords,$type,$timestamp,$published,$status,0,$weight, $sort,$module_object_id,$module_block,$second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $direction_id, $region_id, $regional_direction_id, $rss, $rss_aggregator_link, $rss_addition, $rss_aggregation, $main_page_fix, $aggregation_by_dates, $aggregation_date_start, $aggregation_date_end, $content_id);
               if($content && $content['path'] !== $path && $type !== 'redirect' && !($type === 'aggregator' && $rss)) {
                   $connect->query("INSERT INTO `sites_contents` (`title`, `title_h1`, `title_h2`, `path`, `redirect_path`, `description`, `body`, `body2`, `summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `map_code`, `landing_info`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation`, `direction_id`, `region_id`, `regional_direction_id`) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?i, ?i, ?s, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i)","Редирект", "", "", $content['path'], $path, "","","","","",'redirect',$timestamp,$published,1,0,$content['site_id'],$timestamp,0.9, 0,0, '', 0, '','', '', '', '', 'album', 0, 0, 0);
                   if($site_id == 38) {
@@ -2818,7 +2844,7 @@ function set_sites_content($connect) {
             else {
               $respAr['success'] = 1;
               $respAr['msg'] = "Контент успешно добавлен";
-              $connect->query("INSERT INTO `sites_contents` (`title`, `title_h1`, `title_h2`, `path`, `redirect_path`, `description`, `body`, `body2`, `summary`, `snippet_summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `map_code`, `landing_info`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation`, `direction_id`, `region_id`, `regional_direction_id`, `rss`, `rss_aggregator_link`, `rss_addition`, `rss_aggregation`, `main_page_fix`) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?i, ?i, ?s, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?s, ?s, ?i, ?i)",$title, $title_h1, $title_h2, $path, $redirect_path, $description,$body,$body2,$summary, $snippet_summary, $keywords,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight, $sort,$module_object_id, $module_block, $second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $direction_id, $region_id, $regional_direction_id, $rss, $rss_aggregator_link, $rss_addition, $rss_aggregation, $main_page_fix);
+              $connect->query("INSERT INTO `sites_contents` (`title`, `title_h1`, `title_h2`, `path`, `redirect_path`, `description`, `body`, `body2`, `summary`, `snippet_summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `map_code`, `landing_info`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation`, `direction_id`, `region_id`, `regional_direction_id`, `rss`, `rss_aggregator_link`, `rss_addition`, `rss_aggregation`, `main_page_fix`, `aggregation_by_dates`, `aggregation_date_start`, `aggregation_date_end`) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?i, ?i, ?s, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?s, ?s, ?i, ?i, ?i, ?i, ?i)",$title, $title_h1, $title_h2, $path, $redirect_path, $description,$body,$body2,$summary, $snippet_summary, $keywords,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight, $sort,$module_object_id, $module_block, $second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $direction_id, $region_id, $regional_direction_id, $rss, $rss_aggregator_link, $rss_addition, $rss_aggregation, $main_page_fix, $aggregation_by_dates, $aggregation_date_start, $aggregation_date_end);
 
               $entity = [
                 'id' => $connect->insertId(),
