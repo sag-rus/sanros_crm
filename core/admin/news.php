@@ -1649,6 +1649,18 @@ function edit_sites_content($connect) {
                               </select>
                           </div>
                       </div>
+                      <div class="form-group<?php if($content['type'] !== 'aggregator' || !$content['aggregation_by_dates']) { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Начальная дата</label>
+                          <div class="col-sm-10">
+                              <input type="datetime-local" name="aggregation_date_start" class="form-control" value="<?=gmdate("Y-m-d\TH:i",$content['aggregation_date_start']+3600*3);?>">
+                          </div>
+                      </div>
+                      <div class="form-group<?php if($content['type'] !== 'aggregator' || !$content['aggregation_by_dates']) { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Конечная дата</label>
+                          <div class="col-sm-10">
+                              <input type="datetime-local" name="aggregation_date_end" class="form-control" value="<?=gmdate("Y-m-d\TH:i",$content['aggregation_date_end']+3600*3);?>">
+                          </div>
+                      </div>
                       <div class="form-group<?php if(!$content['rss'] || $content['type'] !== 'aggregator') { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Адрес основного агрегатора</label>
                           <div class="col-sm-10">

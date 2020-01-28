@@ -1966,6 +1966,27 @@ function add_new_sites_content(site_id) {
                           '</select>' +
                         '</div>'+
                       '</div>'+
+			 								'<div class="form-group hidden">'+
+												'<label class="col-sm-2 control-label">Агрегация по датам</label>'+
+												'<div class="col-sm-10">'+
+												'<select class="form-control" name="aggregation_by_dates">'+
+													'<option value="0" selected="">Нет</option>'+
+													'<option value="1">Да</option>'+
+												'</select>'+
+												'</div>'+
+											'</div>'+
+			 								'<div class="form-group hidden">'+
+                          '<label class="col-sm-2 control-label">Начальная дата</label>'+
+                          '<div class="col-sm-10">'+
+                              '<input type="datetime-local" name="aggregation_date_start" class="form-control" value="1970-01-01T03:00">'+
+                          '</div>'+
+                      '</div>'+
+			 								'<div class="form-group hidden">'+
+                          '<label class="col-sm-2 control-label">Конечная дата</label>'+
+                          '<div class="col-sm-10">'+
+                              '<input type="datetime-local" name="aggregation_date_end" class="form-control" value="1970-01-01T03:00">'+
+                          '</div>'+
+                      '</div>'+
                       '<div class="form-group hidden">' +
                           '<label class="col-sm-2 control-label">Адрес основного агрегатора</label>' +
                           '<div class="col-sm-10">' +
@@ -2628,6 +2649,19 @@ function set_sites_content() {
 	$aggregate_typesMsg.html("");
 	var aggregate_types = [], aggrI;
 
+	var $aggregation_by_dates = $('.sites-content-modal *[name="aggregation_by_dates"]');
+	var $aggregation_by_datesFormG = $aggregation_by_dates.closest('.form-group');
+	var aggregation_by_dates = parseInt($aggregation_by_dates.val(), 10);
+
+	var $aggregation_date_start = $('.sites-content-modal *[name="aggregation_date_start"]');
+	var $aggregation_date_startFormG = $aggregation_date_start.closest('.form-group');
+	var aggregation_date_start = $aggregation_date_start.val();
+
+	var $aggregation_date_end = $('.sites-content-modal *[name="aggregation_date_end"]');
+	var $aggregation_date_endFormG = $aggregation_date_end.closest('.form-group');
+	var aggregation_date_end = $aggregation_date_end.val();
+
+
 	for(aggrI = 0; aggrI < $aggregate_types.length; aggrI++) {
 		aggregate_types.push(parseInt($($aggregate_types.get(aggrI)).val(),10));
 	}
@@ -2845,7 +2879,11 @@ function set_sites_content() {
         rss_aggregator_link: rss_aggregator_link,
         rss_addition: rss_addition,
 				rss_aggregation: rss_aggregation,
-				main_page_fix: main_page_fix
+				main_page_fix: main_page_fix,
+				aggregation_by_dates: aggregation_by_dates,
+				aggregation_date_start: aggregation_date_start,
+				aggregation_date_end: aggregation_date_end
+
 			},
       dataType: 'JSON',
       url: 'mysql.php',
@@ -3727,6 +3765,29 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 	var $region_id = $('.sites-content-modal *[name="region_id"]');
 	var $region_idFormG = $region_id.closest('.form-group');
 
+	var $aggregation_by_dates = $('.sites-content-modal *[name="aggregation_by_dates"]');
+	var $aggregation_by_datesFormG = $aggregation_by_dates.closest('.form-group');
+	var aggregation_by_dates = parseInt($aggregation_by_dates.val(), 10);
+
+	var $aggregation_date_start = $('.sites-content-modal *[name="aggregation_date_start"]');
+	var $aggregation_date_startFormG = $aggregation_date_start.closest('.form-group');
+
+	var $aggregation_date_end = $('.sites-content-modal *[name="aggregation_date_end"]');
+	var $aggregation_date_endFormG = $aggregation_date_end.closest('.form-group');
+
+	$aggregation_by_datesFormG.addClass('hidden');
+	$aggregation_date_startFormG.addClass('hidden');
+	$aggregation_date_endFormG.addClass('hidden');
+
+	if(type === 'aggregator') {
+		$aggregation_by_datesFormG.removeClass('hidden');
+	}
+
+	if(type === 'aggregator' && aggregation_by_dates) {
+		$aggregation_date_startFormG.removeClass('hidden');
+		$aggregation_date_endFormG.removeClass('hidden');
+	}
+
 	if(type === 'redirect') {
 		$breadcrumb_titleFormG.addClass('hidden');
 		$title_h1FormG.addClass('hidden');
@@ -3927,6 +3988,33 @@ $(document).on('change','.sites-content-modal select[name="rss"]',function (e) {
 	}
 
 });
+
+
+$(document).on('change','.sites-content-modal select[name="aggregation_by_dates"]',function (e) {
+	var $type = $('.sites-content-modal *[name="type"]');
+	var $typeFormG = $type.closest('.form-group');
+	var type = $type.val();
+
+	var $aggregation_by_dates = $('.sites-content-modal *[name="aggregation_by_dates"]');
+	var $aggregation_by_datesFormG = $aggregation_by_dates.closest('.form-group');
+	var aggregation_by_dates = parseInt($aggregation_by_dates.val(), 10);
+
+	var $aggregation_date_start = $('.sites-content-modal *[name="aggregation_date_start"]');
+	var $aggregation_date_startFormG = $aggregation_date_start.closest('.form-group');
+
+	var $aggregation_date_end = $('.sites-content-modal *[name="aggregation_date_end"]');
+	var $aggregation_date_endFormG = $aggregation_date_end.closest('.form-group');
+
+	$aggregation_date_startFormG.addClass('hidden');
+	$aggregation_date_endFormG.addClass('hidden');
+
+	if(type === 'aggregator' && aggregation_by_dates) {
+		$aggregation_date_startFormG.removeClass('hidden');
+		$aggregation_date_endFormG.removeClass('hidden');
+	}
+
+});
+
 
 $(document).on('change','.site-modal select[name="type"]',function (e) {
 	var type = $(this).val().trim();
