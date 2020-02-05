@@ -2754,12 +2754,37 @@ function set_sites_content($connect) {
   $published = (isset($_POST['published']) && mb_strlen($_POST['published']) > 0)?(strtotime($_POST['published'])):$timestamp;
   $content_id = isset($_POST['content_id'])?(int)$_POST['content_id']:0;
   $status = isset($_POST['status'])?(int)$_POST['status']:0;
+  $path_autogenerate = isset($_POST['path_autogenerate'])?(int)$_POST['path_autogenerate']:0;
   $second_bg = isset($_POST['second_bg'])?(int)$_POST['second_bg']:0;
   $module_object_id = isset($_POST['module_object_id'])?(int)$_POST['module_object_id']:0;
   $module_block = isset($_POST['module_block'])?mb_strtolower(trim($_POST['module_block'])):"";
 
   if($status !== 0 && $status !== 1)
       $status = 0;
+
+  if($path_autogenerate !== 0 && $path_autogenerate !== 1)
+      $path_autogenerate = 0;
+
+    if(!in_array($type,['news','article','info', 'advice', 'blog_post'])) {
+        $path_autogenerate = 0;
+    }
+    elseif($path_autogenerate && !$content_id) {
+        $pathAr = [
+          'news' => '/новости',
+          'article' => '/статьи',
+          'info'    => '/информация',
+            'advice'    => '/советы',
+            'blog_post' => '/блог'
+        ];
+        if(array_key_exists($type,$pathAr))
+            $path = $pathAr[$type].'/'.change_text_url($title,'new');
+        $i = 0;
+        $orPath = $path;
+        while($connect->getRow('SELECT `id` FROM `sites_contents` WHERE `path`=?s AND `site_id` = ?i AND `status` <> 2', $path, $site_id)) {
+            $i++;
+            $path = $orPath.'-'.$i;
+        }
+    }
 
   if(in_array($type,$typesAr) && in_array($photogallery_orientation,$photogallery_orientations) && (($module_object_id === 0 && $module_block === "" && $type !== 'module') || ($module_object_id > 0 && in_array($module_block,$moduleBlocks) && $type === 'module'))) {
     if($site_id) {

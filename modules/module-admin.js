@@ -2000,6 +2000,10 @@ function add_new_sites_content(site_id) {
                               '<textarea class="form-control" name="rss_addition"></textarea>' +
                           '</div>' +
                       '</div>' +
+                      '<div class="form-group hidden">'+
+                          '<label class="col-sm-2 control-label">Генерировать адрес</label>' +
+                          '<input type="checkbox" name="path_autogenerate">'+
+                      '</div>'+
 			 								'<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Адрес страницы</label>' +
 												'<div class="col-sm-10">' +
@@ -2532,6 +2536,13 @@ function set_sites_content() {
 	else
 		status = 0;
 
+  var $path_autogenerate = $modalBody.find('*[name="path_autogenerate"]');
+  var path_autogenerate;
+  if($path_autogenerate.prop('checked'))
+    path_autogenerate = 1;
+  else
+    path_autogenerate = 0;
+
 	var $rss_aggregation = $modalBody.find('*[name="rss_aggregation"]');
 	var rss_aggregation;
 	if($rss_aggregation.prop('checked'))
@@ -2676,20 +2687,22 @@ function set_sites_content() {
     }
 	}
 
-  if(path.length === 0) {
-    $pathMsg.html("Это обязательное поле");
-    if(!error) {
-      $path.focus();
-      error = true;
+  if(!(path_autogenerate && (type === 'blog_post' || type === 'news' || type === 'article' || type === 'advice' || type === 'info'))) {
+    if(path.length === 0) {
+      $pathMsg.html("Это обязательное поле");
+      if(!error) {
+        $path.focus();
+        error = true;
+      }
+    }
+    else if(path[0] !== '/') {
+      $pathMsg.html("путь должен начинаться с /");
+      if(!error) {
+        $path.focus();
+        error = true;
+      }
     }
   }
-  else if(path[0] !== '/') {
-  	$pathMsg.html("путь должен начинаться с /");
-  	if(!error) {
-  		$path.focus();
-  		error = true;
-		}
-	}
 
   if(weight.length === 0) {
     $weightMsg.html("Это обязательное поле");
@@ -2867,6 +2880,7 @@ function set_sites_content() {
 				summary: summary,
 				snippet_summary: snippet_summary,
 				status: status,
+        path_autogenerate: path_autogenerate,
 				content_id: content_id,
 				weight: weight,
         module_object_id: module_object_id,
@@ -3753,6 +3767,12 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 	var $rss_aggregation = $('.sites-content-modal *[name="rss_aggregation"]');
 	var $rss_aggregationFormG = $rss_aggregation.closest('.form-group');
 
+  var $path_autogenerate = $('.sites-content-modal *[name="path_autogenerate"]');
+  var $path_autogenerateFormG = $path_autogenerate.closest('.form-group');
+
+  var $path = $('.sites-content-modal *[name="path"]');
+  var $pathFormG = $path.closest('.form-group');
+
 	var $body = $('.sites-content-modal *[name="body"]');
 	var $bodyFormG = $body.closest('.form-group');
 
@@ -3890,6 +3910,7 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 		$direction_idFormG.removeClass('hidden');
 		$main_page_fixFormG.removeClass('hidden');
 		$resorts_idsFormG.removeClass('hidden');
+		$path_autogenerateFormG.removeClass('hidden');
 		if($direction_id.val() > 0) {
 			$region_idFormG.removeClass('hidden');
 		}
@@ -3902,7 +3923,11 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 		$region_idFormG.addClass('hidden');
 		$main_page_fixFormG.addClass('hidden');
     $resorts_idsFormG.addClass('hidden');
-	}
+    $path_autogenerateFormG.addClass('hidden');
+    $path_autogenerate.prop('checked',false);
+    $path.prop('disabled', false);
+
+  }
 
     if(type === 'settings' || type === 'article' || type === 'news' || type === 'info' || type === 'advice' || type === 'blog_post') {
     	$rss_aggregationFormG.removeClass('hidden');
@@ -4140,4 +4165,24 @@ $(document).on('change','.sites-content-modal select[name="region_id"]',function
 			}
 		});
 	}
+});
+
+$(document).on('change','.sites-content-modal *[name="path_autogenerate"]',function (e) {
+  var $type = $('.sites-content-modal *[name="type"]');
+  var $typeFormG = $type.closest('.form-group');
+  var type = $type.val();
+  var $path = $('.sites-content-modal *[name="path"]');
+  var $pathMsg = $path.parent().find('.input-message-block');
+  var path = $path.val().trim();
+
+  var $path_autogenerate = $('.sites-content-modal *[name="path_autogenerate"]');
+  var $path_autogenerateFormG = $path_autogenerate.closest('.form-group');
+  var path_autogenerate = $path_autogenerate.prop('checked');
+
+  if(path_autogenerate && (type === 'article' || type === 'news' || type === 'info' || type === 'advice' || type === 'blog_post')) {
+    $path.prop('disabled', true);
+  }
+  else {
+    $path.prop('disabled', false);
+  }
 });

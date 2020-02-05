@@ -1518,6 +1518,23 @@ function change_text_url($text, $type = ""){
 		$text = str_replace(")", "", $text);
 		$text = str_replace(".", "", $text);
 	}
+	if($type == 'new') {
+        $text = str_replace(".", "", $text);
+        $text = str_replace(",", "-", $text);
+        $text = str_replace(";", "-", $text);
+        $text = str_replace(":", "-", $text);
+        $text = str_replace("*", "-", $text);
+        $text = str_replace("#", "-", $text);
+        $text = str_replace("$", "-", $text);
+        $text = str_replace("%", "-", $text);
+        $text = str_replace("@", "-", $text);
+        $text = str_replace("^", "-", $text);
+        $text = str_replace(";", "-", $text);
+        $text = str_replace("&", "", $text);
+        $text = str_replace("?", "", $text);
+        $text = str_replace("~", "", $text);
+
+    }
 	$text = str_replace("\"", "", $text);
 	$text = str_replace("'", "", $text);
 	$text = str_replace(" ", "-", $text);
