@@ -64,7 +64,8 @@ function general_payment_report($connect){
 			<label class="col-sm-2 control-label">Оплата</label>
 			<div class="col-sm-4">
 				<select class="form-control" id="type_pay">
-					<option value="1">Клиента</option>
+                    <option value="1-3">Оплата клиента и возврат</option>
+                    <option value="1">Клиента</option>
 					<option value="2">В санаторий</option>
 					<option value="3">Возврат</option>
 					<option value="4">Все</option>
@@ -271,7 +272,12 @@ function filter_payment($connect){
 		elseif ($type_opl == 3)
             $zapros_for_mysql.= "(`payment`.`type`=6)";
 	}
-	if($type_pay_tbl == 1){
+
+    if($type_pay_tbl === '1-3'){
+        $zapros_for_mysql.= " AND (`payment`.`type`=1 OR `payment`.`type`=2 OR `payment`.`type`=6 OR `payment`.`type`=5)";
+        $th_pay = "<th width='70'>Способ<br />платежа</th>";
+    }
+	elseif($type_pay_tbl == 1){
 		$zapros_for_mysql.= " AND (`payment`.`type`=1 OR `payment`.`type`=2 OR `payment`.`type`=6)";
 		$th_pay = "<th width='70'>Способ<br />платежа</th>";
 	}elseif($type_pay_tbl == 2){
@@ -296,9 +302,9 @@ function filter_payment($connect){
 
 	$zapros_for_mysql_cond = $zapros_for_mysql;
 	if($manager_id)
-	    $zapros_for_mysql = "SELECT `payment`.`id`, `payment`.`processed`, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, `users`.`office`, `payment`.`status` AS payment_status, `payment`.`type`, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san FROM payment INNER JOIN reckoning ON reckoning.id=payment.schet INNER JOIN users ON `reckoning`.`id_user`=`users`.`id` WHERE ".$zapros_for_mysql." ORDER BY payment.id";
+	    $zapros_for_mysql = "SELECT `payment`.`id`, `payment`.`processed`, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, `users`.`office`, `payment`.`status` AS payment_status, `payment`.`type`, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san, `reckoning`.`reward` AS `reckoning_reward`, `object`.`reward` AS `object_reward`, `commission`.`value` AS `agency_commission` FROM payment INNER JOIN reckoning ON reckoning.id=payment.schet INNER JOIN users ON `reckoning`.`id_user`=`users`.`id` INNER JOIN `object` ON `reckoning`.`id_obj` = `object`.`id` LEFT JOIN `commission` ON `reckoning`.`id_com` = `commission`.`id` WHERE ".$zapros_for_mysql." ORDER BY payment.id";
 	else
-        $zapros_for_mysql = "SELECT `payment`.`id`, `payment`.`processed`, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, `users`.`office`, `payment`.`status` AS payment_status, `payment`.`type`, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san FROM payment LEFT JOIN reckoning ON reckoning.id=payment.schet LEFT JOIN users ON `reckoning`.`id_user`=`users`.`id` WHERE ".$zapros_for_mysql." ORDER BY payment.id";
+        $zapros_for_mysql = "SELECT `payment`.`id`, `payment`.`processed`, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, `users`.`office`, `payment`.`status` AS payment_status, `payment`.`type`, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san, `reckoning`.`reward` AS `reckoning_reward`, `object`.`reward` AS `object_reward`, `commission`.`value` AS `agency_commission` FROM payment LEFT JOIN reckoning ON reckoning.id=payment.schet LEFT JOIN users ON `reckoning`.`id_user`=`users`.`id` INNER JOIN `object` ON `reckoning`.`id_obj` = `object`.`id` LEFT JOIN `commission` ON `reckoning`.`id_com` = `commission`.`id` WHERE ".$zapros_for_mysql." ORDER BY payment.id";
 
 
   $data = $connect->getAll($zapros_for_mysql);
@@ -491,42 +497,11 @@ function filter_payment($connect){
 
 
 			//блок расчета прибыли по платежу - начало
-            if($class == "cert")
-                $pay_reward = $row['sum'];
-            else
-                $pay_reward = 0;
-            $all_pays = $connect->getAll("SELECT id FROM payment WHERE (type = 1 OR type = 2 OR type = 6) AND schet = ?i AND `payment`.`status` != 0", $id);
-            $all_pays_count = count($all_pays);
-              $pay_ar1 = [];
-              $pay_ar2 = [];
-              foreach ($all_pays as $all_pay_index => $all_pays_el)
-              {
-                if($all_pays_el['id'] == $payment_id) {
-                  if($all_pays_count-1 != $all_pay_index)
-                    $pay_ar1[] = $all_pays_el['id'];
-                  else {
-                    $pay_ar2[] = $all_pays_el['id'];
-                  }
-                }
-              }
+           $pay_reward = round((($row['sum']*$row['object_reward']/100))-$row['sum']*$row['bank_com']/100-$row['sum']*$row['agency_commission']/100,2);
 
-              if(count($pay_ar1) > 0) {
-                $test_reward = get_reward_schet($connect, $id, "", TRUE, FALSE, $pay_ar1);
-                $pay_reward += $test_reward;
-              }
-
-              if(count($pay_ar2) > 0) {
-
-                $test_reward = get_reward_schet($connect, $id, "", TRUE, TRUE, $pay_ar2,$all_pays_count != (count($pay_ar1)+count($pay_ar2)));
-                $pay_reward += $test_reward;
-              }
-              //echo $id." ".$all_pays_count." ".count($pay_ar1)." ".count($pay_ar2)." ".$pay_reward."<br />";
-            //блок расчета прибыли по платежу - конец
-
-            $all_reward += $pay_reward;
-              if($office_pay > 0){
-                $array["office"][$office_pay]["all_reward"]+= $pay_reward;
-              }
+			if($type_pay_tbl === '1-3' && $type_pay == 5) {
+			    $pay_reward *= (-1);
+            }
 
 
 			$html.= "<tr class='".$bg_class."' ".$func." style='background: ".$color."!important;'>";
@@ -658,7 +633,7 @@ function filter_payment($connect){
 				<div class="clearfix"></div>
 				<hr />
 				<div class="col-sm-6">
-					Общее вознаграждение на сумму <?php echo number_format($array["reward"], 2, ",", " ")." (сумма прибыли по каждому платежу ".number_format($all_reward, 2, ",", " ").") "; ?>
+					Общее вознаграждение на сумму <?php echo number_format($array["reward"], 2, ",", " "); ?>
 				</div>
 			</div>
 		</div>
@@ -733,7 +708,7 @@ function filter_payment($connect){
                     <div class="clearfix"></div>
                     <hr />
                     <div class="col-sm-6">
-                        Общее вознаграждение по офису на сумму <?php echo number_format($data["reward"], 2, ",", " ")." (сумма прибыли по каждому платежу ".number_format($data['all_reward'], 2, ",", " ").") "; ?>
+                        Общее вознаграждение по офису на сумму <?php echo number_format($data["reward"], 2, ",", " "); ?>
                     </div>
                 <?php } ?>
 
