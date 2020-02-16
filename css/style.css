@@ -1712,3 +1712,7 @@ tr.simple-row {
 .std-bottom-margin {
   margin-bottom: 2em;
 }
+
+.datepicker.hidden+.convers-date {
+	display: none !important;
+}

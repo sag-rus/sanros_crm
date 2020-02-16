@@ -28,12 +28,31 @@ function general_payment_report($connect){
 <div class="form-horizontal panel panel-default">
 	<div class="panel-body">
 		<div class="form-group">
-			<label class="col-sm-2 control-label">Дата оплаты</label>
+			<label class="col-sm-2 control-label" style="padding-top: 0;">
+                <select class="form-control" id="period_selector">
+                    <option value="dates">Даты оплаты</option>
+                    <option value="month">Месяц</option>
+                    <option value="year">Год</option>
+                </select>
+            </label>
 			<div class="col-sm-2">
 				<input type="text" class="form-control datepicker" id="date_opl" />
+                <select class="form-control hidden" id="year_opl">
+                    <?php for ($i = date("Y")-3; $i < date("Y")+1;$i++) { ?>
+                        <option value="<?=$i;?>"<?php if($i == date("Y")) { ?> selected<?php } ?>><?=$i;?></option>
+                    <?php } ?>
+                </select>
 			</div>
 			<div class="col-sm-2">
 				<input type="text" class="form-control datepicker" id="date_opl2" />
+                <select class="form-control hidden" id="month_opl">
+                    <?php
+                        $array_month = array(1 => "Январь", 2 => "Февраль", 3 => "Март", 4 => "Апрель", 5 => "Май", 6 => "Июнь", 7 => "Июль", 8 => "Август", 9 => "Сентябрь", 10 => "Октябрь", 11 => "Ноябрь", 12 => "Декабрь");
+                        foreach ($array_month as $monthNumber => $monthName) {
+                    ?>
+                            <option value="<?=$monthNumber;?>"<?php if($monthNumber == date('n')) { ?> selected<?php } ?>><?=$monthName;?><?php if($monthNumber == date('n')) { ?> (текущий)<?php } ?></option>
+                        <?php } ?>
+                </select>
 			</div>
 			<label class="col-sm-2 control-label">Способ оплаты</label>
 			<div class="col-sm-4">
@@ -169,7 +188,23 @@ function filter_payment($connect){
 	}
 	$date_opl = $_POST["date_opl"];
 	$date_opl2 = $_POST["date_opl2"];
-	$method_opl = (int)$_POST["method_opl"];
+	$year_opl = $_POST["year_opl"];
+    $month_opl = $_POST["month_opl"];
+    $period_selector = $_POST["period_selector"];
+
+    if($period_selector === 'year') {
+        $date_opl = $year_opl.'-01-01';
+        $date_opl2 = $year_opl.'-12-31';
+    }
+    elseif ($period_selector === 'month') {
+        if(mb_strlen($month_opl) === 1)
+            $month_opl = '0'.$month_opl;
+
+        $date_opl = $year_opl.'-'.$month_opl.'-01';
+        $date_opl2 = date($year_opl.'-'.$month_opl.'-t');
+    }
+
+    $method_opl = (int)$_POST["method_opl"];
 	$manager_id = isset($_POST['manager_id'])?(int)$_POST['manager_id']:0;
 	if($manager_id < 0)
 	    $manager_id = 0;
@@ -302,9 +337,9 @@ function filter_payment($connect){
 
 	$zapros_for_mysql_cond = $zapros_for_mysql;
 	if($manager_id)
-	    $zapros_for_mysql = "SELECT `payment`.`id`, `payment`.`processed`, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, `users`.`office`, `payment`.`status` AS payment_status, `payment`.`type`, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san, `reckoning`.`reward` AS `reckoning_reward`, `object`.`reward` AS `object_reward`, `commission`.`value` AS `agency_commission` FROM payment INNER JOIN reckoning ON reckoning.id=payment.schet INNER JOIN users ON `reckoning`.`id_user`=`users`.`id` INNER JOIN `object` ON `reckoning`.`id_obj` = `object`.`id` LEFT JOIN `commission` ON `reckoning`.`id_com` = `commission`.`id` WHERE ".$zapros_for_mysql." ORDER BY payment.id";
+	    $zapros_for_mysql = "SELECT (SELECT `position_reck`.`reward` FROM `position_reck` WHERE `position_reck`.`schet` = `payment`.`schet` ORDER BY (`position_reck`.`reward` > 0) LIMIT 1) AS `position_reward`, `payment`.`id`, `payment`.`processed`, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, `users`.`office`, `payment`.`status` AS payment_status, `payment`.`type`, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san, `reckoning`.`reward` AS `reckoning_reward`, `object`.`reward` AS `object_reward`, `commission`.`value` AS `agency_commission` FROM payment INNER JOIN reckoning ON reckoning.id=payment.schet INNER JOIN users ON `reckoning`.`id_user`=`users`.`id` INNER JOIN `object` ON `reckoning`.`id_obj` = `object`.`id` LEFT JOIN `commission` ON `reckoning`.`id_com` = `commission`.`id` WHERE ".$zapros_for_mysql." ORDER BY payment.id";
 	else
-        $zapros_for_mysql = "SELECT `payment`.`id`, `payment`.`processed`, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, `users`.`office`, `payment`.`status` AS payment_status, `payment`.`type`, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san, `reckoning`.`reward` AS `reckoning_reward`, `object`.`reward` AS `object_reward`, `commission`.`value` AS `agency_commission` FROM payment LEFT JOIN reckoning ON reckoning.id=payment.schet LEFT JOIN users ON `reckoning`.`id_user`=`users`.`id` INNER JOIN `object` ON `reckoning`.`id_obj` = `object`.`id` LEFT JOIN `commission` ON `reckoning`.`id_com` = `commission`.`id` WHERE ".$zapros_for_mysql." ORDER BY payment.id";
+        $zapros_for_mysql = "SELECT (SELECT `position_reck`.`reward` FROM `position_reck` WHERE `position_reck`.`schet` = `payment`.`schet` ORDER BY (`position_reck`.`reward` > 0) LIMIT 1) AS `position_reward`, `payment`.`id`, `payment`.`processed`, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, `users`.`office`, `payment`.`status` AS payment_status, `payment`.`type`, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san, `reckoning`.`reward` AS `reckoning_reward`, `object`.`reward` AS `object_reward`, `commission`.`value` AS `agency_commission` FROM payment LEFT JOIN reckoning ON reckoning.id=payment.schet LEFT JOIN users ON `reckoning`.`id_user`=`users`.`id` INNER JOIN `object` ON `reckoning`.`id_obj` = `object`.`id` LEFT JOIN `commission` ON `reckoning`.`id_com` = `commission`.`id` WHERE ".$zapros_for_mysql." ORDER BY payment.id";
 
 
   $data = $connect->getAll($zapros_for_mysql);
@@ -497,7 +532,7 @@ function filter_payment($connect){
 
 
 			//блок расчета прибыли по платежу - начало
-           $pay_reward = round((($row['sum']*$row['object_reward']/100))-$row['sum']*$row['bank_com']/100-$row['sum']*$row['agency_commission']/100,2);
+           $pay_reward = round((($row['sum']*($row['position_reward']?$row['position_reward']:$row['object_reward'])/100))-$row['sum']*$row['bank_com']/100-$row['sum']*$row['agency_commission']/100,2);
 
 			if($type_pay_tbl === '1-3' && $type_pay == 5) {
 			    $pay_reward *= (-1);
@@ -523,43 +558,52 @@ function filter_payment($connect){
 		//}
 	}
 
-	foreach ($pay_groups as $reck_id => $pay_array) {
-	    $all_pays = $connect->getAll("SELECT `id`, `office` FROM payment WHERE (type = 1 OR type = 2 OR type = 6) AND schet = ?i AND `payment`.`status` != 0", $reck_id);
-	    $office_g = $connect->getOne("SELECT `users`.`office` FROM `reckoning` LEFT JOIN `users` ON `reckoning`.`id_user`=`users`.`id` WHERE `reckoning`.`id` = ?i", $reck_id);
-	    $all_pays_count = count($all_pays);
-	    /*if($all_pays_count === count($pay_array)) {
+if($type_pay_tbl === '1-3' && $type_pay == 5) {
+    $array['reward'] += $pay_reward;
+    $office_g = $connect->getOne("SELECT `users`.`office` FROM `reckoning` LEFT JOIN `users` ON `reckoning`.`id_user`=`users`.`id` WHERE `reckoning`.`id` = ?i", $id);
+    if($office_g) {
+        $array["office"][$office_g]["reward"] += $pay_reward;
+    }
+}
+else {
+    foreach ($pay_groups as $reck_id => $pay_array) {
+        $all_pays = $connect->getAll("SELECT `id`, `office` FROM payment WHERE (type = 1 OR type = 2 OR type = 6) AND schet = ?i AND `payment`.`status` != 0", $reck_id);
+        $office_g = $connect->getOne("SELECT `users`.`office` FROM `reckoning` LEFT JOIN `users` ON `reckoning`.`id_user`=`users`.`id` WHERE `reckoning`.`id` = ?i", $reck_id);
+        $all_pays_count = count($all_pays);
+        /*if($all_pays_count === count($pay_array)) {
           $array["reward"] += get_reward_schet($connect, $reck_id, "", TRUE);
         }
         else {*/
-	        $pay_ar1 = [];
-	        $pay_ar2 = [];
-	        foreach ($all_pays as $all_pay_index => $all_pays_el)
-	        {
-	            if(in_array($all_pays_el['id'],$pay_array)) {
-	                if($all_pays_count-1 != $all_pay_index)
-	                    $pay_ar1[] = $all_pays_el['id'];
-	                else {
-	                    $pay_ar2[] = $all_pays_el['id'];
-                    }
+        $pay_ar1 = [];
+        $pay_ar2 = [];
+        foreach ($all_pays as $all_pay_index => $all_pays_el)
+        {
+            if(in_array($all_pays_el['id'],$pay_array)) {
+                if($all_pays_count-1 != $all_pay_index)
+                    $pay_ar1[] = $all_pays_el['id'];
+                else {
+                    $pay_ar2[] = $all_pays_el['id'];
                 }
             }
-            $reck_pay_reward = 0;
-            if(count($pay_ar1) > 0) {
-              $test_reward = get_reward_schet($connect, $reck_id, "", TRUE, FALSE, $pay_ar1);
-              $reck_pay_reward += $test_reward;
-            }
+        }
+        $reck_pay_reward = 0;
+        if(count($pay_ar1) > 0) {
+            $test_reward = get_reward_schet($connect, $reck_id, "", TRUE, FALSE, $pay_ar1);
+            $reck_pay_reward += $test_reward;
+        }
 
-	        if(count($pay_ar2) > 0) {
-	          $test_reward = get_reward_schet($connect, $reck_id, "", TRUE, TRUE, $pay_ar2,$all_pays_count != (count($pay_ar1)+count($pay_ar2)));
-	          $reck_pay_reward += $test_reward;
-            }
+        if(count($pay_ar2) > 0) {
+            $test_reward = get_reward_schet($connect, $reck_id, "", TRUE, TRUE, $pay_ar2,$all_pays_count != (count($pay_ar1)+count($pay_ar2)));
+            $reck_pay_reward += $test_reward;
+        }
         //}
-      $array['reward'] += $reck_pay_reward;
-	  if($office_g) {
-        $array["office"][$office_g]["reward"] += $reck_pay_reward;
-      }
-      //echo " <br />".$reck_id." ".$reck_pay_reward."<br />";
+        $array['reward'] += $reck_pay_reward;
+        if($office_g) {
+            $array["office"][$office_g]["reward"] += $reck_pay_reward;
+        }
+        //echo " <br />".$reck_id." ".$reck_pay_reward."<br />";
     }
+}
 
 	if(!$html)
 		return "<div class='alert alert-info'><i class='fa fa-info-circle'></i> Ничего не найдено</div>";
@@ -632,9 +676,29 @@ function filter_payment($connect){
 
 				<div class="clearfix"></div>
 				<hr />
-				<div class="col-sm-6">
-					Общее вознаграждение на сумму <?php echo number_format($array["reward"], 2, ",", " "); ?>
+				<div class="col-sm-4">
+                    <b>Общее вознаграждение на сумму <?php echo number_format($array["reward"], 2, ",", " "); ?></b>
 				</div>
+                <?php if($manager_id && $period_selector === 'month') {
+                    $row = $connect->getRow("SELECT commission, plan FROM plan WHERE `manager`=?i AND `year` = ?i AND `month` = ?i LIMIT 1", $manager_id, $year_opl, (int)$month_opl);
+                    ?>
+                     <?php if($row) { ?>
+                        <div class="col-sm-4">
+                            <b>План: <?=number_format($row['plan'], 2, ",", " ");?></b>
+                        </div>
+                        <div class="col-sm-4">
+                            <b>Комиссия сверх плана: <?=$row['commission'];?>%</b>
+                        </div>
+                        <?php
+                        $overPlan = $array["reward"]-$row['plan'];
+                        ?>
+                        <?php if($overPlan > 0) { ?>
+                            <div class="col-sm-4"><b>Премия: <?=number_format($row['commission']*$overPlan/100, 2, ",", " ");?></b></div>
+                        <?php } ?>
+                <?php
+                        }
+                    }
+                ?>
 			</div>
 		</div>
 	<?php foreach($array["office"] as $office => $data){

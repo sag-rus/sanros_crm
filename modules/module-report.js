@@ -324,6 +324,11 @@ function payment_report_general(){
 
 function filter_payment(){
 	var method_opl = $('#method_opl').val();
+
+	var periodSelector = $('#period_selector').val();
+	var month_opl = $('#month_opl').val();
+	var year_opl = $('#year_opl').val();
+
 	var card_payment_types = 0;
 	if(method_opl === "5-1") {
 		method_opl = 5;
@@ -351,10 +356,10 @@ function filter_payment(){
 	var date_opl2 = $('#date_opl2').attr('date');
 	var showHoldings = parseInt($('#show-holdings').prop('checked')*1);
 	var managerId = parseInt($('#all_manager').val(),10);
-	if(!date_opl)
+	if(!date_opl && periodSelector === 'dates')
 		show_warning('#filter_res', 'Введите дату');
 	else{
-		var str = 'func=filter_payment&date_opl=' + date_opl + '&date_opl2=' + date_opl2 + '&method_opl=' + method_opl + '&type_opl=' + type_opl + '&type_pay=' + type_pay+'&show_holdings='+showHoldings+"&card_payment_types="+card_payment_types+'&manager_id='+managerId;
+		var str = 'func=filter_payment&date_opl=' + date_opl + '&date_opl2=' + date_opl2 + '&method_opl=' + method_opl + '&type_opl=' + type_opl + '&type_pay=' + type_pay+'&show_holdings='+showHoldings+"&card_payment_types="+card_payment_types+'&manager_id='+managerId+'&period_selector='+periodSelector+'&month_opl='+month_opl+'&year_opl='+year_opl;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
@@ -1516,3 +1521,29 @@ function sync_comparison_object(object){
 		}
 	});
 }
+
+$(document).ready(function (e) {
+	$(document).on('change','#period_selector', function (e) {
+		var periodSelector = $(this).val();
+		var $date_opl = $('#date_opl');
+		var $date_opl2 = $('#date_opl2');
+		var $month_opl = $('#month_opl');
+		var $year_opl = $('#year_opl');
+		$date_opl.addClass('hidden');
+		$date_opl2.addClass('hidden');
+		$month_opl.addClass('hidden');
+		$year_opl.addClass('hidden');
+
+		if(periodSelector === 'dates') {
+			$date_opl.removeClass('hidden');
+			$date_opl2.removeClass('hidden');
+		}
+		else if(periodSelector === 'month') {
+			$month_opl.removeClass('hidden');
+			$year_opl.removeClass('hidden');
+		}
+		else if(periodSelector === 'year') {
+			$year_opl.removeClass('hidden');
+		}
+	});
+});
