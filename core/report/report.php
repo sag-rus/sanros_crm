@@ -558,7 +558,7 @@ function filter_payment($connect){
 		//}
 	}
 
-if($type_pay_tbl === '1-3' && $type_pay == 5) {
+if($type_pay_tbl === '1-3') {
     $array['reward'] += $pay_reward;
     $office_g = $connect->getOne("SELECT `users`.`office` FROM `reckoning` LEFT JOIN `users` ON `reckoning`.`id_user`=`users`.`id` WHERE `reckoning`.`id` = ?i", $id);
     if($office_g) {
