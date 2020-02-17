@@ -538,6 +538,12 @@ function filter_payment($connect){
 			    $pay_reward *= (-1);
             }
 
+            $array['reward'] += $pay_reward;
+            $office_g = $connect->getOne("SELECT `users`.`office` FROM `reckoning` LEFT JOIN `users` ON `reckoning`.`id_user`=`users`.`id` WHERE `reckoning`.`id` = ?i", $id);
+            if($office_g) {
+                $array["office"][$office_g]["reward"] += $pay_reward;
+            }
+
 
 			$html.= "<tr class='".$bg_class."' ".$func." style='background: ".$color."!important;'>";
 			$html.= "<td valign='top' align='center'>".$id."</td>";
@@ -559,11 +565,7 @@ function filter_payment($connect){
 	}
 
 if($type_pay_tbl === '1-3') {
-    $array['reward'] += $pay_reward;
-    $office_g = $connect->getOne("SELECT `users`.`office` FROM `reckoning` LEFT JOIN `users` ON `reckoning`.`id_user`=`users`.`id` WHERE `reckoning`.`id` = ?i", $id);
-    if($office_g) {
-        $array["office"][$office_g]["reward"] += $pay_reward;
-    }
+
 }
 else {
     foreach ($pay_groups as $reck_id => $pay_array) {
