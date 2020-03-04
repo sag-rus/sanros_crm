@@ -281,7 +281,7 @@ function show_call_back($connect){
 		</p>
 		<?php } ?>
 <?php
-	$data = $connect->getAll("SELECT id, active, id_user, website, turist, telephone, question, address, type, DATE_FORMAT(time, '%H:%i:%s %d.%m.%Y') as date, promo, note, id_bid, source, href, chat_id, user_remote_id FROM order_call_back WHERE ".$zapros." ORDER BY `time` DESC");
+	$data = $connect->getAll("SELECT id, active, id_user, website, turist, telephone, question, address, type, DATE_FORMAT(time, '%H:%i:%s %d.%m.%Y') as date, promo, note, id_bid, source, href, chat_id, user_remote_id, callback_time FROM order_call_back WHERE ".$zapros." ORDER BY `time` DESC");
 	foreach($data as $row){
 		$id = $row["id"];
 		$active = $row["active"];
@@ -341,6 +341,18 @@ function show_call_back($connect){
 					</div>
 				</div>
 			</div>
+            <?php if($row["callback_time"]) { ?>
+                <div class="list-group-item list-hover-item">
+                    <div class="form-group form-group-margin">
+                        <label class="col-sm-4 control-label-element">
+                            Желаемое время для звонка:
+                        </label>
+                        <div class="col-sm-8">
+                            <?php echo date("d.m.Y H:i:s",$row["callback_time"]); ?>
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
 			<div class="list-group-item list-hover-item">
 				<div class="form-group form-group-margin">
 					<label class="col-sm-4 control-label-element">
