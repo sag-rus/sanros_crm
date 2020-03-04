@@ -276,6 +276,9 @@ require_once __DIR__."/../../vendor/autoload.php";
 			$object = isset($data_booking_JSON["object"])?(int)$data_booking_JSON["object"]:0;
 			$chat_id = NULL;
 
+			$callback_time = $data_booking_JSON['callback_time']?$data_booking_JSON['callback_time']:'';
+
+
 			//if(isset($data_booking_JSON["chat_id"]))
 				//$chat_id = (int)$data_booking_JSON["chat_id"];
 
@@ -296,7 +299,13 @@ require_once __DIR__."/../../vendor/autoload.php";
 			if(!$arrival || !$object){
 
 				$address = get_address_by_ip($client_info["ip"]);
-				$connect->query("INSERT INTO order_call_back(website, turist, telephone, question, address, type, source, href, chat_id, user_remote_id, form_id) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i)", $website, $fio, $client_info["telephone"], $question, $address, $type, $source, $page, $chat_id, $user_remote_id,$form_id);
+
+				if($callback_time)
+					$connect->query("INSERT INTO order_call_back(website, turist, telephone, question, address, type, source, href, chat_id, user_remote_id, form_id, callback_time) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i)", $website, $fio, $client_info["telephone"], $question, $address, $type, $source, $page, $chat_id, $user_remote_id,$form_id, strtotime($callback_time));
+				else
+					$connect->query("INSERT INTO order_call_back(website, turist, telephone, question, address, type, source, href, chat_id, user_remote_id, form_id) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i)", $website, $fio, $client_info["telephone"], $question, $address, $type, $source, $page, $chat_id, $user_remote_id,$form_id);
+
+
 				if($id){
 					$last = $connect->insertId();
 					$connect->query("UPDATE order_call_back SET type='module', promo=?i WHERE id=?i", $id, $last);
