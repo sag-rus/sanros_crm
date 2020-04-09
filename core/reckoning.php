@@ -2934,7 +2934,8 @@ function show_menu_bid($connect){
 		<?php } ?>
 		<?php if($status == 6 AND $id_rights > 3){ ?>
 			<span onclick="return_cancel(<?php echo $id; ?>)">Вернуть в работу</span>
-		<?php } ?>
+            <span onclick="reckoning_to_deposit(<?=$id;?>)">Перевести в депозит</span>
+        <?php } ?>
 		<?php if(($status == 7 OR $status == 8 OR $status == 10 OR $status == 11) AND $id_rights > 3){ ?>
 			<span onclick="return_schet(<?php echo $id; ?>, <?php echo $status; ?>)">Вернуть</span>
 		<?php } ?>
