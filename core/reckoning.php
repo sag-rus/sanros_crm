@@ -2919,6 +2919,7 @@ function show_menu_bid($connect){
 		<?php } ?>
 		<?php if($status == 9 && $row['holding_sum'] == 0){ ?>
 			<span onclick="reckoning_from_aside(<?php echo $id; ?>)">Вернуть в работу</span>
+            <span onclick="reckoning_to_deposit(<?=$id;?>)">Перевести в депозит</span>
 			<span onclick="reckoning_to_upsorted(<?php echo $id; ?>)">Удалить</span>
 		<?php } ?>
 		<?php if(($status == 4 OR $status == 3 OR $status == 7) AND $id_rights > 5){ ?>

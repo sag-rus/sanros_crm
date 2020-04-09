@@ -838,6 +838,20 @@ function reckoning_from_aside(id){
 	});
 }
 
+function reckoning_to_deposit(id){
+	var str = 'func=reckoning_to_deposit&id=' + id;
+	$.ajax({
+		type: 'POST',
+		data: str,
+		url: 'mysql.php',
+		success: function(){
+			remove_all_windows();
+			view_schet(id);
+			show_alert('Заявка переведена в депозит...');
+		}
+	});
+}
+
 function delete_changes_reckoning(id){
 	var str = 'func=delete_changes_reckoning&id=' + id;
 	$.ajax({
