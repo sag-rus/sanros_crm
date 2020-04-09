@@ -1116,7 +1116,7 @@ function reckoning_from_aside($connect){
 function reckoning_to_deposit($connect){
     $id = $_POST["id"];
     $status = $connect->getOne("SELECT status FROM reckoning WHERE id=?i", $id);
-    if($status == 9 || $status == 6){
+    if($status == 4 || $status == 5 || $status == 9 || $status == 6){
         $status = 12;
         $connect->query("UPDATE reckoning SET status=?i WHERE id=?i", $status, $id);
         save_schet_to_history($connect, $id, "Заявка переведена в депозит");

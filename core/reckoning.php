@@ -2967,7 +2967,8 @@ function show_menu_bid($connect){
 		<?php } ?>
 		<?php if(($id_rights > 3) AND ($status != 6) AND ($status != 9)){ ?>
 			<span onclick="review_cancel(<?php echo $id; ?>, 6)">Аннулировать</span>
-		<?php } ?>
+            <span onclick="reckoning_to_deposit(<?php echo $id; ?>, 6)">Перевести в депозит</span>
+        <?php } ?>
 		<?php if($id_rights > 3 OR ($id_rights == 3 AND $connect->getOne("SELECT office FROM users WHERE id=?i", $session_login) == $connect->getOne("SELECT office FROM users WHERE id=?i", $user)) OR $user == $session_login){ ?>
 			<span onclick="change_manager(<?php echo $id; ?>)">Изменить менеджера</span>
 		<?php } ?>
