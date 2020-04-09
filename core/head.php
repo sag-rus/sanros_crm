@@ -48,7 +48,12 @@ function show_my_bid_menu($connect){
 			$bgcolor = "#FF0000";
 			$color = "#FFF";
 			$query2 = "status=5 AND (status_san!=1 AND status_san!=4)";
-		}else{
+		} elseif($id == 12){
+			$bgcolor = "#FF0000";
+			$color = "#FFF";
+			$query2 = "status=12";
+        }
+		else{
 			$bgcolor = "#FF0";
 			$color = "#000";
 			$query = "status=$id";
@@ -68,7 +73,7 @@ function show_my_bid_menu($connect){
 		}
 		if($count == 0)
 			$count = "";
-		if($id <= 6){
+		if($id <= 6 || $id == 12){
 		?>
 			<li class="<?php echo $id; ?>-bid-page" onclick="get_my_reckoning(<?php echo $id; ?>)">
 				<a><?php echo $name_menu; ?><span class="badge"><?php echo $count; ?></span></a>
