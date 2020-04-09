@@ -1085,7 +1085,7 @@ function received_report_agent($connect){
 function return_cancel($connect){
 	$id = $_POST["id"];
 	$status = $connect->getOne("SELECT status FROM reckoning WHERE id=?i", $id);
-	if($status == 6){
+	if($status == 6 || $status == 12){
 		$connect->query("UPDATE reckoning SET status=2 WHERE id=?i", $id);
 		save_schet_to_history($connect, $id, "Возврат в работу");
 	}
