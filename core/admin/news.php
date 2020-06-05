@@ -2110,7 +2110,6 @@ function multipart_upload($connect, $customData = NULL) {
           'plength' => 1
       ];
     }
-    $postCopy["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
     if(is_null($customData)) {
       $respAr['partnum'] = (int)$_POST['partnum'];
       $respAr['plength'] = (int)$_POST['plength'];
@@ -2141,7 +2140,10 @@ function multipart_upload($connect, $customData = NULL) {
 
 
     $res = $client->request('POST',"https://cdn.tonia.ru/api/files/upload/multipart",[
-      'multipart' => $multipart
+      'multipart' => $multipart,
+      'headers' => [
+          'X-Secret-Token' => '8g5bKM1o70O3MqQPsaHNvXTICd5ZSZoB9ZmcpBBh'
+      ]
     ]);
 
     $res = json_decode($res->getBody(),true);
