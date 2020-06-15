@@ -1616,7 +1616,7 @@ function edit_sites_content($connect) {
                       <div class="form-group<?php if(in_array($content['type'],['redirect'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Основная картинка</label>
                           <div class="col-sm-10">
-                              <input type="file" class="form-control" name="image" value="<?=htmlspecialchars(json_encode((object)bounds_to_files($connect,load_bounds($connect,$entity,'image'))));?>">
+                              <input type="file" class="form-control" name="image" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'image'))));?>">
                               <div class="input-message-block" data-for="image"></div>
                           </div>
                       </div>
@@ -1743,7 +1743,7 @@ function edit_sites_content($connect) {
                           <label class="col-sm-2 control-label">Фотографии</label>
                           <div class="col-sm-10">
                               <div class="input-message-block" data-for="photogallery"></div>
-                              <input type="file" name="photogallery" value="<?=htmlspecialchars(json_encode((object)bounds_to_files($connect,load_bounds($connect,$entity,'photogallery'))));?>">
+                              <input type="file" name="photogallery" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'photogallery'))));?>">
                           </div>
                       </div>
                       <div class="form-group<?php if(!in_array($content['type'],['photogallery','landing','news', 'page','settings', 'article', 'info', 'advice', 'blog_post'])) { ?> hidden<?php } ?>">
@@ -1774,14 +1774,14 @@ function edit_sites_content($connect) {
                           <label class="col-sm-2 control-label">Фото слайдера</label>
                           <div class="col-sm-10">
                               <div class="input-message-block" data-for="slider_photos"></div>
-                              <input type="file" name="slider_photos" value="<?=htmlspecialchars(json_encode((object)bounds_to_files($connect,load_bounds($connect,$entity,'slider_photos'))));?>">
+                              <input type="file" name="slider_photos" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'slider_photos'))));?>">
                           </div>
                       </div>
                       <div class="form-group<?php if(!in_array($content['type'],['landing','settings'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Фото для фона</label>
                           <div class="col-sm-10">
                               <div class="input-message-block" data-for="page_bg"></div>
-                              <input type="file" name="page_bg" value="<?=htmlspecialchars(json_encode((object)bounds_to_files($connect,load_bounds($connect,$entity,'page_bg'))));?>">
+                              <input type="file" name="page_bg" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'page_bg'))));?>">
                           </div>
                       </div>
                       <div class="form-group<?php if(!in_array($content['type'],['landing','settings'])) { ?> hidden<?php } ?>">
@@ -2235,7 +2235,7 @@ function edit_site($connect) {
                           <label class="col-sm-4 control-label">Favicon</label>
                           <div class="col-sm-8">
                               <div class="input-message-block" data-for="favicon"></div>
-                              <input type="file" name="favicon" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'favicon')):[]));?>">
+                              <input type="file" name="favicon" value="<?=htmlspecialchars(json_encode($site?bounds_to_files($connect,load_bounds($connect,$entity,'favicon')):[]));?>">
                           </div>
                       </div>
                       <div class="form-group">
@@ -2407,28 +2407,28 @@ function edit_site_icons($connect) {
                           <div class="col-sm-8">
                               <div class="input-message-block" data-for="favicon"></div>
                               <input type="hidden" name="id" value="<?=$id;?>">
-                              <input type="file" name="favicon" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'favicon')):[]));?>">
+                              <input type="file" name="favicon" value="<?=htmlspecialchars(json_encode($site?bounds_to_files($connect,load_bounds($connect,$entity,'favicon')):[]));?>">
                           </div>
                       </div>
                       <div class="form-group">
                           <label class="col-sm-4 control-label">Логотип</label>
                           <div class="col-sm-8">
                               <div class="input-message-block" data-for="logo"></div>
-                              <input type="file" name="logo" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'logo')):[]));?>">
+                              <input type="file" name="logo" value="<?=htmlspecialchars(json_encode($site?bounds_to_files($connect,load_bounds($connect,$entity,'logo')):[]));?>">
                           </div>
                       </div>
                       <div class="form-group">
                           <label class="col-sm-4 control-label">Иконка 16x16</label>
                           <div class="col-sm-8">
                               <div class="input-message-block" data-for="icon_16x16"></div>
-                              <input type="file" name="icon_16x16" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_16x16')):[]));?>">
+                              <input type="file" name="icon_16x16" value="<?=htmlspecialchars(json_encode($site?bounds_to_files($connect,load_bounds($connect,$entity,'icon_16x16')):[]));?>">
                           </div>
                       </div>
                       <div class="form-group">
                           <label class="col-sm-4 control-label">Иконка 32x32</label>
                           <div class="col-sm-8">
                               <div class="input-message-block" data-for="icon_32x32"></div>
-                              <input type="file" name="icon_32x32" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_32x32')):[]));?>">
+                              <input type="file" name="icon_32x32" value="<?=htmlspecialchars(json_encode($site?bounds_to_files($connect,load_bounds($connect,$entity,'icon_32x32')):[]));?>">
                           </div>
                       </div>
 
@@ -2436,7 +2436,7 @@ function edit_site_icons($connect) {
                           <label class="col-sm-4 control-label">Иконка 57x57 (Apple non-Retina)</label>
                           <div class="col-sm-8">
                               <div class="input-message-block" data-for="icon_apple_57x57"></div>
-                              <input type="file" name="icon_apple_57x57" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_57x57')):[]));?>">
+                              <input type="file" name="icon_apple_57x57" value="<?=htmlspecialchars(json_encode($site?bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_57x57')):[]));?>">
                           </div>
                       </div>
 
@@ -2444,70 +2444,70 @@ function edit_site_icons($connect) {
                           <label class="col-sm-4 control-label">Иконка 60x60 (Apple)</label>
                           <div class="col-sm-8">
                               <div class="input-message-block" data-for="icon_apple_60x60"></div>
-                              <input type="file" name="icon_apple_60x60" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_60x60')):[]));?>">
+                              <input type="file" name="icon_apple_60x60" value="<?=htmlspecialchars(json_encode($site?bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_60x60')):[]));?>">
                           </div>
                       </div>
                       <div class="form-group">
                           <label class="col-sm-4 control-label">Иконка 72x72 (Apple)</label>
                           <div class="col-sm-8">
                               <div class="input-message-block" data-for="icon_apple_72x72"></div>
-                              <input type="file" name="icon_apple_72x72" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_72x72')):[]));?>">
+                              <input type="file" name="icon_apple_72x72" value="<?=htmlspecialchars(json_encode($site?bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_72x72')):[]));?>">
                           </div>
                       </div>
                       <div class="form-group">
                           <label class="col-sm-4 control-label">Иконка 76x76 (Apple)</label>
                           <div class="col-sm-8">
                               <div class="input-message-block" data-for="icon_apple_76x76"></div>
-                              <input type="file" name="icon_apple_76x76" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_76x76')):[]));?>">
+                              <input type="file" name="icon_apple_76x76" value="<?=htmlspecialchars(json_encode($site?bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_76x76')):[]));?>">
                           </div>
                       </div>
                       <div class="form-group">
                           <label class="col-sm-4 control-label">Иконка 96x96</label>
                           <div class="col-sm-8">
                               <div class="input-message-block" data-for="icon_96x96"></div>
-                              <input type="file" name="icon_96x96" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_96x96')):[]));?>">
+                              <input type="file" name="icon_96x96" value="<?=htmlspecialchars(json_encode($site?bounds_to_files($connect,load_bounds($connect,$entity,'icon_96x96')):[]));?>">
                           </div>
                       </div>
                       <div class="form-group">
                           <label class="col-sm-4 control-label">Иконка 114x114 (Apple)</label>
                           <div class="col-sm-8">
                               <div class="input-message-block" data-for="icon_apple_114x114"></div>
-                              <input type="file" name="icon_apple_114x114" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_114x114')):[]));?>">
+                              <input type="file" name="icon_apple_114x114" value="<?=htmlspecialchars(json_encode($site?bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_114x114')):[]));?>">
                           </div>
                       </div>
                       <div class="form-group">
                           <label class="col-sm-4 control-label">Иконка 120x120 (Apple)</label>
                           <div class="col-sm-8">
                               <div class="input-message-block" data-for="icon_apple_120x120"></div>
-                              <input type="file" name="icon_apple_120x120" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_120x120')):[]));?>">
+                              <input type="file" name="icon_apple_120x120" value="<?=htmlspecialchars(json_encode($site?bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_120x120')):[]));?>">
                           </div>
                       </div>
                       <div class="form-group">
                           <label class="col-sm-4 control-label">Иконка 144x144 (Apple)</label>
                           <div class="col-sm-8">
                               <div class="input-message-block" data-for="icon_apple_144x144"></div>
-                              <input type="file" name="icon_apple_144x144" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_144x144')):[]));?>">
+                              <input type="file" name="icon_apple_144x144" value="<?=htmlspecialchars(json_encode($site?bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_144x144')):[]));?>">
                           </div>
                       </div>
                       <div class="form-group">
                           <label class="col-sm-4 control-label">Иконка 152x152 (Apple)</label>
                           <div class="col-sm-8">
                               <div class="input-message-block" data-for="icon_apple_152x152"></div>
-                              <input type="file" name="icon_apple_152x152" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_152x152')):[]));?>">
+                              <input type="file" name="icon_apple_152x152" value="<?=htmlspecialchars(json_encode($site?bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_152x152')):[]));?>">
                           </div>
                       </div>
                       <div class="form-group">
                           <label class="col-sm-4 control-label">Иконка 180x180 (Apple)</label>
                           <div class="col-sm-8">
                               <div class="input-message-block" data-for="icon_apple_180x180"></div>
-                              <input type="file" name="icon_apple_180x180" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_180x180')):[]));?>">
+                              <input type="file" name="icon_apple_180x180" value="<?=htmlspecialchars(json_encode($site?bounds_to_files($connect,load_bounds($connect,$entity,'icon_apple_180x180')):[]));?>">
                           </div>
                       </div>
                       <div class="form-group">
                           <label class="col-sm-4 control-label">Иконка 192x192</label>
                           <div class="col-sm-8">
                               <div class="input-message-block" data-for="icon_192x192"></div>
-                              <input type="file" name="icon_192x192" value="<?=htmlspecialchars(json_encode($site?(object)bounds_to_files($connect,load_bounds($connect,$entity,'icon_192x192')):[]));?>">
+                              <input type="file" name="icon_192x192" value="<?=htmlspecialchars(json_encode($site?bounds_to_files($connect,load_bounds($connect,$entity,'icon_192x192')):[]));?>">
                           </div>
                       </div>
                   </div>

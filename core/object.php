@@ -1047,7 +1047,7 @@ function edit_room($connect){
     <div class="form-group">
         <label class="col-sm-2 control-label">Фото</label>
         <div class="col-sm-10">
-            <input type="file" class="form-control" name="image" value="<?=htmlspecialchars(json_encode((object)bounds_to_files($connect,load_bounds($connect,$entity,'image'))));?>">
+            <input type="file" class="form-control" name="image" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'image'))));?>">
             <div class="input-message-block" data-for="image"></div>
         </div>
     </div>

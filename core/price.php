@@ -93,7 +93,7 @@ function edit_profile($connect){
                     <div class="form-group">
                         <label class="col-sm-4 control-label">Иконка</label>
                         <div class="col-sm-8">
-                            <input type="file" name="image" value="<?=htmlspecialchars(json_encode((object)bounds_to_files($connect,load_bounds($connect,$entity,'image'))));?>">
+                            <input type="file" name="image" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'image'))));?>">
                         </div>
                     </div>
 					<div class="form-group form-group-margin">
