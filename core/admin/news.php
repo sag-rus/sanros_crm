@@ -2146,7 +2146,7 @@ function multipart_upload($connect, $customData = NULL) {
       ]
     ]);
 
-    $res = json_decode($res->getBody(),true);
+    $res = json_decode($res->getBody()->getContents(),true);
     if(array_key_exists('success',$res)) {
       $respAr = $res;
       $respAr['success'] = (int)$respAr['success'];
@@ -2157,7 +2157,7 @@ function multipart_upload($connect, $customData = NULL) {
 
       if($respAr['loaded']) {
         $respAr['uri'] = 'https://cdn.tonia.ru'.$respAr['uri'];
-        $connect->query("INSERT INTO `core_models_file_file` (`id`, `created`, `changed`, `status`, `uid`, `title`, `description`, `uri`, `mime`, `ext`, `usages`) VALUES (?i,?i,?i,?i,?i,?s,?s,?s,?s,?s,?i)",$respAr['fid'],$respAr['created'],$respAr['changed'],1,$respAr['uid'],'','',$respAr['uri'],$respAr['mime'],$respAr['ext'],0);
+        $connect->query("INSERT INTO `core_models_file_file` (`id`, `created`, `changed`, `status`, `uid`, `title`, `description`, `uri`, `mime`, `ext`, `usages`) VALUES (?i,?i,?i,?i,?i,?s,?s,?s,?s,?s,?i)",$respAr['id'],$respAr['created'],$respAr['changed'],1,(int)$respAr['uid'],'','',$respAr['uri'],$respAr['mime'],$respAr['extension'],0);
         if(!is_null($customData))
           return [
             'id' => $respAr['id']
