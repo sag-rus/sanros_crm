@@ -204,7 +204,7 @@
                 }
                 fd.append('upload',blob);
                 $.multUploderObjects[loaderID].fragSent = $.ajax({
-                    url: $uploader.attr('data-action')+'?cache='+Math.random(),
+                    url: $uploader.attr('data-action'),
                     type: "POST",
                     data: fd,
                     dataType: "json",
