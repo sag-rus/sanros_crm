@@ -2160,7 +2160,7 @@ function multipart_upload($connect, $customData = NULL) {
         $connect->query("INSERT INTO `core_models_file_file` (`id`, `created`, `changed`, `status`, `uid`, `title`, `description`, `uri`, `mime`, `ext`, `usages`) VALUES (?i,?i,?i,?i,?i,?s,?s,?s,?s,?s,?i)",$respAr['fid'],$respAr['created'],$respAr['changed'],1,$respAr['uid'],'','',$respAr['uri'],$respAr['mime'],$respAr['ext'],0);
         if(!is_null($customData))
           return [
-            'id' => $respAr['fid']
+            'id' => $respAr['id']
           ];
         $respAr['uri_thumbnail'] = 'https://cdn.tonia.ru'.$respAr['uri_thumbnail'];
         $respAr['uri_preview'] = 'https://cdn.tonia.ru'.$respAr['uri_preview'];

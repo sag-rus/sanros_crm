@@ -22,17 +22,17 @@ input[type="text"].damirez-def-input-hide {
 }
 .multiple-uploader .upload-progress {
 	width: 90%;
-    height: 20px;
-    padding: 0;
-    margin: 5px;
-    text-align: center;
-    overflow: visible;
-    color: rgba(255,255,255,1);
-    position: relative;
-    z-index: 0;
-    top: 37%;
-    margin-left: auto;
-    margin-right: auto;
+	height: 20px;
+	padding: 0;
+	margin: 5px;
+	text-align: center;
+	overflow: visible;
+	color: rgba(255,255,255,1);
+	position: relative;
+	z-index: 0;
+	top: 37%;
+	margin-left: auto;
+	margin-right: auto;
 	cursor:pointer;
 }
 .multiple-uploader .upload-progress .upload-progress-rel {
@@ -45,7 +45,7 @@ input[type="text"].damirez-def-input-hide {
 	height:100%;
 	-webkit-border-radius:2px;
 	-moz-border-radius:2px;
-    border-radius:2px;
+	border-radius:2px;
 	transition: width 200ms ease 0ms;
 	-webkit-transition: width 200ms ease 0ms;
 	-moz-transition: width 200ms ease 0ms;
@@ -56,10 +56,10 @@ input[type="text"].damirez-def-input-hide {
 }
 .multiple-uploader .multiple-uploader-input {
 	width: 0;
-    height: 0;
-    opacity: 0;
-    cursor: pointer;
-    padding: 0;
+	height: 0;
+	opacity: 0;
+	cursor: pointer;
+	padding: 0;
 	border:none;
 	z-index: -1;
 	position: relative;
@@ -110,28 +110,28 @@ input[type="text"].damirez-def-input-hide {
 	background-position:center center;
 	opacity: 1;
 	-webkit-transition: opacity 500ms ease 0ms;
-    -moz-transition: opacity 500ms ease 0ms;
-    -o-transition: opacity 500ms ease 0ms;
+	-moz-transition: opacity 500ms ease 0ms;
+	-o-transition: opacity 500ms ease 0ms;
 	transition:opacity 500ms ease 0ms;
-	outline: 1px dotted rgba(1,142,255,0.8);
 	position: relative;
+	border: 1px solid #64c89540;
 }
 .multiple-uploader .files-preview-block .uploader-preview-element .uploader-el-url {
 	display: none;
-    overflow-x: hidden;
-    position: relative;
-    top: 26%;
-    background-color: rgba(0,191,90,0.5);
-    height: 1em;
-    line-height: 0.97em;
-    z-index: 0;
-    overflow-y: hidden;
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    color: #FFF;
-    font-weight: 100;
-    text-align: center;
+	overflow-x: hidden;
+	position: relative;
+	top: 26%;
+	background-color: rgba(0,191,90,0.5);
+	height: 1em;
+	line-height: 0.97em;
+	z-index: 0;
+	overflow-y: hidden;
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	color: #FFF;
+	font-weight: 100;
+	text-align: center;
 	cursor:pointer;
 }
 .multiple-uploader .files-preview-block .uploader-preview-element.uploaded-el .uploader-el-url {
@@ -163,8 +163,17 @@ input[type="text"].damirez-def-input-hide {
 	z-index: 1;
 	width: 200px;
 	height: auto;
-	background-color: #f0f3f7;
+	background-color: #ffffff;
+	padding: 15px;
+	box-shadow: 0 0 11px -1px #CCC;
 }
+
+.multiple-uploader .files-preview-block .uploader-preview-element .element-settings-block input,
+.multiple-uploader .files-preview-block .uploader-preview-element .element-settings-block textarea,
+.multiple-uploader .files-preview-block .uploader-preview-element .element-settings-block select {
+	width: 100%;
+}
+
 .multiple-uploader .files-preview-block .uploader-preview-element .element-settings-block textarea.element-description {
 	resize: none;
 }
@@ -190,14 +199,14 @@ input[type="text"].damirez-def-input-hide {
 	outline:none;
 }
 .multiple-uploader .files-preview-block .uploader-preview-element .remove-button:before {
-    font-family: 'FontAwesome';
-    line-height: 1;
-    opacity: 1;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    content: '\f00d';
-    height: 100%;
-    width: 100%;
+	font-family: 'FontAwesome';
+	line-height: 1;
+	opacity: 1;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	content: '\f00d';
+	height: 100%;
+	width: 100%;
 	color: rgb(49, 99, 72);
 	display: block;
 }
