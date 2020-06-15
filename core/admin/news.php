@@ -1991,7 +1991,7 @@ function bounds_to_files($connect,array $bounds):array
     foreach ($bounds as $bound) {
         if($bound['entity2_type'] === 'file' && ($file = $connect->getRow("SELECT * FROM `core_models_file_file` WHERE `id` =?i LIMIT 1",$bound['entity2_id']))) {
           $filesAr[] = [
-            'fid' => $bound['entity2_id'],
+            'id' => $bound['entity2_id'],
             'title' => $bound['title'],
             'description' => $bound['description'],
             'uri' => $file['uri'],
@@ -1999,7 +1999,7 @@ function bounds_to_files($connect,array $bounds):array
             'uri_preview' => in_array($file['mime'],['image/png','image/jpeg'])?imageUriStyle($file['uri'],"preview"):(in_array($file['mime'],['image/vnd.microsoft.icon','image/x-icon'])?$file['uri']:""),
             'uri_large' => in_array($file['mime'],['image/png','image/jpeg'])?imageUriStyle($file['uri'],"large"):(in_array($file['mime'],['image/vnd.microsoft.icon','image/x-icon'])?$file['uri']:""),
             'mime' => $file['mime'],
-            'ext' => $file['ext'],
+            'extension' => $file['ext'],
             'cache' => substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15)
           ];
         }
