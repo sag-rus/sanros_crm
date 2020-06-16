@@ -2161,6 +2161,8 @@ function multipart_upload($connect, $customData = NULL) {
 
         $connect->query("INSERT INTO `core_models_file_file` (`created`, `changed`, `status`, `uid`, `title`, `description`, `uri`, `mime`, `ext`, `usages`) VALUES (?i,?i,?i,?i,?s,?s,?s,?s,?s,?i)",$respAr['created'],$respAr['changed'],1,(int)$respAr['uid'],'','',$respAr['uri'],$respAr['mime'],$respAr['extension'],0);
 
+        $respAr['id'] = $connect->insertId();
+
         if(!is_null($customData))
           return [
             'id' => $connect->insertId()
