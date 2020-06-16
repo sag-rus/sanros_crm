@@ -2048,7 +2048,7 @@ function files_to_bounds($connect,$entity,String $name, array $files):array
     $i = 0;
     $timestamp = gmdate("U");
     foreach ($files as $file) {
-        if($fileBase = $connect->getRow("SELECT * FROM `core_models_file_file` WHERE `id` =?i LIMIT 1",$file['fid'])) {
+        if($fileBase = $connect->getRow("SELECT * FROM `core_models_file_file` WHERE `id` =?i LIMIT 1",$file['id'])) {
             $boundsAr[] = [
             'created' => $timestamp,
             'changed' => $timestamp,
