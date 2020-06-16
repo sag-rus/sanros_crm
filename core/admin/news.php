@@ -2157,7 +2157,10 @@ function multipart_upload($connect, $customData = NULL) {
 
       if($respAr['loaded']) {
         $respAr['uri'] = 'https://cdn.tonia.ru'.$respAr['uri'];
-        $connect->query("INSERT INTO `core_models_file_file` (`id`, `created`, `changed`, `status`, `uid`, `title`, `description`, `uri`, `mime`, `ext`, `usages`) VALUES (?i,?i,?i,?i,?i,?s,?s,?s,?s,?s,?i)",$respAr['id'],$respAr['created'],$respAr['changed'],1,(int)$respAr['uid'],'','',$respAr['uri'],$respAr['mime'],$respAr['extension'],0);
+
+        if(!$connect->getRow("SELECT * FROM `core_models_file_file` WHERE id = ?i", $respAr['id']))
+            $connect->query("INSERT INTO `core_models_file_file` (`id`, `created`, `changed`, `status`, `uid`, `title`, `description`, `uri`, `mime`, `ext`, `usages`) VALUES (?i,?i,?i,?i,?i,?s,?s,?s,?s,?s,?i)",$respAr['id'],$respAr['created'],$respAr['changed'],1,(int)$respAr['uid'],'','',$respAr['uri'],$respAr['mime'],$respAr['extension'],0);
+
         if(!is_null($customData))
           return [
             'id' => $respAr['id']
