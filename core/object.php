@@ -1562,8 +1562,10 @@ function update_direction($connect){
 
 function create_uniq_link_object($connect){
 	$object = $_POST["id"];
-	if($connect->getOne("SELECT id FROM object WHERE url_name !='' AND id=?i", $object))
-		return;
+
+	/*if($connect->getOne("SELECT id FROM object WHERE url_name !='' AND id=?i", $object))
+		return;*/
+    
 	$name = $connect->getOne("SELECT name FROM object WHERE id=?i", $object);
 	$url = change_text_url($name, "object");
 	if(!$connect->getOne("SELECT id FROM object WHERE url_name=?s", $url)){
