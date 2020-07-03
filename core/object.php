@@ -488,7 +488,7 @@ function select_object_about($connect){
 function edit_main_data_object($connect){
     global $array_type;
     $id = $_POST["id"];
-	$row = $connect->getRow("SELECT name, similar, full_name, id_reg, type, city, direction, region_direction_id, latitude, longitude, weather, direction, source_booking, booking_uri, uri_schema, description, fast_booking, main_post_name, main_post_fio, default_price_type FROM object WHERE id='$id'");
+	$row = $connect->getRow("SELECT name, similar, full_name, id_reg, type, city, direction, region_direction_id, latitude, longitude, weather, direction, source_booking, booking_uri, uri_schema, description, fast_booking, main_post_name, main_post_fio, default_price_type, url_name FROM object WHERE id='$id'");
 	$similar = explode("_", $row["similar"]);
 	$type = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]);
 	$country = $connect->getOne("SELECT id_country FROM region WHERE id=?i", $row["id_reg"]);
@@ -641,6 +641,12 @@ function edit_main_data_object($connect){
                 </div>
             </div>
         </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Идентификатор для адреса</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" value="<?=$row['url_name'];?>" id="url_name">
+            </div>
+        </div>
 		<div class="form-group form-group-margin">
 			<label class="col-sm-3 control-label">Описание</label>
 			<div class="col-sm-9">
@@ -694,6 +700,7 @@ function update_main_data_object($connect){
     $id_reg = (int)$_POST["region_id"];
     $region_direction_id = (int)$_POST['region_direction_id'];
     $uri_schema = isset($_POST["uri_schema"])?(int)$_POST["uri_schema"]:1;
+    $url_name = trim($_POST['url_name']);
 
     if(!in_array($uri_schema,[1,2]))
         $uri_schema = 1;
@@ -720,7 +727,7 @@ function update_main_data_object($connect){
     if(!array_key_exists($default_price_type,$array_type))
         $default_price_type = 1;
 
-    $connect->query("UPDATE object SET name=?s, full_name=?s, city=?s, direction=?s, type=?s, latitude=?s, longitude=?s, similar=?s, weather=?s, description=?s, source_booking=?i, description_check=?s, booking_uri=?s, fast_booking=?i, main_post_name = ?s, main_post_fio = ?s, default_price_type = ?i, id_reg = ?i, region_direction_id = ?i, `uri_schema` = ?i, synchronized=0 WHERE id=?i", $name, $full_name, $city, $direction, $type, $latitude, $longitude, $similar, $weather, $description, $source_booking, $description, $booking_uri, $fast_booking, $main_post_name, $main_post_fio, $default_price_type, $id_reg, $region_direction_id,$uri_schema, $id);
+    $connect->query("UPDATE object SET name=?s, full_name=?s, city=?s, direction=?s, type=?s, latitude=?s, longitude=?s, similar=?s, weather=?s, description=?s, source_booking=?i, description_check=?s, booking_uri=?s, fast_booking=?i, main_post_name = ?s, main_post_fio = ?s, default_price_type = ?i, id_reg = ?i, region_direction_id = ?i, `uri_schema` = ?i, `url_name` = ?s, synchronized=0 WHERE id=?i", $name, $full_name, $city, $direction, $type, $latitude, $longitude, $similar, $weather, $description, $source_booking, $description, $booking_uri, $fast_booking, $main_post_name, $main_post_fio, $default_price_type, $id_reg, $region_direction_id,$uri_schema, $url_name, $id);
 }
 
 function edit_desc_object($connect){
@@ -1565,7 +1572,7 @@ function create_uniq_link_object($connect){
 
 	/*if($connect->getOne("SELECT id FROM object WHERE url_name !='' AND id=?i", $object))
 		return;*/
-    
+
 	$name = $connect->getOne("SELECT name FROM object WHERE id=?i", $object);
 	$url = change_text_url($name, "object");
 	if(!$connect->getOne("SELECT id FROM object WHERE url_name=?s", $url)){

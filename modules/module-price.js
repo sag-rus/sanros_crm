@@ -994,6 +994,7 @@ function update_main_data_object(id){
 		"fast_booking": parseInt($('#fast_booking').prop('checked')*1),
 		"booking_uri": $("#booking_uri").val().trim(),
 		"uri_schema": $("#uri_schema").val(),
+		"url_name": $('#url_name').val(),
 		"description": q
 	};
 	// var str = 'func=update_main_data_object&id=' + id;
