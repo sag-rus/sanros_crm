@@ -340,15 +340,20 @@
                             val[valIt]['title'] = '';
                         if(!('description' in val[valIt]))
                             val[valIt]['description'] = '';
+
                         elSettings = '<div class="element-settings-block default-shadow-min">';
                         elSettings += '<div class="darkish-form-mask-form-block-cont">';
                         elSettings +='<div class="input-block">';
                         elSettings +='<div class="input-title">Заголовок файла</div>';
-                        elSettings += '<input type="text" placeholder="Заголовок файла" class="element-title" value="'+val[valIt]['title']+'"/>';
+                        elSettings += '<input type="text" placeholder="Заголовок файла" class="element-title" value="'+val[valIt]['title'].replace(/[\u00A0-\u9999<>\&]/gim, function(i) {
+                            return '&#' + i.charCodeAt(0) + ';';
+                        })+'"/>';
                         elSettings += '</div>';
                         elSettings +='<div class="input-block">';
                         elSettings +='<div class="input-title">Описание</div>';
-                        elSettings += '<textarea class="element-description" placeholder="Описание">'+val[valIt]['description']+'</textarea>';
+                        elSettings += '<textarea class="element-description" placeholder="Описание">'+val[valIt]['description'].replace(/[\u00A0-\u9999<>\&]/gim, function(i) {
+                            return '&#' + i.charCodeAt(0) + ';';
+                        })+'</textarea>';
                         elSettings += '</div>';
                         elSettings += '</div>';
                         elSettings += '<div class="darkish-form-mask-buttons">';
