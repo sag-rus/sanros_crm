@@ -2190,7 +2190,7 @@ function add_new_sites_content(site_id) {
 															'</select>'+
 													 '</div>' +
 											'</div>' +
-			                '<div class="form-group hidden">' +
+			                				'<div class="form-group hidden">' +
 													'<label class="col-sm-2 control-label">Регион</label>' +
 													'<div class="col-sm-10">' +
 											 				'<select class="form-control" name="region_id">' +
@@ -2206,25 +2206,43 @@ function add_new_sites_content(site_id) {
 															'</select>' +
 													'</div>' +
 											'</div>' +
-                      '<div class="form-group hidden">' +
-                        '<label class="col-sm-2 control-label">ID объектов</label>' +
-                        '<div class="col-sm-10">' +
-                          '<input class="form-control" type="text" name="resorts_ids">' +
-                          '<div class="input-message-block" data-for="resorts_ids"></div>' +
-                        '</div>' +
-                      '</div>' +
+										    '<div class="form-group hidden">' +
+												'<label class="col-sm-2 control-label">ID объектов</label>' +
+												'<div class="col-sm-10">' +
+												  '<input class="form-control" type="text" name="resorts_ids">' +
+												  '<div class="input-message-block" data-for="resorts_ids"></div>' +
+												'</div>' +
+										    '</div>' +
 			 								'<div class="form-group">' +
-                          '<label class="col-sm-2 control-label">Код карты</label>' +
-                          '<div class="col-sm-10">' +
-                              '<textarea class="form-control" name="map_code"></textarea>' +
-                          '</div>' +
-                      '</div>' +
-			 								'<div class="form-group">' +
-                          '<label class="col-sm-2 control-label">Вводный текст</label>' +
-                          '<div class="col-sm-10">' +
-                              '<textarea class="form-control" name="landing_info"></textarea>' +
-                          '</div>' +
-                      '</div>' +
+											  '<label class="col-sm-2 control-label">Код карты</label>' +
+											  '<div class="col-sm-10">' +
+												  '<textarea class="form-control" name="map_code"></textarea>' +
+											  '</div>' +
+										  '</div>' +
+										  '<div class="form-group">' +
+											  '<label class="col-sm-2 control-label">Вводный текст</label>' +
+											  '<div class="col-sm-10">' +
+												  '<textarea class="form-control" name="landing_info"></textarea>' +
+											  '</div>' +
+										  '</div>' +
+	                                       '<div class="form-group">' +
+												  '<label class="col-sm-2 control-label">Код в блоке head</label>' +
+												  '<div class="col-sm-10">' +
+													  '<textarea class="form-control" name="head_code"></textarea>' +
+												  '</div>' +
+	                                       '</div>' +
+	                                       '<div class="form-group">' +
+												  '<label class="col-sm-2 control-label">Код в начале элемента body</label>' +
+												  '<div class="col-sm-10">' +
+													  '<textarea class="form-control" name="pre_body_code"></textarea>' +
+												  '</div>' +
+	                                       '</div>' +
+										   '<div class="form-group">' +
+											  '<label class="col-sm-2 control-label">Код в конце элемента body</label>' +
+											  '<div class="col-sm-10">' +
+												  '<textarea class="form-control" name="post_body_code"></textarea>' +
+											  '</div>' +
+										    '</div>' +
 			 								'<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Дата и время публикации</label>' +
 												'<div class="col-sm-10">' +
@@ -2672,6 +2690,11 @@ function set_sites_content() {
 	var $aggregation_date_endFormG = $aggregation_date_end.closest('.form-group');
 	var aggregation_date_end = $aggregation_date_end.val();
 
+	var head_code = $modalBody.find('*[name="head_code"]').val();
+	var pre_body_code = $modalBody.find('*[name="pre_body_code"]').val();
+	var post_body_code = $modalBody.find('*[name="post_body_code"]').val();
+
+
 
 	for(aggrI = 0; aggrI < $aggregate_types.length; aggrI++) {
 		aggregate_types.push(parseInt($($aggregate_types.get(aggrI)).val(),10));
@@ -2851,54 +2874,56 @@ function set_sites_content() {
       type: 'POST',
       data: {
       	func: 'set_sites_content',
-				title: title,
-				title_h1: title_h1,
+		title: title,
+		title_h1: title_h1,
         title_h2: title_h2,
-				aggregate_types: aggregate_types,
+		aggregate_types: aggregate_types,
         description: description,
-				slider_photos: slider_photos,
-				direction_id: direction_id,
-				sort: sort,
-				region_id: region_id,
-				regional_direction_id: regional_direction_id,
+		slider_photos: slider_photos,
+		direction_id: direction_id,
+		sort: sort,
+		region_id: region_id,
+		regional_direction_id: regional_direction_id,
         photogallery: photogallery,
-				photogallery_title: photogallery_title,
-				photogallery_orientation: photogallery_orientation,
-				breadcrumb_title: breadcrumb_title,
+		photogallery_title: photogallery_title,
+		photogallery_orientation: photogallery_orientation,
+		breadcrumb_title: breadcrumb_title,
         body: body,
-				body2: body2,
+		body2: body2,
+	  	head_code: head_code,
+	  	pre_body_code: pre_body_code,
+	  	post_body_code: post_body_code,
         site_id: site_id,
-				image: image,
-				page_bg: page_bg,
-				second_bg: second_bg,
-				type: type,
-				keywords: keywords,
+		image: image,
+		page_bg: page_bg,
+		second_bg: second_bg,
+		type: type,
+		keywords: keywords,
         published: published,
-				path: path,
-				redirect_path: redirect_path,
+		path: path,
+		redirect_path: redirect_path,
         form_action: form_action,
-				summary: summary,
-				snippet_summary: snippet_summary,
-				status: status,
+		summary: summary,
+		snippet_summary: snippet_summary,
+		status: status,
         path_autogenerate: path_autogenerate,
-				content_id: content_id,
-				weight: weight,
+		content_id: content_id,
+		weight: weight,
         module_object_id: module_object_id,
         module_block: module_block,
-				map_code: map_code,
+		map_code: map_code,
         landing_info: landing_info,
-				reviews_objects: reviews_objects,
+		reviews_objects: reviews_objects,
         resorts_ids: resorts_ids,
         rss: rss,
         rss_aggregator_link: rss_aggregator_link,
         rss_addition: rss_addition,
-				rss_aggregation: rss_aggregation,
-				main_page_fix: main_page_fix,
-				aggregation_by_dates: aggregation_by_dates,
-				aggregation_date_start: aggregation_date_start,
-				aggregation_date_end: aggregation_date_end
-
-			},
+		rss_aggregation: rss_aggregation,
+		main_page_fix: main_page_fix,
+		aggregation_by_dates: aggregation_by_dates,
+		aggregation_date_start: aggregation_date_start,
+		aggregation_date_end: aggregation_date_end
+	  },
       dataType: 'JSON',
       url: 'mysql.php',
       success: function(data){
