@@ -2243,6 +2243,12 @@ function add_new_sites_content(site_id) {
 												  '<textarea class="form-control" name="post_body_code"></textarea>' +
 											  '</div>' +
 										    '</div>' +
+											 '<div class="form-group">' +
+											 '<label class="col-sm-2 control-label">Телефон</label>' +
+											 '<div class="col-sm-10">' +
+											 '<input type="text" class="form-control" name="phone">' +
+											 '</div>' +
+											 '</div>' +
 			 								'<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Дата и время публикации</label>' +
 												'<div class="col-sm-10">' +
@@ -2693,7 +2699,7 @@ function set_sites_content() {
 	var head_code = $modalBody.find('*[name="head_code"]').val();
 	var pre_body_code = $modalBody.find('*[name="pre_body_code"]').val();
 	var post_body_code = $modalBody.find('*[name="post_body_code"]').val();
-
+	var phone = $modalBody.find('*[name="phone"]').val().trim();
 
 
 	for(aggrI = 0; aggrI < $aggregate_types.length; aggrI++) {
@@ -2893,6 +2899,7 @@ function set_sites_content() {
 	  	head_code: head_code,
 	  	pre_body_code: pre_body_code,
 	  	post_body_code: post_body_code,
+			phone: phone,
         site_id: site_id,
 		image: image,
 		page_bg: page_bg,
@@ -3820,6 +3827,18 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 	var $aggregation_date_end = $('.sites-content-modal *[name="aggregation_date_end"]');
 	var $aggregation_date_endFormG = $aggregation_date_end.closest('.form-group');
 
+	var $head_code = $('.sites-content-modal *[name="head_code"]');
+	var $head_codeFormG = $head_code.closest('.form-group');
+
+	var $post_body_code = $('.sites-content-modal *[name="post_body_code"]');
+	var $post_body_codeFormG = $post_body_code.closest('.form-group');
+
+	var $pre_body_code = $('.sites-content-modal *[name="pre_body_code"]');
+	var $pre_body_codeFormG = $pre_body_code.closest('.form-group');
+
+	var $phone = $('.sites-content-modal *[name="phone"]');
+	var $phoneFormG = $phone.closest('.form-group');
+
 	$aggregation_by_datesFormG.addClass('hidden');
 	$aggregation_date_startFormG.addClass('hidden');
 	$aggregation_date_endFormG.addClass('hidden');
@@ -3846,6 +3865,10 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 		$weightFormG.addClass('hidden');
 		$sortFormG.addClass('hidden');
 		$redirect_pathFormG.removeClass('hidden');
+		$head_codeFormG.addClass('hidden');
+		$pre_body_codeFormG.addClass('hidden');
+		$post_body_codeFormG.addClass('hidden');
+		$phoneFormG.addClass('hidden');
 	}
 	else {
 		$breadcrumb_titleFormG.removeClass('hidden');
@@ -3860,6 +3883,10 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 		$weightFormG.removeClass('hidden');
 		$sortFormG.removeClass('hidden');
 		$redirect_pathFormG.addClass('hidden');
+		$head_codeFormG.removeClass('hidden');
+		$pre_body_codeFormG.removeClass('hidden');
+		$post_body_codeFormG.removeClass('hidden');
+		$phoneFormG.removeClass('hidden');
 	}
 
 	if(type === 'aggregator')  {
