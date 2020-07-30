@@ -995,6 +995,7 @@ function update_main_data_object(id){
 		"booking_uri": $("#booking_uri").val().trim(),
 		"uri_schema": $("#uri_schema").val(),
 		"url_name": $('#url_name').val(),
+		'state_program': $('#state-program').prop('checked') ? 1 : 0,
 		"description": q
 	};
 	// var str = 'func=update_main_data_object&id=' + id;
@@ -1407,10 +1408,15 @@ function update_region(id){
 	var description = $('.edit-region .description-region').val();
 	var meta_desc = $('.edit-region .meta-desc-region').val();
 	var man_reward_scheme = $('.edit-region .man_reward_scheme').val();
+	var state_program = $('.edit-region .state-program').prop('checked') ? 1: 0;
+	var state_program_start_timestamp = $('.edit-region .state-program-start-timestamp').val();
+	var state_program_end_timestamp = $('.edit-region .state-program-end-timestamp').val();
+
+
 	if(!name)
 		show_warning('.edit-region', 'Укажите название региона', false);
 	else{
-		var str = 'func=update_region&id=' + id + '&name=' + name + '&direction=' + direction + '&description=' + description + '&meta_desc=' + meta_desc+'&man_reward_scheme='+man_reward_scheme;
+		var str = 'func=update_region&id=' + id + '&name=' + name + '&direction=' + direction + '&description=' + description + '&meta_desc=' + meta_desc+'&man_reward_scheme='+man_reward_scheme+'&state_program='+state_program+'&state_program_start_timestamp='+state_program_start_timestamp+'&state_program_end_timestamp='+state_program_end_timestamp;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',

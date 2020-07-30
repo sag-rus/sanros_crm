@@ -342,7 +342,7 @@ function select_menu_object($connect){
 
 function select_object_about($connect){
 	$id = $_POST["id"];
-	$row = $connect->getRow("SELECT id, type, active, image, name, city, similar, id_reg, id_profile, id_methods, id_infa, medical_factors, id_services, weather, latitude, longitude, image, url_name, website FROM object WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT id, type, active, image, name, city, similar, id_reg, id_profile, id_methods, id_infa, medical_factors, id_services, weather, latitude, longitude, image, url_name, website, state_program FROM object WHERE id=?i", $id);
 	if(!$row["id"])
 		return FALSE;
 	$address = $connect->getOne("SELECT name FROM region WHERE id=?i", $row["id_reg"]);
@@ -449,6 +449,18 @@ function select_object_about($connect){
 				</div>
 			</div>
 		</div>
+        <div class="list-group-item list-hover-item">
+            <div class="form-group form-group-margin">
+                <label class="col-sm-3 control-label-element">Действие гос. программы</label>
+                <div class="col-sm-9">
+                 <?php if($row['state_program']) { ?>
+                     Да
+                 <?php } else { ?>
+                     Нет
+                 <?php } ?>
+                </div>
+            </div>
+        </div>
 		<div class="list-group-item list-hover-item">
 			<div class="form-group form-group-margin">
 				<label class="col-sm-3 control-label-element">Уникальная ссылка</label>
@@ -488,7 +500,7 @@ function select_object_about($connect){
 function edit_main_data_object($connect){
     global $array_type;
     $id = $_POST["id"];
-	$row = $connect->getRow("SELECT name, similar, full_name, id_reg, type, city, direction, region_direction_id, latitude, longitude, weather, direction, source_booking, booking_uri, uri_schema, description, fast_booking, main_post_name, main_post_fio, default_price_type, url_name FROM object WHERE id='$id'");
+	$row = $connect->getRow("SELECT name, similar, full_name, id_reg, type, city, direction, region_direction_id, latitude, longitude, weather, direction, source_booking, booking_uri, uri_schema, description, fast_booking, main_post_name, main_post_fio, default_price_type, url_name, state_program FROM object WHERE id='$id'");
 	$similar = explode("_", $row["similar"]);
 	$type = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]);
 	$country = $connect->getOne("SELECT id_country FROM region WHERE id=?i", $row["id_reg"]);
@@ -647,6 +659,12 @@ function edit_main_data_object($connect){
                 <input type="text" class="form-control" value="<?=$row['url_name'];?>" id="url_name">
             </div>
         </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Действие гос. программы</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control"<?php if($row['state_program']) { ?> checked<?php } ?> id="state-program">
+            </div>
+        </div>
 		<div class="form-group form-group-margin">
 			<label class="col-sm-3 control-label">Описание</label>
 			<div class="col-sm-9">
@@ -700,7 +718,15 @@ function update_main_data_object($connect){
     $id_reg = (int)$_POST["region_id"];
     $region_direction_id = (int)$_POST['region_direction_id'];
     $uri_schema = isset($_POST["uri_schema"])?(int)$_POST["uri_schema"]:1;
+    $state_program = isset($_POST["state_program"])?(int)$_POST["state_program"]:0;
     $url_name = trim($_POST['url_name']);
+
+    if($state_program) {
+        $state_program = 1;
+    }
+    else {
+        $state_program = 0;
+    }
 
     if(!in_array($uri_schema,[1,2]))
         $uri_schema = 1;
@@ -727,7 +753,7 @@ function update_main_data_object($connect){
     if(!array_key_exists($default_price_type,$array_type))
         $default_price_type = 1;
 
-    $connect->query("UPDATE object SET name=?s, full_name=?s, city=?s, direction=?s, type=?s, latitude=?s, longitude=?s, similar=?s, weather=?s, description=?s, source_booking=?i, description_check=?s, booking_uri=?s, fast_booking=?i, main_post_name = ?s, main_post_fio = ?s, default_price_type = ?i, id_reg = ?i, region_direction_id = ?i, `uri_schema` = ?i, `url_name` = ?s, synchronized=0 WHERE id=?i", $name, $full_name, $city, $direction, $type, $latitude, $longitude, $similar, $weather, $description, $source_booking, $description, $booking_uri, $fast_booking, $main_post_name, $main_post_fio, $default_price_type, $id_reg, $region_direction_id,$uri_schema, $url_name, $id);
+    $connect->query("UPDATE object SET name=?s, full_name=?s, city=?s, direction=?s, type=?s, latitude=?s, longitude=?s, similar=?s, weather=?s, description=?s, source_booking=?i, description_check=?s, booking_uri=?s, fast_booking=?i, main_post_name = ?s, main_post_fio = ?s, default_price_type = ?i, id_reg = ?i, region_direction_id = ?i, `uri_schema` = ?i, `url_name` = ?s, `state_program` = ?i, synchronized=0 WHERE id=?i", $name, $full_name, $city, $direction, $type, $latitude, $longitude, $similar, $weather, $description, $source_booking, $description, $booking_uri, $fast_booking, $main_post_name, $main_post_fio, $default_price_type, $id_reg, $region_direction_id,$uri_schema, $url_name, $state_program, $id);
 }
 
 function edit_desc_object($connect){
@@ -1432,7 +1458,7 @@ function check_completeness_object($connect){
 
 function edit_region($connect){
 	$id = $_POST["id"];
-	$row = $connect->getRow("SELECT name, id_direction, id_country, description, meta_desc, man_reward_scheme FROM region WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT name, id_direction, id_country, description, meta_desc, man_reward_scheme, state_program, state_program_start_timestamp, state_program_end_timestamp FROM region WHERE id=?i", $id);
 ?>
 <div class="modal fade">
 	<div class="modal-dialog">
@@ -1479,6 +1505,24 @@ function edit_region($connect){
 						<textarea class="form-control meta-desc-region" onkeypress="check_size_limit('.meta-desc-region', 250, '.label-meta')"><?php echo $row["meta_desc"]; ?></textarea>
 					</div>
 				</div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Действие гос. программы</label>
+                    <div class="col-sm-8">
+                        <input type="checkbox" class="form-control state-program"<?php if($row['state_program']) { ?> checked<?php } ?>>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Начало действия гос. программы</label>
+                    <div class="col-sm-8">
+                        <input type="date" class="form-control state-program-start-timestamp" value="<?=gmdate('Y-m-d', $row['state_program_start_timestamp']+3600*3);?>">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Окончание действия гос. программы</label>
+                    <div class="col-sm-8">
+                        <input type="date" class="form-control state-program-end-timestamp" value="<?=gmdate('Y-m-d', $row['state_program_end_timestamp']+3600*3);?>">
+                    </div>
+                </div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-success btn-sm" onclick="update_region('<?php echo $id; ?>')"><i class="fa fa-check"></i> Сохранить</button>
@@ -1496,8 +1540,23 @@ function update_region($connect){
 	$description = strip_tags($_POST["description"]);
 	$meta_desc = strip_tags($_POST["meta_desc"]);
 	$man_reward_scheme = (int)$_POST['man_reward_scheme'];
+	$state_program = isset($_POST['state_program']) ? (int)$_POST['state_program'] : 0;
+	$state_program_start_timestamp = (isset($_POST['state_program_start_timestamp']) && trim($_POST['state_program_start_timestamp'])) ? strtotime($_POST['state_program_start_timestamp']) : 0;
+    $state_program_end_timestamp = (isset($_POST['state_program_end_timestamp']) && trim($_POST['state_program_end_timestamp'])) ? strtotime($_POST['state_program_end_timestamp']) : 0;
 
-	$connect->query("UPDATE region SET name=?s, description=?s, meta_desc=?s, man_reward_scheme=?i, synchronized = 0 WHERE id=?i", $name, $description, $meta_desc, $man_reward_scheme,$id);
+	if($state_program)
+	    $state_program = 1;
+	else {
+        $state_program = 0;
+        $state_program_start_timestamp = 0;
+        $state_program_end_timestamp = 0;
+    }
+
+	if($state_program_start_timestamp > $state_program_end_timestamp) {
+	    $state_program_end_timestamp = $state_program_start_timestamp;
+    }
+
+	$connect->query("UPDATE region SET name=?s, description=?s, meta_desc=?s, man_reward_scheme=?i, state_program = ?i, state_program_start_timestamp = ?i, state_program_end_timestamp = ?i, synchronized = 0 WHERE id=?i", $name, $description, $meta_desc, $man_reward_scheme, $state_program, $state_program_start_timestamp, $state_program_end_timestamp, $id);
 	if($direction)
 		$connect->query("UPDATE region SET id_direction=?i, synchronized = 0 WHERE id=?i", $direction, $id);
 }
