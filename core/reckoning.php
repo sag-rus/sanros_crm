@@ -1572,6 +1572,8 @@ function show_schet_klient($connect){
 	$doc_schet_san = $row["doc_schet_san"];
 	$note_bid = $row["note_bid"];
 	$check_cabinet = 0;
+	$state_program =$row['state_program'];
+
 	if(($turist AND $connect->getOne("SELECT id FROM klient WHERE id=?i AND login!=''", $turist)) OR ($agency AND $connect->getOne("SELECT id FROM agency WHERE id=?i AND login!=''", $agency)))
 		$check_cabinet = 1;
 	if($reason_delete AND $reason_delete != 1 AND $active == 3)
@@ -2025,7 +2027,7 @@ function show_schet_klient($connect){
 					<strong>Поправка:</strong> <?php echo $correction; ?><br />
 				<?php } ?>
 				<strong>Итоговое вознаграждение:</strong> <span style="<?php echo $style; ?>; text-decoration: underline; cursor: pointer;" id="span_reward" onmouseover="show_reward_schet('<?php echo $id; ?>')" onmouseout="$('#div_buttons').remove()"><?php echo $reward_sum; ?></span><br>
-				<strong>Гос. субсидии:</strong> <?=(isset($row['state_program']) && $row['state_program']) ? 'Да' : 'Нет';?><br>
+				<strong>Гос. субсидии:</strong> <?=($state_program) ? 'Да' : 'Нет';?><br>
                 <?php if($payment_div){ ?>
 					<div><button class="btn btn-default btn-xs" onclick="$('.payment-schet').show(); $('.desc-schet').hide();"><i class="fa fa-credit-card"></i> Платежи</button></div>
 				<?php } ?>
