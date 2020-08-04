@@ -474,7 +474,7 @@ class BookingPayment {
         }
       }
       else {
-          file_put_contents(__DIR__.'/../../../../core/sync/files/payment-log-'.date('Y-m-d'), print_r($answer, true).PHP_EOL, FILE_APPEND);
+          file_put_contents(__DIR__.'/../../../../core/sync/file/payment-log-'.date('Y-m-d').'.log', print_r($answer, true).PHP_EOL, FILE_APPEND);
       }
       return $answer;
     }
