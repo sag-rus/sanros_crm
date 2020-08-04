@@ -24,10 +24,14 @@ class BookingPayment {
     "orderId"
   );
   protected $bankInfo = array(
-    "userName",
-    "password",
-    "link",
-    "commission"
+      "userName",
+      "userName_v2",
+      "userName_test",
+      "password",
+      "password_v2",
+      "password_test",
+      "link",
+      "commission"
   );
 
   protected function getObject($connect, $id, $type_view = ""){
@@ -468,6 +472,9 @@ class BookingPayment {
           $bank_com = $this->bankInfo["commission"];
           $connect->query("INSERT INTO payment_request(bid, type, pay_method, sum, bank_com, order_id, bid_pay) VALUES (?i, ?i, 5, ?s, ?s, ?s, ?s)", $booking, $type_pay, $sum_to_pay, $bank_com, $answer["orderId"], $orderNumber);
         }
+      }
+      else {
+          file_put_contents(__DIR__.'/../../../../core/sync/files/payment-log-'.date('Y-m-d'), print_r($answer, true).PHP_EOL, FILE_APPEND);
       }
       return $answer;
     }

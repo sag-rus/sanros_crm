@@ -25,7 +25,11 @@ class Client {
   );
   public $onlinePaymentInfo = array(
     "userName",
+    "userName_v2",
+    "userName_test",
     "password",
+    "password_v2",
+    "password_test",
     "link",
     "commission"
   );
