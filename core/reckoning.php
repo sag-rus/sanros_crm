@@ -2024,7 +2024,7 @@ function show_schet_klient($connect){
 				<?php if($correction != 0){ ?>
 					<strong>Поправка:</strong> <?php echo $correction; ?><br />
 				<?php } ?>
-				<strong>Итоговое вознаграждение:</strong> <span style="<?php echo $style; ?>; text-decoration: underline; cursor: pointer;" id="span_reward" onmouseover="show_reward_schet('<?php echo $id; ?>')" onmouseout="$('#div_buttons').remove()"><?php echo $reward_sum; ?></span>
+				<strong>Итоговое вознаграждение:</strong> <span style="<?php echo $style; ?>; text-decoration: underline; cursor: pointer;" id="span_reward" onmouseover="show_reward_schet('<?php echo $id; ?>')" onmouseout="$('#div_buttons').remove()"><?php echo $reward_sum; ?></span><br>
 				<strong>Гос. субсидии:</strong> <?=(isset($row['state_program']) && $row['state_program']) ? 'Да' : 'Нет';?><br>
                 <?php if($payment_div){ ?>
 					<div><button class="btn btn-default btn-xs" onclick="$('.payment-schet').show(); $('.desc-schet').hide();"><i class="fa fa-credit-card"></i> Платежи</button></div>
