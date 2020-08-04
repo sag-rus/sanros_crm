@@ -6,12 +6,13 @@ use App\Model\Bonus;
 use Voronkovich\SberbankAcquiring\Client;
 use Voronkovich\SberbankAcquiring\Exception\ActionException;
 
-class BookingPayment extends Client {
+class BookingPayment {
   protected $connect;
   protected $link;
   protected $booking;
   protected $type;
   protected $turist;
+  protected $clients = [];
 
   protected $bookingInfo = array(
     "id",
@@ -85,6 +86,50 @@ class BookingPayment extends Client {
     return $all_sum;
   }
 
+  public function getSberbankClient($type = null, $settings = array())
+  {
+      if(!$type) {
+          $clientKey = 'default';
+      }
+      else {
+          $clientKey = $type;
+      }
+
+      if(!array_key_exists($clientKey, $this->clients)) {
+          if(!isset($settings['currency']))
+              $settings['currency'] = 643;
+
+          if(!isset($settings['language']))
+              $settings['language'] = 'ru';
+
+          if(!isset($settings['userName'])) {
+              if($type)
+                  $settings['userName'] = $this->bankInfo['userName_'.$type];
+              else
+                  $settings['userName'] = $this->bankInfo['userName'];
+          }
+
+          if(!isset($settings['password'])) {
+              if($type)
+                  $settings['password'] = $this->bankInfo['password_'.$type];
+              else
+                  $settings['password'] = $this->bankInfo['password'];
+
+          }
+
+          if(!isset($settings['apiUri'])) {
+              if($type === 'test')
+                  $settings['apiUri'] = Client::API_URI_TEST;
+              else
+                  $settings['apiUri'] = Client::API_URI;
+          }
+
+          $this->clients[$clientKey] =  new Client($settings);
+      }
+
+      return $this->clients[$clientKey];
+  }
+
   public function __construct(array $settings = [])
   {
     $config = \App\lib\CRM\Config\Client::getInstance();
@@ -93,23 +138,6 @@ class BookingPayment extends Client {
     $this->bankInfo = $config->onlinePaymentInfo;
     $this->booking = $config->booking;
     $this->turist = $config->account;
-
-    if(!isset($settings['currency']))
-      $settings['currency'] = 643;
-
-    if(!isset($settings['language']))
-      $settings['language'] = 'ru';
-
-    if(!isset($settings['userName']))
-      $settings['userName'] = $this->bankInfo['userName'];
-
-    if(!isset($settings['password']))
-      $settings['password'] = $this->bankInfo['password'];
-
-    if(!isset($settings['apiUri']))
-      $settings['apiUri'] = self::API_URI;
-
-    parent::__construct($settings);
   }
 
   protected function getRewardSchetPosition($id){
@@ -355,7 +383,7 @@ class BookingPayment extends Client {
     $booking = $this->booking;
     $turist = $this->turist;
 
-    $reck_properties = $connect->getRow("SELECT sum, id_dis, exclude_bank_commission FROM reckoning WHERE id=?i AND turist=?i AND (status=3 OR status=4) LIMIT 1", $booking, $turist);
+    $reck_properties = $connect->getRow("SELECT sum, id_dis, exclude_bank_commission, is_test, state_program FROM reckoning WHERE id=?i AND turist=?i AND (status=3 OR status=4) LIMIT 1", $booking, $turist);
 
     $sum = $reck_properties['sum'];
     if($sum > 0){
@@ -421,7 +449,14 @@ class BookingPayment extends Client {
 
       $description = "Оплата путевки по заявке №".$booking." (".self::getObject($connect, $object, "type").")";
 
-      $answer = $this->registerOrderPreAuth($orderNumber,$sum_to_pay*100,$returnUrl,[
+      if($reck_properties['is_test']) {
+          $sberbankClient = $this->getSberbankClient('test');
+      }
+      else {
+          $sberbankClient = $this->getSberbankClient();
+      }
+
+      $answer = $sberbankClient->registerOrderPreAuth($orderNumber,$sum_to_pay*100,$returnUrl,[
         "description" => $description
       ]);
 
@@ -444,7 +479,7 @@ class BookingPayment extends Client {
     $booking = $this->booking;
     $turist = $this->turist;
 
-    $reck_properties = $connect->getRow("SELECT sum, id_dis FROM reckoning WHERE id=?i AND turist=?i AND (status=1 OR status=2) LIMIT 1", $booking, $turist);
+    $reck_properties = $connect->getRow("SELECT sum, id_dis, is_test, state_program FROM reckoning WHERE id=?i AND turist=?i AND (status=1 OR status=2) LIMIT 1", $booking, $turist);
     $sum = $reck_properties['sum'];
 
     if($sum > 0 && $holding_sum > 0){
@@ -503,7 +538,14 @@ class BookingPayment extends Client {
 
       $description = "Заморозка средств по заявке №".$booking." (".self::getObject($connect, $object, "type").")";
 
-      $answer = $this->registerOrderPreAuth($orderNumber,$sum_to_pay*100,$returnUrl,[
+        if($reck_properties['is_test']) {
+            $sberbankClient = $this->getSberbankClient('test');
+        }
+        else {
+            $sberbankClient = $this->getSberbankClient();
+        }
+
+      $answer = $sberbankClient->registerOrderPreAuth($orderNumber,$sum_to_pay*100,$returnUrl,[
         "description" => $description
       ]);
 
@@ -521,8 +563,10 @@ class BookingPayment extends Client {
     return FALSE;
   }
 
-  protected function getPaymentStatus(){
-    $answer = $this->getOrderStatus($this->bookingInfo["orderId"]);
+  protected function getPaymentStatus($type = null){
+    $sberbankClient = $this->getSberbankClient($type);
+
+    $answer = $sberbankClient->getOrderStatus($this->bookingInfo["orderId"]);
     return $answer;
   }
 
@@ -552,7 +596,11 @@ class BookingPayment extends Client {
       $sum_to_pay = $row["sum"];
       $request_id = $row['id'];
       $type_pay = $row["type"];
-      $row = $connect->getRow("SELECT id_obj, id_user, date_v, turist, status FROM reckoning WHERE id=?i", $bid);
+      $row = $connect->getRow("SELECT id_obj, id_user, date_v, turist, status, is_test, state_program FROM reckoning WHERE id=?i", $bid);
+
+      $is_test = $row['is_test'];
+      $state_program = $row['state_program'];
+
       $object = $row["id_obj"];
       $manager = $row["id_user"];
       $client = $row["turist"];
@@ -566,8 +614,15 @@ class BookingPayment extends Client {
         "orderId" => $orderId
       );
       $this->bookingInfo = $data;
-      $data = $this->getPaymentStatus();
 
+      if($is_test) {
+          $sberbankClient = $this->getSberbankClient('test');
+          $data = $this->getPaymentStatus('test');
+      }
+      else {
+          $sberbankClient = $this->getSberbankClient();
+          $data = $this->getPaymentStatus();
+      }
 
       $connect->query("UPDATE payment_request SET status=?i WHERE id=?i", (int)$data["OrderStatus"], $request_id);
       if($data["OrderStatus"] != 1) {
@@ -590,7 +645,7 @@ class BookingPayment extends Client {
       $this->bookingInfo = $data;
 
       if(!$holding)
-        $data = $this->deposit($orderId,$sum*100);
+        $data = $sberbankClient->deposit($orderId,$sum*100);
 
       if($data["ErrorCode"] != 0)
         return $data["ErrorMessage"]." ".($sum * 100)." ".$orderId;
@@ -677,7 +732,7 @@ class BookingPayment extends Client {
       $payment = $connect->getRow("SELECT `id`, `request_id`, `schet`, `sum`  FROM payment WHERE id = ?i AND status = 1", $id);
       if($payment) {
         $reck_id = $payment['schet'];
-        $reckoning = $connect->getRow("SELECT id, turist FROM reckoning WHERE id = ?i", $reck_id);
+        $reckoning = $connect->getRow("SELECT id, turist, is_test, state_program FROM reckoning WHERE id = ?i", $reck_id);
         $config = \App\lib\CRM\Config\Client::getInstance();
         $config->booking = $reck_id;
         $config->turist = $reckoning['turist'];
@@ -686,7 +741,13 @@ class BookingPayment extends Client {
           $request = $connect->getRow("SELECT id, order_id, bid_pay FROM payment_request WHERE id = ?i",$payment['request_id']);
           if($request) {
             try {
-              $response = $this->reverseOrder($request['order_id']);
+                if($reckoning['is_test'])
+                    $sberbankClient = $this->getSberbankClient('test');
+                else
+                    $sberbankClient = $this->getSberbankClient();
+
+
+                $response = $sberbankClient->reverseOrder($request['order_id']);
               $connect->query("UPDATE payment_request SET status = ?i WHERE id = ?i AND status = 1",0,$payment['request_id']);
               $connect->query("UPDATE payment SET status = ?i, processed = ?i WHERE id = ?i AND status = 1",0,$timestamp,$id);
               $connect->query("UPDATE reckoning SET `holding_sum` = `holding_sum`-".$payment['sum'].", `holding_cancelled_sum` = `holding_cancelled_sum` + ".$payment['sum']." WHERE id = ?i",$reck_id);
@@ -731,7 +792,7 @@ class BookingPayment extends Client {
       $payment = $connect->getRow("SELECT `id`, `request_id`, `schet`, `sum`, `created`  FROM payment WHERE id = ?i AND status = 1", $id);
       if ($payment) {
         $reck_id = $payment['schet'];
-        $reckoning = $connect->getRow("SELECT `id`, `turist`, `sum` FROM reckoning WHERE id = ?i", $reck_id);
+        $reckoning = $connect->getRow("SELECT `id`, `turist`, `sum`, `is_test`, `state_program` FROM reckoning WHERE id = ?i", $reck_id);
         $config = \App\lib\CRM\Config\Client::getInstance();
         $config->booking = $reck_id;
         $config->turist = $reckoning['turist'];
@@ -782,7 +843,14 @@ class BookingPayment extends Client {
                     }
                     else {
                       try {
-                        $response = $this->deposit($request['order_id'],$payment_sum*100);
+                         if($reckoning['is_test']) {
+                             $sberbankClient = $this->getSberbankClient('test');
+                         }
+                         else {
+                             $sberbankClient = $this->getSberbankClient();
+                         }
+
+                        $response = $sberbankClient->deposit($request['order_id'],$payment_sum*100);
                         $this->saveSchetToHistory($reck_id, "Принятие замороженных клиентом средств в качестве платежа. Сумма ".$payment_sum);
                         if($reck_new_status == 4)
                           $connect->query("UPDATE `reckoning` SET `status` = ?i, `holding_sum` = `holding_sum` - ".$payment_sum.", `holding_confirmed_sum` = `holding_confirmed_sum` + ".$payment_sum.", `prepay` = `prepay` + ".$payment_sum." WHERE id = ?i",$reck_new_status, $reck_id);

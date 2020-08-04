@@ -32,12 +32,18 @@ if($func AND function_exists($func)){
 
 	$configInstance->mail = $conf->email_module;
 
-	$configInstance->onlinePaymentInfo = [
-    "userName" => $conf->USERNAME_SBERBANK,
-    "password" => $conf->PASSWORD_SBERBANK,
-    "link" => $conf->BANK_PAYMENT_LINK_SBERBANK,
-    "commission" => $conf->BANK_COM_SBERBANK
-	];
+	$onlinePaymentInfoSber = array(
+		"link" => $conf->BANK_PAYMENT_LINK_SBERBANK,
+		"link_test" => $conf->BANK_PAYMENT_LINK_SBERBANK_TEST,
+		"link_v2" => $conf->BANK_PAYMENT_LINK_SBERBANK_V2,
+		"commission" => $conf->BANK_COM_SBERBANK,
+		"userName" => $conf->USERNAME_SBERBANK,
+		"userName_test" => $conf->USERNAME_SBERBANK_TEST,
+		"userName_v2" => $conf->USERNAME_SBERBANK_TEST,
+		"password" => $conf->PASSWORD_SBERBANK,
+		"password_test" => $conf->PASSWORD_SBERBANK_TEST,
+		"password_v2" => $conf->PASSWORD_SBERBANK_V2
+	);
 
 	$configInstance->bonus = [
     "bonus-booking" => $conf->bonus_rec,
