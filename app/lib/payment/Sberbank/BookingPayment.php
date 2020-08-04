@@ -460,23 +460,27 @@ class BookingPayment {
           $sberbankClient = $this->getSberbankClient();
       }
 
-      $answer = $sberbankClient->registerOrderPreAuth($orderNumber,$sum_to_pay*100,$returnUrl,[
-        "description" => $description
-      ]);
+      try {
+          $answer = $sberbankClient->registerOrderPreAuth($orderNumber, $sum_to_pay * 100, $returnUrl, [
+              "description" => $description
+          ]);
 
-      //$this->
+          //$this->
 
-      if($answer["orderId"]){
-        $check = $connect->getOne("SELECT id FROM payment_request WHERE order_id=?s", $answer["orderId"]);
-        if(!$check){
-          $bank_com = $this->bankInfo["commission"];
-          $connect->query("INSERT INTO payment_request(bid, type, pay_method, sum, bank_com, order_id, bid_pay) VALUES (?i, ?i, 5, ?s, ?s, ?s, ?s)", $booking, $type_pay, $sum_to_pay, $bank_com, $answer["orderId"], $orderNumber);
-        }
+          if ($answer["orderId"]) {
+              $check = $connect->getOne("SELECT id FROM payment_request WHERE order_id=?s", $answer["orderId"]);
+              if (!$check) {
+                  $bank_com = $this->bankInfo["commission"];
+                  $connect->query("INSERT INTO payment_request(bid, type, pay_method, sum, bank_com, order_id, bid_pay) VALUES (?i, ?i, 5, ?s, ?s, ?s, ?s)", $booking, $type_pay, $sum_to_pay, $bank_com, $answer["orderId"], $orderNumber);
+              }
+          } else {
+              file_put_contents(__DIR__ . '/../../../../core/sync/file/payment-log-' . date('Y-m-d') . '.log', date('Y-m-d H:i:s') . PHP_EOL . print_r($answer, true) . PHP_EOL, FILE_APPEND);
+          }
+          return $answer;
       }
-      else {
-          file_put_contents(__DIR__.'/../../../../core/sync/file/payment-log-'.date('Y-m-d').'.log', print_r($answer, true).PHP_EOL, FILE_APPEND);
+      catch (\Exception $e) {
+          file_put_contents(__DIR__ . '/../../../../core/sync/file/payment-log-' . date('Y-m-d') . '.log', date('Y-m-d H:i:s') . PHP_EOL . ' '.$e->getMessage() . PHP_EOL, FILE_APPEND);
       }
-      return $answer;
     }
     return FALSE;
   }
