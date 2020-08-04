@@ -98,6 +98,12 @@ require_once __DIR__."/../../vendor/autoload.php";
 			$website = isset($data_booking->site)?$data_booking->site:"";
 			$id_obj = isset($data_booking->id_obj)?$data_booking->id_obj:0;
 			$email = isset($data_booking_JSON["email"])?$data_booking_JSON["email"]:"";
+			$state_program = isset($data_booking_JSON["state_program"]) ? (int)$data_booking_JSON['state_program'] : 0;
+
+			if($state_program) {
+				$state_program = 1;
+			}
+
 			if(isset($data_booking->source))
 				$booking_source = $data_booking->source;
 
@@ -175,6 +181,9 @@ require_once __DIR__."/../../vendor/autoload.php";
 			change_arrival_date($connect, $id);
 			recalculation_sum($connect, $id);
 			save_schet_to_history($connect, $id, "Новая заявка от клиента");
+
+			if($state_program)
+				$connect->query("UPDATE reckoning SET state_program=1 WHERE id=?i AND sum >= 25000", $id);
 
 			if(isset($data_booking->promo_code) && $data_booking->promo_code != ""){
 				$promo_code = mb_strtolower($data_booking->promo_code);
