@@ -1523,7 +1523,7 @@ function show_schet_klient($connect){
 	$type = $_POST["type"];
 	if(isset($_COOKIE["reck"]))
 		SetCookie("reck","");
-	$row = $connect->getRow("SELECT type, agency, turist, holding_sum, DATE_FORMAT(date, '%d.%m.%Y') as date, sum, status, DATE_FORMAT(date_z, '%d.%m.%Y') as date_z, DATE_FORMAT(date_v, '%d.%m.%Y') as date_v, id_obj, id_tour, rest, status_san, number_turist, id_com, id_dis, note, active, status_agent, schet_san, DATE_FORMAT(date_schet_san, '%d.%m.%Y') as date_schet_san, id_user, website, guaranteed, reason_delete, changes, doc_schet_san, note_bid, correction, commission_value FROM reckoning WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT type, agency, turist, holding_sum, DATE_FORMAT(date, '%d.%m.%Y') as date, sum, status, DATE_FORMAT(date_z, '%d.%m.%Y') as date_z, DATE_FORMAT(date_v, '%d.%m.%Y') as date_v, id_obj, id_tour, rest, status_san, number_turist, id_com, id_dis, note, active, status_agent, schet_san, DATE_FORMAT(date_schet_san, '%d.%m.%Y') as date_schet_san, id_user, website, guaranteed, reason_delete, changes, doc_schet_san, note_bid, correction, commission_value, state_program FROM reckoning WHERE id=?i", $id);
 	$active = $row["active"];
 	$reck_type = $row["type"];
 	if($type == "agency")
@@ -1560,6 +1560,7 @@ function show_schet_klient($connect){
 	$note_schet = $row["note"];
 	$rest = $row["rest"];
 	$website = $row["website"];
+	$state_program = $row['state_program'];
 	$guaranteed = $row["guaranteed"];
 	$number_turist = $row["number_turist"];
 	$status_san = $row["status_san"];
@@ -2024,7 +2025,8 @@ function show_schet_klient($connect){
 					<strong>Поправка:</strong> <?php echo $correction; ?><br />
 				<?php } ?>
 				<strong>Итоговое вознаграждение:</strong> <span style="<?php echo $style; ?>; text-decoration: underline; cursor: pointer;" id="span_reward" onmouseover="show_reward_schet('<?php echo $id; ?>')" onmouseout="$('#div_buttons').remove()"><?php echo $reward_sum; ?></span>
-				<?php if($payment_div){ ?>
+				<strong>Гос. субсидии:</strong> <?=(isset($row['state_program']) && $row['state_program']) ? 'Да' : 'Нет';?><br>
+                <?php if($payment_div){ ?>
 					<div><button class="btn btn-default btn-xs" onclick="$('.payment-schet').show(); $('.desc-schet').hide();"><i class="fa fa-credit-card"></i> Платежи</button></div>
 				<?php } ?>
 			</div>
