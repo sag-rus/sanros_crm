@@ -456,6 +456,9 @@ class BookingPayment {
       if($reck_properties['is_test']) {
           $sberbankClient = $this->getSberbankClient('test');
       }
+      elseif ($reck_properties['state_program']) {
+          $sberbankClient = $this->getSberbankClient('v2');
+      }
       else {
           $sberbankClient = $this->getSberbankClient();
       }
@@ -552,6 +555,9 @@ class BookingPayment {
         if($reck_properties['is_test']) {
             $sberbankClient = $this->getSberbankClient('test');
         }
+        elseif ($reck_properties['state_program']) {
+            $sberbankClient = $this->getSberbankClient('v2');
+        }
         else {
             $sberbankClient = $this->getSberbankClient();
         }
@@ -629,6 +635,10 @@ class BookingPayment {
       if($is_test) {
           $sberbankClient = $this->getSberbankClient('test');
           $data = $this->getPaymentStatus('test');
+      }
+      elseif ($state_program) {
+          $sberbankClient = $this->getSberbankClient('v2');
+          $data = $this->getPaymentStatus('v2');
       }
       else {
           $sberbankClient = $this->getSberbankClient();
@@ -754,6 +764,8 @@ class BookingPayment {
             try {
                 if($reckoning['is_test'])
                     $sberbankClient = $this->getSberbankClient('test');
+                elseif ($reckoning['state_program'])
+                    $sberbankClient = $this->getSberbankClient('v2');
                 else
                     $sberbankClient = $this->getSberbankClient();
 
@@ -856,6 +868,9 @@ class BookingPayment {
                       try {
                          if($reckoning['is_test']) {
                              $sberbankClient = $this->getSberbankClient('test');
+                         }
+                         elseif ($reckoning['state_program']) {
+                             $sberbankClient = $this->getSberbankClient('v2');
                          }
                          else {
                              $sberbankClient = $this->getSberbankClient();
