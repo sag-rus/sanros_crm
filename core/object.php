@@ -1548,8 +1548,6 @@ function update_region($connect){
 	    $state_program = 1;
 	else {
         $state_program = 0;
-        $state_program_start_timestamp = 0;
-        $state_program_end_timestamp = 0;
     }
 
 	if($state_program_start_timestamp > $state_program_end_timestamp) {
