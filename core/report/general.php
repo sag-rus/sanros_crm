@@ -256,8 +256,15 @@ function show_filter_report($connect){
 					<div class="col-sm-9">
 						<label><input type="checkbox" id="show-site-bid" checked /> заявки с сайта</label>
 						<label><input type="checkbox" id="show-crm-bid" checked /> заведенные в CRM</label>
-					</div>
+                    </div>
 				</div>
+                <div class="form-group">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <label><input type="checkbox" id="show-state-program-bid" checked /> Заявки с субсидиями</label>
+                        <label><input type="checkbox" id="show-no-state-program-bid" checked /> Заявки без субсидий</label>
+                    </div>
+                </div>
 				<div class="form-group">
 					<label class="col-sm-3 control-label">Источник</label>
 					<div class="col-sm-9">
@@ -396,6 +403,7 @@ function filter_do($connect){
 	$site_bid = $_POST["site_bid"];
 	$crm_bid = $_POST["crm_bid"];
 	$count = $_POST;
+	$state_program = isset($_POST['state_program']) ? (int)$_POST['state_program'] : null;
 	$website = "";
 	if(isset($_POST["website"]))
 		$website = $_POST["website"];
@@ -467,6 +475,12 @@ function filter_do($connect){
 		if($zapros_for_mysql) $zapros_for_mysql .= " AND ";
 		$zapros_for_mysql.= " id_tour = $id_tour";
 	}
+
+	if(null !== $state_program) {
+        if($zapros_for_mysql) $zapros_for_mysql .= " AND ";
+        $zapros_for_mysql.= " reckoning.state_program = $state_program";
+    }
+
 	if($status != ""){
 		if($zapros_for_mysql) $zapros_for_mysql .= " AND ";
 		$a = explode("_", $status);
@@ -597,10 +611,10 @@ function filter_do($connect){
 
 	if($zapros_for_mysql)
 		$zapros_for_mysql = " WHERE ".$zapros_for_mysql;
-	$zapros_for_mysql = "SELECT id, rest, turist, agency, date, id_user, sum, id_obj, date_z, date_v, status, status_san, status_agent, active, website, guaranteed, `source`, promo_code, form_booking FROM reckoning " .$zapros_for_mysql." ORDER BY id";
+	$zapros_for_mysql = "SELECT id, rest, turist, agency, date, id_user, sum, id_obj, date_z, date_v, status, status_san, status_agent, active, website, guaranteed, `source`, promo_code, form_booking, reckoning.state_program AS state_program FROM reckoning " .$zapros_for_mysql." ORDER BY id";
 
     if($id_schet){
-		$zapros_for_mysql = "SELECT id, rest, turist, agency, id_user, date, sum, id_obj, date_z, date_v, status, status_san, status_agent, active, website, guaranteed, source, promo_code, form_booking FROM reckoning WHERE (";
+		$zapros_for_mysql = "SELECT id, rest, turist, agency, id_user, date, sum, id_obj, date_z, date_v, status, status_san, status_agent, active, website, guaranteed, source, promo_code, form_booking, reckoning.state_program AS state_program FROM reckoning WHERE (";
 		$id_schet = str_replace(".", "#", $id_schet);
 		$id_schet = str_replace(",", "#", $id_schet);
 		$id_schet = str_replace(" ", "#", $id_schet);
@@ -696,6 +710,7 @@ function filter_do($connect){
 			$source = $row["source"];
 			$promo_code = $row["promo_code"];
 			$form_booking = $row["form_booking"];
+			$state_program_status = $row['state_program'];
 			if($website)
 				$object.= "<br />(<span style='text-decoration: underline;'>".$website."</span>)";
 			if($row["status_san"] == 0)
@@ -815,12 +830,19 @@ function filter_do($connect){
 			<td width="80" valign="top"><?php echo $date.$time; ?></td>
 			<td width="80" valign="top"><?php echo $date_z; ?></td>
 			<td width="80" valign="top"><?php echo $date_v; ?></td>
-			<td width="200" valign="top" data-toggle="tooltip" title="<?php echo $full_object; ?>"><?php echo $object; ?></td>
+			<td width="170" valign="top" data-toggle="tooltip" title="<?php echo $full_object; ?>"><?php echo $object; ?></td>
 			<?php if($id_rights > 1) { ?>
                 <td width="70" valign="top"><?php echo $summa; ?></td>
             <?php } else { ?>
                 <td width="70" valign="top">Скрыто</td>
             <?php } ?>
+            <td width="30">
+                <?php if($state_program_status) { ?>
+                    Да
+                <?php } else { ?>
+                    Нет
+                <?php } ?>
+            </td>
 			<?php if($type_filter != "manager"){ ?>
                 <?php if($id_rights > 1) { ?>
 				    <td width="70" valign="top"><?php echo $reward; ?></td>
@@ -951,9 +973,10 @@ function filter_do($connect){
 			<th class="{dateFormat: 'ddmmyyyy'}" width="80">Заявка</th>
 			<th width="80" class="{dateFormat: 'ddmmyyyy'}">Заезд</th>
 			<th class="{dateFormat: 'ddmmyyyy'}" width="80">Выезд</th>
-			<th width="200">Объект</th>
+			<th width="170">Объект</th>
 			<th width="70">Сумма</th>
-			<?php echo $tbl_reward; ?>
+            <th width="70">Субсидия</th>
+            <?php echo $tbl_reward; ?>
 			<th width="80">Менеджер</th>
 			<th width="120">Статус</th>
 			<th width="30">Сан</th>

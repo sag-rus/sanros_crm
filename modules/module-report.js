@@ -160,6 +160,8 @@ function filter_do_report(type){
 	var date_v = $('#date_v').attr('date');
 	var date_v2 = $('#date_v2').attr('date');
 	var id = $('#id_schet').val();
+	var state_program = null;
+
 	if($('#show-delete').is(':checked'))
 		show_delete = 1;
 	if($('#through-tour').is(':checked'))
@@ -168,6 +170,20 @@ function filter_do_report(type){
 		site_bid = 2;
 	if(!$('#show-crm-bid').is(':checked'))
 		crm_bid = 2;
+
+
+	if($('#show-state-program-bid').is(':checked'))
+		state_program = 1;
+
+	if($('#show-no-state-program-bid').is(':checked')) {
+		if(state_program) {
+			state_program = null;
+		}
+		else {
+			state_program = 0;
+		}
+	}
+
 	var status = select_checkbox('status');
 	var st_san = select_checkbox('status_san');
 	var st_agent = select_checkbox('status_agent');
@@ -181,6 +197,11 @@ function filter_do_report(type){
 		$('.btn-search').button('loading');
 		$('.btn-hide').attr('disabled', 'disabled');
 		var str = 'func=filter_do&type_filter=report&surname=' + surname + '&id_obj=' + object + '&all_manager=' + manager + '&date_z=' + date_z + '&date_z2=' + date_z2 + '&date_op=' + date_op + '&date_op2=' + date_op2 + '&id_schet=' + id + '&status_id=' + status + '&st_san=' + st_san + '&type=' + type + '&date_v=' + date_v + '&date_v2=' + date_v2 + '&st_agent=' + st_agent + '&id_tour=' + tour + '&show_delete=' + show_delete + '&region=' + region + '&website=' + website + '&place_object=' + place_object + '&office=' + office + '&through_tour=' + through_tour + '&source=' + source + '&site_bid=' + site_bid + '&crm_bid=' + crm_bid;
+
+		if(null !== state_program) {
+			str += '&state_program='+state_program;
+		}
+
 		$('#tbl_head').html('');
 		$.ajax({
 			url: 'mysql.php',
