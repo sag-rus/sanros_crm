@@ -277,6 +277,9 @@ function update_schet(id){
     var number_turist = $('#number_turist').val();
     var schet_san = $('#schet_san').val();
     var date_schet_san = $('#date_schet_san').attr('date');
+    var state_program = $('#state_program').prop('checked')*1;
+    var exclude_bank_commission = $('#exclude_bank_commission').prop('checked')*1;
+
     if($('#id_com').length)
       id_com = $('#id_com').val();
     else if($('#id_dis').length)
@@ -286,7 +289,7 @@ function update_schet(id){
     else{
       note = note.replace("+", "plus");
       note = note.replace("+", "plus");
-      var str = 'func=update_schet&id=' + id + '&number_turist=' + number_turist + '&id_obj=' + id_obj + '&id_tour=' + id_tour + '&check=' + check_obj + '&id_com=' + id_com + '&note=' + note + '&id_dis=' + id_dis + '&schet_san=' + schet_san + '&date_schet_san=' + date_schet_san+"&reck_type="+reck_type;
+      var str = 'func=update_schet&id=' + id + '&number_turist=' + number_turist + '&id_obj=' + id_obj + '&id_tour=' + id_tour + '&check=' + check_obj + '&id_com=' + id_com + '&note=' + note + '&id_dis=' + id_dis + '&schet_san=' + schet_san + '&date_schet_san=' + date_schet_san+"&reck_type="+reck_type+'&state_program='+state_program+'&exclude_bank_commission='+exclude_bank_commission;
       $('.btn-update').button('loading');
       $.ajax({
         url: 'mysql.php',
