@@ -599,7 +599,7 @@ else {
             $reck_pay_reward += $test_reward;
         }
         //}
-        $array['reward'] += $reck_pay_reward;
+        //$array['reward'] += $reck_pay_reward;
         if($office_g) {
             $array["office"][$office_g]["reward"] += $reck_pay_reward;
         }
