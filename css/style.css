@@ -1716,3 +1716,9 @@ tr.simple-row {
 .datepicker.hidden+.convers-date {
 	display: none !important;
 }
+
+.ck.ck-content.ck-editor__editable {
+	border: 1px solid #ccc;
+	border-top: none;
+	border-top-right-radius: 0;
+}

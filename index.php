@@ -1,5 +1,5 @@
 <?php
-	$version = "29-05-2020";
+	$version = "22-06-2020";
     $loader = require( __DIR__ . '/vendor/autoload.php');
     /*$payment = new \App\lib\payment\Sberbank\BookingPayment([
 
@@ -15,7 +15,8 @@
 	<title>CRM БОНУСЫ</title>
 
 	<script type="text/javascript" src="js/jquery-1.9.1.js"></script>
-    <script type="text/javascript" src="js/ckeditor-4/ckeditor.js"></script>
+    <script type="text/javascript" src="js/ckeditor/ckeditor.js?v=<?=$version;?>"></script>
+    <script type="text/javascript" src="js/ckeditor/ru.js?v=<?=$version;?>"></script>
     <script type="text/javascript" src="js/highcharts.js"></script>
 	<script type="text/javascript" src="js/ajaxupload.js"></script>
 	<script type="text/javascript" src="js/jquery-ui.js"></script>
@@ -49,7 +50,6 @@
 	<script type="text/javascript" src="modules/module-question.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-profile.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-manual.js?ver=<?php echo $version; ?>"></script>
-    <script src="https://cdn.ckeditor.com/ckeditor5/1.0.0-alpha.2/classic/ckeditor.js"></script>
     <script type="text/javascript" src="https://cdn.tonia.ru/static-assets/damirez-uploader/js/damirez-uploader.js?ver=<?php echo $version; ?>"></script>
     <!--link rel="stylesheet" href="js/ckeditor/style.css"-->
 	<link href="font/font-awesome/css/font-awesome.css" rel="stylesheet">

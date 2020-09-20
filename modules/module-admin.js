@@ -1,5 +1,3 @@
-CKEDITOR.config.allowedContent=true;
-
 function show_admin(){
 	select_menu('admin_menu', '1');
 	var str = 'func=show_admin_search';
@@ -2297,8 +2295,44 @@ function add_new_sites_content(site_id) {
 							'</div>';
 
 	show_modal(html);
-  CKEDITOR.replace('sites_content_body');
-	CKEDITOR.replace('sites_content_body2');
+
+	DecoupledEditor
+		.create( $('#sites_content_body').get(0), {
+			language: 'ru'
+		})
+		.then( editor => {
+
+			$('#sites_content_body').before('<div id="sites_content_body_toolbar_container"></div>');
+
+			const toolbarContainer = $('#sites_content_body_toolbar_container').get(0);
+
+			toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+
+			window.sites_content_body = editor;
+		})
+		.catch( error => {
+			console.error( error );
+		});
+
+	DecoupledEditor
+		.create( $('#sites_content_body2').get(0), {
+			language: 'ru'
+		})
+		.then( editor => {
+
+			$('#sites_content_body2').before('<div id="sites_content_body2_toolbar_container"></div>');
+
+			const toolbarContainer2 = $('#sites_content_body2_toolbar_container').get(0);
+
+			toolbarContainer2.appendChild( editor.ui.view.toolbar.element );
+
+			window.sites_content_body2 = editor;
+		})
+		.catch( error => {
+			console.error( error );
+		});
+
+
   $('.sites-content-modal *[name="slider_photos"], .sites-content-modal *[name="photogallery"]').multUploader({
     action:'mysql.php?func=multipart_upload',
     fragmentSize:1024*1024,
@@ -2644,8 +2678,8 @@ function set_sites_content() {
   $module_blockMsg.html('');
 
 
-  var body = CKEDITOR.instances.sites_content_body.getData();
-	var body2 = CKEDITOR.instances.sites_content_body2.getData();
+  var body = window.sites_content_body.getData();
+	var body2 = window.sites_content_body2.getData();
 
   var site_id = $modalBody.find('*[name="site_id"]').val();
   var type = $modalBody.find('*[name="type"]').val();
@@ -3304,15 +3338,50 @@ function edit_sites_content(id,copyMode) {
     url: 'mysql.php',
     success: function(html){
       show_modal(html);
-      var sites_content_body = $('#sites_content_body').val();
-      CKEDITOR.replace('sites_content_body', {
+      var sites_content_body_orig = $('#sites_content_body').val();
+      var sites_content_body_orig2 = $('#sites_content_body2').val();
 
+		$('#sites_content_body').replaceWith('<div id="sites_content_body"></div>');
+		$('#sites_content_body2').replaceWith('<div id="sites_content_body2"></div>');
+
+
+		DecoupledEditor
+			.create( $('#sites_content_body').get(0), {
+				language: 'ru'
+			})
+			.then( editor => {
+
+				$('#sites_content_body').before('<div id="sites_content_body_toolbar_container"></div>');
+
+				const toolbarContainer = $('#sites_content_body_toolbar_container').get(0);
+
+				toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+
+				window.sites_content_body = editor;
+				window.sites_content_body.setData(sites_content_body_orig);
+			})
+			.catch( error => {
+				console.error( error );
 			});
-      CKEDITOR.instances.sites_content_body.setData(sites_content_body);
 
-			var sites_content_body2 = $('#sites_content_body2').val();
-			CKEDITOR.replace('sites_content_body2');
-			CKEDITOR.instances.sites_content_body2.setData(sites_content_body2);
+		DecoupledEditor
+			.create( $('#sites_content_body2').get(0), {
+				language: 'ru'
+			})
+			.then( editor => {
+
+				$('#sites_content_body2').before('<div id="sites_content_body2_toolbar_container"></div>');
+
+				const toolbarContainer2 = $('#sites_content_body2_toolbar_container').get(0);
+
+				toolbarContainer2.appendChild( editor.ui.view.toolbar.element );
+
+				window.sites_content_body2 = editor;
+				window.sites_content_body2.setData(sites_content_body_orig2);
+			})
+			.catch( error => {
+				console.error( error );
+			});
 
       $('.sites-content-modal *[name="slider_photos"], .sites-content-modal *[name="photogallery"]').multUploader({
         action:'mysql.php?func=multipart_upload',
