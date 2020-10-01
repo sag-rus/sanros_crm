@@ -183,7 +183,7 @@ require_once __DIR__."/../../vendor/autoload.php";
 			save_schet_to_history($connect, $id, "Новая заявка от клиента");
 
 			if($state_program)
-				$connect->query("UPDATE reckoning SET state_program=1 WHERE id=?i AND (sum >= 25000 OR sum = 0)", $id);
+				$connect->query("UPDATE reckoning SET state_program=1 WHERE id=?i", $id);
 
 			if(isset($data_booking->promo_code) && $data_booking->promo_code != ""){
 				$promo_code = mb_strtolower($data_booking->promo_code);
