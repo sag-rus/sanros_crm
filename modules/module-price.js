@@ -971,7 +971,7 @@ function update_main_data_object(id){
 		}
 	});
 
-	var q = object_description_editor.getData();
+	var q = $('#description-object').val();
 
 	var obj = {
 		"func": "update_main_data_object",
