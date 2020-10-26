@@ -356,7 +356,7 @@ function edit_user($connect){
         <div class="form-group">
             <label class="col-sm-3 control-label">Роль</label>
             <div class="col-sm-9">
-                <select id="user-role">
+                <select id="user-role" class="form-control">
                     <option value="0"<?php if($user['class'] != 1) { ?> selected<?php } ?>>Пользователь</option>
                     <option value="1"<?php if($user['class'] == 1) { ?> selected<?php } ?>>Менеджер</option>
                 </select>
