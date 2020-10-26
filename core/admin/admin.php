@@ -286,7 +286,7 @@ function see_accounts($connect){
 
 function edit_user($connect){
 	$id = $_POST["id"];
-	$user = $connect->getRow("SELECT login, name, surname, email, telephone, rights, channel, note, office, id_group FROM users WHERE id=?i", $id);
+	$user = $connect->getRow("SELECT login, name, surname, email, telephone, rights, channel, note, office, id_group, class FROM users WHERE id=?i", $id);
 	$select_rights = get_select_rights($connect, $user["rights"]);
 	ob_start();
 ?>
@@ -353,6 +353,15 @@ function edit_user($connect){
 				<?php echo get_select_table($connect, "groups", "", $user["id_group"], "user-group", 1); ?>
 			</div>
 		</div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Роль</label>
+            <div class="col-sm-9">
+                <select id="user-role">
+                    <option value="0"<?php if($user['class'] != 1) { ?> selected<?php } ?>>Пользователь</option>
+                    <option value="1"<?php if($user['class'] == 1) { ?> selected<?php } ?>>Менеджер</option>
+                </select>
+            </div>
+        </div>
 	</div>
 	<div class="form-horizontal panel-footer">
 		<div class="form-group form-group-margin">
@@ -489,9 +498,16 @@ function update_user($connect){
 	$rights = $_POST["rights"];
 	$office = $_POST["office"];
 	$group = $_POST["group"];
+	$role = (int)$_POST['role'];
+
 	if($connect->getOne("SELECT id FROM users WHERE id!=?i AND login=?s", $id, $login))
 		return 2;
-	$connect->query("UPDATE users SET login=?s, name=?s, surname=?s, email=?s, telephone=?s, rights=?i, office=?s, id_group=?s WHERE id=?i", $login, $name, $surname, $email, $telephone, $rights, $office, $group, $id);
+
+	if($role)
+	    $connect->query("UPDATE users SET login=?s, name=?s, surname=?s, email=?s, telephone=?s, rights=?i, office=?s, id_group=?s, class = ?i WHERE id=?i", $login, $name, $surname, $email, $telephone, $rights, $office, $group, $role, $id);
+	else
+	    $connect->query("UPDATE users SET login=?s, name=?s, surname=?s, email=?s, telephone=?s, rights=?i, office=?s, id_group=?s, class = NULL WHERE id=?i", $login, $name, $surname, $email, $telephone, $rights, $office, $group, $id);
+
 	if($password)
 		$connect->query("UPDATE users SET password=?s WHERE id=?i", $password, $id);
 	return 1;

@@ -114,12 +114,13 @@ function update_user(id){
 	var note = $('#note').val();
 	var office = $('#user-office').val();
 	var group = $('#user-group').val();
+	var role = $('#user-role').val();
 	if(login == '')
 		show_warning('.edit-user', 'Не введен логин');
 	else if((password != password_1) && (password != ''))
 		show_warning('.edit-user', 'Пароли не совпадают');
 	else{
-		var str = 'func=update_user&login=' + login + '&password=' + password + '&rights=' + rights + '&name=' + name + '&surname=' + surname + '&telephone=' + telephone + '&email=' + email + '&id=' + id + '&office=' + office + '&group=' + group;
+		var str = 'func=update_user&login=' + login + '&password=' + password + '&rights=' + rights + '&name=' + name + '&surname=' + surname + '&telephone=' + telephone + '&email=' + email + '&id=' + id + '&office=' + office + '&group=' + group+'&role='+role;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
