@@ -222,7 +222,7 @@ require_once __DIR__."/../../vendor/autoload.php";
 	    if($telephone){
 	      $id_obj = $connect->getOne("SELECT id_obj FROM reckoning WHERE id=?i", $id);
 	      $object = get_object($connect, $id_obj, "type");
-	      $text = "Заявка №".$id." в ".$object." принята. Ожидайте подтверждения. Тел. 8-800-600-16-20. Санатории-России.рф";
+	      $text = "Заявка №".$id." в ".$object." принята в обработку. 8-800-600-16-20 Санатории-России.рф";
 	      send_sms($connect, $telephone, $booking, $text, "new-booking");
 	    }
 
