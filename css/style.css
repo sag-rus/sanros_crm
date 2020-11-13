@@ -1722,3 +1722,7 @@ tr.simple-row {
 	border-top: none;
 	border-top-right-radius: 0;
 }
+
+.ck.ck-balloon-panel {
+	z-index: 1000000000;
+}
