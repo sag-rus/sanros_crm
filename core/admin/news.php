@@ -1959,7 +1959,8 @@ function set_bounds($connect,$boundsArray,String $boundsName)
       'site',
       'content',
       'room',
-      'treatment_profile'
+      'treatment_profile',
+      'treatment_method'
     ];
 
     $entity2_types = [

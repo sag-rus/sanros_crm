@@ -43,8 +43,14 @@ function show_methods($connect){
 function edit_method($connect){
 	$id = $_POST["id"];
 	$row = $connect->getRow("SELECT name, description FROM methods WHERE id=?i", $id);
+
+    $entity = [
+        'id' => $id,
+        'type' => 'treatment_method'
+    ];
+
 ?>
-<div class="modal fade">
+<div class="modal fade edit-method-modal">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -58,6 +64,12 @@ function edit_method($connect){
 						<input type="text" class="form-control name-method" value="<?php echo $row['name']; ?>" />
 					</div>
 				</div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Иконка</label>
+                    <div class="col-sm-8">
+                        <input type="file" name="image" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'image'))));?>">
+                    </div>
+                </div>
 				<div class="form-group form-group-margin">
 					<label class="col-sm-4 control-label">Описание</label>
 					<div class="col-sm-8">
@@ -66,7 +78,7 @@ function edit_method($connect){
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-success btn-sm" onclick="update_method('<?php echo $id; ?>')"><i class="fa fa-check"></i> Сохранить</button>
+				<button type="button" class="btn btn-success btn-sm btn-update-method" onclick="update_method('<?php echo $id; ?>')"><i class="fa fa-check"></i> Сохранить</button>
 			</div>
 		</div>
 	</div>
@@ -78,6 +90,16 @@ function update_method($connect){
 	$id = $_POST["id"];
 	$name = $_POST["name"];
 	$desc = $_POST["desc"];
+
+    $entity = [
+        'id' => $id,
+        'type' => 'treatment_method'
+    ];
+
+    $boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);
+    remove_bounds($connect,$entity,'image');
+    set_bounds($connect,$boundsArrayImage,'image');
+
 	$connect->query("UPDATE methods SET name=?s, description=?s, synchronized = 0 WHERE id=?i", $name, $desc, $id);
 }
 

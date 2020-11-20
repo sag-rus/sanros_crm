@@ -593,21 +593,48 @@ function edit_method(id){
 		data: str,
 		url: 'mysql.php',
 		success: function(html){
+			remove_all_windows();
 			show_modal(html);
+
+			$('.edit-method-modal *[name="image"]').multUploader({
+				action:'mysql.php?func=multipart_upload',
+				fragmentSize:1024*1024,
+				maxcount: 1,
+				contentType:['image/svg+xml']
+			});
+
 		}
 	});
 }
 
 function update_method(id){
+	var $button = $('.btn-update-method');
+
 	var name = $('.name-method').val();
 	var desc = $('.desc-method').val();
+
+	var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
+
+	var $image = $modalBody.find('*[name="image"]');
+	var $imageMsg = $image.parent().find('.input-message-block');
+	var image = JSON.parse($image.val().trim());
+	$imageMsg.html("").removeClass('with-bottom-margin');
+
 	if(!name)
 		show_warning('.edit-method', 'Введите название метода', false);
 	else{
-		var str = 'func=update_method&id=' + id + '&name=' + name + '&desc=' + desc;
+
+		var data = {
+			func: 'update_method',
+			id: id,
+			name: name,
+			desc: desc,
+			image: image
+		}
+
 		$.ajax({
 			type: 'POST',
-			data: str,
+			data: data,
 			url: 'mysql.php',
 			success: function(){
 				remove_all_windows();
