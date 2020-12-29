@@ -9,12 +9,8 @@ function sync_server_database($connect){
   // $tables = array("object", "room", "housing", "rate_plan");
   $file = $directory."/core/sync/file/dump.txt";
   $file2 = $directory."/core/sync/file/dump2.txt";
-  $file3 = $directory . '/core/sync/file/dump3.txt';
   $fp = fopen($file, "w");
   $fp2 = fopen($file2, "w");
-  $fp3 = fopen($file3, "w");
-
-  $fp3Created = false;
 
   foreach($tables as $table){
   	$query = "";
@@ -51,16 +47,12 @@ function sync_server_database($connect){
   		if($i > $insert_records){
   			$query_ins = ";\nINSERT INTO `".$table."` VALUES ";
 
-				if($table !== 'room' || $rid < 1500) {
+				if($table !== 'room' || $rid < 3000) {
 					fwrite($fp, $query_ins);
 
 				}
-				elseif ($rid < 3000) {
-					fwrite($fp2,$query_ins);
-				}
 				else {
-					$fp3Created = true;
-					fwrite($fp3,$query_ins);
+					fwrite($fp2,$query_ins);
 				}
   			$i = 1;
 
@@ -71,28 +63,22 @@ function sync_server_database($connect){
   			$q = "(".$query.")";
   		else
   			$q=",(".$query.")";
-			if($table !== 'room' || $rid < 1500) {
+			if($table !== 'room' || $rid < 3000) {
 				fwrite($fp, $q);
 
 			}
-			elseif ($rid < 3000) {
-				fwrite($fp2,$q);
-			}
 			else {
-				$fp3Created = true;
-				fwrite($fp3, $q);
+				fwrite($fp2, $q);
 			}
 
   		$i++;
   	}
   	fwrite($fp, ";\n");
 		fwrite($fp2, ";\n");
-	  fwrite($fp3, ";\n");
   }
 
   	fclose($fp);
   	fclose($fp2);
-  	fclose($fp3);
 
   	$name = "dump-base";
 
@@ -116,21 +102,6 @@ function sync_server_database($connect){
 		ftp_quit($connect_server);
 
   	$data = request_to_sync(array("func" => "imports_mysql_base", "name" => $name));
-
-
-  	if($fp3Created) {
-		$name = "dump-base3";
-
-		$server_file = "/var/www/default-site/public_html/sync/file/".$name.".txt";
-
-		if(!ftp_put($connect_server, $server_file, $file3, FTP_ASCII))
-			echo "Не удалось загрузить файл на сервер";
-		ftp_chmod($connect_server, 0777, $server_file);
-		ftp_quit($connect_server);
-
-		$data = request_to_sync(array("func" => "imports_mysql_base", "name" => $name));
-	}
-
     return '<div class="alert alert-success">Выгрузка завершена</div>';
 
 }
