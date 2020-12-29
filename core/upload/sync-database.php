@@ -51,11 +51,11 @@ function sync_server_database($connect){
   		if($i > $insert_records){
   			$query_ins = ";\nINSERT INTO `".$table."` VALUES ";
 
-				if($table !== 'room' || $rid < 3000) {
+				if($table !== 'room' || $rid < 1500) {
 					fwrite($fp, $query_ins);
 
 				}
-				elseif ($rid < 6000) {
+				elseif ($rid < 3000) {
 					fwrite($fp2,$query_ins);
 				}
 				else {
@@ -71,11 +71,11 @@ function sync_server_database($connect){
   			$q = "(".$query.")";
   		else
   			$q=",(".$query.")";
-			if($table !== 'room' || $rid < 3000) {
+			if($table !== 'room' || $rid < 1500) {
 				fwrite($fp, $q);
 
 			}
-			elseif ($rid < 6000) {
+			elseif ($rid < 3000) {
 				fwrite($fp2,$q);
 			}
 			else {
