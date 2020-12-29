@@ -118,7 +118,7 @@ function sync_server_database($connect){
 
 	$server_file = "/var/www/default-site/public_html/sync/file/".$name.".txt";
 
-	if(!ftp_put($connect_server, $server_file, $file2, FTP_ASCII))
+	if(!ftp_put($connect_server, $server_file, $file3, FTP_ASCII))
 		echo "Не удалось загрузить файл на сервер";
 	ftp_chmod($connect_server, 0777, $server_file);
 	ftp_quit($connect_server);
