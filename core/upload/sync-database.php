@@ -9,8 +9,10 @@ function sync_server_database($connect){
   // $tables = array("object", "room", "housing", "rate_plan");
   $file = $directory."/core/sync/file/dump.txt";
   $file2 = $directory."/core/sync/file/dump2.txt";
+  $file3 = $directory . '/core/sync/file/dump3.txt';
   $fp = fopen($file, "w");
   $fp2 = fopen($file2, "w");
+  $fp3 = fopen($file3, "w");
 
   foreach($tables as $table){
   	$query = "";
@@ -51,8 +53,11 @@ function sync_server_database($connect){
 					fwrite($fp, $query_ins);
 
 				}
-				else {
+				elseif ($rid < 6000) {
 					fwrite($fp2,$query_ins);
+				}
+				else {
+					fwrite($fp3,$query_ins);
 				}
   			$i = 1;
 
@@ -67,18 +72,23 @@ function sync_server_database($connect){
 				fwrite($fp, $q);
 
 			}
+			elseif ($rid < 6000) {
+				fwrite($fp2,$query_ins);
+			}
 			else {
-				fwrite($fp2, $q);
+				fwrite($fp3, $q);
 			}
 
   		$i++;
   	}
   	fwrite($fp, ";\n");
 		fwrite($fp2, ";\n");
+	  fwrite($fp3, ";\n");
   }
 
   	fclose($fp);
   	fclose($fp2);
+  	fclose($fp3);
 
   	$name = "dump-base";
 
@@ -102,6 +112,19 @@ function sync_server_database($connect){
 		ftp_quit($connect_server);
 
   	$data = request_to_sync(array("func" => "imports_mysql_base", "name" => $name));
+
+
+	$name = "dump-base3";
+
+	$server_file = "/var/www/default-site/public_html/sync/file/".$name.".txt";
+
+	if(!ftp_put($connect_server, $server_file, $file2, FTP_ASCII))
+		echo "Не удалось загрузить файл на сервер";
+	ftp_chmod($connect_server, 0777, $server_file);
+	ftp_quit($connect_server);
+
+	$data = request_to_sync(array("func" => "imports_mysql_base", "name" => $name));
+
     return '<div class="alert alert-success">Выгрузка завершена</div>';
 
 }
