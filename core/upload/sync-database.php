@@ -73,7 +73,7 @@ function sync_server_database($connect){
 
 			}
 			elseif ($rid < 6000) {
-				fwrite($fp2,$query_ins);
+				fwrite($fp2,$q);
 			}
 			else {
 				fwrite($fp3, $q);
