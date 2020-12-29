@@ -14,6 +14,8 @@ function sync_server_database($connect){
   $fp2 = fopen($file2, "w");
   $fp3 = fopen($file3, "w");
 
+  $fp3Created = false;
+
   foreach($tables as $table){
   	$query = "";
   	$result = $connect->getRow("SHOW CREATE TABLE `".$table."`");
@@ -57,6 +59,7 @@ function sync_server_database($connect){
 					fwrite($fp2,$query_ins);
 				}
 				else {
+					$fp3Created = true;
 					fwrite($fp3,$query_ins);
 				}
   			$i = 1;
@@ -76,6 +79,7 @@ function sync_server_database($connect){
 				fwrite($fp2,$q);
 			}
 			else {
+				$fp3Created = true;
 				fwrite($fp3, $q);
 			}
 
@@ -114,16 +118,18 @@ function sync_server_database($connect){
   	$data = request_to_sync(array("func" => "imports_mysql_base", "name" => $name));
 
 
-	$name = "dump-base3";
+  	if($fp3Created) {
+		$name = "dump-base3";
 
-	$server_file = "/var/www/default-site/public_html/sync/file/".$name.".txt";
+		$server_file = "/var/www/default-site/public_html/sync/file/".$name.".txt";
 
-	if(!ftp_put($connect_server, $server_file, $file3, FTP_ASCII))
-		echo "Не удалось загрузить файл на сервер";
-	ftp_chmod($connect_server, 0777, $server_file);
-	ftp_quit($connect_server);
+		if(!ftp_put($connect_server, $server_file, $file3, FTP_ASCII))
+			echo "Не удалось загрузить файл на сервер";
+		ftp_chmod($connect_server, 0777, $server_file);
+		ftp_quit($connect_server);
 
-	$data = request_to_sync(array("func" => "imports_mysql_base", "name" => $name));
+		$data = request_to_sync(array("func" => "imports_mysql_base", "name" => $name));
+	}
 
     return '<div class="alert alert-success">Выгрузка завершена</div>';
 
