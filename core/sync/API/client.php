@@ -99,12 +99,17 @@ function register_new_account($connect, $data){
       $account = $connect->insertId();
 		}
 		save_client_to_history($connect, $account, "Регистрация нового аккаутна");
-		if($invited == "birthday"){
+		if($invited == "birthday") {
 			$bonus = 300;
-      $bonus_days = 30;
-			$last_timestamp = strtotime($today)+$bonus_days*86400;
+			$bonus_days = 30;
+			$last_timestamp = strtotime($today) + $bonus_days * 86400;
 			$connect->query("INSERT INTO bonus(turist, type, sum, date, note, `last_timestamp`) VALUES(?i, 3, ?i, ?s, 'Подарочный бонус на день рождения', ?i)", $account, $bonus, $today, $last_timestamp);
-		}elseif($invited != ""){
+		} elseif($invited == 'new-year') {
+			$bonus = 500;
+			$bonus_days = 365;
+			$last_timestamp = strtotime($today) + $bonus_days * 86400;
+			$connect->query("INSERT INTO bonus(turist, type, sum, date, note, `last_timestamp`) VALUES(?i, 3, ?i, ?s, 'Подарочный бонус на Новый год', ?i)", $account, $bonus, $today, $last_timestamp);
+		} elseif($invited != ""){
 			$id_invited = $connect->getOne("SELECT id FROM klient WHERE hash=?s", $invited);
 			$connect->query("UPDATE klient SET invited=?i WHERE id=?i LIMIT 1", $id_invited, $account);
 			//Бонус при регистрации
