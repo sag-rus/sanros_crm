@@ -1,5 +1,16 @@
 <?php
 
+function get_template_letter_new($file_name, $id = ""){
+	global $directory;
+	$answer = array();
+	$file = $directory."/templates/".$file_name.".html";
+	include_once($directory."/config.php");
+	$conf = new JConfig;
+	
+	return $answer;
+}
+
+
 function get_template_letter($file_name, $id = ""){
 	global $directory;
 	$answer = array();
