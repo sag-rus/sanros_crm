@@ -53,8 +53,7 @@ function report_agent($connect, $all_id){
 ?>
 	<div class="border">
 	<p style="font-weight: bold;">Компания: <?php echo $firma; ?><br />
-	Юридический адрес: <?php echo $leg_address; ?><br />
-	Обособленное подразделение: <?php echo $sep_address.", факс: ".$fax; ?><br />
+	Адрес: <?php echo $leg_address; ?><br />
 	Агент: <?php echo $agency; ?><br />
 	Юридический адрес: <?php echo $leg_address_agency; ?><br />
 	Агентский договор: №<?php echo $agency_contract["number"]." действующий до ".$agency_contract["date_cont"]; ?></p>
@@ -124,8 +123,7 @@ function report_agent($connect, $all_id){
 		<td width="325">ИНН/КПП:<br /><?php echo $INN_agency."/".$KPP_agency; ?></td>
 	</tr>
 	<tr>
-		<td width="325">Обособленное подразделение:<br /><?php echo $sep_address; ?></td>
-		<td width="325" valign="top">Юридический адрес:<br /><?php echo $leg_address_agency; ?></td>
+		<td width="325" valign="top">Адрес:<br /><?php echo $leg_address_agency; ?></td>
 	</tr>
 	<tr>
 		<td width="325">

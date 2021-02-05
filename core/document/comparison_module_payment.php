@@ -23,8 +23,7 @@ function comparison_module_payment($connect, $object_id, $rate = 1, $month = 3) 
       <tr>
         <td style="border: none; width: 900px;">
           <p style="margin-top: 10px;"><?php echo $data["company"]["firma"]; ?><br />
-            <strong>Юридический адрес:</strong> <?php echo $data["company"]["legal-address"]; ?><br />
-            <strong>Обособленное подразделение:</strong> <?php echo $data["company"]["separate-address"]; ?><br />
+            <strong>Адрес:</strong> <?php echo $data["company"]["legal-address"]; ?><br />
             <strong>Тел.:</strong> <?php echo $data["company"]["phone"]; ?> <br />
             <strong>Email:</strong> <?php echo $data["company"]["email"]; ?> <strong>Сайт:</strong> <?php echo $data["company"]["website"]; ?></p>
         </td>

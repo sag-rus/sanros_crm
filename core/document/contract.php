@@ -275,7 +275,6 @@ function review_contract($connect, $type, $id){
 	полное и сокращенное наименования:<br />
 	<?php echo $full_firma."<br />".$firma; ?><br />
 	<strong>Адрес:</strong> <?php echo $leg_address; ?><br />
-	<strong>Адрес обособленного подразделения:</strong> <?php echo $sep_address; ?><br />
 	<strong>ОГРН:</strong> <?php echo $OGRN; ?><br />
 	<strong>ИНН/КПП:</strong> <?php echo $INN."/".$KPP; ?><br />
 	<strong>Реестровый номер:</strong> <?php echo $reestr; ?><br /><br />
@@ -372,7 +371,6 @@ function review_contract($connect, $type, $id){
             <strong>к/с:</strong> <?php echo $KS; ?><br />
             <strong>БИК:</strong> <?php echo $BIK; ?><br /><br />
 
-            <strong>Обособленное подразделение:</strong><br /><?php echo $sep_address; ?><br />
 			<strong>Тел.:</strong> <?php echo $tel; ?><br /><br />
 
                 <?php echo $post; ?><br /><?php echo $firma; ?><?php if($brand_info) { ?> (торговая марка «САНАТОРИИ РОССИИ»)<?php } ?>:

@@ -44,8 +44,7 @@ function review_schet_certificate($connect, $type, $id){
 	<table cellpadding="5" cellspacing="0">
 	<tr>
 		<td style="border: none; width: 550px;"><p style="margin: 0px;"><?php echo $firma; ?><br />
-		<strong>Юридический адрес:</strong> <?php echo $leg_address; ?><br />
-		<strong>Обособленное подразделение:</strong> <?php echo $sep_address; ?><br />
+		<strong>Адрес:</strong> <?php echo $leg_address; ?><br />
 		<strong>Тел.:</strong> <?php echo $tel; ?> <strong>Факс:</strong> <?php echo $fax; ?><br />
 		<strong>Email:</strong> <?php echo $email; ?> <strong>Сайт:</strong> <?php echo $web_site; ?></p>
 		</td>
