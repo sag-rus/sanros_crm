@@ -46,7 +46,7 @@ function review_schet_certificate($connect, $type, $id){
 		<td style="border: none; width: 550px;"><p style="margin: 0px;"><?php echo $firma; ?><br />
 		<strong>Юридический адрес:</strong> <?php echo $leg_address; ?><br />
         <strong>Почтовый/Фактический адрес:</strong> <?php echo $leg_address; ?><br />
-        <strong>Тел.:</strong> <?php echo $tel; ?> <strong>Факс:</strong> <?php echo $fax; ?><br />
+        <strong>Тел.:</strong> <?php echo $tel; ?><br />
 		<strong>Email:</strong> <?php echo $email; ?> <strong>Сайт:</strong> <?php echo $web_site; ?></p>
 		</td>
 	<td  style="border: none;" valign="top"><span class="bold_head" style="color: #DB0E0E;">ДЕЙСТВИТЕЛЕН В ТЕЧЕНИИ 3 РАБОЧИХ ДНЕЙ</span></td>

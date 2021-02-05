@@ -322,9 +322,6 @@ function review_contract($connect, $type, $id){
 			<strong>Юридический адрес:</strong><br /><?php echo $leg_address; ?><br />
 			<strong>Почтовый/Фактический адрес:</strong><br /><?php echo $leg_address; ?><br />
 			<strong>Тел.:</strong> <?php echo $tel; ?><br />
-		<?php if($fax){ ?>
-			<strong>Факс:</strong> <?php echo $fax; ?><br />
-		<?php } ?>
 			<strong>р/с:</strong> <?php echo $reck; ?><br />
 			в <?php echo $bank; ?><br />
 			<strong>к/с:</strong> <?php echo $KS; ?><br />

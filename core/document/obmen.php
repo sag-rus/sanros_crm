@@ -321,7 +321,7 @@ function review_obmen($connect, $type = "PDF", $id, $for = ""){
 				<td style="text-align: center; width: 388px;" valign="top">
 					<span><?php echo $firma; ?></span><br />
 					<span class="head_span">Реестровый номер <?php echo $reestr; ?></span><br />
-					<span class="head_span"><strong>Тел.:</strong> <?php echo $tel; ?><br /><strong>Факс:</strong> <?php echo $fax; ?></span><br />
+					<span class="head_span"><strong>Тел.:</strong> <?php echo $tel; ?></span><br />
 					<span class="head_span"><strong>Email:</strong> <?php echo $email; ?></span>
 					<span class="head_span"><strong>Сайт:</strong> <?php echo $web_site; ?></span>
 				</td>

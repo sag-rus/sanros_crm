@@ -49,7 +49,7 @@ function review_confirm($connect, $type, $id, $type_PDF = "PDF"){
 				<strong>Юридический адрес:</strong> <?php echo $leg_address; ?><br />
                 <strong>Почтовый/Фактический адрес:</strong> <?php echo $leg_address; ?><br />
                 <strong>Реестровый номер:</strong> <?php echo $reestr; ?><br />
-				<strong>Тел.:</strong> <?php echo $tel; ?> <strong>Факс:</strong> <?php echo $fax; ?><br />
+				<strong>Тел.:</strong> <?php echo $tel; ?> <br />
 				<strong>Email:</strong> <?php echo $email; ?><br />
 				<strong>Сайт:</strong> <?php echo $web_site; ?></p>
 			</td>
@@ -142,7 +142,7 @@ function review_confirm($connect, $type, $id, $type_PDF = "PDF"){
 			<td>(<?php echo $director; ?>)</td>
 		</tr>
 		<tr>
-			<td width="700" colspan="3" align="right"><p style="font-size: 11pt; text-align: right;"><strong>С уважением, <?php echo $manager; ?></strong><br />Email: <?php echo $email; ?><br />Факс: +7(843)<?php echo $fax; ?></p></td>
+			<td width="700" colspan="3" align="right"><p style="font-size: 11pt; text-align: right;"><strong>С уважением, <?php echo $manager; ?></strong><br />Email: <?php echo $email; ?></p></td>
 		</tr>
 		</table>
 

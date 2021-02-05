@@ -52,7 +52,7 @@ function review_cancel($connect, $type, $id){
 				<strong>Юридический адрес:</strong> <?php echo $leg_address; ?><br />
                 <strong>Почтовый/Фактический адрес:</strong> <?php echo $leg_address; ?><br />
                 <strong>Реестровый номер:</strong> <?php echo $reestr; ?><br />
-				<strong>Тел.:</strong> <?php echo $tel; ?> <strong>Факс:</strong> <?php echo $fax; ?><br />
+				<strong>Тел.:</strong> <?php echo $tel; ?> <br />
 				<strong>Email:</strong> <?php echo $email; ?><br />
 				<strong>Сайт:</strong> <?php echo $web_site; ?></p>
 			</td>

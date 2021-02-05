@@ -202,7 +202,6 @@ function review_agency_dogovor($connect, $id){
 			<strong>к/с:</strong> <?php echo $KS; ?><br />
 			<strong>БИК:</strong> <?php echo $BIK; ?><br /><br />
 			<strong>Тел:</strong> <?php echo $tel; ?><br />
-			<strong>Факс:</strong> <?php echo $fax; ?><br />
 			<strong>Email:</strong> <?php echo $email; ?><br />
 			<strong>Сайт:</strong> <?php echo $web_site; ?><br /><br />
 

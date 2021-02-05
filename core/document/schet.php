@@ -217,7 +217,7 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 			<p style="margin-top: 10px;"><?php echo $firma; ?><br />
 		<strong>Юридический адрес:</strong> <?php echo $leg_address; ?><br />
 		<strong>Почтовый/Фактический адрес:</strong> <?php echo $leg_address; ?><br />
-		<strong>Тел.:</strong> <?php echo $tel; ?> <strong>Факс:</strong> <?php echo $fax; ?><br />
+		<strong>Тел.:</strong> <?php echo $tel; ?><br />
 		<strong>Email:</strong> <?php echo $email; ?> <strong>Сайт:</strong> <?php echo $web_site; ?></p>
 		</td>
 	</tr>
