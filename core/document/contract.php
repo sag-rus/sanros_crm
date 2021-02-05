@@ -275,7 +275,7 @@ function review_contract($connect, $type, $id){
 	полное и сокращенное наименования:<br />
 	<?php echo $full_firma."<br />".$firma; ?><br />
 	<strong>Юридический адрес:</strong> <?php echo $leg_address; ?><br />
-    <strong>Почтовый/Фактический адрес:</strong> <?php echo $sep_address; ?><br />
+    <strong>Почтовый/Фактический адрес:</strong> <?php echo $leg_address; ?><br />
     <strong>ОГРН:</strong> <?php echo $OGRN; ?><br />
 	<strong>ИНН/КПП:</strong> <?php echo $INN."/".$KPP; ?><br />
 	<strong>Реестровый номер:</strong> <?php echo $reestr; ?><br /><br />
@@ -366,7 +366,7 @@ function review_contract($connect, $type, $id){
 			<strong>ИНН/КПП:</strong> <?php echo $INN."/".$KPP; ?><br />
 			<strong>ОГРН:</strong> <?php echo $OGRN; ?><br />
 			<strong>Юридический адрес:</strong><br /><?php echo $leg_address; ?><br /><br />
-            <strong>Почтовый/Фактический адрес:</strong><br /><?php echo $sep_address; ?><br /><br />
+            <strong>Почтовый/Фактический адрес:</strong><br /><?php echo $leg_address; ?><br /><br />
 
           <?php if($fax){ ?>
             <strong>Факс:</strong> <?php echo $fax; ?><br />
