@@ -375,7 +375,7 @@ function review_contract($connect, $type, $id){
             в <?php echo $bank; ?><br />
             <strong>к/с:</strong> <?php echo $KS; ?><br />
             <strong>БИК:</strong> <?php echo $BIK; ?><br />
-			<strong>Тел.:</strong> <?php echo $tel; ?><br />
+			<strong>Тел.:</strong> <?php echo $tel; ?><br /><br>
 
                 <?php echo $post; ?><br /><?php echo $firma; ?><?php if($brand_info) { ?> (торговая марка «САНАТОРИИ РОССИИ»)<?php } ?>:
 			<?php if($img == 1){
