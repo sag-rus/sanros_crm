@@ -53,8 +53,9 @@ function report_agent($connect, $all_id){
 ?>
 	<div class="border">
 	<p style="font-weight: bold;">Компания: <?php echo $firma; ?><br />
-	Адрес: <?php echo $leg_address; ?><br />
-	Агент: <?php echo $agency; ?><br />
+	Юридический адрес: <?php echo $leg_address; ?><br />
+    Почтовый/Фактический адрес: <?php echo $sep_address; ?><br />
+    Агент: <?php echo $agency; ?><br />
 	Юридический адрес: <?php echo $leg_address_agency; ?><br />
 	Агентский договор: №<?php echo $agency_contract["number"]." действующий до ".$agency_contract["date_cont"]; ?></p>
 	<p class="head">ОТЧЕТ АГЕНТА № <?php echo $id; ?> от <?php if($id == 80185) { echo "05 июля 2019 г."; } else { echo $date_z_trans." г."; } ?></p>

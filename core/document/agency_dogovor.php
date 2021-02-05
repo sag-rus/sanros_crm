@@ -194,8 +194,9 @@ function review_agency_dogovor($connect, $id){
 		<td width="300" valign="top">
 			<strong>Компания:</strong> <?php echo $firma; ?><br />
 			<strong>ИНН/КПП:</strong> <?php echo $INN."/".$KPP; ?><br />
-			<strong>Адрес:</strong><br /><?php echo $leg_address; ?><br />
-			<strong>ОКПО:</strong> <?php echo $OKPO; ?><br />
+			<strong>Юридический адрес:</strong><br /><?php echo $leg_address; ?><br />
+            <strong>Почтовый/Фактический адрес:</strong><br /><?php echo $sep_address; ?><br />
+            <strong>ОКПО:</strong> <?php echo $OKPO; ?><br />
 			<strong>р/с:</strong> <?php echo $RS; ?><br />
 			<?php echo $bank; ?><br />
 			<strong>к/с:</strong> <?php echo $KS; ?><br />
