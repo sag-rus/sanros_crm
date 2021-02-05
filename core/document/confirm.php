@@ -47,7 +47,7 @@ function review_confirm($connect, $type, $id, $type_PDF = "PDF"){
 				<p style="font-size: 11pt;"><strong><?php echo $firma; ?></strong><br />
 				<strong>ИНН/КПП:</strong> <?php echo $INN; ?>/<?php echo $KPP; ?><br />
 				<strong>Юридический адрес:</strong> <?php echo $leg_address; ?><br />
-                <strong>Почтовый/Фактический адрес:</strong> <?php echo $sep_address; ?><br />
+                <strong>Почтовый/Фактический адрес:</strong> <?php echo $leg_address; ?><br />
                 <strong>Реестровый номер:</strong> <?php echo $reestr; ?><br />
 				<strong>Тел.:</strong> <?php echo $tel; ?> <strong>Факс:</strong> <?php echo $fax; ?><br />
 				<strong>Email:</strong> <?php echo $email; ?><br />
