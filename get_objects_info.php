@@ -18,8 +18,8 @@ if($rows){
     ?>
         <li style="border-bottom: 1px solid #000;">
             Название: <?=$row['name'];?><br>
-            <?php if($row['email']) { ?>
-            E-mail: <?=$row['email'];?><br>
+            <?php if($emailAr = json_decode($row['email'], true)) { ?>
+            E-mail: <?=$emailAr['value'];?><br>
             <?php } ?>
             <?php if($row['inn']) { ?>
                 ИНН: <?=$row['inn'];?><br>
