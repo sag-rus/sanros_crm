@@ -6,7 +6,7 @@ include_once("core/lib/Mysql.Class.php");
 include_once("config.php");
 $conf = new JConfig;
 $connect = connect_to_MySQL();
-$rows = $connect->getAll("SELECT name, email, inn FROM object");
+$rows = $connect->getAll("SELECT name, email, inn FROM object WHERE state_program = 1");
 
 $emails = array();
 if($rows){
