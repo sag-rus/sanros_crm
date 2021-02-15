@@ -342,7 +342,7 @@ function select_menu_object($connect){
 
 function select_object_about($connect){
 	$id = $_POST["id"];
-	$row = $connect->getRow("SELECT id, type, active, image, name, city, similar, id_reg, id_profile, id_methods, id_infa, medical_factors, id_services, weather, latitude, longitude, image, url_name, website, state_program FROM object WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT id, type, active, image, name, city, similar, id_reg, id_profile, id_methods, id_infa, medical_factors, id_services, weather, latitude, longitude, image, url_name, website, state_program, featured FROM object WHERE id=?i", $id);
 	if(!$row["id"])
 		return FALSE;
 	$address = $connect->getOne("SELECT name FROM region WHERE id=?i", $row["id_reg"]);
@@ -461,6 +461,20 @@ function select_object_about($connect){
                 </div>
             </div>
         </div>
+
+        <div class="list-group-item list-hover-item">
+            <div class="form-group form-group-margin">
+                <label class="col-sm-3 control-label-element">Разместить в блок "Популярные санатории"</label>
+                <div class="col-sm-9">
+                    <?php if($row['featured']) { ?>
+                        Да
+                    <?php } else { ?>
+                        Нет
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+
 		<div class="list-group-item list-hover-item">
 			<div class="form-group form-group-margin">
 				<label class="col-sm-3 control-label-element">Уникальная ссылка</label>
