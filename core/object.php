@@ -734,6 +734,7 @@ function update_main_data_object($connect){
     else {
         $state_program = 0;
     }
+
     if($featured) {
         $featured = 1;
     }
@@ -766,7 +767,7 @@ function update_main_data_object($connect){
     if(!array_key_exists($default_price_type,$array_type))
         $default_price_type = 1;
 
-    $connect->query("UPDATE object SET name=?s, full_name=?s, city=?s, direction=?s, type=?s, latitude=?s, longitude=?s, similar=?s, weather=?s, description=?s, source_booking=?i, description_check=?s, booking_uri=?s, fast_booking=?i, main_post_name = ?s, main_post_fio = ?s, default_price_type = ?i, id_reg = ?i, region_direction_id = ?i, `uri_schema` = ?i, `url_name` = ?s, `state_program` = ?i, synchronized=0, `featured` = ?i WHERE id=?i", $name, $full_name, $city, $direction, $type, $latitude, $longitude, $similar, $weather, $description, $source_booking, $description, $booking_uri, $fast_booking, $main_post_name, $main_post_fio, $default_price_type, $id_reg, $region_direction_id,$uri_schema, $url_name, $state_program, $id, $featured);
+    $connect->query("UPDATE object SET name=?s, full_name=?s, city=?s, direction=?s, type=?s, latitude=?s, longitude=?s, similar=?s, weather=?s, description=?s, source_booking=?i, description_check=?s, booking_uri=?s, fast_booking=?i, main_post_name = ?s, main_post_fio = ?s, default_price_type = ?i, id_reg = ?i, region_direction_id = ?i, `uri_schema` = ?i, `url_name` = ?s, `state_program` = ?i, synchronized=0, `featured` = ?i WHERE id=?i", $name, $full_name, $city, $direction, $type, $latitude, $longitude, $similar, $weather, $description, $source_booking, $description, $booking_uri, $fast_booking, $main_post_name, $main_post_fio, $default_price_type, $id_reg, $region_direction_id,$uri_schema, $url_name, $state_program, $featured, $id);
 }
 
 function edit_desc_object($connect){
