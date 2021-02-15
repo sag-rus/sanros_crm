@@ -12,7 +12,7 @@ $emails = array();
 if($rows){
     $count = count($rows);
     ?>
-    <ul style="padding:0,margin: 0;list-style:none;">
+    <ul style="padding: 0; margin: 0; list-style: none;">
     <?php
 	foreach($rows as $row) {
     ?>
