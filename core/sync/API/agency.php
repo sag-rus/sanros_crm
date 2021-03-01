@@ -196,7 +196,9 @@ function show_tour_agency($connect, $data){
 		}
 		return $answer;
 	}
-	return FALSE;
+	return [
+		'session' => isset($data["session"]) ? $data["session"] : ''
+	];
 }
 
 function show_tour_archive_agency($connect, $data){
