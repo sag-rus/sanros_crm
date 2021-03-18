@@ -17,7 +17,7 @@ function create_account_client($connect){
 	$message["content"] = str_replace("<password>", $password, $message["content"]);
 	$message["content"] = str_replace("<hash>", $link, $message["content"]);
 	$message["content"] = str_replace("<turist>", $turist, $message["content"]);
-	send_mail($email, $message["title"], $message["content"]);
+	send_mail_sanata($email, $message["title"], $message["content"]);
 }
 
 function send_login_agency($connect){
@@ -31,7 +31,7 @@ function send_login_agency($connect){
 	$message["content"] = str_replace("<login>", $login, $message["content"]);
 	$message["content"] = str_replace("<password>", $password, $message["content"]);
 	$email = $connect->getOne("SELECT email FROM agency WHERE id=?i", $id);
-	send_mail($email, $message["title"], $message["content"]);
+	send_mail_sanata($email, $message["title"], $message["content"]);
 }
 
 function send_mail_client_document($connect){
@@ -70,7 +70,7 @@ function send_mail_client_schet($connect, $id){
 	$message["content"] = str_replace("<client>", $client, $message["content"]);
 	$message["content"] = str_replace("<object>", $object, $message["content"]);
 	$message["content"] = str_replace("<date_payment>", $time_payment, $message["content"]);
-	send_mail($login, $message["title"], $message["content"]);
+	send_mail_sanata($login, $message["title"], $message["content"]);
 }
 
 function send_mail_client_obmen($connect, $id){
@@ -120,7 +120,7 @@ function send_mail_client_cancel($connect, $id){
 	$message["content"] = str_replace("<client>", $turist, $message["content"]);
 	$message["content"] = str_replace("<object>", $object, $message["content"]);
 	$message["content"] = str_replace("<cause>", $cause, $message["content"]);
-	send_mail($email, $message["title"], $message["content"]);
+	send_mail_sanata($email, $message["title"], $message["content"]);
 }
 
 function send_mail_client_changes($connect, $id){
@@ -159,7 +159,7 @@ function send_mail_agency_schet($connect, $id){
 	$email = $connect->getOne("SELECT email FROM agency WHERE id=?i", $row["agency"]);
 	$message = select_template_letter("agency/document/send-schet", "agency", $id);
 	$message["content"] = str_replace("<manager>", $manager, $message["content"]);
-	send_mail($email, $message["title"], $message["content"]);
+	send_mail_sanata($email, $message["title"], $message["content"]);
 }
 
 function send_mail_agency_obmen($connect, $id){
@@ -170,7 +170,7 @@ function send_mail_agency_obmen($connect, $id){
 	$email = $connect->getOne("SELECT email FROM agency WHERE id=?i", $row["agency"]);
 	$message = select_template_letter("agency/document/send-obmen", "agency", $id);
 	$message["content"] = str_replace("<manager>", $manager, $message["content"]);
-	send_mail($email, $message["title"], $message["content"]);
+	send_mail_sanata($email, $message["title"], $message["content"]);
 }
 
 function send_mail_agency_changes($connect, $id){
@@ -278,7 +278,7 @@ function send_mail_confirm_rating($connect){
 	$message["content"] = str_replace("<object>", $object, $message["content"]);
 	$message["content"] = str_replace("<link>", $link, $message["content"]);
 	$message["content"] = str_replace("<image>", $image, $message["content"]);
-	send_mail($email, $message["title"], $message["content"]);
+	send_mail_sanata($email, $message["title"], $message["content"]);
 
 	$connect_server = connect_to_server();
 	if(save_rating_XML_object($connect, $id_obj)){
@@ -331,7 +331,7 @@ function send_mail_confirm_rating_comment($connect){
 		$message["content"] = str_replace("<object>", $object, $message["content"]);
 		$message["content"] = str_replace("<link>", $link, $message["content"]);
 		$message["content"] = str_replace("<image>", $image, $message["content"]);
-		send_mail($send_email, $message["title"], $message["content"]);
+		send_mail_sanata($send_email, $message["title"], $message["content"]);
 		sleep(2);
 	}
 }

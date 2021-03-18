@@ -122,7 +122,7 @@ function register_new_account($connect, $data){
 		$message = select_template_letter("turist/cabinet/new-account", "client", $id);
 		$link = CABINET."?func=activation&email=".$email."&hash=".$hash;
 		$message["content"] = str_replace("<hash>", $link, $message["content"]);
-		send_mail($email, $message["title"], $message["content"]);
+		send_mail_sanata($email, $message["title"], $message["content"]);
 		return $account;
 	}
 	return FALSE;
@@ -186,7 +186,7 @@ function send_activation_email($connect, $data){
 		$message = select_template_letter("turist/cabinet/new-account", "client");
 		$link = CABINET."?func=activation&email=".$email."&hash=".$hash;
 		$message["content"] = str_replace("<hash>", $link, $message["content"]);
-		send_mail($email, $message["title"], $message["content"]);
+		send_mail_sanata($email, $message["title"], $message["content"]);
 		return 1;
 	}elseif($connect->getOne("SELECT id FROM klient WHERE login=?s AND active=1", $email))
 		return 2;
@@ -204,7 +204,7 @@ function send_recovery_email($connect, $data){
 		$link = CABINET."восстановить-пароль/email=".$email."&hash=".$hash;
 		$message["content"] = str_replace("<hash>", $link, $message["content"]);
 		save_client_to_history($connect, $id, "Отправка письма с восстановлением пароля");
-		send_mail($email, $message["title"], $message["content"]);
+		send_mail_sanata($email, $message["title"], $message["content"]);
 		return 1;
 	}
 	return FALSE;
