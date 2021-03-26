@@ -2122,7 +2122,17 @@ function add_new_sites_content(site_id) {
                               '<input type="file" name="slider_photos">' +
                           '</div>' +
                       '</div>' +
-			 								'<div class="form-group">' +
+					   '<div class="form-group">' +
+						   '<label class="col-sm-2 control-label">Тип слайдера</label>' +
+						   '<div class="col-sm-10">' +
+							   '<select class="form-control" name="slider_mode">' +
+								   '<option value="0">Стандартный</option>' +
+								   '<option value="1">Увеличенный по высоте</option>' +
+							   '</select>' +
+						   		'<div class="input-message-block" data-for="slider_mode"></div>' +
+						   '</div>' +
+					   '</div>' +
+						'<div class="form-group">' +
                           '<label class="col-sm-2 control-label">Фото для фона</label>' +
                           '<div class="col-sm-10">' +
                               '<div class="input-message-block" data-for="page_bg"></div>' +
@@ -2640,6 +2650,11 @@ function set_sites_content() {
   var slider_photos = JSON.parse($slider_photos.val().trim());
   $slider_photosMsg.html("").removeClass('with-bottom-margin');
 
+	var $slider_mode = $modalBody.find('*[name="slider_mode"]');
+	var $slider_modeMsg = $slider_mode.parent().find('.input-message-block');
+	var slider_mode = $slider_mode.val().trim();
+	$slider_modeMsg.html('');
+
   var $photogallery = $modalBody.find('*[name="photogallery"]');
   var $photogalleryMsg = $photogallery.parent().find('.input-message-block');
   var photogallery = JSON.parse($photogallery.val().trim());
@@ -2930,6 +2945,7 @@ function set_sites_content() {
         photogallery: photogallery,
 		photogallery_title: photogallery_title,
 		photogallery_orientation: photogallery_orientation,
+		slider_mode: slider_mode,
 		breadcrumb_title: breadcrumb_title,
         body: body,
 		body2: body2,
@@ -3787,6 +3803,9 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
   var $slider_photos = $('.sites-content-modal *[name="slider_photos"]');
   var $sliderPhotosFormG = $slider_photos.closest('.form-group');
 
+	var $slider_mode = $('.sites-content-modal *[name="slider_mode"]');
+	var $slider_modeFormG = $slider_mode.closest('.form-group');
+
   var $form_action = $('.sites-content-modal *[name="form_action"]');
   var $form_actionFormG = $form_action.closest('.form-group');
 
@@ -4001,6 +4020,15 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 		$reviews_objectsFormG.addClass('hidden');
 	}
 
+	if(type === 'landing' || type === 'settings') {
+		$sliderPhotosFormG.removeClass('hidden');
+		$slider_modeFormG.removeClass('hidden');
+	}
+	else {
+		$sliderPhotosFormG.addClass('hidden');
+		$slider_modeFormG.addClass('hidden');
+	}
+
   if(type === 'landing' || type === 'settings' || type === 'news' || type === 'article' || type === 'info' || type === 'advice' || type === 'blog_post' || type === 'page') {
     $sliderPhotosFormG.removeClass('hidden');
     $page_bgFormG.removeClass('hidden');
@@ -4008,15 +4036,15 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
     $title_h2FormG.removeClass('hidden');
     $landing_infoFormG.removeClass('hidden');
 		$body2FormG.removeClass('hidden');
-
-	}
+	  	$slider_modeFormG.removeClass('hidden');
+  }
   else {
-    $sliderPhotosFormG.addClass('hidden');
     $page_bgFormG.addClass('hidden');
     $second_bgFormG.addClass('hidden');
     $title_h2FormG.addClass('hidden');
     $landing_infoFormG.addClass('hidden');
 		$body2FormG.addClass('hidden');
+
   }
 
   if(type === 'photogallery' || type === 'landing' || type === 'news' || type === 'page' || type === 'settings' || type === 'article' || type === 'info' || type === 'advice' || type === 'blog_post') {

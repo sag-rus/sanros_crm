@@ -1562,7 +1562,7 @@ function edit_sites_content($connect) {
   $copy_mode = isset($_POST['copy_mode'])?(int)$_POST['copy_mode']:0;
   $content = NULL;
   if($content_id)
-      $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h1`, `title_h2`, `summary`, `snippet_summary`, `body`, `body2`, `head_code`, `pre_body_code`, `post_body_code`, `path`, `redirect_path`, `description`, `keywords`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `photogallery_title`, `photogallery_orientation`, `breadcrumb_title`, `direction_id`, `region_id`, `regional_direction_id`, `rss`, `rss_aggregator_link`, `rss_addition`, `rss_aggregation`, `main_page_fix`, `aggregation_by_dates`, `aggregation_date_start`, `aggregation_date_end`, `phone` FROM `sites_contents` WHERE `id` =?i",$content_id);
+      $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h1`, `title_h2`, `slider_mode`, `summary`, `snippet_summary`, `body`, `body2`, `head_code`, `pre_body_code`, `post_body_code`, `path`, `redirect_path`, `description`, `keywords`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `photogallery_title`, `photogallery_orientation`, `breadcrumb_title`, `direction_id`, `region_id`, `regional_direction_id`, `rss`, `rss_aggregator_link`, `rss_addition`, `rss_aggregation`, `main_page_fix`, `aggregation_by_dates`, `aggregation_date_start`, `aggregation_date_end`, `phone` FROM `sites_contents` WHERE `id` =?i",$content_id);
       $entity = $content;
       $entity['type'] = 'content';
   ob_start();
@@ -1775,6 +1775,16 @@ function edit_sites_content($connect) {
                           <div class="col-sm-10">
                               <div class="input-message-block" data-for="slider_photos"></div>
                               <input type="file" name="slider_photos" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'slider_photos'))));?>">
+                          </div>
+                      </div>
+                      <div class="form-group<?php if(!in_array($content['type'],['landing','settings'])) { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Тип слайдера</label>
+                          <div class="col-sm-10">
+                              <select class="form-control" name="slider_mode">
+                                  <option value="0"<?php if($content['slider_mode'] == 0) { ?> selected<?php } ?>>Стандартный</option>
+                                  <option value="1"<?php if($content['slider_mode'] == 1) { ?> selected<?php } ?>>Увеличенный по высоте</option>
+                              </select>
+                              <div class="input-message-block" data-for="slider_mode"></div>
                           </div>
                       </div>
                       <div class="form-group<?php if(!in_array($content['type'],['landing','settings'])) { ?> hidden<?php } ?>">
@@ -2653,7 +2663,11 @@ function set_sites_content($connect) {
   $title_h1 = isset($_POST['title_h1'])?trim($_POST['title_h1']):"";
   $photogallery_title = isset($_POST['photogallery_title'])?trim($_POST['photogallery_title']):"";
   $photogallery_orientation = isset($_POST['photogallery_orientation'])?trim($_POST['photogallery_orientation']):"album";
-  $title_h2 = isset($_POST['title_h2'])?trim($_POST['title_h2']):"";
+
+    $slider_mode = isset($_POST['slider_mode'])?(int)$_POST['slider_mode']:0;
+
+
+    $title_h2 = isset($_POST['title_h2'])?trim($_POST['title_h2']):"";
   $path = isset($_POST['path'])?explode("?",trim($_POST['path']))[0]:"";
   $redirect_path = isset($_POST['redirect_path'])?explode("?",trim($_POST['redirect_path']))[0]:"";
   $form_action = isset($_POST['form_action'])?trim($_POST['form_action']):"";
@@ -2828,6 +2842,14 @@ function set_sites_content($connect) {
         }
     }
 
+    if(!in_array($type,['landing','settings'])) {
+        $slider_mode = 0;
+    }
+
+    if(!in_array($slider_mode, [0, 1])) {
+        $slider_mode = 0;
+    }
+
   if(in_array($type,$typesAr) && in_array($photogallery_orientation,$photogallery_orientations) && (($module_object_id === 0 && $module_block === "" && $type !== 'module') || ($module_object_id > 0 && in_array($module_block,$moduleBlocks) && $type === 'module'))) {
     if($site_id) {
       if($title && $path) {
@@ -2902,7 +2924,7 @@ function set_sites_content($connect) {
               set_bounds($connect,$boundsArrayResortsIds, 'resorts_ids');
 
 
-              $connect->query("UPDATE `sites_contents` SET `title`=?s, `title_h1`=?s, `title_h2` = ?s, `path`=?s, `redirect_path` = ?s, `description`=?s, `body`=?s, `body2` =?s, `summary`=?s, `snippet_summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `sort` = ?i, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i, `form_action` = ?s, `map_code` = ?s, `landing_info` = ?s, `breadcrumb_title` = ?s, `photogallery_title` = ?s, `photogallery_orientation` = ?s, `direction_id` = ?i, `region_id` = ?i, `regional_direction_id` = ?i, `rss` = ?i, `rss_aggregator_link` = ?s, `rss_addition` = ?s, `rss_aggregation` = ?i, `main_page_fix` = ?i, `aggregation_by_dates` = ?i, `aggregation_date_start` = ?i, `aggregation_date_end` = ?i, `head_code` = ?s, `pre_body_code` = ?s, `post_body_code` = ?s, `phone` = ?s WHERE `id`=?i",$title, $title_h1, $title_h2, $path, $redirect_path, $description, $body, $body2,$summary, $snippet_summary,$keywords,$type,$timestamp,$published,$status,0,$weight, $sort,$module_object_id,$module_block,$second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $direction_id, $region_id, $regional_direction_id, $rss, $rss_aggregator_link, $rss_addition, $rss_aggregation, $main_page_fix, $aggregation_by_dates, $aggregation_date_start, $aggregation_date_end, $head_code, $pre_body_code, $post_body_code, $phone,$content_id);
+              $connect->query("UPDATE `sites_contents` SET `title`=?s, `slider_mode` = ?i, `title_h1`=?s, `title_h2` = ?s, `path`=?s, `redirect_path` = ?s, `description`=?s, `body`=?s, `body2` =?s, `summary`=?s, `snippet_summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `synchronized`=?i, `weight` = ?s, `sort` = ?i, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i, `form_action` = ?s, `map_code` = ?s, `landing_info` = ?s, `breadcrumb_title` = ?s, `photogallery_title` = ?s, `photogallery_orientation` = ?s, `direction_id` = ?i, `region_id` = ?i, `regional_direction_id` = ?i, `rss` = ?i, `rss_aggregator_link` = ?s, `rss_addition` = ?s, `rss_aggregation` = ?i, `main_page_fix` = ?i, `aggregation_by_dates` = ?i, `aggregation_date_start` = ?i, `aggregation_date_end` = ?i, `head_code` = ?s, `pre_body_code` = ?s, `post_body_code` = ?s, `phone` = ?s WHERE `id`=?i",$title, $slider_mode, $title_h1, $title_h2, $path, $redirect_path, $description, $body, $body2,$summary, $snippet_summary,$keywords,$type,$timestamp,$published,$status,0,$weight, $sort,$module_object_id,$module_block,$second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $direction_id, $region_id, $regional_direction_id, $rss, $rss_aggregator_link, $rss_addition, $rss_aggregation, $main_page_fix, $aggregation_by_dates, $aggregation_date_start, $aggregation_date_end, $head_code, $pre_body_code, $post_body_code, $phone,$content_id);
               if($content && $content['path'] !== $path && $type !== 'redirect' && !($type === 'aggregator' && $rss)) {
                   $connect->query("INSERT INTO `sites_contents` (`title`, `title_h1`, `title_h2`, `path`, `redirect_path`, `description`, `body`, `body2`, `summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `map_code`, `landing_info`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation`, `direction_id`, `region_id`, `regional_direction_id`) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?i, ?i, ?s, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i)","Редирект", "", "", $content['path'], $path, "","","","","",'redirect',$timestamp,$published,1,0,$content['site_id'],$timestamp,0.9, 0,0, '', 0, '','', '', '', '', 'album', 0, 0, 0);
                   if($site_id == 38) {
@@ -2923,7 +2945,7 @@ function set_sites_content($connect) {
             else {
               $respAr['success'] = 1;
               $respAr['msg'] = "Контент успешно добавлен";
-              $connect->query("INSERT INTO `sites_contents` (`title`, `title_h1`, `title_h2`, `path`, `redirect_path`, `description`, `body`, `body2`, `summary`, `snippet_summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `map_code`, `landing_info`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation`, `direction_id`, `region_id`, `regional_direction_id`, `rss`, `rss_aggregator_link`, `rss_addition`, `rss_aggregation`, `main_page_fix`, `aggregation_by_dates`, `aggregation_date_start`, `aggregation_date_end`, `head_code`, `pre_body_code`, `post_body_code`, `phone`) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?i, ?i, ?s, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?s, ?s, ?s, ?s)",$title, $title_h1, $title_h2, $path, $redirect_path, $description,$body,$body2,$summary, $snippet_summary, $keywords,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight, $sort,$module_object_id, $module_block, $second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $direction_id, $region_id, $regional_direction_id, $rss, $rss_aggregator_link, $rss_addition, $rss_aggregation, $main_page_fix, $aggregation_by_dates, $aggregation_date_start, $aggregation_date_end, $head_code, $pre_body_code, $post_body_code, $phone);
+              $connect->query("INSERT INTO `sites_contents` (`title`, `slider_mode`, `title_h1`, `title_h2`, `path`, `redirect_path`, `description`, `body`, `body2`, `summary`, `snippet_summary`, `keywords`, `type`, `changed`, `published`, `status`, `synchronized`, `site_id`, `created`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `map_code`, `landing_info`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation`, `direction_id`, `region_id`, `regional_direction_id`, `rss`, `rss_aggregator_link`, `rss_addition`, `rss_aggregation`, `main_page_fix`, `aggregation_by_dates`, `aggregation_date_start`, `aggregation_date_end`, `head_code`, `pre_body_code`, `post_body_code`, `phone`) VALUES (?s, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?i, ?i, ?s, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?s, ?s, ?s, ?s)",$title, $slider_mode, $title_h1, $title_h2, $path, $redirect_path, $description,$body,$body2,$summary, $snippet_summary, $keywords,$type,$timestamp,$published,$status,0,$site_id,$timestamp,$weight, $sort,$module_object_id, $module_block, $second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $direction_id, $region_id, $regional_direction_id, $rss, $rss_aggregator_link, $rss_addition, $rss_aggregation, $main_page_fix, $aggregation_by_dates, $aggregation_date_start, $aggregation_date_end, $head_code, $pre_body_code, $post_body_code, $phone);
 
               $entity = [
                 'id' => $connect->insertId(),
@@ -2994,7 +3016,7 @@ function set_sites_content($connect) {
 }
 
 function sync_site_content($connect, $id):bool {
-    $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h1`, `title_h2`, `summary`, `snippet_summary`, `body`, `body2`, `head_code`, `pre_body_code`, `post_body_code`, `path`, `redirect_path`, `description`, `keywords`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation`, `direction_id`, `region_id`, `regional_direction_id`, `rss`, `rss_aggregator_link`, `rss_addition`, `rss_aggregation`, `main_page_fix`, `aggregation_by_dates`, `aggregation_date_start`, `aggregation_date_end`, `phone` FROM `sites_contents` WHERE `id` =?i",$id);
+    $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h1`, `title_h2`, `summary`, `snippet_summary`, `body`, `body2`, `head_code`, `pre_body_code`, `post_body_code`, `path`, `redirect_path`, `description`, `keywords`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation`, `direction_id`, `region_id`, `regional_direction_id`, `rss`, `rss_aggregator_link`, `rss_addition`, `rss_aggregation`, `main_page_fix`, `aggregation_by_dates`, `aggregation_date_start`, `aggregation_date_end`, `phone`, `slider_mode` FROM `sites_contents` WHERE `id` =?i",$id);
     if($content) {
         try {
           $client = new \GuzzleHttp\Client();
