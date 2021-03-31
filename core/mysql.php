@@ -722,7 +722,9 @@ function write_body($connect){
                     <li id="new_klient_menu" onclick="add_klient()"><a>Клиент</a></li>
 					<li id="agency_menu" onclick="agency()"><a>Агентства</a></li>
 					<li id="touroperator_menu" onclick="touroperator()"><a>Туроператоры</a></li>
-					<li id="obj_menu" onclick="objects()"><a>Объекты</a></li>
+				  <?php } ?>
+					<li id="obj_menu" onclick="objects(<?=$id_rights;?>)" data-id-rights="<?=$id_rights;?>"><a>Объекты</a></li>
+				  <?php if($id_rights > 1) { ?>
 					<li id="reminder_menu" onclick="my_reminder()"><a>Напоминания</a></li>
                   <?php } ?>
 			<?php if($id_rights == 1 || $id_rights > 2 || $session_login == 21 || $session_login == 55){ ?>
@@ -764,9 +766,9 @@ function write_body($connect){
 					<li id="all-admin-menu"><a onclick="$('.menu-admin').toggle()">Админ</a>
 						<ul class="nav nav-pills nav-stacked second-level-menu menu-admin" style="display: none">
 							<li onclick="object()" id="price_menu"><a><i class="fa fa-home"></i> Объекты</a></li>
+							<li onclick="show_rating_menu()" id="rating_menu"><a><i class="fa fa-comments-o"></i> Отзывы</a></li>
 						  <?php if($id_rights > 4){ ?>
 
-							<li onclick="show_rating_menu()" id="rating_menu"><a><i class="fa fa-comments-o"></i> Отзывы</a></li>
 							<li id="office_menu" onclick="see_office()"><a><i class="fa fa-users"></i> Офис</a></li>
 							<li id="users_menu" onclick="see_users()"><a><i class="fa fa-user"></i> Пользователь</a></li>
 							<li id="group-menu" onclick="see_groups()"><a><i class="fa fa-users"></i> Группы</a></li>
