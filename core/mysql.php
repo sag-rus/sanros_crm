@@ -760,10 +760,12 @@ function write_body($connect){
 							<li onclick="show_my_chat_log()" id="my-chat-log"><a><i class="fa fa-weixin"></i> Чат</a></li>
 						</ul>
 					</li>
-			<?php if($id_rights > 4){ ?>
+			<?php if($id_rights > 0){ ?>
 					<li id="all-admin-menu"><a onclick="$('.menu-admin').toggle()">Админ</a>
 						<ul class="nav nav-pills nav-stacked second-level-menu menu-admin" style="display: none">
 							<li onclick="object()" id="price_menu"><a><i class="fa fa-home"></i> Объекты</a></li>
+						  <?php if($id_rights > 4){ ?>
+
 							<li onclick="show_rating_menu()" id="rating_menu"><a><i class="fa fa-comments-o"></i> Отзывы</a></li>
 							<li id="office_menu" onclick="see_office()"><a><i class="fa fa-users"></i> Офис</a></li>
 							<li id="users_menu" onclick="see_users()"><a><i class="fa fa-user"></i> Пользователь</a></li>
@@ -783,6 +785,7 @@ function write_body($connect){
 							<li id="news-menu1" onclick="show_news()"><a><i class="fa fa-newspaper-o"></i> Новости</a></li>
 							<li id="image_menu" onclick="save_image_to_server()"><a><i class="fa fa-cloud-upload"></i> Обновить фото</a></li>
 							<li onclick="show_admin()" id="admin_menu"><a><i class="fa fa-search"></i> Поиск</a></li>
+                          <?php } ?>
 						</ul>
 					</li>
 
