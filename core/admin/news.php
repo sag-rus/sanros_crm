@@ -1778,6 +1778,13 @@ function edit_sites_content($connect) {
                           </div>
                       </div>
                       <div class="form-group<?php if(!in_array($content['type'],['landing','settings'])) { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Фото слайдера (моб. версия)</label>
+                          <div class="col-sm-10">
+                              <div class="input-message-block" data-for="slider_photos_mobile"></div>
+                              <input type="file" name="slider_photos_mobile" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'slider_photos_mobile'))));?>">
+                          </div>
+                      </div>
+                      <div class="form-group<?php if(!in_array($content['type'],['landing','settings'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Тип слайдера</label>
                           <div class="col-sm-10">
                               <select class="form-control" name="slider_mode">
@@ -2889,6 +2896,7 @@ function set_sites_content($connect) {
               }
 
               $boundsArraySliderPhotos = [];
+              $boundsArraySliderPhotosMobile = [];
               $boundsArrayPageBg = [];
               $boundsArrayReviewsObjects = [];
               $boundsArrayAggregateTypes = [];
@@ -2896,6 +2904,7 @@ function set_sites_content($connect) {
 
               if(in_array($type,['landing','settings'])) {
                 $boundsArraySliderPhotos = files_to_bounds($connect,$entity,'slider_photos',isset($_POST['slider_photos'])?$_POST['slider_photos']:[]);
+                $boundsArraySliderPhotosMobile = files_to_bounds($connect,$entity,'slider_photos_mobile',isset($_POST['slider_photos_mobile'])?$_POST['slider_photos_mobile']:[]);
                 $boundsArrayPageBg = files_to_bounds($connect,$entity,'page_bg',isset($_POST['page_bg'])?$_POST['page_bg']:[]);
                 $boundsArrayReviewsObjects = ids_to_bounds($connect,$entity,'reviews_objects',isset($_POST['reviews_objects'])?ids_string_to_ids($_POST['reviews_objects']):[]);
               }
@@ -2912,6 +2921,7 @@ function set_sites_content($connect) {
               remove_bounds($connect,$entity,'page_bg');
               remove_bounds($connect,$entity,'photogallery');
               remove_bounds($connect,$entity,'slider_photos');
+                remove_bounds($connect,$entity,'slider_photos_mobile');
               remove_bounds($connect,$entity,'reviews_objects');
               remove_bounds($connect,$entity,'aggregate_types');
               remove_bounds($connect,$entity, 'resorts_ids');
@@ -2919,6 +2929,7 @@ function set_sites_content($connect) {
               set_bounds($connect,$boundsArrayPageBg,'page_bg');
               set_bounds($connect,$boundsArrayPhotogallery,'photogallery');
               set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
+                set_bounds($connect,$boundsArraySliderPhotosMobile,'slider_photos_mobile');
               set_bounds($connect,$boundsArrayReviewsObjects,'reviews_objects');
               set_bounds($connect,$boundsArrayAggregateTypes,'aggregate_types');
               set_bounds($connect,$boundsArrayResortsIds, 'resorts_ids');
@@ -2971,10 +2982,13 @@ function set_sites_content($connect) {
               }
 
               $boundsArraySliderPhotos = [];
+                $boundsArraySliderPhotosMobile = [];
 
               if(in_array($type,['landing','settings'])) {
                 $boundsArraySliderPhotos = files_to_bounds($connect,$entity,'slider_photos',isset($_POST['slider_photos'])?$_POST['slider_photos']:[]);
-                $boundsArrayPageBg = files_to_bounds($connect,$entity,'page_bg',isset($_POST['page_bg'])?$_POST['page_bg']:[]);
+                  $boundsArraySliderPhotosMobile = files_to_bounds($connect,$entity,'slider_photos_mobile',isset($_POST['slider_photos_mobile'])?$_POST['slider_photos_mobile']:[]);
+
+                  $boundsArrayPageBg = files_to_bounds($connect,$entity,'page_bg',isset($_POST['page_bg'])?$_POST['page_bg']:[]);
                 $boundsArrayReviewsObjects = ids_to_bounds($connect,$entity,'reviews_objects',isset($_POST['reviews_objects'])?ids_string_to_ids($_POST['reviews_objects']):[]);
               }
 
@@ -2986,7 +3000,9 @@ function set_sites_content($connect) {
               set_bounds($connect,$boundsArrayPageBg,'page_bg');
               set_bounds($connect,$boundsArrayPhotogallery,'photogallery');
               set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
-              set_bounds($connect,$boundsArrayReviewsObjects,'reviews_objects');
+                set_bounds($connect,$boundsArraySliderPhotosMobile,'slider_photos_mobile');
+
+                set_bounds($connect,$boundsArrayReviewsObjects,'reviews_objects');
               set_bounds($connect,$boundsArrayAggregateTypes,'aggregate_types');
               set_bounds($connect,$boundsArrayResortsIds, 'resorts_ids');
             }

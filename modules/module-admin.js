@@ -2122,6 +2122,13 @@ function add_new_sites_content(site_id) {
                               '<input type="file" name="slider_photos">' +
                           '</div>' +
                       '</div>' +
+					  '<div class="form-group">' +
+                          '<label class="col-sm-2 control-label">Фото слайдера (моб. версия)</label>' +
+                          '<div class="col-sm-10">' +
+                              '<div class="input-message-block" data-for="slider_photos_mobile"></div>' +
+                              '<input type="file" name="slider_photos_mobile">' +
+                          '</div>' +
+                      '</div>' +
 					   '<div class="form-group">' +
 						   '<label class="col-sm-2 control-label">Тип слайдера</label>' +
 						   '<div class="col-sm-10">' +
@@ -2346,7 +2353,7 @@ function add_new_sites_content(site_id) {
 		});
 
 
-  $('.sites-content-modal *[name="slider_photos"], .sites-content-modal *[name="photogallery"]').multUploader({
+  $('.sites-content-modal *[name="slider_photos"], .sites-content-modal *[name="slider_photos_mobile"], .sites-content-modal *[name="photogallery"]').multUploader({
     action:'mysql.php?func=multipart_upload',
     fragmentSize:1024*1024,
     contentType:['image/jpeg','image/png']
@@ -2650,6 +2657,11 @@ function set_sites_content() {
   var slider_photos = JSON.parse($slider_photos.val().trim());
   $slider_photosMsg.html("").removeClass('with-bottom-margin');
 
+	var $slider_photos_mobile = $modalBody.find('*[name="slider_photos_mobile"]');
+	var $slider_photos_mobileMsg = $slider_photos_mobile.parent().find('.input-message-block');
+	var slider_photos_mobile = JSON.parse($slider_photos_mobile.val().trim());
+	$slider_photos_mobileMsg.html("").removeClass('with-bottom-margin');
+
 	var $slider_mode = $modalBody.find('*[name="slider_mode"]');
 	var $slider_modeMsg = $slider_mode.parent().find('.input-message-block');
 	var slider_mode = $slider_mode.val().trim();
@@ -2938,6 +2950,7 @@ function set_sites_content() {
 		aggregate_types: aggregate_types,
         description: description,
 		slider_photos: slider_photos,
+		slider_photos_mobile: slider_photos_mobile,
 		direction_id: direction_id,
 		sort: sort,
 		region_id: region_id,
@@ -3402,7 +3415,7 @@ function edit_sites_content(id,copyMode) {
 				console.error( error );
 			});
 
-      $('.sites-content-modal *[name="slider_photos"], .sites-content-modal *[name="photogallery"]').multUploader({
+      $('.sites-content-modal *[name="slider_photos"], .sites-content-modal *[name="slider_photos_mobile"], .sites-content-modal *[name="photogallery"]').multUploader({
         action:'mysql.php?func=multipart_upload',
         fragmentSize:1024*1024,
         contentType:['image/jpeg','image/png']
@@ -3803,6 +3816,9 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
   var $slider_photos = $('.sites-content-modal *[name="slider_photos"]');
   var $sliderPhotosFormG = $slider_photos.closest('.form-group');
 
+	var $slider_photos_mobile = $('.sites-content-modal *[name="slider_photos_mobile"]');
+	var $sliderPhotosMobileFormG = $slider_photos_mobile.closest('.form-group');
+
 	var $slider_mode = $('.sites-content-modal *[name="slider_mode"]');
 	var $slider_modeFormG = $slider_mode.closest('.form-group');
 
@@ -4023,14 +4039,17 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 	if(type === 'landing' || type === 'settings') {
 		$sliderPhotosFormG.removeClass('hidden');
 		$slider_modeFormG.removeClass('hidden');
+		$sliderPhotosMobileFormG.removeClass('hidden');
 	}
 	else {
 		$sliderPhotosFormG.addClass('hidden');
 		$slider_modeFormG.addClass('hidden');
+		$sliderPhotosMobileFormG.addClass('hidden');
 	}
 
   if(type === 'landing' || type === 'settings' || type === 'news' || type === 'article' || type === 'info' || type === 'advice' || type === 'blog_post' || type === 'page') {
     $sliderPhotosFormG.removeClass('hidden');
+    $sliderPhotosMobileFormG.removeClass('hidden');
     $page_bgFormG.removeClass('hidden');
     $second_bgFormG.removeClass('hidden');
     $title_h2FormG.removeClass('hidden');
