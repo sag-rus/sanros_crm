@@ -672,7 +672,7 @@ function write_body($connect){
 ?>
 	<div class="wrapper">
 		<div class="main-header">
-            <?php if($id_rights > 1) { ?>
+            <?php if($id_rights > 3) { ?>
 			<span>
 				<input type="text" class="form-control input-sm number-reckoning" style="width: 150px; margin: 7px; display: inline" placeholder="Поиск по заявке" onKeyPress="if(event.keyCode == 13) select_by_number_reckoning()" />
 			</span>
@@ -716,34 +716,37 @@ function write_body($connect){
 				</div>
 
 				<ul class="nav nav-pills nav-stacked head-menu">
-                  <?php if($id_rights > 1) { ?>
+                  <?php if($id_rights > 3) { ?>
 					<li onclick="head_page()" id="reckoning-menu"><a>Заявки</a></li>
 					<li onclick="show_call_back_menu()" id="call-back-menu"><a>Заказы звонка</a></li>
                     <li id="new_klient_menu" onclick="add_klient()"><a>Клиент</a></li>
 					<li id="agency_menu" onclick="agency()"><a>Агентства</a></li>
 					<li id="touroperator_menu" onclick="touroperator()"><a>Туроператоры</a></li>
-					<li id="obj_menu" onclick="objects()"><a>Объекты</a></li>
+				  <?php } ?>
+				  <?php if($id_rights > 1) { ?>
+					<li id="obj_menu" onclick="objects(<?=$id_rights;?>)" data-id-rights="<?=$id_rights;?>"><a>Объекты</a></li>
+				  <?php } ?>
+				  <?php if($id_rights > 3) { ?>
 					<li id="reminder_menu" onclick="my_reminder()"><a>Напоминания</a></li>
                   <?php } ?>
-			<?php if($id_rights == 1 || $id_rights > 2 || $session_login == 21 || $session_login == 55){ ?>
+				  <?php if($id_rights > 3 || $session_login == 21 || $session_login == 55){ ?>
 					<li id="report_menu" onclick="show_reports()" data-id-rights="<?=$id_rights;?>"><a>Отчеты</a></li>
-                    <?php if($id_rights > 1) { ?>
-                    <li id="filter_menu" onclick="show_filter()"><a>Поиск</a></li>
-                    <?php } ?>
-			<?php }elseif($id_rights > 1) { ?>
+				  <?php } ?>
+				  <?php if($id_rights > 3) { ?>
 					<li id="filter_menu" onclick="show_filter()"><a>Поиск</a></li>
-			<?php } ?>
-			<?php if($id_rights > 3){ ?>
+				  <?php } ?>
+				  <?php if($id_rights > 4){ ?>
 					<li class="manager-menu"><a onclick="$('.menu-manager').toggle()">Менеджеры</a>
 						<ul class="nav nav-pills nav-stacked second-level-menu menu-manager" style="display: none">
 							<li onclick="see_managers()" id="plan-manager"><a><i class="fa fa-rub"></i> План</a></li>
 							<li onclick="show_chat_users()" id="chat-manager"><a><i class="fa fa-weixin"></i> Чат</a></li>
 						</ul>
 					</li>
-			<?php } ?>
-                  <?php if($id_rights > 1) { ?>
+				  <?php } ?>
+                  <?php if($id_rights > 3) { ?>
 					<li onclick="show_certificate()" id="certificate_menu"><a>Сертификаты</a></li>
                   <?php } ?>
+                  <?php if($id_rights > 3) { ?>
 					<li class="question-menu"><a onclick="$('.menu-question').toggle()">Вопросы</a>
 						<ul class="nav nav-pills nav-stacked second-level-menu menu-question" style="display: none">
 							<li onclick="show_question_client()" id="question-turist" class="question-turist"><a><i class="fa fa-circle-o"></i> Турист</a></li>
@@ -751,20 +754,23 @@ function write_body($connect){
 							<li onclick="show_question_object()" id="question-object" class="question-object"><a><i class="fa fa-circle-o"></i> Объект</a></li>
 						</ul>
 					</li>
+                  <?php } ?>
 					<li><a onclick="$('.menu-profile').toggle()">Профиль</a>
 						<ul class="nav nav-pills nav-stacked second-level-menu menu-profile" style="display: none">
-							<?php if($id_rights > 1 && $id_rights <= 3){ ?>
+							<?php if($id_rights > 3){ ?>
 							<li onclick="show_profit()" id="commission_menu"><a><i class="fa fa-rub"></i> Мой доход</a></li>
 							<?php } ?>
 							<li onclick="show_change_password()" id="my-password"><a><i class="fa fa-key"></i> Сменить пароль</a></li>
 							<li onclick="show_my_chat_log()" id="my-chat-log"><a><i class="fa fa-weixin"></i> Чат</a></li>
 						</ul>
 					</li>
-			<?php if($id_rights > 4){ ?>
+				  <?php if($id_rights > 1){ ?>
 					<li id="all-admin-menu"><a onclick="$('.menu-admin').toggle()">Админ</a>
 						<ul class="nav nav-pills nav-stacked second-level-menu menu-admin" style="display: none">
 							<li onclick="object()" id="price_menu"><a><i class="fa fa-home"></i> Объекты</a></li>
 							<li onclick="show_rating_menu()" id="rating_menu"><a><i class="fa fa-comments-o"></i> Отзывы</a></li>
+						  <?php if($id_rights > 4){ ?>
+
 							<li id="office_menu" onclick="see_office()"><a><i class="fa fa-users"></i> Офис</a></li>
 							<li id="users_menu" onclick="see_users()"><a><i class="fa fa-user"></i> Пользователь</a></li>
 							<li id="group-menu" onclick="see_groups()"><a><i class="fa fa-users"></i> Группы</a></li>
@@ -783,9 +789,11 @@ function write_body($connect){
 							<li id="news-menu1" onclick="show_news()"><a><i class="fa fa-newspaper-o"></i> Новости</a></li>
 							<li id="image_menu" onclick="save_image_to_server()"><a><i class="fa fa-cloud-upload"></i> Обновить фото</a></li>
 							<li onclick="show_admin()" id="admin_menu"><a><i class="fa fa-search"></i> Поиск</a></li>
+                          <?php } ?>
 						</ul>
 					</li>
-
+				  <?php } ?>
+				  <?php if($id_rights > 4){ ?>
 					<li class="menu-object-cabinet"><a onclick="$('.show-menu-object-cabinet').toggle()">Кабинет объекта</a>
 						<ul class="nav nav-pills nav-stacked second-level-menu show-menu-object-cabinet" style="display: none">
 							<li onclick="show_cabinet_object()" id="account-object"><a><i class="fa fa-flag-o"></i> Аккаунты</a></li>
@@ -795,11 +803,9 @@ function write_body($connect){
 							<li onclick="select_object_profkurort()" id="profkurort-menu"><a><i class="fa fa-product-hunt"></i> Профкурорт</a></li>
 						</ul>
 					</li>
-                <?php } ?>
-
-                    <?php if($id_rights > 4 || $session_login == 62) { ?>
-
-                      <li><a onclick="$('.show-menu-sites').toggle()">Сайты</a>
+                  <?php } ?>
+                  <?php if($id_rights > 2 || $session_login == 62) { ?>
+                    <li><a onclick="$('.show-menu-sites').toggle()">Сайты</a>
                         <ul class="nav nav-pills nav-stacked second-level-menu show-menu-sites" style="display: none">
                             <li onclick="show_sites_list()" id="sites-list"><a><i class="fa fa-list"></i> Список</a></li>
                         </ul>

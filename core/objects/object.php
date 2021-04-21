@@ -85,8 +85,10 @@ function objects_menu(){
 	<ul class="nav nav-tabs nav-justified menu-object">
 		<li class="li-object" onclick="search_object()"><a><i class="fa fa-home"></i> Объекты</a></li>
 		<li class="li-no-price" onclick="find_object_no_price()"><a><i class="fa fa-warning"></i> Нет цен</a></li>
+	<?php if($id_rights > 3){ ?>
 		<li class="li-reservation" onclick="search_object_reservation()"><a><i class="fa fa-calendar"></i> Блоки мест</a></li>
 		<li class="li-search-reservation" onclick="show_form_search_engine_reservation()"><a><i class="fa fa-search-plus"></i> Поиск</a></li>
+	<?php } ?>
 		<li class="li-promo" onclick="menu_all_promotions()"><a><i class="fa fa-star"></i> Акции</a></li>
 		<li class="li-rating" onclick="view_all_rating()"><a><i class="fa fa-comments-o"></i> Отзывы</a></li>
 	<?php if($id_rights > 3){ ?>

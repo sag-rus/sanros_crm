@@ -204,6 +204,20 @@ function save_old_html_for_back(){
 	scroll_val = getBodyScrollTop();
 }
 
+function load_first_menu_content(){
+	var selectors = [".head-menu li", ".head-menu li li"];
+	for (var i = 0; i < selectors.length; i++) {
+		if ($(selectors[i]).length) {
+			var el = $(selectors[i]).first();
+			if (el.prop('id').length) {
+				select_menu(el.prop('id'), 1);
+				el.click();
+				break;
+			}
+		}
+	}
+}
+
 function write_body(){
 	var str = 'func=write_body';
 	$.ajax({
@@ -213,7 +227,7 @@ function write_body(){
 		dataType: 'JSON',
 		success: function(data){
 			$('body').html(data['html']);
-			head_page();
+			load_first_menu_content();
 			check_menu_count();
 			setInterval("check_menu_count()", 240000);
 			$('.main-header .btn-setting').popover({
