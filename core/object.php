@@ -642,19 +642,19 @@ function edit_main_data_object($connect){
         <div class="form-group">
             <label class="col-sm-3 control-label">Полное название для доверенности</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id="trust_full_name" value="<?php echo $row['trust_full_name']; ?>">
+                <input type="text" class="form-control" id="trust_full_name" value="<?php echo htmlspecialchars($row['trust_full_name'], ENT_QUOTES); ?>">
             </div>
         </div>
         <div class="form-group">
             <label class="col-sm-3 control-label">Шаблон названия доверенности</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id="trust_name_template" value="<?php echo $row['trust_name_template']; ?>">
+                <input type="text" class="form-control" id="trust_name_template" value="<?php echo htmlspecialchars($row['trust_name_template'], ENT_QUOTES); ?>">
             </div>
         </div>
         <div class="form-group">
             <label class="col-sm-3 control-label">Ед. измерения для доверенности</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id="trust_number" value="<?php echo $row['trust_number']; ?>">
+                <input type="text" class="form-control" id="trust_number" value="<?php echo htmlspecialchars($row['trust_number'], ENT_QUOTES); ?>">
             </div>
         </div>
         <div class="form-group">
