@@ -121,7 +121,7 @@ function review_dover($connect, $type, $id, $turist, $type_PDF = "PDF"){
 	Паспорт: <?php echo $passport; ?><br />
 	Кем выдан: <?php echo $output; ?><br />
 	Дата выдачи: <?php echo $date_pass." г."; ?><br />
-	На получение от <?php echo full_name($id_obj); ?><br />
+	На получение от <?php echo full_name($connect, $id_obj); ?><br />
 	товарно-материальных ценностей по
 		<?php
 			if($id_obj != 31)
@@ -279,7 +279,7 @@ function naimenovanie($connect, $id_obj, $room = "", $date_z = "", $date_v = "",
     $trust_name_template = $connect->getOne("SELECT trust_name_template FROM object WHERE id=?i", $id_obj);
 
     if($trust_name_template) {
-        return str_replace(['{room}', '{date_z}', '{date_v}'], [$room, $date_z, $date_v], $trust_name_template);
+        return str_replace(['{room}', '{date_z}', '{date_v}', '{days}'], [$room, $date_z, $date_v, $days], $trust_name_template);
     }
 
     return $html;
