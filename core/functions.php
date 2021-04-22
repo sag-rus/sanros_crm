@@ -1803,7 +1803,7 @@ function save_to_PDF($connect, $id, $doc){
 	if($doc == "dover"){
 		include_once($directory."/core/document/dover.php");
 		$object = $connect->getOne("SELECT id_obj FROM reckoning WHERE id=?i", $id);
-		if(naimenovanie($object))
+		if(naimenovanie($connect, $object))
 			$file = review_dover($connect, "PDF", $id, "", "email");
 	}
 	return $file;

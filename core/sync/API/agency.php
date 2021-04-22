@@ -560,7 +560,7 @@ function get_document_dover_agency($connect, $data) {
 
 		$array['position_reck'] = $connect->getRow("SELECT id_room, days, number FROM position_reck WHERE schet=?i", $data['id']);
 		$array['room'] = get_room($connect, $array['position_reck']["id_room"]);
-		$array['putevka'] = naimenovanie($id_obj, $array['room'], $date_z, $date_v, $array['position_reck']['days']);
+		$array['putevka'] = naimenovanie($connect, $id_obj, $array['room'], $date_z, $date_v, $array['position_reck']['days']);
 
 		$array['check_service'] = $connect->getOne("SELECT id_service FROM position_reck WHERE schet=?i AND id_room=0", $id);
 
@@ -568,7 +568,7 @@ function get_document_dover_agency($connect, $data) {
 			$array['service'] = $connect->getOne("SELECT name FROM service_schet WHERE id=?i", $array['check_service']);
 		}
 
-		$array['number_id_obj'] = number($id_obj);
+		$array['number_id_obj'] = number($connect, $id_obj);
 
 		$date_dei = date_sum($date_z, $days + 1);
 		$array['date_dei'] = date("d.m.Y", $date_dei);

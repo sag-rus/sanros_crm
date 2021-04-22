@@ -49,7 +49,7 @@ function review_dover($connect, $type, $id, $turist, $type_PDF = "PDF"){
       $number_turist.= " (".$prop[$number_turist].")";
       $index++;
       $room = get_room($connect, $row["id_room"]);
-      $putevka = naimenovanie($id_obj, $room, $date_z, $date_v, $days);
+      $putevka = naimenovanie($connect, $id_obj, $room, $date_z, $date_v, $days);
 
       if($id == 53740) {
         $putevka .="<br />".$note_bid;
@@ -61,7 +61,7 @@ function review_dover($connect, $type, $id, $turist, $type_PDF = "PDF"){
       $table.= "<tr>";
       $table.= "<td width='50' align='center'>".$index."</td>";
       $table.= "<td width='380'>".$putevka."</td>";
-      $table.= "<td width='100' align='center'>".number($id_obj)."</td>";
+      $table.= "<td width='100' align='center'>".number($connect, $id_obj)."</td>";
       $table.= "<td width='130' align='center'>".$number_turist."</td>";
       $table.= "</tr>";
     }
@@ -74,7 +74,7 @@ function review_dover($connect, $type, $id, $turist, $type_PDF = "PDF"){
 			$table.= "<tr>";
 			$table.= "<td width='50' align='center'>".$index."</td>";
 			$table.= "<td width='380'>".$service."</td>";
-			$table.= "<td width='100' align='center'>".number($id_obj)."</td>";
+			$table.= "<td width='100' align='center'>".number($connect, $id_obj)."</td>";
 			$table.= "<td width='130' align='center'>".$number_turist."</td>";
 			$table.= "</tr>";
 		}
@@ -85,7 +85,7 @@ function review_dover($connect, $type, $id, $turist, $type_PDF = "PDF"){
 	$date_out = date("d.m.Y", $date_out);
 	ob_start();
 
-	if(naimenovanie($id_obj)){
+	if(naimenovanie($connect, $id_obj)){
 ?>
 	<div class="border">
 	<p align="right">Типовая межотраслевая форма № М-2а<br />
@@ -220,11 +220,12 @@ th{
 	}
 }
 
-function naimenovanie($id_obj, $room = "", $date_z = "", $date_v = "", $days = ""){
+function naimenovanie($connect, $id_obj, $room = "", $date_z = "", $date_v = "", $days = ""){
 	$date_z = str_replace("-", ".", $date_z);
 	$date_v = str_replace("-", ".", $date_v);
 	$html = "";
-	if($id_obj == 3) //Бакирово
+
+	/*if($id_obj == 3) //Бакирово
 		$html = "Санаторий \"Бакирово\" ".$room." ".$date_z."-".$date_v;
 	elseif($id_obj == 6) //варзи-ятчи
 		$html = "Санаторий \"Варзи-Ятчи\"";
@@ -273,13 +274,20 @@ function naimenovanie($id_obj, $room = "", $date_z = "", $date_v = "", $days = "
     elseif ($id_obj == 20)
       $html = "Путевка";
     elseif ($id_obj == 35)
-      $html = "Путевка в санаторий \"Лучезарный\"";
-	return $html;
+      $html = "Путевка в санаторий \"Лучезарный\"";*/
+
+    $trust_name_template = $connect->getOne("SELECT trust_name_template FROM object WHERE id=?i", $id_obj);
+
+    if($trust_name_template) {
+        return str_replace(['{room}', '{date_z}', '{date_v}'], [$room, $date_z, $date_v], $trust_name_template);
+    }
+
+    return $html;
 }
 
-function full_name($id_obj){
+function full_name($connect, $id_obj){
 	$html = "";
-	if($id_obj == 3) //Бакирово
+	/*if($id_obj == 3) //Бакирово
 		$html = "ЛПЧУП санаторий \"Бакирово\"";
 	elseif($id_obj == 6) //варзи-ятчи
 		$html = "ООО \"Санаторий Варзи-Ятчи\"";
@@ -328,15 +336,29 @@ function full_name($id_obj){
 	elseif($id_obj == 673)
 		$html = "Санаторий «Сибирь» (Россия, Алтайский край, Белокуриха)";
     elseif($id_obj == 545)
-        $html = "Санаторий-профилакторий «Бодрость»";
+        $html = "Санаторий-профилакторий «Бодрость»";*/
+
+    $trust_full_name = $connect->getOne("SELECT trust_full_name FROM object WHERE id=?i", $id_obj);
+
+    if($trust_full_name) {
+        return $trust_full_name;
+    }
+
 	return $html;
 }
 
-function number($id_obj){
-	if($id_obj == 34 OR $id_obj == 57 OR $id_obj == 54 OR $id_obj == 59 OR $id_obj == 3 OR $id_obj == 31 OR $id_obj == 15 OR $id_obj == 28 OR $id_obj == 670 OR $id_obj == 22 OR $id_obj == 492 OR $id_obj == 495 OR $id_obj == 673 OR $id_obj == 35)
-		return "шт";
-	else
-		return "";
+function number($connect, $id_obj){
+	/*if($id_obj == 34 OR $id_obj == 57 OR $id_obj == 54 OR $id_obj == 59 OR $id_obj == 3 OR $id_obj == 31 OR $id_obj == 15 OR $id_obj == 28 OR $id_obj == 670 OR $id_obj == 22 OR $id_obj == 492 OR $id_obj == 495 OR $id_obj == 673 OR $id_obj == 35)
+		return "шт";*/
+
+    $trust_number = $connect->getOne("SELECT trust_number FROM object WHERE id=?i", $id_obj);
+
+    if($trust_number) {
+        return $trust_number;
+    }
+
+
+    return "";
 }
 
 ?>
