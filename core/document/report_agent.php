@@ -124,6 +124,7 @@ function report_agent($connect, $all_id){
 		<td width="325">ИНН/КПП:<br /><?php echo $INN_agency."/".$KPP_agency; ?></td>
 	</tr>
 	<tr>
+        <td></td>
 		<td width="325" valign="top">Адрес:<br /><?php echo $leg_address_agency; ?></td>
 	</tr>
 	<tr>
