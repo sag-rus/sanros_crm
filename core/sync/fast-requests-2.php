@@ -61,13 +61,16 @@ $onlinePaymentInfoSber = array(
     "link" => $conf->BANK_PAYMENT_LINK_SBERBANK,
     "link_test" => $conf->BANK_PAYMENT_LINK_SBERBANK_TEST,
     "link_v2" => $conf->BANK_PAYMENT_LINK_SBERBANK_V2,
+    "link_v3" => $conf->BANK_PAYMENT_LINK_SBERBANK_V3,
     "commission" => $conf->BANK_COM_SBERBANK,
     "userName" => $conf->USERNAME_SBERBANK,
     "userName_test" => $conf->USERNAME_SBERBANK_TEST,
-    "userName_v2" => $conf->USERNAME_SBERBANK_TEST,
+    "userName_v2" => $conf->USERNAME_SBERBANK_V2,
+    "userName_v3" => $conf->USERNAME_SBERBANK_V3,
     "password" => $conf->PASSWORD_SBERBANK,
     "password_test" => $conf->PASSWORD_SBERBANK_TEST,
-    "password_v2" => $conf->PASSWORD_SBERBANK_V2
+    "password_v2" => $conf->PASSWORD_SBERBANK_V2,
+    "password_v3" => $conf->PASSWORD_SBERBANK_V3
 );
 
 $clientCabinet = array(
