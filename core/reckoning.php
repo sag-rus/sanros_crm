@@ -334,7 +334,7 @@ function save_schet($connect){
 
 function edit_schet($connect){
 	$id = $_POST["id"];
-	$data = $connect->getRow("SELECT type, date, number_turist, id_obj, agency, id_com, id_dis, note, status_san, date_schet_san, schet_san, state_program, exclude_bank_commission, children_rest FROM reckoning WHERE id=?i", $id);
+	$data = $connect->getRow("SELECT type, date, number_turist, id_obj, agency, id_com, id_dis, note, status_san, date_schet_san, schet_san, state_program, exclude_bank_commission, children_rest, is_test FROM reckoning WHERE id=?i", $id);
 	$arr = array();
 	ob_start();
 ?>
@@ -415,6 +415,12 @@ function edit_schet($connect){
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="col-sm-4 control-label">Тестовая заявк</label>
+                        <div class="col-sm-8">
+                            <input type="checkbox" class="form-control" id="is_test"<?php if($data['is_test']) { ?> checked<?php } ?>>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="col-sm-4 control-label">Дата счета санатория</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control datepicker" id="date_schet_san" value="<?php echo $data['date_schet_san']; ?>">
@@ -455,6 +461,7 @@ function update_schet($connect){
       $id_com = $_POST["id_com"];
       $state_program = isset($_POST['state_program']) ? (int)$_POST['state_program'] : 0;
       $children_rest = isset($_POST['children_rest']) ? (int)$_POST['children_rest'] : 0;
+      $is_test = isset($_POST['is_test']) ? (int)$_POST['is_test'] : 0;
       $exclude_bank_commission = isset($_POST['exclude_bank_commission']) ? $_POST['exclude_bank_commission'] : 0;
 
       $number_turist = $_POST["number_turist"];
@@ -483,7 +490,8 @@ function update_schet($connect){
           $children_rest = 0;
       }
 
-      $row = $connect->getRow("SELECT turist, agency, status, status_san, number_turist, id_obj, id_com, id_dis, date_schet_san, schet_san, state_program, children_rest, exclude_bank_commission FROM reckoning WHERE id=?i", $id);
+      $row = $connect->getRow("SELECT turist, agency, status, status_san, number_turist, id_obj, id_com, id_dis, date_schet_san, schet_san, state_program, children_rest, exclude_bank_commission, is_test FROM reckoning WHERE id=?i", $id);
+
       if($row["number_turist"] != $number_turist)
         $note.= " Отдыхающих (старое - ".$row["number_turist"].");";
       if(($row["id_com"] != $id_com) AND ($id_com)){
@@ -501,6 +509,9 @@ function update_schet($connect){
             $note .= $children_rest ? ' Включен детский отдых' : ' Отключен детский отдых';
         }
 
+        if($row['is_test'] != $is_test) {
+            $note .= $is_test ? ' Включен тестовый режим' : ' Отключен тестовый режим';
+        }
 
         if($row['exclude_bank_commission'] != $exclude_bank_commission) {
           $note .= $exclude_bank_commission ? ' Убрана комиссия банка при оплате' : ' Включена комиссия банка при оплате';
@@ -516,7 +527,7 @@ function update_schet($connect){
         $note = "Изменен объект. Старый - ".get_object($connect, $obj).";";
         changes_reckoning_cabinet($connect, $id, "object");
         save_schet_to_history($connect, $id, $note);
-        $connect->query("UPDATE reckoning SET id_obj=?i, id_tour=?s, state_program = ?i, exclude_bank_commission = ?i, children_rest = ?i  WHERE id=?i", $id_obj, $id_tour, $state_program, $exclude_bank_commission, $children_rest, $id);
+        $connect->query("UPDATE reckoning SET id_obj=?i, id_tour=?s, state_program = ?i, exclude_bank_commission = ?i, children_rest = ?i, is_test = ?i  WHERE id=?i", $id_obj, $id_tour, $state_program, $exclude_bank_commission, $children_rest, $is_test, $id);
         $connect->query("DELETE FROM position_reck WHERE schet=?i", $id);
         if($connect->getOne("SELECT klient.login FROM reckoning, klient WHERE reckoning.id=?i AND reckoning.turist=klient.id", $id))
           send_mail_client_changes($connect, $id);
@@ -542,7 +553,7 @@ function update_schet($connect){
         $connect->query("UPDATE reckoning SET id_dis=?s WHERE id=?i", $id_dis, $id);
         save_schet_to_history($connect, $id, "Изменена скидка. Старый - ".$discount);
       }
-      $connect->query("UPDATE reckoning SET number_turist=?i, note=?s, schet_san=?s, date_schet_san=?s, state_program = ?i, exclude_bank_commission = ?i, children_rest = ?i WHERE id=?i", $number_turist, $note_schet, $schet_san, $date_schet_san, $state_program, $exclude_bank_commission, $children_rest, $id);
+      $connect->query("UPDATE reckoning SET number_turist=?i, note=?s, schet_san=?s, date_schet_san=?s, state_program = ?i, exclude_bank_commission = ?i, children_rest = ?i, is_test = ?i WHERE id=?i", $number_turist, $note_schet, $schet_san, $date_schet_san, $state_program, $exclude_bank_commission, $children_rest, $is_test, $id);
       recalculation_sum($connect, $id);
     }
     else {
