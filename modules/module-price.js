@@ -1026,6 +1026,7 @@ function update_main_data_object(id){
 		"uri_schema": $("#uri_schema").val(),
 		"url_name": $('#url_name').val(),
 		'state_program': $('#state-program').prop('checked') ? 1 : 0,
+		'children_rest': $('#children-rest').prop('checked') ? 1 : 0,
 		'featured': $('#featured').prop('checked') ? 1 : 0,
 		"description": q
 	};
