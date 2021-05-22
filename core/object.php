@@ -1784,6 +1784,14 @@ function update_rate_plan($connect){
 	$min_days = (int)$_POST["min_days"];
     $max_days = (int)$_POST["max_days"];
 
+    if($min_days < 0) {
+        $min_days = 0;
+    }
+
+    if($max_days < 0) {
+        $max_days = 0;
+    }
+
     if($max_days < $min_days) {
         $max_days = $min_days;
     }
