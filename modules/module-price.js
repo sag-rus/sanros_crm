@@ -1551,9 +1551,9 @@ function select_object_rate_plan(){
 			for(var index in data){
 				var rate_plan = data[index];
 				if(rate_plan['status'] == 1)
-					html+= '<div class="form-group"><div class="rate-plan-item clearfix"><div class="rate-plan-item-container clearfix"><div class="col-sm-3">' +rate_plan['name']+ '</div><div class="col-sm-4">' +rate_plan['description']+ '</div><div class="col-sm-3">' +rate_plan['food']+ '</div><div class="col-sm-2"><button type="button" class="btn btn-default btn-xs" onclick="edit_rate_plan(' +rate_plan['id']+ ')"><i class="fa fa-pencil"></i> изменить</button></div></div></div></div>';
+					html+= '<div class="form-group"><div class="rate-plan-item clearfix"><div class="rate-plan-item-container clearfix"><div class="col-sm-3">' +rate_plan['name']+ '</div><div class="col-sm-4">' +rate_plan['description']+ '</div><div class="col-sm-3">' + (rate_plan['food'] ? rate_plan['food'] : '') + '</div><div class="col-sm-2"><button type="button" class="btn btn-default btn-xs" onclick="edit_rate_plan(' +rate_plan['id']+ ')"><i class="fa fa-pencil"></i> изменить</button></div></div></div></div>';
 				else
-					html+= '<div class="form-group"><div class="rate-plan-item in-archieve-element clearfix"><div class="rate-plan-item-container clearfix"><div class="col-sm-3">' +rate_plan['name']+ '</div><div class="col-sm-4">' +rate_plan['description']+ '</div><div class="col-sm-3">' +rate_plan['food']+ '</div><div class="col-sm-2"><button type="button" class="btn btn-default btn-xs" onclick="edit_rate_plan(' +rate_plan['id']+ ')"><i class="fa fa-pencil"></i> изменить</button></div></div></div></div>';
+					html+= '<div class="form-group"><div class="rate-plan-item in-archieve-element clearfix"><div class="rate-plan-item-container clearfix"><div class="col-sm-3">' +rate_plan['name']+ '</div><div class="col-sm-4">' +rate_plan['description']+ '</div><div class="col-sm-3">' + (rate_plan['food'] ? rate_plan['food'] : '') + '</div><div class="col-sm-2"><button type="button" class="btn btn-default btn-xs" onclick="edit_rate_plan(' +rate_plan['id']+ ')"><i class="fa fa-pencil"></i> изменить</button></div></div></div></div>';
 			}
 			html+= '</div><div class="panel-footer text-right"><button type="button" class="btn btn-primary btn-sm" onclick="add_new_rate_place(' +object+ ')"><i class="fa fa-plus-circle"></i> Новый тариф</button></div></div>';
 			$('.object-infa').html(html);
@@ -1592,8 +1592,12 @@ function edit_rate_plan(id){
 		data: str,
 		dataType: 'JSON',
 		success: function(data){
-			if(!data['days'])
-				data['days'] = '';
+			if(!data['min_days'])
+				data['min_days'] = '';
+
+			if(!data['max_days'])
+				data['max_days'] = '';
+
 			var html = '<div class="modal fade">' +
 											'<div class="modal-dialog">' +
 												'<div class="modal-content">' +
@@ -1615,9 +1619,15 @@ function edit_rate_plan(id){
 															'</div>' +
 														'</div>' +
 														'<div class="form-group">' +
-																'<label class="col-sm-4 control-label">Мин кол-во дней</label>' +
+																'<label class="col-sm-4 control-label">Мин. кол-во дней</label>' +
 																'<div class="col-sm-8">' +
-																	'<input type="text" class="form-control days-rate-plan" value="' +data['days']+ '" />' +
+																	'<input type="number" min="0" class="form-control min-days-rate-plan" value="' +data['min_days']+ '" />' +
+																'</div>' +
+														'</div>' +
+														'<div class="form-group">' +
+																'<label class="col-sm-4 control-label">Макс. кол-во дней</label>' +
+																'<div class="col-sm-8">' +
+																	'<input type="number" min="0" class="form-control max-days-rate-plan" value="' +data['max_days']+ '" />' +
 																'</div>' +
 														'</div>' +
 														'<div class="form-group">' +
