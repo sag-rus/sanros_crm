@@ -1783,6 +1783,19 @@ function update_rate_plan($connect){
 	$food = $_POST["food"];
 	$min_days = (int)$_POST["min_days"];
     $max_days = (int)$_POST["max_days"];
+
+    if($max_days < $min_days) {
+        $max_days = $min_days;
+    }
+
+    if(!$min_days) {
+        $min_days = null;
+    }
+
+    if(!$max_days) {
+        $max_days = null;
+    }
+
 	$status = (int)$_POST['status'];
 	if($status !== 0 && $status !== 1)
 	    $status = 1;
