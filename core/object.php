@@ -1772,7 +1772,7 @@ function save_new_rate_plan($connect){
 
 function edit_rate_plan($connect){
 	$id = $_POST["id"];
-	$row = $connect->getRow("SELECT name, description, food, min_days, max_days, status FROM rate_plan WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT name, description, food, start_date, end_date, min_days, max_days, status FROM rate_plan WHERE id=?i", $id);
 	return json_encode($row);
 }
 
@@ -1783,6 +1783,25 @@ function update_rate_plan($connect){
 	$food = $_POST["food"];
 	$min_days = (int)$_POST["min_days"];
     $max_days = (int)$_POST["max_days"];
+    $start_date = strtotime($_POST["start_date"]);
+    $end_date = strtotime($_POST["end_date"]);
+
+    if($end_date < $start_date) {
+        $end_date = null;
+    }
+    elseif($end_date > 0) {
+        $end_date = date('Y-m-d', $end_date);
+    }
+    else {
+        $end_date = null;
+    }
+
+    if($start_date > 0) {
+        $start_date = date('Y-m-d', $start_date);
+    }
+    else {
+        $start_date = null;
+    }
 
     if($min_days < 0) {
         $min_days = 0;
@@ -1792,8 +1811,8 @@ function update_rate_plan($connect){
         $max_days = 0;
     }
 
-    if($max_days < $min_days) {
-        $max_days = $min_days;
+    if($max_days && $max_days < $min_days) {
+        $max_days = null;
     }
 
     if(!$min_days) {
@@ -1808,7 +1827,7 @@ function update_rate_plan($connect){
 	if($status !== 0 && $status !== 1)
 	    $status = 1;
 
-	$connect->query("UPDATE rate_plan SET name=?s, description=?s, food=?s, min_days=?s, max_days=?s, status = ?i, synchronized = 0 WHERE id=?i", $name, $desc, $food, $min_days, $max_days, $status, $id);
+	$connect->query("UPDATE rate_plan SET name=?s, description=?s, food=?s, min_days=?s, max_days=?s, start_date=?s, end_date=?s, status = ?i, synchronized = 0 WHERE id=?i", $name, $desc, $food, $min_days, $max_days, $start_date, $end_date, $status, $id);
 }
 
 ?>

@@ -1598,6 +1598,12 @@ function edit_rate_plan(id){
 			if(!data['max_days'])
 				data['max_days'] = '';
 
+			if(!data['start_date'])
+				data['start_date'] = '';
+
+			if(!data['end_date'])
+				data['end_date'] = '';
+
 			var html = '<div class="modal fade">' +
 											'<div class="modal-dialog">' +
 												'<div class="modal-content">' +
@@ -1618,6 +1624,18 @@ function edit_rate_plan(id){
 																'<input type="text" class="form-control food-rate-plan" value="' +(data['food'] ? data['food'] : '')+ '" />' +
 															'</div>' +
 														'</div>' +
+														'<div class="form-group">' +
+															'<label class="col-sm-4 control-label">Дата начала</label>' +
+															'<div class="col-sm-8">' +
+																'<input type="date" class="form-control start-date-rate-plan" value="' +(data['start_date'] ? data['start_date'] : '')+ '" />' +
+															'</div>' +
+														'</div>' +		
+														'<div class="form-group">' +
+															'<label class="col-sm-4 control-label">Дата окончания</label>' +
+															'<div class="col-sm-8">' +
+																'<input type="date" class="form-control end-date-rate-plan" value="' +(data['end_date'] ? data['end_date'] : '')+ '" />' +
+															'</div>' +
+														'</div>' +					
 														'<div class="form-group">' +
 																'<label class="col-sm-4 control-label">Мин. кол-во дней</label>' +
 																'<div class="col-sm-8">' +
@@ -1660,11 +1678,13 @@ function update_rate_plan(id){
 	var food = $('.food-rate-plan').val();
 	var min_days = $('.min-days-rate-plan').val();
 	var max_days = $('.max-days-rate-plan').val();
+	var start_date = $('.start-date-rate-plan').val();
+	var end_date = $('.end-date-rate-plan').val();
 	var status = 1*$('.status-rate-plan').prop('checked');
 	if(!name)
 		show_warning('.edit-rate-plan', 'Укажите название тарифа', false);
 	else{
-		var str = 'func=update_rate_plan&id=' + id + '&name=' + name + '&desc=' + desc + '&food=' + food + '&min_days=' + min_days + '&max_days=' + max_days +'&status='+status;
+		var str = 'func=update_rate_plan&id=' + id + '&name=' + name + '&desc=' + desc + '&food=' + food + '&min_days=' + min_days + '&max_days=' + max_days +'&status='+status+'&start_date='+start_date+'&end_date='+end_date;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',

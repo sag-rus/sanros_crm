@@ -266,7 +266,7 @@ function sync_objects_api($connect){
 			}
 		}
 
-		$rates = $connect->getAll("SELECT `id`, `name`, `object`, `status`, `description`, `food`, `min_days`, `max_days` FROM `rate_plan` WHERE `synchronized` = 0");
+		$rates = $connect->getAll("SELECT `id`, `name`, `object`, `status`, `description`, `food`, `min_days`, `max_days`, `start_date`, `end_date` FROM `rate_plan` WHERE `synchronized` = 0");
 
 		foreach ($rates as $rate) {
 			$rateAr = [];
@@ -280,6 +280,8 @@ function sync_objects_api($connect){
 			$rateAr['food'] = $rate['food'];
 			$rateAr['min_days'] = (int)$rate['min_days'];
 			$rateAr['max_days'] = (int)$rate['max_days'];
+			$rateAr['start_date'] = $rate['start_date'] ? strtotime($rate['start_date']) : 0;
+			$rateAr['end_date'] = $rate['end_date'] ? strtotime($rate['end_date']) : 0;
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/rate/set/".$rate['id'],[
 				'form_params' => $rateAr
