@@ -97,6 +97,7 @@ function show_sites_list($connect) {
                   <button class="btn btn-default btn-sm" onclick="show_sites_contents_list(<?=$site['id'];?>);">Материалы</button>
                   <button class="btn btn-default btn-sm" onclick="show_sites_addresses_list(<?=$site['id'];?>);">Адреса</button>
                   <button class="btn btn-default btn-sm" onclick="show_sites_menu_items_list(<?=$site['id'];?>);">Элементы меню</button>
+                  <button class="btn btn-default btn-sm" onclick="show_sites_meta_templates_list(<?=$site['id'];?>);">Шаблоны мета-тегов</button>
                   <button class="btn btn-default btn-sm" onclick="show_sites_phones_list(<?=$site['id'];?>);">Телефоны</button>
                   <?php if($id_rights > 5)  { ?>
                       <button class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
@@ -633,6 +634,92 @@ function show_sites_phones_list($connect) {
     </div>
   <?php
   return ob_get_clean();
+}
+
+
+function show_sites_meta_templates_list($connect) {
+    global $id_rights;
+    $typesArray = [
+        1 => 'Страница',
+        2 => 'Объект',
+        3 => 'Отзывы об объекте',
+
+    ];
+    $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
+    $site = NULL;
+    if($site_id) {
+        $site = $connect->getRow("SELECT `id`, `name`, `domain` FROM `sites` WHERE `id`=?i",$site_id);
+        if($site)
+            $meta_templates = $connect->getAll("SELECT * FROM `app_models_site_page_meta_templates` WHERE `site_id`=?i ORDER BY `created` ASC", $site_id);
+        else
+            $meta_templates = [];
+    }
+    else
+        $meta_templates = $connect->getAll("SELECT * FROM `app_models_site_page_meta_templates` ORDER BY `created` ASC");
+
+    ob_start();
+    ?>
+    <div class="panel panel-default sites-meta-templates-panel">
+        <div class="panel-heading"><i class="fa fa-list"></i> Шаблоны мета-тегов<?php if($site) { ?> сайта «<?=$site['name'];?>»<?php } ?> <button class="btn btn-default btn-sm" onclick="show_sites_list();">К списку сайтов</button></div>
+        <div class="panel-body table-body">
+            <table class="table table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        Название
+                    </th>
+                    <th>
+                        Ключ
+                    </th>
+                    <th>
+                        Тип
+                    </th>
+                    <th>
+                        Текст
+                    </th>
+                    <th>
+                        Статус
+                    </th>
+                    <th>
+                        Действия
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                foreach ($meta_templates as $meta_template) {
+                    ?>
+                    <tr>
+                        <td><?=$meta_template['id'];?></td>
+                        <td><?=$meta_template['name'];?></td>
+                        <td><?=$meta_template['key'];?></td>
+                        <td><?=$meta_template['type'];?></td>
+                        <td><?=$meta_template['text'];?></td>
+                        <td><?=$meta_template['status'] == 1?"Активен":"Не активен";?></td>
+                        <td>
+                            <?php if($id_rights > 4) { ?>
+                                <button class="btn btn-default btn-sm" onclick="remove_sites_meta_template(<?=$meta_template['id'];?>);"><i class="fa fa-trash-o"></i></button>
+                                <button class="btn btn-default btn-sm" onclick="sites_meta_template(<?=$meta_template['id'];?>);"><i class="fa fa-pencil"></i></button>
+                            <?php } ?>
+                        </td>
+                    </tr>
+                    <?php
+                }
+                ?>
+                </tbody>
+            </table>
+        </div>
+        <div class="panel-footer text-right">
+            <?php if($id_rights > 4) { ?>
+                <button type="button" class="btn btn-primary btn-sm" onclick="sites_meta_template(null,<?=$site_id;?>);"><i class="fa fa-plus-circle"></i> Добавить шаблон</button>
+            <?php } ?>
+        </div>
+    </div>
+    <?php
+    return ob_get_clean();
 }
 
 function save_site($connect) {

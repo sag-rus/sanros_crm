@@ -1884,6 +1884,18 @@ function show_sites_menu_items_list(site_id) {
   });
 }
 
+function show_sites_meta_templates_list(site_id) {
+	var str = 'func=show_sites_meta_templates_list&site_id='+site_id;
+	$.ajax({
+		type: 'POST',
+		data: str,
+		url: 'mysql.php',
+		success: function(html){
+			$('#body').html(html);
+		}
+	});
+}
+
 function show_sites_phones_list(site_id) {
   var str = 'func=show_sites_phones_list&site_id='+site_id;
   $.ajax({
