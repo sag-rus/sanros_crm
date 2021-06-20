@@ -3423,7 +3423,7 @@ function save_sites_meta_template() {
 			success: function(data){
 				if(data['success']) {
 					remove_all_windows();
-					show_sites_phones_list(site_id);
+					show_sites_meta_templates_list(site_id);
 				}
 				else {
 					$modalLoader.html('');
