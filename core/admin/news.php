@@ -1240,7 +1240,7 @@ function save_sites_meta_template($connect) {
 
 
         if ($oldMetaTemplate > 0 && $status) {
-            $respAr['msg'] = 'На сайте уже есть активный шаблон для данного типа и подтипа материалов';
+            $respAr['msg'] = 'На сайте уже есть активный шаблон для данного ключа, типа и подтипа материалов';
             $respAr['msg_field'] = 'subtype';
         }
         else {
