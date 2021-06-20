@@ -1915,7 +1915,7 @@ function sites_meta_template($connect)
                                     <div>{{next_year}} - следующий год</div>
                                 </div>
                                 <div class="info std-bottom-margin">
-                                    <i class="fa fa-warning"></i> В случае пустоты значений использованных переменных на какой-либо странице шаблон будет проигнорирован!
+                                    <i class="fa fa-warning"></i> В случае пустоты значений использованных переменных шаблон будет проигнорирован для конкретной страницы!
                                 </div>
                             </div>
                         </div>
