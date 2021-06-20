@@ -3628,6 +3628,24 @@ function sites_menu_item(id,site_id,parent_id) {
   });
 }
 
+function sites_meta_template(id, site_id) {
+	if(typeof id === 'undefined')
+		id = 0;
+
+	if(typeof site_id === 'undefined')
+		site_id = 0;
+
+	var str = 'func=sites_meta_template&id='+id+"&site_id="+site_id;
+	$.ajax({
+		type: 'POST',
+		data: str,
+		url: 'mysql.php',
+		success: function(html){
+			show_modal(html);
+		}
+	});
+}
+
 function sites_phone(id,site_id) {
   if(typeof id === 'undefined')
     id = 0;

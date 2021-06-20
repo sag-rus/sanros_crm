@@ -639,13 +639,16 @@ function show_sites_phones_list($connect) {
 
 function show_sites_meta_templates_list($connect) {
     global $id_rights;
-    $typesArray = [
-        1 => 'Страница',
-        2 => 'Объект',
-        3 => 'Отзывы об объекте',
-        4 => 'Новость'
 
-    ];
+    $contentTypesRows = $connect->getAll("SELECT * FROM `app_models_site_contenttype` WHERE `status` = 1 AND `system` != 1");
+
+    $typesArray = [];
+
+
+    foreach ($contentTypesRows as $contentTypesRow) {
+        $typesArray[$contentTypesRow['machine_name']] = $contentTypesRow['name'];
+    }
+
     $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
     $site = NULL;
     if($site_id) {
@@ -1644,6 +1647,107 @@ function sites_phone($connect)
   <?php
   return ob_get_clean();
 }
+
+function sites_meta_template($connect)
+{
+
+    $contentTypesRows = $connect->getAll("SELECT * FROM `app_models_site_contenttype` WHERE `status` = 1 AND `system` != 1");
+
+    $typesArray = [];
+
+    $keys = [
+      'title' => 'Заголовок (Title)',
+      'description' => 'Мета-описание (description)',
+      'keywords' => 'Ключевые слова (keywords)',
+      'h1' => 'Заголовок H1',
+      'h2' => 'Заголовок H2'
+    ];
+
+
+    foreach ($contentTypesRows as $contentTypesRow) {
+        $typesArray[$contentTypesRow['machine_name']] = $contentTypesRow['name'];
+    }
+
+    $meta_template_id = isset($_POST['id'])?(int)$_POST['id']:0;
+    $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
+
+    if($meta_template_id)
+        $meta_template = $connect->getRow("SELECT * FROM `app_models_site_page_meta_templates` WHERE `id`=?i",$meta_template_id);
+    else
+        $meta_template = NULL;
+
+    ob_start();
+    ?>
+    <div class="modal fade sites-content-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+                    <h4 class="modal-title"><?php if($meta_template) { ?>Редактировать шаблон мета-тегов<?php } else { ?>Добавить шаблон мета-тегов<?php } ?></h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <?php if($meta_template || $site_id) { ?>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Название</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="name" maxlength="255" value="<?=$meta_template?htmlspecialchars($meta_template['name']):"";?>">
+                                <input type="hidden" value="<?=$site_id?$site_id:$meta_template['site_id'];?>" name="site_id">
+                                <input type="hidden" value="<?=$meta_template?$meta_template['id']:0;?>" name="id">
+                                <div class="input-message-block" data-for="name"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Ключ</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" name="key">
+                                    <?php foreach ($keys as $key => $label) { ?>
+                                        <option value="<?=$key;?>"<?php if($meta_template && $meta_template['key'] == $key) { ?> selected<?php } ?>><?=$label;?></option>
+                                    <?php } ?>
+                                </select>
+                                <div class="input-message-block" data-for="block"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Тип страницы</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" name="type">
+                                    <?php foreach ($typesArray as $type => $label) { ?>
+                                        <option value="<?=$type;?>"<?php if($meta_template && $meta_template['type'] == $type) { ?> selected<?php } ?>><?=$label;?></option>
+                                    <?php } ?>
+                                </select>
+                                <div class="input-message-block" data-for="type"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Текст шаблона</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="text" value="<?=$meta_template?htmlspecialchars($meta_template['text']):"";?>">
+                                <div class="input-message-block" data-for="text"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Активный</label>
+                            <div class="col-sm-10">
+                                <input type="checkbox" name="status" class="form-control"<?php if($meta_template && $meta_template['status'] == 1) {?> checked<?php } ?>>
+                            </div>
+                        </div>
+                    <?php } ?>
+                </div>
+                <div class="modal-loader"></div>
+                <div class="modal-footer">
+                    <button class="btn btn-success btn-sm btn-save-sites-phone" onclick="save_sites_meta_template()" id="btn-save-sites-meta-template"><i class="fa fa-check-circle"></i> Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+
 
 function edit_sites_content($connect) {
   $content_id = isset($_POST['id'])?(int)$_POST['id']:0;
