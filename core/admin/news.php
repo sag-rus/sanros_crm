@@ -643,6 +643,7 @@ function show_sites_meta_templates_list($connect) {
         1 => 'Страница',
         2 => 'Объект',
         3 => 'Отзывы об объекте',
+        4 => 'Новость'
 
     ];
     $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
@@ -675,7 +676,7 @@ function show_sites_meta_templates_list($connect) {
                         Ключ
                     </th>
                     <th>
-                        Тип
+                        Тип страницы
                     </th>
                     <th>
                         Текст
