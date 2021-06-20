@@ -645,6 +645,12 @@ function show_sites_meta_templates_list($connect) {
     $typesArray = [];
 
 
+    $subTypesArray = [
+        'all' => 'Любой',
+        'reviews' => 'Отзывы'
+    ];
+
+
     foreach ($contentTypesRows as $contentTypesRow) {
         $typesArray[$contentTypesRow['machine_name']] = $contentTypesRow['name'];
     }
@@ -682,6 +688,9 @@ function show_sites_meta_templates_list($connect) {
                         Тип страницы
                     </th>
                     <th>
+                        Подтип страницы
+                    </th>
+                    <th>
                         Текст
                     </th>
                     <th>
@@ -700,7 +709,8 @@ function show_sites_meta_templates_list($connect) {
                         <td><?=$meta_template['id'];?></td>
                         <td><?=$meta_template['name'];?></td>
                         <td><?=$meta_template['key'];?></td>
-                        <td><?=$meta_template['type'];?></td>
+                        <td><?=$typesArray[$meta_template['type']];?></td>
+                        <td><?=$subTypesArray[$meta_template['subtype']];?></td>
                         <td><?=$meta_template['text'];?></td>
                         <td><?=$meta_template['status'] == 1?"Активен":"Не активен";?></td>
                         <td>
@@ -1655,6 +1665,11 @@ function sites_meta_template($connect)
 
     $typesArray = [];
 
+    $subTypesArray = [
+        'all' => 'Любой',
+        'reviews' => 'Отзывы'
+    ];
+
     $keys = [
       'title' => 'Заголовок (Title)',
       'description' => 'Мета-описание (description)',
@@ -1718,6 +1733,19 @@ function sites_meta_template($connect)
                                     <?php } ?>
                                 </select>
                                 <div class="input-message-block" data-for="type"></div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Подтип страницы</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" name="subtype">
+                                    <?php foreach ($subTypesArray as $subType => $label) { ?>
+                                        <option value="<?=$subType;?>"<?php if($meta_template && $meta_template['subtype'] == $type) { ?> selected<?php } ?>><?=$label;?></option>
+                                    <?php } ?>
+                                </select>
+                                <div class="input-message-block" data-for="subtype"></div>
                             </div>
                         </div>
 
