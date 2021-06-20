@@ -3646,6 +3646,44 @@ function sync_site($connect) {
             }
           }
 
+            if($respAr['success']) {
+                $meta_templates = $connect->getAll("SELECT * FROM `app_models_site_page_meta_templates` WHERE `site_id` = ?i", $site['id']);
+
+                foreach ($meta_templates as $meta_template) {
+                    $res = $client->request('POST',"https://sites.tonia.ru/api/meta-templates/set/" . $meta_template['id'],[
+                        'form_params' => [
+                            'id' => $meta_template['id'],
+                            'name' => $meta_template['name'],
+                            'key' => $meta_template['key'],
+                            'type' => $meta_template['type'],
+                            'subtype' => $meta_template['subtype'],
+                            'value' => $meta_template['value'],
+                            'status' => $meta_template['status'],
+                            'uid' => $meta_template['uid'],
+                            'created' => $meta_template['created'],
+                            'changed' => $meta_template['changed'],
+                            'site_id' => $meta_template['site_id'],
+                            'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4'
+                        ]
+                    ]);
+
+                    $res = json_decode($res->getBody(),true);
+                    if(array_key_exists('success',$res)) {
+                        $respAr['success'] = $res['success'];
+                        $respAr['msg'] = $res['msg'];
+                        if(!$respAr['success']) {
+                            break;
+                        }
+                    }
+                    else {
+                        $respAr['success'] = 0;
+                        $respAr['msg'] = "Что-то пошло не так...";
+                        break;
+                    }
+                }
+            }
+
+
         }
 
         if(!sync_files($connect)) {
