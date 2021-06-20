@@ -1894,8 +1894,23 @@ function sites_meta_template($connect)
                             <label class="col-sm-2 control-label">Текст шаблона</label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control std-bottom-margin" name="value" value="<?=$meta_template?htmlspecialchars($meta_template['value']):"";?>">
-                                <div class="info"><b>Доступны переменные</b>: {{resort.name}}, {{resort.full_name}}, {{resort.description}}, {{resort.type}}, {{resort.name_with_type}}, {{resort.city.name}}, {{resort.region.name}}, {{resort.direction.name}}, {{resort.city.name_genitive}}, {{resort.region.name_genitive}}, {{resort.direction.name_genitive}}</div>
                                 <div class="input-message-block" data-for="value"></div>
+                                <div class="info std-bottom-margin"><b>Доступные переменные</b>:
+                                    <div>{{resort.name}} - название объекта</div>
+                                    <div>{{resort.full_name}} - полное название объекта</div>
+                                    <div>{{resort.description}} - описание объекта</div>
+                                    <div>{{resort.type}} - тип объекта</div>
+                                    <div>{{resort.name_with_type}} - тип название объекта</div>
+                                    <div>{{resort.city.name}} - город объекта</div>
+                                    <div>{{resort.region.name}} - регион объекта</div>
+                                    <div>{{resort.direction.name}} - направление объекта</div>
+                                    <div>{{resort.city.name_genitive}} - название города в родительном падеже</div>
+                                    <div>{{resort.region.name_genitive}} - название региона в родительном падеже</div>
+                                    <div>{{resort.direction.name_genitive}} - название направления в родительном падеже</div>
+                                </div>
+                                <div class="info">
+                                    <i class="fa fa-warning"></i> В случае отсутствия одного из значений на странице, шаблон игнорируется!
+                                </div>
                             </div>
                         </div>
 
