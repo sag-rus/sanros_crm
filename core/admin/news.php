@@ -1890,7 +1890,8 @@ function sites_meta_template($connect)
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Текст шаблона</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="value" value="<?=$meta_template?htmlspecialchars($meta_template['value']):"";?>">
+                                <input type="text" class="form-control std-bottom-margin" name="value" value="<?=$meta_template?htmlspecialchars($meta_template['value']):"";?>">
+                                <div class="info"><b>Доступны переменные</b>: {{resort.name}}, {{resort.full_name}}, {{resort.description}}, {{resort.type}}, {{resort.name_with_type}}, {{resort.city.name}}, {{resort.region.name}}, {{resort.direction.name}}, {{resort.city.name_genitive}}, {{resort.region.name_genitive}}, {{resort.direction.name_genitive}}</div>
                                 <div class="input-message-block" data-for="value"></div>
                             </div>
                         </div>
