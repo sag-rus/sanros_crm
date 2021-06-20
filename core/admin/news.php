@@ -1244,7 +1244,7 @@ function save_sites_meta_templates($connect) {
         else {
             $timestamp = gmdate("U");
             if($meta_template)
-                $connect->query("UPDATE `app_models_site_page_meta_templates` SET `changed`=?i, `name`=?s, `key`=?s, `type` = ?s, `subtype` =?s, `value` = ?s, `status` =?i WHERE `id` =?i",$timestamp, $name, $key, $type, $subtype, $value, $status, $meta_template['id']);
+                $connect->query("UPDATE `app_models_site_page_meta_templates` SET `changed`=?i, `name`=?s, `key`=?s, `type` = ?s, `subtype` =?s, `value` = ?s, `status` =?i, `synchronized` = 0 WHERE `id` =?i",$timestamp, $name, $key, $type, $subtype, $value, $status, $meta_template['id']);
             else
                 $connect->query("INSERT INTO `app_models_site_page_meta_templates` (`created`, `changed`, `status`, `uid`, `name`, `key`, `type`, `subtype`, `value`, `site_id`) VALUES (?i, ?i, ?i, ?i, ?s, ?s, ?s, ?s, ?s, ?i)",$timestamp, $timestamp, $status, 1, $name, $key, $type, $subtype, $value, $site['id']);
 
@@ -1853,7 +1853,7 @@ function sites_meta_template($connect)
                 </div>
                 <div class="modal-loader"></div>
                 <div class="modal-footer">
-                    <button class="btn btn-success btn-sm btn-save-sites-phone" onclick="save_sites_meta_template()" id="btn-save-sites-meta-template"><i class="fa fa-check-circle"></i> Сохранить</button>
+                    <button class="btn btn-success btn-sm btn-save-sites-meta-template" onclick="save_sites_meta_template()" id="btn-save-sites-meta-template"><i class="fa fa-check-circle"></i> Сохранить</button>
                 </div>
             </div>
         </div>
