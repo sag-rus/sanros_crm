@@ -650,6 +650,14 @@ function show_sites_meta_templates_list($connect) {
         'reviews' => 'Отзывы'
     ];
 
+    $keys = [
+        'title' => 'Заголовок (Title)',
+        'description' => 'Мета-описание (description)',
+        'keywords' => 'Ключевые слова (keywords)',
+        'h1' => 'Заголовок H1',
+        'h2' => 'Заголовок H2'
+    ];
+
 
     foreach ($contentTypesRows as $contentTypesRow) {
         $typesArray[$contentTypesRow['machine_name']] = $contentTypesRow['name'];
@@ -708,7 +716,7 @@ function show_sites_meta_templates_list($connect) {
                     <tr>
                         <td><?=$meta_template['id'];?></td>
                         <td><?=$meta_template['name'];?></td>
-                        <td><?=$meta_template['key'];?></td>
+                        <td><?=$keys[$meta_template['key']];?></td>
                         <td><?=$typesArray[$meta_template['type']];?></td>
                         <td><?=$subTypesArray[$meta_template['subtype']];?></td>
                         <td><?=$meta_template['text'];?></td>
@@ -1167,6 +1175,84 @@ function save_sites_phone($connect) {
   }
 
   return json_encode($respAr);
+}
+
+function save_sites_meta_templates($connect) {
+    $contentTypesRows = $connect->getAll("SELECT * FROM `app_models_site_contenttype` WHERE `status` = 1 AND `system` != 1");
+
+    $typesArray = [];
+
+
+    $subTypesArray = [
+        'all' => 'Любой',
+        'reviews' => 'Отзывы'
+    ];
+
+    $keys = [
+        'title' => 'Заголовок (Title)',
+        'description' => 'Мета-описание (description)',
+        'keywords' => 'Ключевые слова (keywords)',
+        'h1' => 'Заголовок H1',
+        'h2' => 'Заголовок H2'
+    ];
+
+    foreach ($contentTypesRows as $contentTypesRow) {
+        $typesArray[$contentTypesRow['machine_name']] = $contentTypesRow['name'];
+    }
+
+
+    $respAr = [
+        'success' => 0,
+        'title' => '',
+        'msg' => ''
+    ];
+
+    $id = isset($_POST['id'])?(int)$_POST['id']:0;
+    $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
+    $name = isset($_POST['name'])?trim($_POST['name']):"";
+    $key = isset($_POST['key'])?$_POST['key']:"";
+    $type = isset($_POST['type'])?$_POST['type']:"";
+    $subtype = isset($_POST['subtype'])?$_POST['subtype']:"";
+    $value = isset($_POST['value'])?$_POST['value']:"";
+    $status = isset($_POST['status'])?(int)$_POST['status']:0;
+
+    if($id)
+        $meta_template = $connect->getRow("SELECT `id` FROM `app_models_site_page_meta_templates` WHERE `id` =?i",$id);
+    else
+        $meta_template = NULL;
+
+    if($site_id)
+        $site = $connect->getRow("SELECT `id` FROM `sites` WHERE `id`=?i",$site_id);
+    else
+        $site = NULL;
+
+
+    if((!$id || $meta_template) && $site && in_array($status,[0,1]) && array_key_exists($key, $keys) && array_key_exists($type,$typesArray) && array_key_exists($subtype, $subTypesArray) && mb_strlen($value) > 0) {
+
+        if ($meta_template) {
+            $oldMetaTemplate = $connect->getOne("SELECT COUNT(*) FROM `app_models_site_page_meta_templates` WHERE `status`= '1' AND `id` <> ?i AND `site_id` = ?i AND `type` = ?s AND `subtype` = ?s", $meta_template['id'], $site['id'], $type, $subtype);
+        }
+        else {
+            $oldMetaTemplate = $connect->getOne("SELECT COUNT(*) FROM `app_models_site_page_meta_templates` WHERE `status`= '1' AND `site_id` = ?i AND `type` = ?s AND `subtype` =?s", $site['id'], $type, $subtype);
+        }
+
+
+      if ($oldMetaTemplate > 0) {
+            $respAr['msg'] = 'На сайте уже есть активный шаблон для данного типа и подтипа материалов';
+            $respAr['msg_field'] = 'subtype';
+        }
+        else {
+            $timestamp = gmdate("U");
+            if($meta_template)
+                $connect->query("UPDATE `app_models_site_page_meta_templates` SET `changed`=?i, `name`=?s, `key`=?s, `type` = ?s, `subtype` =?s, `value` = ?s, `status` =?i WHERE `id` =?i",$timestamp, $name, $key, $type, $subtype, $value, $status, $meta_template['id']);
+            else
+                $connect->query("INSERT INTO `app_models_site_page_meta_templates` (`created`, `changed`, `status`, `uid`, `name`, `key`, `type`, `subtype`, `value`, `site_id`) VALUES (?i, ?i, ?i, ?i, ?s, ?s, ?s, ?s, ?s, ?i)",$timestamp, $timestamp, $status, 1, $name, $key, $type, $subtype, $value, $site['id']);
+
+            $respAr['success'] = 1;
+        }
+    }
+
+    return json_encode($respAr);
 }
 
 function remove_sites_address($connect) {
@@ -1752,8 +1838,8 @@ function sites_meta_template($connect)
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Текст шаблона</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="text" value="<?=$meta_template?htmlspecialchars($meta_template['text']):"";?>">
-                                <div class="input-message-block" data-for="text"></div>
+                                <input type="text" class="form-control" name="value" value="<?=$meta_template?htmlspecialchars($meta_template['value']):"";?>">
+                                <div class="input-message-block" data-for="value"></div>
                             </div>
                         </div>
 

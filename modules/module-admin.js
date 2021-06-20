@@ -3359,6 +3359,86 @@ function save_sites_phone() {
 }
 
 
+function save_sites_meta_template() {
+	var $button = $('.btn-save-sites-meta-template');
+	var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
+	var $modalLoader = $button.closest('.modal-dialog').find('.modal-loader');
+
+	var $name = $modalBody.find('input[name="name"]');
+	var $nameMsg = $name.parent().find('.input-message-block');
+	var name = $name.val().trim();
+	$nameMsg.html('');
+
+	var $value = $modalBody.find('input[name="value"]');
+	var $valueMsg = $value.parent().find('.input-message-block');
+	var value = $value.val().trim();
+	$valueMsg.html('');
+
+	var site_id = parseInt($modalBody.find('*[name="site_id"]').val());
+	var key = $modalBody.find('*[name="key"]').val();
+	var type = $modalBody.find('*[name="type"]').val();
+	var subtype = $modalBody.find('*[name="subtype"]').val();
+
+	var id = parseInt($modalBody.find('*[name="id"]').val());
+
+
+	var $status = $modalBody.find('*[name="status"]');
+	var status;
+	if($status.prop('checked'))
+		status = 1;
+	else
+		status = 0;
+
+
+	var error = false;
+
+	if(value.length === 0) {
+		$valueMsg.html("Это обязательное поле");
+		if(!error) {
+			$value.focus();
+			error = true;
+		}
+	}
+
+
+	if(!error) {
+		show_loader_element($modalLoader);
+		$modalBody.addClass('hidden');
+		$button.prop('disabled',true);
+		$.ajax({
+			type: 'POST',
+			data: {
+				func: 'save_sites_meta_template',
+				name: name,
+				key: key,
+				type: type,
+				subtype: subtype,
+				value: value,
+				id:id,
+				status: status,
+				site_id: site_id
+			},
+			dataType: 'JSON',
+			url: 'mysql.php',
+			success: function(data){
+				if(data['success']) {
+					remove_all_windows();
+					show_sites_phones_list(site_id);
+				}
+				else {
+					$modalLoader.html('');
+					$modalBody.removeClass('hidden');
+					$button.prop('disabled',false);
+					$modalBody.find('*[data-for="'+data['msg_field']+'"]').html(data['msg']);
+				}
+			}
+		});
+	}
+
+}
+
+
+
 function edit_sites_content(id,copyMode) {
   if(typeof copyMode === 'undefined')
   	copyMode = 0;
