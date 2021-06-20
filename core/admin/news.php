@@ -1232,10 +1232,10 @@ function save_sites_meta_template($connect) {
     if((!$id || $meta_template) && $site && in_array($status,[0,1]) && array_key_exists($key, $keys) && array_key_exists($type,$typesArray) && array_key_exists($subtype, $subTypesArray) && mb_strlen($value) > 0) {
 
         if ($meta_template) {
-            $oldMetaTemplate = $connect->getOne("SELECT COUNT(*) FROM `app_models_site_page_meta_templates` WHERE `status`= '1' AND `id` <> ?i AND `site_id` = ?i AND `type` = ?s AND `subtype` = ?s", $meta_template['id'], $site['id'], $type, $subtype);
+            $oldMetaTemplate = $connect->getOne("SELECT COUNT(*) FROM `app_models_site_page_meta_templates` WHERE `status`= '1' AND `id` <> ?i AND `site_id` = ?i AND `type` = ?s AND `subtype` = ?s AND `key` = ?s", $meta_template['id'], $site['id'], $type, $subtype, $key);
         }
         else {
-            $oldMetaTemplate = $connect->getOne("SELECT COUNT(*) FROM `app_models_site_page_meta_templates` WHERE `status`= '1' AND `site_id` = ?i AND `type` = ?s AND `subtype` =?s", $site['id'], $type, $subtype);
+            $oldMetaTemplate = $connect->getOne("SELECT COUNT(*) FROM `app_models_site_page_meta_templates` WHERE `status`= '1' AND `site_id` = ?i AND `type` = ?s AND `subtype` =?s AND `key` = ?s", $site['id'], $type, $subtype, $key);
         }
 
 
