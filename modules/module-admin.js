@@ -3392,6 +3392,14 @@ function save_sites_meta_template() {
 
 	var error = false;
 
+	if(name.length === 0) {
+		$nameMsg.html("Это обязательное поле");
+		if(!error) {
+			$name.focus();
+			error = true;
+		}
+	}
+
 	if(value.length === 0) {
 		$valueMsg.html("Это обязательное поле");
 		if(!error) {
