@@ -112,13 +112,14 @@ function sync_objects_api($connect){
 
 		}
 
-		$types = $connect->getAll("SELECT `id`, `name` FROM `type_object` WHERE `synchronized` = 0");
+		$types = $connect->getAll("SELECT `id`, `name`, `name_prepositional` FROM `type_object` WHERE `synchronized` = 0");
 
 		foreach ($types as $type) {
 			$typeAr = [];
 			$typeAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
 			$typeAr["id"] = $type['id'];
 			$typeAr["name"] = $type['name'];
+			$typeAr['name_prepositional'] = $type['name_prepositional'];
 			$typeAr['status'] = 1;
 
 

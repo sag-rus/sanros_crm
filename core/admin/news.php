@@ -1903,7 +1903,8 @@ function sites_meta_template($connect)
                                     <div>{{resort.full_name}} - полное название объекта</div>
                                     <div>{{resort.description}} - описание объекта</div>
                                     <div>{{resort.type}} - тип объекта</div>
-                                    <div>{{resort.name_with_type}} - тип название объекта</div>
+                                    <div>{{resort.name_with_type}} - тип и название объекта</div>
+                                    <div>{{resort.name_with_type_prepositional}} - тип и название объекта в предложном падеже</div>
                                     <div>{{resort.city.name}} - город объекта</div>
                                     <div>{{resort.region.name}} - регион объекта</div>
                                     <div>{{resort.direction.name}} - направление объекта</div>
