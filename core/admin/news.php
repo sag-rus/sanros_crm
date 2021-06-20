@@ -720,7 +720,7 @@ function show_sites_meta_templates_list($connect) {
                         <td><?=$keys[$meta_template['key']];?></td>
                         <td><?=$typesArray[$meta_template['type']];?></td>
                         <td><?=$subTypesArray[$meta_template['subtype']];?></td>
-                        <td><?=$meta_template['text'];?></td>
+                        <td><?=$meta_template['value'];?></td>
                         <td><?=$meta_template['status'] == 1?"Активен":"Не активен";?></td>
                         <td>
                             <?php if($id_rights > 4) { ?>
@@ -1883,7 +1883,7 @@ function sites_meta_template($connect)
                             <div class="col-sm-10">
                                 <select class="form-control" name="subtype">
                                     <?php foreach ($subTypesArray as $subType => $label) { ?>
-                                        <option value="<?=$subType;?>"<?php if($meta_template && $meta_template['subtype'] == $type) { ?> selected<?php } ?>><?=$label;?></option>
+                                        <option value="<?=$subType;?>"<?php if($meta_template && $meta_template['subtype'] == $subType) { ?> selected<?php } ?>><?=$label;?></option>
                                     <?php } ?>
                                 </select>
                                 <div class="input-message-block" data-for="subtype"></div>
