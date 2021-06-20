@@ -668,12 +668,12 @@ function show_sites_meta_templates_list($connect) {
     if($site_id) {
         $site = $connect->getRow("SELECT `id`, `name`, `domain` FROM `sites` WHERE `id`=?i",$site_id);
         if($site)
-            $meta_templates = $connect->getAll("SELECT * FROM `app_models_site_page_meta_templates` WHERE `site_id`=?i ORDER BY `created` ASC", $site_id);
+            $meta_templates = $connect->getAll("SELECT * FROM `app_models_site_page_meta_templates` WHERE `site_id`=?i AND `status` <> 2 ORDER BY `created` ASC", $site_id);
         else
             $meta_templates = [];
     }
     else
-        $meta_templates = $connect->getAll("SELECT * FROM `app_models_site_page_meta_templates` ORDER BY `created` ASC");
+        $meta_templates = $connect->getAll("SELECT * FROM `app_models_site_page_meta_templates` WHERE `status` <> 2 ORDER BY `created` ASC");
 
     ob_start();
     ?>
@@ -1404,6 +1404,43 @@ function remove_sites_content($connect) {
   return ob_get_clean();
 }
 
+function remove_sites_meta_template($connect) {
+    $id = isset($_POST['id'])?(int)$_POST['id']:0;
+    $meta_template = $connect->getRow("SELECT `id`, `site_id` FROM `app_models_site_page_meta_templates` WHERE `id` =?i AND `status` <> 2",$id);
+    ob_start();
+    ?>
+    <div class="modal fade remove-sites-meta-template">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+                    <h4 class="modal-title">Удаление шаблона мета-тегов</h4>
+                </div>
+                <div class="modal-body form-horizontal site-name">
+                    <?php if($meta_template) { ?>
+                        <input type="hidden" name="id" value="<?=$id;?>">
+                        <input type="hidden" name="site_id" value="<?=$meta_template['site_id'];?>">
+                        Вы уверены, что хотите удалить этот шаблон?
+                    <?php } else { ?>
+                        Некорректный ID
+                    <?php } ?>
+                </div>
+                <div class="modal-loader"></div>
+                <div class="modal-footer">
+                    <?php if($meta_template) { ?>
+                        <button class="btn btn-success btn-sm btn-remove-sites-meta-template-success" onclick="remove_sites_meta_template_success(<?=$id;?>)" id="btn-remove-sites-meta-template-success"><i class="fa fa-check-circle"></i> Удалить</button>
+                        <button class="btn btn-danger btn-sm" data-dismiss="modal" aria-label="Close">Нет</button>
+                    <?php } else { ?>
+                        <button class="btn btn-danger btn-sm" data-dismiss="modal" aria-label="Close">Закрыть</button>
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+
 
 function remove_sites_address_success($connect) {
   $respAr = [
@@ -1464,6 +1501,21 @@ function remove_sites_content_success($connect) {
     $respAr['success'] = 1;
   }
   return json_encode($respAr);
+}
+
+function remove_sites_meta_template_success($connect) {
+    $respAr = [
+        'msg' => '',
+        'title' => '',
+        'success' => 0
+    ];
+    $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
+    $meta_template = $connect->getRow("SELECT `id` FROM `app_models_site_page_meta_templates` WHERE `id` =?i AND `status` <> 2", $id);
+    if($meta_template) {
+        $connect->query("UPDATE `app_models_site_page_meta_templates` SET `status` = 2, `synchronized` = 0 WHERE `id` =?i",$id);
+        $respAr['success'] = 1;
+    }
+    return json_encode($respAr);
 }
 
 function sites_address($connect)

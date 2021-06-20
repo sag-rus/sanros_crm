@@ -3792,6 +3792,19 @@ function remove_sites_content(id) {
 	});
 }
 
+
+function remove_sites_meta_template(id) {
+	var str = 'func=remove_sites_meta_template&id='+id;
+	$.ajax({
+		type: 'POST',
+		data: str,
+		url: 'mysql.php',
+		success: function(html){
+			show_modal(html);
+		}
+	});
+}
+
 function remove_sites_content_success(id) {
 	var $button = $('.btn-remove-sites-content-success');
 	var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
@@ -3808,6 +3821,29 @@ function remove_sites_content_success(id) {
 		success: function(data){
 			if(data['success']) {
 				show_sites_contents_list(site_id);
+			}
+			else alert("Ошибка при удалении");
+			remove_all_windows();
+		}
+	});
+}
+
+function remove_sites_meta_template_success(id) {
+	var $button = $('.btn-remove-sites-meta-template-success');
+	var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
+	var $modalLoader = $button.closest('.modal-dialog').find('.modal-loader');
+	var site_id = $modalBody.find('*[name="site_id"]');
+	var str = 'func=remove_sites_meta_template_success&id='+id+"&site_id="+site_id;
+	$modalBody.addClass('hidden');
+	show_loader_element($modalLoader);
+	$.ajax({
+		type: 'POST',
+		data: str,
+		dataType: 'JSON',
+		url: 'mysql.php',
+		success: function(data){
+			if(data['success']) {
+				show_sites_meta_templates_list(site_id);
 			}
 			else alert("Ошибка при удалении");
 			remove_all_windows();
