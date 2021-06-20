@@ -1177,7 +1177,7 @@ function save_sites_phone($connect) {
   return json_encode($respAr);
 }
 
-function save_sites_meta_templates($connect) {
+function save_sites_meta_template($connect) {
     $contentTypesRows = $connect->getAll("SELECT * FROM `app_models_site_contenttype` WHERE `status` = 1 AND `system` != 1");
 
     $typesArray = [];
@@ -1237,7 +1237,7 @@ function save_sites_meta_templates($connect) {
         }
 
 
-      if ($oldMetaTemplate > 0) {
+        if ($oldMetaTemplate > 0) {
             $respAr['msg'] = 'На сайте уже есть активный шаблон для данного типа и подтипа материалов';
             $respAr['msg_field'] = 'subtype';
         }
