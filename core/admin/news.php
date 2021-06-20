@@ -1910,6 +1910,9 @@ function sites_meta_template($connect)
                                     <div>{{resort.city.name_genitive}} - название города в родительном падеже</div>
                                     <div>{{resort.region.name_genitive}} - название региона в родительном падеже</div>
                                     <div>{{resort.direction.name_genitive}} - название направления в родительном падеже</div>
+                                    <div>{{prev_year}} - предыдующий год</div>
+                                    <div>{{current_year}} - текущий год</div>
+                                    <div>{{next_year}} - следующий год</div>
                                 </div>
                                 <div class="info std-bottom-margin">
                                     <i class="fa fa-warning"></i> В случае отсутствия одного из значений на странице, шаблон игнорируется!
