@@ -1893,8 +1893,8 @@ function sites_meta_template($connect)
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Текст шаблона</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control std-bottom-margin" name="value" value="<?=$meta_template?htmlspecialchars($meta_template['value']):"";?>">
-                                <div class="input-message-block" data-for="value"></div>
+                                <input type="text" class="form-control" name="value" value="<?=$meta_template?htmlspecialchars($meta_template['value']):"";?>">
+                                <div class="input-message-block std-bottom-margin" data-for="value"></div>
                                 <div class="info std-bottom-margin"><b>Доступные переменные</b>:
                                     <div>{{resort.name}} - название объекта</div>
                                     <div>{{resort.full_name}} - полное название объекта</div>
@@ -1908,7 +1908,7 @@ function sites_meta_template($connect)
                                     <div>{{resort.region.name_genitive}} - название региона в родительном падеже</div>
                                     <div>{{resort.direction.name_genitive}} - название направления в родительном падеже</div>
                                 </div>
-                                <div class="info">
+                                <div class="info std-bottom-margin">
                                     <i class="fa fa-warning"></i> В случае отсутствия одного из значений на странице, шаблон игнорируется!
                                 </div>
                             </div>
