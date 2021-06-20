@@ -647,6 +647,7 @@ function show_sites_meta_templates_list($connect) {
 
     $subTypesArray = [
         'all' => 'Любой',
+        'resort' => 'Объект',
         'reviews' => 'Отзывы'
     ];
 
@@ -1185,6 +1186,7 @@ function save_sites_meta_template($connect) {
 
     $subTypesArray = [
         'all' => 'Любой',
+        'resort' => 'Объект',
         'reviews' => 'Отзывы'
     ];
 
@@ -1805,6 +1807,7 @@ function sites_meta_template($connect)
 
     $subTypesArray = [
         'all' => 'Любой',
+        'resort' => 'Объект',
         'reviews' => 'Отзывы'
     ];
 
