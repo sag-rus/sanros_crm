@@ -1906,9 +1906,13 @@ function sites_meta_template($connect)
                                     <div>{{resort.name_with_type}} - тип и название объекта</div>
                                     <div>{{resort.name_with_type_prepositional}} - тип и название объекта в предложном падеже</div>
                                     <div>{{resort.city.name}} - город объекта</div>
+                                    <div>{{resort.city.name_genitive}} - город объекта в родительном падеже</div>
                                     <div>{{resort.region.name}} - регион объекта</div>
                                     <div>{{resort.direction.name}} - направление объекта</div>
-                                    <div>{{resort.city.name_genitive}} - название города в родительном падеже</div>
+                                    <div>{{resort.regional_direction.name}} - название регионального направления объекта</div>
+                                    <div>{{resort.regional_direction.name_genitive}} - название регионального направления объекта в родительном падеже</div>
+                                    <div>{{resort.regional_direction.name.or.city.name}} - название регионального направления объекта или город объекта</div>
+                                    <div>{{resort.regional_direction.name_genitive.or.city.name_genitive}} - название регионального направления объекта или город объекта в родительном падеже</div>
                                     <div>{{resort.region.name_genitive}} - название региона в родительном падеже</div>
                                     <div>{{resort.direction.name_genitive}} - название направления в родительном падеже</div>
                                     <div>{{prev_year}} - предыдующий год</div>
