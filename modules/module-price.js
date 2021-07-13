@@ -1014,6 +1014,7 @@ function update_main_data_object(id){
 		"main_post_fio": $("#main_post_fio").val(),
 		"default_price_type": $('#default_price_type').val(),
 		"city": $('#city_object').val(),
+		'city_genitive': $('#city_genitive').val(),
 		"latitude": $('#latitude').val(),
 		"longitude": $('#longitude').val(),
 		"weather": $('#weather').val(),

@@ -361,7 +361,7 @@ function sync_objects_api($connect){
 		}
 
 
-		$objects = $connect->getAll("SELECT `object`.`id` AS `id`, `object`.`name` AS `name`, `object`.`url_name` AS `url_name`, `object`.`url_name_origin` AS `url_name_origin`, `object`.`id_reg` AS `region_id`, `object`.`region_direction_id` AS `region_direction_id`, `object`.`direction` AS `direction`, `object`.`active` AS `active`, `object`.`note` AS `note`, `object`.`type` AS `type`, `object`.`full_name` AS `full_name`, `object`.`address` AS `address`, `object`.`telephone` AS `telephone`, `object`.`email` AS `email`, `object`.`id_profile` AS `id_profile`, `object`.`id_methods` AS `id_methods`, `object`.`id_infa` AS `id_infa`, `object`.`check_places` AS `check_places`, `object`.`default_price_type` AS `default_price_type`, `object`.`description` AS `description`, `object`.`state_program` AS `state_program`, `object`.`children_rest` AS `children_rest`, (`object`.`image` IS NOT NULL) AS `has_thumbnail`, `type_object`.`name` AS `type_name`, `object`.`uri_schema` AS `uri_schema`, `object`.`longitude`, `object`.`latitude`, `object`.`featured` AS `featured` FROM `object` LEFT JOIN `type_object` ON `object`.`type` = `type_object`.`id` WHERE `object`.`synchronized` = 0 AND `object`.`type` IS NOT NULL AND `object`.`id_reg` > 0");
+		$objects = $connect->getAll("SELECT `object`.`id` AS `id`, `object`.`name` AS `name`, `object`.`url_name` AS `url_name`, `object`.`url_name_origin` AS `url_name_origin`, `object`.`id_reg` AS `region_id`, `object`.`region_direction_id` AS `region_direction_id`, `object`.`direction` AS `direction`, `object`.`active` AS `active`, `object`.`note` AS `note`, `object`.`type` AS `type`, `object`.`full_name` AS `full_name`, `object`.`city` AS `city`, `object`.`city_genitive` AS `city_genitive`, `object`.`address` AS `address`, `object`.`telephone` AS `telephone`, `object`.`email` AS `email`, `object`.`id_profile` AS `id_profile`, `object`.`id_methods` AS `id_methods`, `object`.`id_infa` AS `id_infa`, `object`.`check_places` AS `check_places`, `object`.`default_price_type` AS `default_price_type`, `object`.`description` AS `description`, `object`.`state_program` AS `state_program`, `object`.`children_rest` AS `children_rest`, (`object`.`image` IS NOT NULL) AS `has_thumbnail`, `type_object`.`name` AS `type_name`, `object`.`uri_schema` AS `uri_schema`, `object`.`longitude`, `object`.`latitude`, `object`.`featured` AS `featured` FROM `object` LEFT JOIN `type_object` ON `object`.`type` = `type_object`.`id` WHERE `object`.`synchronized` = 0 AND `object`.`type` IS NOT NULL AND `object`.`id_reg` > 0");
 
 		foreach ($objects as $object) {
 			$objectAr = [];
@@ -369,6 +369,8 @@ function sync_objects_api($connect){
 			$objectAr["id"] = $object['id'];
 			$objectAr["name"] = $object['name'];
 			$objectAr['full_name'] = $object['full_name'];
+			$objectAr['city'] = $object['city'];
+			$objectAr['city_genitive'] = $object['city_genitive'];
 			$objectAr['type'] = $object['type'];
 			$objectAr['status'] = (int)(!$object['active']);
 			$objectAr['region_id'] = $object['region_id'];

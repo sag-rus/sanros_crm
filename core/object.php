@@ -527,7 +527,7 @@ function select_object_about($connect){
 function edit_main_data_object($connect){
     global $array_type;
     $id = $_POST["id"];
-	$row = $connect->getRow("SELECT name, similar, full_name, id_reg, type, city, direction, region_direction_id, latitude, longitude, weather, direction, source_booking, booking_uri, uri_schema, description, fast_booking, main_post_name, main_post_fio, default_price_type, url_name, state_program, children_rest, featured, trust_full_name, trust_name_template, trust_number FROM object WHERE id='$id'");
+	$row = $connect->getRow("SELECT name, similar, full_name, id_reg, type, city, city_genitive, direction, region_direction_id, latitude, longitude, weather, direction, source_booking, booking_uri, uri_schema, description, fast_booking, main_post_name, main_post_fio, default_price_type, url_name, state_program, children_rest, featured, trust_full_name, trust_name_template, trust_number FROM object WHERE id='$id'");
 	$similar = explode("_", $row["similar"]);
 	$type = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]);
 	$country = $connect->getOne("SELECT id_country FROM region WHERE id=?i", $row["id_reg"]);
@@ -582,6 +582,12 @@ function edit_main_data_object($connect){
 				<input type="text" class="form-control" id="city_object" value="<?php echo $row['city']; ?>">
 			</div>
 		</div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Город в родительном падеже</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" id="city_genitive" value="<?php echo $row['city_genitive']; ?>">
+            </div>
+        </div>
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Направление</label>
 			<div class="col-sm-9">
@@ -770,7 +776,8 @@ function update_main_data_object($connect){
 	$longitude = (float)$_POST["longitude"];
 	$name = $_POST["name"];
 	$full_name = $_POST["full_name"];
-	$city = $_POST["city"];
+	$city = trim($_POST["city"]);
+	$city_genitive = trim($_POST["city_genitive"]);
 	$direction = (int)$_POST["direction"];
     $id_reg = (int)$_POST["region_id"];
     $region_direction_id = (int)$_POST['region_direction_id'];
@@ -829,7 +836,7 @@ function update_main_data_object($connect){
     if(!array_key_exists($default_price_type,$array_type))
         $default_price_type = 1;
 
-    $connect->query("UPDATE object SET name=?s, full_name=?s, city=?s, direction=?s, type=?s, latitude=?s, longitude=?s, similar=?s, weather=?s, description=?s, source_booking=?i, description_check=?s, booking_uri=?s, fast_booking=?i, main_post_name = ?s, main_post_fio = ?s, default_price_type = ?i, id_reg = ?i, region_direction_id = ?i, `uri_schema` = ?i, `url_name` = ?s, `state_program` = ?i, `children_rest` = ?i, synchronized=0, `featured` = ?i, `trust_full_name` = ?s, `trust_name_template` = ?s, `trust_number` = ?s WHERE id=?i", $name, $full_name, $city, $direction, $type, $latitude, $longitude, $similar, $weather, $description, $source_booking, $description, $booking_uri, $fast_booking, $main_post_name, $main_post_fio, $default_price_type, $id_reg, $region_direction_id,$uri_schema, $url_name, $state_program, $children_rest, $featured, $trust_full_name, $trust_name_template, $trust_number, $id);
+    $connect->query("UPDATE object SET name=?s, full_name=?s, city=?s, city_genitive = ?s, direction=?s, type=?s, latitude=?s, longitude=?s, similar=?s, weather=?s, description=?s, source_booking=?i, description_check=?s, booking_uri=?s, fast_booking=?i, main_post_name = ?s, main_post_fio = ?s, default_price_type = ?i, id_reg = ?i, region_direction_id = ?i, `uri_schema` = ?i, `url_name` = ?s, `state_program` = ?i, `children_rest` = ?i, synchronized=0, `featured` = ?i, `trust_full_name` = ?s, `trust_name_template` = ?s, `trust_number` = ?s WHERE id=?i", $name, $full_name, $city, $city_genitive, $direction, $type, $latitude, $longitude, $similar, $weather, $description, $source_booking, $description, $booking_uri, $fast_booking, $main_post_name, $main_post_fio, $default_price_type, $id_reg, $region_direction_id,$uri_schema, $url_name, $state_program, $children_rest, $featured, $trust_full_name, $trust_name_template, $trust_number, $id);
 }
 
 function edit_desc_object($connect){
