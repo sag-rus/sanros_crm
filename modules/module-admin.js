@@ -1896,6 +1896,18 @@ function show_sites_meta_templates_list(site_id) {
 	});
 }
 
+function show_sites_questions_list(site_id) {
+	var str = 'func=show_sites_questions_list&site_id='+site_id;
+	$.ajax({
+		type: 'POST',
+		data: str,
+		url: 'mysql.php',
+		success: function(html){
+			$('#body').html(html);
+		}
+	});
+}
+
 function show_sites_phones_list(site_id) {
   var str = 'func=show_sites_phones_list&site_id='+site_id;
   $.ajax({
@@ -3445,6 +3457,106 @@ function save_sites_meta_template() {
 
 }
 
+function save_sites_question() {
+	var $button = $('.btn-save-sites-question');
+	var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
+	var $modalLoader = $button.closest('.modal-dialog').find('.modal-loader');
+
+	var $title = $modalBody.find('input[name="title"]');
+	var $titleMsg = $title.parent().find('.input-message-block');
+	var title = $title.val().trim();
+	$titleMsg.html('');
+
+	var $text = $modalBody.find('input[name="text"]');
+	var $textMsg = $text.parent().find('.input-message-block');
+	var text = $text.val().trim();
+	$textMsg.html('');
+
+	var $answer = $modalBody.find('input[name="answer"]');
+	var $answerMsg = $answer.parent().find('.input-message-block');
+	var answer = $answer.val().trim();
+	$answerMsg.html('');
+
+	var $path = $modalBody.find('input[name="path"]');
+	var $pathMsg = $path.parent().find('.input-message-block');
+	var path = $path.val().trim();
+	$pathMsg.html('');
+
+	var $sort = $modalBody.find('input[name="sort"]');
+	var $sortMsg = $sort.parent().find('.input-message-block');
+	var sort = $sort.val().trim();
+	$sortMsg.html('');
+
+	var site_id = parseInt($modalBody.find('*[name="site_id"]').val());
+
+	var id = parseInt($modalBody.find('*[name="id"]').val());
+
+
+	var $status = $modalBody.find('*[name="status"]');
+	var status;
+	if($status.prop('checked'))
+		status = 1;
+	else
+		status = 0;
+
+
+	var error = false;
+
+
+	if(text.length === 0) {
+		$textMsg.html("Это обязательное поле");
+		if(!error) {
+			$text.focus();
+			error = true;
+		}
+	}
+
+
+	if(answer.length === 0) {
+		$answerMsg.html("Это обязательное поле");
+		if(!error) {
+			$answer.focus();
+			error = true;
+		}
+	}
+
+
+
+	if(!error) {
+		show_loader_element($modalLoader);
+		$modalBody.addClass('hidden');
+		$button.prop('disabled',true);
+		$.ajax({
+			type: 'POST',
+			data: {
+				func: 'save_sites_question',
+				title: title,
+				text: value,
+				answer: answer,
+				path: path,
+				id:id,
+				status: status,
+				site_id: site_id,
+				sort: sort
+			},
+			dataType: 'JSON',
+			url: 'mysql.php',
+			success: function(data){
+				if(data['success']) {
+					remove_all_windows();
+					show_sites_questions_list(site_id);
+				}
+				else {
+					$modalLoader.html('');
+					$modalBody.removeClass('hidden');
+					$button.prop('disabled',false);
+					$modalBody.find('*[data-for="'+data['msg_field']+'"]').html(data['msg']);
+				}
+			}
+		});
+	}
+
+}
 
 
 function edit_sites_content(id,copyMode) {
@@ -3734,6 +3846,24 @@ function sites_meta_template(id, site_id) {
 	});
 }
 
+function sites_question(id, site_id) {
+	if(typeof id === 'undefined')
+		id = 0;
+
+	if(typeof site_id === 'undefined')
+		site_id = 0;
+
+	var str = 'func=sites_question&id='+id+"&site_id="+site_id;
+	$.ajax({
+		type: 'POST',
+		data: str,
+		url: 'mysql.php',
+		success: function(html){
+			show_modal(html);
+		}
+	});
+}
+
 function sites_phone(id,site_id) {
   if(typeof id === 'undefined')
     id = 0;
@@ -3813,6 +3943,18 @@ function remove_sites_meta_template(id) {
 	});
 }
 
+function remove_sites_question(id) {
+	var str = 'func=remove_sites_question&id='+id;
+	$.ajax({
+		type: 'POST',
+		data: str,
+		url: 'mysql.php',
+		success: function(html){
+			show_modal(html);
+		}
+	});
+}
+
 function remove_sites_content_success(id) {
 	var $button = $('.btn-remove-sites-content-success');
 	var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
@@ -3852,6 +3994,29 @@ function remove_sites_meta_template_success(id) {
 		success: function(data){
 			if(data['success']) {
 				show_sites_meta_templates_list(site_id);
+			}
+			else alert("Ошибка при удалении");
+			remove_all_windows();
+		}
+	});
+}
+
+function remove_sites_question_success(id) {
+	var $button = $('.btn-remove-sites-question-success');
+	var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
+	var $modalLoader = $button.closest('.modal-dialog').find('.modal-loader');
+	var site_id = $modalBody.find('*[name="site_id"]');
+	var str = 'func=remove_sites_question_success&id='+id+"&site_id="+site_id;
+	$modalBody.addClass('hidden');
+	show_loader_element($modalLoader);
+	$.ajax({
+		type: 'POST',
+		data: str,
+		dataType: 'JSON',
+		url: 'mysql.php',
+		success: function(data){
+			if(data['success']) {
+				show_sites_questions_list(site_id);
 			}
 			else alert("Ошибка при удалении");
 			remove_all_windows();

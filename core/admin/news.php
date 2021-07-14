@@ -98,6 +98,7 @@ function show_sites_list($connect) {
                   <button class="btn btn-default btn-sm" onclick="show_sites_addresses_list(<?=$site['id'];?>);">Адреса</button>
                   <button class="btn btn-default btn-sm" onclick="show_sites_menu_items_list(<?=$site['id'];?>);">Элементы меню</button>
                   <button class="btn btn-default btn-sm" onclick="show_sites_meta_templates_list(<?=$site['id'];?>);">Шаблоны мета-тегов</button>
+                  <button class="btn btn-default btn-sm" onclick="show_sites_questions_list(<?=$site['id'];?>);">Вопросы</button>
                   <button class="btn btn-default btn-sm" onclick="show_sites_phones_list(<?=$site['id'];?>);">Телефоны</button>
                   <?php if($id_rights > 5)  { ?>
                       <button class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
@@ -745,6 +746,80 @@ function show_sites_meta_templates_list($connect) {
     return ob_get_clean();
 }
 
+function show_sites_questions_list($connect) {
+    global $id_rights;
+
+
+    $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
+    $site = NULL;
+    if($site_id) {
+        $site = $connect->getRow("SELECT `id`, `name`, `domain` FROM `sites` WHERE `id`=?i",$site_id);
+        if($site)
+            $questions = $connect->getAll("SELECT * FROM `app_models_site_question` WHERE `site_id`=?i AND `status` <> 2 ORDER BY `sort` ASC", $site_id);
+        else
+            $questions = [];
+    }
+    else
+        $questions = $connect->getAll("SELECT * FROM `app_models_site_question` WHERE `status` <> 2 ORDER BY `sort` ASC");
+
+    ob_start();
+    ?>
+    <div class="panel panel-default sites-questions-panel">
+        <div class="panel-heading"><i class="fa fa-list"></i> Вопросы<?php if($site) { ?> сайта «<?=$site['name'];?>»<?php } ?> <button class="btn btn-default btn-sm" onclick="show_sites_list();">К списку сайтов</button></div>
+        <div class="panel-body table-body">
+            <table class="table table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        Заголовок
+                    </th>
+                    <th>
+                        Адрес страницы
+                    </th>
+                    <th>
+                        Статус
+                    </th>
+                    <th>
+                        Действия
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                foreach ($questions as $question) {
+                    ?>
+                    <tr <?php if(!$question['synchronized']){ ?>class="not-synchronized"<?php } ?>>
+                        <td><?=$question['id'];?></td>
+                        <td><?=$question['title'];?></td>
+                        <td><?=$question['path'];?></td>
+                        <td><?=$question['status'] == 1?"Активен":"Не активен";?></td>
+                        <td>
+                            <?php if($id_rights > 4) { ?>
+                                <button class="btn btn-default btn-sm" onclick="remove_sites_question(<?=$question['id'];?>);"><i class="fa fa-trash-o"></i></button>
+                                <button class="btn btn-default btn-sm" onclick="sites_question(<?=$question['id'];?>);"><i class="fa fa-pencil"></i></button>
+                            <?php } ?>
+                        </td>
+                    </tr>
+                    <?php
+                }
+                ?>
+                </tbody>
+            </table>
+        </div>
+        <div class="panel-footer text-right">
+            <?php if($id_rights > 4) { ?>
+                <button type="button" class="btn btn-primary btn-sm" onclick="sites_question(null,<?=$site_id;?>);"><i class="fa fa-plus-circle"></i> Добавить вопрос</button>
+            <?php } ?>
+        </div>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+
+
 function save_site($connect) {
     $respAr = [
       'success' => 0,
@@ -1257,6 +1332,67 @@ function save_sites_meta_template($connect) {
     return json_encode($respAr);
 }
 
+function save_sites_question($connect) {
+
+    $respAr = [
+        'success' => 0,
+        'title' => '',
+        'msg' => ''
+    ];
+
+    $id = isset($_POST['id'])?(int)$_POST['id']:0;
+    $sort = isset($_POST['sort'])?(int)$_POST['sort']:0;
+    $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
+    $title = isset($_POST['title'])?trim($_POST['title']):"";
+    $text = trim($_POST['text'] ?? "");
+    $answer = trim($_POST['answer'] ?? "");
+    $path = isset($_POST['path'])?explode("?",trim($_POST['path']))[0]:"";
+    $status = isset($_POST['status'])?(int)$_POST['status']:0;
+
+    if($id)
+        $question = $connect->getRow("SELECT `id` FROM `app_models_site_question` WHERE `id` =?i",$id);
+    else
+        $question = NULL;
+
+    if($site_id)
+        $site = $connect->getRow("SELECT `id` FROM `sites` WHERE `id`=?i",$site_id);
+    else
+        $site = NULL;
+
+
+    if((!$id || $question) && $site && in_array($status,[0,1]) && mb_strlen($text) > 0 && mb_strlen($answer) > 0) {
+
+        if(mb_strlen($title) > 0) {
+            if ($question) {
+                $oldQuestionCount = $connect->getOne("SELECT COUNT(*) FROM `app_models_site_question` WHERE `status`= '1' AND `id` <> ?i AND `site_id` = ?i AND `title` = ?s AND (`path` = ?s OR `path` = '')", $question['id'], $site['id'], $title, $path);
+            }
+            else {
+                $oldQuestionCount = $connect->getOne("SELECT COUNT(*) FROM `app_models_site_question` WHERE `status`= '1' AND `site_id` = ?i AND `title` = ?s AND (`path` = ?s OR `path` = '')", $site['id'], $title, $path);
+            }
+        }
+        else {
+            $oldQuestionCount = 0;
+        }
+
+        if ($oldQuestionCount > 0 && $status) {
+            $respAr['msg'] = 'На сайте уже есть активный вопрос с таким заголовком, который будет выводиться на данной странице';
+            $respAr['msg_field'] = 'title';
+        }
+        else {
+            $timestamp = gmdate("U");
+            if($question)
+                $connect->query("UPDATE `app_models_site_question` SET `changed`=?i, `title`=?s, `path`=?s, `text` = ?s, `answer` =?s, `status` =?i, `sort` = ?i, `synchronized` = 0 WHERE `id` =?i",$timestamp, $title, $path, $text, $answer, $status, $sort, $question['id']);
+            else
+                $connect->query("INSERT INTO `app_models_site_question` (`created`, `changed`, `status`, `uid`, `title`, `path`, `text`, `answer`, `site_id`, `sort`) VALUES (?i, ?i, ?i, ?i, ?s, ?s, ?s, ?s, ?i, ?i)",$timestamp, $timestamp, $status, 1, $title, $path, $text, $answer, $site['id'], $sort);
+
+            $respAr['success'] = 1;
+        }
+    }
+
+    return json_encode($respAr);
+}
+
+
 function remove_sites_address($connect) {
     $id = isset($_POST['id'])?(int)$_POST['id']:0;
     $address = $connect->getRow("SELECT `id`, `site_id` FROM `app_models_site_address` WHERE `id` =?i",$id);
@@ -1443,6 +1579,43 @@ function remove_sites_meta_template($connect) {
     return ob_get_clean();
 }
 
+function remove_sites_question($connect) {
+    $id = isset($_POST['id'])?(int)$_POST['id']:0;
+    $question = $connect->getRow("SELECT `id`, `site_id` FROM `app_models_site_question` WHERE `id` =?i AND `status` <> 2",$id);
+    ob_start();
+    ?>
+    <div class="modal fade remove-sites-question">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+                    <h4 class="modal-title">Удаление вопроса</h4>
+                </div>
+                <div class="modal-body form-horizontal site-name">
+                    <?php if($question) { ?>
+                        <input type="hidden" name="id" value="<?=$id;?>">
+                        <input type="hidden" name="site_id" value="<?=$question['site_id'];?>">
+                        Вы уверены, что хотите удалить этот вопрос?
+                    <?php } else { ?>
+                        Некорректный ID
+                    <?php } ?>
+                </div>
+                <div class="modal-loader"></div>
+                <div class="modal-footer">
+                    <?php if($question) { ?>
+                        <button class="btn btn-success btn-sm btn-remove-sites-question-success" onclick="remove_sites_question_success(<?=$id;?>)" id="btn-remove-sites-question-success"><i class="fa fa-check-circle"></i> Удалить</button>
+                        <button class="btn btn-danger btn-sm" data-dismiss="modal" aria-label="Close">Нет</button>
+                    <?php } else { ?>
+                        <button class="btn btn-danger btn-sm" data-dismiss="modal" aria-label="Close">Закрыть</button>
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+
 
 function remove_sites_address_success($connect) {
   $respAr = [
@@ -1515,6 +1688,23 @@ function remove_sites_meta_template_success($connect) {
     $meta_template = $connect->getRow("SELECT `id` FROM `app_models_site_page_meta_templates` WHERE `id` =?i AND `status` <> 2", $id);
     if($meta_template) {
         $connect->query("UPDATE `app_models_site_page_meta_templates` SET `status` = 2, `synchronized` = 0 WHERE `id` =?i",$id);
+        $respAr['success'] = 1;
+    }
+    return json_encode($respAr);
+}
+
+
+function remove_sites_question_success($connect) {
+    $respAr = [
+        'msg' => '',
+        'title' => '',
+        'success' => 0
+    ];
+
+    $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
+    $question = $connect->getRow("SELECT `id` FROM `app_models_site_question` WHERE `id` =?i AND `status` <> 2", $id);
+    if($question) {
+        $connect->query("UPDATE `app_models_site_question` SET `status` = 2, `synchronized` = 0 WHERE `id` =?i",$id);
         $respAr['success'] = 1;
     }
     return json_encode($respAr);
@@ -1936,6 +2126,88 @@ function sites_meta_template($connect)
                 <div class="modal-loader"></div>
                 <div class="modal-footer">
                     <button class="btn btn-success btn-sm btn-save-sites-meta-template" onclick="save_sites_meta_template()" id="btn-save-sites-meta-template"><i class="fa fa-check-circle"></i> Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+
+function sites_question($connect)
+{
+    $question_id = isset($_POST['id'])?(int)$_POST['id']:0;
+    $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
+
+    if($question_id)
+        $question = $connect->getRow("SELECT * FROM `app_models_site_question` WHERE `id`=?i",$question_id);
+    else
+        $question = NULL;
+
+    ob_start();
+    ?>
+    <div class="modal fade sites-question-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+                    <h4 class="modal-title"><?php if($question) { ?>Редактировать вопрос<?php } else { ?>Добавить вопрос<?php } ?></h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <?php if($question || $site_id) { ?>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Заголовок</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="title" maxlength="255" value="<?=$question?htmlspecialchars($question['title']):"";?>">
+                                <input type="hidden" value="<?=$site_id?$site_id:$question['site_id'];?>" name="site_id">
+                                <input type="hidden" value="<?=$question?$question['id']:0;?>" name="id">
+                                <div class="input-message-block" data-for="title"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Адрес страницы</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="path" value="<?=htmlspecialchars($question['path']);?>" maxlength="512">
+                                <div class="input-message-block" data-for="path"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Текст вопроса</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" name="text"><?=$question?htmlspecialchars($question['text']):"";?></textarea>
+                                <div class="input-message-block std-bottom-margin" data-for="text"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Ответ на вопрос</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" name="answer"><?=$question?htmlspecialchars($question['answer']):"";?></textarea>
+                                <div class="input-message-block std-bottom-margin" data-for="answer"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Вес вопроса (сортировка)</label>
+                            <div class="col-sm-10">
+                                <input type="number" name="sort" class="form-control" value="<?=$question?$question['sort']:0;?>">
+                                <div class="input-message-block" data-for="sort"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Активный</label>
+                            <div class="col-sm-10">
+                                <input type="checkbox" name="status" class="form-control"<?php if($question && $question['status'] == 1) {?> checked<?php } ?>>
+                            </div>
+                        </div>
+                    <?php } ?>
+                </div>
+                <div class="modal-loader"></div>
+                <div class="modal-footer">
+                    <button class="btn btn-success btn-sm btn-save-sites-question" onclick="save_sites_question()" id="btn-save-sites-question"><i class="fa fa-check-circle"></i> Сохранить</button>
                 </div>
             </div>
         </div>
@@ -3712,6 +3984,43 @@ function sync_site($connect) {
                 }
             }
 
+
+            if($respAr['success']) {
+                $questions = $connect->getAll("SELECT * FROM `app_models_site_question` WHERE `site_id` = ?i", $site['id']);
+
+                foreach ($questions as $question) {
+                    $res = $client->request('POST',"https://sites.tonia.ru/api/question/set/" . $question['id'],[
+                        'form_params' => [
+                            'id' => $question['id'],
+                            'title' => $question['title'],
+                            'text' => $question['text'],
+                            'answer' => $question['answer'],
+                            'path' => $question['path'],
+                            'status' => $question['status'],
+                            'uid' => $question['uid'],
+                            'created' => $question['created'],
+                            'changed' => $question['changed'],
+                            'site_id' => $question['site_id'],
+                            'sort' => $question['sort'],
+                            'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4'
+                        ]
+                    ]);
+
+                    $res = json_decode($res->getBody(),true);
+                    if(array_key_exists('success',$res)) {
+                        $respAr['success'] = $res['success'];
+                        $respAr['msg'] = $res['msg'];
+                        if(!$respAr['success']) {
+                            break;
+                        }
+                    }
+                    else {
+                        $respAr['success'] = 0;
+                        $respAr['msg'] = "Что-то пошло не так...";
+                        break;
+                    }
+                }
+            }
 
         }
 
