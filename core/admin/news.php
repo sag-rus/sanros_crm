@@ -4026,6 +4026,9 @@ function sync_site($connect) {
                         if(!$respAr['success']) {
                             break;
                         }
+                        else {
+                            $connect->query("UPDATE `app_models_site_question` SET `synchronized` = '1' WHERE `id` = ?i", $question['id']);
+                        }
                     }
                     else {
                         $respAr['success'] = 0;
