@@ -1726,3 +1726,8 @@ tr.simple-row {
 .ck.ck-balloon-panel {
 	z-index: 1000000000;
 }
+
+.sites-question-modal .modal-dialog {
+	width: 800px;
+	max-width: 100%;
+}
