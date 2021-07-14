@@ -4112,8 +4112,12 @@ function sync_site(site_id) {
     success: function (data) {
       if (data['success']) {
         remove_all_windows();
-        if($('.addresses-panel').length > 0)
-        	show_sites_addresses_list(site_id);
+        if($('.addresses-panel').length > 0) {
+			show_sites_addresses_list(site_id);
+		}
+        else if($('.sites-questions-panel').length > 0) {
+        	show_sites_questions_list(site_id);
+		}
         else
         	show_sites_contents_list(site_id);
       }
