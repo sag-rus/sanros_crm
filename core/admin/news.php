@@ -2174,7 +2174,7 @@ function sites_question($connect)
                                 <input type="text" class="form-control" name="title" maxlength="255" value="<?=$question?htmlspecialchars($question['title']):"";?>">
                                 <input type="hidden" value="<?=$site_id?$site_id:$question['site_id'];?>" name="site_id">
                                 <input type="hidden" value="<?=$question?$question['id']:0;?>" name="id">
-                                <div class="input-message-block" data-for="title"></div>
+                                <div class="input-message-block input-message-block-2h" data-for="title"></div>
                             </div>
                         </div>
 

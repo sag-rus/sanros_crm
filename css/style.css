@@ -1731,3 +1731,7 @@ tr.simple-row {
 	width: 800px;
 	max-width: 100%;
 }
+
+.input-message-block.input-message-block-2h {
+	height: 2em;
+}
