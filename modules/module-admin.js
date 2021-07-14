@@ -3531,7 +3531,7 @@ function save_sites_question() {
 			data: {
 				func: 'save_sites_question',
 				title: title,
-				text: value,
+				text: text,
 				answer: answer,
 				path: path,
 				id:id,
