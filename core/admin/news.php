@@ -780,6 +780,9 @@ function show_sites_questions_list($connect) {
                         Адрес страницы
                     </th>
                     <th>
+                        Вес
+                    </th>
+                    <th>
                         Статус
                     </th>
                     <th>
@@ -795,6 +798,7 @@ function show_sites_questions_list($connect) {
                         <td><?=$question['id'];?></td>
                         <td><?=$question['title'];?></td>
                         <td><?=$question['path'];?></td>
+                        <td><?=$question['sort'];?></td>
                         <td><?=$question['status'] == 1?"Активен":"Не активен";?></td>
                         <td>
                             <?php if($id_rights > 4) { ?>
