@@ -3467,12 +3467,12 @@ function save_sites_question() {
 	var title = $title.val().trim();
 	$titleMsg.html('');
 
-	var $text = $modalBody.find('input[name="text"]');
+	var $text = $modalBody.find('*[name="text"]');
 	var $textMsg = $text.parent().find('.input-message-block');
 	var text = $text.val().trim();
 	$textMsg.html('');
 
-	var $answer = $modalBody.find('input[name="answer"]');
+	var $answer = $modalBody.find('*[name="answer"]');
 	var $answerMsg = $answer.parent().find('.input-message-block');
 	var answer = $answer.val().trim();
 	$answerMsg.html('');
