@@ -1367,11 +1367,20 @@ function save_sites_question($connect) {
     if((!$id || $question) && $site && in_array($status,[0,1]) && mb_strlen($text) > 0 && mb_strlen($answer) > 0) {
 
         if(mb_strlen($title) > 0) {
-            if ($question) {
-                $oldQuestionCount = $connect->getOne("SELECT COUNT(*) FROM `app_models_site_question` WHERE `status`= '1' AND `id` <> ?i AND `site_id` = ?i AND `title` = ?s AND (`path` = ?s OR `path` = '')", $question['id'], $site['id'], $title, $path);
+
+            if(mb_strlen($path) > 0) {
+                if ($question) {
+                    $oldQuestionCount = $connect->getOne("SELECT COUNT(*) FROM `app_models_site_question` WHERE `status`= '1' AND `id` <> ?i AND `site_id` = ?i AND `title` = ?s AND (`path` = ?s OR `path` = '')", $question['id'], $site['id'], $title, $path);
+                } else {
+                    $oldQuestionCount = $connect->getOne("SELECT COUNT(*) FROM `app_models_site_question` WHERE `status`= '1' AND `site_id` = ?i AND `title` = ?s AND (`path` = ?s OR `path` = '')", $site['id'], $title, $path);
+                }
             }
             else {
-                $oldQuestionCount = $connect->getOne("SELECT COUNT(*) FROM `app_models_site_question` WHERE `status`= '1' AND `site_id` = ?i AND `title` = ?s AND (`path` = ?s OR `path` = '')", $site['id'], $title, $path);
+                if ($question) {
+                    $oldQuestionCount = $connect->getOne("SELECT COUNT(*) FROM `app_models_site_question` WHERE `status`= '1' AND `id` <> ?i AND `site_id` = ?i AND `title` = ?s", $question['id'], $site['id'], $title);
+                } else {
+                    $oldQuestionCount = $connect->getOne("SELECT COUNT(*) FROM `app_models_site_question` WHERE `status`= '1' AND `site_id` = ?i AND `title` = ?s", $site['id'], $title);
+                }
             }
         }
         else {
