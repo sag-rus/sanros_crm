@@ -186,7 +186,7 @@ function show_tour_agency($connect, $data){
 		$array_status = get_status_array($connect, "status");
 		$answer = array("check" => 1, "tour" => array());
 		$id = $connect->getOne("SELECT id FROM agency WHERE login=?s LIMIT 1", $login);
-		$data = $connect->getAll("SELECT id, id_obj, sum, status, date_z, date_v, rest FROM reckoning WHERE agency=?i AND ((active=0 OR active=1) AND ((status=6 AND date_v>=?s) OR status!=6)) LIMIT ". ($page-1)*$limit . ", " . $limit, $id, date("Y-m-d"));
+		$data = $connect->getAll("SELECT id, id_obj, sum, status, date_z, date_v, rest FROM reckoning WHERE agency=?i AND ((active=0 OR active=1) AND ((status=6 AND date_v>=?s) OR status!=6)) ORDER BY id DESC LIMIT ". ($page-1)*$limit . ", " . $limit, $id, date("Y-m-d"));
 		$count = $connect->getOne("SELECT COUNT(*) FROM reckoning WHERE agency=?i AND ((active=0 OR active=1) AND ((status=6 AND date_v>=?s) OR status!=6))", $id, date("Y-m-d"));
 
 
