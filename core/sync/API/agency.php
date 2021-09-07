@@ -204,7 +204,7 @@ function show_tour_agency($connect, $data){
 			$answer["tour"][$bid]["status"] = $array_status[$row["status"]];
 			$answer["tour"][$bid]["arrival"] = date_change($row["date_z"], ".");
 			$answer["tour"][$bid]["leaving"] = date_change($row["date_v"], ".");
-			$answer['pages'] = $count;
+			$answer['pages'] = ceil($count/$limit);
 		}
 		return $answer;
 	}
