@@ -174,11 +174,22 @@ function show_details_page_agency($connect, $data){
 
 function show_tour_agency($connect, $data){
 	$login = $connect->getOne("SELECT login FROM session_agency WHERE id_session=?s", $data["session"]);
+	$page = isset($data['page']) ? (int)$data['page'] : 1;
+
+	if($page < 1) {
+		$page = 1;
+	}
+
+	$limit = 20;
+
 	if($login){
 		$array_status = get_status_array($connect, "status");
 		$answer = array("check" => 1, "tour" => array());
 		$id = $connect->getOne("SELECT id FROM agency WHERE login=?s LIMIT 1", $login);
-		$data = $connect->getAll("SELECT id, id_obj, sum, status, date_z, date_v, rest FROM reckoning WHERE agency=?i AND ((active=0 OR active=1) AND ((status=6 AND date_v>=?s) OR status!=6))", $id, date("Y-m-d"));
+		$data = $connect->getAll("SELECT id, id_obj, sum, status, date_z, date_v, rest FROM reckoning WHERE agency=?i AND ((active=0 OR active=1) AND ((status=6 AND date_v>=?s) OR status!=6)) LIMIT ". ($page-1)*$limit . ", " . $limit, $id, date("Y-m-d"));
+		$count = $connect->getOne("SELECT COUNT(*) FROM reckoning WHERE agency=?i AND ((active=0 OR active=1) AND ((status=6 AND date_v>=?s) OR status!=6))", $id, date("Y-m-d"));
+
+
 		foreach($data as $row){
 			$array_rest = explode(",", $row["rest"]);
 			$array_rest = array_diff($array_rest, array(""));
@@ -193,6 +204,7 @@ function show_tour_agency($connect, $data){
 			$answer["tour"][$bid]["status"] = $array_status[$row["status"]];
 			$answer["tour"][$bid]["arrival"] = date_change($row["date_z"], ".");
 			$answer["tour"][$bid]["leaving"] = date_change($row["date_v"], ".");
+			$answer['pages'] = $count;
 		}
 		return $answer;
 	}
