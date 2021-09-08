@@ -2189,7 +2189,7 @@ function sites_question($connect)
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Текст вопроса</label>
                             <div class="col-sm-10">
-                                <textarea class="form-control" name="text"><?=$question?htmlspecialchars($question['text'], ENT_SUBSTITUTE):"";?></textarea>
+                                <textarea class="form-control" name="text"><?=$question?htmlentities($question['text'], ENT_QUOTES):"";?></textarea>
                                 <div class="input-message-block std-bottom-margin" data-for="text"></div>
                             </div>
                         </div>
@@ -2197,7 +2197,7 @@ function sites_question($connect)
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Ответ на вопрос</label>
                             <div class="col-sm-10">
-                                <textarea class="form-control" name="answer"><?=$question?htmlspecialchars($question['answer'], ENT_SUBSTITUTE):"";?></textarea>
+                                <textarea class="form-control" name="answer"><?=$question?htmlentities($question['answer'], ENT_QUOTES):"";?></textarea>
                                 <div class="input-message-block std-bottom-margin" data-for="answer"></div>
                             </div>
                         </div>
