@@ -2171,7 +2171,7 @@ function sites_question($connect)
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Заголовок</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="title" maxlength="255" value="<?=$question?htmlspecialchars($question['title']):"";?>">
+                                <input type="text" class="form-control" name="title" maxlength="255" value="<?=$question?htmlspecialchars($question['title'], ENT_QUOTES):"";?>">
                                 <input type="hidden" value="<?=$site_id?$site_id:$question['site_id'];?>" name="site_id">
                                 <input type="hidden" value="<?=$question?$question['id']:0;?>" name="id">
                                 <div class="input-message-block input-message-block-2h" data-for="title"></div>
@@ -2181,7 +2181,7 @@ function sites_question($connect)
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Адрес страницы</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="path" value="<?=htmlspecialchars($question['path']);?>" maxlength="512">
+                                <input type="text" class="form-control" name="path" value="<?=htmlspecialchars($question['path'], ENT_QUOTES);?>" maxlength="512">
                                 <div class="input-message-block" data-for="path"></div>
                             </div>
                         </div>
@@ -2189,7 +2189,7 @@ function sites_question($connect)
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Текст вопроса</label>
                             <div class="col-sm-10">
-                                <textarea class="form-control" name="text"><?=$question?htmlspecialchars($question['text']):"";?></textarea>
+                                <textarea class="form-control" name="text"><?=$question?htmlspecialchars($question['text'], ENT_QUOTES):"";?></textarea>
                                 <div class="input-message-block std-bottom-margin" data-for="text"></div>
                             </div>
                         </div>
@@ -2197,7 +2197,7 @@ function sites_question($connect)
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Ответ на вопрос</label>
                             <div class="col-sm-10">
-                                <textarea class="form-control" name="answer"><?=$question?htmlspecialchars($question['answer']):"";?></textarea>
+                                <textarea class="form-control" name="answer"><?=$question?htmlspecialchars($question['answer'], ENT_QUOTES):"";?></textarea>
                                 <div class="input-message-block std-bottom-margin" data-for="answer"></div>
                             </div>
                         </div>
