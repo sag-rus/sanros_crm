@@ -47,7 +47,7 @@ require_once __DIR__."/../../vendor/autoload.php";
 	if(!$connect)
 		return;
 
-	$client = new GuzzleHttp\Client();
+	$client = new GuzzleHttp\Client(['verify' => false]);
 	$token = "7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4";
 
 	try {
