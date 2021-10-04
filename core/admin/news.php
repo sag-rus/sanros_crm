@@ -2812,7 +2812,7 @@ function multipart_upload($connect, $customData = NULL) {
     'success' => 0
   ];
   try {
-    $client = new \GuzzleHttp\Client();
+    $client = new \GuzzleHttp\Client(['verify' => false]);
     if(is_null($customData)) {
       $postCopy = $_POST;
     }
@@ -3708,7 +3708,7 @@ function sync_site_content($connect, $id):bool {
     $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h1`, `title_h2`, `summary`, `snippet_summary`, `body`, `body2`, `head_code`, `pre_body_code`, `post_body_code`, `path`, `redirect_path`, `description`, `keywords`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation`, `direction_id`, `region_id`, `regional_direction_id`, `rss`, `rss_aggregator_link`, `rss_addition`, `rss_aggregation`, `main_page_fix`, `aggregation_by_dates`, `aggregation_date_start`, `aggregation_date_end`, `phone`, `slider_mode` FROM `sites_contents` WHERE `id` =?i",$id);
     if($content) {
         try {
-          $client = new \GuzzleHttp\Client();
+          $client = new \GuzzleHttp\Client(['verify' => false]);
           $content["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
           $content["body"] = base64_encode($content["body"]);
           $res = $client->request('POST',"https://sites.tonia.ru/api/content/set/".$content['id'],[
@@ -3737,7 +3737,7 @@ function sync_files($connect) {
     $ret = true;
     while ($files = $connect->getAll("SELECT * FROM `core_models_file_file` WHERE `synchronized` = 0 LIMIT 0, 10")) {
       try {
-        $client = new \GuzzleHttp\Client();
+        $client = new \GuzzleHttp\Client(['verify' => false]);
         $data = [];
         $data["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
         $data["files_list"] = $files;
@@ -3770,7 +3770,7 @@ function sync_files($connect) {
 function sync_bounds($connect,$entity) {
     $bounds = $connect->getAll("SELECT * FROM `app_models_site_bound` WHERE `entity1_type` =?s AND `entity1_id` =?i ORDER BY `sort` ASC",$entity['type'],$entity['id']);
   try {
-    $client = new \GuzzleHttp\Client();
+    $client = new \GuzzleHttp\Client(['verify' => false]);
     $data = [];
     $data["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
     $data["bounds"] = $bounds;
@@ -3802,7 +3802,7 @@ function sync_site($connect) {
 
       foreach ($contentTypes as $contentType) {
         try {
-          $client = new \GuzzleHttp\Client();
+          $client = new \GuzzleHttp\Client(['verify' => false]);
           $contentType["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
           $res = $client->request('POST',"https://sites.tonia.ru/api/content/type/set/".$contentType['id'],[
             'form_params' => $contentType
@@ -3862,7 +3862,7 @@ function sync_site($connect) {
       if($respAr['success']) {
         foreach ($sites as $site) {
           try {
-            $client = new \GuzzleHttp\Client();
+            $client = new \GuzzleHttp\Client(['verify' => false]);
             $site["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
             $res = $client->request('POST',"https://sites.tonia.ru/api/site/set/".$site['id'],[
               'form_params' => $site

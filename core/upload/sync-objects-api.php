@@ -10,7 +10,7 @@ function sync_objects_api($connect){
 
 	try {
 
-		$client = new \GuzzleHttp\Client();
+		$client = new \GuzzleHttp\Client(['verify' => false]);
 		$directions = $connect->getAll("SELECT `id`, `name`, `name_rod`, `description`, `meta_desc`, `sort` FROM `direction_object` WHERE `id_country` = 1 AND `synchronized` = 0");
 		$directionsCond = "";
 		foreach ($directions as $direction) {
