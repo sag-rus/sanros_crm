@@ -3999,38 +3999,37 @@ function sync_site($connect) {
 
 
             if($respAr['success']) {
-                $questions = $connect->getAll("SELECT * FROM `app_models_site_question` WHERE `site_id` = ?i", $site['id']);
+                $questions = $connect->getAll("SELECT * FROM `app_models_site_question` WHERE `site_id` = ?i AND synchronized = 0", $site['id']);
 
-                foreach ($questions as $question) {
-                    $res = $client->request('POST',"https://sites.tonia.ru/api/question/set/" . $question['id'],[
+                if(count($questions) >  0) {
+
+                    $questionsAr = [];
+
+                    $questionsIds = [];
+
+                    foreach ($questions as $question) {
+                        unset($question['synchronized']);
+                        $questionsAr[] = $question;
+                        $questionsIds[] = $question['id'];
+                    }
+
+                    $res = $client->request('POST', "https://sites.tonia.ru/api/questions/set", [
                         'form_params' => [
-                            'id' => $question['id'],
-                            'title' => $question['title'],
-                            'text' => $question['text'],
-                            'answer' => $question['answer'],
-                            'path' => $question['path'],
-                            'status' => $question['status'],
-                            'uid' => $question['uid'],
-                            'created' => $question['created'],
-                            'changed' => $question['changed'],
-                            'site_id' => $question['site_id'],
-                            'sort' => $question['sort'],
+                            'questions' => $questionsAr,
                             'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4'
                         ]
                     ]);
 
-                    $res = json_decode($res->getBody(),true);
-                    if(array_key_exists('success',$res)) {
+                    $res = json_decode($res->getBody(), true);
+                    if (array_key_exists('success', $res)) {
                         $respAr['success'] = $res['success'];
                         $respAr['msg'] = $res['msg'];
-                        if(!$respAr['success']) {
+                        if (!$respAr['success']) {
                             break;
+                        } elseif(count($questionsIds) > 0) {
+                            $connect->query("UPDATE `app_models_site_question` SET `synchronized` = '1' WHERE `id` IN (". implode(', ', $questionsIds).")");
                         }
-                        else {
-                            $connect->query("UPDATE `app_models_site_question` SET `synchronized` = '1' WHERE `id` = ?i", $question['id']);
-                        }
-                    }
-                    else {
+                    } else {
                         $respAr['success'] = 0;
                         $respAr['msg'] = "Что-то пошло не так...";
                         break;
