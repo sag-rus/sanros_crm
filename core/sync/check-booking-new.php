@@ -420,6 +420,8 @@ require_once __DIR__."/../../vendor/autoload.php";
 	}
 
 	if($delete) {
+		$client = new GuzzleHttp\Client(['verify' => false]);
+
 		$res = $client->request('POST', "https://sync.tonia.ru/api/booking/deactivate" . '?cache=' . substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15), [
 			'form_params' => [
 				'token' => $token,
