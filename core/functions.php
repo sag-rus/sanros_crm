@@ -152,6 +152,8 @@ function get_login_bank($connect, $object = ""){
 }
 
 function get_address_by_ip($ip){
+    return false;
+
 	if(!$ip)
 		return FALSE;
 	$url = "http://ipgeobase.ru:7020/geo?ip=".$ip;
