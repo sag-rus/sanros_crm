@@ -144,7 +144,7 @@ function review_contract($connect, $type, $id){
 		$table.= "</tr>";
 	}
 	$img = $_COOKIE['img'];
-	$director_pad = "Генерального директора $director_pad, действующего на основании Устава";
+	$director_pad = "генерального директора $director_pad, действующего на основании Устава";
 	$city_office = "Казань";
 	$image = "pechat1";
 	$post = "Генеральный директор";
