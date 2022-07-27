@@ -172,6 +172,8 @@ function authorization_account($connect, $data){
 					$array = array("status" => 2);
 				return $array;
 			}
+		} else {
+			$array = array("msg" => 'User not found');
 		}
 	}
 	return FALSE;
