@@ -171,13 +171,16 @@ function authorization_account($connect, $data){
 				}else
 					$array = array("status" => 2);
 				return $array;
+			} else {
+				$array = array("msg" => 'Incorrect password');
+				return $array;
 			}
 		} else {
 			$array = array("msg" => 'User not found');
 			return $array;
 		}
 	}
-	return array("msg" => 'Login required');;
+	return array("msg" => 'Login required');
 }
 
 function send_activation_email($connect, $data){
