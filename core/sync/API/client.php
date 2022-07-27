@@ -174,9 +174,10 @@ function authorization_account($connect, $data){
 			}
 		} else {
 			$array = array("msg" => 'User not found');
+			return $array;
 		}
 	}
-	return FALSE;
+	return array("msg" => 'Login required');;
 }
 
 function send_activation_email($connect, $data){
