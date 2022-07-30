@@ -266,13 +266,18 @@ $(document).on('change','.modal-edit-reckoning #state_program',function (e) {
 	var $childrenRest =  $('.modal-edit-reckoning #children_rest');
 	var $farEast =  $('.modal-edit-reckoning #far_east');
 	var $childrenRestFormGroup = $childrenRest.closest('.form-group');
+	var $farEastFormGroup = $farEast.closest('.form-group');
 
 	if(state_program) {
 		$childrenRestFormGroup.removeClass('hidden');
+		$farEastFormGroup.removeClass('hidden');
+
 	}
 	else {
 		$childrenRest.prop('checked', false);
 		$childrenRestFormGroup.addClass('hidden');
+		$farEast.prop('checked', false);
+		$farEastFormGroup.addClass('hidden');
 
 	}
 });
