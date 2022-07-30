@@ -27,10 +27,12 @@ class BookingPayment {
       "userName",
       "userName_v2",
       "userName_v3",
+      "userName_v4",
       "userName_test",
       "password",
       "password_v2",
       "password_v3",
+      "password_v4",
       "password_test",
       "link",
       "commission"
@@ -389,7 +391,7 @@ class BookingPayment {
     $booking = $this->booking;
     $turist = $this->turist;
 
-    $reck_properties = $connect->getRow("SELECT sum, id_dis, exclude_bank_commission, is_test, state_program, children_rest FROM reckoning WHERE id=?i AND turist=?i AND (status=3 OR status=4) LIMIT 1", $booking, $turist);
+    $reck_properties = $connect->getRow("SELECT sum, id_dis, exclude_bank_commission, is_test, state_program, children_rest, far_east FROM reckoning WHERE id=?i AND turist=?i AND (status=3 OR status=4) LIMIT 1", $booking, $turist);
 
     $sum = $reck_properties['sum'];
     if($sum > 0){
@@ -461,6 +463,8 @@ class BookingPayment {
       elseif ($reck_properties['state_program']) {
           if($reck_properties['children_rest'])
               $sberbankClient = $this->getSberbankClient('v3');
+          elseif($reck_properties['far_east'])
+              $sberbankClient = $this->getSberbankClient('v4');
           else
               $sberbankClient = $this->getSberbankClient('v2');
       }
@@ -498,7 +502,7 @@ class BookingPayment {
     $booking = $this->booking;
     $turist = $this->turist;
 
-    $reck_properties = $connect->getRow("SELECT sum, id_dis, is_test, state_program, children_rest FROM reckoning WHERE id=?i AND turist=?i AND (status=1 OR status=2) LIMIT 1", $booking, $turist);
+    $reck_properties = $connect->getRow("SELECT sum, id_dis, is_test, state_program, children_rest, far_east FROM reckoning WHERE id=?i AND turist=?i AND (status=1 OR status=2) LIMIT 1", $booking, $turist);
     $sum = $reck_properties['sum'];
 
     if($sum > 0 && $holding_sum > 0){
@@ -563,6 +567,8 @@ class BookingPayment {
         elseif ($reck_properties['state_program']) {
             if($reck_properties['children_rest'])
                 $sberbankClient = $this->getSberbankClient('v3');
+            elseif($reck_properties['far_east'])
+                $sberbankClient = $this->getSberbankClient('v4');
             else
                 $sberbankClient = $this->getSberbankClient('v2');
         }
@@ -621,11 +627,12 @@ class BookingPayment {
       $sum_to_pay = $row["sum"];
       $request_id = $row['id'];
       $type_pay = $row["type"];
-      $row = $connect->getRow("SELECT id_obj, id_user, date_v, turist, status, is_test, state_program, children_rest FROM reckoning WHERE id=?i", $bid);
+      $row = $connect->getRow("SELECT id_obj, id_user, date_v, turist, status, is_test, state_program, children_rest, far_east FROM reckoning WHERE id=?i", $bid);
 
       $is_test = $row['is_test'];
       $state_program = $row['state_program'];
       $children_rest = $row['children_rest'];
+      $far_east = $row['far_east'];
 
       $object = $row["id_obj"];
       $manager = $row["id_user"];
@@ -649,6 +656,10 @@ class BookingPayment {
           if($children_rest) {
               $sberbankClient = $this->getSberbankClient('v3');
               $data = $this->getPaymentStatus('v3');
+          }
+          elseif ($far_east) {
+              $sberbankClient = $this->getSberbankClient('v4');
+              $data = $this->getPaymentStatus('v4');
           }
           else {
               $sberbankClient = $this->getSberbankClient('v2');
@@ -768,7 +779,7 @@ class BookingPayment {
       $payment = $connect->getRow("SELECT `id`, `request_id`, `schet`, `sum`  FROM payment WHERE id = ?i AND status = 1", $id);
       if($payment) {
         $reck_id = $payment['schet'];
-        $reckoning = $connect->getRow("SELECT id, turist, is_test, state_program, children_rest FROM reckoning WHERE id = ?i", $reck_id);
+        $reckoning = $connect->getRow("SELECT id, turist, is_test, state_program, children_rest, far_east FROM reckoning WHERE id = ?i", $reck_id);
         $config = \App\lib\CRM\Config\Client::getInstance();
         $config->booking = $reck_id;
         $config->turist = $reckoning['turist'];
@@ -782,6 +793,8 @@ class BookingPayment {
                 elseif ($reckoning['state_program']) {
                     if($reckoning['children_rest'])
                         $sberbankClient = $this->getSberbankClient('v3');
+                    elseif ($reckoning['far_east'])
+                        $sberbankClient = $this->getSberbankClient('v4');
                     else
                         $sberbankClient = $this->getSberbankClient('v2');
                 }
@@ -834,7 +847,7 @@ class BookingPayment {
       $payment = $connect->getRow("SELECT `id`, `request_id`, `schet`, `sum`, `created`  FROM payment WHERE id = ?i AND status = 1", $id);
       if ($payment) {
         $reck_id = $payment['schet'];
-        $reckoning = $connect->getRow("SELECT `id`, `turist`, `sum`, `is_test`, `state_program`, `children_rest` FROM reckoning WHERE id = ?i", $reck_id);
+        $reckoning = $connect->getRow("SELECT `id`, `turist`, `sum`, `is_test`, `state_program`, `children_rest`, `far_east` FROM reckoning WHERE id = ?i", $reck_id);
         $config = \App\lib\CRM\Config\Client::getInstance();
         $config->booking = $reck_id;
         $config->turist = $reckoning['turist'];
@@ -891,6 +904,8 @@ class BookingPayment {
                          elseif ($reckoning['state_program']) {
                              if($reckoning['children_rest'])
                                  $sberbankClient = $this->getSberbankClient('v3');
+                             elseif($reckoning['far_east'])
+                                 $sberbankClient = $this->getSberbankClient('v4');
                              else
                                  $sberbankClient = $this->getSberbankClient('v2');
                          }
