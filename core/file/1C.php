@@ -18,7 +18,8 @@ function save_file_1C_sync($connect, $id){
 	);
 
 	$filename = "temp/1C/CRM.dbf";
-	
+	if (file_exists($filename)) unlink($filename);
+
 	if(!$DBF = dbase_create($filename, $array)) {
 		// echo 'Невозможно создать файл'; exit;
 	}
@@ -94,6 +95,7 @@ function save_file_1C_sync($connect, $id){
 	header("Pragma: public");
 	header("Content-Length: ".filesize($filename));
 	readfile($filename);
+
 	// file_put_contents($filename, "");
 }
 

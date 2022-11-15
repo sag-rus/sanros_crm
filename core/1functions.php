@@ -1718,19 +1718,9 @@ function check_promotional_code($code, $object, $sum, $dates, $client_id = NULL,
 	$promotional_code = [
         'sanata2019' => [
             "sum" => 500,
-            "min-sum" => 1000
-        ],
-        'sanata2022' => [
-            "procent" => 5,
-            "access" => array(26),
-            "start" => '2022-11-06 10:00:00',
-            "end" => '2022-12-30 12:00:00',
-            "work_start" => '2022-11-08 10:00:00',
-            "work_end" => '2022-11-16 23:59:59'
-        ]        
+            "min-sum" => 10000
+        ]
 	];
-
-	$reck_sum = $sum;
 
 	if(!isset($promotional_code[$code]) && !is_null($connect) && mb_strlen($code) > 4 && mb_substr($code,0,4) === 'doc_') {
 	    $doctorCard = $connect->getRow("SELECT * FROM `doctor_card` WHERE status = 3 AND promo = ?s",$code);
@@ -1748,32 +1738,19 @@ function check_promotional_code($code, $object, $sum, $dates, $client_id = NULL,
 			   'msg' => "Использование промокода ".$code." невозможно: сумма заявки меньше ".$promotional_code[$code]["min-sum"]." рублей"
             ];
 		$data = $promotional_code[$code];
-
-		//$sum = $data["sum"];
-		if (isset($data['sum'])) $sum = $data["sum"];
-		if (isset($data['procent'])) $sum = round($reck_sum*($data["procent"]/100));
-
+		$sum = $data["sum"];
 		if(isset($data["access"]) AND !in_array($object, $data["access"])){
 			return FALSE;
 		}
-
 		if(isset($promotional_code[$code]["start"])){
 			$start = strToTime($promotional_code[$code]["start"]);
 			$end = strToTime($promotional_code[$code]["end"]);
 			$check_start = strToTime($dates["arrival"]);
 			$check_end = $check_start + $dates["days"] * 86400;
-			//if(($check_start >= $start AND $check_start <= $end) OR ($check_end >= $start AND $check_end <= $end) OR ($check_start <= $start AND $check_end >= $end))
-			if(!($check_end >= $start AND $check_end <= $end)) {
+			if(($check_start >= $start AND $check_start <= $end) OR ($check_end >= $start AND $check_end <= $end) OR ($check_start <= $start AND $check_end >= $end))
+				return $sum;
+			else
 				return FALSE;
-			}
-		}
-
-		if(isset($promotional_code[$code]["work_start"]) AND isset($promotional_code[$code]["work_end"])) {
-			$start = strToTime($promotional_code[$code]["work_start"]);
-			$end = strToTime($promotional_code[$code]["work_end"]);
-			if(!(time() >= $start AND time() <= $end)) {
-				return FALSE;
-			}
 		}
 
 		if(!is_null($client_id) && !is_null($connect)) {

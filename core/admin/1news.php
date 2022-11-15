@@ -3999,7 +3999,7 @@ function sync_site($connect) {
 
 
             if($respAr['success']) {
-                $questions = $connect->getAll("SELECT * FROM `app_models_site_question` WHERE `site_id` = ?i AND synchronized = 0 LIMIT 200", $site['id']);
+                $questions = $connect->getAll("SELECT * FROM `app_models_site_question` WHERE `site_id` = ?i AND synchronized = 0", $site['id']);
 
                 if(count($questions) >  0) {
 
@@ -4019,12 +4019,6 @@ function sync_site($connect) {
                             'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4'
                         ]
                     ]);
-
-                    /*echo '<pre> SAGRUS_TEST';
-                    print_r($res);
-                    print_r($res->getBody());
-                    $res = json_decode($res->getBody(), true);
-                    print_r($res);*/
 
                     $res = json_decode($res->getBody(), true);
                     if (array_key_exists('success', $res)) {

@@ -8,10 +8,6 @@ function sync_objects_ratings_api($connect,$showMessages = FALSE){
 
 		$client = new \GuzzleHttp\Client(['verify' => false]);
 		$ratings = $connect->getAll("SELECT DISTINCT `rating`.`id` AS `id`, `rating`.`status` AS `status`, `rating`.`clean` AS `clean`, `rating`.`comfort` AS `comfort`, `rating`.`location` AS `location`, `rating`.`staff` AS `staff`, `rating`.`ratio` AS `ratio`, `rating`.`leisure` AS `leisure`, `rating`.`treatment` AS `treatment`, `rating`.`id_obj` AS `id_obj`, `rating`.`positive` AS `positive`, `rating`.`negative` AS `negative`, `rating`.`date_send` AS `date_send`, `rating`.`company_rating` AS `company_rating`, `rating`.`turist` AS `turist`, `rating`.`advice` AS `advice`, `klient`.`name` AS `klient_name` FROM `rating` LEFT JOIN `reckoning` ON `rating`.`schet` = `reckoning`.`id` LEFT JOIN `klient` ON `reckoning`.`turist` = `klient`.`id` INNER JOIN `object` ON `object`.`id` = `rating`.`id_obj` WHERE `rating`.`date_send` IS NOT NULL AND `rating`.`clean` IS NOT NULL AND `rating`.`comfort` IS NOT NULL AND `rating`.`location` IS NOT NULL AND `rating`.`staff` IS NOT NULL AND `rating`.`ratio` IS NOT NULL AND `rating`.`leisure` IS NOT NULL AND `rating`.`synchronized` = 0 AND `rating`.`id_obj` > 0 AND `object`.`synchronized` = 1");
-
-		echo '<pre>';
-		print_r($ratings);
-
 		foreach ($ratings as $rating) {
 			$ratingSum = $rating['clean']+$rating['comfort']+$rating['location']+$rating['staff']+$rating['ratio']+$rating['leisure']+$rating['treatment'];
 
@@ -36,13 +32,6 @@ function sync_objects_ratings_api($connect,$showMessages = FALSE){
 				'advice' => (string)$rating['advice'],
 				'author_name' => $turistName,
 				'average' => round($ratingSum/$ratingDel,1),
-				'clean' => (string)$rating['clean'],
-				'comfort' => (string)$rating['comfort'],
-				'location' => (string)$rating['location'],
-				'staff' => (string)$rating['staff'],
-				'ratio' => (string)$rating['ratio'],
-				'leisure' => (string)$rating['leisure'],
-				'treatment' => (string)$rating['treatment'],
 				'company_rating' => (string)$rating['company_rating'],
 				'has_company_rating' => (int)(mb_strlen((string)$rating['company_rating']) > 0),
 				'uid' => 1

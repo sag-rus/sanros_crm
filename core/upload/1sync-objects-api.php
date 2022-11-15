@@ -27,12 +27,9 @@ function sync_objects_api($connect){
 				'description' => $direction['description']?$direction['description']:$direction['meta_desc'],
 				'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4',
 				'sort' => $direction['sort'],
-				//'uri' => '/направления/'.change_text_url($direction['name']),
-				'uri' => '/'.change_text_url($direction['name']),
+				'uri' => '/направления/'.change_text_url($direction['name']),
 				'status' => 1
 			];
-
-			//echo "Отправка запроса на  https://sites.tonia.ru/api/location/direction/set/".$direction['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/location/direction/set/".$direction['id'],[
 				'form_params' => $directionAr
@@ -62,12 +59,9 @@ function sync_objects_api($connect){
 				'parent_id' => $region['id_direction'],
 				'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4',
 				'description' => $region['description']?$region['description']:$region['meta_desc'],
-				//'uri' => '/направления/'.change_text_url($region['direction_name']).'/'.change_text_url($region['name']),
-				'uri' => '/'.change_text_url($region['direction_name']).'/'.change_text_url($region['name']),
+				'uri' => '/направления/'.change_text_url($region['direction_name']).'/'.change_text_url($region['name']),
 				'status' => 1
 			];
-
-			//echo "Отправка запроса на  https://sites.tonia.ru/api/location/region/set/".$region['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/location/region/set/".$region['id'],[
 				'form_params' => $regionAr
@@ -97,12 +91,9 @@ function sync_objects_api($connect){
 				'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4',
 				'description' => $regional_direction['description'],
 				'sort' => $regional_direction['sort'],
-				//'uri' => '/направления/'.change_text_url($regional_direction['dir_name']).'/'.change_text_url($regional_direction['name_reg']).'/'.change_text_url($regional_direction['name']),
-				'uri' => '/'.change_text_url($regional_direction['dir_name']).'/'.change_text_url($regional_direction['name_reg']).'/'.change_text_url($regional_direction['name']),
+				'uri' => '/направления/'.change_text_url($regional_direction['dir_name']).'/'.change_text_url($regional_direction['name_reg']).'/'.change_text_url($regional_direction['name']),
 				'status' => 1
 			];
-
-			//echo "Отправка запроса на https://sites.tonia.ru/api/location/regional_direction/set/".$regional_direction['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/location/regional_direction/set/".$regional_direction['id'],[
 				'form_params' => $regionalDirectionAr
@@ -131,7 +122,6 @@ function sync_objects_api($connect){
 			$typeAr['name_prepositional'] = $type['name_prepositional'];
 			$typeAr['status'] = 1;
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/type/set/".$type['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/type/set/".$type['id'],[
 				'form_params' => $typeAr
@@ -158,7 +148,6 @@ function sync_objects_api($connect){
 			$profileAr['uri'] = '/профили-лечения/'.change_text_url($profile['name']);
 			$profileAr['status'] = 1;
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/object/profile/set/".$profile['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/object/profile/set/".$profile['id'],[
 				'form_params' => $profileAr
@@ -192,7 +181,6 @@ function sync_objects_api($connect){
 			$methodAr['uri'] = '/методы-лечения/'.change_text_url($method['name']);
 			$methodAr['status'] = 1;
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/object/method/set/".$method['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/object/method/set/".$method['id'],[
 				'form_params' => $methodAr
@@ -230,8 +218,6 @@ function sync_objects_api($connect){
 			$promotionAr['end_timestamp'] = strtotime($promotion['date_end']);
 			$promotionAr['uid'] = 1;
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/promo/set/".$promotion['id'].'<br>';
-
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/promo/set/".$promotion['id'],[
 				'form_params' => $promotionAr
 			]);
@@ -262,8 +248,6 @@ function sync_objects_api($connect){
 			$housingAr['resort_id'] = $housing['id_obj'];
 			$housingAr['status'] = 1;
 			$housingAr['uid'] = 1;
-
-			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/housing/set/".$housing['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/housing/set/".$housing['id'],[
 				'form_params' => $housingAr
@@ -300,8 +284,6 @@ function sync_objects_api($connect){
 			$rateAr['start_date'] = $rate['start_date'] ? strtotime($rate['start_date']) : 0;
 			$rateAr['end_date'] = $rate['end_date'] ? strtotime($rate['end_date']) : 0;
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/rate/set/".$rate['id'].'<br>';
-
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/rate/set/".$rate['id'],[
 				'form_params' => $rateAr
 			]);
@@ -332,8 +314,6 @@ function sync_objects_api($connect){
 			$comfortAr['type'] = $comfort['type'];
 			$comfortAr['uid'] = 1;
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/room/comfort/set/".$comfort['id'].'<br>';
-
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/room/comfort/set/".$comfort['id'],[
 				'form_params' => $comfortAr
 			]);
@@ -362,8 +342,6 @@ function sync_objects_api($connect){
 			$infrastructureAr['name'] = $infrastructure['name'];
 			$infrastructureAr['uid'] = 1;
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/infrastructure/set/".$infrastructure['id'].'<br>';
-
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/infrastructure/set/".$infrastructure['id'],[
 				'form_params' => $infrastructureAr
 			]);
@@ -383,7 +361,7 @@ function sync_objects_api($connect){
 		}
 
 
-		$objects = $connect->getAll("SELECT `object`.`id` AS `id`, `object`.`name` AS `name`, `object`.`url_name` AS `url_name`, `object`.`url_name_origin` AS `url_name_origin`, `object`.`id_reg` AS `region_id`, `object`.`region_direction_id` AS `region_direction_id`, `object`.`direction` AS `direction`, `object`.`active` AS `active`, `object`.`note` AS `note`, `object`.`type` AS `type`, `object`.`full_name` AS `full_name`, `object`.`city` AS `city`, `object`.`city_genitive` AS `city_genitive`, `object`.`address` AS `address`, `object`.`telephone` AS `telephone`, `object`.`email` AS `email`, `object`.`id_profile` AS `id_profile`, `object`.`id_methods` AS `id_methods`, `object`.`id_infa` AS `id_infa`, `object`.`check_places` AS `check_places`, `object`.`default_price_type` AS `default_price_type`, `object`.`description` AS `description`, `object`.`state_program` AS `state_program`, `object`.`children_rest` AS `children_rest`, (`object`.`image` IS NOT NULL) AS `has_thumbnail`, `type_object`.`name` AS `type_name`, `object`.`uri_schema` AS `uri_schema`, `object`.`longitude`, `object`.`latitude`, `object`.`featured` AS `featured`, `object`.`selected` AS `selected` FROM `object` LEFT JOIN `type_object` ON `object`.`type` = `type_object`.`id` WHERE `object`.`synchronized` = 0 AND `object`.`type` IS NOT NULL AND `object`.`id_reg` > 0 LIMIT 50");
+		$objects = $connect->getAll("SELECT `object`.`id` AS `id`, `object`.`name` AS `name`, `object`.`url_name` AS `url_name`, `object`.`url_name_origin` AS `url_name_origin`, `object`.`id_reg` AS `region_id`, `object`.`region_direction_id` AS `region_direction_id`, `object`.`direction` AS `direction`, `object`.`active` AS `active`, `object`.`note` AS `note`, `object`.`type` AS `type`, `object`.`full_name` AS `full_name`, `object`.`city` AS `city`, `object`.`city_genitive` AS `city_genitive`, `object`.`address` AS `address`, `object`.`telephone` AS `telephone`, `object`.`email` AS `email`, `object`.`id_profile` AS `id_profile`, `object`.`id_methods` AS `id_methods`, `object`.`id_infa` AS `id_infa`, `object`.`check_places` AS `check_places`, `object`.`default_price_type` AS `default_price_type`, `object`.`description` AS `description`, `object`.`state_program` AS `state_program`, `object`.`children_rest` AS `children_rest`, (`object`.`image` IS NOT NULL) AS `has_thumbnail`, `type_object`.`name` AS `type_name`, `object`.`uri_schema` AS `uri_schema`, `object`.`longitude`, `object`.`latitude`, `object`.`featured` AS `featured` FROM `object` LEFT JOIN `type_object` ON `object`.`type` = `type_object`.`id` WHERE `object`.`synchronized` = 0 AND `object`.`type` IS NOT NULL AND `object`.`id_reg` > 0");
 
 		foreach ($objects as $object) {
 			$objectAr = [];
@@ -405,7 +383,6 @@ function sync_objects_api($connect){
 			$objectAr['longitude'] = $object['longitude'];
 			$objectAr['latitude'] = $object['latitude'];
 			$objectAr['featured'] = $object['featured'];
-			$objectAr['selected'] = $object['selected'];
 			$objectAr['state_program'] = $object['state_program'];
 			$objectAr['children_rest'] = $object['children_rest'];
 
@@ -454,8 +431,7 @@ function sync_objects_api($connect){
 
 				if(!is_null($object['direction'])) {
                     $directionUrl = $connect->getOne("SELECT `name` FROM `direction_object` WHERE `id_country` = 1 AND `id` = ?i", $object['direction']);
-                    //$objectArFullUri = '/направления/'.change_text_url($directionUrl);
-                    $objectArFullUri = '/'.change_text_url($directionUrl);
+                    $objectArFullUri = '/направления/'.change_text_url($directionUrl);
                     if($objectAr['region_id'] && mb_strlen($object['url_name_origin']) > 0) {
                         $regionUrl = $connect->getOne("SELECT `name` FROM `region` WHERE `region`.`id_country` = 1 AND `region`.`id` = ?i", $objectAr['region_id']);
                         $objectArFullUri .= '/' . change_text_url($regionUrl);
@@ -502,8 +478,6 @@ function sync_objects_api($connect){
             $objectAr['uri'] = '/объект/' . $object['url_name'];
             $objectAr['uri_type'] = 0;
           }
-
-          //echo "Отправка запроса на https://sites.tonia.ru/api/object/set/".$object['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/object/set/".$object['id'],[
 				'form_params' => $objectAr
@@ -586,8 +560,6 @@ function sync_objects_api($connect){
 			$roomAr['travelline_prices_json'] = $room['price_places'];
 			$roomAr['uid'] = 1;
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/room/set/".$room['id'].'<br>';
-
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/room/set/".$room['id'],[
 				'form_params' => $roomAr
 			]);
@@ -639,8 +611,6 @@ function sync_objects_api($connect){
 			$dateRangeAr['resort_id'] = $dateRange['id_obj'];
 			$dateRangeAr['uid'] = 1;
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/daterange/set/".$dateRange['id'].'<br>';
-
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/daterange/set/".$dateRange['id'],[
 				'form_params' => $dateRangeAr
 			]);
@@ -670,8 +640,6 @@ function sync_objects_api($connect){
 			$placeAr['status'] = 1;
 			$placeAr['resort_id'] = $place['id_obj'];
 			$placeAr['uid'] = 1;
-
-			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/place/set/".$place['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/place/set/".$place['id'],[
 				'form_params' => $placeAr
@@ -709,8 +677,6 @@ function sync_objects_api($connect){
 			$rangeAr['treatment'] = $range['treatment'];
 			$rangeAr['uid'] = 1;
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/range/set/".$range['id'].'<br>';
-
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/range/set/".$range['id'],[
 				'form_params' => $rangeAr
 			]);
@@ -745,7 +711,7 @@ function sync_objects_api($connect){
 			}
 		}
 
-		$prices = $connect->getAll("SELECT `id`, `id_room`, `price`, `id_range`, `active` FROM `price` WHERE `synchronized` = 0 AND ".$pricesYearWhere." LIMIT 500");
+		$prices = $connect->getAll("SELECT `id`, `id_room`, `price`, `id_range`, `active` FROM `price` WHERE `synchronized` = 0 AND ".$pricesYearWhere);
 
 		foreach ($prices as $price) {
 			$priceAr = [];
@@ -756,8 +722,6 @@ function sync_objects_api($connect){
 			$priceAr['range_id'] = $price['id_range'];
 			$priceAr['status'] = (int)(!$price['active']);
 			$priceAr['uid'] = 1;
-
-			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/set/".$price['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/set/".$price['id'],[
 				'form_params' => $priceAr
@@ -780,7 +744,7 @@ function sync_objects_api($connect){
 		return true;
 	}
 	catch (Exception $e) {
-		echo 'Exception='.$e->getMessage();
+		echo $e->getMessage();
 		return false;
 	}
 

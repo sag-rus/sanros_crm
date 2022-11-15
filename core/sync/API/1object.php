@@ -51,11 +51,10 @@ function update_contact_object_account($connect, $data){
 	if(CheckAuthObjectCabinet::check_authorization()){
 		$object = $data["object"];
 		$address = $data["address"];
-		$travelline_id = $data["travelline_id"];
-		/*$fax = $data["fax"];
-		$website = $data["website"];*/
-		$connect->query("UPDATE object SET address=?s, travelline_id=?s, synchronized=0 WHERE id=?i", $address, $travelline_id, $object);
-		save_history_object("Изменение контактов с travelline_id");
+		$fax = $data["fax"];
+		$website = $data["website"];
+		$connect->query("UPDATE object SET address=?s, fax=?s, website=?s, synchronized=0 WHERE id=?i", $address, $fax, $website, $object);
+		save_history_object("Изменение контактов");
 	}
 	return FALSE;
 }

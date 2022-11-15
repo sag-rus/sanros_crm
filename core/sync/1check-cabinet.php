@@ -158,9 +158,7 @@ $onlinePaymentInfoSber = array(
           $configNew->booking = $query["booking"];
         }
 				$answer[$id] = $func($connect, $query);
-				
-				//$connect->query("INSERT INTO cabinet_request SET `request`='?i', `query`='?s'", $id, str_replace('\\', '\\\\', json_encode($query)));
-				$connect->query("INSERT INTO cabinet_request SET `request`='$id', `query`='".str_replace('\\', '\\\\', json_encode($query))."'");
+				$connect->query("INSERT INTO cabinet_request(request) VALUES(?i)", $id);
 			}else{
 				file_put_contents($directory."/core/sync/file/no-func.txt", $func);
 			}

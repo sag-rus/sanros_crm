@@ -1,11 +1,6 @@
 <?php
 $loader = require( __DIR__ . '/../../../vendor/autoload.php');
 
-if ($_GET['a']=='aznakaevo') {
-	echo '123';
-	send_aznakaevo_email(false, false);
-}
-
 function save_source_booking_data($connect, $data) {
 	$surname = $data["surname"];
   $name = $data["name"];
@@ -202,13 +197,6 @@ function send_activation_email($connect, $data){
 	}elseif($connect->getOne("SELECT id FROM klient WHERE login=?s AND active=1", $email))
 		return 2;
 	return 0;
-}
-
-function send_aznakaevo_email($connect, $data){
-	global $directory;
-	$email = 'sagrus@yandex.ru';
-	send_mail_sanata($email, 'Заявка на бронь с сайта санаторий-азнакаевский.рф', 'Тестовое письма типа в Азнакаево');
-	return 1;
 }
 
 function send_recovery_email($connect, $data){

@@ -1029,7 +1029,6 @@ function update_main_data_object(id){
 		'state_program': $('#state-program').prop('checked') ? 1 : 0,
 		'children_rest': $('#children-rest').prop('checked') ? 1 : 0,
 		'featured': $('#featured').prop('checked') ? 1 : 0,
-		'selected': $('#selected').prop('checked') ? 1 : 0,
 		"description": q
 	};
 	// var str = 'func=update_main_data_object&id=' + id;

@@ -136,37 +136,6 @@ require_once __DIR__."/../../vendor/autoload.php";
 			save_client_to_history($connect, $last_id, "Создание клиента");
 			$note_booking = isset($data_booking->note)?trim($data_booking->note):"";
 
-			if ($id_obj=='1') {
-
-				$azn_text = 'Дата заезда: '.$data_booking_JSON["date"].'<br>';
-				$azn_text .= 'Количество дней: '.$data_booking->days.'<br>';
-
-				if(isset($data_booking->position) && $data_booking->position){
-					$positions = json_decode($data_booking->position, TRUE);
-					foreach($positions as $position){
-						if ($position['id_room']>0) {
-							$room = $connect->getOne("SELECT name FROM room WHERE id=?i", $position['id_room']);
-							$azn_text .= 'Номер: '.$room.'<br>';
-							$azn_text .= 'Количество: '.$position['number'].'<br>';
-							$azn_text .= 'Цена: '.$position['price'].'<br><br>';
-						}
-					}
-				}		
-
-				$azn_text .= 'Имя: '.$data_booking_JSON["name"].'<br>';
-				$azn_text .= 'Фамилия: '.$data_booking_JSON["sur"].'<br>';
-				$azn_text .= 'Отчество: '.$data_booking_JSON["otch"].'<br>';
-				$azn_text .= 'Телефон: '.$data_booking_JSON["tel"].'<br>';
-				$azn_text .= 'E-mail: '.$email.'<br><br>';
-				$azn_text .= 'Комментарий: '.$note_booking.'<br><br>';
-
-
-				send_mail_sanata('sanatazn1@yahoo.com', 'Заявка на бронь с сайта санаторий-азнакаевский.рф', $azn_text);
-
-				$note_booking .= '!!!!ЗАЯВКА БЫЛА ОТПРАВЛЕНА САНАТОРИЮ НА ОБРАБОТКУ!!!!!';
-			}
-
-
 			$connect->query("INSERT INTO reckoning(date, turist, id_obj, rest, hash, website, source, form_booking, note) VALUES (?s, ?i, ?i, ?i, ?s, ?s, ?i, 'module',?s)", $today, $last_id, $id_obj, $last_id, $hash, $website, $source, $note_booking);
 			$id = $connect->insertId();
 			$id_tour = $connect->getOne("SELECT id_tour FROM object WHERE id=?i", $id_obj);
@@ -189,7 +158,6 @@ require_once __DIR__."/../../vendor/autoload.php";
 					$note = isset($position["place"])?$position["place"]:"";
 					$price = isset($position["price"])?(float)$position["price"]:0;
 					$number = isset($position["number"])?(int)$position["number"]:1;
-
 					$connect->query("INSERT INTO position_reck(id_room, schet, days, date_z, number, sum, type, note, reward, add_one_day) VALUES (?i, ?i, ?i, ?s, ?s, ?s, ?i, ?s, ?s, ?i)", $id_room, $id, $days, $date_z, $number, $price, $type_index, $note, $reward, (int)$add_one_day);
 					if(isset($position["ratePlan"]) AND $position["ratePlan"] > 0){
 						if($connect->getOne("SELECT id FROM object WHERE id=?i AND (check_places=1 OR check_places=2)", $id_obj)){
@@ -341,14 +309,7 @@ require_once __DIR__."/../../vendor/autoload.php";
 
 				$address = get_address_by_ip($client_info["ip"]);
 
-				if ($website=='санаторий-азнакаевский.рф') {
-					$azn_text .= 'Имя: '.$fio.'<br>';
-					$azn_text .= 'Телефон: '.$client_info["telephone"].'<br>';
-					$azn_text .= 'Вопрос: '.$question.'<br>';
-					send_mail_sanata('sanatazn1@yahoo.com', 'Вопрос с сайта санаторий-азнакаевский.рф', $azn_text);
-				}
-
-				/*if($callback_time)
+				if($callback_time)
 					$connect->query("INSERT INTO order_call_back(website, turist, telephone, question, address, type, source, href, chat_id, user_remote_id, form_id, callback_time) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i)", $website, $fio, $client_info["telephone"], $question, $address, $type, $source, $page, $chat_id, $user_remote_id,$form_id, strtotime($callback_time));
 				else
 					$connect->query("INSERT INTO order_call_back(website, turist, telephone, question, address, type, source, href, chat_id, user_remote_id, form_id) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i)", $website, $fio, $client_info["telephone"], $question, $address, $type, $source, $page, $chat_id, $user_remote_id,$form_id);
@@ -357,7 +318,7 @@ require_once __DIR__."/../../vendor/autoload.php";
 				if($id){
 					$last = $connect->insertId();
 					$connect->query("UPDATE order_call_back SET type='module', promo=?i WHERE id=?i", $id, $last);
-				}*/
+				}
 
 			}else{
 
