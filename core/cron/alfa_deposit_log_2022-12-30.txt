@@ -1,0 +1,1139 @@
+
+START depositPayment bid_pay=122377-16
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55668
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-16
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-15
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55668
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-15
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-14
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-14
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-13
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122377-13
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-12
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-12
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-11
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55668
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-11
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-10
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-10
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-9
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55668
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-9
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122347-3
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 2392409
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 217.30.255.106
+    [orderNumber] => 122347-3
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-8
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55668
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-8
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122346-1
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 1184211
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122346-1
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122347-2
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 2392409
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 217.30.255.106
+    [orderNumber] => 122347-2
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122347-1
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 2392409
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 217.30.255.106
+    [orderNumber] => 122347-1
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-7
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55668
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-7
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-6
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55668
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122377-6
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-5
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55668
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-5
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-4
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55668
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-4
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-3
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55668
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122377-3
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-2
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55668
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122377-2
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-1
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55668
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122377-1
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122483-1
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 1215
+    [bankInfo] => Array
+        (
+            [bankCountryCode] => RU
+            [bankName] => Alfa-Bank
+        )
+
+    [cardAuthInfo] => Array
+        (
+            [approvalCode] => 76429H
+            [cardholderName] => Card Holder
+            [expiration] => 202903
+            [maskedPan] => 220015*5062
+            [paymentSystem] => MIR
+            [product] => PRD
+            [secureAuthInfo] => Array
+                (
+                    [eci] => 5
+                    [paResStatus] => Y
+                    [threeDSInfo] => Array
+                        (
+                            [cavv] => AAIBA4llhwAAAAMVl2WHAUj4F7w=
+                            [xid] => 40cdb2a3-be69-46ac-906a-59e18d012ac4
+                        )
+
+                    [veResStatus] => Y
+                )
+
+        )
+
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122483-1
+    [orderStatus] => 2
+    [paymentAmountInfo] => Array
+        (
+            [depositedAmount] => 1215
+            [paymentState] => DEPOSITED
+        )
+
+    [paymentWay] => CARD
+)
+
+action=deposit.do
+Array
+(
+    [errorCode] => 7
+    [errorMessage] => Платёж должен быть в корректном состоянии
+)
+
+Оплата картой №122483
+
+START depositPayment bid_pay=122377-18
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 1511
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122377-18
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122455-3
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 2014
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122455-3
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122455-2
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 2000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122455-2
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122455-1
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 2000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122455-1
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122448-4
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 1511
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122448-4
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122448-3
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 1511
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122448-3
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122448-2
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 1511
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122448-2
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122448-1
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 1511
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122448-1
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122441-3
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 2024
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122441-3
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122441-2
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 2014
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122441-2
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122441-1
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 2014
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122441-1
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-17
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55668
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122377-17
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122428-1
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 3428000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.207.224.212
+    [orderNumber] => 122428-1
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-16
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55668
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-16
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-15
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55668
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-15
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-14
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-14
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-13
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122377-13
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-12
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-12
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-11
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55668
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-11
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-10
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-10
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-18
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 1511
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122377-18
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122455-3
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 2014
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122455-3
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122455-2
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 2000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122455-2
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122455-1
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 2000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122455-1
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122448-4
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 1511
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122448-4
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122448-3
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 1511
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122448-3
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122448-2
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 1511
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122448-2
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122448-1
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 1511
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122448-1
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122441-3
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 2024
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122441-3
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122441-2
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 2014
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122441-2
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122441-1
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 2014
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122441-1
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-17
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55668
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122377-17
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122428-1
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 3428000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.207.224.212
+    [orderNumber] => 122428-1
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-16
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55668
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-16
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-15
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55668
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-15
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-14
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-14
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-13
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122377-13
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-12
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-12
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-11
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55668
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-11
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-10
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-10
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-18
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 1511
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122377-18
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122455-3
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 2014
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122455-3
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122455-2
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 2000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122455-2
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122455-1
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 2000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122455-1
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122448-4
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 1511
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122448-4
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122448-3
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 1511
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122448-3
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122448-2
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 1511
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122448-2
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122448-1
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 1511
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122448-1
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122441-3
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 2024
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122441-3
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122441-2
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 2014
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122441-2
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122441-1
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 2014
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122441-1
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-17
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55668
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122377-17
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122428-1
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 3428000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.207.224.212
+    [orderNumber] => 122428-1
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-16
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55668
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-16
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-15
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55668
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-15
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-14
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-14
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-13
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [orderNumber] => 122377-13
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-12
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-12
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-11
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55668
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-11
+    [orderStatus] => 0
+)
+
+
+START depositPayment bid_pay=122377-10
+action=getOrderStatusExtended.do
+Array
+(
+    [amount] => 55000
+    [currency] => 643
+    [errorCode] => 0
+    [errorMessage] => Успешно
+    [ip] => 178.204.183.134
+    [orderNumber] => 122377-10
+    [orderStatus] => 0
+)
+

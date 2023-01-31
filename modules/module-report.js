@@ -352,23 +352,23 @@ function filter_payment(){
 
 	var card_payment_types = 0;
 	if(method_opl === "5-1") {
-		method_opl = 5;
+		method_opl = '5,6';
 		card_payment_types = 1;
 	}
 	else if(method_opl === "5-2") {
-		method_opl = 5;
+		method_opl = '5,6';
     card_payment_types = 2;
 	}
   else if(method_opl === "5-3") {
-    method_opl = 5;
+    method_opl = '5,6';
     card_payment_types = 3;
   }
   else if(method_opl === "5-4") {
-    method_opl = 5;
+    method_opl = '5,6';
     card_payment_types = 4;
   }
 	else {
-		method_opl = parseInt(method_opl);
+		//method_opl = parseInt(method_opl);
 	}
 
 	var type_opl = $('#type_opl').val();

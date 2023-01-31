@@ -20,9 +20,12 @@ function upload_rating_object($connect){
 			$file = "temp/xml/rating/".$id.".xml";
 			$fileJSON = __DIR__.'/../../temp/json/rating/'.$id.'.json';
 			$fileCache = __DIR__.'/../../temp/json/rating/'.$id.'.cache';
-			$server_file = "/var/www/default-site/public_html/price/XML/rating/".$id.".xml";
+			/*$server_file = "/var/www/default-site/public_html/price/XML/rating/".$id.".xml";
 			$server_file2 = "/var/www/default-site/public_html/price/json/rating/".$id.".json";
-			$server_file3 = "/var/www/default-site/public_html/price/json/rating/".$id.".cache";
+			$server_file3 = "/var/www/default-site/public_html/price/json/rating/".$id.".cache";*/
+			$server_file = "/load_price/XML/rating/".$id.".xml";
+			$server_file2 = "/load_price/json/rating/".$id.".json";
+			$server_file3 = "/load_price/json/rating/".$id.".cache";
 
 			if(!ftp_put($connect_server, $server_file, $file, FTP_ASCII))
 				return "<div class='alert alert-danger'>Не удалось загрузить файл на сервер</div>";
@@ -40,7 +43,8 @@ function upload_rating_object($connect){
 	}
 
 	$fileJSONCache = __DIR__.'/../../temp/json/rating/rating.cache';
-	$server_file4 = "/var/www/default-site/public_html/price/json/rating/rating.cache";
+	//$server_file4 = "/var/www/default-site/public_html/price/json/rating/rating.cache";
+	$server_file4 = "/load_price/json/rating/rating.cache";
 	if(!file_exists(__DIR__.'/../../temp/json'))
 		mkdir(__DIR__.'/../../temp/json',0777,true);
 

@@ -76,6 +76,14 @@ $onlinePaymentInfoSber = array(
     "password_v4" => $conf->PASSWORD_SBERBANK_V4
 );
 
+$onlinePaymentInfoAlfa = array(
+  "link" => $conf->BANK_PAYMENT_LINK_ALFA,
+  "commission" => $conf->BANK_COM_ALFA,
+  "commission_qr" => $conf->BANK_COM_ALFA_QR,
+  "userName" => $conf->USERNAME_ALFA,
+  "password" => $conf->PASSWORD_ALFA
+);
+
 $clientCabinet = array(
   "link" => $conf->turist_cabinet
 );
@@ -104,6 +112,7 @@ $configNew = \App\lib\CRM\Config\Client::getInstance();
 
 $configNew->connect = $connect;
 $configNew->onlinePaymentInfo = $onlinePaymentInfoSber;
+$configNew->onlinePaymentInfoAlfa = $onlinePaymentInfoAlfa;
 $configNew->clientCabinet = $clientCabinet;
 $configNew->objectCabinet = $objectCabinet;
 $configNew->contactInfo = $contactInfo;

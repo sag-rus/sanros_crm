@@ -4,7 +4,8 @@ $rootPath = __DIR__.'/../..';
 
 function upload_promo_object_on_server($connect, $id = NULL){
 	global $rootPath;
-	$ftp_folder = "/var/www/default-site/public_html/price/XML/";
+	//$ftp_folder = "/var/www/default-site/public_html/price/XML/";
+	$ftp_folder = "/load_price/XML/";
 	if(!$id)
 		$id = $_POST["id"];
 	$connect_server = connect_to_server_directory();

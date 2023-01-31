@@ -26,11 +26,13 @@ function upload_sights_on_server($connect){
 	$xml->formatOutput = true;
 	$xml->save($file);
 
-	$ftp_folder = "/var/www/default-site/public_html/price/image/sights";
+	//$ftp_folder = "/var/www/default-site/public_html/price/image/sights";
+	$ftp_folder = "/load_price/image/sights";
 	$local_dir = $directory."/temp/sights";
 	do_upload_images($connect_server, $local_dir, $ftp_folder);
 
-	$server_file = "/var/www/default-site/public_html/price/XML/overall/sights.xml";
+	//$server_file = "/var/www/default-site/public_html/price/XML/overall/sights.xml";
+	$server_file = "/load_price/XML/overall/sights.xml";
 	if(!ftp_put($connect_server, $server_file, $file, FTP_ASCII))
 		return "Не удалось загрузить файл на сервер";
 	ftp_chmod($connect_server, 0644, $server_file);

@@ -24,6 +24,30 @@ spl_autoload_register(function($class){
 	}
 });
 
+function clear_phone($phone) {
+  $phone = preg_replace("/[^0-9]/", "", $phone);
+  if ($phone[0]=='8') $phone[0]='7';
+  if (strlen($phone)==10) $phone='7'.$phone;
+  return $phone; 
+}
+
+function format_phone($phone = '') {
+  if (empty($phone)) {
+    return '';
+  }
+  
+  $phone = clear_phone($phone);
+  if (strlen($phone)>11) {
+    $phone = substr($phone,  0, 11);
+  }
+
+  if (strlen($phone) == 11) {
+    return preg_replace("/([0-9])([0-9])([0-9])([0-9])([0-9])([0-9])([0-9])([0-9])([0-9])([0-9])([0-9])/", "$1 ($2$3$4) $5$6$7-$8$9-$10$11", $phone);
+  }
+
+  return $phone;
+}
+
 function connect_to_MySQL(){
 	include_once(__DIR__."/../config.php");
 	$conf = new JConfig;
@@ -55,7 +79,8 @@ function connect_to_server(){
 	include_once($directory."/config.php");
 
 	$conf = new JConfig;
-	$server = $conf->ftp_server;
+
+  $server = $conf->ftp_server;
 	$user_ftp = $conf->ftp_server_user;
 	$pass_ftp = $conf->ftp_server_pass;
 
@@ -325,7 +350,7 @@ function get_managers($connect, $type = "", $select = "", $id_rights = NULL, $se
 }
 
 function get_object($connect, $id, $type_view = ""){
-	$data_object = $connect->getRow("SELECT name, full_name, type, id_reg, city, fast_booking FROM object WHERE id=?i", $id);
+	$data_object = $connect->getRow("SELECT name, address, full_name, type, id_reg, city, fast_booking FROM object WHERE id=?i", $id);
 	$short = $data_object["name"];
 	$full = $data_object["full_name"];
 	$type = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $data_object["type"]);
@@ -347,6 +372,8 @@ function get_object($connect, $id, $type_view = ""){
 		$country = $connect->getOne("SELECT name FROM country WHERE id=?i", $id_country);
 		if($country)
 			$object = $object." (".$country.", ".$region.$city.")";
+	}elseif($type_view == "full_and_address"){
+  	$object = $data_object["full_name"]." (".$data_object['address'].")";
 	}elseif($type_view == "place"){
 		$object = $short;
 		$data_region = $connect->getRow("SELECT name, id_country FROM region WHERE id=?i", $id_reg);
@@ -1085,7 +1112,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
   if($only_payment_state)
     $data = $connect->getAll("SELECT sum, bank_com, type FROM payment WHERE ".$add_cond."pay_method=5 AND schet=?i".$payment_status_string, $id);
   else
-    $data = $connect->getAll("SELECT sum, bank_com, type FROM payment WHERE pay_method=5 AND schet=?i".$payment_status_string, $id);
+    $data = $connect->getAll("SELECT sum, bank_com, type FROM payment WHERE pay_method in (5,6,7) AND schet=?i".$payment_status_string, $id);
 
 
   foreach($data as $row){
@@ -1100,8 +1127,10 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
       $bank_com+= "3.5";
     else
       $bank_com+= $row["sum"] * ($row["bank_com"] / 100);
-    if($type == "EACH")
+    if($type == "EACH") {
+    	$array["bank_com_procent"] = $row["bank_com"];
       $array["bank_com"] = add_null($bank_com);
+    }
   }
 
   /*if($fact) {
@@ -1414,7 +1443,11 @@ function get_payment($connect, $id, $type = ""){
 
           if($row['terminal'])
               $array[$index]["pay_method"] .= " через терминал";
-        }
+    }elseif($row["pay_method"] == 6)
+			$array[$index]["pay_method"] = "банковской картой";
+		elseif($row["pay_method"] == 7)
+			$array[$index]["pay_method"] = "СБП";
+
 		$array[$index]["sum"] = add_null($row["sum"]);
 		$array[$index]["pay_number"] = $row["pay_number"];
 		$array[$index]["date"] = month_transform($row["date"]);

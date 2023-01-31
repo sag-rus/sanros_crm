@@ -228,7 +228,8 @@ function upload_image_server(){
 	global $directory;
 	$region = $_POST["region"];
 	$objects = explode("_", $_POST["object"]);
-	$ftp_folder = "/var/www/default-site/public_html/price/images";
+	//$ftp_folder = "/var/www/default-site/public_html/price/images";
+	$ftp_folder = "/load_price/images";
 	$local_dir = $directory."/temp/images";
 	$connect_server = connect_to_server();
 	//if($connect_server == 1 OR $connect_server == 2)
@@ -281,11 +282,14 @@ function upload_image_object_server($connect){
       $connect_server = connect_to_server_directory();
 
       if(file_exists($directory."/temp/object-head/images/".$object.".jpg")) {
-        @ftp_put($connect_server,"/var/www/default-site/public_html/price/object/head/".$object.".jpg",$directory."/temp/object-head/images/".$object.".jpg", FTP_BINARY);
-        @ftp_chmod($connect_server, 0777, "/var/www/default-site/public_html/price/object/head/".$object.".jpg");
+        //@ftp_put($connect_server,"/var/www/default-site/public_html/price/object/head/".$object.".jpg",$directory."/temp/object-head/images/".$object.".jpg", FTP_BINARY);
+        //@ftp_chmod($connect_server, 0777, "/var/www/default-site/public_html/price/object/head/".$object.".jpg");
+        @ftp_put($connect_server,"/load_price/object/head/".$object.".jpg",$directory."/temp/object-head/images/".$object.".jpg", FTP_BINARY);
+        @ftp_chmod($connect_server, 0777, "/load_price/object/head/".$object.".jpg");        
       }
 
-      $ftp_folder = "/var/www/default-site/public_html/price/images";
+      //$ftp_folder = "/var/www/default-site/public_html/price/images";
+      $ftp_folder = "/load_price/images";
       $local_dir = $directory . "/temp/images";
 
       $local = $local_dir . "/" . $region . "/" . $object;
@@ -305,7 +309,8 @@ function upload_image_object_server($connect){
       do_upload_images($connect_server, $local, $ftp);
 
 
-      $ftp_folder = "/var/www/default-site/public_html/price/object/images/" . $object;
+      //$ftp_folder = "/var/www/default-site/public_html/price/object/images/" . $object;
+      $ftp_folder = "/load_price/images/object/images/" . $object;
       $local_dir = "temp/object/" . $object;
 
       ftp_rdel($connect_server, $ftp_folder);
@@ -377,7 +382,8 @@ function resetObjectImagesCache($connect, int $object_id) {
 
   $object = $connect->getRow("SELECT id_reg, image FROM object WHERE id=?i", $object_id);
   $local_dir_room = $directory.'/temp/object/'.$object_id.'/rooms';
-  $ftp_folder = "/var/www/default-site/public_html/price/object/images/" . $object_id;
+  //$ftp_folder = "/var/www/default-site/public_html/price/object/images/" . $object_id;
+  $ftp_folder = "/load_price/object/images/" . $object_id;
   $ftp_folder_room_base = $ftp_folder.'/rooms';
 
 

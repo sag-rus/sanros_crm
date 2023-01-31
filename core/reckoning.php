@@ -2785,7 +2785,7 @@ function display_reward_schet($connect){
 		<span>Скидка: <span style="color: red; display: inline; padding: 0px;"><?php echo $row["discount"]; ?></span></span>
 	<?php } ?>
 	<?php if($row["bank_com"] != 0){ ?>
-		<span>Комиссия банка: <span style="color: red; display: inline; padding: 0px;"><?php echo $row["bank_com"]; ?></span></span>
+		<span>Комиссия банка: <span style="color: red; display: inline; padding: 0px;"><?php echo $row["bank_com"]; ?></span> (<?php echo $row["bank_com_procent"]?>%)</span>
 	<?php } ?>
 	<?php if($row["correction"] > 0){ ?>
 		<span>Поправка: <span style="color: green; display: inline; padding: 0px;"><?php echo $row["correction"]; ?></span></span>

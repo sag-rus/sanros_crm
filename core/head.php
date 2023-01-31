@@ -15,6 +15,9 @@ function show_my_bid_menu($connect){
 	    $showdeffered = 0;
 	$deferred = $connect->getOne("SELECT COUNT(*) FROM reckoning WHERE (id_user=?i OR ?i) AND reckoning.status=9", $session_login, $showdeffered);
 ?>
+	<?php if($_POST["search"] == '1'){ ?>
+		<li class="search-bid-page" onclick="get_my_reckoning('search')"><a>Поиск</a></li>
+	<?php } ?>
 	<?php if($new > 0){ ?>
 		<li class="new-bid-page" onclick="get_my_reckoning('new')"><a>Новые</a></li>
 	<?php } ?>
@@ -134,7 +137,20 @@ function get_my_reckoning($connect){
     }
     $str .= ' ORDER BY (id_user = '.$session_login.') DESC, (holding_sum > 0) DESC';
 
+	if($page == "search") {
+			$_POST['q'] = trim($_POST['q']);
+			if (strpos($_POST['q'], '@')!==FALSE) {
+				$str = " AND turist IN (SELECT id FROM klient WHERE `email` LIKE '%".$_POST['q']."%') ORDER BY id desc";
+			} else {
+				$str = " AND turist IN (SELECT id FROM klient WHERE `telephone` LIKE '%".$_POST['q']."%' or `telephone` LIKE '%".format_phone($_POST['q'])."%' or `telephone` LIKE '%".format_phone(clear_phone($_POST['q']))."%' or `telephone` LIKE '%".clear_phone($_POST['q'])."%') ORDER BY id desc";
+			}
+      
+  }        
+
 	$query = "SELECT id, status, status_san, turist, agency, holding_sum, DATE_FORMAT(date, '%d.%m.%Y') as date, DATE_FORMAT(date_z, '%d.%m.%Y') as date_z, id_obj, id_user, sum, active FROM reckoning WHERE (active=0 OR active=2 OR active=1) $str";
+
+	//if ($page=="search") $html .= $query;
+
 	$data = $connect->getAll($query);
 	foreach($data as $row){
 		$row["manager"] = $connect->getOne("SELECT name FROM users WHERE id=?i", $row["id_user"]);

@@ -29,6 +29,17 @@ function show_payment_card_account_sberbank($connect, $data){
   return FALSE;
 }
 
+function show_payment_card_account_alfa($connect, $data){
+  if(CheckAuthTuristCabinet::check_authorization_booking()){
+    $type = $data["type"];
+    $payment = new \App\lib\payment\Alfa\BookingPayment([]);
+    $request = $payment->showPaymentCard($type);
+    unset($payment);
+    return $request;
+  }
+  return FALSE;
+}
+
 function show_holding_card_account_sberbank($connect, $data){
   if(CheckAuthTuristCabinet::check_authorization_booking()){
     $type = $data["type"];
@@ -68,6 +79,17 @@ function register_payment_sberbank($connect, $data){
   }
 }
 
+function register_payment_alfa($connect, $data){
+  if(CheckAuthTuristCabinet::check_authorization_booking()){
+    $type = $data["type"];
+    $qr = $data["qr"];
+    $payment = new \App\lib\payment\Alfa\BookingPayment([]);
+    $request = $payment->registerPayment($type, $qr);
+    unset($payment);
+    return $request;
+  }
+}
+
 function register_holding_sberbank($connect, $data){
   if(CheckAuthTuristCabinet::check_authorization_booking()){
   	if($data['sum'] > 0) {
@@ -102,6 +124,14 @@ function success_payment_sberbank($connect, $data){
   unset($payment);
   return $request;
   //	}
+}
+
+function success_payment_alfa($connect, $data){
+  $bid_pay = $data["bid"];
+  $payment = new \App\lib\payment\Alfa\BookingPayment([]);
+  $request = $payment->depositPayment($bid_pay);
+  unset($payment);
+  return $request;
 }
 
 function success_holding_sberbank($connect, $data){

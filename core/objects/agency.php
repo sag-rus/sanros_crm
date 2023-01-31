@@ -542,6 +542,10 @@ function select_agency($connect){
 			</div>
 		</div>
 		<div class="form-group hide_info" style="display: none">
+			<label class="col-sm-2 control-label">ОГРН</label>
+			<div class="col-sm-4">
+				<div class="well well-sm"><?php echo $row["ogrn"]; ?>&nbsp;</div>
+			</div>			
 			<label class="col-sm-2 control-label">Сайт</label>
 			<div class="col-sm-4">
 				<div class="well well-sm"><?php echo $row["website"]; ?>&nbsp;</div>
@@ -677,6 +681,12 @@ function edit_agency($connect){
 			</div>
 		</div>
 		<div class="form-group">
+			<label class="col-sm-3 control-label">ОГРН</label>
+			<div class="col-sm-9">
+				<input type="text" id="ogrn" class="form-control" value="<?php echo $row['ogrn']; ?>" />
+			</div>
+		</div>		
+		<div class="form-group">
 			<label class="col-sm-3 control-label">Р.счет</label>
 			<div class="col-sm-9">
 				<input type="text" id="rs" class="form-control" value="<?php echo $row['rs']; ?>" />
@@ -762,7 +772,7 @@ function edit_agency($connect){
 
 function update_agency($connect){
 	$_POST["name"] = str_replace("plus", "+", $_POST["name"]);
-	$connect->query("UPDATE agency SET name=?s, short_name=?s, telephone=?s, email=?s, fax=?s, skype=?s, note=?s, address=?s, website=?s, icq=?s, legal_address=?s, ks=?s, rs=?s, bik=?s, inn=?s, kpp=?s, bank=?s, present=?s, post=?s, doc=?s, type_com=?i WHERE id=?i", $_POST["name"], $_POST["short_name"], $_POST["telephone"], $_POST["email"], $_POST["fax"], $_POST["skype"], $_POST["note"], $_POST["address"], $_POST["website"], $_POST["icq"], $_POST["legal_address"], $_POST["ks"], $_POST["rs"], $_POST["bik"], $_POST["inn"], $_POST["kpp"], $_POST["bank"], $_POST["present"], $_POST["post"], $_POST["doc"], $_POST["type_com"], $_POST["id"]);
+	$connect->query("UPDATE agency SET name=?s, short_name=?s, telephone=?s, email=?s, fax=?s, skype=?s, note=?s, address=?s, website=?s, icq=?s, legal_address=?s, ks=?s, rs=?s, bik=?s, inn=?s, kpp=?s, ogrn=?s, bank=?s, present=?s, post=?s, doc=?s, type_com=?i WHERE id=?i", $_POST["name"], $_POST["short_name"], $_POST["telephone"], $_POST["email"], $_POST["fax"], $_POST["skype"], $_POST["note"], $_POST["address"], $_POST["website"], $_POST["icq"], $_POST["legal_address"], $_POST["ks"], $_POST["rs"], $_POST["bik"], $_POST["inn"], $_POST["kpp"], $_POST["ogrn"], $_POST["bank"], $_POST["present"], $_POST["post"], $_POST["doc"], $_POST["type_com"], $_POST["id"]);
 }
 
 function throw_off_agency_contract($connect){

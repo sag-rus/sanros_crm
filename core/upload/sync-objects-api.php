@@ -32,7 +32,7 @@ function sync_objects_api($connect){
 				'status' => 1
 			];
 
-			//echo "Отправка запроса на  https://sites.tonia.ru/api/location/direction/set/".$direction['id'].'<br>';
+			echo "Отправка запроса на  https://sites.tonia.ru/api/location/direction/set/".$direction['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/location/direction/set/".$direction['id'],[
 				'form_params' => $directionAr
@@ -67,7 +67,7 @@ function sync_objects_api($connect){
 				'status' => 1
 			];
 
-			//echo "Отправка запроса на  https://sites.tonia.ru/api/location/region/set/".$region['id'].'<br>';
+			echo "Отправка запроса на  https://sites.tonia.ru/api/location/region/set/".$region['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/location/region/set/".$region['id'],[
 				'form_params' => $regionAr
@@ -102,7 +102,7 @@ function sync_objects_api($connect){
 				'status' => 1
 			];
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/location/regional_direction/set/".$regional_direction['id'].'<br>';
+			echo "Отправка запроса на https://sites.tonia.ru/api/location/regional_direction/set/".$regional_direction['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/location/regional_direction/set/".$regional_direction['id'],[
 				'form_params' => $regionalDirectionAr
@@ -131,7 +131,7 @@ function sync_objects_api($connect){
 			$typeAr['name_prepositional'] = $type['name_prepositional'];
 			$typeAr['status'] = 1;
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/type/set/".$type['id'].'<br>';
+			echo "Отправка запроса на https://sites.tonia.ru/api/type/set/".$type['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/type/set/".$type['id'],[
 				'form_params' => $typeAr
@@ -158,7 +158,7 @@ function sync_objects_api($connect){
 			$profileAr['uri'] = '/профили-лечения/'.change_text_url($profile['name']);
 			$profileAr['status'] = 1;
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/object/profile/set/".$profile['id'].'<br>';
+			echo "Отправка запроса на https://sites.tonia.ru/api/object/profile/set/".$profile['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/object/profile/set/".$profile['id'],[
 				'form_params' => $profileAr
@@ -192,7 +192,7 @@ function sync_objects_api($connect){
 			$methodAr['uri'] = '/методы-лечения/'.change_text_url($method['name']);
 			$methodAr['status'] = 1;
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/object/method/set/".$method['id'].'<br>';
+			echo "Отправка запроса на https://sites.tonia.ru/api/object/method/set/".$method['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/object/method/set/".$method['id'],[
 				'form_params' => $methodAr
@@ -230,7 +230,7 @@ function sync_objects_api($connect){
 			$promotionAr['end_timestamp'] = strtotime($promotion['date_end']);
 			$promotionAr['uid'] = 1;
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/promo/set/".$promotion['id'].'<br>';
+			echo "Отправка запроса на https://sites.tonia.ru/api/resort/promo/set/".$promotion['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/promo/set/".$promotion['id'],[
 				'form_params' => $promotionAr
@@ -263,7 +263,7 @@ function sync_objects_api($connect){
 			$housingAr['status'] = 1;
 			$housingAr['uid'] = 1;
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/housing/set/".$housing['id'].'<br>';
+			echo "Отправка запроса на https://sites.tonia.ru/api/resort/housing/set/".$housing['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/housing/set/".$housing['id'],[
 				'form_params' => $housingAr
@@ -332,7 +332,7 @@ function sync_objects_api($connect){
 			$comfortAr['type'] = $comfort['type'];
 			$comfortAr['uid'] = 1;
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/room/comfort/set/".$comfort['id'].'<br>';
+			echo "Отправка запроса на https://sites.tonia.ru/api/resort/room/comfort/set/".$comfort['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/room/comfort/set/".$comfort['id'],[
 				'form_params' => $comfortAr
@@ -362,7 +362,7 @@ function sync_objects_api($connect){
 			$infrastructureAr['name'] = $infrastructure['name'];
 			$infrastructureAr['uid'] = 1;
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/infrastructure/set/".$infrastructure['id'].'<br>';
+			echo "Отправка запроса на https://sites.tonia.ru/api/resort/infrastructure/set/".$infrastructure['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/infrastructure/set/".$infrastructure['id'],[
 				'form_params' => $infrastructureAr
@@ -503,7 +503,7 @@ function sync_objects_api($connect){
             $objectAr['uri_type'] = 0;
           }
 
-          //echo "Отправка запроса на https://sites.tonia.ru/api/object/set/".$object['id'].'<br>';
+          echo "Отправка запроса на https://sites.tonia.ru/api/object/set/".$object['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/object/set/".$object['id'],[
 				'form_params' => $objectAr
@@ -586,7 +586,7 @@ function sync_objects_api($connect){
 			$roomAr['travelline_prices_json'] = $room['price_places'];
 			$roomAr['uid'] = 1;
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/room/set/".$room['id'].'<br>';
+			echo "Отправка запроса на https://sites.tonia.ru/api/resort/room/set/".$room['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/room/set/".$room['id'],[
 				'form_params' => $roomAr
@@ -639,7 +639,7 @@ function sync_objects_api($connect){
 			$dateRangeAr['resort_id'] = $dateRange['id_obj'];
 			$dateRangeAr['uid'] = 1;
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/daterange/set/".$dateRange['id'].'<br>';
+			echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/daterange/set/".$dateRange['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/daterange/set/".$dateRange['id'],[
 				'form_params' => $dateRangeAr
@@ -709,7 +709,7 @@ function sync_objects_api($connect){
 			$rangeAr['treatment'] = $range['treatment'];
 			$rangeAr['uid'] = 1;
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/range/set/".$range['id'].'<br>';
+			echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/range/set/".$range['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/range/set/".$range['id'],[
 				'form_params' => $rangeAr
@@ -757,7 +757,7 @@ function sync_objects_api($connect){
 			$priceAr['status'] = (int)(!$price['active']);
 			$priceAr['uid'] = 1;
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/set/".$price['id'].'<br>';
+			echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/set/".$price['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/set/".$price['id'],[
 				'form_params' => $priceAr

@@ -108,6 +108,7 @@ function update_agency(id){
 	var website = $('#website').val();
 	var inn = $('#inn').val();
 	var kpp = $('#kpp').val();
+	var ogrn = $('#ogrn').val();
 	var bik = $('#bik').val();
 	var ks = $('#ks').val();
 	var rs = $('#rs').val();
@@ -127,7 +128,7 @@ function update_agency(id){
 		show_warning('.edit', 'Не введено поле Адрес');
 	else{
 		name = name.replace("+", "plus");
-		var str = 'func=update_agency&name=' + name + '&short_name=' + short_name + '&telephone=' + telephone + '&email=' + email + '&fax=' + fax + '&icq=' + icq + '&skype=' + skype + '&note=' + note_a + '&address=' + address + '&website=' + website + '&id=' + id + '&legal_address=' + legal_address + '&inn=' + inn + '&kpp=' + kpp + '&bik=' + bik + '&ks=' + ks + '&rs=' + rs + '&bank=' + bank + '&present=' + present + '&post=' + post + '&doc=' + doc + '&type_com=' + type_com;
+		var str = 'func=update_agency&name=' + name + '&short_name=' + short_name + '&telephone=' + telephone + '&email=' + email + '&fax=' + fax + '&icq=' + icq + '&skype=' + skype + '&note=' + note_a + '&address=' + address + '&website=' + website + '&id=' + id + '&legal_address=' + legal_address + '&inn=' + inn + '&kpp=' + kpp + '&ogrn=' + ogrn + '&bik=' + bik + '&ks=' + ks + '&rs=' + rs + '&bank=' + bank + '&present=' + present + '&post=' + post + '&doc=' + doc + '&type_com=' + type_com;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',

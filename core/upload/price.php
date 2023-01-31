@@ -153,7 +153,8 @@ function upload_price_on_server($connect, $id=false, $nthChild = NULL,$showProcc
 		save_desc_XML_object($connect, $id);
 
 		$file = $directory."/temp/xml/price/".$id.".xml";
-		$server_file = "/var/www/default-site/public_html/price/XML/price/".$id.".xml";
+		//$server_file = "/var/www/default-site/public_html/price/XML/price/".$id.".xml";
+    $server_file = "/load_price/XML/price/".$id.".xml";
 		if(!ftp_put($connect_server, $server_file, $file, FTP_ASCII))
 			return "Не удалось загрузить файл на сервер";
 		@ftp_chmod($connect_server, 0777, $server_file);
@@ -161,25 +162,33 @@ function upload_price_on_server($connect, $id=false, $nthChild = NULL,$showProcc
 
 		$file = $directory."/temp/json/price/".$id.".json";
 
-		if(ftp_nlist($connect_server,"/var/www/default-site/public_html/price/json/price") == false) {
+		/*if(ftp_nlist($connect_server,"/var/www/default-site/public_html/price/json/price") == false) {
 			@ftp_mkdir($connect_server, "/var/www/default-site/public_html/price/json/price");
 			@ftp_chmod($connect_server,0777,"/var/www/default-site/public_html/price/json/price");
-		}
+		}*/
 
-		$server_file = "/var/www/default-site/public_html/price/json/price/".$id.".json";
+    if(ftp_nlist($connect_server,"/load_price/json/price") == false) {
+      @ftp_mkdir($connect_server, "/load_price/json/price");
+      @ftp_chmod($connect_server,0777,"/load_price/json/price");
+    }
+
+		//$server_file = "/var/www/default-site/public_html/price/json/price/".$id.".json";
+    $server_file = "/load_price/json/price/".$id.".json";
 		if(!ftp_put($connect_server, $server_file, $file, FTP_ASCII))
 			return "Не удалось загрузить файл на сервер";
 		@ftp_chmod($connect_server, 0777, $server_file);
 
 		$file = $directory."/temp/json/price/".$id.".cache";
-		$server_file = "/var/www/default-site/public_html/price/json/price/".$id.".cache";
+		//$server_file = "/var/www/default-site/public_html/price/json/price/".$id.".cache";
+    $server_file = "/load_price/json/price/".$id.".cache";
 		if(!ftp_put($connect_server, $server_file, $file, FTP_ASCII))
 			return "Не удалось загрузить файл на сервер";
 		@ftp_chmod($connect_server, 0777, $server_file);
 
 
 		$file = $directory."/temp/xml/desc/".$id.".xml";
-		$server_file = "/var/www/default-site/public_html/price/XML/desc/".$id.".xml";
+		//$server_file = "/var/www/default-site/public_html/price/XML/desc/".$id.".xml";
+    $server_file = "/load_price/XML/desc/".$id.".xml";
 		if(!ftp_put($connect_server, $server_file, $file, FTP_ASCII))
 			return "Не удалось загрузить файл на сервер";
 		@ftp_chmod($connect_server, 0777, $server_file);

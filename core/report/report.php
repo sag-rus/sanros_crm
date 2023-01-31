@@ -62,11 +62,10 @@ function general_payment_report($connect){
 					<option value="1">Безналичный</option>
 					<option value="3">Сертификатом</option>
 					<option value="4">На месте</option>
-					<option value="5">Банковской картой</option>
+					<option value="5,6">Банковской картой</option>
                     <option value="5-1">-- Банковской картой через личный кабинет</option>
-                    <option value="5-2">----- Банковской картой с холдированием</option>
-                    <option value="5-3">----- Банковской картой без холдирования</option>
                     <option value="5-4">-- Банковской картой через терминал</option>
+                    <option value="7">СБП</option>
 				</select>
 			</div>
 		</div>
@@ -204,7 +203,7 @@ function filter_payment($connect){
         $date_opl2 = date($year_opl.'-'.$month_opl.'-t');
     }
 
-    $method_opl = (int)$_POST["method_opl"];
+    $method_opl = $_POST["method_opl"];
 	$manager_id = isset($_POST['manager_id'])?(int)$_POST['manager_id']:0;
 	if($manager_id < 0)
 	    $manager_id = 0;
@@ -282,7 +281,7 @@ function filter_payment($connect){
 	if($method_opl != ""){
 		if($zapros_for_mysql)
 			$zapros_for_mysql.= " AND ";
-		$zapros_for_mysql.= " pay_method='$method_opl' ";
+		$zapros_for_mysql.= " pay_method IN ($method_opl) ";
 		if($cardPaymentTypes) {
           if($zapros_for_mysql)
             $zapros_for_mysql.= " AND ";
@@ -341,6 +340,7 @@ function filter_payment($connect){
 	else
         $zapros_for_mysql = "SELECT (SELECT `position_reck`.`reward` FROM `position_reck` WHERE `position_reck`.`schet` = `payment`.`schet` ORDER BY (`position_reck`.`reward` > 0) DESC LIMIT 1) AS `position_reward`, `payment`.`id`, `payment`.`processed`, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, `users`.`office`, `payment`.`status` AS payment_status, `payment`.`type`, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san, `reckoning`.`reward` AS `reckoning_reward`, `object`.`reward` AS `object_reward`, `commission`.`value` AS `agency_commission` FROM payment LEFT JOIN reckoning ON reckoning.id=payment.schet LEFT JOIN users ON `reckoning`.`id_user`=`users`.`id` INNER JOIN `object` ON `reckoning`.`id_obj` = `object`.`id` LEFT JOIN `commission` ON `reckoning`.`id_com` = `commission`.`id` WHERE ".$zapros_for_mysql." ORDER BY payment.id";
 
+    echo '<span style="display: none">'.$zapros_for_mysql.'</span>';
 
   $data = $connect->getAll($zapros_for_mysql);
 
@@ -462,8 +462,33 @@ function filter_payment($connect){
 					$array["office"][$office_pay]["num_card"]++;
 					$array["office"][$office_pay]["pay_card"]+= $sum;
 				}
-				$type_opl_text = "Банк.карт.";
+				$type_opl_text = "Сбер (Банк.карт.)";
+			}elseif($type_opl == 6){
+				$array["num_card"]++;
+				if($sum <= 100)
+					$sum = add_null($sum - 3.5);
+				else
+					$sum = add_null(round(((100 - $bank_com)/100) * $sum,2));
+				$array["pay_card"]+= $sum;
+				if($office_pay > 0){
+					$array["office"][$office_pay]["num_card"]++;
+					$array["office"][$office_pay]["pay_card"]+= $sum;
+				}
+				$type_opl_text = "Альфа (карта)";
+			}elseif($type_opl == 7){
+				$array["num_card"]++;
+				if($sum <= 100)
+					$sum = add_null($sum - 3.5);
+				else
+					$sum = add_null(round(((100 - $bank_com)/100) * $sum,2));
+				$array["pay_card"]+= $sum;
+				if($office_pay > 0){
+					$array["office"][$office_pay]["num_card"]++;
+					$array["office"][$office_pay]["pay_card"]+= $sum;
+				}
+				$type_opl_text = "Альфа (СБП)";
 			}
+
 			if($type_pay == 3 OR $type_pay == 4){
 				$type_opl_text = "-";
 				$array["num_san"]++;

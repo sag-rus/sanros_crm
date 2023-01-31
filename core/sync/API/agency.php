@@ -1074,7 +1074,7 @@ function enter_dogovor_agency($connect, $data){
 		}
 
     try {
-      $connect->query("INSERT INTO agency(name, short_name, present, telephone, email, fax, icq, skype, note, address, website, legal_address, inn, kpp, bik, rs, ks, bank, post, doc, module, module_email, created) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $name, $short_name, $present, $telephone, $email, $fax, $icq, $skype, $note, $address, $website, $legal_address, $inn, $kpp, $bik, $rs, $ks, $bank, $post, $doc, $module, $email, gmdate("U"));
+      $connect->query("INSERT INTO agency(name, short_name, present, telephone, email, fax, icq, skype, note, address, website, legal_address, inn, kpp, bik, rs, ks, ogrn, bank, post, doc, module, module_email, created) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $name, $short_name, $present, $telephone, $email, $fax, $icq, $skype, $note, $address, $website, $legal_address, $inn, $kpp, $bik, $rs, $ks, $ogrn, $bank, $post, $doc, $module, $email, gmdate("U"));
       $id = $connect->insertId();
 		}
 		catch (Exception $e) {

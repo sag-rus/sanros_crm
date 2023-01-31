@@ -19,7 +19,8 @@ function upload_reserv_object_on_server($connect, $id){
 		$id = $row["id"];
 		save_reserv_XML_object($connect, $id);
 		$file = $directory."/temp/xml/reserv/".$id.".xml";
-		$server_file = "/var/www/default-site/public_html/price/XML/reserv/".$id.".xml";
+		//$server_file = "/var/www/default-site/public_html/price/XML/reserv/".$id.".xml";
+		$server_file = "/load_price/XML/reserv/".$id.".xml";
 		if(!ftp_put($connect_server, $server_file, $file, FTP_ASCII))
 			return "Не удалось загрузить файл на сервер";
 		ftp_chmod($connect_server, 0644, $server_file);

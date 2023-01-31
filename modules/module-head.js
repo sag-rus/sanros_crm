@@ -3,8 +3,9 @@ function head_page(){
 	show_my_bid_menu();
 }
 
-function show_my_bid_menu(){
+function show_my_bid_menu(search = ''){
 	var str = 'func=show_my_bid_menu';
+	if (search == '1') str+='&search=1&q='+$('.number-reckoning').val();
 	$.ajax({
 		type: 'POST',
 		data: str,
@@ -26,6 +27,7 @@ function get_my_reckoning(page){
 	$('.my-bid-page li').removeClass('active');
 	$('.my-bid-page li.'+li).addClass('active');
 	var str = 'func=get_my_reckoning&page=' + page;
+	if (page == 'search') str+='&q='+$('.number-reckoning').val();
 	$.ajax({
 		url: 'mysql.php',
 		type: 'POST',

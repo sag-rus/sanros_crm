@@ -22,3 +22,6 @@ core/sync/file/*
 composer.phar
 composer.lock
 objects.xlsx
+
+
+core/sync/alfa_deposit_log_*

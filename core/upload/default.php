@@ -19,6 +19,7 @@ function upload_information_object($connect){
 
 	$array_type = array(1 => "за чел/сутки", 2 => "за дом/сутки", 3 => "за номер/сутки", 4 => "за заезд");
 
+
 	$xml = new DomDocument("1.0", "utf-8");
 	$profiles = $xml->appendChild($xml->createElement("profiles"));
 	$data = $connect->getAll("SELECT id, name, description FROM profile ORDER BY name");
@@ -623,8 +624,10 @@ function upload_information_object($connect){
 		if($connect_server == 2)
 			return "Не удалось авторизироваться";
 
-		$ftp_folder = "/var/www/default-site/public_html/price/XML/overall/";
-		$ftp_folder_image = "/var/www/default-site/public_html/price/";
+		//$ftp_folder = "/var/www/default-site/public_html/price/XML/overall/";
+		$ftp_folder = "/load_price/XML/overall/";
+		//$ftp_folder_image = "/var/www/default-site/public_html/price/";
+		$ftp_folder_image = "/load_price/";
 		$file = "temp/profile.xml";
 		if(!ftp_put($connect_server, $ftp_folder."profile.xml", $file, FTP_ASCII))
 			echo "Ошибка загрузки";
@@ -768,8 +771,10 @@ function upload_method_on_server($connect){
 		if($connect_server == 2)
 			return "Не удалось авторизироваться";
 
-		$ftp_folder = "/var/www/default-site/public_html/price/XML/overall/";
-		$ftp_image_folder = "/var/www/default-site/public_html/price/image/methods/";
+		//$ftp_folder = "/var/www/default-site/public_html/price/XML/overall/";
+		$ftp_folder = "/load_price/XML/overall/";
+		//$ftp_image_folder = "/var/www/default-site/public_html/price/image/methods/";
+		$ftp_image_folder = "/load_price/image/methods/";
 		$file = $directory."/temp/methods.xml";
 		if(!ftp_put($connect_server, $ftp_folder."methods.xml", $file, FTP_ASCII))
 			return "Ошибка загрузки";

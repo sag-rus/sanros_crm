@@ -1,0 +1,556 @@
+1action=register_payment_alfaConfigCRM Object
+(
+    [connect] => SafeMySQL Object
+        (
+            [connect:SafeMySQL:private] => mysqli Object
+                (
+                    [affected_rows] => 1
+                    [client_info] => mysqlnd 5.0.12-dev - 20150407 - $Id: 38fea24f2847fa7519001be390c98ae0acafe387 $
+                    [client_version] => 50012
+                    [connect_errno] => 0
+                    [connect_error] => 
+                    [errno] => 0
+                    [error] => 
+                    [error_list] => Array
+                        (
+                        )
+
+                    [field_count] => 1
+                    [host_info] => Localhost via UNIX socket
+                    [info] => 
+                    [insert_id] => 0
+                    [server_info] => 5.5.5-10.2.13-MariaDB-10.2.13+maria~trusty-log
+                    [server_version] => 50505
+                    [stat] => Uptime: 528608  Threads: 57  Questions: 20773352  Slow queries: 0  Opens: 689  Flush tables: 1  Open tables: 400  Queries per second avg: 39.298
+                    [sqlstate] => 00000
+                    [protocol_version] => 10
+                    [thread_id] => 126858
+                    [warning_count] => 0
+                )
+
+            [emode:SafeMySQL:private] => 
+            [exname:SafeMySQL:private] => 
+            [defaults:SafeMySQL:private] => Array
+                (
+                    [host] => localhost
+                    [user] => root
+                    [pass] => 
+                    [db] => test
+                    [charset] => utf8
+                )
+
+        )
+
+    [session] => 3ee4870b3fb10fc39f1911f9d479e912
+    [booking] => 122074
+    [object] => 
+    [account] => 
+    [typeAuth] => 
+    [turist] => 
+    [directory] => /var/www/html/CRM/core/..
+    [sync] => Array
+        (
+            [0] => link
+        )
+
+    [bonus] => Array
+        (
+            [bonus-booking] => 0.02
+            [bonus-affiliate] => 0.01
+        )
+
+    [clientCabinet] => Array
+        (
+            [link] => http://xn----7sba6aaba8akdsdekah.xn--p1ai/client/
+        )
+
+    [onlinePaymentInfo] => Array
+        (
+            [link] => https://engine.paymentgate.ru/payment/rest/
+            [commission] => 2.4
+            [userName] => sanata_travel-api
+            [password] => p%@Z?,\;ax3yI~8Q}eS^Aa3C>
+        )
+
+    [contactInfo] => Array
+        (
+            [free-line] => 8 800 600 16 20
+        )
+
+    [mail] => Array
+        (
+            [default] => Array
+                (
+                    [login] => kazangood@gmail.com
+                    [password] => Barokamera#13425
+                    [from] => kazangood@gmail.com
+                    [from_name] => Санатории России
+                )
+
+            [module] => Array
+                (
+                    [login] => info@sanata.online
+                    [password] => Kriosayna-56124
+                    [from] => info@sanata.online
+                    [from_name] => Система Саната
+                )
+
+        )
+
+    [objectCabinet] => Array
+        (
+            [link] => http://admin.xn----7sba6aaba8akdsdekah.xn--p1ai/
+        )
+
+)
+
+__beforeApp\lib\CRM\Config\Client Object
+(
+    [connect] => SafeMySQL Object
+        (
+            [connect:SafeMySQL:private] => mysqli Object
+                (
+                    [affected_rows] => 1
+                    [client_info] => mysqlnd 5.0.12-dev - 20150407 - $Id: 38fea24f2847fa7519001be390c98ae0acafe387 $
+                    [client_version] => 50012
+                    [connect_errno] => 0
+                    [connect_error] => 
+                    [errno] => 0
+                    [error] => 
+                    [error_list] => Array
+                        (
+                        )
+
+                    [field_count] => 1
+                    [host_info] => Localhost via UNIX socket
+                    [info] => 
+                    [insert_id] => 0
+                    [server_info] => 5.5.5-10.2.13-MariaDB-10.2.13+maria~trusty-log
+                    [server_version] => 50505
+                    [stat] => Uptime: 528608  Threads: 57  Questions: 20773355  Slow queries: 0  Opens: 689  Flush tables: 1  Open tables: 400  Queries per second avg: 39.298
+                    [sqlstate] => 00000
+                    [protocol_version] => 10
+                    [thread_id] => 126858
+                    [warning_count] => 0
+                )
+
+            [emode:SafeMySQL:private] => 
+            [exname:SafeMySQL:private] => 
+            [defaults:SafeMySQL:private] => Array
+                (
+                    [host] => localhost
+                    [user] => root
+                    [pass] => 
+                    [db] => test
+                    [charset] => utf8
+                )
+
+        )
+
+    [session] => 3ee4870b3fb10fc39f1911f9d479e912
+    [booking] => 122074
+    [object] => 
+    [account] => 134120
+    [typeAuth] => turist
+    [turist] => 134120
+    [directory] => /var/www/html/CRM/core/..
+    [sync] => Array
+        (
+            [0] => link
+        )
+
+    [bonus] => Array
+        (
+            [bonus-booking] => 0.02
+            [bonus-affiliate] => 0.01
+        )
+
+    [clientCabinet] => Array
+        (
+            [link] => http://xn----7sba6aaba8akdsdekah.xn--p1ai/client/
+        )
+
+    [onlinePaymentInfo] => Array
+        (
+            [link] => https://securepayments.sberbank.ru/payment/rest/
+            [link_test] => https://3dsec.sberbank.ru/payment/rest/
+            [link_v2] => https://securepayments.sberbank.ru/payment/rest/
+            [link_v3] => https://securepayments.sberbank.ru/payment/rest/
+            [link_v4] => https://securepayments.sberbank.ru/payment/rest/
+            [commission] => 1.8
+            [userName] => sanata_trevel-api
+            [userName_test] => T7704527950_4051-api
+            [userName_v2] => sanatorii-rossii_9572-api
+            [userName_v3] => P7704527950-api
+            [userName_v4] => P7704527950_7902-api
+            [password] => G{s}Berv7#a@8YFa%KEQ
+            [password_test] => T7704527950_4051
+            [password_v2] => D8vJEViwSi3m8Sb9WQ4T7Ga0KgCcO4
+            [password_v3] => xs1r1nbdgZF7blTMSnAO
+            [password_v4] => tA88lnCkReu14KSL3r25
+        )
+
+    [contactInfo] => Array
+        (
+            [free-line] => 8 800 600 16 20
+        )
+
+    [mail] => Array
+        (
+            [default] => Array
+                (
+                    [login] => kazangood@gmail.com
+                    [password] => Barokamera#13425
+                    [from] => kazangood@gmail.com
+                    [from_name] => Санатории России
+                )
+
+            [module] => Array
+                (
+                    [login] => info@sanata.online
+                    [password] => Kriosayna-56124
+                    [from] => info@sanata.online
+                    [from_name] => Система Саната
+                )
+
+        )
+
+    [objectCabinet] => Array
+        (
+            [link] => http://admin.xn----7sba6aaba8akdsdekah.xn--p1ai/
+        )
+
+)
+
+__afterApp\lib\CRM\Config\Client Object
+(
+    [connect] => SafeMySQL Object
+        (
+            [connect:SafeMySQL:private] => mysqli Object
+                (
+                    [affected_rows] => -1
+                    [client_info] => mysqlnd 5.0.12-dev - 20150407 - $Id: 38fea24f2847fa7519001be390c98ae0acafe387 $
+                    [client_version] => 50012
+                    [connect_errno] => 0
+                    [connect_error] => 
+                    [errno] => 0
+                    [error] => 
+                    [error_list] => Array
+                        (
+                        )
+
+                    [field_count] => 1
+                    [host_info] => Localhost via UNIX socket
+                    [info] => 
+                    [insert_id] => 0
+                    [server_info] => 5.5.5-10.2.13-MariaDB-10.2.13+maria~trusty-log
+                    [server_version] => 50505
+                    [stat] => Uptime: 528608  Threads: 57  Questions: 20773355  Slow queries: 0  Opens: 689  Flush tables: 1  Open tables: 400  Queries per second avg: 39.298
+                    [sqlstate] => 00000
+                    [protocol_version] => 10
+                    [thread_id] => 126858
+                    [warning_count] => 0
+                )
+
+            [emode:SafeMySQL:private] => 
+            [exname:SafeMySQL:private] => 
+            [defaults:SafeMySQL:private] => Array
+                (
+                    [host] => localhost
+                    [user] => root
+                    [pass] => 
+                    [db] => test
+                    [charset] => utf8
+                )
+
+        )
+
+    [session] => 3ee4870b3fb10fc39f1911f9d479e912
+    [booking] => 122074
+    [object] => 
+    [account] => 134120
+    [typeAuth] => turist
+    [turist] => 134120
+    [directory] => /var/www/html/CRM/core/..
+    [sync] => Array
+        (
+            [0] => link
+        )
+
+    [bonus] => Array
+        (
+            [bonus-booking] => 0.02
+            [bonus-affiliate] => 0.01
+        )
+
+    [clientCabinet] => Array
+        (
+            [link] => http://xn----7sba6aaba8akdsdekah.xn--p1ai/client/
+        )
+
+    [onlinePaymentInfo] => Array
+        (
+            [link] => https://securepayments.sberbank.ru/payment/rest/
+            [link_test] => https://3dsec.sberbank.ru/payment/rest/
+            [link_v2] => https://securepayments.sberbank.ru/payment/rest/
+            [link_v3] => https://securepayments.sberbank.ru/payment/rest/
+            [link_v4] => https://securepayments.sberbank.ru/payment/rest/
+            [commission] => 1.8
+            [userName] => sanata_trevel-api
+            [userName_test] => T7704527950_4051-api
+            [userName_v2] => sanatorii-rossii_9572-api
+            [userName_v3] => P7704527950-api
+            [userName_v4] => P7704527950_7902-api
+            [password] => G{s}Berv7#a@8YFa%KEQ
+            [password_test] => T7704527950_4051
+            [password_v2] => D8vJEViwSi3m8Sb9WQ4T7Ga0KgCcO4
+            [password_v3] => xs1r1nbdgZF7blTMSnAO
+            [password_v4] => tA88lnCkReu14KSL3r25
+        )
+
+    [contactInfo] => Array
+        (
+            [free-line] => 8 800 600 16 20
+        )
+
+    [mail] => Array
+        (
+            [default] => Array
+                (
+                    [login] => kazangood@gmail.com
+                    [password] => Barokamera#13425
+                    [from] => kazangood@gmail.com
+                    [from_name] => Санатории России
+                )
+
+            [module] => Array
+                (
+                    [login] => info@sanata.online
+                    [password] => Kriosayna-56124
+                    [from] => info@sanata.online
+                    [from_name] => Система Саната
+                )
+
+        )
+
+    [objectCabinet] => Array
+        (
+            [link] => http://admin.xn----7sba6aaba8akdsdekah.xn--p1ai/
+        )
+
+)
+
+2action=register_payment_alfaConfigCRM Object
+(
+    [connect] => SafeMySQL Object
+        (
+            [connect:SafeMySQL:private] => mysqli Object
+                (
+                    [affected_rows] => 1
+                    [client_info] => mysqlnd 5.0.12-dev - 20150407 - $Id: 38fea24f2847fa7519001be390c98ae0acafe387 $
+                    [client_version] => 50012
+                    [connect_errno] => 0
+                    [connect_error] => 
+                    [errno] => 0
+                    [error] => 
+                    [error_list] => Array
+                        (
+                        )
+
+                    [field_count] => 0
+                    [host_info] => Localhost via UNIX socket
+                    [info] => 
+                    [insert_id] => 19190
+                    [server_info] => 5.5.5-10.2.13-MariaDB-10.2.13+maria~trusty-log
+                    [server_version] => 50505
+                    [stat] => Uptime: 528609  Threads: 57  Questions: 20773377  Slow queries: 0  Opens: 689  Flush tables: 1  Open tables: 400  Queries per second avg: 39.298
+                    [sqlstate] => 00000
+                    [protocol_version] => 10
+                    [thread_id] => 126858
+                    [warning_count] => 0
+                )
+
+            [emode:SafeMySQL:private] => 
+            [exname:SafeMySQL:private] => 
+            [defaults:SafeMySQL:private] => Array
+                (
+                    [host] => localhost
+                    [user] => root
+                    [pass] => 
+                    [db] => test
+                    [charset] => utf8
+                )
+
+        )
+
+    [session] => 3ee4870b3fb10fc39f1911f9d479e912
+    [booking] => 122074
+    [object] => 
+    [account] => 134120
+    [typeAuth] => turist
+    [turist] => 134120
+    [directory] => /var/www/html/CRM/core/..
+    [sync] => Array
+        (
+            [0] => link
+        )
+
+    [bonus] => Array
+        (
+            [bonus-booking] => 0.02
+            [bonus-affiliate] => 0.01
+        )
+
+    [clientCabinet] => Array
+        (
+            [link] => http://xn----7sba6aaba8akdsdekah.xn--p1ai/client/
+        )
+
+    [onlinePaymentInfo] => Array
+        (
+            [link] => https://engine.paymentgate.ru/payment/rest/
+            [commission] => 2.4
+            [userName] => sanata_travel-api
+            [password] => p%@Z?,\;ax3yI~8Q}eS^Aa3C>
+        )
+
+    [contactInfo] => Array
+        (
+            [free-line] => 8 800 600 16 20
+        )
+
+    [mail] => Array
+        (
+            [default] => Array
+                (
+                    [login] => kazangood@gmail.com
+                    [password] => Barokamera#13425
+                    [from] => kazangood@gmail.com
+                    [from_name] => Санатории России
+                )
+
+            [module] => Array
+                (
+                    [login] => info@sanata.online
+                    [password] => Kriosayna-56124
+                    [from] => info@sanata.online
+                    [from_name] => Система Саната
+                )
+
+        )
+
+    [objectCabinet] => Array
+        (
+            [link] => http://admin.xn----7sba6aaba8akdsdekah.xn--p1ai/
+        )
+
+)
+
+1action=register_payment_alfaConfigCRM Object
+(
+    [connect] => SafeMySQL Object
+        (
+            [connect:SafeMySQL:private] => mysqli Object
+                (
+                    [affected_rows] => 1
+                    [client_info] => mysqlnd 5.0.12-dev - 20150407 - $Id: 38fea24f2847fa7519001be390c98ae0acafe387 $
+                    [client_version] => 50012
+                    [connect_errno] => 0
+                    [connect_error] => 
+                    [errno] => 0
+                    [error] => 
+                    [error_list] => Array
+                        (
+                        )
+
+                    [field_count] => 1
+                    [host_info] => Localhost via UNIX socket
+                    [info] => 
+                    [insert_id] => 0
+                    [server_info] => 5.5.5-10.2.13-MariaDB-10.2.13+maria~trusty-log
+                    [server_version] => 50505
+                    [stat] => Uptime: 528700  Threads: 55  Questions: 20775682  Slow queries: 0  Opens: 689  Flush tables: 1  Open tables: 400  Queries per second avg: 39.295
+                    [sqlstate] => 00000
+                    [protocol_version] => 10
+                    [thread_id] => 126867
+                    [warning_count] => 0
+                )
+
+            [emode:SafeMySQL:private] => 
+            [exname:SafeMySQL:private] => 
+            [defaults:SafeMySQL:private] => Array
+                (
+                    [host] => localhost
+                    [user] => root
+                    [pass] => 
+                    [db] => test
+                    [charset] => utf8
+                )
+
+        )
+
+    [session] => 3ee4870b3fb10fc39f1911f9d479e912
+    [booking] => 122074
+    [object] => 
+    [account] => 
+    [typeAuth] => 
+    [turist] => 
+    [directory] => /var/www/html/CRM/core/..
+    [sync] => Array
+        (
+            [0] => link
+        )
+
+    [bonus] => Array
+        (
+            [bonus-booking] => 0.02
+            [bonus-affiliate] => 0.01
+        )
+
+    [clientCabinet] => Array
+        (
+            [link] => http://xn----7sba6aaba8akdsdekah.xn--p1ai/client/
+        )
+
+    [onlinePaymentInfo] => Array
+        (
+            [link] => https://engine.paymentgate.ru/payment/rest/
+            [commission] => 2.4
+            [userName] => sanata_travel-api
+            [password] => p%@Z?,\;ax3yI~8Q}eS^Aa3C>
+        )
+
+    [contactInfo] => Array
+        (
+            [free-line] => 8 800 600 16 20
+        )
+
+    [mail] => Array
+        (
+            [default] => Array
+                (
+                    [login] => kazangood@gmail.com
+                    [password] => Barokamera#13425
+                    [from] => kazangood@gmail.com
+                    [from_name] => Санатории России
+                )
+
+            [module] => Array
+                (
+                    [login] => info@sanata.online
+                    [password] => Kriosayna-56124
+                    [from] => info@sanata.online
+                    [from_name] => Система Саната
+                )
+
+        )
+
+    [objectCabinet] => Array
+        (
+            [link] => http://admin.xn----7sba6aaba8akdsdekah.xn--p1ai/
+        )
+
+)
+
+__before
+__after

@@ -25,18 +25,16 @@ class Client {
   );
   public $onlinePaymentInfo = array(
     "userName",
-    "userName_v2",
-    "userName_v3",
-    "userName_v4",
-    "userName_test",
     "password",
-    "password_v2",
-    "password_v3",
-    "password_v4",
-    "password_test",
     "link",
     "commission"
   );
+  public $onlinePaymentInfoAlfa = array(
+    "userName",
+    "password",
+    "link",
+    "commission"
+  );  
   public $contactInfo = array(
     "free-line",
     "email",

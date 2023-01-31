@@ -479,26 +479,43 @@ function logout_sitehelp(){
 	});
 }
 
+function replaceAll(str, find, replace) {
+  return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+}
+
 function select_by_number_reckoning(){
 	var id = $('.number-reckoning').val();
 	if(id){
-		clear_mistake('.panel-number-reckoning');
-		var str = 'func=select_by_number_reckoning&id=' + id;
-		$.ajax({
-			url: 'mysql.php',
-			type: 'POST',
-			data: str,
-			dataType: 'JSON',
-			success: function(data){
-				if(data){
-					if(data['turist'])
-						show_turist(data['turist'], data['id']);
-					else if(data['agency'])
-						show_turist(data['agency'], data['id'], 'agency');
-				}else
-					show_mistake('.panel-number-reckoning');
-			}
-		});
+		id = id.replaceAll('+', '');
+		id = id.replaceAll(' ', '');
+		id = id.replaceAll('-', '');
+		id = id.replaceAll('(', '');
+		id = id.replaceAll(')', '');
+		console.log('id='+id);
+		console.log('id.length='+id.length);
+		console.log('id.first='+id[0]);
+		console.log('id.indexOf='+id.indexOf('@'));
+		if ((id.length==11 && (id[0]=='7' || id[0]=='8'))  || (id.indexOf('@')>0 && id.length>4) ) {
+			show_my_bid_menu('1');
+		} else {
+			clear_mistake('.panel-number-reckoning');
+			var str = 'func=select_by_number_reckoning&id=' + id;
+			$.ajax({
+				url: 'mysql.php',
+				type: 'POST',
+				data: str,
+				dataType: 'JSON',
+				success: function(data){
+					if(data){
+						if(data['turist'])
+							show_turist(data['turist'], data['id']);
+						else if(data['agency'])
+							show_turist(data['agency'], data['id'], 'agency');
+					}else
+						show_mistake('.panel-number-reckoning');
+				}
+			});
+		}
 	}else
 		show_mistake('.panel-number-reckoning');
 }

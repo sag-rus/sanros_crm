@@ -1,5 +1,7 @@
 <?php
 
+	$loader = require( __DIR__ . '/../../vendor/autoload.php');
+
 	$directory = dirname(__FILE__)."/../..";
 	include_once($directory."/core/functions.php");
 	include_once($directory."/core/lib/Mysql.Class.php");
@@ -10,15 +12,39 @@
 	define("PASSWORD_ALFA", $conf->PASSWORD_ALFA);
 	$connect = connect_to_MySQL_directory();
 
-	count_no_price_object($connect);
-	count_published_news($connect);
-	check_average_rating($connect);
+	$configNew = \App\lib\CRM\Config\Client::getInstance();
+	$configNew->connect = $connect;	
 
-	$connect->query("UPDATE chat_users SET status=0 WHERE last_visit<CURRENT_TIMESTAMP - INTERVAL (10) MINUTE");
+	$onlinePaymentInfoAlfa = array(
+	  "link" => $conf->BANK_PAYMENT_LINK_ALFA,
+	  "commission" => $conf->BANK_COM_ALFA,
+	  "commission_qr" => $conf->BANK_COM_ALFA_QR,
+	  "userName" => $conf->USERNAME_ALFA,
+	  "password" => $conf->PASSWORD_ALFA
+	);	
 
-	$data = $connect->getAll("SELECT id, bid, order_id FROM payment_request WHERE status=0 OR status=1 OR status IS NULL");
+	$configNew->onlinePaymentInfoAlfa = $onlinePaymentInfoAlfa;	
+
+	if ($_GET['debug']=='') {
+		count_no_price_object($connect);
+		count_published_news($connect);
+		check_average_rating($connect);
+		$connect->query("UPDATE chat_users SET status=0 WHERE last_visit<CURRENT_TIMESTAMP - INTERVAL (10) MINUTE");
+	}
+	
+
+	$data = $connect->getAll("SELECT id, bid, bid_pay, order_id FROM payment_request WHERE status=0 or status IS NULL ORDER BY `id` DESC LIMIT 20");
 	foreach($data as $row){
-		$id = $row["id"];
+		$payment = new \App\lib\payment\Alfa\BookingPayment([]);
+		$request = $payment->depositPayment($row["bid_pay"]);
+
+		if ($_GET['debug']=='1') {
+			echo '<pre>bid_pay='.$row["bid_pay"]."\r\n";
+			print_r($request);
+			echo '</pre><br>';
+		}
+
+		/*$id = $row["id"];
 		$bid = $row["bid"];
 		$orderId = $row["order_id"];
 		$object = $connect->getOne("SELECT id_obj FROM reckoning WHERE id=?i", $bid);
@@ -28,7 +54,7 @@
 		$data["password"] = PASSWORD_ALFA;
 		$data["orderId"] = $orderId;
 		$data = request_to_url($url, $data);
-		$connect->query("UPDATE payment_request SET status=?i WHERE order_id=?s", $data["OrderStatus"], $orderId);
+		$connect->query("UPDATE payment_request SET status=?i WHERE order_id=?s", $data["OrderStatus"], $orderId);*/
 	}
 
 function count_no_price_object($connect){
