@@ -125,22 +125,15 @@ define("CABINET", "http://xn----7sba6aaba8akdsdekah.xn--p1ai/client/");
 
 $token = "d9954a2ef753a0a688cd0dd07ceda98b83d6eb803731a633e9e16967fe767e00";
 
-$client = new GuzzleHttp\Client(['verify' => false]);
+$client = new GuzzleHttp\Client();
 
-$last_time = NULL;
 $start_time = time();
 
-if(file_exists($directory."/core/sync/file/fast-time-0.txt")) {
-  $last_time = (int)file_get_contents($directory."/core/sync/file/fast-time-0.txt");
-}
+$worker = 0;
 
-if(is_null($last_time) || file_exists($directory."/core/sync/file/fast-killing-time-0.txt")) {
-  unlink($directory."/core/sync/file/fast-killing-time-0.txt");
-  while(1) {
-    file_put_contents($directory."/core/sync/file/fast-time-0.txt", time());
+while(1) {
     if(!$connect) {
       file_put_contents($directory."/core/sync/file/fast-requests-error.log",'Database connection exception'.PHP_EOL,FILE_APPEND);
-      unlink($directory."/core/sync/file/fast-time-0.txt");
       break;
     }
 
@@ -152,12 +145,11 @@ if(is_null($last_time) || file_exists($directory."/core/sync/file/fast-killing-t
 
     if(!$connect || !$connect->getRow("SELECT `id` FROM `object` LIMIT 1")) {
       file_put_contents($directory."/core/sync/file/fast-requests-error.log",'Database connection exception'.PHP_EOL,FILE_APPEND);
-      unlink($directory."/core/sync/file/fast-time-0.txt");
       break;
     }
 
     try {
-      $res = $client->request('POST',"https://sync2.tonia.ru/api/request/list/0".'?cache='.substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15),[
+      $res = $client->request('POST',"https://sync2.tonia.ru/api/request/list/".$worker.'?cache='.substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15),[
         'form_params' => [
           'token' => $token
         ]
@@ -216,7 +208,6 @@ if(is_null($last_time) || file_exists($directory."/core/sync/file/fast-killing-t
             }
             catch (Exception $e) {
               file_put_contents($directory."/core/sync/file/fast-requests-error.log",$e->getMessage().PHP_EOL,FILE_APPEND);
-              unlink($directory."/core/sync/file/fast-time-0.txt");
               break 2;
             }
 
@@ -227,7 +218,6 @@ if(is_null($last_time) || file_exists($directory."/core/sync/file/fast-killing-t
     }
     catch (Exception $e) {
       file_put_contents($directory."/core/sync/file/fast-requests-error.log",$e->getMessage().PHP_EOL,FILE_APPEND);
-      unlink($directory."/core/sync/file/fast-time-0.txt");
       break;
     }
 
@@ -236,10 +226,8 @@ if(is_null($last_time) || file_exists($directory."/core/sync/file/fast-killing-t
       break;
     }
 
-    if(time() - $start_time > 56) {
-      file_put_contents($directory."/core/sync/file/fast-killing-time-0.txt",(time()-$start_time));
+    if(time() - $start_time > 60) {
       break;
     }
 
-  }
 }
