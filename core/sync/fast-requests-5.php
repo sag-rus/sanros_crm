@@ -76,6 +76,14 @@ $onlinePaymentInfoSber = array(
     "password_v4" => $conf->PASSWORD_SBERBANK_V4
 );
 
+$onlinePaymentInfoAlfa = array(
+  "link" => $conf->BANK_PAYMENT_LINK_ALFA,
+  "commission" => $conf->BANK_COM_ALFA,
+  "commission_qr" => $conf->BANK_COM_ALFA_QR,
+  "userName" => $conf->USERNAME_ALFA,
+  "password" => $conf->PASSWORD_ALFA
+);
+
 $clientCabinet = array(
   "link" => $conf->turist_cabinet
 );
@@ -104,6 +112,7 @@ $configNew = \App\lib\CRM\Config\Client::getInstance();
 
 $configNew->connect = $connect;
 $configNew->onlinePaymentInfo = $onlinePaymentInfoSber;
+$configNew->onlinePaymentInfoAlfa = $onlinePaymentInfoAlfa;
 $configNew->clientCabinet = $clientCabinet;
 $configNew->objectCabinet = $objectCabinet;
 $configNew->contactInfo = $contactInfo;
@@ -121,17 +130,17 @@ $client = new GuzzleHttp\Client(['verify' => false]);
 $last_time = NULL;
 $start_time = time();
 
-if(file_exists($directory."/core/sync/file/fast-time-0.txt")) {
-  $last_time = (int)file_get_contents($directory."/core/sync/file/fast-time-0.txt");
+if(file_exists($directory."/core/sync/file/fast-time-5.txt")) {
+  $last_time = (int)file_get_contents($directory."/core/sync/file/fast-time-5.txt");
 }
 
-if(is_null($last_time) || file_exists($directory."/core/sync/file/fast-killing-time-0.txt")) {
-  unlink($directory."/core/sync/file/fast-killing-time-0.txt");
+if(is_null($last_time) || file_exists($directory."/core/sync/file/fast-killing-time-5.txt")) {
+  unlink($directory."/core/sync/file/fast-killing-time-5.txt");
   while(1) {
-    file_put_contents($directory."/core/sync/file/fast-time-0.txt", time());
+    file_put_contents($directory."/core/sync/file/fast-time-5.txt", time());
     if(!$connect) {
       file_put_contents($directory."/core/sync/file/fast-requests-error.log",'Database connection exception'.PHP_EOL,FILE_APPEND);
-      unlink($directory."/core/sync/file/fast-time-0.txt");
+      unlink($directory."/core/sync/file/fast-time-5.txt");
       break;
     }
 
@@ -143,12 +152,12 @@ if(is_null($last_time) || file_exists($directory."/core/sync/file/fast-killing-t
 
     if(!$connect || !$connect->getRow("SELECT `id` FROM `object` LIMIT 1")) {
       file_put_contents($directory."/core/sync/file/fast-requests-error.log",'Database connection exception'.PHP_EOL,FILE_APPEND);
-      unlink($directory."/core/sync/file/fast-time-0.txt");
+      unlink($directory."/core/sync/file/fast-time-5.txt");
       break;
     }
 
     try {
-      $res = $client->request('POST',"https://sync2.tonia.ru/api/request/list/0".'?cache='.substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15),[
+      $res = $client->request('POST',"https://sync2.tonia.ru/api/request/list/5".'?cache='.substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15),[
         'form_params' => [
           'token' => $token
         ]
@@ -207,7 +216,7 @@ if(is_null($last_time) || file_exists($directory."/core/sync/file/fast-killing-t
             }
             catch (Exception $e) {
               file_put_contents($directory."/core/sync/file/fast-requests-error.log",$e->getMessage().PHP_EOL,FILE_APPEND);
-              unlink($directory."/core/sync/file/fast-time-0.txt");
+              unlink($directory."/core/sync/file/fast-time-5.txt");
               break 2;
             }
 
@@ -218,7 +227,7 @@ if(is_null($last_time) || file_exists($directory."/core/sync/file/fast-killing-t
     }
     catch (Exception $e) {
       file_put_contents($directory."/core/sync/file/fast-requests-error.log",$e->getMessage().PHP_EOL,FILE_APPEND);
-      unlink($directory."/core/sync/file/fast-time-0.txt");
+      unlink($directory."/core/sync/file/fast-time-5.txt");
       break;
     }
 
@@ -228,7 +237,7 @@ if(is_null($last_time) || file_exists($directory."/core/sync/file/fast-killing-t
     }
 
     if(time() - $start_time > 56) {
-      file_put_contents($directory."/core/sync/file/fast-killing-time-0.txt",(time()-$start_time));
+      file_put_contents($directory."/core/sync/file/fast-killing-time-5.txt",(time()-$start_time));
       break;
     }
 
