@@ -125,7 +125,7 @@ define("CABINET", "http://xn----7sba6aaba8akdsdekah.xn--p1ai/client/");
 
 $token = "d9954a2ef753a0a688cd0dd07ceda98b83d6eb803731a633e9e16967fe767e00";
 
-$client = new GuzzleHttp\Client();
+$client = new GuzzleHttp\Client(['verify' => false]);
 
 $start_time = time();
 
