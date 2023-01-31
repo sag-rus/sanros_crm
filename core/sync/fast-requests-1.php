@@ -215,14 +215,8 @@ while(1) {
         }
       }
       sleep(1);
-    }
-    catch (Exception $e) {
+    } catch (Exception $e) {
       file_put_contents($directory."/core/sync/file/fast-requests-error.log",$e->getMessage().PHP_EOL,FILE_APPEND);
-      break;
-    }
-
-
-    if(!file_exists($directory."/core/sync/file/fast-kill.txt")){
       break;
     }
 

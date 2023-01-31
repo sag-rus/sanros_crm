@@ -221,11 +221,6 @@ while(1) {
       break;
     }
 
-
-    if(!file_exists($directory."/core/sync/file/fast-kill.txt")){
-      break;
-    }
-
     if(time() - $start_time > 60) {
       break;
     }
