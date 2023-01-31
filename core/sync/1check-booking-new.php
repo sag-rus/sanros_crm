@@ -51,7 +51,7 @@ require_once __DIR__."/../../vendor/autoload.php";
 	$token = "7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4";
 
 	try {
-		$res = $client->request('POST', "https://sync.tonia.ru/api/booking/list/10" . '?cache=' . substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15), [
+		$res = $client->request('POST', "https://sync2.tonia.ru/api/booking/list/10" . '?cache=' . substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15), [
 			'form_params' => [
 				'token' => $token
 			]
@@ -422,7 +422,7 @@ require_once __DIR__."/../../vendor/autoload.php";
 	if($delete) {
 		$client = new GuzzleHttp\Client(['verify' => false]);
 
-		$res = $client->request('POST', "https://sync.tonia.ru/api/booking/deactivate" . '?cache=' . substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15), [
+		$res = $client->request('POST', "https://sync2.tonia.ru/api/booking/deactivate" . '?cache=' . substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15), [
 			'form_params' => [
 				'token' => $token,
 				'ids' => $delete

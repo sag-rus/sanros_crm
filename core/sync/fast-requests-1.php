@@ -157,7 +157,7 @@ if(is_null($last_time) || file_exists($directory."/core/sync/file/fast-killing-t
     }
 
     try {
-      $res = $client->request('POST',"https://sync.tonia.ru/api/request/list/1".'?cache='.substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15),[
+      $res = $client->request('POST',"https://sync2.tonia.ru/api/request/list/1".'?cache='.substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15),[
         'form_params' => [
           'token' => $token
         ]
@@ -207,7 +207,7 @@ if(is_null($last_time) || file_exists($directory."/core/sync/file/fast-killing-t
             }
 
             try {
-              $res = $client->request('POST',"https://sync.tonia.ru/api/request/answer/set/".$id.'?cache='.substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15),[
+              $res = $client->request('POST',"https://sync2.tonia.ru/api/request/answer/set/".$id.'?cache='.substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15),[
                 'form_params' => [
                   'token' => $token,
                   'answer' => $respAr
