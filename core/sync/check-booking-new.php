@@ -424,16 +424,16 @@ require_once __DIR__."/../../vendor/autoload.php";
 
 		}elseif($function == "booking_object_agency_module"){
 
-			$surname = $data_booking->surname;
+			$surname = $data_booking->sur;
 			$name = $data_booking->name;
 			$otch = $data_booking->otch;
-			$telephone = $data_booking->telephone;
+			$telephone = $data_booking->tel;
 			$email = $data_booking->email;
 			if(!filter_var($email, FILTER_VALIDATE_EMAIL))
 				$email = "";
 
-			$object = $data_booking->object;
-			$date2 = explode(".", $data_booking->arrival);
+			$object = $data_booking->id_obj;
+			$date2 = explode(".", $data_booking->date);
 			$arrival = $date2[2]."-".$date2[1]."-".$date2[0];
 			$days = $data_booking->days;
 			$position = $data_booking->position;
