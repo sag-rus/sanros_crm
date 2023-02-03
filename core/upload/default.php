@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__.'/../admin/news.php';
+
 function upload_information_object($connect){
 	global $directory;
 	$rootPath = __DIR__.'/../..';
@@ -111,7 +113,7 @@ function upload_information_object($connect){
 	$objects = $xml->appendChild($xml->createElement("objects"));
 	$objectsArray = [];
 	$sights = $connect->getAll("SELECT latitude, longitude FROM sights");
-	$data = $connect->getAll("SELECT object.name as object, object.id, object.image, object.id_reg, object.direction, object.city, object.id_profile, object.id_methods, object.id_infa, object.type, object.check_places, object.description, object.similar, object.add_one_day, object.latitude, object.longitude, object.weather, object.url_name, object.reward, object.source_booking, object.booking_uri, object.fast_booking, region.name as region, region.name_rod as region_rod FROM region, object WHERE region.id_country=1 AND (object.active=0) AND object.id_reg=region.id AND object.url_name!='' ORDER BY region.name");
+	$data = $connect->getAll("SELECT object.name as object, object.id, object.image, object.id_reg, object.region_direction_id, object.direction, object.city, object.id_profile, object.id_methods, object.id_infa, object.type, object.check_places, object.description, object.similar, object.add_one_day, object.latitude, object.longitude, object.weather, object.url_name, object.reward, object.source_booking, object.booking_uri, object.fast_booking, region.name as region, region.name_rod as region_rod FROM region, object WHERE region.id_country=1 AND (object.active=0) AND object.id_reg=region.id AND object.url_name!='' ORDER BY region.name");
 	foreach($data as $row){
 		$id = $row["id"];
 		$prices = get_prices_object($connect, $id);
@@ -181,6 +183,28 @@ function upload_information_object($connect){
 			$object->setAttribute("quota", $check_places);
 			$object->setAttribute("min", $prices["min"]);
 			$object->setAttribute("fast_booking", $fast_booking);
+
+
+			$url = '';
+			if ($name_direction<>'') {
+				$url = '/'.change_text_url($name_direction);
+				$name_region = $connect->getOne("SELECT name FROM region WHERE id=?i", $id_reg);
+				if ($name_region<>'') {
+					$url .= '/' . change_text_url($name_region);
+					if ($row['region_direction_id']>0) {
+						$name_region_direction = $connect->getOne("SELECT `name` FROM `direction_object` WHERE (`direction_object`.`id_country` = 0 OR `direction_object`.`id_country` IS NULL)  AND `direction_object`.`id_reg` > 0 AND `direction_object`.`id` = ?i", $row['region_direction_id']);
+						$url .= '/'. change_text_url($name_region_direction);
+					}
+					$url .= '/' . change_text_url($type) . '-' . $row['url_name'];
+					$entity = $connect->getRow("SELECT * FROM `sites_contents` WHERE `path`='$url'");
+					$bound = $connect->getRow("SELECT * FROM `app_models_site_bound` WHERE  `status` = 1 AND `entity1_type`='content' AND `entity1_id` = '$entity[id]' AND `name`='image' ORDER BY `sort` ASC");
+					$file = $connect->getRow("SELECT * FROM `core_models_file_file` WHERE `id`=?i LIMIT 1", $bound['entity2_id']);
+					$file['uri'] = str_replace('/images/jpg/', '/images/jpg/min-preview-webp/', $file['uri']);
+					$file['uri'] = str_replace('.jpg', '.webp', $file['uri']);
+					if ($file['uri']!='') $object->setAttribute("image", $file['uri']);
+				}
+			}
+			
 
 			$objectItem = [
 				'id' => $id,
@@ -617,6 +641,7 @@ function upload_information_object($connect){
 
 	$connect_server = connect_to_server();
 
+
 	//if($connect_server == 1)
 	//	return "Ошибка соединения";
 	//else{
@@ -763,13 +788,14 @@ function upload_information_object($connect){
 
 function upload_method_on_server($connect){
 	global $directory;
-	save_methods_XML($connect);
+	echo 'upload_method_on_server';
+	//save_methods_XML($connect);
 	$connect_server = connect_to_server();
+	echo '$connect_server='.$connect_server.'<br>';
 	//if($connect_server == 1)
 		//return "Ошибка соединения";
 	//else{
-		if($connect_server == 2)
-			return "Не удалось авторизироваться";
+		//if($connect_server == 2) return "Не удалось авторизироваться";
 
 		//$ftp_folder = "/var/www/default-site/public_html/price/XML/overall/";
 		$ftp_folder = "/load_price/XML/overall/";

@@ -369,15 +369,17 @@ function review_contract($connect, $type, $id){
 			<?php
 				}else{
 					echo "<p><strong>КЛИЕНТ:</strong> ".$payers["name"]."<br />";
+					if($payers["address"])
+						echo "<strong>АДРЕС:</strong> ".$payers["address"]."<br />";					
 					if($payers["passport"]){
 						echo "<strong>ПАСПОРТ:</strong> ".substr_replace($payers["passport"], " ", 4, 0)."<br />";
-						if($payers["output"])
-							echo "<strong>ВЫДАН:</strong> ".$payers["output"]."<br />";
-						if($payers["date_passport"])
-							echo "<strong>ДАТА ВЫДАЧИ:</strong> ".$payers["date_passport"]."<br />";
-						if($payers["telephone"])
-							echo "<strong>ТЕЛЕФОН:</strong> ".$payers["telephone"]."<br />";
-						if($payers["email"])
+					if($payers["output"])
+						echo "<strong>ВЫДАН:</strong> ".$payers["output"]."<br />";
+					if($payers["date_passport"])
+						echo "<strong>ДАТА ВЫДАЧИ:</strong> ".$payers["date_passport"]."<br />";
+					if($payers["telephone"])
+						echo "<strong>ТЕЛЕФОН:</strong> ".$payers["telephone"]."<br />";
+					if($payers["email"])
 							echo "<strong>EMAIL:</strong> ".$payers["email"];
 					}
 					echo "<br /><br /><br /><strong>ПОДПИСЬ:</strong> ____________</p>";
