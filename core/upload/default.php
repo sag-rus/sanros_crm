@@ -113,13 +113,14 @@ function upload_information_object($connect){
 	$objects = $xml->appendChild($xml->createElement("objects"));
 	$objectsArray = [];
 	$sights = $connect->getAll("SELECT latitude, longitude FROM sights");
-	$data = $connect->getAll("SELECT object.name as object, object.id, object.image, object.id_reg, object.region_direction_id, object.direction, object.city, object.id_profile, object.id_methods, object.id_infa, object.type, object.check_places, object.description, object.similar, object.add_one_day, object.latitude, object.longitude, object.weather, object.url_name, object.reward, object.source_booking, object.booking_uri, object.fast_booking, region.name as region, region.name_rod as region_rod FROM region, object WHERE region.id_country=1 AND (object.active=0) AND object.id_reg=region.id AND object.url_name!='' ORDER BY region.name");
+	$data = $connect->getAll("SELECT object.name as object, object.id, object.image, object.id_reg, object.address, object.region_direction_id, object.direction, object.city, object.id_profile, object.id_methods, object.id_infa, object.type, object.check_places, object.description, object.similar, object.add_one_day, object.latitude, object.longitude, object.weather, object.url_name, object.reward, object.source_booking, object.booking_uri, object.fast_booking, region.name as region, region.name_rod as region_rod FROM region, object WHERE region.id_country=1 AND (object.active=0) AND object.id_reg=region.id AND object.url_name!='' ORDER BY region.name");
 	foreach($data as $row){
 		$id = $row["id"];
 		$prices = get_prices_object($connect, $id);
 		//if($prices["min"]){
 			$name = $row["object"];
 			$id_reg = $row["id_reg"];
+			$address = $row["address"];
 			$id_dir = $row["direction"];
 			$region = $row["region"];
 			$region_rod = $row["region_rod"];
@@ -183,6 +184,7 @@ function upload_information_object($connect){
 			$object->setAttribute("quota", $check_places);
 			$object->setAttribute("min", $prices["min"]);
 			$object->setAttribute("fast_booking", $fast_booking);
+			$object->setAttribute("address", $address);
 
 
 			$url = '';
@@ -197,11 +199,20 @@ function upload_information_object($connect){
 					}
 					$url .= '/' . change_text_url($type) . '-' . $row['url_name'];
 					$entity = $connect->getRow("SELECT * FROM `sites_contents` WHERE `path`='$url'");
-					$bound = $connect->getRow("SELECT * FROM `app_models_site_bound` WHERE  `status` = 1 AND `entity1_type`='content' AND `entity1_id` = '$entity[id]' AND `name`='image' ORDER BY `sort` ASC");
+
+					/*$bound = $connect->getRow("SELECT * FROM `app_models_site_bound` WHERE  `status` = 1 AND `entity1_type`='content' AND `entity1_id` = '$entity[id]' AND `name`='image' ORDER BY `sort` ASC");
 					$file = $connect->getRow("SELECT * FROM `core_models_file_file` WHERE `id`=?i LIMIT 1", $bound['entity2_id']);
 					$file['uri'] = str_replace('/images/jpg/', '/images/jpg/min-preview-webp/', $file['uri']);
 					$file['uri'] = str_replace('.jpg', '.webp', $file['uri']);
-					if ($file['uri']!='') $object->setAttribute("image", $file['uri']);
+					if ($file['uri']!='') $object->setAttribute("image", $file['uri']);*/
+
+			    $entity = [
+			      'id' => $entity['id'],
+			      'type' => 'content'
+			    ];
+			    $images = (bounds_to_files($connect,load_bounds($connect,$entity,'image')));
+			    if (count($images)>0) 
+			    	$object->setAttribute("image", $images[0]['uri_thumbnail']);
 				}
 			}
 			

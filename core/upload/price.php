@@ -12,6 +12,7 @@ function upload_price_on_server($connect, $id=false, $nthChild = NULL,$showProcc
   if(!$id && isset($_GET['id']))
     $id = $_GET["id"];  
 
+
 	$connect_server = connect_to_server();
 	//if($connect_server == 1)
 	//	return "Ошибка соединения";
@@ -155,6 +156,9 @@ function upload_price_on_server($connect, $id=false, $nthChild = NULL,$showProcc
 		$website = $row['website'];
 		save_price_XML_object($connect, $id);
 		save_desc_XML_object($connect, $id);
+
+
+
 
 		$file = $directory."/temp/xml/price/".$id.".xml";
 		//$server_file = "/var/www/default-site/public_html/price/XML/price/".$id.".xml";
@@ -350,6 +354,15 @@ function save_price_XML_object($connect, $id){
 		$room->setAttribute("best_comfort", $best_comfort);
 		$room->setAttribute("square", $square);
 		$room->setAttribute("food", $food);
+
+    $entity = [
+      'id' => $id_room,
+      'type' => 'room'
+    ];
+    $images = (bounds_to_files($connect,load_bounds($connect,$entity,'image')));
+    if (count($images)>0) {
+      $room->setAttribute("image", $images[0]['uri_thumbnail']);  
+    }
 
 		$roomArray = [
 			"id" => $id_room,
@@ -613,13 +626,14 @@ function save_price_XML_object($connect, $id){
 
 function save_desc_XML_object($connect, $id){
 	$directory = __DIR__.'/../..';
-	$row = $connect->getRow("SELECT id, id_reg, region_direction_id, type, name, url_name, id_profile, id_methods, id_infa, medical_factors, description, id_services FROM object WHERE id=?i AND (active=0 OR active=1) LIMIT 1", $id);
+	$row = $connect->getRow("SELECT id, id_reg, region_direction_id, type, name, address, url_name, id_profile, id_methods, id_infa, medical_factors, description, id_services FROM object WHERE id=?i AND (active=0 OR active=1) LIMIT 1", $id);
 
 	$name_object = $row["name"];
 	$region = $row["id_reg"];
 	$infa_text = json_encode(parse_index_string_to_array($connect, $row["id_infa"], "infa", "_"));
 	$profile_object = $row["id_profile"];
-	$methods_object = $row["id_methods"];
+	$methods_object = $row["address"];
+  $address = $row["address"];
   $id_reg = $row["id_reg"];
   $url_name = $row["url_name"];
   $type = $row["type"];
@@ -670,6 +684,7 @@ function save_desc_XML_object($connect, $id){
 	$object = $xml->appendChild($xml->createElement("object"));
 	$object->setAttribute("name", $name_object);
 	$object->setAttribute("region", $region);
+  $object->setAttribute("address", $address);
 
   $direction = $connect->getOne("SELECT id_direction FROM region WHERE id=?i", $id_reg);
   $name_direction = $connect->getOne("SELECT name FROM direction_object WHERE id=?i", $direction);
