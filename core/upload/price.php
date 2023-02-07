@@ -11,7 +11,7 @@ function upload_price_on_server($connect, $id=false, $nthChild = NULL,$showProcc
 
   if(!$id && isset($_GET['id']))
     $id = $_GET["id"];  
-
+ 
 
 	$connect_server = connect_to_server();
 	//if($connect_server == 1)
@@ -149,13 +149,20 @@ function upload_price_on_server($connect, $id=false, $nthChild = NULL,$showProcc
 		$connect->query("UPDATE object SET status=1, description_check=?s, synchronized=0 WHERE id=?i LIMIT 1", $desc, $id);
 	}
 	foreach($data as $row){
+
+
+
+
 		$id = $row["id"];
-    upload_promo_object_on_server($connect,$id);
+    
 		$url = $row["url_name"];
 		$source_booking = $row["source_booking"];
 		$website = $row['website'];
 		save_price_XML_object($connect, $id);
+    
 		save_desc_XML_object($connect, $id);
+
+    upload_promo_object_on_server($connect,$id);
 
 
 
@@ -632,7 +639,7 @@ function save_desc_XML_object($connect, $id){
 	$region = $row["id_reg"];
 	$infa_text = json_encode(parse_index_string_to_array($connect, $row["id_infa"], "infa", "_"));
 	$profile_object = $row["id_profile"];
-	$methods_object = $row["address"];
+	$methods_object = $row["id_methods"];
   $address = $row["address"];
   $id_reg = $row["id_reg"];
   $url_name = $row["url_name"];
@@ -655,7 +662,7 @@ function save_desc_XML_object($connect, $id){
 	$profile_text = json_encode($profiles);
 
 	$array = explode("_", $methods_object);
-	$methods = array();
+  $methods = array();
 	foreach($array as $index){
 		if($index){
 			$row = $connect->getRow("SELECT name, description FROM methods WHERE id=?i LIMIT 1", $index);

@@ -799,14 +799,12 @@ function upload_information_object($connect){
 
 function upload_method_on_server($connect){
 	global $directory;
-	echo 'upload_method_on_server';
 	//save_methods_XML($connect);
 	$connect_server = connect_to_server();
-	echo '$connect_server='.$connect_server.'<br>';
-	//if($connect_server == 1)
-		//return "Ошибка соединения";
-	//else{
-		//if($connect_server == 2) return "Не удалось авторизироваться";
+	if($connect_server == 1)
+		return "Ошибка соединения";
+	else{
+		if($connect_server == 2) return "Не удалось авторизироваться";
 
 		//$ftp_folder = "/var/www/default-site/public_html/price/XML/overall/";
 		$ftp_folder = "/load_price/XML/overall/";
@@ -818,7 +816,7 @@ function upload_method_on_server($connect){
 		ftp_chmod($connect_server, 0644, $ftp_folder."methods.xml");
 		include_once($directory."/core/upload/image.php");
 		do_upload_images($connect_server, $directory."/temp/method/", $ftp_image_folder);
-	//}
+	}
 	ftp_quit($connect_server);
 }
 
