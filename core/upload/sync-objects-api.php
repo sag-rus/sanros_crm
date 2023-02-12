@@ -566,7 +566,7 @@ function sync_objects_api($connect){
 		}
 
 
-		$rooms = $connect->getAll("SELECT `id`, `name`, `active`, `id_obj`, `housing`, `square`, `food`, `note`, `description`, `main_place`, `add_place`, `priority`, `id_comfort`, `id_best_comfort`, `price_places` FROM `room` WHERE `synchronized` = 0");
+		$rooms = $connect->getAll("SELECT `id`, `name`, `active`, `id_obj`, `housing`, `square`, `food`, `note`, `description`, `main_place`, `add_place`, `priority`, `id_comfort`, `id_best_comfort`, `price_places`, `accessible_places` FROM `room` WHERE `synchronized` = 0");
 
 		foreach ($rooms as $room) {
 			$roomAr = [];
@@ -584,6 +584,7 @@ function sync_objects_api($connect){
 			$roomAr['add_places_count'] = $room['add_place'];
 			$roomAr['sort'] = $room['priority'];
 			$roomAr['travelline_prices_json'] = $room['price_places'];
+			$roomAr['accessible_places'] = $room['accessible_places'];
 			$roomAr['uid'] = 1;
 
 			echo "Отправка запроса на https://sites.tonia.ru/api/resort/room/set/".$room['id'].'<br>';
