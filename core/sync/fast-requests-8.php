@@ -185,7 +185,7 @@ while(1) {
                   $config->booking = $requestData["booking"];
                   $configNew->booking = $requestData["booking"];
                 }
-                $respAr['result'] = $request['action']($connect,$requestData,true);
+                $respAr['result'] = $request['action']($connect,$requestData);
                 $respAr['success'] = 1;
               }
               catch (Exception $e) {
