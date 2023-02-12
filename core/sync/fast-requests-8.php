@@ -51,10 +51,10 @@ $CHAT_GROUP_OBJECT = array(
 
 
 $onlinePaymentInfo = array(
-  "link" => $conf->BANK_PAYMENT_LINK ?? null,
-  "commission" => $conf->BANK_COM ?? null,
-  "userName" => $conf->USERNAME_ALFA ?? null,
-  "password" => $conf->PASSWORD_ALFA ?? null
+    "link" => $conf->BANK_PAYMENT_LINK ?? null,
+    "commission" => $conf->BANK_COM ?? null,
+    "userName" => $conf->USERNAME_ALFA ?? null,
+    "password" => $conf->PASSWORD_ALFA ?? null
 );
 
 $onlinePaymentInfoSber = array(

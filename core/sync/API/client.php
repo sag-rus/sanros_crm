@@ -1,7 +1,7 @@
 <?php
 $loader = require( __DIR__ . '/../../../vendor/autoload.php');
 
-if ($_GET['a']=='aznakaevo') {
+if (isset($_GET['a']) && $_GET['a']=='aznakaevo') {
 	echo '123';
 	send_aznakaevo_email(false, false);
 }
