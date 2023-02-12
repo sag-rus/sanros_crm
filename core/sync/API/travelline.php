@@ -1,7 +1,12 @@
 <?php
 
 function update_room_places_quota($connect, $data){
+	if(!array_key_exists('update', $data)) {
+		echo 'Unknown data structure: ' . print_r($data, true);
+	}
+
 	$update = $data["update"];
+
 	foreach($update as $room => $update_places){
 		$connect->query("UPDATE room SET accessible_places=?s, synchronized = 0 WHERE id=?i", $update_places, $room);
 	}
