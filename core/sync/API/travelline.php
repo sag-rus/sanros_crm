@@ -1,11 +1,7 @@
 <?php
 
 function update_room_places_quota($connect, $data){
-	if(!array_key_exists('update', $data)) {
-		echo 'Unknown data structure: ' . print_r($data, true);
-	}
-
-	$update = $data["update"];
+	$update = $data["update"] ?? [];
 
 	foreach($update as $room => $update_places){
 		$connect->query("UPDATE room SET accessible_places=?s, synchronized = 0 WHERE id=?i", $update_places, $room);
@@ -13,12 +9,7 @@ function update_room_places_quota($connect, $data){
 }
 
 function update_room_prices_quota($connect, $data){
-
-	if(!array_key_exists('update', $data)) {
-		echo 'Unknown data structure: ' . print_r($data, true);
-	}
-
-	$update = $data["update"];
+	$update = $data["update"] ?? [];
 	foreach($update as $room => $update_price){
 		$connect->query("UPDATE room SET price_places=?s, synchronized = 0 WHERE id=?i", $update_price, $room);
 	}
