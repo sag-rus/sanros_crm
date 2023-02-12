@@ -163,7 +163,7 @@ while(1) {
             $respAr = [
               'title' => '',
               'msg' => '',
-              'success' => ''
+              'success' => 0
             ];
 
             if(function_exists($request['action'])) {
