@@ -8,7 +8,11 @@ function upload_promo_object_on_server($connect, $id = NULL){
 	$ftp_folder = "/load_price/XML/";
 	if(!$id)
 		$id = $_POST["id"];
-	$connect_server = connect_to_server_directory();
+	if(!$id)
+		$id = $_GET["id"];
+
+	//$connect_server = connect_to_server_directory();
+	$connect_server = connect_to_server();
 	if($connect_server == 1)
 		return "<div class='alert alert-danger'>Ошибка соединения</div>";
 
@@ -29,19 +33,22 @@ function upload_promo_object_on_server($connect, $id = NULL){
 			return "Не удалось загрузить файл на сервер";
 		ftp_chmod($connect_server, 0644, $server_file);
 	}
-	save_primary_promo_XML($connect);
-	save_VIP_promo_XML($connect);
-  save_all_promo_XML($connect);
 
-  ftp_put($connect_server, $ftp_folder."overall/VIPpromo.xml", $rootPath."/temp/VIPpromo.xml", FTP_ASCII);
-  ftp_put($connect_server, $ftp_folder."overall/PrimaryPromo.xml", $rootPath."/temp/PrimaryPromo.xml", FTP_ASCII);
-  ftp_put($connect_server, $ftp_folder."overall/promotions.xml", $rootPath."/temp/promotions.xml", FTP_ASCII);
-  ftp_chmod($connect_server, 0644, $ftp_folder."overall/VIPpromo.xml");
-  ftp_chmod($connect_server, 0644, $ftp_folder."overall/PrimaryPromo.xml");
-  ftp_chmod($connect_server, 0644, $ftp_folder."overall/promotions.xml");
-  ftp_quit($connect_server);
+	if ($id == NULL) {
+		save_primary_promo_XML($connect);
+		save_VIP_promo_XML($connect);
+	  	save_all_promo_XML($connect);
 
-  if(!isset($_POST["id"]) || !$_POST["id"])
+	  	ftp_put($connect_server, $ftp_folder."overall/VIPpromo.xml", $rootPath."/temp/VIPpromo.xml", FTP_ASCII);
+	  	ftp_put($connect_server, $ftp_folder."overall/PrimaryPromo.xml", $rootPath."/temp/PrimaryPromo.xml", FTP_ASCII);
+	  	ftp_put($connect_server, $ftp_folder."overall/promotions.xml", $rootPath."/temp/promotions.xml", FTP_ASCII);
+	  	ftp_chmod($connect_server, 0644, $ftp_folder."overall/VIPpromo.xml");
+	  	ftp_chmod($connect_server, 0644, $ftp_folder."overall/PrimaryPromo.xml");
+	  	ftp_chmod($connect_server, 0644, $ftp_folder."overall/promotions.xml");
+  	}	
+  	ftp_quit($connect_server);
+
+  	if(!isset($_POST["id"]) || !$_POST["id"])
 		return "<div class='alert alert-success'>Загрузка завершена!</div>";
 	return "<div class='alert alert-success'>Загрузка завершена!<br /><a class='alert-link' href='http://xn----dtbmnhpbbghbyj0jwa2c.xn--p1ai/price.html#object/".$id."/promo' target='_blank'><i class='fa fa-smile-o'></i> Посмотреть как это выглядит на сайте</a></div>";
 }
