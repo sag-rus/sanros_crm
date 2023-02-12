@@ -1171,8 +1171,8 @@ function save_list_account($connect, $data){
 }
 
 function show_reviews_account($connect, $data){
+	$answer = array();
 	if(CheckAuthTuristCabinet::check_authorization()){
-		$answer = array();
 		$turist = ConfigCRM::getInstance()->account;
 		$data = $connect->getAll("SELECT id, id_obj, DATE_FORMAT(date_z, '%d.%m.%Y') as arrival FROM reckoning WHERE turist=?i AND status=5 AND date_v<?s", $turist, date("Y-m-d"));
 		foreach($data as $row){
@@ -1189,8 +1189,11 @@ function show_reviews_account($connect, $data){
 			}
 
 		}
-		return $answer;
+	} else {
+		$answer['error'] = 'You\'re not authorized!';
 	}
+
+	return $answer;
 }
 
 function show_comment_tour_account($connect, $data){
