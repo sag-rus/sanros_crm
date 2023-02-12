@@ -1171,7 +1171,9 @@ function save_list_account($connect, $data){
 }
 
 function show_reviews_account($connect, $data){
-	$answer = array();
+	$answer = array(
+		'control_hash' => bin2hex(random_bytes(32))
+	);
 	if(CheckAuthTuristCabinet::check_authorization()){
 		$answer['reviews'] = array();
 		$turist = ConfigCRM::getInstance()->account;
