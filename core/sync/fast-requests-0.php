@@ -196,6 +196,7 @@ while(1) {
             else {
               $respAr['msg'] = "Action's method not exists";
               $respAr['title'] = 'Error';
+              $respAr['result'] = null;
             }
 
             try {
