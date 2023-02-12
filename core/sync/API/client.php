@@ -1173,19 +1173,20 @@ function save_list_account($connect, $data){
 function show_reviews_account($connect, $data){
 	$answer = array();
 	if(CheckAuthTuristCabinet::check_authorization()){
+		$answer['reviews'] = array();
 		$turist = ConfigCRM::getInstance()->account;
 		$data = $connect->getAll("SELECT id, id_obj, DATE_FORMAT(date_z, '%d.%m.%Y') as arrival FROM reckoning WHERE turist=?i AND status=5 AND date_v<?s", $turist, date("Y-m-d"));
 		foreach($data as $row){
 			$id = $row["id"];
 			$rating = $connect->getRow("SELECT id, clean, comfort, location, staff, leisure, ratio, treatment FROM rating WHERE schet=?i AND status>1", $id);
-			$answer[$id]["object"] = get_object($connect, $row["id_obj"], "type");
-			$answer[$id]["arrival"] = $row["arrival"];
+			$answer['reviews'][$id]["object"] = get_object($connect, $row["id_obj"], "type");
+			$answer['reviews'][$id]["arrival"] = $row["arrival"];
 			if($rating["id"]){
 				$count_rating = 6;
 				$average = $rating["clean"] + $rating["comfort"] + $rating["location"] + $rating["staff"] + $rating["treatment"] + $rating["leisure"] + $rating["ratio"];
 				if($rating["treatment"] != 0)
 					$count_rating++;
-				$answer[$id]["average"] = round($average / $count_rating * 2, 2);
+				$answer['reviews'][$id]["average"] = round($average / $count_rating * 2, 2);
 			}
 
 		}
