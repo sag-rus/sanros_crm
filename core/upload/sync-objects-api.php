@@ -746,7 +746,7 @@ function sync_objects_api($connect){
 			}
 		}
 
-		$prices = $connect->getAll("SELECT `id`, `id_room`, `price`, `id_range`, `active` FROM `price` WHERE `synchronized` = 0 AND ".$pricesYearWhere." LIMIT 500");
+		$prices = $connect->getAll("SELECT `id`, `id_room`, `price`, `id_range`, `active` FROM `price` WHERE `synchronized` = 0 AND ".$pricesYearWhere." LIMIT 5000");
 
 		foreach ($prices as $price) {
 			$priceAr = [];
