@@ -52,9 +52,9 @@ function update_contact_object_account($connect, $data){
 		$object = $data["object"];
 		$address = $data["address"];
 		$travelline_id = $data["travelline_id"];
-		/*$fax = $data["fax"];
-		$website = $data["website"];*/
-		$connect->query("UPDATE object SET address=?s, travelline_id=?s, synchronized=0 WHERE id=?i", $address, $travelline_id, $object);
+		$fax = $data["fax"];
+		$website = $data["website"];
+		$connect->query("UPDATE object SET address=?s, fax=?s, website=?s, travelline_id=?s, synchronized=0 WHERE id=?i", $address, $fax, $website, $travelline_id, $object);
 		save_history_object("Изменение контактов с travelline_id");
 	}
 	return FALSE;
