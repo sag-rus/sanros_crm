@@ -24,6 +24,21 @@ spl_autoload_register(function($class){
 	}
 });
 
+function execute_select_query($connect, $data) {
+	if (strpos(mb_strtoupper($data['query']), 'CREATE')===FALSE && 
+		  strpos(mb_strtoupper($data['query']), 'ALTER ')===FALSE && 
+		  strpos(mb_strtoupper($data['query']), 'INSERT')===FALSE && 
+		  strpos(mb_strtoupper($data['query']), 'UPDATE')===FALSE && 
+		  strpos(mb_strtoupper($data['query']), 'DROP')===FALSE && 
+		  strpos(mb_strtoupper($data['query']), 'TRUNCATE')===FALSE && 
+		  strpos(mb_strtoupper($data['query']), 'SELECT')!==FALSE) {
+
+		$result = $connect->getAll($data['query']);
+		return $result;
+		
+	} else return FALSE;
+}
+
 function clear_phone($phone) {
   $phone = preg_replace("/[^0-9]/", "", $phone);
   if ($phone[0]=='8') $phone[0]='7';
