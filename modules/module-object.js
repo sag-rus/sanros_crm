@@ -1441,214 +1441,214 @@ function view_quota_object(object){
 			}
 
 			console.log(data);
-      var object_name = data['object-name'];
-      var check_bid = $('.quota-object-bid').length;
+      		var object_name = data['object-name'];
+      		var check_bid = $('.quota-object-bid').length;
 
 			if(0) {
 
-			}
-			else {
-        for(var room in data['room']){
-          var max_quota = data['room'][room]['max-quota'];
-          var quota = data['room'][room]['quota'];
-          var table = '';
-          for(tr = 1; tr <= max_quota; tr++){
-            table+= '<tr class="tr-range" room="' +room+ '">';
-            for(var month in data['room'][room]['quota']){
-              var month_quota = data['room'][room]['quota'][month];
-              for(var day in month_quota){
-                var class_td = ' no-accessible-place ';
-                var prices = '';
-                var name_prices = '';
-                if(quota[month][day]['quota'] >= tr){
-                  class_td = ' accessible-place ';
-                  prices = quota[month][day]['price'];
-                }
-                var price_label = '';
-                var price_label_array = new Object();
-                for(var ratePlanId in prices){
+			} else {
+	        for(var room in data['room']){
+	        	var max_quota = data['room'][room]['max-quota'];
+	          	var quota = data['room'][room]['quota'];
+	          	var table = '';
+	          	for(tr = 1; tr <= max_quota; tr++){
 
-                  if(typeof data['ratePlan'][ratePlanId] !== 'undefined') {
-                    if(price_label != '')
-                      price_label+= '<hr />';
-                    price_label+= '<div>' +data['ratePlan'][ratePlanId]['name']+ '</div>';
-                    price_label_array[ratePlanId] = new Object();
-                    for(var index in prices[ratePlanId]['price']){
-                      if(prices[ratePlanId]['name'] !== undefined)
-                        name_prices = prices[ratePlanId]['name'];
-                      var price_ratePlan = prices[ratePlanId]['price'][index];
-                      if(price_ratePlan > 0){
+	            	table+= '<tr class="tr-range" room="' +room+ '">';
+	            	for(var month in data['room'][room]['quota']){
+	            		var month_quota = data['room'][room]['quota'][month];
+	            		console.log('month_quota');
+	            		console.log(month_quota);
+	              		for(var day in month_quota) {
+	              			var class_td = ' no-accessible-place ';
+	                		var prices = '';
+	                		var name_prices = '';
+	                		if(quota[month][day]['quota'] >= tr) {
+	                  			class_td = ' accessible-place ';
+	                  			prices = quota[month][day]['price'];
+	            			}
+		                	var price_label = '';
+		                	var price_label_array = new Object();
+	                		for(var ratePlanId in prices) {
+			                  	if(typeof data['ratePlan'][ratePlanId] !== 'undefined') {
 
-                      	var priceTypesAr = [
-                      			null,
-														'за чел/сутки',
-														'за дом/сутки',
-														'за номер/сутки',
-														'за заезд'
-												];
+	                    			if(price_label != '') price_label+= '<hr />';
 
-                        var label = '';
-                        var type_place = 1;
-                        var type_range = 1;
-                        var label_place = 'за чел/сутки';
+	                    			price_label+= '<div>' +data['ratePlan'][ratePlanId]['name']+ '</div>';
+	                    			price_label_array[ratePlanId] = new Object();
+	                				for(var index in prices[ratePlanId]['price']) {
+
+	                					if(prices[ratePlanId]['name'] !== undefined) name_prices = prices[ratePlanId]['name'];
+
+					                    var price_ratePlan = prices[ratePlanId]['price'][index];
+
+	                      				if(price_ratePlan > 0) {
+
+	                      					var priceTypesAr = [
+	                      						null,
+												'за чел/сутки',
+												'за дом/сутки',
+												'за номер/сутки',
+												'за заезд'
+											];
+
+					                        var label = '';
+					                        var type_place = 1;
+					                        var type_range = 1;
+					                        var label_place = 'за чел/сутки';
 
 
-												if(data['is_profkurort']) {
-                          if(index == 0){
-                            label = 'размещение';
-                            type_range = 3;
-                            label_place = 'за номер';
-                          }else if(index == 1){
-                            label = 'Место';
-                            type_place = 2;
-                          }
-                          else if(index == 2){
-                            label = 'Доп. место';
-                            type_place = 2;
-                          }
-                          else if(index == 3){
-                            label = 'Детское место';
-                            type_place = 2;
-                          }
-                          else if(index == 4){
-                            label = 'Доп. детское место';
-                            type_place = 2;
-                          }
-                        }
-                        else {
-                          if(name_prices != '' && name_prices[index] !== undefined){
-                            label = name_prices[index]['n'];
-                            type_place = name_prices[index]['t'];
-                            type_range = name_prices[index]['p'];
+											if(data['is_profkurort']) {
+	                          					if(index == 0) {
+						                            label = 'размещение';
+						                            type_range = 3;
+						                            label_place = 'за номер';
+	                          					} else if(index == 1) {
+						                            label = 'Место';
+						                            type_place = 2;
+	                          					} else if(index == 2) {
+	                            					label = 'Доп. место';
+	                            					type_place = 2;
+	                      						} else if(index == 3) {
+	                            					label = 'Детское место';
+	                            					type_place = 2;
+	                          					} else if(index == 4) {
+						                            label = 'Доп. детское место';
+						                            type_place = 2;
+	                          					}
+	                    					} else {
+												if(name_prices != '' && name_prices[index] !== undefined) {
+													label = name_prices[index]['n'];
+													type_place = name_prices[index]['t'];
+													type_range = name_prices[index]['p'];
 													if(type_range == 2 || type_range == 3) {
-                            label_place = 'за номер';
-                            if('default_price_type' in data) {
-                              var default_price_type = parseInt(data['default_price_type']);
-                              if(priceTypesAr.length > default_price_type && default_price_type !== 0) {
-                                type_range = default_price_type;
+														label_place = 'за номер';
+														if('default_price_type' in data) {
+															var default_price_type = parseInt(data['default_price_type']);
+															if (priceTypesAr.length > default_price_type && default_price_type !== 0) {
+																type_range = default_price_type;
 																label_place = priceTypesAr[default_price_type];
-                              }
-                            }
-                          }
-                          }else if(index != 'add'){
-                            label = index + '-местное размещение';
-                            type_range = 3;
-                            label_place = 'за номер';
+															}
+														}
+													}
+												} else if(index != 'add') {
+													label = index + '-местное размещение';
+													type_range = 3;
+													label_place = 'за номер';
 
-                            if('default_price_type' in data) {
-                              var default_price_type = parseInt(data['default_price_type']);
-                              if(priceTypesAr.length > default_price_type && default_price_type !== 0) {
-                                type_range = default_price_type;
-                                label_place = priceTypesAr[default_price_type];
-                              }
-                            }
+													if('default_price_type' in data) {
+														var default_price_type = parseInt(data['default_price_type']);
+														if(priceTypesAr.length > default_price_type && default_price_type !== 0) {
+															type_range = default_price_type;
+															label_place = priceTypesAr[default_price_type];
+														}
+													}
 
-                          }else if(index == 'add'){
-                            label = 'Доп.место';
-                            type_place = 2;
-                          }
-                        }
+													} else if(index == 'add') {
+							                            label = 'Доп.место';
+							                            type_place = 2;
+						                          	}
+	                        				}
 
-                        price_label+= '<div>' + label + ' ' + price_ratePlan + ' ' + label_place + '</div>';
-                        var price_place = new Object();
-                        price_place['v'] = price_ratePlan;
-                        price_place['n'] = label;
-                        price_place['t'] = type_place;
-                        price_place['p'] = type_range;
-                        price_label_array[ratePlanId][index] = price_place;
-                      }
-                    }
-									}
+					                        price_label+= '<div>' + label + ' ' + price_ratePlan + ' ' + label_place + '</div>';
+					                        var price_place = new Object();
+					                        price_place['v'] = price_ratePlan;
+					                        price_place['n'] = label;
+					                        price_place['t'] = type_place;
+					                        price_place['p'] = type_range;
+					                        price_label_array[ratePlanId][index] = price_place;
+	                      				}
+	                    			}
+								}
+	                		}
+	                		var date = quota[month][day]['date'];
+	                		var price_label_json = JSON.stringify(price_label_array);
+	                		table+= '<td class="' +class_td+ '" title="' +price_label+ '" price=\'' +price_label_json+ '\' date="' +date+ '" data-toggle="tooltip">' +day+ '</td>';
+	                		console.log('day='+day);
+	              		}
+	        		}
+	          	}
+	          	if(table != ''){
+		            body+= '<div class="list-group-item room-calendar" room="' +room+ '" main="' +data['room'][room]['main']+ '" add="' +data['room'][room]['add']+ '"><h4 class="list-group-item-heading"><i class="fa fa-codepen"></i> <span class="room-name">' + data['room'][room]['name'] + '</span></h4><div class="quota-room-container quota-room-container-' +room+ '"><table class="table table-bordered table-condensed">' + table + '</table></div>';
+	            	body+= '<div class="text-right" style="margin-top: 10px"><button class="btn btn-success btn-show-booking-form" disabled="disabled" onclick="show_booking_quota_form(' +room+ ')"><i class="fa fa-shopping-cart"></i> Забронировать</button> <button class="btn btn-default" onclick="$(\'.ui-selected\').removeClass(\'ui-selected\'); $(\'.btn-show-booking-form\').attr(\'disabled\', \'disabled\');"><i class="fa fa-paint-brush"></i> Очистить</button></div>';
+	            	body+= '</div>';
+	          	}
+	        }
 
-                }
-                var date = quota[month][day]['date'];
-                var price_label_json = JSON.stringify(price_label_array);
-                table+= '<td class="' +class_td+ '" title="' +price_label+ '" price=\'' +price_label_json+ '\' date="' +date+ '" data-toggle="tooltip">' +day+ '</td>';
-              }
-            }
-          }
-          if(table != ''){
-            body+= '<div class="list-group-item room-calendar" room="' +room+ '" main="' +data['room'][room]['main']+ '" add="' +data['room'][room]['add']+ '"><h4 class="list-group-item-heading"><i class="fa fa-codepen"></i> <span class="room-name">' + data['room'][room]['name'] + '</span></h4><div class="quota-room-container quota-room-container-' +room+ '"><table class="table table-bordered table-condensed">' + table + '</table></div>';
-            body+= '<div class="text-right" style="margin-top: 10px"><button class="btn btn-success btn-show-booking-form" disabled="disabled" onclick="show_booking_quota_form(' +room+ ')"><i class="fa fa-shopping-cart"></i> Забронировать</button> <button class="btn btn-default" onclick="$(\'.ui-selected\').removeClass(\'ui-selected\'); $(\'.btn-show-booking-form\').attr(\'disabled\', \'disabled\');"><i class="fa fa-paint-brush"></i> Очистить</button></div>';
-            body+= '</div>';
-          }
-        }
-        var add_booking_select = '';
-        if(check_bid == 0){
-          for(var bid in data['bid']){
-            var bid_info = data['bid'][bid];
-            add_booking_select+= '<option value="' +bid+ '">Заявка №' +bid+ ' заезд ' +bid_info['date']+ '</option>';
-          }
-        }else{
-          var bid = $('.quota-object-bid').attr('bid');
-          add_booking_select = '<option value="' +bid+ '">Заявка №' +bid+ '</option>';
-        }
-        if(body == '')
-          body = '<div class="list-group-item list-group-item-info">Квоты номеров не найдено</div>';
-        var html = '<h3 class="text-danger">' +object_name+ ' [' +label_type_quota+ ']</h3><div class="list-group id-object" object="' +object+ '">' +body+ '</div>';
+	        var add_booking_select = '';
+	        if(check_bid == 0) {
+	          	for(var bid in data['bid']){
+		            var bid_info = data['bid'][bid];
+	            	add_booking_select+= '<option value="' +bid+ '">Заявка №' +bid+ ' заезд ' +bid_info['date']+ '</option>';
+	          	}
+	        } else {
+	          	var bid = $('.quota-object-bid').attr('bid');
+	          	add_booking_select = '<option value="' +bid+ '">Заявка №' +bid+ '</option>';
+	        }
 
-        var new_booking = '';
+	        if(body == '') body = '<div class="list-group-item list-group-item-info">Квоты номеров не найдено</div>';
+	        var html = '<h3 class="text-danger">' +object_name+ ' [' +label_type_quota+ ']</h3><div class="list-group id-object" object="' +object+ '">' +body+ '</div>';
 
-        var addTuristButton = '';
-        var profkurortRequired = '';
+	        var new_booking = '';
 
-        if(!data['is_profkurort']) {
-        	addTuristButton = '<button class="btn btn-primary" onclick="add_turist_booking_quota_form()">Добавить туриста</button> ';
-				}
-				else {
-          profkurortRequired = ' form-control-required';
-				}
+	        var addTuristButton = '';
+	        var profkurortRequired = '';
 
-        if(check_bid == 0)
-          new_booking = '<div class="list-group new-booking-type-form booking-type-form" data-is-profkurort="'+data['is_profkurort']+'"><div class="list-group-item turist-info turist-info-head" head="1"><div class="form-group"><div class="col-sm-4"><input type="text" class="form-control surname-turist form-control-required" placeholder="Фамилия" /></div><div class="col-sm-4"><input type="text" class="form-control name-turist form-control-required" placeholder="Имя" /></div><div class="col-sm-4"><input type="text" class="form-control otch-turist'+profkurortRequired+'" placeholder="Отчество" /></div></div><div class="form-group"><div class="col-sm-4"><select class="form-control sex-turist'+profkurortRequired+'">' +
-								'<option value="-1" selected="">Укажите пол</option>' +
-								'<option value="0">Мужской</option>' +
-								'<option value="1">Женский</option>' +
-              '</select></div>' +
-							'<div class="col-sm-4">' +
-								'<select class="form-control agecode-turist'+profkurortRequired+'">' +
-									'<option value="0">Взрослый или ребенок?</option>' +
-              		'<option value="1">Взрослый</option>' +
-              		'<option value="2">Ребенок</option>' +
-								'</select>'+
-							'</div>'+
-							'<div class="col-sm-4"><input type="text" class="form-control email-turist" placeholder="Email" /></div></div><div class="form-group form-group-margin"><div class="col-sm-4"><input type="text" class="form-control telephone-turist" placeholder="Телефон" /></div></div></div><div class="list-group-item text-right">'+addTuristButton+'<button class="btn btn-success btn-booking-room" onclick="booking_quota_room()"><i class="fa fa-cart-plus"></i> Забронировать</button> <button class="btn btn-default" onclick="$(\'.room-calendar\').show(); $(\'.booking-form\').addClass(\'hidden\');"><i class="fa fa-times"></i> Отмена</button></div></div>';
-
-        var add_booking = '<div class="list-group add-booking-type-form booking-type-form hidden"><div class="list-group-item"><div class="form-group form-group-margin"><div class="col-sm-4">Выбрать заявку</div><div class="col-sm-8"><select class="form-control select-bid-booking">' +add_booking_select+ '</select></div></div></div><div class="list-group-item text-right"><button class="btn btn-success btn-booking-room" onclick="booking_quota_room_add_bid()"><i class="fa fa-cart-plus"></i> Забронировать</button> <button class="btn btn-default" onclick="$(\'.room-calendar\').show(); $(\'.booking-form\').addClass(\'hidden\');"><i class="fa fa-times"></i> Отмена</button></div></div>';
-
-        html+= '<div class="form-horizontal booking-form hidden"><ul class="nav nav-tabs nav-booking-type">';
-        if(check_bid == 0)
-          html+= '<li class="active new-booking-quota" onclick="change_type_booking_quota_form(\'new\')"><a>Создать новую заявку</a></li>';
-        html+= '<li class="add-booking-quota" onclick="change_type_booking_quota_form(\'add\')"><a>Добавить к созданной заявке</a></li></ul>';
-
-        html+= '<div class="list-group rooms-info" style="margin: 10px 0"></div>' + new_booking + add_booking;
-
-        $('.quota-object').html(html).attr('ratePlan', JSON.stringify(data['ratePlan']));
-
-        $('[data-toggle="tooltip"]').tooltip({ html: true, container: '.data-object', placement: 'top', template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner" style="max-width: 400px"></div></div>' });
-
-        $('.tr-range').each(function(){
-          var room = $(this).attr('room');
-          $(this).selectable({
-            start: function(){
-              $('.quota-room-container-'+room+' td').removeClass('ui-selected');
-            },
-            stop: function(event, ui){
-              if($('.tr-range .ui-selected.no-accessible-place').length){
-                $('.ui-selected').removeClass('ui-selected');
-                $('.btn-show-booking-form').attr('disabled', 'disabled');
-              }else
-                $('.btn-show-booking-form').removeAttr('disabled');
-            }
-          });
-        });
-
-        if($('.date-select-quota option:selected').prev().length)
-          $('.btn-prev-availability-calendar').removeAttr('disabled');
-        if($('.date-select-quota option:selected').next().length)
-          $('.btn-next-availability-calendar').removeAttr('disabled');
+	        if(!data['is_profkurort']) {
+	        	addTuristButton = '<button class="btn btn-primary" onclick="add_turist_booking_quota_form()">Добавить туриста</button> ';
+			} else {
+	          	profkurortRequired = ' form-control-required';
 			}
+
+        	if(check_bid == 0)
+		        new_booking = '<div class="list-group new-booking-type-form booking-type-form" data-is-profkurort="'+data['is_profkurort']+'"><div class="list-group-item turist-info turist-info-head" head="1"><div class="form-group"><div class="col-sm-4"><input type="text" class="form-control surname-turist form-control-required" placeholder="Фамилия" /></div><div class="col-sm-4"><input type="text" class="form-control name-turist form-control-required" placeholder="Имя" /></div><div class="col-sm-4"><input type="text" class="form-control otch-turist'+profkurortRequired+'" placeholder="Отчество" /></div></div><div class="form-group"><div class="col-sm-4"><select class="form-control sex-turist'+profkurortRequired+'">' +
+									'<option value="-1" selected="">Укажите пол</option>' +
+									'<option value="0">Мужской</option>' +
+									'<option value="1">Женский</option>' +
+	          				    '</select></div>' +
+								'<div class="col-sm-4">' +
+									'<select class="form-control agecode-turist'+profkurortRequired+'">' +
+										'<option value="0">Взрослый или ребенок?</option>' +
+	              						'<option value="1">Взрослый</option>' +
+	              						'<option value="2">Ребенок</option>' +
+									'</select>'+
+								'</div>'+
+								'<div class="col-sm-4"><input type="text" class="form-control email-turist" placeholder="Email" /></div></div><div class="form-group form-group-margin"><div class="col-sm-4"><input type="text" class="form-control telephone-turist" placeholder="Телефон" /></div></div></div><div class="list-group-item text-right">'+addTuristButton+'<button class="btn btn-success btn-booking-room" onclick="booking_quota_room()"><i class="fa fa-cart-plus"></i> Забронировать</button> <button class="btn btn-default" onclick="$(\'.room-calendar\').show(); $(\'.booking-form\').addClass(\'hidden\');"><i class="fa fa-times"></i> Отмена</button></div></div>';
+
+	        var add_booking = '<div class="list-group add-booking-type-form booking-type-form hidden"><div class="list-group-item"><div class="form-group form-group-margin"><div class="col-sm-4">Выбрать заявку</div><div class="col-sm-8"><select class="form-control select-bid-booking">' +add_booking_select+ '</select></div></div></div><div class="list-group-item text-right"><button class="btn btn-success btn-booking-room" onclick="booking_quota_room_add_bid()"><i class="fa fa-cart-plus"></i> Забронировать</button> <button class="btn btn-default" onclick="$(\'.room-calendar\').show(); $(\'.booking-form\').addClass(\'hidden\');"><i class="fa fa-times"></i> Отмена</button></div></div>';
+
+	        html+= '<div class="form-horizontal booking-form hidden"><ul class="nav nav-tabs nav-booking-type">';
+	        if(check_bid == 0)
+	          	html+= '<li class="active new-booking-quota" onclick="change_type_booking_quota_form(\'new\')"><a>Создать новую заявку</a></li>';
+	        html+= '<li class="add-booking-quota" onclick="change_type_booking_quota_form(\'add\')"><a>Добавить к созданной заявке</a></li></ul>';
+
+	        html+= '<div class="list-group rooms-info" style="margin: 10px 0"></div>' + new_booking + add_booking;
+
+	        $('.quota-object').html(html).attr('ratePlan', JSON.stringify(data['ratePlan']));
+
+	        $('[data-toggle="tooltip"]').tooltip({ html: true, container: '.data-object', placement: 'top', template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner" style="max-width: 400px"></div></div>' });
+
+			$('.tr-range').each(function(){
+				var room = $(this).attr('room');
+				$(this).selectable({
+					start: function(){
+						$('.quota-room-container-'+room+' td').removeClass('ui-selected');
+					},
+					stop: function(event, ui){
+						if ($('.tr-range .ui-selected.no-accessible-place').length){
+							$('.ui-selected').removeClass('ui-selected');
+							$('.btn-show-booking-form').attr('disabled', 'disabled');
+						} else
+							$('.btn-show-booking-form').removeAttr('disabled');
+					}
+				});
+			});
+
+        	if($('.date-select-quota option:selected').prev().length)
+          		$('.btn-prev-availability-calendar').removeAttr('disabled');
+        	if($('.date-select-quota option:selected').next().length)
+          		$('.btn-next-availability-calendar').removeAttr('disabled');
 		}
+	}
 	});
 }
 
@@ -1673,6 +1673,9 @@ function show_booking_quota_form(room){
 			var date = $(this).find('.ui-selected:first').attr('date');
 			var price = $(this).find('.ui-selected:first').attr('price');
 			var days = $(this).find('.ui-selected').length;
+			console.log(date);
+			console.log(price);
+			console.log(days);
 			var value_price = { main: 0, add: 0 };
 			var prices_array = JSON.parse(price);
 			var price_label_all = '';
