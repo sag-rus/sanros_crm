@@ -344,7 +344,10 @@ class BookingPayment {
         $response = curl_exec($ch);
         curl_close($ch);    
         $response = json_decode($response, true); 
-        if ($response['qrStatus']=='STARTED') $answer['renderedQr'] = $response['renderedQr'];
+        if ($response['qrStatus']=='STARTED') {
+          $answer['renderedQr'] = $response['renderedQr'];
+          $answer['payload'] = $response['payload'];
+        }
 
         $log = "action=get.do".PHP_EOL;
         $log .= print_r($response, true).PHP_EOL;
