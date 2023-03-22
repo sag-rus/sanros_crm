@@ -24,6 +24,13 @@ spl_autoload_register(function($class){
 	}
 });
 
+function save_crm_user_history($connect, $note = ""){
+	global $session_login;
+	$today = date("Y-m-d");
+	$time = date("H:i:s");
+	$connect->query("INSERT INTO history_crm(date, time, id_user, note) VALUES(?s, ?s, ?i, ?s)", $today, $time, $session_login, $note);
+}
+
 function execute_select_query($connect, $data) {
 	if (strpos(mb_strtoupper($data['query']), 'CREATE')===FALSE && 
 		  strpos(mb_strtoupper($data['query']), 'ALTER ')===FALSE && 

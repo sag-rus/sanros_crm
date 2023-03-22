@@ -568,12 +568,14 @@ function update_rating($connect){
 
 function confirm_rating($connect){
 	$connect->query("UPDATE rating SET status=3, synchronized = 0 WHERE id=?i", $_POST["id"]);
+	save_crm_user_history($connect, 'Отзыв c ID='.$_POST['id'].' принят');
 	$data = check_rating_count($connect);
 	return json_encode($data);
 }
 
 function delete_rating($connect){
 	$connect->query("UPDATE rating SET status=4, synchronized = 0 WHERE id=?i", $_POST["id"]);
+	save_crm_user_history($connect, 'Отзыв c ID='.$_POST['id'].' отправлен в архив');
 }
 
 function show_rating_comment($connect){
