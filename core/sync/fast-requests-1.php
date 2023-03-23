@@ -229,7 +229,7 @@ while(1) {
 
                     echo 'Обновление даннных по квотам...'. PHP_EOL;
                     $client = new GuzzleHttp\Client(['verify' => false]);
-                    $res = $client->request('POST','https://sync2.tonia.ru/api/bookings/set?cache='.substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15),[
+                    $res = $client->request('POST','https://sites.tonia.ru/api/bookings/set?cache='.substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15),[
                         'form_params' => [
                             'data' => $data,
                             'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4'
