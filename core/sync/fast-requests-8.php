@@ -218,6 +218,7 @@ while(1) {
 
 
         if($worker === 0) {
+            echo 'Проверка необходимости обновлений данных по квотам...'. PHP_EOL;
             $bookings = check_new_update_booking($connect);
             if($bookings["check"] == 1){
                 $data = json_encode($bookings["bookings"]);

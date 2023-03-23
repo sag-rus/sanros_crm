@@ -217,6 +217,7 @@ while(1) {
       }
 
         if($worker === 0) {
+            echo 'Проверка необходимости обновлений данных по квотам...'. PHP_EOL;
             $bookings = check_new_update_booking($connect);
             if($bookings["check"] == 1){
                 $data = json_encode($bookings["bookings"]);
@@ -225,6 +226,8 @@ while(1) {
                 confirm_update_booking($connect, $return);
 
                 try {
+
+                    echo 'Обновление даннных по квотам...'. PHP_EOL;
                     $client = new GuzzleHttp\Client(['verify' => false]);
                     $res = $client->request('POST','https://sync2.tonia.ru/api/bookings/set?cache='.substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15),[
                         'form_params' => [
@@ -239,6 +242,7 @@ while(1) {
 
             }
         }
+
 
         sleep(1);
 
