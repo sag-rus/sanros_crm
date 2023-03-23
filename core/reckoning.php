@@ -115,7 +115,10 @@ function save_all($connect){
 		recalculation_sum($connect, $bid);
 		save_schet_to_history($connect, $bid);
 		change_arrival_date($connect, $bid);
-		return $client;
+
+        $connect->query("UPDATE booking SET update_bid = 1 WHERE bid = ?i", $bid);
+
+        return $client;
 	}
 	return FALSE;
 }
