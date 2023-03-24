@@ -1,11 +1,30 @@
 <?php
 
+define("_FOLDERSITE_", $directory);
+
 function review_schet($connect, $type = "PDF", $id, $for = ""){
 	global $directory, $session_login;
 
 	include_once($directory."/config.php");
+	include_once($directory."/core/sync/API/payment.php");
 
 	$conf = new JConfig;
+
+	//Начало добавил параметры для запросов а QR-код Альфа-банка
+	$onlinePaymentInfoAlfa = array(
+	  "link" => $conf->BANK_PAYMENT_LINK_ALFA,
+	  "commission" => $conf->BANK_COM_ALFA,
+	  "commission_qr" => $conf->BANK_COM_ALFA_QR,
+	  "userName" => $conf->USERNAME_ALFA,
+	  "password" => $conf->PASSWORD_ALFA
+	);
+
+	$configNew = \App\lib\CRM\Config\Client::getInstance();
+	$configNew->connect = $connect;
+	$configNew->onlinePaymentInfoAlfa = $onlinePaymentInfoAlfa;
+	//Конец добавил параметры для запросов а QR-код Альфа-банка
+
+
 	$firma = $conf->firma;
 	$leg_address = $conf->leg_address;
 	$sep_address = $conf->sep_address;
@@ -23,7 +42,7 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 	$booker = $conf->booker;
 	$reestr = $conf->reestr;
 	$pay_days = isset($_GET['pay_days'])?(int)$_GET['pay_days']:1;
-    $pay_date = $connect->getOne("SELECT DATE_FORMAT(date, '%d.%m.%Y') as date FROM time_payment WHERE id_schet=?i AND type=1", $id);
+  $pay_date = $connect->getOne("SELECT DATE_FORMAT(date, '%d.%m.%Y') as date FROM time_payment WHERE id_schet=?i AND type=1", $id);
 
 
 	$pay_days_strings = [
@@ -351,10 +370,27 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 			echo "<tr><td colspan='3' style='border: none;'>&nbsp;<br /></td></tr>";
 	?>
 	</table>
-	<?php if(!$agency) echo "<span class='bold_head'>Оплатив счет, Вы получите 2% бонус на следующий заказ</span>"; ?>
+	<?php if(!$agency) {
+		echo "<span class='bold_head'>Оплатив счет, Вы получите 2% бонус на следующий заказ</span>";
+		if ($id=='125813') {
+			$configNew->account = $turist;
+			$configNew->booking = $id;
+
+	    $payment = new \App\lib\payment\Alfa\BookingPayment([]);
+	    $qr_data = $payment->registerPayment('pay', '1');
+
+	    if ($qr_data['renderedQr']!='') echo '<br><br><span class="bold_head" style="color: red;">Для оплаты через СБП отсканируйте QR-код камерой телефона:</span><br><br><img src="data:image/png;base64, '.$qr_data['renderedQr'].'"/>';
+
+	    if ($qr_data['payload']!='') echo '<br><br><span class="bold_head">или нажмите на кнопку:</span><br><br><a href="'.$qr_data['payload'].'" class="btn"><img src="images/pay_btn.jpg" /><br /></a>';
+		}
+	} ?>
 	</div>
 
 <style type="text/css">
+
+.btn {
+	
+}
 
 .content{
 	font-family: freesans, sans-serif;
@@ -394,6 +430,7 @@ th{
 </style>
 
 <?php
+
 	$content = ob_get_clean();
 	if($type == "HTML"){
 		echo $content;
