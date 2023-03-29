@@ -372,17 +372,15 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 	</table>
 	<?php if(!$agency) {
 		echo "<span class='bold_head'>Оплатив счет, Вы получите 2% бонус на следующий заказ</span>";
-		if ($id=='125813') {
-			$configNew->account = $turist;
-			$configNew->booking = $id;
+		$configNew->account = $turist;
+		$configNew->booking = $id;
 
-	    $payment = new \App\lib\payment\Alfa\BookingPayment([]);
-	    $qr_data = $payment->registerPayment('pay', '1');
+    $payment = new \App\lib\payment\Alfa\BookingPayment([]);
+    $qr_data = $payment->registerPayment('pay', '1');
 
-	    if ($qr_data['renderedQr']!='') echo '<br><br><span class="bold_head" style="color: red;">Для оплаты через СБП отсканируйте QR-код камерой телефона:</span><br><br><img src="data:image/png;base64, '.$qr_data['renderedQr'].'"/>';
+    if ($qr_data['renderedQr']!='') echo '<br><br><span class="bold_head" style="color: red;">Для оплаты через СБП отсканируйте QR-код камерой телефона:</span><br><br><img src="data:image/png;base64, '.$qr_data['renderedQr'].'"/>';
 
-	    if ($qr_data['payload']!='') echo '<br><br><span class="bold_head">или нажмите на кнопку:</span><br><br><a href="'.$qr_data['payload'].'" class="btn"><img src="images/pay_btn.jpg" /><br /></a>';
-		}
+    if ($qr_data['payload']!='') echo '<br><br><span class="bold_head">или нажмите на кнопку:</span><br><br><a href="'.$qr_data['payload'].'" class="btn"><img src="images/pay_btn.jpg" /><br /></a>';
 	} ?>
 	</div>
 

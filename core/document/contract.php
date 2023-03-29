@@ -302,8 +302,17 @@ function review_contract($connect, $type, $id){
 			$itog_sum_string = convert_number_to_string($arr[0])." рублей ".add_null($arr[1])." копеек";
 			$itog_sum_string = first_symbol_to_title($itog_sum_string);
 			echo " (".$itog_sum_string.")";
+
+			if ($id==125409) {
+				$sum_pay = $sum_pay - 1000 + 2541.90;
+				$sum_pay .='0';
+				$arr1 = explode('.', $sum_pay);
+				$itog_sum_pay = convert_number_to_string($arr1[0])." рубль ".($arr1[1])." копеек";
+			}
 		?>
-		, из них скидка составляет <?php echo $sale; ?> рублей РФ (<?php echo $itog_sum_sale; ?>). Итого стоимость санаторно-курортной путёвки составляет <?php echo $sum_pay; ?> рублей РФ (<?php echo $itog_sum_pay; ?>)
+		, из них скидка составляет <?php echo $sale; ?> рублей РФ (<?php echo $itog_sum_sale; ?>).
+		<?php if ($id==125409) echo ' Комиссия банка составляет 2541.90 рублей РФ (две тысячи пятьсот сорок один рубль 90 копеек). ';?>
+		 Итого стоимость санаторно-курортной путёвки составляет <?php echo $sum_pay; ?> рублей РФ (<?php echo $itog_sum_pay; ?>)
         <?php if($id == 79836) { ?>
             <br>&nbsp;4.1.1. В указанную стоимость входит:<br>
             &nbsp; &nbsp; Миронова Е. А. - 25 200 рублей (двадцать пять тысяч двести рублей 00 копеек)<br>
