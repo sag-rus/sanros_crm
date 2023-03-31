@@ -121,7 +121,7 @@ function object_agency_report($connect) {
               <h1>Отчет агента № <?= $month; ?> от «<?= $monthLastDay; ?>» <?= $monthArS[$month]; ?>  <?= $year ?> г.</h1>
               <h3>За период с «01» <?= $monthArS[$month]; ?> <?= $year ?> г. по «<?= $monthLastDay; ?>» <?= $monthArS[$month]; ?>  <?= $year ?>г.</h3>
               <h3>по агентскому договору № <?=$objectContract['number'];?></h3>
-              <h3 style="text-align: left; font-weight: 100;"><b>Комиссионер:</b> ООО ТА «САНАТА-ТРЕВЕЛ»</h3>
+              <h3 style="text-align: left; font-weight: 100;"><b>Комиссионер:</b> ООО ТА «САНАТА»</h3>
               <h3 style="text-align: left; font-weight: 100;"><b>Комитент:</b> <?=$objRow['full_name'];?></h3>
               <table border="1" cellpadding="0" cellspacing="0">
                   <thead>
@@ -238,7 +238,7 @@ function object_agency_report($connect) {
                     <tr>
                         <td style="padding-left: 0;">
                             Комиссионер:<br>
-                            Генеральный директор ООО ТА «САНАТА-ТРЕВЕЛ»<br><br>
+                            Генеральный директор ООО ТА «САНАТА»<br><br>
                             ________________Терентьева О. Б.
                         </td>
                         <td style="padding-left: 0;">

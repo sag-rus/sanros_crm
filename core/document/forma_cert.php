@@ -25,7 +25,7 @@ function review_forma_certificate($connect, $type, $id){
         <p style="text-align: center; font-size: 24pt; color: #3e2d27; margin-bottom: 0; margin-top: 150px;">№<span style="text-decoration: underline; margin-left: 10px;"><?php echo $key; ?></span></p>
         <p style="text-align: center; font-size: 24pt; color: #3e2d27; margin-bottom: 0; margin-top: 10px;">на сумму</p>
         <p style="text-align: center; font-size: 24pt; color: #3e2d27; margin-bottom: 0; margin-top: 10px;"><span style="text-decoration: underline; margin-left: 10px;"><?php echo $sum; ?> рублей</span></p>
-        <p style="text-align: center; font-size: 12pt; color: #3e2d27; margin-bottom: 0; margin-top: 30px;">Сертификат действителен при оплате путевки в любой санаторий России через компанию ООО ТА «САНАТА-ТРЕВЕЛ»</p>
+        <p style="text-align: center; font-size: 12pt; color: #3e2d27; margin-bottom: 0; margin-top: 30px;">Сертификат действителен при оплате путевки в любой санаторий России через компанию ООО ТА «САНАТА»</p>
         <p style="text-align: centНовая заявкаer; font-size: 12pt; color: #3e2d27; margin-bottom: 0; margin-top: 10px;">Действителен до 31.12.<?=(date("Y")+1)?></p>
         <table align="left" style="width: 650px; margin-top: 180px;">
         <tr>

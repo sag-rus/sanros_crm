@@ -125,7 +125,7 @@ function send_mail($email, $title, $mess, $file=false, $file2=false){
 	$mail->Username = $email_from;
 	$mail->Password = $password_from;
 
-	$mail->SetFrom("kazangood@gmail.com", "Саната-Тревел");
+	$mail->SetFrom("kazangood@gmail.com", "Саната");
 	$mail->AddAddress($email);
 	$mail->Subject = htmlspecialchars($title);
 	if($file)
