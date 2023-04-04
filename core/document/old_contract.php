@@ -39,6 +39,11 @@ function review_contract($connect, $type, $id){
 	$date_z_schet = date_change($row["date_z"]);
 	$date_v_schet = date_change($row["date_v"]);
 	$date_create = date_change($row["date"], ".");
+	$date_create2 = strtotime($date_create);
+	if ($date_create2<1680296400) {
+		$firma = 'ООО ТА «САНАТА-ТРЕВЕЛ»';
+		$full_firma = 'Общество с ограниченной ответственностью Туристическое агентство «САНАТА-ТРЕВЕЛ»';	
+	}	
 	$id_obj = $row["id_obj"];
 	$sum = $row["sum"];
 	$sum_pay = $sum;
