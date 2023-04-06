@@ -80,7 +80,7 @@ function comparison_module_payment($connect, $object_id, $rate = 1, $month = 3) 
             <tr>
               <td width="150" valign="bottom">Руководитель предприятия</td>
               <td width="100" rowspan="2" height="100">
-                <img src="<?=$directory;?>/images/pechat/pechat.jpg" />
+                <img src="<?=$directory;?>/images/pechat/pechatnew.jpg" />
               </td>
               <td valign="bottom">(<?php echo $data["company"]["director"]; ?>)</td>
             </tr>

@@ -295,7 +295,7 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 				<td width="150" valign="bottom">Руководитель предприятия</td>
 				<td width="100" rowspan="2" height="100">
 				<?php if($img == 1)
-					echo "<img src='images/pechat/pechat.jpg' />";
+					echo "<img src='images/pechat/pechatnew.jpg' />";
 				?>
 				</td>
 				<td valign="bottom">(<?php echo $director; ?>)</td>

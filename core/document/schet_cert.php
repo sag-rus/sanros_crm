@@ -99,7 +99,7 @@ function review_schet_certificate($connect, $type, $id){
 			<tr>
 				<td width="250" valign="bottom">Руководитель предприятия</td>
 				<td width="200" rowspan="2" height="100">
-					<img src='images/pechat/pechat.jpg' />
+					<img src='images/pechat/pechatnew.jpg' />
 				</td>
 				<td valign="bottom">(<?php echo $director; ?>)</td>
 			</tr>

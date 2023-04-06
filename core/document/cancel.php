@@ -76,7 +76,7 @@ function review_cancel($connect, $type, $id){
 			<td valign="middle">Руководитель предприятия</td>
 			<td width="200" height="120">
 			<?php if($img == 1)
-				echo "<img src='images/pechat/pechat1.jpg' />";
+				echo "<img src='images/pechat/pechat1new.jpg' />";
 			?>
 			</td>
 			<td valign="middle">(<?php echo $director; ?>)</td>

@@ -136,7 +136,7 @@ function review_confirm($connect, $type, $id, $type_PDF = "PDF"){
 			<td>Руководитель предприятия</td>
 			<td width="200" height="120">
 			<?php if($img == 1)
-				echo "<img src='images/pechat/pechat1.jpg' />";
+				echo "<img src='images/pechat/pechat1new.jpg' />";
 			?>
 			</td>
 			<td>(<?php echo $director; ?>)</td>

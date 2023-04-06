@@ -49,7 +49,7 @@ function review_obmen($connect, $type = "PDF", $id, $for = ""){
 	// 	$connect->query("UPDATE reckoning SET id_services=?s WHERE id=?i", implode("_", $services_update), $id);
 	// }
 
-	$image = "pechat1";
+	$image = "pechat1new";
 	$post = "Руководитель предприятия";
 	if($office){
 		$row = $connect->getRow("SELECT present, post, print_image FROM office WHERE id=?i", $office);
