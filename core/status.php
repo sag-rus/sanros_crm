@@ -1100,6 +1100,15 @@ function reckoning_put_aside($connect){
 	}
 }
 
+function reckoning_reject($connect){
+	$id = $_POST["id"];
+	$status = $connect->getOne("SELECT status FROM reckoning WHERE id=?i", $id);
+	if($status !=13 ){
+		$connect->query("UPDATE reckoning SET status=13 WHERE id=?i", $id);
+		save_schet_to_history($connect, $id, "Заявка переведена в отказные");
+	}
+}
+
 function reckoning_from_aside($connect){
 	$id = $_POST["id"];
 	$status = $connect->getOne("SELECT status FROM reckoning WHERE id=?i", $id);

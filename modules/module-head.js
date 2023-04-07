@@ -826,6 +826,19 @@ function reckoning_put_aside(id){
 	});
 }
 
+function review_reject(id){
+	var str = 'func=reckoning_reject&id=' + id;
+	$.ajax({
+		type: 'POST',
+		data: str,
+		url: 'mysql.php',
+		success: function(){
+			remove_all_windows();
+			show_alert('Заявка переведена в отказные');
+		}
+	});
+}
+
 function reckoning_from_aside(id){
 	var str = 'func=reckoning_from_aside&id=' + id;
 	$.ajax({
