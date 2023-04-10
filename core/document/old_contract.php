@@ -152,9 +152,6 @@ function review_contract($connect, $type, $id){
 	$director_pad = "генерального директора $director_pad, действующего на основании Устава";
 	$city_office = "Казань";
 	$image = "pechat1new";
-	/*if ($date_create2<1680296400) {
-		$image = "pechat1";
-	}*/
 	$post = "Генеральный директор";
 	$office = $connect->getOne("SELECT office FROM users WHERE id=?i", $session_login);
 	if($office){
@@ -177,6 +174,9 @@ function review_contract($connect, $type, $id){
 			$reck = $row["rs"];
 		}
 	}
+	if ($date_create2<1680296400) {
+		$image = "pechat1";
+	}	
 	ob_start();
 ?>
 	<div class="border">
