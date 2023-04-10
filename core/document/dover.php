@@ -147,7 +147,7 @@ function review_dover($connect, $type, $id, $turist, $type_PDF = "PDF"){
 		<td width="250" valign="bottom"><br />Руководитель предприятия</td>
 		<td width="200" rowspan="2" height="100">
 		<?php if($img == 1)
-			echo "<img src='images/pechat/pechat.jpg' />";
+			echo "<img src='images/pechat/pechatnew.jpg' />";
 		?>
 		</td>
 		<td valign="bottom"><br />(<?php echo $director; ?>)</td>
