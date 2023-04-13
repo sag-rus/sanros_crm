@@ -19,9 +19,14 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 	  "password" => $conf->PASSWORD_ALFA
 	);
 
+	$clientCabinet = array(
+	  "link" => $conf->turist_cabinet
+	);	
+
 	$configNew = \App\lib\CRM\Config\Client::getInstance();
 	$configNew->connect = $connect;
 	$configNew->onlinePaymentInfoAlfa = $onlinePaymentInfoAlfa;
+	$configNew->clientCabinet = $clientCabinet;
 	//Конец добавил параметры для запросов а QR-код Альфа-банка
 
 

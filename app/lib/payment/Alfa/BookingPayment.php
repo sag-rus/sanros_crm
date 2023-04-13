@@ -325,6 +325,10 @@ class BookingPayment {
 
 
       $url = $this->bankInfo['link'].'register.do?userName='.$this->bankInfo['userName'].'&password='.$this->bankInfo['password'].'&amount='.($sum_to_pay*100).'&currency=810&language=ru&description='.urlencode($description).'&orderNumber='.$orderNumber.'&returnUrl='.urlencode($returnUrl).'&failUrl='.urlencode($failUrl).'&expirationDate='.date("Y-m-d", time()+86400*7).'T'.date("H:i:s", time()+86400*7);
+
+      $log = "action=register.do url=".$url.PHP_EOL;
+      file_put_contents('alfa_deposit_log_'.date('Y-m-d').'.txt', $log, FILE_APPEND);
+
       $ch = curl_init($url);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
       $answer = curl_exec($ch);
@@ -333,12 +337,17 @@ class BookingPayment {
       $answer['renderedQr'] = '';
 
 
-      $log = "action=register.do".PHP_EOL;
+      $log = "action=register.do RESULT".PHP_EOL;
       $log .= print_r($answer, true).PHP_EOL;
       file_put_contents('alfa_deposit_log_'.date('Y-m-d').'.txt', $log, FILE_APPEND);
 
       if ($qr=='1')  {
+
         $url = $this->bankInfo['link'].'sbp/c2b/qr/dynamic/get.do?userName='.$this->bankInfo['userName'].'&password='.$this->bankInfo['password'].'&mdOrder='.$answer['orderId'].'&qrFormat=image';
+
+        $log = "action=get.do START=".$url.PHP_EOL;
+        file_put_contents('alfa_deposit_log_'.date('Y-m-d').'.txt', $log, FILE_APPEND);        
+
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($ch);
@@ -349,7 +358,7 @@ class BookingPayment {
           $answer['payload'] = $response['payload'];
         }
 
-        $log = "action=get.do".PHP_EOL;
+        $log = "action=get.do RESULT".PHP_EOL;
         $log .= print_r($response, true).PHP_EOL;
         file_put_contents('alfa_deposit_log_'.date('Y-m-d').'.txt', $log, FILE_APPEND);        
 
