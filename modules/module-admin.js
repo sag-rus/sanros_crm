@@ -2893,13 +2893,13 @@ function set_sites_content() {
       }
     }
 
-    if(jQuery.isEmptyObject(slider_photos)) {
+    /*if(jQuery.isEmptyObject(slider_photos)) {
       $slider_photosMsg.html("Нужно внести фотографии!").addClass('with-bottom-margin');
       if(!error) {
         $slider_photos.focus();
         error = true;
       }
-    }
+    }*/
 
     if(form_action.length === 0) {
       $form_actionMsg.html("Это обязательное поле");
