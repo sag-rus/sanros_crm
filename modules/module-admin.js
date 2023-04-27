@@ -2921,7 +2921,7 @@ function set_sites_content() {
     title_h2 = '';
   }
 
-  if(type === 'photogallery') {
+  /*if(type === 'photogallery') {
     if(jQuery.isEmptyObject(photogallery)) {
       $photogalleryMsg.html("Нужно внести фотографии!").addClass('with-bottom-margin');
       if(!error) {
@@ -2929,7 +2929,7 @@ function set_sites_content() {
         error = true;
       }
     }
-  }
+  }*/
 
   if(type === 'aggregator') {
   	if($aggregate_types.length === 0) {
