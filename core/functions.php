@@ -1336,49 +1336,48 @@ function get_month_profit(){
 }
 
 function all_klient_bonus($connect, $id){
-	$costs = $connect->getAll("SELECT id, active, sum, date FROM bonus WHERE turist=?i AND sum < 0 ORDER BY id ASC", $id);
+	$costs = $connect->getAll("SELECT id, active, sum, date FROM bonus WHERE turist=?i AND sum < 0 ORDER BY `date` ASC", $id);
 	$sum = 0;
 	$today = date("Y-m-d");
 
-    $costsArray = array();
+  $costsArray = array();
 
-    $bonuses = $connect->getAll("SELECT id, active, sum, date, type, schet, `last_timestamp` FROM bonus WHERE turist=?i AND sum > 0 ORDER BY id ASC", $id);
-    $bonusList = array();
+  $bonuses = $connect->getAll("SELECT id, active, sum, date, type, schet, `last_timestamp` FROM bonus WHERE turist=?i AND sum > 0 ORDER BY `date` ASC", $id);
+  $bonusList = array();
 
-    foreach ($bonuses as $bonus) {
-        $access = false;
-        if($bonus['type'] == 4) {
-            if($connect->getOne("SELECT id FROM reckoning WHERE date_v>?s AND id=?i", $today, $bonus["schet"]))
-                $access = true;
-        }
-        else {
-            $access = true;
-        }
-        if(is_null($bonus['last_timestamp'])) {
-          $dateO = new DateTime($bonus['date']);
-          $dateO->modify("+1 year");
-          $dateO->modify("+6 month");
-          $bonus['last_timestamp'] = $dateO->format("U");
-        }
-
-        $bonus['timestamp'] = strToTime($bonus['date']);
-        $bonusList[] = $bonus;
+  foreach ($bonuses as $bonus) {
+    	/*$access = false;
+    if($bonus['type'] == 4) {
+      if($connect->getOne("SELECT id FROM reckoning WHERE date_v>?s AND id=?i", $today, $bonus["schet"])) $access = true;
+  	} else {
+      $access = true;
+    }*/
+    if(is_null($bonus['last_timestamp'])) {
+      $dateO = new DateTime($bonus['date']);
+      $dateO->modify("+1 year");
+      $dateO->modify("+6 month");
+      $bonus['last_timestamp'] = $dateO->format("U");
     }
 
-    foreach ($costs as $cost) {
-        $costSum = (int)$cost['sum'];
-        foreach ($bonusList as $i => $bonus) {
-            if($bonusList[$i]['id'] < $cost['id'] && $bonusList[$i]['last_timestamp'] >= strtotime($cost['date']) && $costSum < 0) {
-                $c_sum = min($bonusList[$i]['sum'],abs($costSum));
-                $costSum += $c_sum;
-                $bonusList[$i]['sum'] -= $c_sum;
-            }
-        }
+    $bonus['timestamp'] = strToTime($bonus['date']);
+    $bonusList[] = $bonus;
+  }
+
+
+  foreach ($costs as $cost) {
+    $costSum = (int)$cost['sum'];
+    foreach ($bonusList as $i => $bonus) {
+      if( strtotime($bonusList[$i]['date']) < strtotime($cost['date']) && $bonusList[$i]['last_timestamp'] >= strtotime($cost['date']) && $costSum < 0) {
+        $c_sum = min($bonusList[$i]['sum'],abs($costSum));
+        $costSum += $c_sum;
+        $bonusList[$i]['sum'] -= $c_sum;
+      }
     }
-    foreach ($bonusList as $bonus) {
-        if($bonus['last_timestamp'] >= strtotime(date("d.m.Y")))
-            $sum += $bonus['sum'];
-    }
+  }
+
+  foreach ($bonusList as $bonus) {
+    if($bonus['last_timestamp'] >= strtotime(date("d.m.Y"))) $sum += $bonus['sum'];
+  }
 	return $sum;
 }
 
