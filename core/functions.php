@@ -1367,7 +1367,7 @@ function all_klient_bonus($connect, $id){
   foreach ($costs as $cost) {
     $costSum = (int)$cost['sum'];
     foreach ($bonusList as $i => $bonus) {
-      if( strtotime($bonusList[$i]['date']) < strtotime($cost['date']) && $bonusList[$i]['last_timestamp'] >= strtotime($cost['date']) && $costSum < 0) {
+      if( strtotime($bonusList[$i]['date']) <= strtotime($cost['date']) && $bonusList[$i]['last_timestamp'] >= strtotime($cost['date']) && $costSum < 0) {
         $c_sum = min($bonusList[$i]['sum'],abs($costSum));
         $costSum += $c_sum;
         $bonusList[$i]['sum'] -= $c_sum;
