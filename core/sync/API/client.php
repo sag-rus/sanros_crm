@@ -556,7 +556,7 @@ function show_bonus_account($connect, $data){
 	$login = $connect->getOne("SELECT login FROM session_account WHERE id_session=?s", $data["session"]);
 	$client = $connect->getOne("SELECT id FROM klient WHERE login=?s", $login);
 	if($login AND $client){
-		$answer = $connect->getAll("SELECT id, date, sum, schet, type, note, booking, `last_timestamp` FROM bonus WHERE turist=?i", $client);
+		$answer = $connect->getAll("SELECT id, date, sum, schet, type, note, booking, `last_timestamp` FROM bonus WHERE turist=?i ORDER BY `date` ASC", $client);
 		foreach($answer as $a){
 			$today = date("Y-m-d");
 			$id = $a["id"];
