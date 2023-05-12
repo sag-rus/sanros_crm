@@ -391,7 +391,7 @@ function update_agency_sync_info(id){
 	var name = $('.edit-agency .name-agency').val();
 	var code = $('.edit-agency .inn-agency').val();
 	var inn = $('.edit-agency .code-1C').val();
-	if(isNaN(code) || isNaN(inn) || !code || !inn)
+	if(!code || !inn)
 		show_warning('.edit-agency', 'Укажите правильно поля кода и ИНН', false);
 	else{
 		var str = 'func=update_agency_sync_info&id=' + id + '&name=' + name + '&code=' + code + '&inn=' + inn;

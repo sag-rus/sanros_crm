@@ -1019,12 +1019,12 @@ function edit_object_sync_info($connect){
 						<input type="text" class="form-control nomenclature" value="<?php echo $row['nomenclature']; ?>" />
 					</div>
 				</div>
-				<div class="form-group form-group-margin">
+				<!--<div class="form-group form-group-margin">
 					<label class="col-sm-4 control-label">Логин Альфа-банк</label>
 					<div class="col-sm-8">
 						<input type="text" class="form-control bank-login" value="<?php echo $row['bank_login']; ?>" />
 					</div>
-				</div>
+				</div>->
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-success btn-sm" onclick="update_object_sync_info(<?php echo $id; ?>)"><i class="fa fa-check-circle"></i> Сохранить</button>
