@@ -1216,7 +1216,7 @@ function update_object_sync_info(id){
 	var inn = $('.edit-object .code-1C').val();
 	var nomenclature = $('.edit-object .nomenclature').val();
 	var login = $('.edit-object .bank-login').val();
-	if(isNaN(code) || isNaN(inn) || !code || !inn)
+	if(!code || !inn)
 		show_warning('.edit-object', 'Укажите правильно поля кода и ИНН', false);
 	else{
 		var str = 'func=update_object_sync_info&id=' + id + '&full=' + full + '&code=' + code + '&inn=' + inn + '&nomenclature=' + nomenclature + '&login=' + login;
