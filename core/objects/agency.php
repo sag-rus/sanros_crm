@@ -1077,7 +1077,7 @@ function update_agency_sync_info($connect){
 	$name = $_POST["name"];
 	$code = $_POST["code"];
 	$inn = $_POST["inn"];
-	$connect->query("UPDATE agency SET name=?s, inn=?i, 1C_code=?s WHERE id=?i", $name, $code, $inn, $id);
+	$connect->query("UPDATE agency SET name=?s, inn=?s, 1C_code=?s WHERE id=?i", $name, $code, $inn, $id);
 }
 
 function remove_agency($connect) {

@@ -399,7 +399,7 @@ function update_agency_sync_info(id){
 			url: 'mysql.php',
 			type: 'POST',
 			data: str,
-			success: function(){
+			success: function(html){
 				select_agency(id);
 			}
 		});
