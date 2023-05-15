@@ -3768,7 +3768,7 @@ function sync_files($connect) {
 }
 
 function sync_bounds($connect,$entity) {
-    $bounds = $connect->getAll("SELECT * FROM `app_models_site_bound` WHERE `entity1_type` =?s AND `entity1_id` =?i ORDER BY `sort` ASC",$entity['type'],$entity['id']);
+  $bounds = $connect->getAll("SELECT * FROM `app_models_site_bound` WHERE `entity1_type` =?s AND `entity1_id` =?i ORDER BY `sort` ASC",$entity['type'],$entity['id']);
   try {
     $client = new \GuzzleHttp\Client(['verify' => false]);
     $data = [];
