@@ -2638,6 +2638,13 @@ function set_sites_content() {
 	else
 		status = 0;
 
+	var $imgs_no_index = $modalBody.find('*[name="imgs_no_index"]');
+	var imgs_no_index;
+	if($imgs_no_index.prop('checked'))
+		imgs_no_index = 1;
+	else
+		imgs_no_index = 0;	
+
   var $path_autogenerate = $modalBody.find('*[name="path_autogenerate"]');
   var path_autogenerate;
   if($path_autogenerate.prop('checked'))
@@ -3003,6 +3010,7 @@ function set_sites_content() {
 		summary: summary,
 		snippet_summary: snippet_summary,
 		status: status,
+		imgs_no_index: imgs_no_index,
         path_autogenerate: path_autogenerate,
 		content_id: content_id,
 		weight: weight,
