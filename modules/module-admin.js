@@ -65,7 +65,7 @@ jQuery(function() {
 			url: 'mysql.php',
 			data: str,
 			success: function(html){
-				if (html<>'') {
+				if (html!='') {
 					var input_element = that.parent().find('.multiple-uploader-input');
 					var file_name = html.split('/').pop();
 					var file_link = html;
