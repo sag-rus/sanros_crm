@@ -2834,7 +2834,29 @@ function downloadFile($url, $path) {
     }
 }
 
+function punycode_encode($url) {
+  $parts = parse_url($url);
+ 
+  $out = '';
+  if (!empty($parts['scheme']))   $out .= $parts['scheme'] . ':';
+  if (!empty($parts['host']))     $out .= '//';
+  if (!empty($parts['user']))     $out .= $parts['user'];
+  if (!empty($parts['pass']))     $out .= ':' . $parts['pass'];
+  if (!empty($parts['user']))     $out .= '@';
+  if (!empty($parts['host']))     $out .= idn_to_ascii($parts['host']);
+  if (!empty($parts['port']))     $out .= ':' . $parts['port'];
+  if (!empty($parts['path']))     $out .= $parts['path'];
+  if (!empty($parts['query']))    $out .= '?' . $parts['query'];
+  if (!empty($parts['fragment'])) $out .= '#' . $parts['fragment'];
+ 
+  return $out;
+}
+
 function get_image_from_url() {
+
+  if (mb_strpos($_POST['url'], '.рф')!==FALSE) {
+      $_POST['url'] = punycode_encode($_POST['url']);
+  }
 
   if(filter_var($_POST['url'], FILTER_VALIDATE_URL)) {
   
