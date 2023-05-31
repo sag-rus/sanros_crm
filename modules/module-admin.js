@@ -24,6 +24,74 @@ function select_object_non_region(){
 	show_loader_element('#result');
 }
 
+/*function fetchImage(url){
+        const data = fetch(url);
+        console.log(data);
+        const buffer = data.arrayBuffer();
+        const blob = new Blob([buffer], { type: "image/png"});
+        return blob;
+}*/
+
+function setFile(input, name, url) {
+  try {
+    fetch(url, {
+        method: 'GET'
+    })
+    .then(response => response.blob())
+    .then(blob => {
+	    var dt  = new DataTransfer();
+	    dt.items.add(new File([blob], name, {type: blob.type}));
+	    input[0].files = dt.files;
+	    input.change();
+	    return true;
+    });  	
+
+  }
+  catch(err) {
+  	alert('Ошибка при вставке файла!');
+    console.log('Ошибка при вставке файла:');
+    console.dir(err);
+    return false;
+  }
+}
+
+jQuery(function() {
+	$('body').on('click', '.get_img_from_url', function(){
+		$(this).prev().attr('disabled', 'disabled');
+		var str = 'func=get_image_from_url&url='+$(this).prev().val();
+		var that = $(this);
+		$.ajax({
+			type: 'POST',
+			url: 'mysql.php',
+			data: str,
+			success: function(html){
+				if (html<>'') {
+					var input_element = that.parent().find('.multiple-uploader-input');
+					var file_name = html.split('/').pop();
+					var file_link = html;
+					console.log('file_name='+file_name);
+					setFile(input_element, file_name, file_link);
+					that.prev().val('');
+					that.prev().removeAttr('disabled');
+					delete_temp_uploaded_file(file_name);
+				}
+			}
+		});
+	});
+});
+
+function delete_temp_uploaded_file(file_name){
+	var str = 'func=delete_temp_uploaded_file&file_name='+file_name;
+	$.ajax({
+		type: 'POST',
+		url: 'mysql.php',
+		data: str,
+		success: function(html){
+			
+		}
+	});
+}
+
 function select_similar_client_admin(){
 	var str = 'func=select_similar_client_admin';
 	$.ajax({

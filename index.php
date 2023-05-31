@@ -1,5 +1,5 @@
 <?php
-	$version = "19-05-2023";
+	$version = "31-05-2023";
     $loader = require( __DIR__ . '/vendor/autoload.php');
     /*$payment = new \App\lib\payment\Sberbank\BookingPayment([
 
@@ -51,7 +51,7 @@
 	<script type="text/javascript" src="modules/module-profile.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-manual.js?ver=<?php echo $version; ?>"></script>
     <script type="text/javascript" src="https://cdn.tonia.ru/static-assets/damirez-uploader/js/damirez-uploader.js?ver=<?php echo $version; ?>"></script>
-    <!--<script type="text/javascript" src="/CRM/js/damirez-uploader.js?ver=<?php echo $version; ?>"></script>-->
+    <!--<script type="text/javascript" src="/CRM/damirez-uploader.js?ver=<?php echo $version; ?>"></script>-->
     <!--link rel="stylesheet" href="js/ckeditor/style.css"-->
 	<link href="font/font-awesome/css/font-awesome.css" rel="stylesheet">
 	<link rel="stylesheet" href="css/style.css?ver=<?php echo $version; ?>">

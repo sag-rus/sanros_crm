@@ -495,7 +495,7 @@
                                 $loaderTarg.trigger({
                                     type:"incorrectformat",
                                     format: r.files[i].type,
-                                    filename: r.files[i].name
+                                    filename: r.files[i].namesendImageFilesStringToServerByNum
                                 });
                             }
                         }

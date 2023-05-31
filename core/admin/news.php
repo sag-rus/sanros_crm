@@ -2229,7 +2229,6 @@ function sites_question($connect)
     return ob_get_clean();
 }
 
-
 function edit_sites_content($connect) {
   $content_id = isset($_POST['id'])?(int)$_POST['id']:0;
   $copy_mode = isset($_POST['copy_mode'])?(int)$_POST['copy_mode']:0;
@@ -2289,6 +2288,7 @@ function edit_sites_content($connect) {
                       <div class="form-group<?php if(in_array($content['type'],['redirect'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Основная картинка</label>
                           <div class="col-sm-10">
+                              <input type="text" class="form-control" name="imageurl" value="" style="width: 90%; display: inline-block;" placeholder="вставьте url изображения"><button class="get_img_from_url" >> > ></button><br><br>
                               <input type="file" class="form-control" name="image" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'image'))));?>">
                               <div class="input-message-block" data-for="image"></div>
                           </div>
@@ -2415,6 +2415,7 @@ function edit_sites_content($connect) {
                       <div class="form-group<?php if(!in_array($content['type'],['photogallery','landing','news', 'page','settings', 'article', 'info', 'advice', 'blog_post'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Фотографии</label>
                           <div class="col-sm-10">
+                              <input type="text" class="form-control" name="imageurl" value="" style="width: 90%; display: inline-block;" placeholder="вставьте url изображения"><button class="get_img_from_url" >> > ></button><br><br>
                               <div class="input-message-block" data-for="photogallery"></div>
                               <input type="file" name="photogallery" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'photogallery'))));?>">
                           </div>
@@ -2446,6 +2447,7 @@ function edit_sites_content($connect) {
                       <div class="form-group<?php if(!in_array($content['type'],['landing','settings'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Фото слайдера</label>
                           <div class="col-sm-10">
+                              <input type="text" class="form-control" name="imageurl" value="" style="width: 90%; display: inline-block;" placeholder="вставьте url изображения"><button class="get_img_from_url" >> > ></button><br><br>
                               <div class="input-message-block" data-for="slider_photos"></div>
                               <input type="file" name="slider_photos" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'slider_photos'))));?>">
                           </div>
@@ -2453,6 +2455,7 @@ function edit_sites_content($connect) {
                       <div class="form-group<?php if(!in_array($content['type'],['landing','settings'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Фото слайдера (моб. версия)</label>
                           <div class="col-sm-10">
+                              <input type="text" class="form-control" name="imageurl" value="" style="width: 90%; display: inline-block;" placeholder="вставьте url изображения"><button class="get_img_from_url" >> > ></button><br><br>
                               <div class="input-message-block" data-for="slider_photos_mobile"></div>
                               <input type="file" name="slider_photos_mobile" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'slider_photos_mobile'))));?>">
                           </div>
@@ -2470,6 +2473,7 @@ function edit_sites_content($connect) {
                       <div class="form-group<?php if(!in_array($content['type'],['landing','settings'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Фото для фона</label>
                           <div class="col-sm-10">
+                              <input type="text" class="form-control" name="imageurl" value="" style="width: 90%; display: inline-block;" placeholder="вставьте url изображения"><button class="get_img_from_url" >> > ></button><br><br>
                               <div class="input-message-block" data-for="page_bg"></div>
                               <input type="file" name="page_bg" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'page_bg'))));?>">
                           </div>
@@ -2810,6 +2814,44 @@ function imageUriStyle(String $uri, String $style) {
 
     return $newUri;
 }
+
+function downloadFile($url, $path) {
+    $newfname = $path;
+    $file = fopen ($url, 'rb');
+    if ($file) {
+        $newf = fopen ($newfname, 'wb');
+        if ($newf) {
+            while(!feof($file)) {
+                fwrite($newf, fread($file, 1024 * 8), 1024 * 8);
+            }
+        }
+    }
+    if ($file) {
+        fclose($file);
+    }
+    if ($newf) {
+        fclose($newf);
+    }
+}
+
+function get_image_from_url() {
+
+  if(filter_var($_POST['url'], FILTER_VALIDATE_URL)) {
+  
+    if (strpos($_POST['url'], '?')!==FALSE) $_POST['url'] = substr($_POST['url'], 0, strpos($_POST['url'], '?'));
+
+    $filename = date('d-m-Y_H_m_s_').rand(0,9999).rand(0,9999).'.'.pathinfo($_POST['url'], PATHINFO_EXTENSION);
+    file_put_contents('/var/www/html/CRM/temp/downloaded_imgs/'.$filename, file_get_contents($_POST['url']));
+
+    return 'http://10.10.10.10/CRM/temp/downloaded_imgs/'.$filename;
+  } else return false;
+}
+
+
+function delete_temp_uploaded_file() {
+  unlink('/var/www/html/CRM/temp/downloaded_imgs/'.$_POST['file_name']);
+}
+
 
 function multipart_upload($connect, $customData = NULL) {
   $respAr = [
