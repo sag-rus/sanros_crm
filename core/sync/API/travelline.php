@@ -53,7 +53,7 @@ function check_new_update_booking($connect){
 				$isChild = false;
 
 				try {
-					if($tur_info['date'] != '0000-00-00') {
+					if($tur_info['date'] != '0000-00-00' && $tur_info['date']) {
 						$birthday = new DateTime($tur_info['date']);
 						$interval = $birthday->diff(new DateTime);
 						$isChild = $interval->y < 18;
