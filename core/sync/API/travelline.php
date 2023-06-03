@@ -24,12 +24,16 @@ function check_new_update_booking($connect){
 		$id = $row["id"];
 		$bid = $row["bid"];
 		$status = $row["status"];
-		$reckoning = $connect->getRow("SELECT turist, id_obj, rest FROM reckoning WHERE id=?i", $bid);
+		$reckoning = $connect->getRow("SELECT turist, id_obj, rest, sum FROM reckoning WHERE id=?i", $bid);
 		$turist = $reckoning["turist"];
 		$id_obj = $reckoning["id_obj"];
 		$rest = explode(",", $reckoning["rest"]);
 		$rest = array_diff($rest, array(""));
-		$check_places = $connect->getOne("SELECT check_places FROM object WHERE id=?i", $id_obj);
+		$objectRow = $connect->getRow("SELECT check_places, reward FROM object WHERE id=?i", $id_obj);
+
+		$check_places = $objectRow ? $objectRow['check_places'] : null;
+		$reward = $objectRow ? $objectRow['reward'] : 0;
+
 		if($check_places == 1 OR $check_places == 2){
 
 			$booking = array();
@@ -38,17 +42,38 @@ function check_new_update_booking($connect){
 			$booking["status"] = $status;
 			$guests = array();
 			foreach($rest as $tur){
-				$tur_info = $connect->getRow("SELECT surname, name, otch FROM klient WHERE id=?i", $tur);
+				$tur_info = $connect->getRow("SELECT surname, name, otch, `date` FROM klient WHERE id=?i", $tur);
 				$guest = array();
 				$guest["firstName"] = $tur_info["name"];
 				$guest["lastName"] = $tur_info["surname"];
 				$guest["middleName"] = $tur_info["otch"];
 				$guest["email"] = "";
 				$guest["phone"] = "";
+
+				$isChild = false;
+
+				try {
+					$birthday = new DateTime($row['date']);
+					$interval = $birthday->diff(new DateTime);
+					$isChild = $interval->y < 18;
+				} catch (Throwable $e) {
+
+				}
+
+				$guest["isChild"] = $isChild;
+
+				/*if($isChild) {
+					$booking['children']++;
+				} else {
+					$booking['adults']++;
+				}*/
+
 				$guests[] = $guest;
 			}
 			$booking["hotelId"] = $id_obj;
 			$booking["currencyCode"] = "RUB";
+			$booking["paymentMethod"] = "CREDIT";
+			$booking["paymentMethodComment"] = "По договору " . $id;
 			$object = $connect->getRow("SELECT arrival, leaving FROM object WHERE id=?i", $id_obj);
 			$booking["arrivalTime"] = str_replace([".","-"], ":", $object["arrival"]);
 			$booking["departureTime"] = str_replace([".","-"], ":", $object["leaving"]);
@@ -62,10 +87,15 @@ function check_new_update_booking($connect){
 				$room["ratePlanId"] = $position["ratePlan"];
 				$room["adults"] = $number;
 				$room["children"] = 0;
-				$room["commission"] = $position["reward"];
+				$room["commission"] = get_reward_schet_position($connect, $id_position);
 				$room["bookingPerDayPrices"] = array();
 				$timestamp = strToTime($position["date_z"]);
 				$price = $position["sum"];
+
+				$room['total'] = [
+					"amountAfterTaxes" => 0
+				];
+
 				for($i = 1; $i <= $position["days"]; $i++){
 					$date_price = array();
 					$date = date("Y-m-d", $timestamp);
@@ -73,7 +103,9 @@ function check_new_update_booking($connect){
 					$date_price["price"] = $price;
 					$timestamp+= 86400;
 					$room["bookingPerDayPrices"][] = $date_price;
+					$room['total']["amountAfterTaxes"] += $price;
 				}
+				
 				$room["guests"] = array();
 				$copy_guests = $guests;
 				$check = 0;
