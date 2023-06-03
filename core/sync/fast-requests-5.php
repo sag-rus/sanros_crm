@@ -222,9 +222,8 @@ while(1) {
             $bookings = check_new_update_booking($connect);
             if($bookings["check"] == 1){
                 $data = json_encode($bookings["bookings"]);
-                $request = array("func" => "update_new_bookings_travelline", "data" => $data);
-                $return = request_to_sync($request);
-                confirm_update_booking($connect, $return);
+                //$request = array("func" => "update_new_bookings_travelline", "data" => $data);
+                //$return = request_to_sync($request);
 
                 try {
 
@@ -240,6 +239,14 @@ while(1) {
                 catch (Exception $e) {
                     echo $e->getMessage();
                 }
+
+                $bookingsAr = [];
+
+                foreach ($bookings["bookings"] as $booking) {
+                    $bookingsAr[$booking['number']] = 1;
+                }
+
+                confirm_update_booking($connect, $bookingsAr);
 
             } else {
                 echo 'Квот для обновления нет...'. PHP_EOL;
