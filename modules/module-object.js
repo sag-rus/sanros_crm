@@ -1473,7 +1473,7 @@ function view_quota_object(object){
 		                	var price_label = '';
 		                	var price_label_array = new Object();
 	                		for(var ratePlanId in prices) {
-			                  	if(typeof data['ratePlan'][ratePlanId] !== 'undefined') {
+			                  	if(ratePlanId in data['ratePlan']) {
 
 	                    			if(price_label != '') price_label+= '<hr />';
 

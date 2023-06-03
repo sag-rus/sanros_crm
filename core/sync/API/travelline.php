@@ -53,9 +53,11 @@ function check_new_update_booking($connect){
 				$isChild = false;
 
 				try {
-					$birthday = new DateTime($tur_info['date']);
-					$interval = $birthday->diff(new DateTime);
-					$isChild = $interval->y < 18;
+					if($tur_info['date'] != '0000-00-00') {
+						$birthday = new DateTime($tur_info['date']);
+						$interval = $birthday->diff(new DateTime);
+						$isChild = $interval->y < 18;
+					}
 				} catch (Throwable $e) {
 
 				}
@@ -90,7 +92,7 @@ function check_new_update_booking($connect){
 				$room["commission"] = get_reward_schet_position($connect, $id_position);
 				$room["bookingPerDayPrices"] = array();
 				$timestamp = strToTime($position["date_z"]);
-				$price = $position["sum"];
+				$price = $position["sum"] * $number;
 
 				$room['total'] = [
 					"amountAfterTaxes" => 0
