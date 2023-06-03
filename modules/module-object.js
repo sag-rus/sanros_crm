@@ -1454,7 +1454,11 @@ function view_quota_object(object){
 	          	for(tr = 1; tr <= max_quota; tr++){
 
 	            	table+= '<tr class="tr-range" room="' +room+ '">';
-	            	for(var month in data['room'][room]['quota']){
+	            	for(var month in data['room'][room]['quota']) {
+						if(month.length === 1) {
+							continue;
+						}
+
 	            		var month_quota = data['room'][room]['quota'][month];
 	            		console.log('month_quota');
 	            		console.log(month_quota);
