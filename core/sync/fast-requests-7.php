@@ -241,6 +241,8 @@ while(1) {
                     echo $e->getMessage();
                 }
 
+            } else {
+                echo 'Квот для обновления нет...'. PHP_EOL;
             }
         }
 
