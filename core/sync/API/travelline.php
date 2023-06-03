@@ -53,7 +53,7 @@ function check_new_update_booking($connect){
 				$isChild = false;
 
 				try {
-					$birthday = new DateTime($row['date']);
+					$birthday = new DateTime($tur_info['date']);
 					$interval = $birthday->diff(new DateTime);
 					$isChild = $interval->y < 18;
 				} catch (Throwable $e) {
@@ -105,7 +105,7 @@ function check_new_update_booking($connect){
 					$room["bookingPerDayPrices"][] = $date_price;
 					$room['total']["amountAfterTaxes"] += $price;
 				}
-				
+
 				$room["guests"] = array();
 				$copy_guests = $guests;
 				$check = 0;
