@@ -238,7 +238,7 @@ while(1) {
                     ])->getBody()->getContents();
                 }
                 catch (Exception $e) {
-
+                    echo $e->getMessage();
                 }
 
             }
