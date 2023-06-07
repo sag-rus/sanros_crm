@@ -73,7 +73,7 @@ jQuery(function() {
 					setFile(input_element, file_name, file_link);
 					that.prev().val('');
 					that.prev().removeAttr('disabled');
-					delete_temp_uploaded_file(file_name);
+					//delete_temp_uploaded_file(file_name);
 				}
 			}
 		});
