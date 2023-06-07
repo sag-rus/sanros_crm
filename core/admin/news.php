@@ -2858,6 +2858,8 @@ function get_image_from_url() {
       $_POST['url'] = punycode_encode($_POST['url']);
   }
 
+  $_POST['url'] = str_replace(' ', '%20' $_POST['url']);
+
   if(filter_var($_POST['url'], FILTER_VALIDATE_URL)) {
   
     if (strpos($_POST['url'], '?')!==FALSE) $_POST['url'] = substr($_POST['url'], 0, strpos($_POST['url'], '?'));
