@@ -30,7 +30,10 @@
 			$image = $sync_host."/price/object/head/default.jpg";
 			if($connect->getOne("SELECT image FROM object WHERE id=?i", $id_obj))
 				$image = $sync_host."/price/object/head/".$id_obj.".jpg";
+			$bonus  = all_klient_bonus($connect, $client);
+			if ($bonus>0) $bonus_str = '<br><br>Бонусов на счету: <strong>'.$bonus.'</strong>'; else $bonus_str = '';
 			$message = select_template_letter("cron/rating", "client", $id);
+			$message["content"] = str_replace("<bonus>", $bonus_str, $message["content"]);
 			$message["content"] = str_replace("<name>", $name, $message["content"]);
 			$message["content"] = str_replace("<object>", $object, $message["content"]);
 			$message["content"] = str_replace("<image>", $image, $message["content"]);

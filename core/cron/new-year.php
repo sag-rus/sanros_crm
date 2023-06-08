@@ -16,7 +16,10 @@
 		$email = $row["login"];
 		$bonus = 500;
 		$connect->query("INSERT INTO bonus(turist, type, sum, date, note,`last_timestamp`) VALUES(?i, 3, ?i, ?s, 'Подарочный бонус на Новый год',?i)", $id, $bonus, $today,$last_timestamp);
+		$bonus  = all_klient_bonus($connect, $id);
+		if ($bonus>0) $bonus_str = '<br><br>Бонусов на счету: <strong>'.$bonus.'</strong>'; else $bonus_str = '';		
 		$message = select_template_letter("cron/new-year", "client");
+		$message["content"] = str_replace("<bonus>", $bonus_str, $message["content"]);
 		$message["content"] = str_replace("<name>", $name, $message["content"]);
 		$message["content"] = str_replace("<bonus>", $bonus, $message["content"]);
    	 	$message["content"] = str_replace("<days>", $days, $message["content"]);
