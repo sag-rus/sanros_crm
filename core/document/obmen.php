@@ -66,7 +66,7 @@ function review_obmen($connect, $type = "PDF", $id, $for = ""){
 	$max_days = 0;
 	$trans = "";
 
-	$row = $connect->getRow("SELECT status, status_san, date_v, date_z, id_obj, turist, agency, sum, rest, number_turist, schet_san, date_schet_san, note_bid FROM reckoning WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT status, status_san, date, date_v, date_z, id_obj, turist, agency, sum, rest, number_turist, schet_san, date_schet_san, note_bid FROM reckoning WHERE id=?i", $id);
 	$status = $row["status"];
 	$status_san = $row["status_san"];
 	$sum = $row["sum"];
@@ -79,6 +79,11 @@ function review_obmen($connect, $type = "PDF", $id, $for = ""){
 	$date_schet_san = $row["date_schet_san"];
 	$date_z_schet = date_change($row["date_z"]);
 	$date_v_schet = date_change($row["date_v"]);
+	$date_create = date_change($row["date"], ".");
+	$date_create2 = strtotime($date_create);
+	if ($date_create2<1680296400) {
+		$firma = 'ООО ТА «САНАТА-ТРЕВЕЛ»';
+	}	
 	$number_turist = $row["number_turist"];
     $turist_mode = isset($_GET['turist_mode'])?(int)$_GET['turist_mode']:0;
     $row = $connect->getRow("SELECT arrival, leaving FROM object WHERE id=?i", $id_obj);

@@ -23,7 +23,7 @@ function report_agent($connect, $all_id){
 	$all_id = array_diff($all_id, array(""));
 
 	foreach($all_id as $id){
-		$row = $connect->getRow("SELECT DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.sum, reckoning.id_obj, reckoning.agency, reckoning.id_com, position_reck.days FROM reckoning, position_reck WHERE reckoning.id=?i AND reckoning.id=position_reck.schet", $id);
+		$row = $connect->getRow("SELECT DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.sum, reckoning.id_obj, reckoning.date, reckoning.agency, reckoning.id_com, position_reck.days FROM reckoning, position_reck WHERE reckoning.id=?i AND reckoning.id=position_reck.schet", $id);
 		$object = get_object($connect, $row["id_obj"], "type");
 		$date_z = $row["date_z"];
 		$date_z_trans = month_transform($row["date_z"]);
@@ -36,6 +36,11 @@ function report_agent($connect, $all_id){
 		$leg_address_agency = $row["legal_address"];
 		$INN_agency = $row["inn"];
 		$KPP_agency = $row["kpp"];
+		$date_create = date_change($row["date"], ".");
+		$date_create2 = strtotime($date_create);
+		if ($date_create2<1680296400) {
+			$firma = 'ООО ТА «САНАТА-ТРЕВЕЛ»';
+		}			
 		$value = $connect->getOne("SELECT value FROM commission WHERE id=?i", $id_com);
 		$reward = round(get_reward_agency($connect, $id), 2);
 		$reward = add_null($reward);
