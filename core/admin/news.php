@@ -2878,6 +2878,7 @@ function delete_temp_uploaded_file() {
 
 
 function multipart_upload($connect, $customData = NULL) {
+  global $session_login;
   $respAr = [
     'msg' => "Неизвестная ошибка",
     'title' => 'Error',
@@ -2957,6 +2958,9 @@ function multipart_upload($connect, $customData = NULL) {
         $respAr['uri_thumbnail'] = 'https://cdn.tonia.ru'.$respAr['uri_thumbnail'];
         $respAr['uri_preview'] = 'https://cdn.tonia.ru'.$respAr['uri_preview'];
       }
+
+      $log_data = array('uri'=>$respAr['uri']);
+      $connect->query("INSERT INTO history_global SET `id`=0, `datetime`=NOW(), `id_user`='$session_login', `func`='image_uploaded', `data`='".json_encode($log_data)."'");
 
       return json_encode($respAr);
     }
