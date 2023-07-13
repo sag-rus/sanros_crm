@@ -169,7 +169,7 @@ if($id_tour)
 	$connect->query("UPDATE reckoning SET id_tour=?i WHERE id=?i", $id_tour, $id);
 $add_one_day = $connect->getOne("SELECT add_one_day FROM object WHERE id=?i", $id_obj);
 
-if ($aznak) $connect->query("UPDATE reckoning SET status=14 WHERE id=?i", $id);
+if ($aznak) $connect->query("UPDATE reckoning SET status=14, id_user=13 WHERE id=?i", $id);
 
 $check_quota = 0;
 

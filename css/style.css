@@ -1735,3 +1735,7 @@ tr.simple-row {
 .input-message-block.input-message-block-2h {
 	height: 2em;
 }
+
+.nav-tabs > li > a {
+	padding: 10px 8px !important;
+}
