@@ -76,7 +76,7 @@ function show_my_bid_menu($connect){
 		}
 		if($count == 0)
 			$count = "";
-		if($id <= 6 || $id == 12 || $id == 13){
+		if($id <= 6 || $id == 12 || $id == 13 || $id == 14){
 		?>
 			<li class="<?php echo $id; ?>-bid-page" onclick="get_my_reckoning(<?php echo $id; ?>)">
 				<a><?php echo $name_menu; ?><span class="badge"><?php echo $count; ?></span></a>
