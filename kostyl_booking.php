@@ -156,8 +156,7 @@ if ($id_obj=='1' && $data_booking_JSON["site"]=='санаторий-азнака
 	$azn_text .= 'E-mail: '.$email.'<br><br>';
 	$azn_text .= 'Комментарий: '.$note_booking.'<br><br><br><br>';
 
-	//send_mail_sanata('sanatazn1@yahoo.com', 'Заявка на бронь с сайта санаторий-азнакаевский.рф', $azn_text);
-	send_mail_sanata('sagrus@yandex.com', 'Заявка на бронь с сайта санаторий-азнакаевский.рф', $azn_text);
+	send_mail_sanata('sanatazn1@yahoo.com', 'Заявка на бронь с сайта санаторий-азнакаевский.рф', $azn_text);
 	$aznak = true;
 
 }
