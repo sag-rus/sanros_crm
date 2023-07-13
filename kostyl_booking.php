@@ -132,7 +132,7 @@ $note_booking = isset($data_booking->note)?trim($data_booking->note):"";
 
 $aznak = false;
 
-if ($id_obj=='1') {
+if ($id_obj=='1' && $data_booking_JSON["site"]=='санаторий-азнакаевский.рф') {
 
 	$azn_text = 'Дата заезда: '.$data_booking_JSON["date"].'<br>';
 	$azn_text .= 'Количество дней: '.$data_booking->days.'<br>';
@@ -154,10 +154,10 @@ if ($id_obj=='1') {
 	$azn_text .= 'Отчество: '.$data_booking_JSON["otch"].'<br>';
 	$azn_text .= 'Телефон: '.$data_booking_JSON["tel"].'<br>';
 	$azn_text .= 'E-mail: '.$email.'<br><br>';
-	$azn_text .= 'Комментарий: '.$note_booking.'<br><br>';
+	$azn_text .= 'Комментарий: '.$note_booking.'<br><br><br><br>';
 
-
-	send_mail_sanata('sanatazn1@yahoo.com', 'Заявка на бронь с сайта санаторий-азнакаевский.рф', $azn_text);
+	//send_mail_sanata('sanatazn1@yahoo.com', 'Заявка на бронь с сайта санаторий-азнакаевский.рф', $azn_text);
+	send_mail_sanata('sagrus@yandex.com', 'Заявка на бронь с сайта санаторий-азнакаевский.рф', $azn_text);
 	$aznak = true;
 
 }
