@@ -150,7 +150,7 @@ function send_mail_sanata($email, $title, $mess){
 	$mail = new PHPMailer();
 	$mail->IsSMTP();
 	$mail->CharSet = "UTF-8";
-	$mail->SMTPDebug = 2;
+	$mail->SMTPDebug = false;
 	$mail->SMTPAuth = true;
 	$mail->SMTPSecure = "ssl";
 	$mail->Host = "smtp.gmail.com";

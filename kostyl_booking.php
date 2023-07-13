@@ -154,9 +154,10 @@ if ($id_obj=='1') {
 	$azn_text .= 'Комментарий: '.$note_booking.'<br><br>';
 
 
-	send_mail_sanata('sanatazn1@yahoo.com', 'Заявка на бронь с сайта санаторий-азнакаевский.рф', $azn_text);
+	//send_mail_sanata('sanatazn1@yahoo.com', 'Заявка на бронь с сайта санаторий-азнакаевский.рф', $azn_text);
+	send_mail_sanata('Sagrus@yandex.ru', 'Заявка на бронь с сайта санаторий-азнакаевский.рф', $azn_text);
 
-	$note_booking .= '!!!!ЗАЯВКА БЫЛА ОТПРАВЛЕНА САНАТОРИЮ НА ОБРАБОТКУ!!!!!';
+	//$note_booking .= '!!!!ЗАЯВКА БЫЛА ОТПРАВЛЕНА САНАТОРИЮ НА ОБРАБОТКУ!!!!!';
 
 } else {
 
