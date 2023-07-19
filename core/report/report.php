@@ -1275,11 +1275,13 @@ function history_report(){
 }
 
 function history_report_global(){
+	global $connect;
 	ob_start();
+	$users = $connect->getAll("SELECT id, name FROM users WHERE `dostup`=1 order by name");
 ?>
 <div class="form-horizontal panel panel-default">
 	<div class="panel-body">
-		<div class="form-group form-group-margin">
+		<div class="form-group">
 			<label class="col-sm-2 control-label">Дата</label>
 			<div class="col-sm-5">
 				<input type="text" class="form-control datepicker" id="date_1" />
@@ -1288,6 +1290,19 @@ function history_report_global(){
 				<input type="text" class="form-control datepicker" id="date_2" />
 			</div>
 		</div>
+		<div class="form-group">
+            <label class="col-sm-4 control-label">Пользователь</label>
+            <div class="col-sm-8">
+                <select class="form-control" id="user">
+                	<option value="">все</option>
+            		<?php
+            		foreach ($users as $user) {
+            			?><option value="<?=$user['id']?>"><?=$user['name']?></option><?php
+            		}
+            		?>
+                </select>
+            </div>
+        </div>		
 	</div>
 	<div class="panel-footer">
 		<div class="form-group form-group-margin">
@@ -1362,14 +1377,16 @@ function filter_history($connect){
 function filter_history_global($connect){
 	$date1 = $_POST["date_1"];
 	$date2 = $_POST["date_2"];
+	$user = $_POST["user"];
 	$ar_status = get_status_array($connect, "status");
 	$ar_status_san = get_status_array($connect, "status_san");
 	if($date2){
 		$zapros_for_mysql = "datetime>='".$date1." 00:00:00' AND datetime<='".$date2." 23:59:59'";
 	}else
 		$zapros_for_mysql = "datetime>='".$date1." 00:00:00'";
-	echo "SELECT id, DATE_FORMAT(datetime, '%d.%m.%Y %H:%i:%s') as datetime, id_user, func, data FROM history_global WHERE ".$zapros_for_mysql." LIMIT 2000";
-	$data = $connect->getAll("SELECT id, DATE_FORMAT(datetime, '%d.%m.%Y %H:%i:%s') as datetime, id_user, func, data FROM history_global WHERE ".$zapros_for_mysql." LIMIT 2000");
+
+	if ($user>0) $zapros_for_mysql .= "and id_user='".$user."'";
+	$data = $connect->getAll("SELECT id, DATE_FORMAT(datetime, '%d.%m.%Y %H:%i:%s') as datetime, id_user, func, data FROM history_global WHERE ".$zapros_for_mysql." ORDER BY id LIMIT 2000");
 	foreach($data as $row){
 		$date = $row["datetime"];
 		$id_schet = $row["id_schet"];
@@ -1395,7 +1412,7 @@ function filter_history_global($connect){
 	    		} else $addline = false;		    	
 		    	break;
 	    	case 'update_room':
-    			$func = 'сохранение данных по номеру объекта'; 
+    			$func = 'сохранение данных номера объекта'; 
     			$details = json_decode($details, true);
     			if ($details['id']>0) {
     				$room = $connect->getRow("SELECT id, name, id_obj FROM room WHERE id=?i", $details['id']);
@@ -1403,6 +1420,44 @@ function filter_history_global($connect){
     				$details = 'объект: '.$obj['full_name'].'<br>номер: '.$room['name'].'<br>id номера:'.$room['id'];
     			}
     			break;
+	    	case 'select_object_room':
+    			$func = 'просмотри списка номеров объекта'; 
+    			$details = json_decode($details, true);
+    			if ($details['id']>0) {
+    				$obj = $connect->getRow("SELECT id, full_name FROM object WHERE id=?i", $details['id']);
+    				$details = 'объект: '.$obj['full_name'].'<br>id объекта:'.$obj['id'];
+    			} else $addline = false;
+    			break;
+	    	case 'edit_room':
+    			$func = 'переход к редактированию номера объекта'; 
+    			$details = json_decode($details, true);
+    			if ($details['id']>0) {
+    				$room = $connect->getRow("SELECT id, name, id_obj FROM room WHERE id=?i", $details['id']);
+    				$obj = $connect->getRow("SELECT full_name FROM object WHERE id=?i", $room['id_obj']);
+    				$details = 'объект: '.$obj['full_name'].'<br>номер: '.$room['name'].'<br>id номера:'.$room['id'];
+    			} else $addline = false;
+    			break;
+	    	case 'show_sites_contents_list':
+    			$func = 'переход к списку материалов сайта'; 
+    			$details = json_decode($details, true);
+				$details = 'id сайта:'.$details['site_id'];
+    			break;
+	    	case 'edit_sites_content':
+    			$func = 'переход к редактированию материала сайта'; 
+    			$details = json_decode($details, true);
+    			if ($details['content_id']>0) {
+    				$content = $connect->getRow("SELECT id, title, site_id FROM sites_contents WHERE id=?i", $details['content_id']);
+    				$details = 'название материала: '.$content['title'].'<br>id сайта: '.$content['site_id'].'<br>id материала:'.$content['id'];
+    			} else $addline = false;
+    			break;    			
+	    	case 'set_sites_content':
+    			$func = 'сохранение материала сайта'; 
+    			$details = json_decode($details, true);
+    			if ($details['content_id']>0) {
+    				$content = $connect->getRow("SELECT id, title, site_id FROM sites_contents WHERE id=?i", $details['content_id']);
+    				$details = 'название материала: '.$content['title'].'<br>id сайта: '.$content['site_id'].'<br>id материала:'.$content['id'];
+    			} else $addline = false;
+    			break;    			
 			case 'help_search_by_name':
     			$func = 'поиск'; 
     			$details = json_decode($details,  JSON_UNESCAPED_UNICODE);

@@ -702,10 +702,11 @@ function filter_history(){
 function filter_history_global(){
 	var date_1 = $('#date_1').attr('date');
 	var date_2 = $('#date_2').attr('date');
+	var user = $('#user option:selected').val();
 	if(!date_1)
-		show_warning('#filter_res', 'Введите хотя бы одно поле');
+		show_warning('#filter_res', 'Введите хотя бы одно поле с датой');
 	else{
-		var str = 'func=filter_history_global&date_1=' + date_1 + '&date_2=' + date_2;
+		var str = 'func=filter_history_global&date_1=' + date_1 + '&date_2=' + date_2 + '&user=' + user;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
