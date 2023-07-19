@@ -1389,7 +1389,25 @@ function filter_history_global($connect){
 		    	break;
 		    case 'get_image_from_url': 
 		    	$func = 'загрузка фото по ссылке'; 
+		    	$details = json_decode($details, true);
+		    	if ($details['url']!='' && $details['url']!='null') {
+		    		$details = '<a href="'.$details['url'].'" target="_blank">ссылка на фото</a>';
+	    		} else $addline = false;		    	
 		    	break;
+	    	case 'update_room':
+    			$func = 'сохранение данных по номеру объекта'; 
+    			$details = json_decode($details, true);
+    			if ($details['id']>0) {
+    				$room = $connect->getRow("SELECT id, name, id_obj FROM room WHERE id=?i", $details['id']);
+    				$obj = $connect->getRow("SELECT full_name FROM object WHERE id=?i", $room['id_obj']);
+    				$details = 'объект: '.$obj['full_name'].'<br>номер: '.$room['name'].'<br>id номера:'.$room['id'];
+    			}
+    			break;
+			case 'help_search_by_name':
+    			$func = 'поиск'; 
+    			$details = json_decode($details,  JSON_UNESCAPED_UNICODE);
+    			$details = 'запрос: '.$details['poisk'].'<br>таблица: '.$details['table'].'<br>функция: '.$details['function'];
+	    		break;
 		}
 		if ($addline) {
 			$manager = $connect->getOne("SELECT name FROM users WHERE id=?i", $row["id_user"]);
