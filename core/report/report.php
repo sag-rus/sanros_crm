@@ -1274,6 +1274,35 @@ function history_report(){
 	return $html;
 }
 
+function history_report_global(){
+	ob_start();
+?>
+<div class="form-horizontal panel panel-default">
+	<div class="panel-body">
+		<div class="form-group form-group-margin">
+			<label class="col-sm-2 control-label">Дата</label>
+			<div class="col-sm-5">
+				<input type="text" class="form-control datepicker" id="date_1" />
+			</div>
+			<div class="col-sm-5">
+				<input type="text" class="form-control datepicker" id="date_2" />
+			</div>
+		</div>
+	</div>
+	<div class="panel-footer">
+		<div class="form-group form-group-margin">
+			<div class="col-sm-offset-2 col-sm-10">
+				<button type="button" class="btn btn-success btn-sm" onclick="filter_history_global()"><i class="fa fa-search"></i> Применить</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="filter_res"></div>
+<?php
+	$html = ob_get_clean();
+	return $html;
+}
+
 function filter_history($connect){
 	$date1 = $_POST["date_1"];
 	$date2 = $_POST["date_2"];
@@ -1325,6 +1354,55 @@ function filter_history($connect){
 	}
 	if($html)
 		$html = "<table class='table table-condensed' id='tbl_filter'><thead><tr><th>№</th><th class='{dateFormat: \"ddmmyyyy\"}'>Дата</th><th>Клиент</th><th>Объект</th><th>Изменения</th><th>Менеджер</th></tr></thead><tbody>".$html."</tbody></table>";
+	else
+		$html = "Ничего не найдено";
+	return $html;
+}
+
+function filter_history_global($connect){
+	$date1 = $_POST["date_1"];
+	$date2 = $_POST["date_2"];
+	$ar_status = get_status_array($connect, "status");
+	$ar_status_san = get_status_array($connect, "status_san");
+	if($date2){
+		$zapros_for_mysql = "datetime>='".$date1." 00:00:00' AND datetime<='".$date2." 23:59:59'";
+	}else
+		$zapros_for_mysql = "datetime>='".$date1." 00:00:00'";
+	echo "SELECT id, DATE_FORMAT(datetime, '%d.%m.%Y %H:%i:%s') as datetime, id_user, func, data FROM history_global WHERE ".$zapros_for_mysql." LIMIT 2000";
+	$data = $connect->getAll("SELECT id, DATE_FORMAT(datetime, '%d.%m.%Y %H:%i:%s') as datetime, id_user, func, data FROM history_global WHERE ".$zapros_for_mysql." LIMIT 2000");
+	foreach($data as $row){
+		$date = $row["datetime"];
+		$id_schet = $row["id_schet"];
+		$status = $row["new_status"];
+		$status_san = $row["new_status_san"];
+		$note = $row["note"];
+		$func = $row["func"];
+		$details = $row["data"];
+		$addline = true;
+		switch ($func){
+		    case 'image_uploaded': 
+		    	$func = 'загрузка фото с компьютера'; 
+		    	$details = json_decode($details, true);
+		    	if ($details['uri']!='' && $details['uri']!='null') {
+		    		$details = '<a href="'.$details['uri'].'" target="_blank">ссылка на фото</a>';
+	    		} else $addline = false;
+		    	break;
+		    case 'get_image_from_url': 
+		    	$func = 'загрузка фото по ссылке'; 
+		    	break;
+		}
+		if ($addline) {
+			$manager = $connect->getOne("SELECT name FROM users WHERE id=?i", $row["id_user"]);
+			$html.= "<tr>";
+			$html.= "<td width='140' valign='top'>".$date."</td>";
+			$html.= "<td width='70' valign='top'>".$manager."</td>";
+			$html.= "<td width='200' valign='top'>".$func."</td>";
+			$html.= "<td width='150' valign='top'>".$details."</td>";
+			$html.= "</tr>";
+		}
+	}
+	if($html)
+		$html = "<table class='table table-condensed' id='tbl_filter'><thead><tr><th class='{dateFormat: \"ddmmyyyy\"}'>Дата</th><th>Пользователь</th><th>Действие</th><th>Детали</th></tr></thead><tbody>".$html."</tbody></table>";
 	else
 		$html = "Ничего не найдено";
 	return $html;

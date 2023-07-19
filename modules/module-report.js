@@ -98,7 +98,7 @@ function show_reports(){
 	var id_rights = parseInt($('*[data-id-rights]').attr('data-id-rights'));
 	var html;
 	if(id_rights > 3)
-		html = '<div class="btn-group btn-group-justified head-menu-report"><div class="btn-group"><button type="button" class="btn btn-default btn-general" onclick="general_report()"><i class="fa fa-tasks"></i> Общий</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-calendar" onclick="calendar_report()"><i class="fa fa-calendar"></i> Календарь</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-plan" onclick="plan_report()"><i class="fa fa-calculator"></i> План</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-payment" onclick="payment_report()"><i class="fa fa-university"></i> Платежи</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-bonus" onclick="bonus_report()"><i class="fa fa-gift"></i> Бонусы</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-graphics" onclick="graphics_report()"><i class="fa fa-bar-chart"></i> Графики</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-advertising" onclick="report_advertising()"><i class="fa fa-hacker-news"></i> Реклама</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-cabinet-object" onclick="cabinet_object_report()"><i class="fa fa-home"></i> ЛК санатория</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-history" onclick="history_report()";><i class="fa fa-clock-o"></i> История по заявкам</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-history" onclick="history_report_global()";><i class="fa fa-clock-o"></i> История общая</button></div></div><div id="data" style="margin-top: 10px"></div>';
+		html = '<div class="btn-group btn-group-justified head-menu-report"><div class="btn-group"><button type="button" class="btn btn-default btn-general" onclick="general_report()"><i class="fa fa-tasks"></i> Общий</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-calendar" onclick="calendar_report()"><i class="fa fa-calendar"></i> Календарь</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-plan" onclick="plan_report()"><i class="fa fa-calculator"></i> План</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-payment" onclick="payment_report()"><i class="fa fa-university"></i> Платежи</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-bonus" onclick="bonus_report()"><i class="fa fa-gift"></i> Бонусы</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-graphics" onclick="graphics_report()"><i class="fa fa-bar-chart"></i> Графики</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-advertising" onclick="report_advertising()"><i class="fa fa-hacker-news"></i> Реклама</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-cabinet-object" onclick="cabinet_object_report()"><i class="fa fa-home"></i> ЛК санатория</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-history" onclick="history_report()";><i class="fa fa-clock-o"></i> История по заявкам</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-history-global" onclick="history_report_global()";><i class="fa fa-clock-o"></i> История общая</button></div></div><div id="data" style="margin-top: 10px"></div>';
 	else if(id_rights > 2)
 		html = '<div class="btn-group"><button type="button" class="btn btn-default btn-plan" onclick="plan_report()"><i class="fa fa-calculator"></i> План</button></div><div class="btn-group"><button type="button" class="btn btn-default btn-payment" onclick="payment_report()"><i class="fa fa-university"></i> Платежи</button></div><div id="data" style="margin-top: 10px"></div>';
 	else {
@@ -664,6 +664,21 @@ function history_report(){
 	});
 }
 
+function history_report_global(){
+	$('.head-menu-report button').removeClass('btn-success');
+	$('.head-menu-report .btn-history-global').addClass('btn-success');
+	var str = 'func=history_report_global';
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function(html){
+			$('#data').html(html);
+			show_datepicker();
+		}
+	});
+}
+
 function filter_history(){
 	var date_1 = $('#date_1').attr('date');
 	var date_2 = $('#date_2').attr('date');
@@ -671,6 +686,26 @@ function filter_history(){
 		show_warning('#filter_res', 'Введите хотя бы одно поле');
 	else{
 		var str = 'func=filter_history&date_1=' + date_1 + '&date_2=' + date_2;
+		$.ajax({
+			url: 'mysql.php',
+			type: 'POST',
+			data: str,
+			success: function(html){
+				$('#filter_res').html(html);
+				$("#tbl_filter").tablesorter({ widgets: ['zebra'] });
+			}
+		});
+		show_loader('filter_res');
+	}
+}
+
+function filter_history_global(){
+	var date_1 = $('#date_1').attr('date');
+	var date_2 = $('#date_2').attr('date');
+	if(!date_1)
+		show_warning('#filter_res', 'Введите хотя бы одно поле');
+	else{
+		var str = 'func=filter_history_global&date_1=' + date_1 + '&date_2=' + date_2;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',

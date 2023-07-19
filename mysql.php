@@ -77,7 +77,10 @@ if($func AND function_exists($func)){
 	}
 
 	if ($session_login && $_POST['func']!='') {
-		$connect->query("INSERT INTO history_global SET `id`=0, `datetime`=NOW(), `id_user`='$session_login', `func`='$_POST[func]', `data`='".json_encode($_POST)."'");
+		if ($_POST['func']!='check_menu_count' &&
+			$_POST['func']!='write_body' &&
+			$_POST['func']!='show_my_bid_menu')
+			$connect->query("INSERT INTO history_global SET `id`=0, `datetime`=NOW(), `id_user`='$session_login', `func`='$_POST[func]', `data`='".json_encode($_POST)."'");
 	}		
 
 	$config = ConfigCRM::getInstance();
