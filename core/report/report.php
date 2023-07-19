@@ -1386,7 +1386,7 @@ function filter_history_global($connect){
 		$zapros_for_mysql = "datetime>='".$date1." 00:00:00'";
 
 	if ($user>0) $zapros_for_mysql .= "and id_user='".$user."'";
-	$data = $connect->getAll("SELECT id, DATE_FORMAT(datetime, '%d.%m.%Y %H:%i:%s') as datetime, id_user, func, data FROM history_global WHERE ".$zapros_for_mysql." ORDER BY id LIMIT 2000");
+	$data = $connect->getAll("SELECT id, DATE_FORMAT(datetime, '%d.%m.%Y %H:%i:%s') as datetime, id_user, func, data FROM history_global WHERE ".$zapros_for_mysql." ORDER BY id LIMIT 10000");
 	foreach($data as $row){
 		$date = $row["datetime"];
 		$id_schet = $row["id_schet"];
