@@ -1421,7 +1421,7 @@ function filter_history_global($connect){
     			}
     			break;
 	    	case 'select_object_room':
-    			$func = 'просмотри списка номеров объекта'; 
+    			$func = 'просмотр списка номеров объекта'; 
     			$details = json_decode($details, true);
     			if ($details['id']>0) {
     				$obj = $connect->getRow("SELECT id, full_name FROM object WHERE id=?i", $details['id']);
