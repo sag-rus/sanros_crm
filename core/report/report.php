@@ -1386,7 +1386,17 @@ function filter_history_global($connect){
 		$zapros_for_mysql = "datetime>='".$date1." 00:00:00'";
 
 	if ($user>0) $zapros_for_mysql .= "and id_user='".$user."'";
-	$data = $connect->getAll("SELECT id, DATE_FORMAT(datetime, '%d.%m.%Y %H:%i:%s') as datetime, id_user, func, data FROM history_global WHERE ".$zapros_for_mysql." ORDER BY id LIMIT 10000");
+
+	$all = array();
+	$all['foto_local'] = 0;
+	$all['foto_url'] = 0;
+	$all['save_room'] = 0;
+	$all['sync_site'] = 0;
+	$all['set_sites_content'] = 0;
+	$all['update_price_manager'] = 0;
+	
+
+	$data = $connect->getAll("SELECT id, DATE_FORMAT(datetime, '%d.%m.%Y %H:%i:%s') as datetime, id_user, func, data FROM history_global WHERE ".$zapros_for_mysql." ORDER BY id");
 	foreach($data as $row){
 		$date = $row["datetime"];
 		$id_schet = $row["id_schet"];
@@ -1402,6 +1412,7 @@ function filter_history_global($connect){
 		    	$details = json_decode($details, true);
 		    	if ($details['uri']!='' && $details['uri']!='null') {
 		    		$details = '<a href="'.$details['uri'].'" target="_blank">ссылка на фото</a>';
+		    		$all['foto_local']++; 
 	    		} else $addline = false;
 		    	break;
 		    case 'get_image_from_url': 
@@ -1409,6 +1420,7 @@ function filter_history_global($connect){
 		    	$details = json_decode($details, true);
 		    	if ($details['url']!='' && $details['url']!='null') {
 		    		$details = '<a href="'.$details['url'].'" target="_blank">ссылка на фото</a>';
+		    		$all['foto_url']++; 
 	    		} else $addline = false;		    	
 		    	break;
 	    	case 'update_room':
@@ -1418,7 +1430,63 @@ function filter_history_global($connect){
     				$room = $connect->getRow("SELECT id, name, id_obj FROM room WHERE id=?i", $details['id']);
     				$obj = $connect->getRow("SELECT full_name FROM object WHERE id=?i", $room['id_obj']);
     				$details = 'объект: '.$obj['full_name'].'<br>номер: '.$room['name'].'<br>id номера:'.$room['id'];
+    				$all['save_room']++;
     			}
+    			break;
+	    	case 'select_object':
+    			$func = 'выбор объекта'; 
+    			$details = json_decode($details, true);
+    			if ($details['id']>0) {
+    				$obj = $connect->getRow("SELECT id, full_name FROM object WHERE id=?i", $details['id']);
+    				$details = 'объект: '.$obj['full_name'].'<br>id объекта:'.$obj['id'];
+    			} else $addline = false;
+    			break;
+	    	case 'view_description_object':
+    			$func = 'просмотр описания объекта'; 
+    			$details = json_decode($details, true);
+    			if ($details['id']>0) {
+    				$obj = $connect->getRow("SELECT id, full_name FROM object WHERE id=?i", $details['id']);
+    				$details = 'объект: '.$obj['full_name'].'<br>id объекта:'.$obj['id'];
+    			} else $addline = false;
+    			break; 
+	    	case 'view_dates_price_object':
+    			$func = 'просмотр цен по датам'; 
+    			$details = json_decode($details, true);
+    			if ($details['id']>0) {
+    				$obj = $connect->getRow("SELECT id, full_name FROM object WHERE id=?i", $details['id']);
+    				$details = 'объект: '.$obj['full_name'].'<br>id объекта:'.$obj['id'];
+    			} else $addline = false;
+    			break; 
+	    	case 'view_prices_object':
+    			$func = 'просмотр цен объекта'; 
+    			$details = '';
+    			break;
+	    	case 'update_price_manager':
+    			$func = 'установка новой цены'; 
+    			$details = json_decode($details, true);
+    			$details = 'id комнаты: '.$details['room']. ' id цены: '.$details['id'].' цена:'.$details['price'];
+    			$all['update_price_manager']++;
+    			break;    			
+	    	case 'get_my_reckoning':
+    			$func = 'промотр заявок'; 
+    			$ans = '';
+    			$details = json_decode($details, true);
+    			if ($details['page']=='new') $ans = 'вкладка "новые"';
+    			if ($details['page']=='1') $ans = 'вкладка "необработанные"';
+    			if ($details['page']=='2') $ans = 'вкладка "неподтвержденные"';
+    			if ($details['page']=='3') $ans = 'вкладка "неоплаченные"';
+    			if ($details['page']=='4') $ans = 'вкладка "предоплата"';
+    			if ($details['page']=='5') $ans = 'вкладка "оплаченные"';
+    			if ($details['page']=='6') $ans = 'вкладка "аннулированные"';
+    			if ($details['page']=='12') $ans = 'вкладка "депозит"';
+    			if ($details['page']=='13') $ans = 'вкладка "отказные"';
+    			if ($details['page']=='special') $ans = 'вкладка "скияжск"';
+    			if ($details['page']=='certificate') $ans = 'вкладка "сертификаты"';
+    			$details = $ans;
+    			break;    			
+	    	case 'show_sites_list':
+    			$func = 'просмотр списка сайтов'; 
+    			$details = '';
     			break;
 	    	case 'select_object_room':
     			$func = 'просмотр списка номеров объекта'; 
@@ -1427,7 +1495,15 @@ function filter_history_global($connect){
     				$obj = $connect->getRow("SELECT id, full_name FROM object WHERE id=?i", $details['id']);
     				$details = 'объект: '.$obj['full_name'].'<br>id объекта:'.$obj['id'];
     			} else $addline = false;
-    			break;
+    			break;    			
+	    	case 'view_object_rooms':
+    			$func = 'просмотр списка номеров объекта'; 
+    			$details = json_decode($details, true);
+    			if ($details['id']>0) {
+    				$obj = $connect->getRow("SELECT id, full_name FROM object WHERE id=?i", $details['id']);
+    				$details = 'объект: '.$obj['full_name'].'<br>id объекта:'.$obj['id'];
+    			} else $addline = false;
+    			break;    			
 	    	case 'edit_room':
     			$func = 'переход к редактированию номера объекта'; 
     			$details = json_decode($details, true);
@@ -1442,22 +1518,27 @@ function filter_history_global($connect){
     			$details = json_decode($details, true);
 				$details = 'id сайта:'.$details['site_id'];
     			break;
+	    	case 'sync_site':
+    			$func = 'синхронизация данных сайта'; 
+    			$details = json_decode($details, true);
+				$details = 'id сайта:'.$details['site_id'];
+				$all['sync_site']++;
+    			break;    			
 	    	case 'edit_sites_content':
     			$func = 'переход к редактированию материала сайта'; 
+    			//$details = json_decode($details, true);
     			$details = json_decode($details, true);
-    			if ($details['content_id']>0) {
-    				$content = $connect->getRow("SELECT id, title, site_id FROM sites_contents WHERE id=?i", $details['content_id']);
+    			if ($details['id']>0) {
+    				$content = $connect->getRow("SELECT id, title, site_id FROM sites_contents WHERE id=?i", $details['id']);
     				$details = 'название материала: '.$content['title'].'<br>id сайта: '.$content['site_id'].'<br>id материала:'.$content['id'];
-    			} else $addline = false;
+    			}
     			break;    			
 	    	case 'set_sites_content':
     			$func = 'сохранение материала сайта'; 
-    			$details = json_decode($details, true);
-    			if ($details['content_id']>0) {
-    				$content = $connect->getRow("SELECT id, title, site_id FROM sites_contents WHERE id=?i", $details['content_id']);
-    				$details = 'название материала: '.$content['title'].'<br>id сайта: '.$content['site_id'].'<br>id материала:'.$content['id'];
-    			} else $addline = false;
-    			break;    			
+    			//$details = json_decode($details, true);
+    			$details = '';
+    			$all['set_sites_content']++;
+    			break;
 			case 'help_search_by_name':
     			$func = 'поиск'; 
     			$details = json_decode($details,  JSON_UNESCAPED_UNICODE);
@@ -1474,8 +1555,16 @@ function filter_history_global($connect){
 			$html.= "</tr>";
 		}
 	}
-	if($html)
-		$html = "<table class='table table-condensed' id='tbl_filter'><thead><tr><th class='{dateFormat: \"ddmmyyyy\"}'>Дата</th><th>Пользователь</th><th>Действие</th><th>Детали</th></tr></thead><tbody>".$html."</tbody></table>";
+	if($html) {
+		$stats = 'Загружено фото с компьютера: '.$all['foto_local'].'<br>';
+		$stats .= 'Загружено фото по url: '.$all['foto_url'].'<br>';
+		$stats .= 'Обновлено информации по номерам: '.$all['save_room'].'<br>';
+		$stats .= 'Обновлено материалов сайта: '.$all['set_sites_content'].'<br>';
+		$stats .= 'Обновлено цен: '.$all['update_price_manager'].'<br>';
+		$stats .= 'Запущено синхронизаций с сайтом: '.$all['sync_site'].'<br>';
+
+		$html = $stats."<br><table class='table table-condensed' id='tbl_filter'><thead><tr><th class='{dateFormat: \"ddmmyyyy\"}'>Дата</th><th>Пользователь</th><th>Действие</th><th>Детали</th></tr></thead><tbody>".$html."</tbody></table>";
+	}
 	else
 		$html = "Ничего не найдено";
 	return $html;
