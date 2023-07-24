@@ -1395,7 +1395,7 @@ function filter_history_global($connect){
 	$all['set_sites_content'] = 0;
 	$all['update_price_manager'] = 0;
 	
-
+	$prev_func = '';
 	$data = $connect->getAll("SELECT id, DATE_FORMAT(datetime, '%d.%m.%Y %H:%i:%s') as datetime, id_user, func, data FROM history_global WHERE ".$zapros_for_mysql." ORDER BY id");
 	foreach($data as $row){
 		$date = $row["datetime"];
@@ -1407,14 +1407,6 @@ function filter_history_global($connect){
 		$details = $row["data"];
 		$addline = true;
 		switch ($func){
-		    case 'image_uploaded': 
-		    	$func = 'загрузка фото с компьютера'; 
-		    	$details = json_decode($details, true);
-		    	if ($details['uri']!='' && $details['uri']!='null') {
-		    		$details = '<a href="'.$details['uri'].'" target="_blank">ссылка на фото</a>';
-		    		$all['foto_local']++; 
-	    		} else $addline = false;
-		    	break;
 		    case 'get_image_from_url': 
 		    	$func = 'загрузка фото по ссылке'; 
 		    	$details = json_decode($details, true);
@@ -1423,6 +1415,14 @@ function filter_history_global($connect){
 		    		$all['foto_url']++; 
 	    		} else $addline = false;		    	
 		    	break;
+		    case 'image_uploaded': 
+		    	$func = 'загрузка фото с компьютера'; 
+		    	$details = json_decode($details, true);
+		    	if ($details['uri']!='' && $details['uri']!='null') {
+		    		$details = '<a href="'.$details['uri'].'" target="_blank">ссылка на фото</a>';
+		    		if ($prev_func!='get_image_from_url') $all['foto_local']++; 
+	    		} else $addline = false;
+		    	break;		    	
 	    	case 'update_room':
     			$func = 'сохранение данных номера объекта'; 
     			$details = json_decode($details, true);
@@ -1545,6 +1545,8 @@ function filter_history_global($connect){
     			$details = 'запрос: '.$details['poisk'].'<br>таблица: '.$details['table'].'<br>функция: '.$details['function'];
 	    		break;
 		}
+		$prev_func = $func;
+
 		if ($addline) {
 			$manager = $connect->getOne("SELECT name FROM users WHERE id=?i", $row["id_user"]);
 			$html.= "<tr>";
