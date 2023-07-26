@@ -1430,7 +1430,7 @@ function filter_history_global($connect){
     			if ($details['id']>0) {
     				$room = $connect->getRow("SELECT id, name, id_obj FROM room WHERE id=?i", $details['id']);
     				$obj = $connect->getRow("SELECT full_name FROM object WHERE id=?i", $room['id_obj']);
-    				if (!in_array($room['id_obj'], $all['objects'])) $all['objects'][] = $room['id_obj'];
+    				//if (!in_array($room['id_obj'], $all['objects'])) $all['objects'][] = $room['id_obj'];
     				$details = 'объект: '.$obj['full_name'].'<br>номер: '.$room['name'].'<br>id номера:'.$room['id'];
     				$all['save_room']++;
     			}
@@ -1440,7 +1440,7 @@ function filter_history_global($connect){
     			$details = json_decode($details, true);
     			if ($details['id']>0) {
     				$obj = $connect->getRow("SELECT id, full_name FROM object WHERE id=?i", $details['id']);
-    				if (!in_array($details['id'], $all['objects'])) $all['objects'][] = $details['id'];
+    				//if (!in_array($details['id'], $all['objects'])) $all['objects'][] = $details['id'];
     				$details = 'объект: '.$obj['full_name'].'<br>id объекта:'.$obj['id'];
     			} else $addline = false;
     			break;
@@ -1449,7 +1449,7 @@ function filter_history_global($connect){
     			$details = json_decode($details, true);
     			if ($details['id']>0) {
     				$obj = $connect->getRow("SELECT id, full_name FROM object WHERE id=?i", $details['id']);
-    				if (!in_array($details['id'], $all['objects'])) $all['objects'][] = $details['id'];
+    				//if (!in_array($details['id'], $all['objects'])) $all['objects'][] = $details['id'];
     				$details = 'объект: '.$obj['full_name'].'<br>id объекта:'.$obj['id'];
     			} else $addline = false;
     			break; 
@@ -1458,7 +1458,7 @@ function filter_history_global($connect){
     			$details = json_decode($details, true);
     			if ($details['id']>0) {
     				$obj = $connect->getRow("SELECT id, full_name FROM object WHERE id=?i", $details['id']);
-    				if (!in_array($details['id'], $all['objects'])) $all['objects'][] = $details['id'];
+    				//if (!in_array($details['id'], $all['objects'])) $all['objects'][] = $details['id'];
     				$details = 'объект: '.$obj['full_name'].'<br>id объекта:'.$obj['id'];
     			} else $addline = false;
     			break; 
@@ -1469,7 +1469,10 @@ function filter_history_global($connect){
 	    	case 'update_price_manager':
     			$func = 'установка новой цены'; 
     			$details = json_decode($details, true);
-    			$details = 'id комнаты: '.$details['room']. ' id цены: '.$details['id'].' цена:'.$details['price'];
+    			$room = $connect->getRow("SELECT id, id_obj FROM room WHERE id=?i", $details['room']);
+    			$obj = $connect->getRow("SELECT id, full_name FROM object WHERE id=?i", $room['id_obj']);
+    			if (!in_array($obj['id'], $all['objects'])) $all['objects'][] = $obj['id'];
+    			$details = 'объект: '.$obj['full_name'].' id комнаты: '.$details['room'].' id цены: '.$details['id'].' цена:'.$details['price'];
     			$all['update_price_manager']++;
     			break;    			
 	    	case 'get_my_reckoning':
@@ -1498,7 +1501,7 @@ function filter_history_global($connect){
     			$details = json_decode($details, true);
     			if ($details['id']>0) {
     				$obj = $connect->getRow("SELECT id, full_name FROM object WHERE id=?i", $details['id']);
-    				if (!in_array($details['details'], $all['objects'])) $all['objects'][] = $details['details'];
+    				//if (!in_array($details['details'], $all['objects'])) $all['objects'][] = $details['details'];
     				$details = 'объект: '.$obj['full_name'].'<br>id объекта:'.$obj['id'];
     			} else $addline = false;
     			break;    			
@@ -1507,7 +1510,7 @@ function filter_history_global($connect){
     			$details = json_decode($details, true);
     			if ($details['id']>0) {
     				$obj = $connect->getRow("SELECT id, full_name FROM object WHERE id=?i", $details['id']);
-    				if (!in_array($details['details'], $all['objects'])) $all['objects'][] = $details['details'];
+    				//if (!in_array($details['details'], $all['objects'])) $all['objects'][] = $details['details'];
     				$details = 'объект: '.$obj['full_name'].'<br>id объекта:'.$obj['id'];
     			} else $addline = false;
     			break;    			
@@ -1517,7 +1520,7 @@ function filter_history_global($connect){
     			if ($details['id']>0) {
     				$room = $connect->getRow("SELECT id, name, id_obj FROM room WHERE id=?i", $details['id']);
     				$obj = $connect->getRow("SELECT full_name FROM object WHERE id=?i", $room['id_obj']);
-    				if (!in_array($room['id_obj'], $all['objects'])) $all['objects'][] = $room['id_obj'];
+    				//if (!in_array($room['id_obj'], $all['objects'])) $all['objects'][] = $room['id_obj'];
     				$details = 'объект: '.$obj['full_name'].'<br>номер: '.$room['name'].'<br>id номера:'.$room['id'];
     			} else $addline = false;
     			break;
@@ -1577,7 +1580,7 @@ function filter_history_global($connect){
 		if ($user==42) {
 			$stats .= '<br>';
 			$stats .= '<strong>отчет Марии:</strong><br>';
-			$stats .= 'Затронуто объектов (графа «баз»): '.(count($all['objects'])*20).' руб.<br>';
+			$stats .= 'Затронуто объектов для внесения цены (графа «баз»): '.(count($all['objects'])*20).' руб.<br>';
 			$stats .= 'Обновлено цен (графа «доп»): '.($all['update_price_manager']*1).' руб.<br>';
 			$stats .= 'Загружено фото с компьютера и по url (графа «фото ном», «фото гл»): '.($all['foto_local']*3+$all['foto_url']*3).' руб.<br>';
 			$stats .= '<strong>Итого: </strong>'.(count($all['objects'])*20+$all['update_price_manager']*1+$all['foto_local']*3+$all['foto_url']*3).' руб.<br>';
