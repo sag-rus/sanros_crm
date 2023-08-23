@@ -553,7 +553,7 @@ function pay_schet($connect){
 		if(check_login($connect)) {
 			$status = $connect->getOne("SELECT status_san FROM reckoning WHERE id=?i", $id);
 			if($status != 4 AND $status != 5)
-				$status_san = '<select id="type_pay" class="form-control"><option selected disabled>Способ оплаты</option><option value="1">Безналичный</option><option value="2">Наличными</option><option value="5-1">Банковской картой</option><option value="5-2">Банковской картой через терминал</option></select>';
+				$status_san = '<select id="type_pay" class="form-control"><option selected disabled>Способ оплаты</option><option value="1">Безналичный</option><option value="2">Наличными</option><option value="5-1">Банковской картой</option><option value="5-2">Банковской картой через терминал</option><option value="7">СБП</option></select>';
 			else
 				$status_san = 'Оплата на месте<input type="hidden" id="type_pay" value="4" />';
 			$sum_to_pay = get_sum_for_pay($connect, $id);
