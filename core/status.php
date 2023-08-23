@@ -894,6 +894,7 @@ function show_return_oplata(){
 								<option selected disabled>Способ оплаты</option>
 								<option value="1">безналичный</option>
 								<option value="2">наличными</option>
+								<option value="7">СБП</option>
 							</select>
 						</div>
 					</div>
