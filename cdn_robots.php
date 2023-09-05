@@ -72,6 +72,6 @@ $res = $client->request('POST', "https://cdn.tonia.ru/api/files/upload/robots" .
 
 echo $robots;
 
-file_put_contents('cdn_robots.txt', $robots);
+file_put_contents('/var/www/html/CRM/cdn_robots.txt', $robots);
 
 ?>
