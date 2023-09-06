@@ -253,7 +253,7 @@ class BookingPayment {
     $turist = $this->turist;
 
     $log = PHP_EOL."START registerPayment".PHP_EOL;
-    file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', $log, FILE_APPEND);
+    file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', date('d.m.Y H:i:s').' '.$log, FILE_APPEND);
 
     $reck_properties = $connect->getRow("SELECT sum, id_dis, exclude_bank_commission, is_test, state_program, children_rest, far_east FROM reckoning WHERE id=?i AND turist=?i AND (status=3 OR status=4) LIMIT 1", $booking, $turist);
 
@@ -327,7 +327,7 @@ class BookingPayment {
       $url = $this->bankInfo['link'].'register.do?userName='.$this->bankInfo['userName'].'&password='.$this->bankInfo['password'].'&amount='.($sum_to_pay*100).'&currency=810&language=ru&description='.urlencode($description).'&orderNumber='.$orderNumber.'&returnUrl='.urlencode($returnUrl).'&failUrl='.urlencode($failUrl).'&expirationDate='.date("Y-m-d", time()+86400*7).'T'.date("H:i:s", time()+86400*7);
 
       $log = "action=register.do url=".$url.PHP_EOL;
-      file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', $log, FILE_APPEND);
+      file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', date('d.m.Y H:i:s').' '.$log, FILE_APPEND);
 
       $ch = curl_init($url);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -339,14 +339,14 @@ class BookingPayment {
 
       $log = "action=register.do RESULT".PHP_EOL;
       $log .= print_r($answer, true).PHP_EOL;
-      file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', $log, FILE_APPEND);
+      file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', date('d.m.Y H:i:s').' '.$log, FILE_APPEND);
 
       if ($qr=='1')  {
 
         $url = $this->bankInfo['link'].'sbp/c2b/qr/dynamic/get.do?userName='.$this->bankInfo['userName'].'&password='.$this->bankInfo['password'].'&mdOrder='.$answer['orderId'].'&qrFormat=image';
 
         $log = "action=get.do START=".$url.PHP_EOL;
-        file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', $log, FILE_APPEND);        
+        file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', date('d.m.Y H:i:s').' '.$log, FILE_APPEND);        
 
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -360,7 +360,7 @@ class BookingPayment {
 
         $log = "action=get.do RESULT".PHP_EOL;
         $log .= print_r($response, true).PHP_EOL;
-        file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', $log, FILE_APPEND);        
+        file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', date('d.m.Y H:i:s').' '.$log, FILE_APPEND);        
 
       }
       $answer['orderNumber'] = $orderNumber;
@@ -401,7 +401,7 @@ class BookingPayment {
 
 
       $log = PHP_EOL."START depositPayment bid_pay=".$bid_pay.PHP_EOL;
-      file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', $log, FILE_APPEND);      
+      file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', date('d.m.Y H:i:s').' '.$log, FILE_APPEND);      
 
       $row = $connect->getRow("SELECT id, bid, sum, pay_method, order_id, type, status FROM payment_request WHERE bid_pay=?s", $bid_pay);
 
@@ -446,7 +446,7 @@ class BookingPayment {
 
       $log = "action=getOrderStatusExtended.do".PHP_EOL;
       $log .= print_r($data, true).PHP_EOL;
-      file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', $log, FILE_APPEND);              
+      file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', date('d.m.Y H:i:s').' '.$log, FILE_APPEND);              
       //Проверка состояния заказа getOrderStatusExtended.do
 
 
@@ -476,7 +476,7 @@ class BookingPayment {
 
       $log = "action=deposit.do".PHP_EOL;
       $log .= print_r($data, true).PHP_EOL;
-      file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', $log, FILE_APPEND);
+      file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', date('d.m.Y H:i:s').' '.$log, FILE_APPEND);
       //Запрос завершения заказа deposit.do
 
       if($data["ErrorCode"] != 0)
@@ -500,7 +500,7 @@ class BookingPayment {
         $this->saveSchetToHistory($bid, "Оплата клиентом банковской картой. Сумма ".$sum);
 
         $log = "Оплата картой №".$bid.PHP_EOL;
-        file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', $log, FILE_APPEND);        
+        file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', date('d.m.Y H:i:s').' '.$log, FILE_APPEND);        
 
       } elseif ($type_pay == 2) {
 
@@ -510,7 +510,7 @@ class BookingPayment {
         $this->saveSchetToHistory($bid, "Предоплата клиентом банковской картой. Сумма ".$sum);
 
         $log = "Предоплата картой №".$bid.PHP_EOL;
-        file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', $log, FILE_APPEND);        
+        file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', date('d.m.Y H:i:s').' '.$log, FILE_APPEND);        
 
       }
 
