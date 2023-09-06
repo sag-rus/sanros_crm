@@ -1397,6 +1397,7 @@ function filter_history_global($connect){
 	$all['objects']  = array();
 	
 	$prev_func = '';
+	$prev = array();
 	$data = $connect->getAll("SELECT id, DATE_FORMAT(datetime, '%d.%m.%Y %H:%i:%s') as datetime, id_user, func, data FROM history_global WHERE ".$zapros_for_mysql." ORDER BY id");
 	foreach($data as $row){
 		$date = $row["datetime"];
@@ -1472,8 +1473,11 @@ function filter_history_global($connect){
     			$room = $connect->getRow("SELECT id, id_obj FROM room WHERE id=?i", $details['room']);
     			$obj = $connect->getRow("SELECT id, full_name FROM object WHERE id=?i", $room['id_obj']);
     			if (!in_array($obj['id'], $all['objects'])) $all['objects'][] = $obj['id'];
+
+				if (intval($details['price'])>0) $all['update_price_manager']++;
+
     			$details = 'объект: '.$obj['full_name'].' id комнаты: '.$details['room'].' id цены: '.$details['id'].' цена:'.$details['price'];
-    			$all['update_price_manager']++;
+
     			break;    			
 	    	case 'get_my_reckoning':
     			$func = 'промотр заявок'; 
@@ -1557,6 +1561,7 @@ function filter_history_global($connect){
 	    		break;
 		}
 		$prev_func = $func;
+		$prev = json_decode($row["data"], true);
 
 		if ($addline) {
 			$manager = $connect->getOne("SELECT name FROM users WHERE id=?i", $row["id_user"]);
