@@ -42,7 +42,7 @@ function review_dover($connect, $type, $id, $turist, $type_PDF = "PDF"){
 	$date_pass = $row["date_pas"];
 	$img = $_COOKIE["img"];
 	$index = 0;
-	$rows = $connect->getAll("SELECT id_room, days, number, note FROM position_reck WHERE schet=?i", $id);
+	$rows = $connect->getAll("SELECT id, id_room, days, number, note FROM position_reck WHERE schet=?i", $id);
 	foreach ($rows as $row) {
       $days = $row["days"];
       $number_turist = $row['number'];
@@ -57,6 +57,12 @@ function review_dover($connect, $type, $id, $turist, $type_PDF = "PDF"){
 
       if($row['note'])
           $putevka .= ' ('.$row['note'].')';
+
+      if ($id == 131428) {
+      	if ($row['id']==157008) $putevka = 'Санаторий "Янган-Тау" 2-х местный номер<br>17.09.2023-29.09.2023';
+      	if ($row['id']==157064) $putevka = 'Санаторий "Янган-Тау" 2-х местный номер<br>30.09.2023-06.10.2023 (доплата за 1-но местное размещение)';
+      	if ($row['id']==157066) $putevka = 'Санаторий "Янган-Тау" 2-х местный номер<br>30.09.2023-06.10.2023';
+    	}
 
       $table.= "<tr>";
       $table.= "<td width='50' align='center'>".$index."</td>";
