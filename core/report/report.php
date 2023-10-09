@@ -1398,6 +1398,7 @@ function filter_history_global($connect){
 	
 	$prev_func = '';
 	$prev = array();
+	$prices = array();
 	$data = $connect->getAll("SELECT id, DATE_FORMAT(datetime, '%d.%m.%Y %H:%i:%s') as datetime, id_user, func, data FROM history_global WHERE ".$zapros_for_mysql." ORDER BY id");
 	foreach($data as $row){
 		$date = $row["datetime"];
@@ -1474,7 +1475,14 @@ function filter_history_global($connect){
     			$obj = $connect->getRow("SELECT id, full_name FROM object WHERE id=?i", $room['id_obj']);
     			if (!in_array($obj['id'], $all['objects'])) $all['objects'][] = $obj['id'];
 
-				if (intval($details['price'])>0) $all['update_price_manager']++;
+				if (intval($details['price'])>0) {
+					if (json_encode($prev) <> $row['data']) {
+						if ($prices[$details['room'].$details['range']] <> $details['price']) {
+							$all['update_price_manager']++;
+							$prices[$details['room'].$details['range']] = $details['price'];
+						}
+					} 
+				}
 
     			$details = 'объект: '.$obj['full_name'].' id комнаты: '.$details['room'].' id цены: '.$details['id'].' цена:'.$details['price'];
 
