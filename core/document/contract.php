@@ -319,8 +319,8 @@ function review_contract($connect, $type, $id){
 				$itog_sum_pay = convert_number_to_string($arr1[0])." рубль ".($arr1[1])." копеек";
 			}
 		?>
-		, скидка составляет <?php echo $sale; ?> рублей РФ (<?php echo $itog_sum_sale; ?>).
-		<?php if ($id==125409) echo ' Комиссия банка составляет 541.90 рублей РФ (пятьсот сорок один рубль 90 копеек). ';?>
+		<?php if ($id!=125409) {?>, скидка составляет <?php echo $sale; ?> рублей РФ (<?php echo $itog_sum_sale; ?>). <?php} else echo '.';?>
+		<?php if ($id==125409) {echo ' Комиссия банка составляет 541.90 рублей РФ (пятьсот сорок один рубль 90 копеек). '; }?>
 		 Итого стоимость санаторно-курортной путёвки составляет <?php echo $sum_pay; ?> рублей РФ (<?php echo $itog_sum_pay; ?>)
         <?php if($id == 79836) { ?>
             <br>&nbsp;4.1.1. В указанную стоимость входит:<br>
