@@ -56,7 +56,7 @@ $id_obj = 60;
 try{
 
 	$object = $connect->getAll("SELECT * FROM object WHERE id=$id_obj");
-	$response['code'] = 500;
+	$response['code'] = 200;
 	$response['hotel_id'] = $object[0]['id'];
 	$response['hotel_title'] = $object[0]['full_name'];
 
