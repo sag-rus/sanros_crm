@@ -95,6 +95,8 @@ try{
 		print_r($rooms);
 		echo '</pre>';*/
 
+		$cnt = 0;
+
 		foreach ($rooms as $room) {
 			$temp = array();
 			$temp['title'] = $room['room'].' ('.$room['housing_name'].')';
@@ -118,6 +120,8 @@ try{
 				$temp['occupancies'][$room['id'].'_a.4'] = '4 взрослых';
 			}			
 			$response['rooms'][$room['id']] = $temp;
+			$cnt++;
+			if ($cnt>5) break;
 		}
 
 		foreach ($ratePlans as $plan) {
