@@ -717,7 +717,7 @@ function edit_main_data_object($connect){
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label">Детский отдых</label>
+            <label class="col-sm-3 control-label">Детский отдых с кешбеком</label>
             <div class="col-sm-9">
                 <input type="checkbox" class="form-control"<?php if($row['children_rest']) { ?> checked<?php } ?> id="children-rest">
             </div>
@@ -778,7 +778,7 @@ function edit_main_data_object($connect){
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label">На черном море</label>
+            <label class="col-sm-3 control-label">На Черном море</label>
             <div class="col-sm-9">
                 <input type="checkbox" class="form-control"<?php if($row['near_black_sea']) { ?> checked<?php } ?> id="near_black_sea">
             </div>
@@ -808,7 +808,7 @@ function edit_main_data_object($connect){
             </div>
         </div>        
         <div class="form-group">
-            <label class="col-sm-3 control-label">У реки Волга</label>
+            <label class="col-sm-3 control-label">на Волге</label>
             <div class="col-sm-9">
                 <input type="checkbox" class="form-control"<?php if($row['near_volga_river']) { ?> checked<?php } ?> id="near_volga_river">
             </div>
