@@ -946,7 +946,11 @@ function update_main_data_object($connect){
         $children_rest = 0;
     }
 
-    if($featured) $featured = 1; else $featured = 0;
+    if($featured) {
+    	$featured = 1;
+	} else {
+		$featured = 0;
+	}
 
     if(!in_array($uri_schema,[1,2]))
         $uri_schema = 1;
