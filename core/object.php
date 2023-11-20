@@ -734,6 +734,141 @@ function edit_main_data_object($connect){
                 <input type="checkbox" class="form-control"<?php if($row['selected']) { ?> checked<?php } ?> id="selected">
             </div>
         </div> 
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Есть отдых c лечением</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control"<?php if($row['w_therapy']) { ?> checked<?php } ?> id="w_therapy">
+            </div>
+        </div> 
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Есть отдых без лечения</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control"<?php if($row['wo_therapy']) { ?> checked<?php } ?> id="wo_therapy">
+            </div>
+        </div> 
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Путевка "мать и дитя"</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control"<?php if($row['mother_and_child']) { ?> checked<?php } ?> id="mother_and_child">
+            </div>
+        </div>         
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Для инвалидов</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control"<?php if($row['for_invalid']) { ?> checked<?php } ?> id="for_invalid">
+            </div>
+        </div>         
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Все включено</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control"<?php if($row['all_inc']) { ?> checked<?php } ?> id="all_inc">
+            </div>
+        </div>         
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Шведский стол</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control"<?php if($row['open_buffet']) { ?> checked<?php } ?> id="open_buffet">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">На море</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control"<?php if($row['near_sea']) { ?> checked<?php } ?> id="near_sea">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">На черном море</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control"<?php if($row['near_black_sea']) { ?> checked<?php } ?> id="near_black_sea">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">В лесу</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control"<?php if($row['in_forest']) { ?> checked<?php } ?> id="in_forest">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">В горах</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control"<?php if($row['in_hill']) { ?> checked<?php } ?> id="in_hill">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">У воды</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control"<?php if($row['near_water']) { ?> checked<?php } ?> id="near_water">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">У реки</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control"<?php if($row['near_river']) { ?> checked<?php } ?> id="near_river">
+            </div>
+        </div>        
+        <div class="form-group">
+            <label class="col-sm-3 control-label">У реки Волга</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control"<?php if($row['near_volga_river']) { ?> checked<?php } ?> id="near_volga_river">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">У озера</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control"<?php if($row['near_lake']) { ?> checked<?php } ?> id="near_lake">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">С пляжем</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control"<?php if($row['beach']) { ?> checked<?php } ?> id="beach">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">На побережье</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control"<?php if($row['on_coast']) { ?> checked<?php } ?> id="on_coast">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">С бассейном</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control"<?php if($row['w_pool']) { ?> checked<?php } ?> id="w_pool">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">С кешбеком</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control"<?php if($row['cashback']) { ?> checked<?php } ?> id="cashback">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Со СПА</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control"<?php if($row['w_spa']) { ?> checked<?php } ?> id="w_spa">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">С бюветом</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control"<?php if($row['w_buvet']) { ?> checked<?php } ?> id="w_buvet">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">С радоном</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control"<?php if($row['w_radon']) { ?> checked<?php } ?> id="w_radon">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Количество звезд</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" value="<?=$row['stars'];?>" id="stars">
+            </div>
+        </div>
+
+
 		<div class="form-group form-group-margin">
 			<label class="col-sm-3 control-label">Описание</label>
 			<div class="col-sm-9">
