@@ -64,6 +64,7 @@ class SafeMySQL{
 	private $connect;
 	private $emode;
 	private $exname;
+	private $last_query;
 
 	private $defaults = array(
 		'host'      => 'localhost',
@@ -89,6 +90,10 @@ class SafeMySQL{
 	public function query(){
 		return $this->rawQuery($this->prepareQuery(func_get_args()));
 	}
+
+	public function last_query(){
+		return $this->last_query;
+	}	
 
 	public function fetch($result, $mode = MYSQLI_ASSOC){
 		return mysqli_fetch_array($result, $mode);
@@ -403,6 +408,7 @@ class SafeMySQL{
 			}
 			$query.= $part;
 		}
+		$this->last_query = $query;
 		return $query;
 	}
 

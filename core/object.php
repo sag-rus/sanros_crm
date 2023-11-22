@@ -527,7 +527,7 @@ function select_object_about($connect){
 function edit_main_data_object($connect){
     global $array_type;
     $id = $_POST["id"];
-	$row = $connect->getRow("SELECT name, similar, full_name, id_reg, type, city, city_genitive, direction, region_direction_id, latitude, longitude, weather, direction, source_booking, booking_uri, uri_schema, description, fast_booking, main_post_name, main_post_fio, default_price_type, url_name, state_program, children_rest, featured, selected, trust_full_name, trust_name_template, trust_number FROM object WHERE id='$id'");
+	$row = $connect->getRow("SELECT * FROM object WHERE id='$id'");
 	$similar = explode("_", $row["similar"]);
 	$type = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]);
 	$country = $connect->getOne("SELECT id_country FROM region WHERE id=?i", $row["id_reg"]);
@@ -980,34 +980,36 @@ function update_main_data_object($connect){
     $main_post_fio = trim($_POST["main_post_fio"]);
     $default_price_type = isset($_POST['default_price_type'])?(int)$_POST['default_price_type']:1;
 
-    $w_therapy = isset($_POST['w_therapy']) ? 1 : 0;
-    $wo_therapy = isset($_POST['wo_therapy']) ? 1 : 0;
-    $mother_and_child = isset($_POST['mother_and_child']) ? 1 : 0;
-    $for_invalid = isset($_POST['for_invalid'])? 1 : 0;
-    $all_inc = isset($_POST['all_inc']) ? 1 : 0;
-    $open_buffet = isset($_POST['open_buffet']) ? 1 : 0;
-    $near_sea = isset($_POST['near_sea']) ? 1 : 0;
-    $near_black_sea = isset($_POST['near_black_sea']) ? 1 : 0;
-    $in_forest = isset($_POST['in_forest']) ? 1 : 0;
-    $in_hill = isset($_POST['in_hill']) ? 1 : 0;
-    $near_water = isset($_POST['near_water']) ? 1 : 0;
-    $near_volga_river = isset($_POST['near_volga_river']) ? 1 : 0;
-    $near_river = isset($_POST['near_river']) ? 1 : 0;
-    $near_lake = isset($_POST['near_lake']) ? 1 : 0;
-    $beach = isset($_POST['beach']) ? 1 : 0;
-    $on_coast = isset($_POST['on_coast']) ? 1 : 0;
-    $w_pool = isset($_POST['w_pool']) ? 1 : 0;
-    $cashback = isset($_POST['cashback']) ? 1 : 0;
-    $w_spa = isset($_POST['w_spa']) ? 1 : 0;
-    $w_buvet = isset($_POST['w_buvet']) ? 1 : 0;
-    $w_radon = isset($_POST['w_radon']) ? 1 : 0;
-    $only_summer = isset($_POST['only_summer']) ? 1 : 0;
-    $stars = isset($_POST['stars']) ? $_POST['stars'] : '';
+    $w_therapy = ($_POST['w_therapy']==1) ? 1 : 0;
+    $wo_therapy = ($_POST['wo_therapy']==1) ? 1 : 0;
+    $mother_and_child = ($_POST['mother_and_child']==1) ? 1 : 0;
+    $for_invalid = ($_POST['for_invalid']==1) ? 1 : 0;
+    $all_inc = ($_POST['all_inc']==1) ? 1 : 0;
+    $open_buffet = ($_POST['open_buffet']==1) ? 1 : 0;
+    $near_sea = ($_POST['near_sea']==1) ? 1 : 0;
+    $near_black_sea = ($_POST['near_black_sea']==1) ? 1 : 0;
+    $in_forest = ($_POST['in_forest']==1) ? 1 : 0;
+    $in_hill = ($_POST['in_hill']==1) ? 1 : 0;
+    $near_water = ($_POST['near_water']==1) ? 1 : 0;
+    $near_volga_river = ($_POST['near_volga_river']==1) ? 1 : 0;
+    $near_river = ($_POST['near_river']==1) ? 1 : 0;
+    $near_lake = ($_POST['near_lake']==1) ? 1 : 0;
+    $beach = ($_POST['beach']==1) ? 1 : 0;
+    $on_coast = ($_POST['on_coast']==1) ? 1 : 0;
+    $w_pool = ($_POST['w_pool']==1) ? 1 : 0;
+    $cashback = ($_POST['cashback']==1) ? 1 : 0;
+    $w_spa = ($_POST['w_spa']==1) ? 1 : 0;
+    $w_buvet = ($_POST['w_buvet']==1) ? 1 : 0;
+    $w_radon = ($_POST['w_radon']==1) ? 1 : 0;
+    $only_summer = ($_POST['only_summer']==1) ? 1 : 0;
+
+    if ($_POST['stars']=='') $stars = 0; else $stars = $_POST['stars'];
 
     if(!array_key_exists($default_price_type,$array_type))
         $default_price_type = 1;
 
-    $connect->query("UPDATE object SET name=?s, full_name=?s, city=?s, city_genitive = ?s, direction=?s, type=?s, latitude=?s, longitude=?s, similar=?s, weather=?s, description=?s, source_booking=?i, description_check=?s, booking_uri=?s, fast_booking=?i, main_post_name = ?s, main_post_fio = ?s, default_price_type = ?i, id_reg = ?i, region_direction_id = ?i, `uri_schema` = ?i, `url_name` = ?s, `state_program` = ?i, `children_rest` = ?i, synchronized=0, `featured` = ?i, `selected` = ?i, `w_therapy`=?i, `wo_therapy`=?i, `mother_and_child`=?i, `for_invalid`=?i, `all_inc`=?i, `open_buffet`=?i, `near_sea`=?i, `near_black_sea`=?i, `in_forest`=?i, `in_hill`=?i, `near_water`=?i, `near_river`=?i, `near_volga_river`=?i, `near_lake`=?i, `beach`=?i, `on_coast`=?i, `w_pool`=?i, `cashback`=?i, `w_spa`=?i, `w_buvet`=?i, `w_radon`=?i, `only_summer`=?i, `stars`=?i, `trust_full_name` = ?s, `trust_name_template` = ?s, `trust_number` = ?s WHERE id=?i", $name, $full_name, $city, $city_genitive, $direction, $type, $latitude, $longitude, $similar, $weather, $description, $source_booking, $description, $booking_uri, $fast_booking, $main_post_name, $main_post_fio, $default_price_type, $id_reg, $region_direction_id,$uri_schema, $url_name, $state_program, $children_rest, $featured, $selected, $w_therapy, $wo_therapy, $mother_and_child, $for_invalid, $all_inc, $open_buffet, $near_sea, $near_black_sea, $in_forest, $in_hill, $near_water, $near_river, $near_volga_river, $near_lake, $beach, $on_coast, $w_pool, $cashback, $w_spa, $w_buvet, $w_radon, $only_summer, $stars, $trust_full_name, $trust_name_template, $trust_number, $id);
+    $connect->query("UPDATE object SET name=?s, full_name=?s, city=?s, city_genitive = ?s, direction=?s, type=?s, latitude=?s, longitude=?s, similar=?s, weather=?s, description=?s, source_booking=?i, description_check=?s, booking_uri=?s, fast_booking=?i, main_post_name = ?s, main_post_fio = ?s, default_price_type = ?i, id_reg = ?i, region_direction_id = ?i, `uri_schema` = ?i, `url_name` = ?s, `state_program` = ?i, `children_rest` = ?i, synchronized=0, `featured` = ?i, `selected` = ?i, `w_therapy`=?i, `wo_therapy`=?i, `mother_and_child`=?i, `for_invalid`=?i, `all_inc`=?i, `open_buffet`=?i, `near_sea`=?i, `near_black_sea`=?i, `in_forest`=?i, `in_hill`=?i, `near_water`=?i, `near_river`=?i, `near_volga_river`=?i, `near_lake`=?i, `beach`=?i, `on_coast`=?i, `w_pool`=?i, `cashback`=?i, `w_spa`=?i, `w_buvet`=?i, `w_radon`=?i, `only_summer`=?i, `stars`='$stars', `trust_full_name` = ?s, `trust_name_template` = ?s, `trust_number` = ?s WHERE id=?i", $name, $full_name, $city, $city_genitive, $direction, $type, $latitude, $longitude, $similar, $weather, $description, $source_booking, $description, $booking_uri, $fast_booking, $main_post_name, $main_post_fio, $default_price_type, $id_reg, $region_direction_id,$uri_schema, $url_name, $state_program, $children_rest, $featured, $selected, $w_therapy, $wo_therapy, $mother_and_child, $for_invalid, $all_inc, $open_buffet, $near_sea, $near_black_sea, $in_forest, $in_hill, $near_water, $near_river, $near_volga_river, $near_lake, $beach, $on_coast, $w_pool, $cashback, $w_spa, $w_buvet, $w_radon, $only_summer, $trust_full_name, $trust_name_template, $trust_number, $id);
+
 }
 
 function edit_desc_object($connect){
