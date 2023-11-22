@@ -983,7 +983,7 @@ function update_main_data_object($connect){
     $w_therapy = isset($_POST['w_therapy']) ? 1 : 0;
     $wo_therapy = isset($_POST['wo_therapy']) ? 1 : 0;
     $mother_and_child = isset($_POST['mother_and_child']) ? 1 : 0;
-    $for_invalid = isset($_POST['for_invalid']) 1 : 0;
+    $for_invalid = isset($_POST['for_invalid'])? 1 : 0;
     $all_inc = isset($_POST['all_inc']) ? 1 : 0;
     $open_buffet = isset($_POST['open_buffet']) ? 1 : 0;
     $near_sea = isset($_POST['near_sea']) ? 1 : 0;
