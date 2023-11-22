@@ -1052,6 +1052,7 @@ function update_main_data_object(id){
 		'w_spa': $('#w_spa').prop('checked') ? 1 : 0,
 		'w_buvet': $('#w_buvet').prop('checked') ? 1 : 0,
 		'w_radon': $('#w_radon').prop('checked') ? 1 : 0,
+		'only_summer': $('#only_summer').prop('checked') ? 1 : 0,
 		"stars": $('#stars').val(),
 		"description": q
 	};
