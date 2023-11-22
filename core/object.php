@@ -980,6 +980,30 @@ function update_main_data_object($connect){
     $main_post_fio = trim($_POST["main_post_fio"]);
     $default_price_type = isset($_POST['default_price_type'])?(int)$_POST['default_price_type']:1;
 
+    $w_therapy = isset($_POST['w_therapy']) ? 1 : 0;
+    $wo_therapy = isset($_POST['wo_therapy']) ? 1 : 0;
+    $mother_and_child = isset($_POST['mother_and_child']) ? 1 : 0;
+    $for_invalid = isset($_POST['for_invalid']) 1 : 0;
+    $all_inc = isset($_POST['all_inc']) ? 1 : 0;
+    $open_buffet = isset($_POST['open_buffet']) ? 1 : 0;
+    $near_sea = isset($_POST['near_sea']) ? 1 : 0;
+    $near_black_sea = isset($_POST['near_black_sea']) ? 1 : 0;
+    $in_forest = isset($_POST['in_forest']) ? 1 : 0;
+    $in_hill = isset($_POST['in_hill']) ? 1 : 0;
+    $near_water = isset($_POST['near_water']) ? 1 : 0;
+    $near_volga_river = isset($_POST['near_volga_river']) ? 1 : 0;
+    $near_river = isset($_POST['near_river']) ? 1 : 0;
+    $near_lake = isset($_POST['near_lake']) ? 1 : 0;
+    $beach = isset($_POST['beach']) ? 1 : 0;
+    $on_coast = isset($_POST['on_coast']) ? 1 : 0;
+    $w_pool = isset($_POST['w_pool']) ? 1 : 0;
+    $cashback = isset($_POST['cashback']) ? 1 : 0;
+    $w_spa = isset($_POST['w_spa']) ? 1 : 0;
+    $w_buvet = isset($_POST['w_buvet']) ? 1 : 0;
+    $w_radon = isset($_POST['w_radon']) ? 1 : 0;
+    $only_summer = isset($_POST['only_summer']) ? 1 : 0;
+    $stars = isset($_POST['stars']) ? $_POST['stars'] : '';
+
     if(!array_key_exists($default_price_type,$array_type))
         $default_price_type = 1;
 
