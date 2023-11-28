@@ -15,7 +15,9 @@ function show_sights_menu(){
 }
 
 function add_new_sight(){
+	global $connect;
 	ob_start();
+	$regions = $connect->getAll("SELECT id,name FROM direction_object ORDER BY name");
 ?>
 	<div class="form-horizontal panel panel-default add-new-sight">
 		<div class="panel-heading"><i class="fa fa-plus-circle"></i> Новое место</div>
@@ -50,6 +52,19 @@ function add_new_sight(){
 					<input type="text" class="form-control longitude" />
 				</div>
 			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Расположение</label>
+				<div class="col-sm-9">
+					<select class="form-control place">
+						<option value="0"></option>
+						<?php
+						foreach ($regions as $region) {
+							?><option value="<?=$region['id']?>"><?=$region['name']?></option><?php
+						}
+						?>
+					</select>
+				</div>
+			</div>			
 		</div>
 		<div class="panel-footer" style="text-align: right">
 			<button type="button" class="btn btn-success btn-sm" onclick="save_sight()"><i class="fa fa-check-circle"></i> Сохранить</button>
@@ -66,17 +81,21 @@ function save_new_sight($connect){
 	$address = $_POST["address"];
 	$latitude = $_POST["latitude"];
 	$longitude = $_POST["longitude"];
-	$connect->query("INSERT INTO sights(name, description, address, latitude, longitude) VALUES (?s, ?s, ?s, ?s, ?s)", $name, $description, $address, $latitude, $longitude);
+	$place = $_POST["place"];
+	$connect->query("INSERT INTO sights(name, description, address, latitude, longitude, place) VALUES (?s, ?s, ?s, ?s, ?s, ?i)", $name, $description, $address, $latitude, $longitude, $place);
+	echo '123';
+	echo $connect->last_query();
 }
 
 function view_sights($connect){
-	$data = $connect->getAll("SELECT id, name, description, address, latitude, longitude FROM sights");
+	$data = $connect->getAll("SELECT id, name, description, address, latitude, longitude, place FROM sights");
 	ob_start();
 ?>
 	<div class="form-horizontal">
 		<div class="form-group form-group-margin">
 <?php
 	foreach($data as $row){
+		$region = $connect->getRow("SELECT id,name FROM direction_object WHERE id=?i", $row['place']);
 		$id = $row["id"];
 ?>
 	<div class="col-sm-6 sight-<?php echo $id; ?>">
@@ -84,6 +103,7 @@ function view_sights($connect){
 			<div class="panel-heading"><i class="fa fa-university"></i> <?php echo $row["name"]; ?></div>
 			<div class="panel-body">
 				<?php echo $row["description"]; ?>
+				<div class="well well-sm" style="margin-top: 5px"><strong><i class="fa fa-globe"></i> Расположение</strong> <?php echo $region["name"]; ?></div>
 				<div class="well well-sm" style="margin-top: 5px"><strong><i class="fa fa-globe"></i> Адрес</strong> <?php echo $row["address"]; ?></div>
 				<div class="well well-sm" style="margin-top: 5px"><strong><i class="fa fa-map-marker"></i> Координаты</strong> <?php echo $row["latitude"]." ".$row["longitude"]; ?></div>
 				<div class="well well-sm sight-image" style="margin-top: 5px">
@@ -124,7 +144,8 @@ function view_sights($connect){
 
 function edit_sight($connect){
 	$id = $_POST["id"];
-	$row = $connect->getRow("SELECT name, description, address, latitude, longitude FROM sights WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT name, description, address, latitude, longitude, place FROM sights WHERE id=?i", $id);
+	$regions = $connect->getAll("SELECT id,name FROM direction_object ORDER BY name");
 	ob_start();
 ?>
 	<div class="form-horizontal panel panel-default edit-sight">
@@ -160,6 +181,21 @@ function edit_sight($connect){
 					<input type="text" class="form-control longitude" value="<?php echo $row['longitude']; ?>" />
 				</div>
 			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Расположение</label>
+				<div class="col-sm-9">
+					<select class="form-control place">
+						<option value="0"></option>
+						<?php
+						foreach ($regions as $region) {
+							$sel = '';
+							if ($row['place']==$region['id']) $sel = 'selected="selected"';
+							?><option value="<?=$region['id']?>" <?=$sel?>><?=$region['name']?></option><?php
+						}
+						?>
+					</select>
+				</div>
+			</div>			
 		</div>
 		<div class="panel-footer" style="text-align: right">
 			<button type="button" class="btn btn-success btn-sm" onclick="update_sight('<?php echo $id; ?>')"><i class="fa fa-check-circle"></i> Сохранить</button>
@@ -178,7 +214,8 @@ function update_sight($connect){
 	$address = $_POST["address"];
 	$latitude = $_POST["latitude"];
 	$longitude = $_POST["longitude"];
-	$connect->query("UPDATE sights SET name=?s, description=?s, address=?s, latitude=?s, longitude=?s WHERE id=?i", $name, $description, $address, $latitude, $longitude, $id);
+	$place = $_POST["place"];
+	$connect->query("UPDATE sights SET name=?s, description=?s, address=?s, latitude=?s, longitude=?s, place=?i WHERE id=?i", $name, $description, $address, $latitude, $longitude, $place, $id);
 }
 
 ?>

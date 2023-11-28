@@ -765,6 +765,7 @@ function save_sight(){
 	var address = $('.add-new-sight .address').val();
 	var latitude = $('.add-new-sight .latitude').val();
 	var longitude = $('.add-new-sight .longitude').val();
+	var place = $('.add-new-sight .place option:selected').val();
 	if(!name)
 		show_warning('.add-new-sight', 'Введите название');
 	else if(!description)
@@ -774,7 +775,7 @@ function save_sight(){
 	else if(!longitude)
 		show_warning('.add-new-sight', 'Укажите долготу');
 	else{
-		var str = 'func=save_new_sight&name=' + name + '&description=' + description + '&address=' + address + '&latitude=' + latitude + '&longitude=' + longitude;
+		var str = 'func=save_new_sight&name=' + name + '&description=' + description + '&address=' + address + '&latitude=' + latitude + '&longitude=' + longitude + '&place=' + place;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
@@ -819,6 +820,7 @@ function update_sight(id){
 	var address = $('.edit-sight .address').val();
 	var latitude = $('.edit-sight .latitude').val();
 	var longitude = $('.edit-sight .longitude').val();
+	var place = $('.edit-sight .place option:selected').val();
 	if(!name)
 		show_warning('.edit-sight', 'Введите название');
 	else if(!description)
@@ -828,7 +830,7 @@ function update_sight(id){
 	else if(!longitude)
 		show_warning('.edit-sight', 'Укажите долготу');
 	else{
-		var str = 'func=update_sight&id=' + id + '&name=' + name + '&description=' + description + '&address=' + address + '&latitude=' + latitude + '&longitude=' + longitude;
+		var str = 'func=update_sight&id=' + id + '&name=' + name + '&description=' + description + '&address=' + address + '&latitude=' + latitude + '&longitude=' + longitude + '&place=' + place;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
