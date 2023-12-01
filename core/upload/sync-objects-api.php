@@ -45,6 +45,11 @@ function sync_objects_api($connect){
 						$connect->query("UPDATE `direction_object` SET `synchronized` = '1' WHERE `id` = ?i",$direction['id']);
 						$connect->query("UPDATE `object` SET `synchronized` = '0' WHERE `direction` = ?i", $direction['id']);
 				}
+			} else {
+				echo 'ERROR:';
+				echo '<pre>';
+				print_r($res);
+				echo '</pre>';
 			}
 
 
