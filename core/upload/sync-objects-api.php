@@ -126,10 +126,21 @@ function sync_objects_api($connect){
 			$res = json_decode($res->getBody(),true);
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
+				echo 'SUCCESS1:<br>';
 				if($success) {
+					echo 'SUCCESS2:<br>';
+					echo 'ERROR:<br>';
+					echo '<pre>';
+					print_r($res);
+					echo '</pre>';					
 					$connect->query("UPDATE `direction_object` SET `synchronized` = '1' WHERE `id` = ?i",$regional_direction['id']);
 					$connect->query("UPDATE `object` SET `synchronized` = '0' WHERE `region_direction_id` = ?i", $regional_direction['id']);
 				}
+			} else {
+				echo 'ERROR:<br>';
+				echo '<pre>';
+				print_r($res);
+				echo '</pre>';
 			}
 
 
