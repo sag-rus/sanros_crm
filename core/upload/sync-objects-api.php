@@ -83,11 +83,18 @@ function sync_objects_api($connect){
 			$res = json_decode($res->getBody(),true);
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
+				echo 'SUCCESS1:<br>';
 				if($success) {
+					echo 'SUCCESS2:<br>';
 					$connect->query("UPDATE `region` SET `synchronized` = '1' WHERE `id` = ?i",$region['id']);
 					$connect->query("UPDATE `object` SET `synchronized` = '0' WHERE `id_reg` = ?i", $region['id']);
 					$connect->query("UPDATE `direction_object` SET `synchronized` = '0' WHERE `id_reg` = ?i AND (`direction_object`.`id_country` = 0 OR `direction_object`.`id_country` IS NULL)", $region['id']);
 				}
+			} else {
+				echo 'ERROR:<br>';
+				echo '<pre>';
+				print_r($res);
+				echo '</pre>';
 			}
 
 
