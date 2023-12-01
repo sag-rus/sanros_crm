@@ -40,13 +40,15 @@ function sync_objects_api($connect){
 
 			$res = json_decode($res->getBody(),true);
 			if(array_key_exists('success',$res)) {
+				echo 'SUCCESS1:<br>';
 				$success = (bool)(int)$res['success'];
 				if($success) {
+						echo 'SUCCESS2:<br>';
 						$connect->query("UPDATE `direction_object` SET `synchronized` = '1' WHERE `id` = ?i",$direction['id']);
 						$connect->query("UPDATE `object` SET `synchronized` = '0' WHERE `direction` = ?i", $direction['id']);
 				}
 			} else {
-				echo 'ERROR:';
+				echo 'ERROR:<br>';
 				echo '<pre>';
 				print_r($res);
 				echo '</pre>';
