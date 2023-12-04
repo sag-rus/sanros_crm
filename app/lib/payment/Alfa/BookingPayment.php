@@ -401,6 +401,7 @@ class BookingPayment {
 
 
       $log = PHP_EOL."START depositPayment bid_pay=".$bid_pay.PHP_EOL;
+      if ($_GET['debug']==1) echo '<pre>'.$log.'</pre>';
       file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', date('d.m.Y H:i:s').' '.$log, FILE_APPEND);      
 
       $row = $connect->getRow("SELECT id, bid, sum, pay_method, order_id, type, status FROM payment_request WHERE bid_pay=?s", $bid_pay);
@@ -447,17 +448,22 @@ class BookingPayment {
       $log = "action=getOrderStatusExtended.do".PHP_EOL;
       $log .= print_r($data, true).PHP_EOL;
       file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', date('d.m.Y H:i:s').' '.$log, FILE_APPEND);              
+      if ($_GET['debug']==1) echo '<pre>'.$log.'</pre>';
       //Проверка состояния заказа getOrderStatusExtended.do
 
-
+      if ($_GET['debug']==1) echo '000';
       $connect->query("UPDATE payment_request SET status=?i WHERE order_id=?s", $data["orderStatus"], $orderId);
-      if($data["errorCode"] != 2) {
+      if ($_GET['debug']==1) echo '111';
+      if($data["orderStatus"] != 2) {
         return $data["errorMessage"];
       }
 
       $sum = $data["amount"] / 100;
+      if ($_GET['debug']==1) echo '123';
       if($sum != $sum_to_pay)
         return;
+
+      if ($_GET['debug']==1) echo '456';
 
       /*$data = array(
         "orderId" => $orderId,
@@ -477,6 +483,7 @@ class BookingPayment {
       $log = "action=deposit.do".PHP_EOL;
       $log .= print_r($data, true).PHP_EOL;
       file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', date('d.m.Y H:i:s').' '.$log, FILE_APPEND);
+      if ($_GET['debug']==1) echo '<pre>'.$log.'</pre>';
       //Запрос завершения заказа deposit.do
 
       if($data["ErrorCode"] != 0)
@@ -501,6 +508,7 @@ class BookingPayment {
 
         $log = "Оплата картой №".$bid.PHP_EOL;
         file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', date('d.m.Y H:i:s').' '.$log, FILE_APPEND);        
+        if ($_GET['debug']==1) echo '<pre>'.$log.'</pre>';
 
       } elseif ($type_pay == 2) {
 
@@ -510,7 +518,8 @@ class BookingPayment {
         $this->saveSchetToHistory($bid, "Предоплата клиентом банковской картой. Сумма ".$sum);
 
         $log = "Предоплата картой №".$bid.PHP_EOL;
-        file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', date('d.m.Y H:i:s').' '.$log, FILE_APPEND);        
+        file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', date('d.m.Y H:i:s').' '.$log, FILE_APPEND);
+        if ($_GET['debug']==1) echo '<pre>'.$log.'</pre>';        
 
       }
 
