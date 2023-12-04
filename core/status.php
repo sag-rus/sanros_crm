@@ -893,8 +893,10 @@ function show_return_oplata(){
 						<div class="col-sm-8">
 							<select class="form-control type-pay">
 								<option selected disabled>Способ оплаты</option>
-								<option value="1">безналичный</option>
-								<option value="2">наличными</option>
+								<option value="1">Безналичный</option>
+								<option value="2">Наличными</option>
+                                <option value="5-1">Банковской картой</option>
+                                <option value="5-2">Банковской картой через терминал</option>
 								<option value="7">СБП</option>
 							</select>
 						</div>
