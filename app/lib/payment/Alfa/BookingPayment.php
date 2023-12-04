@@ -451,7 +451,7 @@ class BookingPayment {
 
 
       $connect->query("UPDATE payment_request SET status=?i WHERE order_id=?s", $data["orderStatus"], $orderId);
-      if($data["errorCode"] != 0) {
+      if($data["errorCode"] != 2) {
         return $data["errorMessage"];
       }
 
