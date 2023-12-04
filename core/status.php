@@ -454,6 +454,7 @@ function prepay_schet($connect){
 										<option value="2">Наличными</option>
                                         <option value="5-1">Банковской картой</option>
                                         <option value="5-2">Банковской картой через терминал</option>
+                                        <option value="7">СБП</option>
 									</select>
 								</div>
 							</div>
