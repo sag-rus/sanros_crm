@@ -29,6 +29,13 @@ function add_new_sight(){
 				</div>
 			</div>
 			<div class="form-group">
+				<label class="col-sm-3 control-label">Фотография</label>
+				<div class="col-sm-9">
+					<input type="file" class="form-control" name="image" value="">
+					<div class="input-message-block" data-for="image"></div>
+				</div>
+			</div>
+			<div class="form-group">
 				<label class="col-sm-3 control-label">Описание</label>
 				<div class="col-sm-9">
 					<textarea class="form-control description"></textarea>
@@ -83,12 +90,19 @@ function save_new_sight($connect){
 	$longitude = $_POST["longitude"];
 	$place = $_POST["place"];
 	$connect->query("INSERT INTO sights(name, description, address, latitude, longitude, place) VALUES (?s, ?s, ?s, ?s, ?s, ?i)", $name, $description, $address, $latitude, $longitude, $place);
-	echo '123';
-	echo $connect->last_query();
+
+	$entity = [
+		'id' => $connect->insertId(),
+		'type' => 'sights'
+	];
+
+	$boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);;	
+
+	set_bounds($connect,$boundsArrayImage,'image');
 }
 
 function view_sights($connect){
-	$data = $connect->getAll("SELECT id, name, description, address, latitude, longitude, place FROM sights");
+	$data = $connect->getAll("SELECT * FROM sights");
 	ob_start();
 ?>
 	<div class="form-horizontal">
@@ -97,6 +111,11 @@ function view_sights($connect){
 	foreach($data as $row){
 		$region = $connect->getRow("SELECT id,name FROM direction_object WHERE id=?i", $row['place']);
 		$id = $row["id"];
+		$entity = $row;
+		$entity['type'] = 'sights';
+
+		$image = bounds_to_files($connect,load_bounds($connect,$entity,'image'));
+
 ?>
 	<div class="col-sm-6 sight-<?php echo $id; ?>">
 		<div class="panel panel-info">
@@ -106,17 +125,25 @@ function view_sights($connect){
 				<div class="well well-sm" style="margin-top: 5px"><strong><i class="fa fa-globe"></i> Расположение</strong> <?php echo $region["name"]; ?></div>
 				<div class="well well-sm" style="margin-top: 5px"><strong><i class="fa fa-globe"></i> Адрес</strong> <?php echo $row["address"]; ?></div>
 				<div class="well well-sm" style="margin-top: 5px"><strong><i class="fa fa-map-marker"></i> Координаты</strong> <?php echo $row["latitude"]." ".$row["longitude"]; ?></div>
-				<div class="well well-sm sight-image" style="margin-top: 5px">
+				<div class="well well-sm sight-image" style="margin-top: 5px">				
 			<?php $folder = "temp/sights/".$id;
-			$folder_open = opendir($folder);
-			while($image = readdir($folder_open)){
-				if(($image != '.') AND ($image != '..') AND ($image)){ ?>
-<!--				<div style="display: inline-block; position: relative">-->
-					<img src="<?php echo $folder.'/'.$image; ?>" class="img-thumbnail" style="height: 100px" />
-<!--					<span class="icon_close">asd</span>
-				</div>-->
-				<?php } ?>
-			<?php } ?>
+			if (file_exists($folder)) {
+				echo '<strong>Старые фото: </strong><br><br>';
+				$folder_open = opendir($folder);
+				while($image = readdir($folder_open)){
+					if(($image != '.') AND ($image != '..') AND ($image)){ ?>
+	<!--				<div style="display: inline-block; position: relative">-->
+						<img src="<?php echo $folder.'/'.$image; ?>" class="img-thumbnail" style="height: 100px" />
+	<!--					<span class="icon_close">asd</span>
+					</div>-->
+					<?php }
+				} 
+			}
+			if (is_array($image) && $image[0]['uri']!='') {
+				echo '<br><br><strong>Новое фото: </strong><br><br>';
+				echo '<img src="'.$image[0]['uri'].'" class="img-thumbnail" style="height: 100px" />';
+			}
+			?>
 					<div class="clearfix"></div>
 				</div>
 				<div class="clearfix"></div>
@@ -144,8 +171,11 @@ function view_sights($connect){
 
 function edit_sight($connect){
 	$id = $_POST["id"];
-	$row = $connect->getRow("SELECT name, description, address, latitude, longitude, place FROM sights WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT * FROM sights WHERE id=?i", $id);
 	$regions = $connect->getAll("SELECT id,name FROM direction_object ORDER BY name");
+
+	$entity = $row;
+	$entity['type'] = 'sights';	
 	ob_start();
 ?>
 	<div class="form-horizontal panel panel-default edit-sight">
@@ -157,6 +187,13 @@ function edit_sight($connect){
 					<input type="text" class="form-control name" value="<?php echo $row['name']; ?>" />
 				</div>
 			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Фотография</label>
+				<div class="col-sm-9">
+					<input type="file" class="form-control" name="image" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'image'))));?>">
+					<div class="input-message-block" data-for="image"></div>
+				</div>
+			</div>			
 			<div class="form-group">
 				<label class="col-sm-3 control-label">Описание</label>
 				<div class="col-sm-9">
@@ -216,6 +253,17 @@ function update_sight($connect){
 	$longitude = $_POST["longitude"];
 	$place = $_POST["place"];
 	$connect->query("UPDATE sights SET name=?s, description=?s, address=?s, latitude=?s, longitude=?s, place=?i WHERE id=?i", $name, $description, $address, $latitude, $longitude, $place, $id);
+
+	$entity = [
+		'id' => $id,
+		'type' => 'sights'
+	];
+
+	$boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);;	
+
+	remove_bounds($connect,$entity,'image');
+
+	set_bounds($connect,$boundsArrayImage,'image');	
 }
 
 ?>

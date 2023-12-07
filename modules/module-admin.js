@@ -748,6 +748,7 @@ function sights(){
 function add_new_sight(){
 	$('.menu-sights li').removeClass('active');
 	$('.menu-sights .new-sight').addClass('active');
+
 	var str = 'func=add_new_sight';
 	$.ajax({
 		url: 'mysql.php',
@@ -755,6 +756,14 @@ function add_new_sight(){
 		data: str,
 		success: function(html){
 			$('.sights-content').html(html);
+
+		  $('.add-new-sight *[name="image"]').multUploader({
+		    action:'mysql.php?func=multipart_upload',
+		    fragmentSize:1024*1024,
+				maxcount: 1,
+		    contentType:['image/jpeg','image/png']
+		  });
+
 		}
 	});
 }
@@ -774,8 +783,36 @@ function save_sight(){
 		show_warning('.add-new-sight', 'Укажите широту');
 	else if(!longitude)
 		show_warning('.add-new-sight', 'Укажите долготу');
+	else if(!place)
+		show_warning('.add-new-sight', 'Укажите расположение');
 	else{
-		var str = 'func=save_new_sight&name=' + name + '&description=' + description + '&address=' + address + '&latitude=' + latitude + '&longitude=' + longitude + '&place=' + place;
+
+	  var $image = $('.add-new-sight').find('*[name="image"]');
+	  var $imageMsg = $image.parent().find('.input-message-block');
+	  var image = JSON.parse($image.val().trim());
+	  $imageMsg.html("").removeClass('with-bottom-margin');
+
+
+    $.ajax({
+      type: 'POST',
+      data: {
+      	func: 'save_new_sight',
+      	name: name,
+				image: image,
+				description: description,
+				address: address,
+				latitude: latitude,
+				longitude: longitude,
+				place: place
+		  },
+      dataType: 'JSON',
+      url: 'mysql.php',
+      success: function(data){
+        add_new_sight();
+      }
+    });
+
+		/*var str = 'func=save_new_sight&name=' + name + '&description=' + description + '&address=' + address + '&latitude=' + latitude + '&longitude=' + longitude + '&place=' + place + '&image=' + image;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
@@ -783,7 +820,7 @@ function save_sight(){
 			success: function(){
 				add_new_sight();
 			}
-		});
+		});*/
 	}
 }
 
@@ -810,6 +847,14 @@ function edit_sight(id){
 		data: str,
 		success: function(html){
 			$('.sights-content').html(html);
+
+		  $('.edit-sight *[name="image"]').multUploader({
+		    action:'mysql.php?func=multipart_upload',
+		    fragmentSize:1024*1024,
+				maxcount: 1,
+		    contentType:['image/jpeg','image/png']
+		  });
+
 		}
 	});
 }
@@ -829,8 +874,37 @@ function update_sight(id){
 		show_warning('.edit-sight', 'Укажите широту');
 	else if(!longitude)
 		show_warning('.edit-sight', 'Укажите долготу');
+	else if(!place)
+		show_warning('.add-new-sight', 'Укажите расположение');
 	else{
-		var str = 'func=update_sight&id=' + id + '&name=' + name + '&description=' + description + '&address=' + address + '&latitude=' + latitude + '&longitude=' + longitude + '&place=' + place;
+
+	  var $image = $('.edit-sight').find('*[name="image"]');
+	  var $imageMsg = $image.parent().find('.input-message-block');
+	  var image = JSON.parse($image.val().trim());
+	  $imageMsg.html("").removeClass('with-bottom-margin');
+
+
+    $.ajax({
+      type: 'POST',
+      data: {
+      	func: 'update_sight',
+      	id: id,
+      	name: name,
+				image: image,
+				description: description,
+				address: address,
+				latitude: latitude,
+				longitude: longitude,
+				place: place
+		  },
+      dataType: 'JSON',
+      url: 'mysql.php',
+      success: function(data){
+        add_new_sight();
+      }
+    });
+
+		/*var str = 'func=update_sight&id=' + id + '&name=' + name + '&description=' + description + '&address=' + address + '&latitude=' + latitude + '&longitude=' + longitude + '&place=' + place;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
@@ -838,7 +912,7 @@ function update_sight(id){
 			success: function(){
 				view_sights()
 			}
-		});
+		});*/
 	}
 }
 

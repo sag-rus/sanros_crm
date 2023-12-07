@@ -543,7 +543,11 @@ function sync_objects_api($connect){
 				'form_params' => $objectAr
 			]);
 
+
 			$res = json_decode($res->getBody(),true);
+          echo '<pre>Результат';
+		  print_r($res);   
+          echo '</pre>';			
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
 				if($success) {
