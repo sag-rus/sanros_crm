@@ -2676,18 +2676,15 @@ function set_bounds($connect,$boundsArray,String $boundsName)
       if(in_array($bound['entity1_type'],$entity1_types) && in_array($bound['entity2_type'],$entity2_types) && $bound['entity1_id'] > 0 && $bound['entity2_id'] > 0) {
           if($bound['entity2_type'] === 'file') {
             $connect->query("UPDATE `core_models_file_file` SET `usages` = `usages`+1 WHERE `id` = ?i",$bound['entity2_id']);
-            echo $connect->last_query().'===';
           }
 
           if($bound['entity2_type'] === 'object') {
               if($connect->getOne("SELECT `id` FROM `object` WHERE `id` = ?i",$bound['entity2_id'])) {
                 $connect->query("INSERT INTO `app_models_site_bound` (`created`,`changed`,`status`,`uid`, `sort`, `name`,`entity1_type`,`entity1_id`,`entity2_type`,`entity2_id`, `title`, `description`) VALUES (?i,?i,?i,?i,?i,?s,?s,?i,?s,?i,?s,?s)",$timestamp,$timestamp,1,1,$i,$boundsName,$bound['entity1_type'],$bound['entity1_id'],$bound['entity2_type'],$bound['entity2_id'],$bound['title'],$bound['description']);
-                echo $connect->last_query().'===';
               }
           }
           else {
             $connect->query("INSERT INTO `app_models_site_bound` (`created`,`changed`,`status`,`uid`, `sort`, `name`,`entity1_type`,`entity1_id`,`entity2_type`,`entity2_id`, `title`, `description`) VALUES (?i,?i,?i,?i,?i,?s,?s,?i,?s,?i,?s,?s)",$timestamp,$timestamp,1,1,$i,$boundsName,$bound['entity1_type'],$bound['entity1_id'],$bound['entity2_type'],$bound['entity2_id'],$bound['title'],$bound['description']);
-            echo $connect->last_query().'===';
           }
       }
       $i++;
