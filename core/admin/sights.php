@@ -192,6 +192,11 @@ function view_sights($connect){
 	return $html;
 }
 
+function del_sight($connect){
+	$id = $_POST["id"];
+	echo "DELETE FROM sights WHERE id=$id";
+}
+
 function edit_sight($connect){
 	$id = $_POST["id"];
 	$row = $connect->getRow("SELECT * FROM sights WHERE id=?i", $id);
