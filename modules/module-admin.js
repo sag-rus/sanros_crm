@@ -809,7 +809,7 @@ function save_sight(){
 	  $photogalleryMsg.html("").removeClass('with-bottom-margin');	  	  
 
 
-    $.ajax({
+    /*$.ajax({
       type: 'POST',
       data: {
       	func: 'save_new_sight',
@@ -826,12 +826,16 @@ function save_sight(){
       dataType: 'JSON',
       url: 'mysql.php',
       success: function(){
+      	console.log('success');
       	alert('Место добавлено');
         add_new_sight();
+      },
+      error: function(){
+      	console.log('err');
       }
-    });
+    });*/
 
-		/*var str = 'func=save_new_sight&name=' + name + '&description=' + description + '&address=' + address + '&latitude=' + latitude + '&longitude=' + longitude + '&place=' + place + '&image=' + image;
+		var str = 'func=save_new_sight&name=' + name + '&description=' + description + '&address=' + address + '&latitude=' + latitude + '&longitude=' + longitude + '&place=' + place + '&image=' + image;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
@@ -839,7 +843,7 @@ function save_sight(){
 			success: function(){
 				add_new_sight();
 			}
-		});*/
+		});
 	}
 }
 
