@@ -6,7 +6,7 @@ function show_sights_menu(){
 	<ul class="nav nav-tabs menu-sights">
 		<li onclick="add_new_sight()" class="new-sight"><a><i class="fa fa-plus-circle"></i> Новое место</a></li>
 		<li onclick="view_sights()" class="view-sights"><a><i class="fa fa-university"></i> Все места</a></li>
-		<li onclick="upload_sights()" class="upload-sights"><a><i class="fa fa-upload"></i> Загрузить</a></li>
+		<li onclick="upload_sights1()" class="upload-sights"><a><i class="fa fa-upload"></i> Загрузить</a></li>
 	</ul>
 	<div class="sights-content" style="padding-top: 10px"></div>
 <?php
