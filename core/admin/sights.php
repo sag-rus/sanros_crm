@@ -121,6 +121,12 @@ function save_new_sight($connect){
 	set_bounds($connect,$boundsArrayImage,'image');
 	set_bounds($connect,$boundsArraySlider,'slider');
 	set_bounds($connect,$boundsArrayPhotoGallery,'photogallery');
+
+	$respAr = [
+		'success' => 1,
+	];	
+
+	return json_encode($respAr);
 }
 
 function view_sights($connect){
@@ -316,6 +322,12 @@ function update_sight($connect){
 	set_bounds($connect,$boundsArrayImage,'image');	
 	set_bounds($connect,$boundsArraySlider,'slider');	
 	set_bounds($connect,$boundsArrayPhotoGallery,'photogallery');	
+
+	$respAr = [
+		'success' => 1,
+	];	
+
+	return json_encode($respAr);	
 }
 
 ?>

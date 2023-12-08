@@ -825,8 +825,7 @@ function save_sight(){
 		  },
       dataType: 'JSON',
       url: 'mysql.php',
-      success: function(){
-      	console.log('success');
+      success: function(data){
       	alert('Место добавлено');
         add_new_sight();
       },
@@ -955,7 +954,7 @@ function update_sight(id){
 		  },
       dataType: 'JSON',
       url: 'mysql.php',
-      success: function(){
+      success: function(data){
       	alert('Место изменено');
         view_sights();
       }
