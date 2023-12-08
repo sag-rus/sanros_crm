@@ -798,6 +798,16 @@ function save_sight(){
 	  var image = JSON.parse($image.val().trim());
 	  $imageMsg.html("").removeClass('with-bottom-margin');
 
+	  var $slider = $('.add-new-sight').find('*[name="slider"]');
+	  var $sliderMsg = slider.parent().find('.input-message-block');
+	  var slider = JSON.parse($slider.val().trim());
+	  $sliderMsg.html("").removeClass('with-bottom-margin');	  
+
+	  var photogallery = $('.add-new-sight').find('*[name="photogallery"]');
+	  var $photogalleryMsg = photogallery.parent().find('.input-message-block');
+	  var photogallery = JSON.parse(photogallery.val().trim());
+	  $photogalleryMsg.html("").removeClass('with-bottom-margin');	  	  
+
 
     $.ajax({
       type: 'POST',
@@ -805,6 +815,8 @@ function save_sight(){
       	func: 'save_new_sight',
       	name: name,
 				image: image,
+				slider: slider,
+				photogallery: photogallery,
 				description: description,
 				address: address,
 				latitude: latitude,
@@ -895,6 +907,16 @@ function update_sight(id){
 	  var image = JSON.parse($image.val().trim());
 	  $imageMsg.html("").removeClass('with-bottom-margin');
 
+	  var $slider = $('.edit-sight').find('*[name="slider"]');
+	  var $sliderMsg = slider.parent().find('.input-message-block');
+	  var slider = JSON.parse($slider.val().trim());
+	  $sliderMsg.html("").removeClass('with-bottom-margin');	  
+
+	  var photogallery = $('.edit-sight').find('*[name="photogallery"]');
+	  var $photogalleryMsg = photogallery.parent().find('.input-message-block');
+	  var photogallery = JSON.parse(photogallery.val().trim());
+	  $photogalleryMsg.html("").removeClass('with-bottom-margin');	 	  
+
 
     $.ajax({
       type: 'POST',
@@ -903,6 +925,8 @@ function update_sight(id){
       	id: id,
       	name: name,
 				image: image,
+				slider: slider,
+				photogallery: photogallery,
 				description: description,
 				address: address,
 				latitude: latitude,
