@@ -859,16 +859,18 @@ function view_sights(){
 }
 
 function del_sight(id){
-	var str = 'func=del_sight&id=' + id;
-	$.ajax({
-		url: 'mysql.php',
-		type: 'POST',
-		data: str,
-		success: function(html){
-			alert('Место удалено');
-			view_sights();
-		}
-	});
+	if (confirm("Точно удалить?")) {
+		var str = 'func=del_sight&id=' + id;
+		$.ajax({
+			url: 'mysql.php',
+			type: 'POST',
+			data: str,
+			success: function(html){
+				alert('Место удалено');
+				view_sights();
+			}
+		});
+	}
 }
 
 function edit_sight(id){

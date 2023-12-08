@@ -194,7 +194,7 @@ function view_sights($connect){
 
 function del_sight($connect){
 	$id = $_POST["id"];
-	echo "DELETE FROM sights WHERE id=$id";
+	$connect->query("DELETE FROM sights WHERE id=$id");
 }
 
 function edit_sight($connect){
