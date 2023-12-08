@@ -764,7 +764,7 @@ function add_new_sight(){
 		    contentType:['image/jpeg','image/png']
 		  });
 
-		  $('.sites-content-modal *[name="photogallery"]').multUploader({
+		  $('.add-new-sight *[name="photogallery"]').multUploader({
 		    action:'mysql.php?func=multipart_upload',
 		    fragmentSize:1024*1024,
 		    contentType:['image/jpeg','image/png']
@@ -861,7 +861,7 @@ function edit_sight(id){
 		    contentType:['image/jpeg','image/png']
 		  });
 
-		  $('.sites-content-modal *[name="photogallery"]').multUploader({
+		  $('.edit-sight *[name="photogallery"]').multUploader({
 		    action:'mysql.php?func=multipart_upload',
 		    fragmentSize:1024*1024,
 		    contentType:['image/jpeg','image/png']
