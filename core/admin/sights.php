@@ -150,7 +150,8 @@ function view_sights($connect){
 			</div>
 			<div class="panel-footer" style="text-align: right">
 				<button type="button" class="btn btn-default btn-sm" onclick="edit_sight('<?php echo $id; ?>')"><i class="fa fa-pencil"></i></button>
-				<button type="button" class="btn btn-info btn-sm" onclick="add_new_image_sight('<?php echo $id; ?>')"><i class="fa fa-image"></i></button>
+				<!--<button type="button" class="btn btn-info btn-sm" onclick="add_new_image_sight('<?php echo $id; ?>')"><i class="fa fa-image"></i></button>-->
+				<button type="button" class="btn btn-danger btn-sm" onclick="del_sight('<?php echo $id; ?>')"><i class="fa fa-close"></i></button>
 			</div>
 		</div>
 	</div>
