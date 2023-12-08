@@ -29,12 +29,26 @@ function add_new_sight(){
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">Фотография</label>
+				<label class="col-sm-3 control-label">Фотография для списка</label>
 				<div class="col-sm-9">
 					<input type="file" class="form-control" name="image" value="">
 					<div class="input-message-block" data-for="image"></div>
 				</div>
 			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Фотография для верха страницы</label>
+				<div class="col-sm-9">
+					<input type="file" class="form-control" name="slider" value="">
+					<div class="input-message-block" data-for="slider"></div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Фотогалерея</label>
+				<div class="col-sm-9">
+					<input type="file" class="form-control" name="photogallery" value="">
+					<div class="input-message-block" data-for="photogallery"></div>
+				</div>
+			</div>			
 			<div class="form-group">
 				<label class="col-sm-3 control-label">Описание</label>
 				<div class="col-sm-9">
@@ -96,9 +110,17 @@ function save_new_sight($connect){
 		'type' => 'sights'
 	];
 
-	$boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);;	
+	$boundsArrayImage = [];
+	$boundsArraySlider = [];
+	$boundsArrayPhotoGallery = [];
+
+	$boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);
+	$boundsArraySlider = files_to_bounds($connect,$entity,'slider',isset($_POST['slider'])?$_POST['slider']:[]);
+	$boundsArrayPhotoGallery = files_to_bounds($connect,$entity,'photogallery',isset($_POST['photogallery'])?$_POST['photogallery']:[]);
 
 	set_bounds($connect,$boundsArrayImage,'image');
+	set_bounds($connect,$boundsArraySlider,'slider');
+	set_bounds($connect,$boundsArrayPhotoGallery,'photogallery');
 }
 
 function view_sights($connect){
@@ -189,12 +211,26 @@ function edit_sight($connect){
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">Фотография</label>
+				<label class="col-sm-3 control-label">Фотография для списка</label>
 				<div class="col-sm-9">
 					<input type="file" class="form-control" name="image" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'image'))));?>">
 					<div class="input-message-block" data-for="image"></div>
 				</div>
-			</div>			
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Фотография для верха страницы</label>
+				<div class="col-sm-9">
+					<input type="file" class="form-control" name="slider" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'slider'))));?>">
+					<div class="input-message-block" data-for="slider"></div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Фотогалерея</label>
+				<div class="col-sm-9">
+					<input type="file" class="form-control" name="photogallery" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'photogallery'))));?>">
+					<div class="input-message-block" data-for="photogallery"></div>
+				</div>
+			</div>
 			<div class="form-group">
 				<label class="col-sm-3 control-label">Описание</label>
 				<div class="col-sm-9">
@@ -260,11 +296,21 @@ function update_sight($connect){
 		'type' => 'sights'
 	];
 
-	$boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);;	
+	$boundsArrayImage = [];
+	$boundsArraySlider = [];
+	$boundsArrayPhotoGallery = [];
+
+	$boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);
+	$boundsArraySlider = files_to_bounds($connect,$entity,'slider',isset($_POST['slider'])?$_POST['slider']:[]);
+	$boundsArrayPhotoGallery = files_to_bounds($connect,$entity,'photogallery',isset($_POST['photogallery'])?$_POST['photogallery']:[]);	
 
 	remove_bounds($connect,$entity,'image');
+	remove_bounds($connect,$entity,'slider');
+	remove_bounds($connect,$entity,'photogallery');
 
 	set_bounds($connect,$boundsArrayImage,'image');	
+	set_bounds($connect,$boundsArraySlider,'slider');	
+	set_bounds($connect,$boundsArrayPhotoGallery,'photogallery');	
 }
 
 ?>
