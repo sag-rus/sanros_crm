@@ -3847,12 +3847,24 @@ function sync_files($connect) {
 }
 
 function sync_bounds($connect,$entity) {
+
+  /*echo 'sync_bounds()<br>';
+  echo '<pre>';
+  print_r($entity);
+  echo '</pre>';*/
+
   $bounds = $connect->getAll("SELECT * FROM `app_models_site_bound` WHERE `entity1_type` =?s AND `entity1_id` =?i ORDER BY `sort` ASC",$entity['type'],$entity['id']);
   try {
     $client = new \GuzzleHttp\Client(['verify' => false]);
     $data = [];
     $data["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
     $data["bounds"] = $bounds;
+
+    /*echo "Отправка запроса на https://sites.tonia.ru/api/".$entity['type']."/".$entity['id']."/bounds/set<br>";
+    echo '<pre>';
+    print_r($data);
+    echo '</pre>';*/
+
     $res = $client->request('POST',"https://sites.tonia.ru/api/".$entity['type']."/".$entity['id']."/bounds/set",[
       'form_params' => $data
     ]);

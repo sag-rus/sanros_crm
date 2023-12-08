@@ -229,6 +229,12 @@ function sync_objects_api($connect){
 			]);
 
 			$res = json_decode($res->getBody(),true);
+
+			echo 'res=';
+			echo '<pre>';
+			print_r($res);
+			echo '</pre>';
+
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
 				if($success) {
@@ -244,6 +250,52 @@ function sync_objects_api($connect){
 				}
 			}
 		}
+
+		$sights = $connect->getAll("SELECT * FROM `sights` WHERE `synchronized` = 0");
+
+		foreach ($sights as $sight) {
+			$sightAr = [];
+			$sightAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+			$sightAr["id"] = $sight['id'];
+			$sightAr["name"] = $sight['name'];
+			$sightAr["description"] = $sight['description'];
+			$sightAr["address"] = $sight['address'];
+			$sightAr["latitude"] = $sight['latitude'];
+			$sightAr["longitude"] = $sight['longitude'];
+			$sightAr["location_source_id"] = $sight['place'];
+			$sightAr["source_id"] = $sight['id'];
+			$sightAr['uri'] = '/методы-лечения/'.change_text_url($sight['name']);
+			$sightAr['status'] = 1;
+
+			echo "Отправка запроса на https://sites.tonia.ru/api/sight/set/".$sight['id'].'<br>';
+
+			$res = $client->request('POST',"https://sites.tonia.ru/api/sight/set/".$sight['id'],[
+				'form_params' => $sightAr
+			]);
+
+			$res = json_decode($res->getBody(),true);
+
+			echo 'res=';
+			echo '<pre>';
+			print_r($res);
+			echo '</pre>';
+
+			if(array_key_exists('success',$res)) {
+				$success = (bool)(int)$res['success'];
+				if($success) {
+					if(!sync_bounds($connect,[
+						'type' => 'sights',
+						'id' => $sight['id']
+					])) {
+						//return FALSE;
+						$connect->query("UPDATE `sights` SET `synchronized` = '1' WHERE `id` = ?i",$sight['id']);
+					}
+					else {
+						$connect->query("UPDATE `sights` SET `synchronized` = '1' WHERE `id` = ?i",$sight['id']);
+					}
+				}
+			}
+		}	
 
 		$promotions = $connect->getAll("SELECT `id`, `title`, `text`, `id_obj`, `id_room`, `active`, `date`, `date_end` FROM `promotions` WHERE `synchronized` = 0");
 

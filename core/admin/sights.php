@@ -6,7 +6,7 @@ function show_sights_menu(){
 	<ul class="nav nav-tabs menu-sights">
 		<li onclick="add_new_sight()" class="new-sight"><a><i class="fa fa-plus-circle"></i> Новое место</a></li>
 		<li onclick="view_sights()" class="view-sights"><a><i class="fa fa-university"></i> Все места</a></li>
-		<li onclick="upload_sights1()" class="upload-sights"><a><i class="fa fa-upload"></i> Загрузить</a></li>
+		<li onclick="upload_sights()" class="upload-sights"><a><i class="fa fa-upload"></i> Загрузить</a></li>
 	</ul>
 	<div class="sights-content" style="padding-top: 10px"></div>
 <?php
@@ -133,59 +133,135 @@ function view_sights($connect){
 	$data = $connect->getAll("SELECT * FROM sights");
 	ob_start();
 ?>
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<table class="table table-hover table-condensed">
+				<thead>
+				<tr>
+					<th>
+						ID
+					</th>
+					<th>
+						Название
+					</th>
+					<th>
+						Новое фото
+					</th>
+					<th>
+						Расположение
+					</th>
+                    <th>
+                        Действия
+                    </th>
+				</tr>
+				</thead>	
+				<tbody>
+					<?php
+					foreach($data as $row){
+						$region = $connect->getRow("SELECT id,name FROM direction_object WHERE id=?i", $row['place']);
+						$id = $row["id"];
+						$entity = $row;
+						$entity['type'] = 'sights';
+
+						$new_image = bounds_to_files($connect,load_bounds($connect,$entity,'image'));
+
+						?>
+						<tr>
+							<td><?php echo $row["id"];?></td>
+							<td><?php echo $row["name"];?>
+								<?php 
+								$folder = "temp/sights/".$id;
+								if (file_exists($folder)) {
+									echo '<br><strong>Старые фото: </strong><br>';
+									$folder_open = opendir($folder);
+									while($image = readdir($folder_open)){
+										if(($image != '.') AND ($image != '..') AND ($image)){ ?>
+											<img src="<?php echo $folder.'/'.$image; ?>" class="img-thumbnail" style="height: 100px" />
+										<?php }
+									} 
+								}
+								?>
+							</td>
+							<td>
+								<?php
+								if (is_array($new_image) && $new_image[0]['uri']!='') {
+									echo '<br><br><img src="'.$new_image[0]['uri'].'" class="img-thumbnail" style="height: 100px" />';
+								}								
+								?>
+							</td>
+							<td><?php echo $region["name"]; ?></td>
+							<td>
+								<button type="button" class="btn btn-default btn-sm" onclick="edit_sight('<?php echo $id; ?>')"><i class="fa fa-pencil"></i></button>
+								&nbsp; 
+								<button type="button" class="btn btn-danger btn-sm" onclick="del_sight('<?php echo $id; ?>')"><i class="fa fa-close"></i></button>
+							</td>
+						</tr>
+						<?php
+					}
+					?>
+				</tbody>
+			</table>
+		</div>
+	</div>
+<?php
+	$html = ob_get_clean();
+	return $html;
+}
+
+/*function view_sights($connect){
+	$data = $connect->getAll("SELECT * FROM sights");
+	ob_start();
+?>
 	<div class="form-horizontal">
 		<div class="form-group form-group-margin">
-<?php
+	<?php
 	foreach($data as $row){
 		$region = $connect->getRow("SELECT id,name FROM direction_object WHERE id=?i", $row['place']);
 		$id = $row["id"];
 		$entity = $row;
 		$entity['type'] = 'sights';
 
-		$image = bounds_to_files($connect,load_bounds($connect,$entity,'image'));
+		$new_image = bounds_to_files($connect,load_bounds($connect,$entity,'image'));
 
-?>
-	<div class="col-sm-6 sight-<?php echo $id; ?>">
-		<div class="panel panel-info">
-			<div class="panel-heading"><i class="fa fa-university"></i> <?php echo $row["name"]; ?></div>
-			<div class="panel-body">
-				<?php echo $row["description"]; ?>
-				<div class="well well-sm" style="margin-top: 5px"><strong><i class="fa fa-globe"></i> Расположение</strong> <?php echo $region["name"]; ?></div>
-				<div class="well well-sm" style="margin-top: 5px"><strong><i class="fa fa-globe"></i> Адрес</strong> <?php echo $row["address"]; ?></div>
-				<div class="well well-sm" style="margin-top: 5px"><strong><i class="fa fa-map-marker"></i> Координаты</strong> <?php echo $row["latitude"]." ".$row["longitude"]; ?></div>
-				<div class="well well-sm sight-image" style="margin-top: 5px">				
-			<?php $folder = "temp/sights/".$id;
-			if (file_exists($folder)) {
-				echo '<strong>Старые фото: </strong><br><br>';
-				$folder_open = opendir($folder);
-				while($image = readdir($folder_open)){
-					if(($image != '.') AND ($image != '..') AND ($image)){ ?>
-	<!--				<div style="display: inline-block; position: relative">-->
-						<img src="<?php echo $folder.'/'.$image; ?>" class="img-thumbnail" style="height: 100px" />
-	<!--					<span class="icon_close">asd</span>
-					</div>-->
-					<?php }
-				} 
-			}
-			if (is_array($image) && $image[0]['uri']!='') {
-				echo '<br><br><strong>Новое фото: </strong><br><br>';
-				echo '<img src="'.$image[0]['uri'].'" class="img-thumbnail" style="height: 100px" />';
-			}
-			?>
+		?>
+		<div class="col-sm-6 sight-<?php echo $id; ?>">
+			<div class="panel panel-info">
+				<div class="panel-heading"><i class="fa fa-university"></i> <?php echo $row["name"]; ?></div>
+				<div class="panel-body">
+					<?php echo $row["description"]; ?>
+					<div class="well well-sm" style="margin-top: 5px"><strong><i class="fa fa-globe"></i> Расположение</strong> <?php echo $region["name"]; ?></div>
+					<div class="well well-sm" style="margin-top: 5px"><strong><i class="fa fa-globe"></i> Адрес</strong> <?php echo $row["address"]; ?></div>
+					<div class="well well-sm" style="margin-top: 5px"><strong><i class="fa fa-map-marker"></i> Координаты</strong> <?php echo $row["latitude"]." ".$row["longitude"]; ?></div>
+					<div class="well well-sm sight-image" style="margin-top: 5px">				
+					<?php $folder = "temp/sights/".$id;
+					if (file_exists($folder)) {
+						echo '<strong>Старые фото: </strong><br><br>';
+						$folder_open = opendir($folder);
+						while($image = readdir($folder_open)){
+							if(($image != '.') AND ($image != '..') AND ($image)){ ?>
+								<img src="<?php echo $folder.'/'.$image; ?>" class="img-thumbnail" style="height: 100px" />
+							<?php }
+						} 
+					}
+					if (is_array($new_image) && $new_image[0]['uri']!='') {
+						echo '<br><br><strong>Новое фото: </strong><br><br>';
+						echo '<img src="'.$new_image[0]['uri'].'" class="img-thumbnail" style="height: 100px" />';
+					}
+					?>
+						<div class="clearfix"></div>
+					</div>
 					<div class="clearfix"></div>
 				</div>
-				<div class="clearfix"></div>
-			</div>
-			<div class="panel-footer" style="text-align: right">
-				<button type="button" class="btn btn-default btn-sm" onclick="edit_sight('<?php echo $id; ?>')"><i class="fa fa-pencil"></i></button>
-				<!--<button type="button" class="btn btn-info btn-sm" onclick="add_new_image_sight('<?php echo $id; ?>')"><i class="fa fa-image"></i></button>-->
-				<button type="button" class="btn btn-danger btn-sm" onclick="del_sight('<?php echo $id; ?>')"><i class="fa fa-close"></i></button>
+				<div class="panel-footer" style="text-align: right">
+					<button type="button" class="btn btn-default btn-sm" onclick="edit_sight('<?php echo $id; ?>')"><i class="fa fa-pencil"></i></button>
+					<!--<button type="button" class="btn btn-info btn-sm" onclick="add_new_image_sight('<?php echo $id; ?>')"><i class="fa fa-image"></i></button>-->
+					<button type="button" class="btn btn-danger btn-sm" onclick="del_sight('<?php echo $id; ?>')"><i class="fa fa-close"></i></button>
+				</div>
 			</div>
 		</div>
-	</div>
-<?php
+		<?php
 	}
-?>
+	?>
 	<?php if(!$data){ ?>
 		<div class="col-sm-12">
 			<div class="alert alert-info"><i class="fa fa-info-circle"></i> Мест не добавлено</div>
@@ -196,7 +272,7 @@ function view_sights($connect){
 <?php
 	$html = ob_get_clean();
 	return $html;
-}
+}*/
 
 function del_sight($connect){
 	$id = $_POST["id"];
@@ -300,7 +376,7 @@ function update_sight($connect){
 	$latitude = $_POST["latitude"];
 	$longitude = $_POST["longitude"];
 	$place = $_POST["place"];
-	$connect->query("UPDATE sights SET name=?s, description=?s, address=?s, latitude=?s, longitude=?s, place=?i WHERE id=?i", $name, $description, $address, $latitude, $longitude, $place, $id);
+	$connect->query("UPDATE sights SET name=?s, description=?s, address=?s, latitude=?s, longitude=?s, place=?i, synchronized=0 WHERE id=?i", $name, $description, $address, $latitude, $longitude, $place, $id);
 
 	$entity = [
 		'id' => $id,

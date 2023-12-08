@@ -989,7 +989,7 @@ function upload_sights(){
 	$('.menu-sights li').removeClass('active');
 	$('.menu-sights .upload-sights').addClass('active');
 	show_loader_element('.sights-content');
-	var str = 'func=upload_sights_on_server';
+	var str = 'func=sync_objects_api&cache='+Math.random();
 	$.ajax({
 		type: 'POST',
 		data: str,
