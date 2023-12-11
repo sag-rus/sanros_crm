@@ -267,6 +267,20 @@ function select_object_child_occupancies(){
 	});
 }
 
+function new_child_occupancy(id){
+	$('.new-child-occupancy').remove()
+	var str = 'func=child_occupancy&id=' + id;
+	$.ajax({
+		type: 'POST',
+		data: str,
+		url: 'mysql.php',
+		success: function(html){
+			$('.tbl-room').append(html);
+		}
+	});
+}
+
+
 function select_object_housing(){
 	$('.menu-object li').removeClass('active');
 	$('.menu-housing').addClass('active');
