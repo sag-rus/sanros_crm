@@ -332,7 +332,7 @@ function select_menu_object($connect){
 		<li class="menu-image" onclick="select_object_image('<?php echo $id; ?>')"><a><i class="fa fa-image"></i> Фото</a></li>
 		<li class="menu-room" onclick="select_object_room()"><a><i class="fa fa-cubes"></i> Номера</a></li>
 		<li class="menu-rate-plan" onclick="select_object_rate_plan()"><a><i class="fa fa-star-o"></i> Тарифы</a></li>
-		<?php if ($id=922) { ?>
+		<?php if ($id==922) { ?>
 		<li class="menu-occupancies" onclick="select_object_occupancies()"><a><i class="fa fa-sitemap"></i> Размещения</a></li>
 		<li class="menu-child_occupancies" onclick="select_object_child_occupancies()"><a><i class="fa fa-child"></i> Детские размещения</a></li>
 		<?php } ?>
