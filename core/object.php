@@ -333,8 +333,8 @@ function select_menu_object($connect){
 		<li class="menu-room" onclick="select_object_room()"><a><i class="fa fa-cubes"></i> Номера</a></li>
 		<li class="menu-rate-plan" onclick="select_object_rate_plan()"><a><i class="fa fa-star-o"></i> Тарифы</a></li>
 		<? if ($id=922) { ?>
-		<li class="menu-room" onclick="select_object_occupancies()"><a><i class="fa fa-sitemap"></i> Размещения</a></li>
-		<li class="menu-room" onclick="select_object_child_occupancies()"><a><i class="fa fa-child"></i> Детские размещения</a></li>
+		<li class="menu-occupancies" onclick="select_object_occupancies()"><a><i class="fa fa-sitemap"></i> Размещения</a></li>
+		<li class="menu-child_occupancies" onclick="select_object_child_occupancies()"><a><i class="fa fa-child"></i> Детские размещения</a></li>
 		<? } ?>
 		<li class="menu-housing" onclick="select_object_housing()"><a><i class="fa fa-building-o"></i> Корпуса</a></li>
 		<li class="menu-upload" onclick="select_object_upload('<?php echo $id; ?>')"><a><i class="fa fa-cloud-upload"></i> Загрузка</a></li>

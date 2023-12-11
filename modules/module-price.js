@@ -237,6 +237,36 @@ function select_object_room(){
 	});
 }
 
+function select_object_occupancies(){
+	$('.menu-object li').removeClass('active');
+	$('.menu-occupancies').addClass('active');
+	var object = $('.object-menu .menu-object').attr('object');
+	var str = 'func=select_object_occupancies&id=' + object;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function(html){
+			$('.object-infa').html(html);
+		}
+	});
+}
+
+function select_object_child_occupancies(){
+	$('.menu-object li').removeClass('active');
+	$('.menu-child_occupancies').addClass('active');
+	var object = $('.object-menu .menu-object').attr('object');
+	var str = 'func=select_object_child_occupancies&id=' + object;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function(html){
+			$('.object-infa').html(html);
+		}
+	});
+}
+
 function select_object_housing(){
 	$('.menu-object li').removeClass('active');
 	$('.menu-housing').addClass('active');
