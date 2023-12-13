@@ -252,6 +252,55 @@ function select_object_occupancies(){
 	});
 }
 
+function del_room_occupancy(id){
+	if(confirm('Точно удалить?')){
+		var str = 'func=del_room_occupancy&id=' + id;
+		$.ajax({
+			type: 'POST',
+			data: str,
+			url: 'mysql.php',
+			success: function(){
+				$('#room_occupancy_'+id).remove();
+			}
+		});
+	}
+}
+
+function new_room_occupancy(id){
+	$('.new-room-occupancy').remove();
+	var id_obj = $('.object-menu .menu-object').attr('object');
+	var str = 'func=room_occupancy&id=' + id + '&id_obj=' + id_obj;
+	$.ajax({
+		type: 'POST',
+		data: str,
+		url: 'mysql.php',
+		success: function(html){
+			$('.new-room-occupancy').remove();
+			$('.tbl-room').append(html);
+		}
+	});
+}
+
+function save_room_occupancy(id){
+	var id_obj = $('.object-menu .menu-object').attr('object');
+	
+	str = 'func=save_room_occupancy&id=' + id + '&id_obj=' + id_obj + '&' + $('.new-room-occupancy-form').serialize();
+
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function(){
+			select_object_occupancies();
+			show_alert('Размещение сохранено...');
+		}
+	});
+
+}
+
+
+
+
 function select_object_child_occupancies(){
 	$('.menu-object li').removeClass('active');
 	$('.menu-child_occupancies').addClass('active');
@@ -275,9 +324,44 @@ function new_child_occupancy(id){
 		data: str,
 		url: 'mysql.php',
 		success: function(html){
+			$('.new-child-occupancy').remove();
 			$('.tbl-room').append(html);
 		}
 	});
+}
+
+function del_child_occupancy(id){
+	if(confirm('Точно удалить?')){
+		var str = 'func=del_child_occupancy&id=' + id;
+		$.ajax({
+			type: 'POST',
+			data: str,
+			url: 'mysql.php',
+			success: function(){
+				$('#child_occupancy_'+id).remove();
+			}
+		});
+	}
+}
+
+function save_child_occupancy(id){
+	var id_obj = $('.object-menu .menu-object').attr('object');
+	var age_from = $('#age_from').val();
+	var age_to = $('#age_to').val();
+	var str = 'func=save_child_occupancy&id=' + id + '&id_obj=' + id_obj + '&age_from=' + age_from + '&age_to=' + age_to;
+	if(!age_from || !age_to)
+		show_warning('.new-room-div', 'Введите возраст от и до');
+	else{
+		$.ajax({
+			url: 'mysql.php',
+			type: 'POST',
+			data: str,
+			success: function(){
+				select_object_child_occupancies();
+				show_alert('Размещение сохранено...');
+			}
+		});
+	}
 }
 
 

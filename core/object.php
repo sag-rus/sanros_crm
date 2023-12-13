@@ -1124,6 +1124,281 @@ function update_services_object($connect){
 }
 
 
+//OCCUPANCIES
+function select_object_occupancies($connect){
+	$old_housing = "";
+	$id = $_POST["id"];
+	ob_start();
+	$row = $connect->getRow("SELECT name, type, id_services FROM object WHERE id=?i", $id);
+	$type = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]);		
+	?>
+	<div class="panel panel-default">
+		<div class="panel-heading"><i class="fa fa-cubes"></i> Варианты размещений объекта «<?php echo $type." ".$row["name"]; ?>»</div>
+		<table class="table tbl-room">
+		<?php
+			$data = $connect->getAll("SELECT * FROM room_occupancy WHERE id_obj=?i and `status`=1 ORDER BY id ASC", $_POST["id"]);
+			foreach($data as $row){
+				$room = $connect->getRow("SELECT * FROM room WHERE id=?i", $row["id_room"]);	
+				?>
+				<tr id="room_occupancy_<?=$row['id']?>">
+					<td><?=$room['name']?></td>
+					<td>
+						<?php
+						$res = '';
+						if ($row['adult_on_main_place']>0) $res .= $row['adult_on_main_place'].' взр. на осн.месте + ';
+						if ($row['adult_on_add_place']>0) $res .= $row['adult_on_add_place'].' взр. на доп.месте + ';
+						if ($row['id_child_on_main_place']>0 && $row['child_on_main_place']>0) {
+							$child = $connect->getRow("SELECT * FROM child_occupancy WHERE id=?i", $row["id_child_on_main_place"]);	
+							$res .= $row['child_on_main_place'].' реб. ('.$child['age_from'].'-'.$child['age_to'].' лет) на осн.месте + ';
+						}
+						if ($row['id_child_on_add_place']>0 && $row['child_on_add_place']>0) {
+							$child = $connect->getRow("SELECT * FROM child_occupancy WHERE id=?i", $row["id_child_on_add_place"]);	
+							$res .= $row['child_on_add_place'].' реб. ('.$child['age_from'].'-'.$child['age_to'].' лет) на доп.месте + ';
+						}
+						if ($row['id_child_no_place']>0 && $row['child_no_place']>0) {
+							$child = $connect->getRow("SELECT * FROM child_occupancy WHERE id=?i", $row["id_child_no_place"]);	
+							$res .= $row['child_no_place'].' реб. ('.$child['age_from'].'-'.$child['age_to'].' лет) без места + ';
+						}
+						echo trim(trim($res), '+');
+						?>
+					</td>
+					<td width="80">
+						<button class="btn btn-default btn-xs" onclick="new_room_occupancy('<?=$row['id']?>')" title="Редактировать"><i class="fa fa-pencil"></i></button>
+						&nbsp; 
+						<button type="button" class="btn btn-danger btn-xs" onclick="del_room_occupancy('<?=$row['id']?>')" title="Удалить"><i class="fa fa-trash-o"></i></button>
+					</td>
+				</tr>
+		<?php
+		}
+		if(!$data){?>
+			<tr>
+				<td colspan="3">
+					<div class="alert alert-info"><i class="fa fa-info-circle"></i> Записей нет</div>
+				</td>
+			</tr>
+		<?php } ?>
+		</table>
+		<div class="panel-footer" style="text-align: right">
+			<button type="button" class="btn btn-primary btn-sm" onclick="new_room_occupancy('0')"><i class="fa fa-plus-circle"></i> Новое размещение</button>
+		</div>
+	</div>
+
+	<?php
+	$html = ob_get_clean();
+	return $html;
+}
+
+function del_room_occupancy($connect) {
+	$connect->query("UPDATE room_occupancy SET `status`=0 WHERE id=?i", $_POST['id']);
+}
+
+function room_occupancy($connect){
+	ob_start();
+	$data = false;
+	$id_room = '';
+	$adult_on_main_place = '';
+	$adult_on_add_place = '';
+	$id_child_on_main_place = '';
+	$child_on_main_place = '';
+	$id_child_on_add_place = '';
+	$child_on_add_place = '';
+	$id_child_no_place = '';
+	$child_no_place = '';
+
+	if ($_POST['id']!='0') {
+		$data = $connect->getRow("SELECT * FROM room_occupancy WHERE id=?i", $_POST['id']);
+		$id_room = $data['id_room'];
+		$adult_on_main_place = $data['adult_on_main_place'];
+		$adult_on_add_place = $data['adult_on_add_place'];
+		$id_child_on_main_place = $data['id_child_on_main_place'];
+		$child_on_main_place = $data['child_on_main_place'];
+		$id_child_on_add_place = $data['id_child_on_add_place'];
+		$child_on_add_place = $data['child_on_add_place'];
+		$id_child_no_place = $data['id_child_no_place'];
+		$child_no_place = $data['child_no_place'];
+	}
+	?>
+	<tr class="new-room-occupancy">
+		<td colspan="2">
+			<form class="new-room-occupancy-form">
+				<div class="form-horizontal panel-body check-div new-room-div">
+					<div class="form-group">
+						<label class="col-sm-2 control-label">Номер</label>
+						<div class="col-sm-4">
+							<select class="form-control" name="id_room">
+								<option value="0">выберите</option>
+								<?php
+								$rooms = $connect->getAll("SELECT * FROM room WHERE id_obj=?i", $_POST['id_obj']);
+								foreach ($rooms as $room) {
+									if ($id_room==$room['id']) $sel = ' selected="selected"'; else $sel = '';
+									?><option value="<?=$room['id']?>" <?=$sel?>><?=$room['name']?></option><?php
+								}
+								?>
+							</select>
+						</div>
+					</div>					
+					<div class="form-group">
+						<label class="col-sm-2 control-label">Взрослых на осн.месте</label>
+						<div class="col-sm-4">
+							<input type="text" class="form-control" id="adult_on_main_place" name="adult_on_main_place" value="<?=$adult_on_main_place?>">
+						</div>
+						<label class="col-sm-2 control-label">Взрослых на доп.месте</label>
+						<div class="col-sm-4">
+							<input type="text" class="form-control" id="adult_on_add_place" name="adult_on_add_place" value="<?=$adult_on_add_place?>">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">Детей возраста</label>
+						<div class="col-sm-4">
+							<select class="form-control" name="id_child_on_main_place">
+								<option value="0">выберите</option>
+								<?php
+								$childs = $connect->getAll("SELECT * FROM child_occupancy WHERE id_obj=?i", $_POST['id_obj']);
+								foreach ($childs as $child) {
+									if ($id_child_on_main_place==$child['id']) $sel = ' selected="selected"'; else $sel = '';
+									?><option value="<?=$child['id']?>" <?=$sel?>>(от <?=$child['age_from']?> до <?=$child['age_to']?>  лет)</option><?php
+								}
+								?>
+							</select>
+						</div>
+						<label class="col-sm-2 control-label">на осн.месте в кол-ве</label>
+						<div class="col-sm-4">
+							<input type="text" class="form-control" id="child_on_main_place" name="child_on_main_place" value="<?=$child_on_main_place?>">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">Детей возраста</label>
+						<div class="col-sm-4">
+							<select class="form-control" name="id_child_on_add_place">
+								<option value="0">выберите</option>
+								<?php
+								$childs = $connect->getAll("SELECT * FROM child_occupancy WHERE id_obj=?i", $_POST['id_obj']);
+								foreach ($childs as $child) {
+									if ($id_child_on_add_place==$child['id']) $sel = ' selected="selected"'; else $sel = '';
+									?><option value="<?=$child['id']?>" <?=$sel?>>(от <?=$child['age_from']?> до <?=$child['age_to']?>  лет)</option><?php
+								}
+								?>
+							</select>
+						</div>
+						<label class="col-sm-2 control-label">на доп.месте в кол-ве</label>
+						<div class="col-sm-4">
+							<input type="text" class="form-control" id="child_on_add_place" name="child_on_add_place" value="<?=$child_on_add_place?>">
+						</div>
+					</div>	
+					<div class="form-group">
+						<label class="col-sm-2 control-label">Детей возраста</label>
+						<div class="col-sm-4">
+							<select class="form-control" name="id_child_no_place">
+								<option value="0">выберите</option>
+								<?php
+								$childs = $connect->getAll("SELECT * FROM child_occupancy WHERE id_obj=?i", $_POST['id_obj']);
+								foreach ($childs as $child) {
+									if ($id_child_no_place==$child['id']) $sel = ' selected="selected"'; else $sel = '';
+									?><option value="<?=$child['id']?>" <?=$sel?>>(от <?=$child['age_from']?> до <?=$child['age_to']?>  лет)</option><?php
+								}
+								?>
+							</select>
+						</div>
+						<label class="col-sm-2 control-label">без места в кол-ве</label>
+						<div class="col-sm-4">
+							<input type="text" class="form-control" id="child_no_place" name="child_no_place" value="<?=$child_no_place?>">
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-offset-9 col-sm-3">
+							<?php if (!$data) {?>
+								<button type="button" class="btn btn-success btn-sm" onclick="save_room_occupancy('0')"><i class="fa fa-check-circle"></i> Сохранить</button>
+							<?php } else {?>
+								<button type="button" class="btn btn-success btn-sm" onclick="save_room_occupancy('<?=$data['id']?>')"><i class="fa fa-check-circle"></i> Сохранить</button>
+							<?php } ?>
+							<button type="button" class="btn btn-danger btn-sm" onclick="$('.room-child-occupancy').remove()"><i class="fa fa-times-circle"></i> Отмена</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</td>
+	</tr>
+	<?php
+	$html = ob_get_clean();
+	return $html;
+}
+
+
+function save_room_occupancy($connect) {
+
+	$_POST['adult_on_main_place'] = $_POST['adult_on_main_place']==''?0:$_POST['adult_on_main_place'];
+	$_POST['adult_on_add_place'] = $_POST['adult_on_add_place']==''?0:$_POST['adult_on_add_place'];
+	$_POST['child_on_main_place'] = $_POST['child_on_main_place']==''?0:$_POST['child_on_main_place'];
+	$_POST['child_on_add_place'] = $_POST['child_on_add_place']==''?0:$_POST['child_on_add_place'];
+	$_POST['child_no_place'] = $_POST['child_no_place']==''?0:$_POST['child_no_place'];
+
+	if ($_POST['id_child_on_main_place']==0 && $_POST['child_on_main_place']>0) $_POST['child_on_main_place'] = 0;
+	if ($_POST['id_child_on_main_place']!=0 && $_POST['child_on_main_place']==0) $_POST['id_child_on_main_place'] = 0;
+
+	if ($_POST['id_child_on_add_place']==0 && $_POST['child_on_add_place']>0) $_POST['child_on_add_place'] = 0;
+	if ($_POST['id_child_on_add_place']!=0 && $_POST['child_on_add_place']==0) $_POST['id_child_on_add_place'] = 0;	
+
+	if ($_POST['id_child_no_place']==0 && $_POST['child_no_place']>0) $_POST['child_no_place'] = 0;
+	if ($_POST['id_child_no_place']!=0 && $_POST['child_no_place']==0) $_POST['id_child_no_place'] = 0;		
+
+
+	if ($_POST['id']=='0') {
+		//Создаем новое размещение
+		$connect->query("INSERT INTO `room_occupancy` SET 
+			`id`=0, 
+			`id_obj`=?i, 
+			`id_room`=?i, 
+			`adult_on_main_place`=?i,
+			`adult_on_add_place`=?i,
+			`id_child_on_main_place`=?i,
+			`child_on_main_place`=?i,
+			`id_child_on_add_place`=?i,
+			`child_on_add_place`=?i,
+			`id_child_no_place`=?i,
+			`child_no_place`=?i
+			", 
+			$_POST['id_obj'], 
+			$_POST['id_room'], 
+			$_POST['adult_on_main_place'],
+			$_POST['adult_on_add_place'],
+			$_POST['id_child_on_main_place'],
+			$_POST['child_on_main_place'],
+			$_POST['id_child_on_add_place'],
+			$_POST['child_on_add_place'],
+			$_POST['id_child_no_place'],
+			$_POST['child_no_place']
+		);
+	} else {
+		//меняем имеющееся размещение
+		$connect->query("UPDATE `room_occupancy` SET 
+			`id_room`=?i, 
+			`adult_on_main_place`=?i, 
+			`adult_on_add_place`=?i, 
+			`id_child_on_main_place`=?i, 
+			`child_on_main_place`=?i, 
+			`id_child_on_add_place`=?i, 
+			`child_on_add_place`=?i,
+			`id_child_no_place`=?i, 
+			`child_no_place`=?i  
+			WHERE `id`=?i
+			", 
+			$_POST['id_room'], 
+			$_POST['adult_on_main_place'], 
+			$_POST['adult_on_add_place'], 
+			$_POST['id_child_on_main_place'], 
+			$_POST['child_on_main_place'], 
+			$_POST['id_child_on_add_place'], 
+			$_POST['child_on_add_place'], 
+			$_POST['id_child_no_place'], 
+			$_POST['child_no_place'],
+			$_POST['id']
+		);
+	}
+}
+
+
+//OCCUPANCIES
+
 
 
 //CHILD OCCU
@@ -1132,7 +1407,9 @@ function select_object_child_occupancies($connect){
 	$old_housing = "";
 	$id = $_POST["id"];
 	ob_start();
-?>
+	$row = $connect->getRow("SELECT name, type, id_services FROM object WHERE id=?i", $id);
+	$type = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]);	
+	?>
 	<div class="panel panel-default">
 		<div class="panel-heading"><i class="fa fa-cubes"></i> Варианты детских размещений объекта «<?php echo $type." ".$row["name"]; ?>»</div>
 		<table class="table tbl-room">
@@ -1140,11 +1417,12 @@ function select_object_child_occupancies($connect){
 			$data = $connect->getAll("SELECT * FROM child_occupancy WHERE id_obj=?i and `status`=1 ORDER BY id ASC", $id);
 			foreach($data as $row){
 			?>
-			<tr id="<?=$row['id']?>">
-				<td><?php echo 'дети возрастом от '.$row['age_from'].' до '.$row['age_to']; ?></td>
+			<tr id="child_occupancy_<?=$row['id']?>">
+				<td><?php echo 'дети c возрастом от '.$row['age_from'].' до '.$row['age_to']; ?> лет</td>
 				<td width="220">
 					<button class="btn btn-default btn-xs" onclick="new_child_occupancy('<?=$row['id']?>')" title="Редактировать"><i class="fa fa-pencil"></i></button>
-					<button type="button" class="btn btn-default btn-xs" onclick="del_child_occupancy('<?=$row['id']?>')" title="Удалить"><i class="fa fa-trash-o"></i></button>
+					&nbsp; &nbsp; 
+					<button type="button" class="btn btn-danger btn-xs" onclick="del_child_occupancy('<?=$row['id']?>')" title="Удалить"><i class="fa fa-trash-o"></i></button>
 				</td>
 			</tr>
 		<?php
@@ -1158,11 +1436,11 @@ function select_object_child_occupancies($connect){
 		<?php } ?>
 		</table>
 		<div class="panel-footer" style="text-align: right">
-			<button type="button" class="btn btn-primary btn-sm" onclick="new_child_occupancy('0)"><i class="fa fa-plus-circle"></i> Новое детское размещение</button>
+			<button type="button" class="btn btn-primary btn-sm" onclick="new_child_occupancy('0')"><i class="fa fa-plus-circle"></i> Новое детское размещение</button>
 		</div>
 	</div>
 
-<?php
+	<?php
 	$html = ob_get_clean();
 	return $html;
 }
@@ -1174,38 +1452,54 @@ function child_occupancy($connect){
 	$age_from = '';
 	$age_to = '';
 	if ($_POST['id']!='0') {
-		$data = $connect->getOne("SELECT * FROM child_occupancy WHERE id=?i", $_POST['id']);
+		$data = $connect->getRow("SELECT * FROM child_occupancy WHERE id=?i", $_POST['id']);
 		$age_from = $data['age_from'];
-		$age_to = $data['$age_to'];
+		$age_to = $data['age_to'];
 	}
 	?>
-	<tr class="new-child-occupancy"><td colspan="7">
-	<div class="form-horizontal panel-body check-div new-room-div">
-		<div class="form-group">
-			<label class="col-sm-2 control-label">Возраст от </label>
-			<div class="col-sm-5">
-				<input type="text" class="form-control" id="age_from" value="<?=$age_from?>">
+	<tr class="new-child-occupancy">
+		<td colspan="2">
+			<div class="form-horizontal panel-body check-div new-room-div">
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Возраст от </label>
+					<div class="col-sm-5">
+						<input type="text" class="form-control" id="age_from" value="<?=$age_from?>">
+					</div>
+					<label class="col-sm-1 control-label">до</label>
+					<div class="col-sm-4">
+						<input type="text" class="form-control" id="age_to" value="<?=$age_to?>">
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-9 col-sm-3">
+						<?php if (!$data) {?>
+							<button type="button" class="btn btn-success btn-sm" onclick="save_child_occupancy('0')"><i class="fa fa-check-circle"></i> Сохранить</button>
+						<?php } else {?>
+							<button type="button" class="btn btn-success btn-sm" onclick="save_child_occupancy('<?=$data['id']?>')"><i class="fa fa-check-circle"></i> Сохранить</button>
+						<?php } ?>
+						<button type="button" class="btn btn-danger btn-sm" onclick="$('.new-child-occupancy').remove()"><i class="fa fa-times-circle"></i> Отмена</button>
+					</div>
+				</div>
 			</div>
-			<label class="col-sm-1 control-label">до</label>
-			<div class="col-sm-4">
-				<input type="text" class="form-control" id="age_to" value="<?=$age_to?>">
-			</div>
-		</div>
-		<div class="form-group">
-			<div class="col-sm-offset-9 col-sm-3">
-				<?php if (!$data) {?>
-					<button type="button" class="btn btn-success btn-sm" onclick="save_child_occupancy('0')"><i class="fa fa-check-circle"></i> Сохранить</button>
-				<?php } else {?>
-					<button type="button" class="btn btn-success btn-sm" onclick="save_child_occupancy('<?=$data['id']?>')"><i class="fa fa-check-circle"></i> Сохранить</button>
-				<?php } ?>
-				<button type="button" class="btn btn-danger btn-sm" onclick="$('.new-child-occupancy').remove()"><i class="fa fa-times-circle"></i> Отмена</button>
-			</div>
-		</div>
-	</div>
-	</td></tr>
+		</td>
+	</tr>
 	<?php
 	$html = ob_get_clean();
 	return $html;
+}
+
+function del_child_occupancy($connect) {
+	$connect->query("UPDATE child_occupancy SET `status`=0 WHERE id=?i", $_POST['id']);
+}
+
+function save_child_occupancy($connect) {
+	if ($_POST['id']=='0') {
+		//Создаем новое размещение
+		$connect->query("INSERT INTO child_occupancy SET `id`=0, `id_obj`=?i, `age_from`=?i, `age_to`=?i", $_POST['id_obj'], $_POST['age_from'], $_POST['age_to']);
+	} else {
+		//меняем имеющееся размещение
+		$connect->query("UPDATE child_occupancy SET `age_from`=?i, `age_to`=?i WHERE `id`=?i", $_POST['age_from'], $_POST['age_to'], $_POST['id']);
+	}
 }
 
 //CHILD OCCU
