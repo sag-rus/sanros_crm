@@ -105,13 +105,14 @@ try{
 			$occupancies = $connect->getAll("SELECT * FROM place WHERE id_obj=?i AND id_room=?i ORDER BY id", $id_obj, $room['id']);
 
 			foreach ($occupancies as $occu) {
-				$occu_name = '';
+				/*$occu_name = '';
 				if ($occu['adult_on_main_place']>0) $occu_name .= '_a.'.$occu['adult_on_main_place'];
 				if ($occu['id_child_on_main_place']>0 && $occu['child_on_main_place']>0) $occu_name .= '_c.'.$occu['child_on_main_place'].'.'.$occu['id_child_on_main_place'];
 				if ($occu['adult_on_add_place']>0) $occu_name .= '_e.'.$occu['adult_on_add_place'];
 				if ($occu['id_child_on_add_place']>0 && $occu['child_on_add_place']>0) $occu_name .= '_x.'.$occu['child_on_add_place'].'.'.$occu['id_child_on_add_place'].'.1';
 				if ($occu['id_child_no_place']>0 && $occu['child_no_place']>0) $occu_name .= '_x.'.$occu['child_no_place'].'.'.$occu['id_child_no_place'].'.0';
-				$temp['occupancies'][$room['id'].$occu_name] = $occu['name'];
+				$temp['occupancies'][$room['id'].$occu_name] = $occu['name'];*/
+				$temp['occupancies'][get_place_export_id($room['id'], $occu)] = $occu['name'];
 			}
 
 			$response['rooms'][$room['id']] = $temp;
