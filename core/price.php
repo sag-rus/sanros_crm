@@ -822,7 +822,7 @@ function edit_range_manager($connect){
                         </div>
                     </div>
 					<div class="form-group">
-						<label class="col-sm-4 control-label">Место</label>
+						<label class="col-sm-4 control-label">Место / Размещение</label>
 						<div class="col-sm-8">
 							<?php echo $place; ?>
 						</div>

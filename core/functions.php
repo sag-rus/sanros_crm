@@ -592,16 +592,16 @@ function insert_base64_encoded_image($img){
 
 function get_place_object($connect, $id_obj, $place = ""){
 	$html = "<select id='range_place' class='form-control'>";
-	$data = $connect->getAll("SELECT id, name, type FROM place WHERE id_obj=?i OR id_obj=0 ORDER BY id", $id_obj);
+	$data = $connect->getAll("SELECT * FROM place WHERE id_obj=?i OR id_obj=0 ORDER BY id", $id_obj);
 	foreach($data as $row){
-		$select = "";
+		
 		$id = $row["id"];
-		if($row["type"] == 2)
-			$type = " доп.место";
-		else
-			$type = " основное";
-		if($place == $id)
-			$select = " SELECTED";
+
+		if($row["type"] == 2) $type = " доп.место"; else $type = " основное";
+		if($place == $id)  $select = " SELECTED"; else $select = "";
+
+		if (($row['adult_on_main_place']>0 && $row['adult_on_add_place']>0) || ($row['id_child_on_main_place']>0 && $row['child_on_main_place']>0) || ($row['id_child_on_add_place']>0 && $row['child_on_add_place']>0) || ($row['id_child_no_place']>0 && $row['child_no_place']>0)) $type = '';
+
 		$html.= "<option value='".$id."' ".$select.">".$row["name"].$type."</option>";
 	}
 	$html.= "</select>";
