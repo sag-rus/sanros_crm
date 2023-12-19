@@ -51,7 +51,7 @@ $configNew->objectCabinet = $objectCabinet;
 
 /* ---------------------------- */
 $response = array();
-$id_obj = 60;
+$id_obj = 922;
 
 try{
 
@@ -101,24 +101,19 @@ try{
 			$temp = array();
 			$temp['title'] = $room['room'].' ('.$room['housing_name'].')';
 			$temp['occupancies'] = array();
-			if ($room['main_place']==1) {
-				$temp['occupancies'][$room['id'].'_a.1'] = '1 взрослый';
+
+			$occupancies = $connect->getAll("SELECT * FROM place WHERE id_obj=?i AND id_room=?i ORDER BY id", $id_obj, $room['id']);
+
+			foreach ($occupancies as $occu) {
+				$occu_name = '';
+				if ($occu['adult_on_main_place']>0) $occu_name .= '_a.'.$occu['adult_on_main_place'];
+				if ($occu['id_child_on_main_place']>0 && $occu['child_on_main_place']>0) $occu_name .= '_c.'.$occu['child_on_main_place'].'.'.$occu['id_child_on_main_place'];
+				if ($occu['adult_on_add_place']>0) $occu_name .= '_e.'.$occu['adult_on_add_place'];
+				if ($occu['id_child_on_add_place']>0 && $occu['child_on_add_place']>0) $occu_name .= '_x.'.$occu['child_on_add_place'].'.'.$occu['id_child_on_add_place'].'.1';
+				if ($occu['id_child_no_place']>0 && $occu['child_no_place']>0) $occu_name .= '_x.'.$occu['child_no_place'].'.'.$occu['id_child_no_place'].'.0';
+				$temp['occupancies'][$room['id'].$occu_name] = $occu['name'];
 			}
-			if ($room['main_place']==2) {
-				$temp['occupancies'][$room['id'].'_a.1'] = '1 взрослый';
-				$temp['occupancies'][$room['id'].'_a.2'] = '2 взрослых';
-			}
-			if ($room['main_place']==3) {
-				$temp['occupancies'][$room['id'].'_a.1'] = '1 взрослый';
-				$temp['occupancies'][$room['id'].'_a.2'] = '2 взрослых';
-				$temp['occupancies'][$room['id'].'_a.3'] = '3 взрослых';
-			}
-			if ($room['main_place']==4) {
-				$temp['occupancies'][$room['id'].'_a.1'] = '1 взрослый';
-				$temp['occupancies'][$room['id'].'_a.2'] = '2 взрослых';
-				$temp['occupancies'][$room['id'].'_a.3'] = '3 взрослых';
-				$temp['occupancies'][$room['id'].'_a.4'] = '4 взрослых';
-			}			
+
 			$response['rooms'][$room['id']] = $temp;
 			$cnt++;
 			if ($cnt>5) break;
@@ -133,6 +128,15 @@ try{
 				$temp['rooms'][] = $room['id'];
 			}
 			$response['plans'][$plan['id']] = $temp;
+		}
+
+		$ages = $connect->getAll("SELECT * FROM child_occupancy WHERE id_obj=?i ORDER BY id", $id_obj);	
+
+		foreach ($ages as $age) {
+			$temp = array();
+			$temp['min'] = $age['age_from'];
+			$temp['max'] = $age['age_to'];
+			$response['ages'][$age['id']] = $temp;
 		}		
 
 	}
@@ -146,10 +150,11 @@ try{
 		}
 	}*/
 
-
-	/*echo '<pre>';
-	print_r($response);
-	echo '</pre>';*/
+	if ($_GET['debug']==1) {
+		echo '<pre>';
+		print_r($response);
+		echo '</pre>';
+	}
 
 	echo json_encode($response);
 
