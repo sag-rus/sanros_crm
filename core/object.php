@@ -1137,32 +1137,13 @@ function select_object_occupancies($connect){
 		<table class="table tbl-room">
 		<?php
 			//$data = $connect->getAll("SELECT * FROM room_occupancy WHERE id_obj=?i and `status`=1 ORDER BY id ASC", $_POST["id"]);
-			$data = $connect->getAll("SELECT * FROM place WHERE id_obj=?i and `status`=1 ORDER BY id_room ASC", $_POST["id"]);
+			$data = $connect->getAll("SELECT * FROM place WHERE id_obj=?i and `status`=1 ORDER BY id_room ASC, id ASC", $_POST["id"]);
 			foreach($data as $row){
 				$room = $connect->getRow("SELECT * FROM room WHERE id=?i", $row["id_room"]);	
 				?>
 				<tr id="room_occupancy_<?=$row['id']?>">
 					<td><?=$room['name']?></td>
-					<td>
-						<?php
-						/*$res = '';
-						if ($row['adult_on_main_place']>0) $res .= $row['adult_on_main_place'].' взр. на осн.месте + ';
-						if ($row['adult_on_add_place']>0) $res .= $row['adult_on_add_place'].' взр. на доп.месте + ';
-						if ($row['id_child_on_main_place']>0 && $row['child_on_main_place']>0) {
-							$child = $connect->getRow("SELECT * FROM child_occupancy WHERE id=?i", $row["id_child_on_main_place"]);	
-							$res .= $row['child_on_main_place'].' реб. ('.$child['age_from'].'-'.$child['age_to'].' лет) на осн.месте + ';
-						}
-						if ($row['id_child_on_add_place']>0 && $row['child_on_add_place']>0) {
-							$child = $connect->getRow("SELECT * FROM child_occupancy WHERE id=?i", $row["id_child_on_add_place"]);	
-							$res .= $row['child_on_add_place'].' реб. ('.$child['age_from'].'-'.$child['age_to'].' лет) на доп.месте + ';
-						}
-						if ($row['id_child_no_place']>0 && $row['child_no_place']>0) {
-							$child = $connect->getRow("SELECT * FROM child_occupancy WHERE id=?i", $row["id_child_no_place"]);	
-							$res .= $row['child_no_place'].' реб. ('.$child['age_from'].'-'.$child['age_to'].' лет) без места + ';
-						}
-						echo trim(trim($res), '+');*/
-						echo $row['name'];
-						?>
+					<td><?=$row['name']?>
 					</td>
 					<td width="80">
 						<button class="btn btn-default btn-xs" onclick="new_room_occupancy('<?=$row['id']?>')" title="Редактировать"><i class="fa fa-pencil"></i></button>
@@ -1380,11 +1361,18 @@ function save_room_occupancy($connect) {
 			$_POST['id_child_no_place'],
 			$_POST['child_no_place']
 		);
+		$last_id = $connect->insertId();
+
+		echo $connect->last_query();
+
+		$connect->query("UPDATE `place` SET `export_id`=?s WHERE id=?i", get_place_export_id($_POST['id_room'], $_POST), $last_id);
+
 		echo $connect->last_query();
 	} else {
 		//меняем имеющееся размещение
 		$connect->query("UPDATE `place` SET 
 			`name`=?s,
+			`export_id`=?s,
 			`id_room`=?i, 
 			`adult_on_main_place`=?i, 
 			`adult_on_add_place`=?i, 
@@ -1397,6 +1385,7 @@ function save_room_occupancy($connect) {
 			WHERE `id`=?i
 			", 
 			get_place_name($_POST),
+			get_place_export_id($_POST['id_room'], $_POST),
 			$_POST['id_room'], 
 			$_POST['adult_on_main_place'], 
 			$_POST['adult_on_add_place'], 
@@ -1408,6 +1397,7 @@ function save_room_occupancy($connect) {
 			$_POST['child_no_place'],
 			$_POST['id']
 		);
+		echo $connect->last_query();
 	}
 }
 
