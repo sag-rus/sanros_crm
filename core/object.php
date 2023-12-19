@@ -1137,7 +1137,7 @@ function select_object_occupancies($connect){
 		<table class="table tbl-room">
 		<?php
 			//$data = $connect->getAll("SELECT * FROM room_occupancy WHERE id_obj=?i and `status`=1 ORDER BY id ASC", $_POST["id"]);
-			$data = $connect->getAll("SELECT * FROM place WHERE id_obj=?i and `status`=1 ORDER BY id ASC", $_POST["id"]);
+			$data = $connect->getAll("SELECT * FROM place WHERE id_obj=?i and `status`=1 ORDER BY id_room ASC", $_POST["id"]);
 			foreach($data as $row){
 				$room = $connect->getRow("SELECT * FROM room WHERE id=?i", $row["id_room"]);	
 				?>
