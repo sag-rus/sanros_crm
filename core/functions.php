@@ -24,6 +24,27 @@ spl_autoload_register(function($class){
 	}
 });
 
+
+function get_place_name($row) {
+	global $connect;
+	$res = '';
+	if ($row['adult_on_main_place']>0) $res .= $row['adult_on_main_place'].' взр. на осн.месте + ';
+	if ($row['adult_on_add_place']>0) $res .= $row['adult_on_add_place'].' взр. на доп.месте + ';
+	if ($row['id_child_on_main_place']>0 && $row['child_on_main_place']>0) {
+		$child = $connect->getRow("SELECT * FROM child_occupancy WHERE id=?i", $row["id_child_on_main_place"]);	
+		$res .= $row['child_on_main_place'].' реб. ('.$child['age_from'].'-'.$child['age_to'].' лет) на осн.месте + ';
+	}
+	if ($row['id_child_on_add_place']>0 && $row['child_on_add_place']>0) {
+		$child = $connect->getRow("SELECT * FROM child_occupancy WHERE id=?i", $row["id_child_on_add_place"]);	
+		$res .= $row['child_on_add_place'].' реб. ('.$child['age_from'].'-'.$child['age_to'].' лет) на доп.месте + ';
+	}
+	if ($row['id_child_no_place']>0 && $row['child_no_place']>0) {
+		$child = $connect->getRow("SELECT * FROM child_occupancy WHERE id=?i", $row["id_child_no_place"]);	
+		$res .= $row['child_no_place'].' реб. ('.$child['age_from'].'-'.$child['age_to'].' лет) без места + ';
+	}
+	return trim(trim($res), '+');
+}
+
 function save_crm_user_history($connect, $note = ""){
 	global $session_login;
 	$today = date("Y-m-d");
