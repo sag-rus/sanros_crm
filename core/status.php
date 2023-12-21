@@ -935,7 +935,7 @@ function save_return_oplata($connect){
 	$number = $_POST["number"];
 	$row = $connect->getRow("SELECT sum, status, turist FROM reckoning WHERE id=?i", $id);
 	$status = $row["status"];
-	if(($status == 4 OR $status == 5 OR $status == 6 OR $status == 8) AND ($id_rights > 3)){
+	if(($status == 4 OR $status == 5 OR $status == 6 OR $status == 8 OR $status == 13) AND ($id_rights > 3)){
 		save_payment($connect, $id, $sum, 5, $number, $date, $type);
 		recalculation_sum($connect, $id);
 		if($row["turist"]){
