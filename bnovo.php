@@ -62,9 +62,6 @@ try{
 
 	$response['rooms'] = array();
 
-	$today = date("Y-m-d");
-	$dates = $connect->getAll("SELECT id, DATE_FORMAT(start, '%e.%m.%Y') as date_start, DATE_FORMAT(end, '%e.%m.%Y') as end FROM date_price WHERE id_obj=?i AND active=0 AND end>=?s ORDER BY start", $id_obj, $today);	
-
 	$ratePlans = $connect->getAll("SELECT `id`, `name` FROM `rate_plan` WHERE `object` = ?i AND `status` = 1 ORDER BY id LIMIT 1", $id_obj);
     if(count($ratePlans) === 0)
         $ratePlans = $connect->getAll("SELECT `id`, `name` FROM `rate_plan` WHERE id = 1");	
@@ -73,74 +70,56 @@ try{
 	print_r($ratePlans);
 	echo '</pre>';*/
 
-	if (is_array($dates[0]) && count($ratePlans)>0) {
-		$occupancies = $connect->getAll("SELECT ranges.counter, ranges.id, ranges.name, ranges.type, place.name as place, ranges.treatment, place.type as place_type FROM ranges, place WHERE ranges.id_obj=?i AND (ranges.place=place.id) AND ranges.id_date=?i AND ranges.active = 0 AND ranges.rate_plan = ?i ORDER BY ranges.counter, place.type", $id_obj, $dates[0]['id'], $ratePlans[0]['id']);
+	$rooms = $connect->getAll("SELECT room.id, room.name as room, room.main_place, housing.name as housing_name FROM room, housing WHERE room.id_obj=?i AND (room.housing=housing.id) AND room.active=0 ORDER BY housing.name", $id_obj);
 
-		$check = '';
-		$occu = array();
-		foreach ($occupancies as $occupancy) {
-			if (mb_strpos($check, ','.$occupancy['type'].'='.$occupancy['place'].'='.$occupancy['treatment'].'='.$occupancy['place_type'].',')===FALSE) {
-				$check .= ','.$occupancy['type'].'='.$occupancy['place'].'='.$occupancy['treatment'].'='.$occupancy['place_type'].',';
-				$occu[] = $occupancy;
-			}
+	/*echo '<pre>rooms';
+	print_r($rooms);
+	echo '</pre>';*/
+
+	$cnt = 0;
+
+	foreach ($rooms as $room) {
+		$temp = array();
+		$temp['title'] = $room['room'].' ('.$room['housing_name'].')';
+		$temp['occupancies'] = array();
+
+		$occupancies = $connect->getAll("SELECT * FROM place WHERE id_obj=?i AND id_room=?i ORDER BY id", $id_obj, $room['id']);
+
+		foreach ($occupancies as $occu) {
+			/*$occu_name = '';
+			if ($occu['adult_on_main_place']>0) $occu_name .= '_a.'.$occu['adult_on_main_place'];
+			if ($occu['id_child_on_main_place']>0 && $occu['child_on_main_place']>0) $occu_name .= '_c.'.$occu['child_on_main_place'].'.'.$occu['id_child_on_main_place'];
+			if ($occu['adult_on_add_place']>0) $occu_name .= '_e.'.$occu['adult_on_add_place'];
+			if ($occu['id_child_on_add_place']>0 && $occu['child_on_add_place']>0) $occu_name .= '_x.'.$occu['child_on_add_place'].'.'.$occu['id_child_on_add_place'].'.1';
+			if ($occu['id_child_no_place']>0 && $occu['child_no_place']>0) $occu_name .= '_x.'.$occu['child_no_place'].'.'.$occu['id_child_no_place'].'.0';
+			$temp['occupancies'][$room['id'].$occu_name] = $occu['name'];*/
+			$temp['occupancies'][get_place_export_id($room['id'], $occu)] = $occu['name'];
 		}
 
-		/*echo '<pre>occu';
-		print_r($occu);
-		echo '</pre>';*/
-
-		$rooms = $connect->getAll("SELECT room.id, room.name as room, room.main_place, housing.name as housing_name FROM room, housing WHERE room.id_obj=?i AND (room.housing=housing.id) AND room.active=0 ORDER BY housing.name", $id_obj);
-
-		/*echo '<pre>rooms';
-		print_r($rooms);
-		echo '</pre>';*/
-
-		$cnt = 0;
-
-		foreach ($rooms as $room) {
-			$temp = array();
-			$temp['title'] = $room['room'].' ('.$room['housing_name'].')';
-			$temp['occupancies'] = array();
-
-			$occupancies = $connect->getAll("SELECT * FROM place WHERE id_obj=?i AND id_room=?i ORDER BY id", $id_obj, $room['id']);
-
-			foreach ($occupancies as $occu) {
-				/*$occu_name = '';
-				if ($occu['adult_on_main_place']>0) $occu_name .= '_a.'.$occu['adult_on_main_place'];
-				if ($occu['id_child_on_main_place']>0 && $occu['child_on_main_place']>0) $occu_name .= '_c.'.$occu['child_on_main_place'].'.'.$occu['id_child_on_main_place'];
-				if ($occu['adult_on_add_place']>0) $occu_name .= '_e.'.$occu['adult_on_add_place'];
-				if ($occu['id_child_on_add_place']>0 && $occu['child_on_add_place']>0) $occu_name .= '_x.'.$occu['child_on_add_place'].'.'.$occu['id_child_on_add_place'].'.1';
-				if ($occu['id_child_no_place']>0 && $occu['child_no_place']>0) $occu_name .= '_x.'.$occu['child_no_place'].'.'.$occu['id_child_no_place'].'.0';
-				$temp['occupancies'][$room['id'].$occu_name] = $occu['name'];*/
-				$temp['occupancies'][get_place_export_id($room['id'], $occu)] = $occu['name'];
-			}
-
-			$response['rooms'][$room['id']] = $temp;
-			$cnt++;
-			if ($cnt>5) break;
-		}
-
-		foreach ($ratePlans as $plan) {
-			$temp = array();
-			$temp['title'] = $plan['name'];
-			$temp['permitted_data'] = 'all';
-			$temp['rooms'] = array();
-			foreach ($rooms as $room) {
-				$temp['rooms'][] = $room['id'];
-			}
-			$response['plans'][$plan['id']] = $temp;
-		}
-
-		$ages = $connect->getAll("SELECT * FROM child_occupancy WHERE id_obj=?i ORDER BY id", $id_obj);	
-
-		foreach ($ages as $age) {
-			$temp = array();
-			$temp['min'] = $age['age_from'];
-			$temp['max'] = $age['age_to'];
-			$response['ages'][$age['id']] = $temp;
-		}		
-
+		$response['rooms'][$room['id']] = $temp;
+		$cnt++;
+		if ($cnt>5) break;
 	}
+
+	foreach ($ratePlans as $plan) {
+		$temp = array();
+		$temp['title'] = $plan['name'];
+		$temp['permitted_data'] = 'all';
+		$temp['rooms'] = array();
+		foreach ($rooms as $room) {
+			$temp['rooms'][] = $room['id'];
+		}
+		$response['plans'][$plan['id']] = $temp;
+	}
+
+	$ages = $connect->getAll("SELECT * FROM child_occupancy WHERE id_obj=?i ORDER BY id", $id_obj);	
+
+	foreach ($ages as $age) {
+		$temp = array();
+		$temp['min'] = $age['age_from'];
+		$temp['max'] = $age['age_to'];
+		$response['ages'][$age['id']] = $temp;
+	}		
 
 	/*$housings = $connect->getAll("SELECT * FROM housing WHERE `id_obj`=$id_obj");
 	foreach ($housings as $housing) {

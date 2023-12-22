@@ -24,6 +24,32 @@ spl_autoload_register(function($class){
 	}
 });
 
+function get_bnovo_token($connect) {
+	$token = $connect->getRow("SELECT * FROM `bnovo_token` WHERE `id`=1");
+	$token['timestamp'] = strtotime($token['timestamp']);
+	if ($token['token']!='' && time()-$token['timestamp']<3000) {
+		echo 'Выводим токен из базы...'.$token['token'];
+		return $token['token'];
+	} else {
+		$url = 'https://api.reservationsteps.ru/v1/api/auth';
+		$data = array("username"=> 'info@sanata.online' , "password" => '6CGn3b3qF57lOi5nuxBwiIEzcCOVVXsu');
+		$postdata = json_encode($data);
+		$ch = curl_init($url); 
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+		$result = json_decode(curl_exec($ch), true);
+		curl_close($ch);
+		echo 'token from auth='.$result['token'];
+		$connect->query("UPDATE `bnovo_token` SET `token`=?s, `timestamp`=NOW() WHERE `id`=1", $result['token']);
+		return $result['token'];
+	}
+
+}
+
 
 function get_place_export_id($id_room, $occu) {
 	$occu_name = '';
