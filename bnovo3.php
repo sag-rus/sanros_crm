@@ -73,7 +73,7 @@ echo 'token='.$result['token'];*/
 
 //AUTH
 
-function get_bnovo_rooms_availability($id_obj, $account_id, $dfrom, $dto) {
+function get_bnovo_rooms_availability($id_obj, $account_id, $dfrom, $dto, $id_rooms_bnovo = false) {
 	global $connect;
 
 	$token = get_bnovo_token($connect);
@@ -124,12 +124,11 @@ function get_bnovo_rooms_availability($id_obj, $account_id, $dfrom, $dto) {
 			}
 		}
 	}
-
 }
 
 //get_bnovo_rooms_availability($id_obj, $account_id, date('Y-m-d'), date('Y-m-d', time()+86400*30));
 
-function get_bnovo_rooms_prices($id_obj, $account_id, $dfrom, $dto) {
+function get_bnovo_rooms_prices($id_obj, $account_id, $dfrom, $dto, $id_rooms_bnovo = false) {
 	global $connect;
 
 	$token = get_bnovo_token($connect);
