@@ -57,9 +57,10 @@ $data = json_decode($_POST['data'], true);
 
 //$data['hotel_id'] = $id_obj; //Костыль на время тестов!!!
 
-$connect->query("INSERT novo_data_updates SET `id`=0, `datetime`=NOW(), `hotel_id`=0, `account_id`=0, `data`=?s, `worked_dateime`='0000-00-00 00:00:00'", $_POST['data']);
+$connect->query("INSERT bnovo_data_updates SET `id`=0, `datetime`=NOW(), `hotel_id`=0, `account_id`=0, `data`=?s, `worked_datetime`='0000-00-00 00:00:00'", $_POST['data']);
 
 $response['ok'] = 1;
+$response['sql'] = $connect->last_query();
 
 echo json_encode($response);
 
