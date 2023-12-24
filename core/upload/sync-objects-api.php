@@ -729,7 +729,7 @@ function sync_objects_api($connect){
 			$dateRangeAr['id'] = $dateRange['id'];
 			$dateRangeAr['status'] = (int)(!$dateRange['active']);
 			$dateRangeAr['start_timestamp'] = strtotime($dateRange['start']);
-			$dateRangeAr['end_timestamp'] = strtotime($dateRange['end']+$bnovo_end_of_date);
+			$dateRangeAr['end_timestamp'] = strtotime($dateRange['end'])+$bnovo_end_of_date;
 			$dateRangeAr['resort_id'] = $dateRange['id_obj'];
 			$dateRangeAr['uid'] = 1;
 
