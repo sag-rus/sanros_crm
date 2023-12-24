@@ -734,7 +734,7 @@ function sync_objects_api($connect){
 			$dateRangeAr['uid'] = 1;
 
 			echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/daterange/set/".$dateRange['id'].'<br>';
-			echo '<pre>$bnovo_end_of_date = $bnovo_end_of_date $dateRange';
+			echo '<pre>$bnovo_end_of_date = '.$bnovo_end_of_date.' $dateRange';
 			print_r($dateRange);
 			echo '</pre>';			
 			echo '<pre>$dateRangeAr';
