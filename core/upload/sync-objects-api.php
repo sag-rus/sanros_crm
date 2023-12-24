@@ -734,6 +734,12 @@ function sync_objects_api($connect){
 			$dateRangeAr['uid'] = 1;
 
 			echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/daterange/set/".$dateRange['id'].'<br>';
+			echo '<pre>$dateRange';
+			print_e($dateRange);
+			echo '</pre>';			
+			echo '<pre>$dateRangeAr';
+			print_e($dateRangeAr);
+			echo '</pre>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/daterange/set/".$dateRange['id'],[
 				'form_params' => $dateRangeAr
