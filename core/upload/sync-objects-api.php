@@ -721,12 +721,15 @@ function sync_objects_api($connect){
 		$dateRanges = $connect->getAll("SELECT `id`, `start`, `end`, `id_obj`, `active` FROM `date_price` WHERE `synchronized` = 0");
 
 		foreach ($dateRanges as $dateRange) {
+
+			if ($dateRange['start']==$dateRange['end']) $bnovo_end_of_date + 86399; else $bnovo_end_of_date = 0;
+
 			$dateRangeAr = [];
 			$dateRangeAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
 			$dateRangeAr['id'] = $dateRange['id'];
 			$dateRangeAr['status'] = (int)(!$dateRange['active']);
 			$dateRangeAr['start_timestamp'] = strtotime($dateRange['start']);
-			$dateRangeAr['end_timestamp'] = strtotime($dateRange['end']);
+			$dateRangeAr['end_timestamp'] = strtotime($dateRange['end']+$bnovo_end_of_date);
 			$dateRangeAr['resort_id'] = $dateRange['id_obj'];
 			$dateRangeAr['uid'] = 1;
 
