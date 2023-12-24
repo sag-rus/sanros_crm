@@ -722,7 +722,7 @@ function sync_objects_api($connect){
 
 		foreach ($dateRanges as $dateRange) {
 
-			if ($dateRange['start']==$dateRange['end']) $bnovo_end_of_date + 86399; else $bnovo_end_of_date = 0;
+			if ($dateRange['start']==$dateRange['end']) $bnovo_end_of_date = 86399; else $bnovo_end_of_date = 0;
 
 			$dateRangeAr = [];
 			$dateRangeAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
