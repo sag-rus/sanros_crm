@@ -228,7 +228,7 @@ function get_bnovo_rooms_prices($id_obj, $account_id, $dfrom, $dto, $id_rooms_bn
 
 }
 
-get_bnovo_rooms_prices($id_obj, $account_id, date('Y-m-d'), date('Y-m-d', time()+86400*5));
+get_bnovo_rooms_prices($id_obj, $account_id, date('Y-m-d'), date('Y-m-d', time()+86400*14));
 
 echo '4444';
 
