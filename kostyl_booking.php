@@ -175,6 +175,9 @@ if ($aznak) $connect->query("UPDATE reckoning SET status=14, id_user=13 WHERE id
 $check_quota = 0;
 
 if(isset($data_booking->position) && $data_booking->position){
+
+	$note_booking .= "\r\n".$data_booking->position;
+
 	$positions = json_decode($data_booking->position, TRUE);
 	foreach($positions as $position){
 		$type_index = 1;
