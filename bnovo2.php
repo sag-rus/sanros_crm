@@ -86,10 +86,12 @@ $room_types['prices'] = $prices;
 $data['room_types'] = $room_types;
 
 
-
-
+echo '<pre>';
+print_r($res);
+echo '</pre>';
 
 $data = json_encode($data);
+
 
 $ch = curl_init('https://api.reservationsteps.ru/v1/api/channel_manager_bookings'); 
 curl_setopt($ch, CURLOPT_POST, 1);
