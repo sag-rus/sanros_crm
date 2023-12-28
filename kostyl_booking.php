@@ -129,6 +129,8 @@ $last_id = $create_client->create_client($client_info);
 save_client_to_history($connect, $last_id, "Создание клиента");
 $note_booking = isset($data_booking->note)?trim($data_booking->note):"";
 
+if ($data_booking->bnovo==1) $note_booking .= "\r\nБронирование БНОВО";
+
 
 $aznak = false;
 
