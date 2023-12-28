@@ -69,6 +69,7 @@ $data['lang'] = 'ru';
 $room_types = [];
 $room_types['arrival'] = '2024-01-05';
 $room_types['departure'] = '2024-01-08';
+$room_types['room_type_id'] = 398056;
 $room_types['plan_id'] = 169964;
 $room_types['count'] = 1; //Тут всегда 1
 $room_types['adults'] = 2; //Тут количество взрослых согласно размещения
