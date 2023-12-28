@@ -100,6 +100,9 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 $res = json_decode(curl_exec($ch), true);
 curl_close($ch);
-echo $res;
+
+echo '<pre>';
+print_r($res);
+echo '</pre>';
 
 ?>
