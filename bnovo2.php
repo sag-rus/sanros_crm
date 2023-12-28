@@ -50,48 +50,56 @@ $configNew->objectCabinet = $objectCabinet;
 
 
 /* ---------------------------- */
-$response = array();
-$id_obj = 60;
-$account_id = 34311;
 
 
-//AUTH
-$url = 'https://api.reservationsteps.ru/v1/api/auth';
-$data = array("username"=> 'info@sanata.online' , "password" => '6CGn3b3qF57lOi5nuxBwiIEzcCOVVXsu');
-$postdata = json_encode($data);
-$ch = curl_init($url); 
+$token = get_bnovo_token($connect);
+
+$data = [];
+$data['token'] = $token;
+$data['ota_id'] = 'sanata';
+$data['ota_booking_id'] = '555'; //Тут будем указывать номер заявки!
+$data['status_id']=1;
+$data['name'] = 'Рустем';
+$data['surname'] = 'Сагдиев';
+$data['email'] = 'sagrus@yandex.ru';
+$data['phone'] = '+79093071969';
+$data['comment'] = 'комментарий гостя к бронированию';
+$data['lang'] = 'ru';
+
+$room_types = [];
+$room_types['arrival'] = '2024-01-05';
+$room_types['departure'] = '2024-01-08';
+$room_types['plan_id'] = 169964;
+$room_types['count'] = 1; //Тут всегда 1
+$room_types['adults'] = 2; //Тут количество взрослых согласно размещения
+$room_types['children'] = 0;
+$room_types['amount'] = 8800;
+
+$prices = [];
+$prices['2024-01-05'] = 2200;
+$prices['2024-01-06'] = 2200;
+$prices['2024-01-07'] = 2200;
+$prices['2024-01-08'] = 2200;
+
+$room_types['prices'] = $prices;
+
+$data['room_types'] = $room_types;
+
+
+
+
+
+$data = json_encode($data);
+
+$ch = curl_init('https://api.reservationsteps.ru/v1/api/channel_manager_bookings'); 
 curl_setopt($ch, CURLOPT_POST, 1);
 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
 curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-$result = json_decode(curl_exec($ch), true);
+$res = json_decode(curl_exec($ch), true);
 curl_close($ch);
-
-echo 'token='.$result['token'];
-//AUTH
-
-//PRICES
-$get = array(
-	'token'  => $result['token'],
-	'account_id' => $account_id,
-	'dfrom' => '2021-11-17',
-	'dto' => '2021-11-17',
-	'plans' => [169964],
-	'roomtypes' => [398059],
-	'fields' => ['price']
-);
-
-$ch = curl_init('https://api.reservationsteps.ru/v1/api/plans_data?' . http_build_query($get));
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-curl_setopt($ch, CURLOPT_HEADER, false);
-$html = curl_exec($ch);
-curl_close($ch);
-
-echo $html;
-
-//PRICES
+echo $res;
 
 ?>
