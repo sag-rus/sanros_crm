@@ -87,7 +87,7 @@ $data['room_types'] = $room_types;
 
 
 echo '<pre>';
-print_r($res);
+print_r($data);
 echo '</pre>';
 
 $data = json_encode($data);
