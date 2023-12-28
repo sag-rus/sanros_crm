@@ -163,6 +163,8 @@ if ($id_obj=='1' && $data_booking_JSON["site"]=='санаторий-азнака
 
 }
 
+$note_booking .= "\r\n".$data_booking->position;
+
 $connect->query("INSERT INTO reckoning(date, turist, id_obj, rest, hash, website, source, form_booking, note) VALUES (?s, ?i, ?i, ?i, ?s, ?s, ?i, 'module',?s)", $today, $last_id, $id_obj, $last_id, $hash, $website, $source, $note_booking);
 $id = $connect->insertId();
 $id_tour = $connect->getOne("SELECT id_tour FROM object WHERE id=?i", $id_obj);
@@ -175,8 +177,6 @@ if ($aznak) $connect->query("UPDATE reckoning SET status=14, id_user=13 WHERE id
 $check_quota = 0;
 
 if(isset($data_booking->position) && $data_booking->position){
-
-	$note_booking .= "\r\n".$data_booking->position;
 
 	$positions = json_decode($data_booking->position, TRUE);
 	foreach($positions as $position){
