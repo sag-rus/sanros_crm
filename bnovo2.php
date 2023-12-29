@@ -90,7 +90,7 @@ $room_types['prices'] = $prices;
 
 $booking_data['room_types'] = $room_types;
 
-$data['bbooking_data'] = $booking_data;
+$data['booking_data'] = $booking_data;
 
 
 echo '<pre>';
