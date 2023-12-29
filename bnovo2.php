@@ -84,7 +84,6 @@ $prices = [];
 $prices['2024-01-05'] = 2200;
 $prices['2024-01-06'] = 2200;
 $prices['2024-01-07'] = 2200;
-$prices['2024-01-08'] = 2200;
 
 $room_types['prices'] = $prices;
 
