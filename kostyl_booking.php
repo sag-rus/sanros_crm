@@ -129,7 +129,11 @@ $last_id = $create_client->create_client($client_info);
 save_client_to_history($connect, $last_id, "Создание клиента");
 $note_booking = isset($data_booking->note)?trim($data_booking->note):"";
 
-if ($data_booking->bnovo==1) $note_booking .= "\r\nБронирование БНОВО";
+if ($data_booking->bnovo==1) {
+
+	$note_booking .= "\r\nБронирование БНОВО";
+
+}
 
 
 $aznak = false;
@@ -173,6 +177,86 @@ if($id_tour)
 $add_one_day = $connect->getOne("SELECT add_one_day FROM object WHERE id=?i", $id_obj);
 
 if ($aznak) $connect->query("UPDATE reckoning SET status=14, id_user=13 WHERE id=?i", $id);
+
+
+if ($data_booking->bnovo==1) {
+
+	$bnovo_token = get_bnovo_token($connect);
+
+	//$log = PHP_EOL.'data_booking='.print_r($data_booking, true).PHP_EOL;
+	//file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);	
+
+	$data = [];
+	$data['token'] = $bnovo_token;
+	$data['account_id'] = 34311;
+	
+	$booking_data = [];
+	
+	$booking_data['ota_id'] = 'sanata';
+	$booking_data['ota_booking_id'] = $id;
+	$booking_data['status_id']=1;
+	$booking_data['name'] = $data_booking->name;
+	$booking_data['surname'] = $data_booking->sur;
+	$booking_data['email'] = $data_booking->email;
+	$booking_data['phone'] = $data_booking->tel;
+	$booking_data['comment'] = '';
+	$booking_data['lang'] = 'ru';
+
+	$position = json_decode($data_booking->position, TRUE);
+	$position = $position[0];
+
+	$bnovo_rate = $connect->getRow("SELECT * FROM `bnovo_plans_mathes` WHERE id_plan=?i", $position['rate']);
+	$place = $connect->getRow("SELECT * FROM `place` WHERE id=?i", $position['place']);
+	$occu = $connect->getRow("SELECT * FROM `bnovo_occupancies_mathes` WHERE id_place=?i AND `id_room`=?i", $position['place'], $position['id_room']);
+	
+	$room_types = [];
+	$room_types[0]['arrival'] = date('Y-m-d', strtotime($data_booking->date));
+	$room_types[0]['departure'] = date('Y-m-d', strtotime($data_booking->date)+86400*$data_booking->days);
+	$room_types[0]['room_type_id'] = $occu['id_bnovo'];
+	$room_types[0]['plan_id'] = $bnovo_rate['id_bnovo'];
+	$room_types[0]['count'] = 1; //Тут всегда 1
+	$room_types[0]['adults'] = $place['adult_on_main_place']+$place['adult_on_add_place']; //Тут количество взрослых согласно размещения
+	$room_types[0]['children'] = 0;
+	$room_types[0]['amount'] = $data_booking->sum;
+	
+	
+	$prices = [];
+	$start = strtotime($data_booking->date);
+	while ($start < strtotime($data_booking->date)+86400*$data_booking->days) {
+		$prices[date('Y-m-d', $start)] = $position['price'];
+		$start = $start + 86400;
+	}
+	
+	$prices = json_encode($prices);
+	
+	$room_types[0]['prices'] = $prices;
+	
+	$booking_data['room_types'] = $room_types;
+	
+	$data['booking_data'] = $booking_data;
+
+	$log = PHP_EOL.'BNOVO data='.print_r($data, true).PHP_EOL;
+	file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);	
+
+	$data = json_encode($data);
+
+	$ch = curl_init('https://api.reservationsteps.ru/v1/api/channel_manager_bookings'); 
+	curl_setopt($ch, CURLOPT_POST, 1);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+	$res = json_decode(curl_exec($ch), true);
+	curl_close($ch);	
+
+	$log = PHP_EOL.'BNOVO res='.print_r($res, true).PHP_EOL;
+	file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);
+
+}
+
+
+
 
 $check_quota = 0;
 

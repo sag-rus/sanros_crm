@@ -28,7 +28,7 @@ function get_bnovo_token($connect) {
 	$token = $connect->getRow("SELECT * FROM `bnovo_token` WHERE `id`=1");
 	$token['timestamp'] = strtotime($token['timestamp']);
 	if ($token['token']!='' && time()-$token['timestamp']<3000) {
-		echo 'Выводим токен из базы...'.$token['token'];
+		//echo 'Выводим токен из базы...'.$token['token'];
 		return $token['token'];
 	} else {
 		$url = 'https://api.reservationsteps.ru/v1/api/auth';
@@ -43,7 +43,7 @@ function get_bnovo_token($connect) {
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 		$result = json_decode(curl_exec($ch), true);
 		curl_close($ch);
-		echo 'token from auth='.$result['token'];
+		//echo 'token from auth='.$result['token'];
 		$connect->query("UPDATE `bnovo_token` SET `token`=?s, `timestamp`=NOW() WHERE `id`=1", $result['token']);
 		return $result['token'];
 	}
