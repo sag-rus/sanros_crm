@@ -99,6 +99,8 @@ echo '</pre>';
 
 $data = json_encode($data);
 
+echo 'json='.$data."\r\n";
+
 
 $ch = curl_init('https://api.reservationsteps.ru/v1/api/channel_manager_bookings'); 
 curl_setopt($ch, CURLOPT_POST, 1);
