@@ -56,15 +56,19 @@ $token = get_bnovo_token($connect);
 
 $data = [];
 $data['token'] = $token;
-$data['ota_id'] = 'sanata';
-$data['ota_booking_id'] = '555'; //Тут будем указывать номер заявки!
-$data['status_id']=1;
-$data['name'] = 'Рустем';
-$data['surname'] = 'Сагдиев';
-$data['email'] = 'sagrus@yandex.ru';
-$data['phone'] = '+79093071969';
-$data['comment'] = 'комментарий гостя к бронированию';
-$data['lang'] = 'ru';
+$data['account_id'] = 34311;
+
+$booking_data = [];
+
+$booking_data['ota_id'] = 'sanata';
+$booking_data['ota_booking_id'] = '555'; //Тут будем указывать номер заявки!
+$booking_data['status_id']=1;
+$booking_data['name'] = 'Рустем';
+$booking_data['surname'] = 'Сагдиев';
+$booking_data['email'] = 'sagrus@yandex.ru';
+$booking_data['phone'] = '+79093071969';
+$booking_data['comment'] = 'комментарий гостя к бронированию';
+$booking_data['lang'] = 'ru';
 
 $room_types = [];
 $room_types['arrival'] = '2024-01-05';
@@ -84,7 +88,9 @@ $prices['2024-01-08'] = 2200;
 
 $room_types['prices'] = $prices;
 
-$data['room_types'] = $room_types;
+$booking_data['room_types'] = $room_types;
+
+$data['bbooking_data'] = $booking_data;
 
 
 echo '<pre>';
