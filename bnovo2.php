@@ -85,7 +85,7 @@ $prices['2024-01-05'] = 2200;
 $prices['2024-01-06'] = 2200;
 $prices['2024-01-07'] = 2200;
 
-$prices = json_encode($prices);
+//$prices = json_encode($prices);
 
 $room_types['prices'] = $prices;
 
