@@ -33,7 +33,7 @@
 	}
 	
 
-	$data = $connect->getAll("SELECT id, bid, bid_pay, order_id FROM payment_request WHERE status=0 or status IS NULL ORDER BY `id` DESC LIMIT 20");
+	$data = $connect->getAll("SELECT id, bid, bid_pay, order_id FROM payment_request WHERE status=0 or status IS NULL ORDER BY `id` DESC LIMIT 60");
 	foreach($data as $row){
 		$payment = new \App\lib\payment\Alfa\BookingPayment([]);
 		$request = $payment->depositPayment($row["bid_pay"]);
