@@ -1671,7 +1671,8 @@ function show_schet_klient($connect){
 		$class = "success";
 	if($status == 6)
 		$class = "danger";
-	$status_string = '<div style="padding: 2px">Статус заявки<br /><h3><span class="label label-'.$class.'" data-reckoning-status="'.$status.'">'.$name_status.'</span></h3></div>';
+	if ($status!=3) $status_string = '<div style="padding: 2px">Статус заявки<br /><h3><span class="label label-'.$class.'" data-reckoning-status="'.$status.'">'.$name_status.'</span></h3></div>';
+	else $status_string = '<div style="padding: 2px">Статус заявки<br /><h3><span class="label label-'.$class.'" data-reckoning-status="'.$status.'">'.$name_status.'</span></h3><br></div><div style="padding: 2px 8px; "><a href="/CRM/core/cron/check-info.php?bid='.$id.'" target="_blank">проверить оплату</a></div>';
 	$class = "default";
 	if($status_san == 1)
 		$class = "success";
