@@ -45,6 +45,8 @@
 			echo '</pre><br>';
 		}
 
+		if ($_GET['bid']!='') echo 'Проверка завершена, результат: '.$request.'. Можно закрыть эту вкладку';
+
 		/*$id = $row["id"];
 		$bid = $row["bid"];
 		$orderId = $row["order_id"];
