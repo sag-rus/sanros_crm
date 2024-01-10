@@ -32,8 +32,9 @@
 		$connect->query("UPDATE chat_users SET status=0 WHERE last_visit<CURRENT_TIMESTAMP - INTERVAL (10) MINUTE");
 	}
 	
-
-	$data = $connect->getAll("SELECT id, bid, bid_pay, order_id FROM payment_request WHERE status=0 or status IS NULL ORDER BY `id` DESC LIMIT 60");
+	$sql = "SELECT id, bid, bid_pay, order_id FROM payment_request WHERE status=0 or status IS NULL ORDER BY `id` DESC LIMIT 60";
+	if ($_GET['bid']!='') $sql = "SELECT id, bid, bid_pay, order_id FROM payment_request WHERE (status=0 or status IS NULL) AND `bid`='$_GET[bid]' ORDER BY `id` DESC";
+	$data = $connect->getAll($sql);
 	foreach($data as $row){
 		$payment = new \App\lib\payment\Alfa\BookingPayment([]);
 		$request = $payment->depositPayment($row["bid_pay"]);
