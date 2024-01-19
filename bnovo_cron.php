@@ -309,6 +309,6 @@ if ($data && $data['data']!='') {
 	}
 }
 
-echo '<meta http-equiv="refresh" content="0,URL=/CRM/bnovo_cron.php">';
+//echo '<meta http-equiv="refresh" content="0,URL=/CRM/bnovo_cron.php">';
 
 ?>
