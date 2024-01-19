@@ -113,7 +113,7 @@ function get_bnovo_rooms_availability($id_obj, $account_id, $dfrom, $dto, $id_ro
 		curl_close($ch);
 		$res = json_decode($res, true);
 
-		//print_r($res);
+		print_r($res);
 
 		if (count($res['availability'])>0)
 
