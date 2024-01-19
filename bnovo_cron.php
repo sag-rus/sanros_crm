@@ -265,6 +265,7 @@ $data = $connect->getRow("SELECT * FROM `bnovo_data_updates` WHERE `worked`=0 OR
 if ($data && $data['data']!='') {
 	//$connect -> query("UPDATE `bnovo_data_updates` SET `worked`=1, `worked_datetime`=NOW() WHERE `id`=$data[id]");
 	echo $connect->last_query()."\r\n";
+	echo 'ID записи к обработке: '.$data['id'].'<br>';
 	$data = json_decode($data['data'], true);
 
 	$data['hotel_id'] = $id_obj;
