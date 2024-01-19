@@ -263,7 +263,7 @@ function get_bnovo_rooms_prices($id_obj, $account_id, $dfrom, $dto, $id_plan_bno
 
 $data = $connect->getRow("SELECT * FROM `bnovo_data_updates` WHERE `worked`=0 ORDER BY id ASC LIMIT 1 ");
 if ($data && $data['data']!='') {
-	//$connect -> query("UPDATE `bnovo_data_updates` SET `worked`=1, `worked_datetime`=NOW() WHERE `id`=$data[id]");
+	$connect -> query("UPDATE `bnovo_data_updates` SET `worked`=1, `worked_datetime`=NOW() WHERE `id`=$data[id]");
 	echo $connect->last_query()."\r\n";
 	echo 'ID записи к обработке: '.$data['id'].'<br>';
 	$data = json_decode($data['data'], true);
