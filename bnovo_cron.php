@@ -1,8 +1,8 @@
 <?php
 use GuzzleHttp\Client;
 
-header('Content-Type: application/json;charset=utf-8');
-header('Access-Control-Allow-Origin: *');
+//header('Content-Type: application/json;charset=utf-8');
+//header('Access-Control-Allow-Origin: *');
 
 
 $log = print_r($_POST, true).PHP_EOL;
@@ -309,6 +309,6 @@ if ($data && $data['data']!='') {
 	}
 }
 
-//echo '<meta http-equiv="refresh" content="0,URL=/CRM/bnovo_cron.php">';
+echo '<meta http-equiv="refresh" content="0,URL=/CRM/bnovo_cron.php">';
 
 ?>
