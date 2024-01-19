@@ -240,8 +240,10 @@ if ($data_booking->bnovo==1) {
 
 	$data = json_encode($data);
 
-	echo 'data_json='.$data;
+	$log = PHP_EOL.'BNOVO data_оыщт='.$data.PHP_EOL;
+	file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);		
 
+	
 	$ch = curl_init('https://api.reservationsteps.ru/v1/api/channel_manager_bookings'); 
 	curl_setopt($ch, CURLOPT_POST, 1);
 	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
