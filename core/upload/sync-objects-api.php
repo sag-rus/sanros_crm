@@ -791,6 +791,7 @@ function sync_objects_api($connect){
 			}
 		}
 
+
 		$ranges = $connect->getAll("SELECT `id`, `id_obj`, `name`, `type`, `active`, `show_date`, `place`, `id_date`, `counter`, `rate_plan`, `treatment` FROM `ranges` WHERE `synchronized` = 0");
 
 		foreach ($ranges as $range) {
@@ -829,7 +830,7 @@ function sync_objects_api($connect){
 			}
 		}
 
-		$pricesStartYear = 2018;
+		/*$pricesStartYear = 2018;
 		$pricesYearWhere = "";
 		for($i = $pricesStartYear; $i < date("Y")+1; $i++) {
 			if(mb_strlen($pricesYearWhere) > 0) {
@@ -843,9 +844,10 @@ function sync_objects_api($connect){
 			if($i == date("Y")) {
 				$pricesYearWhere .= ") ";
 			}
-		}
+		}*/
 
-		$prices = $connect->getAll("SELECT `id`, `id_room`, `price`, `id_range`, `active` FROM `price` WHERE `synchronized` = 0 AND ".$pricesYearWhere." LIMIT 5000");
+		//$prices = $connect->getAll("SELECT `id`, `id_room`, `price`, `id_range`, `active` FROM `price` WHERE `synchronized` = 0 AND ".$pricesYearWhere." LIMIT 5000");
+		$prices = $connect->getAll("SELECT `id`, `id_room`, `price`, `id_range`, `active` FROM `price` WHERE `synchronized` = 0 LIMIT 5000");
 
 		foreach ($prices as $price) {
 			$priceAr = [];
@@ -876,6 +878,8 @@ function sync_objects_api($connect){
 				}
 			}
 		}
+
+		echo '<br>end of sync';
 
 		return true;
 	}
