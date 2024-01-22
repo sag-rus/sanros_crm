@@ -169,7 +169,9 @@ if ($id_obj=='1' && $data_booking_JSON["site"]=='санаторий-азнака
 
 $note_booking .= "\r\n".$data_booking->position;
 
-$connect->query("INSERT INTO reckoning(date, turist, id_obj, rest, hash, website, source, form_booking, note) VALUES (?s, ?i, ?i, ?i, ?s, ?s, ?i, 'module',?s)", $today, $last_id, $id_obj, $last_id, $hash, $website, $source, $note_booking);
+if ($data_booking->bnovo==1) $bnovo_in_sql = '1'; else $bnovo_in_sql = '0';
+
+$connect->query("INSERT INTO reckoning(date, turist, id_obj, rest, hash, website, source, form_booking, note, bnovo) VALUES (?s, ?i, ?i, ?i, ?s, ?s, ?i, 'module',?s)", $today, $last_id, $id_obj, $last_id, $hash, $website, $source, $note_booking, $bnovo_in_sql);
 $id = $connect->insertId();
 $id_tour = $connect->getOne("SELECT id_tour FROM object WHERE id=?i", $id_obj);
 if($id_tour)
