@@ -234,7 +234,7 @@ if ($data_booking->bnovo==1) {
 		$start = $start + 86400;
 	}
 	
-	$prices = json_encode($prices);
+	//$prices = json_encode($prices);
 	
 	$room_types[0]['prices'] = $prices;
 	
@@ -259,7 +259,9 @@ if ($data_booking->bnovo==1) {
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
 	curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 	$res = json_decode(curl_exec($ch), true);
-	curl_close($ch);	
+	curl_close($ch);
+	
+	$connect->query("UPDATE reckoning SET `bnovo_json`='?s' WHERE `id`=?i", $data, $id);
 
 	$log = PHP_EOL.'BNOVO res='.print_r($res, true).PHP_EOL;
 	file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);
