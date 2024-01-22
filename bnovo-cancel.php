@@ -61,11 +61,11 @@ if ($row['id']==$_GET['id']) {
     $data = json_encode($data);
 
 	$ch = curl_init('https://api.reservationsteps.ru/v1/api/channel_manager_bookings'); 
-	curl_setopt($ch, CURLOPT_POST, 1);
 	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
 	curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 	$res = json_decode(curl_exec($ch), true);
 	curl_close($ch);    
