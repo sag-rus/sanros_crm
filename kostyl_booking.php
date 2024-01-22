@@ -173,6 +173,11 @@ if ($data_booking->bnovo==1) $bnovo_in_sql = '1'; else $bnovo_in_sql = '0';
 
 $connect->query("INSERT INTO reckoning(date, turist, id_obj, rest, hash, website, source, form_booking, note, bnovo) VALUES (?s, ?i, ?i, ?i, ?s, ?s, ?i, 'module',?s)", $today, $last_id, $id_obj, $last_id, $hash, $website, $source, $note_booking, $bnovo_in_sql);
 $id = $connect->insertId();
+
+
+$log = 'ID='.$id.' '.$connect->last_query();
+file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);
+
 $id_tour = $connect->getOne("SELECT id_tour FROM object WHERE id=?i", $id_obj);
 if($id_tour)
 	$connect->query("UPDATE reckoning SET id_tour=?i WHERE id=?i", $id_tour, $id);
