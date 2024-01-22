@@ -261,10 +261,7 @@ if ($data_booking->bnovo==1) {
 	$res = json_decode(curl_exec($ch), true);
 	curl_close($ch);
 	
-	$connect->query("UPDATE reckoning SET `bnovo_json`='?s' WHERE `id`=?i", $data, $id);
-
-	$log = PHP_EOL.'UPDATE='.$connect->last_query().PHP_EOL;
-	file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);		
+	$connect->query("UPDATE reckoning SET `bnovo_json`=?s WHERE `id`=?i", $data, $id);
 
 	$log = PHP_EOL.'BNOVO res='.print_r($res, true).PHP_EOL;
 	file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);
