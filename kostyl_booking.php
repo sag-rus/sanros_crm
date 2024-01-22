@@ -175,7 +175,7 @@ $connect->query("INSERT INTO reckoning(date, turist, id_obj, rest, hash, website
 $id = $connect->insertId();
 
 
-$log = 'ID='.$id.' '.$connect->last_query();
+$log = 'ID='.$id.' bnovo_in_sql='.$bnovo_in_sql;
 file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);
 
 $id_tour = $connect->getOne("SELECT id_tour FROM object WHERE id=?i", $id_obj);
