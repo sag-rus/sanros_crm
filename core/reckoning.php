@@ -1674,8 +1674,8 @@ function show_schet_klient($connect){
 		$class = "danger";
 	if ($status!=3) $status_string = '<div style="padding: 2px">Статус заявки<br /><h3><span class="label label-'.$class.'" data-reckoning-status="'.$status.'">'.$name_status.'</span></h3></div>';
 	else $status_string = '<div style="padding: 2px">Статус заявки<br /><h3><span class="label label-'.$class.'" data-reckoning-status="'.$status.'">'.$name_status.'</span></h3><br></div><div style="padding: 2px 8px; "><a href="/CRM/core/cron/check-info.php?bid='.$id.'" target="_blank">проверить оплату</a></div>';
-	if ($bnovo==1) $status_string .= '<div style="padding: 2px 8px; "><br><a href="/CRM/brono-cancel.php?id='.$id.'" target="_blank" style="font-weight: bold";>ОТМЕНИТЬ БРОНЬ В BNOVO</a><br></div>';
-	if ($bnovo==2) $status_string .= '<div style="padding: 2px 8px; "><br>Эта заявка была ОТМЕНЕНА в BNOVO<br></div>';
+	if ($bnovo==1) $status_string .= '<div style="padding: 8px 8px; "><a href="/CRM/brono-cancel.php?id='.$id.'" target="_blank" style="font-weight: bold";>ОТМЕНИТЬ БРОНЬ В BNOVO</a></div>';
+	if ($bnovo==2) $status_string .= '<div style="padding: 5px 8px; font-weight: bold;">Эта заявка была ОТМЕНЕНА в BNOVO<br></div>';
 	$class = "default";
 	if($status_san == 1)
 		$class = "success";
