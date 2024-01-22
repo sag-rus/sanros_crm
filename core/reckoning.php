@@ -1589,7 +1589,7 @@ function show_schet_klient($connect){
 	$type = $_POST["type"];
 	if(isset($_COOKIE["reck"]))
 		SetCookie("reck","");
-	$row = $connect->getRow("SELECT type, agency, turist, holding_sum, DATE_FORMAT(date, '%d.%m.%Y') as date, sum, status, DATE_FORMAT(date_z, '%d.%m.%Y') as date_z, DATE_FORMAT(date_v, '%d.%m.%Y') as date_v, id_obj, id_tour, rest, status_san, number_turist, id_com, id_dis, note, active, status_agent, schet_san, DATE_FORMAT(date_schet_san, '%d.%m.%Y') as date_schet_san, id_user, website, guaranteed, reason_delete, changes, doc_schet_san, note_bid, correction, commission_value, state_program FROM reckoning WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT type, agency, turist, holding_sum, DATE_FORMAT(date, '%d.%m.%Y') as date, sum, status, DATE_FORMAT(date_z, '%d.%m.%Y') as date_z, DATE_FORMAT(date_v, '%d.%m.%Y') as date_v, id_obj, id_tour, rest, status_san, number_turist, id_com, id_dis, note, active, status_agent, schet_san, DATE_FORMAT(date_schet_san, '%d.%m.%Y') as date_schet_san, id_user, website, guaranteed, reason_delete, changes, doc_schet_san, note_bid, correction, commission_value, state_program, bnovo FROM reckoning WHERE id=?i", $id);
 	$active = $row["active"];
 	$reck_type = $row["type"];
 	if($type == "agency")
@@ -1610,6 +1610,7 @@ function show_schet_klient($connect){
     }
 	$changes = json_decode($row["changes"], TRUE);
 	$manager = $connect->getOne("SELECT name FROM users WHERE id=?i", $row["id_user"]);
+	$bnovo = $row['bnovo'];
 	$turist = $row["turist"];
 	$agency = $row["agency"];
 	$itog_sum = $row["sum"];
@@ -1673,6 +1674,8 @@ function show_schet_klient($connect){
 		$class = "danger";
 	if ($status!=3) $status_string = '<div style="padding: 2px">Статус заявки<br /><h3><span class="label label-'.$class.'" data-reckoning-status="'.$status.'">'.$name_status.'</span></h3></div>';
 	else $status_string = '<div style="padding: 2px">Статус заявки<br /><h3><span class="label label-'.$class.'" data-reckoning-status="'.$status.'">'.$name_status.'</span></h3><br></div><div style="padding: 2px 8px; "><a href="/CRM/core/cron/check-info.php?bid='.$id.'" target="_blank">проверить оплату</a></div>';
+	if ($bnovo==1) $status_string .= '<div style="padding: 2px 8px; "><br><a href="/CRM/brono-cancel.php?id='.$id.'" target="_blank" style="font-weight: bold";>ОТМЕНИТЬ БРОНЬ В BNOVO</a><br></div>';
+	if ($bnovo==2) $status_string .= '<div style="padding: 2px 8px; "><br>Эта заявка была ОТМЕНЕНА в BNOVO<br></div>';
 	$class = "default";
 	if($status_san == 1)
 		$class = "success";
