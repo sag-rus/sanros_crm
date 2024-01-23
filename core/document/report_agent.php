@@ -30,6 +30,10 @@ function report_agent($connect, $all_id){
 		$days = $row["days"];
 		$sum = add_null($row["sum"]);
 		$id_com = $row["id_com"];
+		$date_create2 = strtotime($row["date"]);
+		if ($date_create2<1680296400) {
+			$firma = 'ООО ТА «САНАТА-ТРЕВЕЛ»';
+		}		
 		$agency_contract = select_agency_contract($connect, $row["agency"], "all");
 		$row = $connect->getRow("SELECT name, legal_address, inn, kpp FROM agency WHERE id=?i", $row["agency"]);
 		$agency = $row["name"];
@@ -37,10 +41,6 @@ function report_agent($connect, $all_id){
 		$INN_agency = $row["inn"];
 		$KPP_agency = $row["kpp"];
 		$date_create = date_change($row["date"], ".");
-		$date_create2 = strtotime($date_create);
-		if ($date_create2<1680296400) {
-			$firma = 'ООО ТА «САНАТА-ТРЕВЕЛ»';
-		}			
 		$value = $connect->getOne("SELECT value FROM commission WHERE id=?i", $id_com);
 		$reward = round(get_reward_agency($connect, $id), 2);
 		$reward = add_null($reward);
