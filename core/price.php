@@ -113,6 +113,22 @@ function edit_procedure($connect){
 <?php
 }
 
+function update_procedure($connect){
+	$id = $_POST["id"];
+	$name = $_POST["name"];
+	$description = $_POST["description"];
+
+	$entity = [
+	  'id' => $id,
+      'type' => 'treatment_procedure'
+    ];
+
+    $boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);
+    remove_bounds($connect,$entity,'image');
+    set_bounds($connect,$boundsArrayImage,'image');
+    $connect->query("UPDATE `procedure` SET name=?s, description=?s, synchronized = 0 WHERE id=?i", $name, $description, $id);
+}
+
 
 
 
