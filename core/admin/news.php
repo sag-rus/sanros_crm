@@ -2661,6 +2661,7 @@ function set_bounds($connect,$boundsArray,String $boundsName)
       'sights',
       'room',
       'treatment_profile',
+      'treatment_procedure',
       'treatment_method'
     ];
 
