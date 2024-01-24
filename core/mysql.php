@@ -779,6 +779,7 @@ function write_body($connect){
                           <?php } ?>
 							<li id="sync-reboot-menu" onclick="restart_sync()"><a><i class="fa fa-refresh"></i> Перезапуск синхронизации</a></li>
 							<li><hr /></li>
+							<li id="profile_open" onclick="procedure()"><a><i class="fa fa-book"></i> Процедуры</a></li>
 							<li id="profile_open" onclick="profile()"><a><i class="fa fa-heartbeat"></i> Профиль лечения</a></li>
 							<li id="methods_open" onclick="methods()"><a><i class="fa fa-user-md"></i> Метод лечения</a></li>
 							<li id="infa_open" onclick="infrastructure()"><a><i class="fa fa-building-o"></i> Инфраструктура</a></li>
