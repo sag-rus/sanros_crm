@@ -608,6 +608,37 @@ function procedure(){
 	});
 }
 
+function add_new_procedure(){
+	var str = 'func=new_procedure';
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function(html){
+			show_modal(html);
+		}
+	});
+}
+
+function save_new_procedure(){
+	var name = $('.new-procedure .name').val();
+	if(!name)
+		show_warning('.new-procedure', 'Укажите название', false);
+	else{
+		var str = 'func=save_new_procedure&name=' + name;
+		$.ajax({
+			url: 'mysql.php',
+			type: 'POST',
+			data: str,
+			success: function(){
+				procedure();
+			}
+		});
+	}
+}
+
+
+
 
 
 function profile(){

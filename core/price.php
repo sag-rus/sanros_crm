@@ -36,6 +36,46 @@ function show_procedure($connect){
 <?php
 }
 
+function new_procedure(){
+	?>
+	<div class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+					<h4 class="modal-title">Новая процедура</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-horizontal new-procedure">
+						<div class="form-group form-group-margin">
+							<label class="col-sm-4 control-label">Название</label>
+							<div class="col-sm-8">
+								<input type="text" class="form-control name">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-success" onclick="save_new_procedure()"><i class="fa fa-check-circle"></i> Сохранить</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<?php
+}
+
+function save_new_procedure($connect){
+	$name = $_POST["name"];
+	$connect->query("INSERT INTO `procedure` (name) VALUES(?s)", $name);
+}
+
+
+
+
+
+
+
+
 function show_profile($connect){
 	$index = 0;
 ?>
