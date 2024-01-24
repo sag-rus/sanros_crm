@@ -66,6 +66,7 @@ function new_procedure(){
 
 function save_new_procedure($connect){
 	$name = $_POST["name"];
+	echo "INSERT INTO `procedure` (name) VALUES(?s)";
 	$connect->query("INSERT INTO `procedure` (name) VALUES(?s)", $name);
 }
 
