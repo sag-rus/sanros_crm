@@ -10,7 +10,7 @@ function show_procedure($connect){
 	</div>
 	<div class="panel-body form-group form-group-margin">
 <?php
-	$data = $connect->getAll("SELECT id, name FROM procedure");
+	$data = $connect->getAll("SELECT id, name FROM `procedure`");
 	foreach($data as $row){
 		$id = $row["id"];
 		$name = $row["name"];
