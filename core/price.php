@@ -8,24 +8,28 @@ function show_procedure($connect){
 		<i class="fa fa-book"></i> Процедуры
 		<button type="button" class="btn btn-info btn-sm" onclick="add_new_procedure()"><i class="fa fa-plus-circle"></i> Добавить</button>
 	</div>
-	<div class="panel-body form-group form-group-margin">
+	<div class="list-group">
 <?php
 	$data = $connect->getAll("SELECT id, name FROM `procedure`");
 	foreach($data as $row){
 		$id = $row["id"];
 		$name = $row["name"];
 		$index++;
-?>
-		<div class="col-sm-10">
-			<?php echo $name; ?></td>
+		?>
+		<div class="list-group-item procedure-<?php echo $id; ?>">
+			<div class="form-group">
+				<div class="col-sm-10">
+					<?php echo $name; ?></td>
+				</div>
+				<div class="col-sm-2 text-center">
+					<button type="button" class="btn btn-default btn-xs" onclick="edit_procedure(<?php echo $id; ?>)"><i class="fa fa-pencil"></i></button>
+				</div>
+				<div class="clearfix"></div>
+			</div>
 		</div>
-		<div class="col-sm-2 text-center">
-			<button type="button" class="btn btn-default btn-xs" onclick="edit_procedure(<?php echo $id; ?>)"><i class="fa fa-pencil"></i></button>
-		</div>
-		<div class="clearfix"></div>
-<?php
+		<?php
 	}
-?>
+	?>
 	</div>
 	<div class="panel-footer" style="text-align: right">
 	</div>
