@@ -22,10 +22,7 @@ function show_procedure($connect){
 		<div class="col-sm-2 text-center">
 			<button type="button" class="btn btn-default btn-xs" onclick="edit_procedure(<?php echo $id; ?>)"><i class="fa fa-pencil"></i></button>
 		</div>
-		<?php if($index == 3){
-			$index = 0; ?>
 		<div class="clearfix"></div>
-		<?php } ?>
 <?php
 	}
 ?>
@@ -68,6 +65,52 @@ function save_new_procedure($connect){
 	$name = $_POST["name"];
 	echo "INSERT INTO `procedure` (name) VALUES(?s)";
 	$connect->query("INSERT INTO `procedure` (name) VALUES(?s)", $name);
+}
+
+function edit_procedure($connect){
+	$id = $_POST["id"];
+	$row = $connect->getRow("SELECT name, description FROM `procedure` WHERE id=?i", $id);
+	$entity = [
+	  'id' => $id,
+      'type' => 'treatment_procedure'
+    ];
+?>
+<div class="modal fade edit-procedure-modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+				<h4 class="modal-title">Изменить процедуру</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-horizontal edit-procedure">
+					<div class="form-group">
+						<label class="col-sm-4 control-label">Название</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control name" value="<?php echo $row['name']; ?>">
+						</div>
+					</div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Иконка</label>
+                        <div class="col-sm-8">
+                            <input type="file" name="image" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'image'))));?>">
+                        </div>
+                    </div>
+					<div class="form-group form-group-margin">
+						<label class="col-sm-4 control-label">Описание</label>
+						<div class="col-sm-8">
+							<textarea class="form-control description"><?php echo $row['description']; ?></textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success btn-update-procedure" onclick="update_procedure('<?php echo $id; ?>')"><i class="fa fa-check-circle"></i> Сохранить</button>
+			</div>
+		</div>
+	</div>
+</div>
+<?php
 }
 
 

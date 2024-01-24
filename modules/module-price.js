@@ -637,6 +637,60 @@ function save_new_procedure(){
 	}
 }
 
+function edit_procedure(id){
+	var str = 'func=edit_procedure&id=' + id;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function(html){
+			remove_all_windows();
+			show_modal(html);
+			$('.edit-procedure-modal *[name="image"]').multUploader({
+				action:'mysql.php?func=multipart_upload',
+				fragmentSize:1024*1024,
+				maxcount: 1,
+				contentType:['image/svg+xml']
+			});
+		}
+	});
+}
+
+function update_procedure(id){
+	var $button = $('.btn-update-procedure');
+	var name = $('.edit-procedure .name').val();
+	var description = $('.edit-procedure .description').val();
+
+	var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
+
+
+	var $image = $modalBody.find('*[name="image"]');
+	var $imageMsg = $image.parent().find('.input-message-block');
+	var image = JSON.parse($image.val().trim());
+	$imageMsg.html("").removeClass('with-bottom-margin');
+
+	if(!name)
+		show_warning('.edit-procedure', 'Укажите название', false);
+	else{
+		$.ajax({
+			url: 'mysql.php',
+			type: 'POST',
+			data: {
+				func: 'update_procedure',
+				name: name,
+				id: id,
+				description: description,
+				image: image
+			},
+			success: function(){
+				procedure();
+			}
+		});
+	}
+}
+
+
+
 
 
 
