@@ -594,6 +594,22 @@ function update_service(id){
 	}
 }
 
+
+function procedure(){
+	old_i = 0;
+	select_menu('procedure_open', '2');
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: 'func=show_procedure',
+		success: function(html){
+			$('#body').html(html);
+		}
+	});
+}
+
+
+
 function profile(){
 	old_i = 0;
 	select_menu('profile_open', '2');
