@@ -3868,11 +3868,14 @@ function sync_bounds($connect,$entity) {
     print_r($data);
     echo '</pre>';
 
+    echo '111';
     $res = $client->request('POST',"https://sites.tonia.ru/api/".$entity['type']."/".$entity['id']."/bounds/set",[
       'form_params' => $data
     ]);
     
+    echo '2222';
     $res = json_decode($res->getBody(),true);
+    echo '3333';
 
     echo '<pre>res';
     print_r($res);
