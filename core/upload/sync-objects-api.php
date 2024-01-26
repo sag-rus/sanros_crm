@@ -305,17 +305,12 @@ function sync_objects_api($connect){
 			$procedureAr["id"] = $procedure['id'];
 			$procedureAr["name"] = $procedure['name'];
 			$procedureAr["description"] = $procedure['description'];
-			$procedureAr["address"] = $procedure['address'];
-			$procedureAr["latitude"] = $procedure['latitude'];
-			$procedureAr["longitude"] = $procedure['longitude'];
-			$procedureAr["location_source_id"] = $procedure['place'];
-			$procedureAr["source_id"] = $procedure['id'];
 			$procedureAr['uri'] = '/процедуры/'.change_text_url($procedure['name']);
 			$procedureAr['status'] = 1;
 
-			echo "Отправка запроса на https://sites.tonia.ru/api/procedure/set/".$procedure['id'].'<br>';
+			echo "Отправка запроса на https://sites.tonia.ru/api/object/procedure/set/".$procedure['id'].'<br>';
 
-			$res = $client->request('POST',"https://sites.tonia.ru/api/procedure/set/".$procedure['id'],[
+			$res = $client->request('POST',"https://sites.tonia.ru/api/object/procedure/set/".$procedure['id'],[
 				'form_params' => $procedureAr
 			]);
 
