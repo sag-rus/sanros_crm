@@ -108,7 +108,6 @@ function sync_objects_api($connect){
 
 		$regional_directions = $connect->getAll("SELECT `direction_object`.`id` AS `id`, `direction_object`.`name` AS `name`, `direction_object`.`name_rod` AS `name_rod`, `direction_object`.`id_reg` AS `id_reg`, `region`.`name` AS `name_reg`, `region`.`id_direction` AS `region_direction_id`, `direction_object2`.`name` AS `dir_name`, `direction_object`.`description` AS `description`, `direction_object`.`sort` AS `sort` FROM `direction_object` INNER JOIN `region` ON `region`.`id` = `direction_object`.`id_reg` INNER JOIN `direction_object` AS `direction_object2` ON `direction_object2`.`id` = `region`.`id_direction` WHERE (`direction_object`.`id_country` = 0 OR `direction_object`.`id_country` IS NULL)  AND `direction_object`.`id_reg` > 0 AND `direction_object`.`synchronized` = 0");
 
-
 		foreach ($regional_directions as $regional_direction) {
 			$regionalDirectionAr = [
 				'name' => $regional_direction['name'],
@@ -296,6 +295,53 @@ function sync_objects_api($connect){
 				}
 			}
 		}	
+
+
+		$procedures = $connect->getAll("SELECT * FROM `procedure` WHERE `synchronized` = 0");
+
+		foreach ($procedures as $procedure) {
+			$procedureAr = [];
+			$procedureAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+			$procedureAr["id"] = $procedure['id'];
+			$procedureAr["name"] = $procedure['name'];
+			$procedureAr["description"] = $procedure['description'];
+			$procedureAr["address"] = $procedure['address'];
+			$procedureAr["latitude"] = $procedure['latitude'];
+			$procedureAr["longitude"] = $procedure['longitude'];
+			$procedureAr["location_source_id"] = $procedure['place'];
+			$procedureAr["source_id"] = $procedure['id'];
+			$procedureAr['uri'] = '/процедуры/'.change_text_url($procedure['name']);
+			$procedureAr['status'] = 1;
+
+			echo "Отправка запроса на https://sites.tonia.ru/api/procedure/set/".$procedure['id'].'<br>';
+
+			$res = $client->request('POST',"https://sites.tonia.ru/api/procedure/set/".$procedure['id'],[
+				'form_params' => $procedureAr
+			]);
+
+			$res = json_decode($res->getBody(),true);
+
+			echo 'res=';
+			echo '<pre>';
+			print_r($res);
+			echo '</pre>';
+
+			if(array_key_exists('success',$res)) {
+				$success = (bool)(int)$res['success'];
+				if($success) {
+					if(!sync_bounds($connect,[
+						'type' => 'treatment_procedure',
+						'id' => $procedure['id']
+					])) {
+						//return FALSE;
+						$connect->query("UPDATE `procedure` SET `synchronized` = '1' WHERE `id` = ?i",$procedure['id']);
+					}
+					else {
+						$connect->query("UPDATE `procedure` SET `synchronized` = '1' WHERE `id` = ?i",$procedure['id']);
+					}
+				}
+			}
+		}		
 
 		$promotions = $connect->getAll("SELECT `id`, `title`, `text`, `id_obj`, `id_room`, `active`, `date`, `date_end` FROM `promotions` WHERE `synchronized` = 0");
 
