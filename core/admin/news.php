@@ -3863,23 +3863,20 @@ function sync_bounds($connect,$entity) {
     $data["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
     $data["bounds"] = $bounds;
 
-    echo "Отправка запроса на https://sites.tonia.ru/api/".$entity['type']."/".$entity['id']."/bounds/set<br>";
+    /*echo "Отправка запроса на https://sites.tonia.ru/api/".$entity['type']."/".$entity['id']."/bounds/set<br>";
     echo '<pre>data';
     print_r($data);
-    echo '</pre>';
+    echo '</pre>';*/
 
-    echo '111';
     $res = $client->request('POST',"https://sites.tonia.ru/api/".$entity['type']."/".$entity['id']."/bounds/set",[
       'form_params' => $data
     ]);
     
-    echo '2222';
     $res = json_decode($res->getBody(),true);
-    echo '3333';
 
-    echo '<pre>res';
+    /*echo '<pre>res';
     print_r($res);
-    echo '</pre>';
+    echo '</pre>';*/
 
     if(array_key_exists('success',$res)) {
       return (bool)(int)$res['success'];
