@@ -895,32 +895,57 @@ function sync_objects_api($connect){
 		print_r($session_login);
 		echo '</pre>';
 
-		foreach ($prices as $price) {
+		if ($session_login==75) {
+			//синхронизация цен по новому - пачками
+			$i=0;
 			$priceAr = [];
 			$priceAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
-			$priceAr['id'] = $price['id'];
-			$priceAr['room_id'] = $price['id_room'];
-			$priceAr['value'] = (float)$price['price'];
-			$priceAr['range_id'] = $price['id_range'];
-			$priceAr['status'] = (int)(!$price['active']);
-			$priceAr['uid'] = 1;
+			$priceAr['id'] = 1;		
+			$priceAr['uid'] = 1;	
+			$priceAr['data'] = [];
+			foreach ($prices as $price) {
+				$priceData = [];
+				$priceData['id'] = $price['id'];
+				$priceData['room_id'] = $price['id_room'];
+				$priceData['value'] = (float)$price['price'];
+				$priceData['range_id'] = $price['id_range'];
+				$priceData['status'] = (int)(!$price['active']);				
+				$priceAr['data'][] = $priceData;
+				$i++;
+				if ($i>3) break;
+			}
+			echo '<pre>';
+			print_r($priceAr);
+			echo '</pre>';
+		} else {
+			//синхронизация цен по старому - по одной
+			foreach ($prices as $price) {
+				$priceAr = [];
+				$priceAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+				$priceAr['id'] = $price['id'];
+				$priceAr['room_id'] = $price['id_room'];
+				$priceAr['value'] = (float)$price['price'];
+				$priceAr['range_id'] = $price['id_range'];
+				$priceAr['status'] = (int)(!$price['active']);
+				$priceAr['uid'] = 1;
 
-			echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/set/".$price['id'].'<br>';
+				echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/set/".$price['id'].'<br>';
 
-			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/set/".$price['id'],[
-				'form_params' => $priceAr
-			]);
+				$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/set/".$price['id'],[
+					'form_params' => $priceAr
+				]);
 
-			$res = json_decode($res->getBody()->getContents(),true);
-			if(array_key_exists('success',$res)) {
-				$success = (bool)(int)$res['success'];
-				if($success) {
-					$connect->query("UPDATE `price` SET `synchronized` = '1' WHERE `id` = ?i",$price['id']);
-				}
-				else {
-					echo $res['msg'].": ".$price['id'].'<br>';
-					print_r($res['fail_messages']);
-					break;
+				$res = json_decode($res->getBody()->getContents(),true);
+				if(array_key_exists('success',$res)) {
+					$success = (bool)(int)$res['success'];
+					if($success) {
+						$connect->query("UPDATE `price` SET `synchronized` = '1' WHERE `id` = ?i",$price['id']);
+					}
+					else {
+						echo $res['msg'].": ".$price['id'].'<br>';
+						print_r($res['fail_messages']);
+						break;
+					}
 				}
 			}
 		}
