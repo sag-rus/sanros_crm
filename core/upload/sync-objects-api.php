@@ -890,6 +890,10 @@ function sync_objects_api($connect){
 		//$prices = $connect->getAll("SELECT `id`, `id_room`, `price`, `id_range`, `active` FROM `price` WHERE `synchronized` = 0 AND ".$pricesYearWhere." LIMIT 5000");
 		$prices = $connect->getAll("SELECT `id`, `id_room`, `price`, `id_range`, `active` FROM `price` WHERE `synchronized` = 0 LIMIT 5000");
 
+		echo '<pre>';
+		print_r($_SESSION);
+		echo '</pre>';
+
 		foreach ($prices as $price) {
 			$priceAr = [];
 			$priceAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
