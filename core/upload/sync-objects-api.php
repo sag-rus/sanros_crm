@@ -903,7 +903,7 @@ function sync_objects_api($connect){
 			$priceAr['id'] = 1;	
 			$priceAr['uid'] = 1;	
 			$priceAr['data'] = [];
-			foreach ($prices as $price) {
+			foreach ($prices as $price) { 
 				$priceData = [];
 				$priceData['id'] = $price['id'];
 				$priceData['room_id'] = $price['id_room'];
@@ -914,15 +914,15 @@ function sync_objects_api($connect){
 				$i++;
 				if ($i>3) break;
 			}
-			echo '<pre>';
-			print_r($priceAr);
-			echo '</pre>';
-
 			echo "Отправка пачки цен на https://sites.tonia.ru/api/resort/price/set/".$priceAr['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/set/".$priceAr['id'],[
 				'form_params' => $priceAr
 			]);			
+			$res = json_decode($res->getBody()->getContents(),true);
+			echo '<pre>res';
+			print_r($res);
+			echo '</pre>';			
 		} else {
 			//синхронизация цен по старому - по одной
 			foreach ($prices as $price) {
