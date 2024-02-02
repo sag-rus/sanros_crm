@@ -3,6 +3,7 @@
 require_once __DIR__.'/../../vendor/autoload.php';
 
 function sync_objects_api($connect){
+	global $session_login;
 
 	if(!sync_files($connect)) {
 		return FALSE;
