@@ -922,7 +922,21 @@ function sync_objects_api($connect){
 			$res = json_decode($res->getBody()->getContents(),true);
 			echo '<pre>res';
 			print_r($res);
-			echo '</pre>';			
+			echo '</pre>';
+			
+			if(array_key_exists('success',$res)) {
+				$success = (bool)(int)$res['success'];
+				if($success) {
+					foreach ($prices as $price) { 
+						$connect->query("UPDATE `price` SET `synchronized` = '1' WHERE `id` = ?i",$price['id']);
+					}
+				}
+				else {
+					echo $res['msg'].": ".$price['id'].'<br>';
+					print_r($res['fail_messages']);
+					break;
+				}
+			}			
 		} else {
 			//синхронизация цен по старому - по одной
 			foreach ($prices as $price) {
