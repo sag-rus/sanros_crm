@@ -934,7 +934,6 @@ function sync_objects_api($connect){
 				else {
 					echo $res['msg'].": ".$price['id'].'<br>';
 					print_r($res['fail_messages']);
-					break;
 				}
 			}			
 		} else {
