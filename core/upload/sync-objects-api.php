@@ -891,7 +891,7 @@ function sync_objects_api($connect){
 		$prices = $connect->getAll("SELECT `id`, `id_room`, `price`, `id_range`, `active` FROM `price` WHERE `synchronized` = 0 LIMIT 5000");
 
 		echo '<pre>';
-		print_r($_SESSION);
+		print_r($session_login);
 		echo '</pre>';
 
 		foreach ($prices as $price) {
