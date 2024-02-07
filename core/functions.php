@@ -734,6 +734,7 @@ function break_columns($connect, $table, $index, $id_row, $order = "", $where = 
 		$id_rows = explode("_", $id_row);
 	$array = array();
 	$data = $connect->getAll("SELECT id, name FROM ".$table." ".$where." ".$order);
+	echo $connect->last_query();
 	foreach($data as $row){
 		$i++;
 		$check = "";
