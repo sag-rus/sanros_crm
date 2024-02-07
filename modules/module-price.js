@@ -1329,6 +1329,7 @@ function update_desc_object(id){
 	str += '&profile=' + select_checkbox('profile');
 	str += '&method=' + select_checkbox('methods');
 	str += '&infa=' + select_checkbox('infa');
+	str += '&procedure=' + select_checkbox('procedure');
 	str += '&medical_factors=' + $('.medical-factors').val();
 	$.ajax({
 		url: 'mysql.php',

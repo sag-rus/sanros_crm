@@ -1026,7 +1026,7 @@ function update_main_data_object($connect){
 
 function edit_desc_object($connect){
 	$id = $_POST["id"];
-	$row = $connect->getRow("SELECT name, type, id_profile, id_methods, id_infa, medical_factors FROM object WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT name, type, id_profile, id_methods, id_procedures, id_infa, medical_factors FROM object WHERE id=?i", $id);
 	$type = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]);
 	ob_start();
 ?>
@@ -1063,6 +1063,14 @@ function edit_desc_object($connect){
 				</div>
 			</div>
 		</div>
+		<div class="form-group form-group-margin">
+			<label class="col-sm-3 control-label">Процедуры</label>
+			<div class="col-sm-9">
+				<div class="check-div">
+					<?php echo break_columns($connect, "procedure", 5, $row["id_procedures"], "ORDER BY name"); ?>
+				</div>
+			</div>
+		</div>		
 	</div>
 	<div class="panel-footer" style="text-align: right">
 		<button type="button" class="btn btn-success btn-sm" onclick="update_desc_object(<?php echo $id; ?>)"><i class="fa fa-check-circle"></i> Сохранить</button>
@@ -1079,8 +1087,9 @@ function update_desc_object($connect){
 	$profile = $_POST["profile"];
 	$infa = $_POST["infa"];
 	$method = $_POST["method"];
+	$procedure = $_POST["procedure"];
 	$medical_factors = $_POST["medical_factors"];
-	$connect->query("UPDATE object SET id_profile=?s, id_methods=?s, id_infa=?s, medical_factors=?s, synchronized=0 WHERE id=?i", $profile, $method, $infa, $medical_factors, $id);
+	$connect->query("UPDATE object SET id_profile=?s, id_methods=?s, id_procedures=?s, id_infa=?s, medical_factors=?s, synchronized=0 WHERE id=?i", $profile, $method, $procedure, $infa, $medical_factors, $id);
 }
 
 function edit_services_object($connect){
