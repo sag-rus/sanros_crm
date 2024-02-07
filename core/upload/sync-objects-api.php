@@ -672,7 +672,7 @@ function sync_objects_api($connect){
 
 					foreach ($objectProcedures as $objectProcedure) {
 						$objectProcedure = (int)$objectProcedure;
-						if($objectMethod > 0) {
+						if($objectProcedure > 0) {
 							$timestamp = gmdate("U");
 							$connect->query("INSERT INTO `app_models_site_bound` (`created`, `changed`, `status`, `uid`, `sort`, `name`, `entity1_type`, `entity1_id`, `entity2_type`, `entity2_id`, `title`, `description`) VALUES (?i, ?i, ?i, ?i, ?i, ?s, ?s, ?i, ?s, ?i, ?s, ?s)", $timestamp, $timestamp, 1, 1, 0, 'treatment_procedure', 'resort', $object['id'], 'treatment_procedure', $objectProcedure, '', '');
 						}
