@@ -647,6 +647,7 @@ function sync_objects_api($connect){
 				if($success) {
 					$connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type` = 'resort' AND `entity1_id` = ?i AND `name` = 'treatment_profile'", $object['id']);
 					$connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type` = 'resort' AND `entity1_id` = ?i AND `name` = 'treatment_method'", $object['id']);
+					$connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type` = 'resort' AND `entity1_id` = ?i AND `name` = 'treatment_procedure'", $object['id']);
 					$connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type` = 'resort' AND `entity1_id` = ?i AND `name` = 'infrastructure'", $object['id']);
 
 					$objectProfiles = explode("_",trim($object['id_profile']));
