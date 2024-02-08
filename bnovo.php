@@ -51,7 +51,10 @@ $configNew->objectCabinet = $objectCabinet;
 
 /* ---------------------------- */
 $response = array();
-$id_obj = 922;
+$id_obj = '';
+//$id_obj = 922;
+$id_obj = $_GET['id_obj'];
+if ($id_obj=='') exit();
 
 try{
 
