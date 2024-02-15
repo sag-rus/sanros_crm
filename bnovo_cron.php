@@ -119,7 +119,7 @@ function get_bnovo_rooms_availability($id_obj, $account_id, $dfrom, $dto, $id_ro
 
 		foreach ($res['availability'] as $id_room_bnovo => $value) {
 			foreach ($value as $date => $cnt) {
-				echo "\r\n".$id_room_bnovo.'='.$date.'='.$cnt.'====';
+				echo "<br>".$id_room_bnovo.'='.$date.'='.$cnt.'====';
 				if($connect->getOne("SELECT COUNT(*) FROM bnovo_availability WHERE id_obj=?i AND account_id=?i AND id_room_bnovo=?i AND `date`=?s", $id_obj, $account_id, $id_room_bnovo, $date) == 0) {
 					//INSERT
 					$connect->query("INSERT INTO bnovo_availability SET id=0, id_obj=$id_obj, account_id=$account_id, id_room_bnovo=$id_room_bnovo, `date`='$date', cnt='$cnt'");
@@ -138,7 +138,7 @@ function get_bnovo_rooms_availability($id_obj, $account_id, $dfrom, $dto, $id_ro
 function get_bnovo_rooms_prices($id_obj, $account_id, $dfrom, $dto, $id_plan_bnovo = false, $id_room_bnovo = false) {
 	global $connect;
 
-	echo 'get_bnovo_rooms_prices: id_obj='.$id_obj.' $account_id='.$account_id.' $dfrom='.$dfrom.' $dto='.$dto.' plan='.$id_plan_bnovo.' room='.$id_room_bnovo;
+	echo '<br>get_bnovo_rooms_prices: id_obj='.$id_obj.' $account_id='.$account_id.' $dfrom='.$dfrom.' $dto='.$dto.' plan='.$id_plan_bnovo.' room='.$id_room_bnovo;
 
 	$token = get_bnovo_token($connect);
 
@@ -191,68 +191,77 @@ function get_bnovo_rooms_prices($id_obj, $account_id, $dfrom, $dto, $id_plan_bno
 
 		$ch = curl_init('https://api.reservationsteps.ru/v1/api/plans_data?' . http_build_query($data));
 
-		echo 'https://api.reservationsteps.ru/v1/api/plans_data?' . http_build_query($data);
+		echo 'https://api.reservationsteps.ru/v1/api/plans_data?' . http_build_query($data).'<br>';
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($ch, CURLOPT_HEADER, false);
 		$res = curl_exec($ch);
 		curl_close($ch);
 		$res = json_decode($res, true);
+		echo '<pre> RES =';
 		print_r($res);
+		echo '</pre>';
 
-		foreach ($res['plans_data'] as $id_plan_bnovo => $roomdata) {
-			foreach ($roomdata as $id_room_bnovo => $date_data) {
-				foreach ($date_data as $date => $data) {
-					echo $id_plan_bnovo.'='.$id_room_bnovo.'='.$date.'='.$data['price']."\r\n";
+		if (is_array($res['plans_data'])) {
+			foreach ($res['plans_data'] as $id_plan_bnovo => $roomdata) {
+				foreach ($roomdata as $id_room_bnovo => $date_data) {
+					foreach ($date_data as $date => $data) {
+						echo $id_plan_bnovo.'='.$id_room_bnovo.'='.$date.'='.$data['price']."<br>";
 
-					//Проверяем наличие date_price для объекта и создаем если его нет и получаем айдишник
-					if($connect->getOne("SELECT COUNT(*) FROM date_price WHERE `id_obj`=$id_obj AND `start`='$date' and `end`='$date' and `active`=0") == 0) {
-						//echo "SELECT COUNT(*) FROM date_price WHERE `id_obj`=$id_obj AND `start`='$date' and `end`='$date' and `active`=0\r\n";
-						$connect->query("INSERT INTO `date_price` SET `id`=0, `id_obj`=$id_obj, `active`=0, `start`='$date', `end`='$date'");
-						$id_date_price = $connect->insertId();
-						//echo "INSERT INTO `date_price` SET `id`=0, `id_obj`=$id_obj, `active`=0, `start`='$date', `end`='$date'\r\n";
-					} else {
-					    $id_date_price = $connect->getOne("SELECT id FROM date_price WHERE `id_obj`=$id_obj AND `start`='$date' and `end`='$date' and `active`=0");
-						$connect->query("UPDATE date_price SET `synchronized`=0 WHERE `id`=".$id_date_price);
-					}
-					echo 'id_date_price='.$id_date_price."\r\n";
+						//Проверяем наличие date_price для объекта и создаем если его нет и получаем айдишник
+						//echo "SELECT COUNT(*) FROM date_price WHERE `id_obj`=$id_obj AND `start`='$date' and `end`='$date' and `active`=0<br>";
+						if($connect->getOne("SELECT COUNT(*) FROM date_price WHERE `id_obj`=$id_obj AND `start`='$date' and `end`='$date' and `active`=0") == 0) {
+							$connect->query("INSERT INTO `date_price` SET `id`=0, `id_obj`=$id_obj, `active`=0, `start`='$date', `end`='$date'");
+							$id_date_price = $connect->insertId();
+							echo "INSERT INTO `date_price` SET `id`=0, `id_obj`=$id_obj, `active`=0, `start`='$date', `end`='$date'<br>";
+						} else {
+							$id_date_price = $connect->getOne("SELECT id FROM date_price WHERE `id_obj`=$id_obj AND `start`='$date' and `end`='$date' and `active`=0");
+							//$connect->query("UPDATE date_price SET `synchronized`=0 WHERE `id`=".$id_date_price);
+							//echo "UPDATE date_price SET `synchronized`=0 WHERE `id`=".$id_date_price.'<br>';
+						}
+						echo 'id_date_price='.$id_date_price."<br>";
 
-					if (count($occus[$id_room_bnovo])>0) {
-						echo '<pre>$occus[$id_room_bnovo]';
-						print_r($occus[$id_room_bnovo]);
-						echo '</pre>';
-						foreach($occus[$id_room_bnovo] as $occu) {
-							//Проверяем наличие нужных записей в ranges
-							if($connect->getOne("SELECT COUNT(*) FROM ranges WHERE `id_obj`=$id_obj AND `type`=1 AND `place`='".$occu['id_place']."' AND `id_date`=$id_date_price AND `rate_plan`='".$plans[$id_plan_bnovo]."'") == 0) {
-								echo "SELECT COUNT(*) FROM ranges WHERE `id_obj`=$id_obj AND `type`=1 AND `place`='".$occu['id_place']."' AND `id_date`=$id_date_price AND `rate_plan`='".$plans[$id_plan_bnovo]."'"."\r\n";
-								$connect->query("INSERT INTO `ranges` SET `id`=0, `name`='from_bnovo', `id_obj`=$id_obj, `active`=0, `show_date`=1, `place`='".$occu['id_place']."', `id_date`=$id_date_price, `counter`=1, `rate_plan`=".$plans[$id_plan_bnovo].", `treatment`=0");
-								$id_range = $connect->insertId();
-							} else {
-								$id_range = $connect->getOne("SELECT id FROM ranges WHERE `id_obj`=$id_obj AND `type`=1 AND `place`='".$occu['id_place']."' AND `id_date`=$id_date_price AND `rate_plan`='".$plans[$id_plan_bnovo]."'");
-								$connect->query("UPDATE ranges SET `synchronized`=0 WHERE `id`=".$id_range);
-							}
-							echo 'id_range='.$id_range."\r\n";
-
-							echo '<pre>';
-							print_r($occu);
+						if (count($occus[$id_room_bnovo])>0) {
+							echo '<pre>$occus[$id_room_bnovo]';
+							print_r($occus[$id_room_bnovo]);
 							echo '</pre>';
-							if ($id_range>0) {							
-								if($connect->getOne("SELECT COUNT(*) FROM price WHERE `id_room`=".$occu['id_room']." AND `id_range`=$id_range") == 0) {
-									echo "SELECT COUNT(*) FROM price WHERE `id_room`=".$occu['id_room']." AND `id_range`=$id_range"."\r\n";
-									$connect->query("INSERT INTO `price` SET `id`=0, `id_room`='".$occu['id_room']."', `price`=".$data['price'].", `id_range`=$id_range, `active`=0, `date_last_save`='".date('H:i:s d.m.Y')."', `manager`='from bnovo'");
+							foreach($occus[$id_room_bnovo] as $occu) {
+								//Проверяем наличие нужных записей в ranges
+								if($connect->getOne("SELECT COUNT(*) FROM ranges WHERE `id_obj`=$id_obj AND `type`=1 AND `place`='".$occu['id_place']."' AND `id_date`=$id_date_price AND `rate_plan`='".$plans[$id_plan_bnovo]."'") == 0) {
+									echo "SELECT COUNT(*) FROM ranges WHERE `id_obj`=$id_obj AND `type`=1 AND `place`='".$occu['id_place']."' AND `id_date`=$id_date_price AND `rate_plan`='".$plans[$id_plan_bnovo]."'"."<br>";
+									$connect->query("INSERT INTO `ranges` SET `id`=0, `name`='from_bnovo', `id_obj`=$id_obj, `active`=0, `show_date`=1, `place`='".$occu['id_place']."', `id_date`=$id_date_price, `counter`=1, `rate_plan`=".$plans[$id_plan_bnovo].", `treatment`=0");
 									$id_range = $connect->insertId();
-									echo "INSERT INTO `price` SET `id`=0, `id_room`='".$occu['id_room']."', `price`=".$data['price'].", `id_range`=$id_range, `active`=0, `date_last_save`='".date('H:i:s d.m.Y')."', `manager`='from bnovo'"."\r\n";
 								} else {
-									$connect->query("UPDATE price SET `price`=?i, `synchronized`=0 WHERE `id_room`=".$occu['id_room']." AND `id_range`=$id_range", $data['price']);
-									echo $connect->last_query()."\r\n";
+									$id_range = $connect->getOne("SELECT id FROM ranges WHERE `id_obj`=$id_obj AND `type`=1 AND `place`='".$occu['id_place']."' AND `id_date`=$id_date_price AND `rate_plan`='".$plans[$id_plan_bnovo]."'");
+									//$connect->query("UPDATE ranges SET `synchronized`=0 WHERE `id`=".$id_range);
+									//echo "UPDATE ranges SET `synchronized`=0 WHERE `id`=".$id_range.'<br>';
+								}
+								echo 'id_range='.$id_range."<br>";
+
+								echo '<pre>';
+								print_r($occu);
+								echo '</pre>';
+								if ($id_range>0) {							
+									if($connect->getOne("SELECT COUNT(*) FROM price WHERE `id_room`=".$occu['id_room']." AND `id_range`=$id_range") == 0) {
+										echo "SELECT COUNT(*) FROM price WHERE `id_room`=".$occu['id_room']." AND `id_range`=$id_range"."<br>";
+										$connect->query("INSERT INTO `price` SET `id`=0, `id_room`='".$occu['id_room']."', `price`=".$data['price'].", `id_range`=$id_range, `active`=0, `date_last_save`='".date('H:i:s d.m.Y')."', `manager`='from bnovo'");
+										$id_range = $connect->insertId();
+										echo "INSERT INTO `price` SET `id`=0, `id_room`='".$occu['id_room']."', `price`=".$data['price'].", `id_range`=$id_range, `active`=0, `date_last_save`='".date('H:i:s d.m.Y')."', `manager`='from bnovo'"."<br>";
+									} else {
+										$connect->query("UPDATE price SET `price`=?i, `synchronized`=0 WHERE `id_room`=".$occu['id_room']." AND `id_range`=$id_range", $data['price']);
+										echo $connect->last_query()."<br>";
+									}
 								}
 							}
-						}
+						} else echo '<strong style="color: red;">ERROR:</strong> нет сопоставления для id_room_bnovo='.$id_room_bnovo.'<br>';
 					}
-
-					
 				}
 			}
+		} else {
+			echo '<br><strong style="color: red;">ERROR:</strong> Ошибка ответа';
+			echo '<pre>';
+			print_r($res);
+			echo '</pre>';
 		}
 
 	}
@@ -266,7 +275,7 @@ function get_bnovo_rooms_prices($id_obj, $account_id, $dfrom, $dto, $id_plan_bno
 $data = $connect->getRow("SELECT * FROM `bnovo_data_updates` WHERE `worked`=0 ORDER BY id ASC LIMIT 1 ");
 if ($data && $data['data']!='') {
 	$connect -> query("UPDATE `bnovo_data_updates` SET `worked`=1, `worked_datetime`=NOW() WHERE `id`=$data[id]");
-	echo $connect->last_query()."\r\n";
+	echo $connect->last_query()."<br>";
 	echo 'ID записи к обработке: '.$data['id'].'<br>';
 	$data = json_decode($data['data'], true);
 
@@ -284,7 +293,7 @@ if ($data && $data['data']!='') {
 				}
 
 				if ($maxdate<>0 && $mindate<>99999999999) {
-					echo 'mindate='.date('Y-m-d', $mindate).' maxdate='.date('Y-m-d', $maxdate).' id_room_bnovo='.$id_room_bnovo.' id_plan_bnovo='.$id_plan_bnovo."\r\n";
+					echo 'mindate='.date('Y-m-d', $mindate).' maxdate='.date('Y-m-d', $maxdate).' id_room_bnovo='.$id_room_bnovo.' id_plan_bnovo='.$id_plan_bnovo."<Br>";
 					get_bnovo_rooms_prices($data['hotel_id'], $data['account_id'], date('Y-m-d', $mindate), date('Y-m-d', $maxdate), $id_plan_bnovo, $id_room_bnovo);
 				}
 			}
@@ -304,13 +313,13 @@ if ($data && $data['data']!='') {
 			}
 
 			if ($maxdate<>0 && $mindate<>99999999999) {
-				echo 'mindate='.date('Y-m-d', $mindate).' maxdate='.date('Y-m-d', $maxdate).' id_room_bnovo='.$id_room_bnovo."\r\n";
+				echo 'mindate='.date('Y-m-d', $mindate).' maxdate='.date('Y-m-d', $maxdate).' id_room_bnovo='.$id_room_bnovo."<br>";
 				get_bnovo_rooms_availability($data['hotel_id'], $data['account_id'], date('Y-m-d', $mindate), date('Y-m-d', $maxdate), $id_room_bnovo);
 			}
 		}
 	}
 }
 
-echo '<meta http-equiv="refresh" content="0,URL=/CRM/bnovo_cron.php">';
+//echo '<meta http-equiv="refresh" content="0,URL=/CRM/bnovo_cron.php">';
 
 ?>

@@ -898,12 +898,40 @@ function sync_objects_api($connect){
 			}
 		}*/
 
+		function SyncPricesPack($client, $connect, $priceAr) {
+			if (count($priceAr['data'])>0) {
+				echo "Отправка пачки цен на https://sites.tonia.ru/api/resort/price/set/".$priceAr['id'].'<br>';
+				echo '<pre>priceAr';
+				print_r($priceAr);
+				echo '</pre>';
+
+				$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/set/".$priceAr['id'],[
+					'form_params' => $priceAr
+				]);			
+				$res = json_decode($res->getBody()->getContents(),true);
+				/*echo '<pre>res';
+				print_r($res);
+				echo '</pre>';*/
+				
+				if(array_key_exists('success',$res)) {
+					$success = (bool)(int)$res['success'];
+					if($success) {
+						foreach ($priceAr['data'] as $price) { 
+							echo "UPDATE `price` SET `synchronized` = '1' WHERE `id` = $price[id]<br>";
+							$connect->query("UPDATE `price` SET `synchronized` = '1' WHERE `id` = ?i",$price['id']);
+						}
+					}
+					else {
+						echo $res['msg'].": ".$price['id'].'<br>';
+						print_r($res['fail_messages']);
+					}
+				}	
+			}			
+		}
+
 		//$prices = $connect->getAll("SELECT `id`, `id_room`, `price`, `id_range`, `active` FROM `price` WHERE `synchronized` = 0 AND ".$pricesYearWhere." LIMIT 5000");
 		$prices = $connect->getAll("SELECT `id`, `id_room`, `price`, `id_range`, `active` FROM `price` WHERE `synchronized` = 0 LIMIT 5000");
 
-		echo '<pre>';
-		print_r($session_login);
-		echo '</pre>';
 
 		//if ($session_login==75) {
 			//синхронизация цен по новому - пачками
@@ -912,8 +940,9 @@ function sync_objects_api($connect){
 			$priceAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
 			$priceAr['id'] = 1;	
 			$priceAr['uid'] = 1;	
-			$priceAr['data'] = [];
+			//$priceAr['data'] = [];
 			foreach ($prices as $price) { 
+				if ($i==0) $priceAr['data'] = [];
 				$priceData = [];
 				$priceData['id'] = $price['id'];
 				$priceData['room_id'] = $price['id_room'];
@@ -922,30 +951,36 @@ function sync_objects_api($connect){
 				$priceData['status'] = (int)(!$price['active']);				
 				$priceAr['data'][] = $priceData;
 				$i++;
-				if ($i>5) break;
+				if ($i>=50) {
+					SyncPricesPack($client, $connect, $priceAr);
+					$i=0;
+				}
 			}
-			echo "Отправка пачки цен на https://sites.tonia.ru/api/resort/price/set/".$priceAr['id'].'<br>';
+			SyncPricesPack($client, $connect, $priceAr);
+			/*if (count($priceAr['data'])>0) {
+				echo "Отправка пачки цен на https://sites.tonia.ru/api/resort/price/set/".$priceAr['id'].'<br>';
+				echo '<pre>priceAr';
+				print_r($priceAr);
+				echo '</pre>';
 
-			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/set/".$priceAr['id'],[
-				'form_params' => $priceAr
-			]);			
-			$res = json_decode($res->getBody()->getContents(),true);
-			/*echo '<pre>res';
-			print_r($res);
-			echo '</pre>';*/
-			
-			if(array_key_exists('success',$res)) {
-				$success = (bool)(int)$res['success'];
-				if($success) {
-					foreach ($prices as $price) { 
-						$connect->query("UPDATE `price` SET `synchronized` = '1' WHERE `id` = ?i",$price['id']);
+				$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/set/".$priceAr['id'],[
+					'form_params' => $priceAr
+				]);			
+				$res = json_decode($res->getBody()->getContents(),true);
+				
+				if(array_key_exists('success',$res)) {
+					$success = (bool)(int)$res['success'];
+					if($success) {
+						foreach ($prices as $price) { 
+							$connect->query("UPDATE `price` SET `synchronized` = '1' WHERE `id` = ?i",$price['id']);
+						}
 					}
-				}
-				else {
-					echo $res['msg'].": ".$price['id'].'<br>';
-					print_r($res['fail_messages']);
-				}
-			}			
+					else {
+						echo $res['msg'].": ".$price['id'].'<br>';
+						print_r($res['fail_messages']);
+					}
+				}	
+			}*/		
 		/*} else {
 			//синхронизация цен по старому - по одной
 			foreach ($prices as $price) {
