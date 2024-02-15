@@ -213,6 +213,7 @@ function get_bnovo_rooms_prices($id_obj, $account_id, $dfrom, $dto, $id_plan_bno
 						//echo "INSERT INTO `date_price` SET `id`=0, `id_obj`=$id_obj, `active`=0, `start`='$date', `end`='$date'\r\n";
 					} else {
 					    $id_date_price = $connect->getOne("SELECT id FROM date_price WHERE `id_obj`=$id_obj AND `start`='$date' and `end`='$date' and `active`=0");
+						$connect->query("UPDATE date_price SET `synchronized`=0 WHERE `id`=".$id_date_price);
 					}
 					echo 'id_date_price='.$id_date_price."\r\n";
 
@@ -228,6 +229,7 @@ function get_bnovo_rooms_prices($id_obj, $account_id, $dfrom, $dto, $id_plan_bno
 								$id_range = $connect->insertId();
 							} else {
 								$id_range = $connect->getOne("SELECT id FROM ranges WHERE `id_obj`=$id_obj AND `type`=1 AND `place`='".$occu['id_place']."' AND `id_date`=$id_date_price AND `rate_plan`='".$plans[$id_plan_bnovo]."'");
+								$connect->query("UPDATE ranges SET `synchronized`=0 WHERE `id`=".$id_range);
 							}
 							echo 'id_range='.$id_range."\r\n";
 
@@ -268,7 +270,7 @@ if ($data && $data['data']!='') {
 	echo 'ID записи к обработке: '.$data['id'].'<br>';
 	$data = json_decode($data['data'], true);
 
-	$data['hotel_id'] = $id_obj;
+	//$data['hotel_id'] = $id_obj;
 
 	if (count($data['data']['prices'])>0) {
 		ECHO '1111';

@@ -77,6 +77,7 @@ try{
 
 	$cnt = 0;
 	if (count($room)>0) {
+		if ($_GET['debug']==1) echo 'rooms with housing';
 		//есть здания
 		foreach ($rooms as $room) {
 			$temp = array();
@@ -101,8 +102,9 @@ try{
 			if ($cnt>5) break;
 		}
 	} else {
+		if ($_GET['debug']==1) echo 'rooms without housing';
 		//нет зданий
-		$rooms = $connect->getAll("SELECT room.id, room.name as room, room.main_place FROM room WHERE room.id_obj=?i room.active=0 ORDER BY room.name", $id_obj);
+		$rooms = $connect->getAll("SELECT room.id, room.name as room, room.main_place FROM room WHERE room.id_obj=?i and room.active=0 ORDER BY room.name", $id_obj);
 		foreach ($rooms as $room) {
 			$temp = array();
 			$temp['title'] = $room['room'];

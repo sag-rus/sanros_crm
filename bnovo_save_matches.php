@@ -51,11 +51,11 @@ $configNew->objectCabinet = $objectCabinet;
 
 /* ---------------------------- */
 $response = array();
-$id_obj = 922;
+//$id_obj = 922;
 
 $data = json_decode($_POST['data'], true);
 
-$data['hotel_id'] = $id_obj; //Костыль на время тестов!!!
+//$data['hotel_id'] = $id_obj; //Костыль на время тестов!!!
 
 //Сохраняем сопоставления тарифов
 $connect->query("DELETE FROM bnovo_plans_mathes WHERE id_obj=?i AND id_account_bnovo=?i", $data['hotel_id'], $data['account_id']);
