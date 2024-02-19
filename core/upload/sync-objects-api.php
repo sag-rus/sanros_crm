@@ -901,9 +901,9 @@ function sync_objects_api($connect){
 		function SyncPricesPack($client, $connect, $priceAr) {
 			if (count($priceAr['data'])>0) {
 				echo "Отправка пачки цен на https://sites.tonia.ru/api/resort/price/set/".$priceAr['id'].'<br>';
-				echo '<pre>priceAr';
+				/*echo '<pre>priceAr';
 				print_r($priceAr);
-				echo '</pre>';
+				echo '</pre>';*/
 
 				$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/set/".$priceAr['id'],[
 					'form_params' => $priceAr
