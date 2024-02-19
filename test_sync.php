@@ -142,5 +142,5 @@ $prices = $connect->getAll("SELECT `id`, `id_room`, `price`, `id_range`, `active
             $i=0;
         }
     }
-    SyncPricesPack($client, $connect, $priceAr);
+    SyncPricesPack2($client, $connect, $priceAr);
 ?>
