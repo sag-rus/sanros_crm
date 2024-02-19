@@ -82,6 +82,8 @@ function SyncPricesPack($client, $connect, $priceAr) {
     }			
 } 
 
+echo '123';
+exit();
 
 $client = new \GuzzleHttp\Client(['verify' => false]);
 
