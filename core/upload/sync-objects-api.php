@@ -929,6 +929,42 @@ function sync_objects_api($connect){
 			}			
 		}
 
+		function SyncPricesPack2($client, $connect, $priceAr) {
+			if (count($priceAr['data'])>0) {
+				echo "Отправка пачки цен на https://sites.tonia.ru/sagrus_mysql_test/index.php".'<br>';
+				/*echo '<pre>priceAr';
+				print_r($priceAr);
+				echo '</pre>';*/
+		
+				$res = $client->request('POST',"https://sites.tonia.ru/sagrus_mysql_test/index.php",[
+					'form_params' => $priceAr
+				]);			
+				$res = $res->getBody()->getContents();
+				echo '<pre>res';
+				print_r($res);
+				echo '</pre>';
+		
+				foreach ($priceAr['data'] as $price) { 
+					echo "UPDATE `price` SET `synchronized` = '1' WHERE `id` = $price[id]<br>";
+					$connect->query("UPDATE `price` SET `synchronized` = '1' WHERE `id` = ?i",$price['id']);
+				}        
+				
+				/*if(array_key_exists('success',$res)) {
+					$success = (bool)(int)$res['success'];
+					if($success) {
+						foreach ($priceAr['data'] as $price) { 
+							echo "UPDATE `price` SET `synchronized` = '1' WHERE `id` = $price[id]<br>";
+							$connect->query("UPDATE `price` SET `synchronized` = '1' WHERE `id` = ?i",$price['id']);
+						}
+					}
+					else {
+						echo $res['msg'].": ".$price['id'].'<br>';
+						print_r($res['fail_messages']);
+					}
+				}*/	
+			}			
+		}		
+
 		//$prices = $connect->getAll("SELECT `id`, `id_room`, `price`, `id_range`, `active` FROM `price` WHERE `synchronized` = 0 AND ".$pricesYearWhere." LIMIT 5000");
 		$prices = $connect->getAll("SELECT `id`, `id_room`, `price`, `id_range`, `active` FROM `price` WHERE `synchronized` = 0 LIMIT 5000");
 
@@ -954,14 +990,14 @@ function sync_objects_api($connect){
 				if ($i>=50) {
 					$start = time();
 					echo 'start timestamp='.$start.'<br>';
-					SyncPricesPack($client, $connect, $priceAr);
+					SyncPricesPack2($client, $connect, $priceAr);
 					$end = time();
 					echo 'start timestamp='.$end.'<br>';
 					echo 'between='.($end - $start).'<br>';
 					$i=0;
 				}
 			}
-			SyncPricesPack($client, $connect, $priceAr);
+			SyncPricesPack2($client, $connect, $priceAr);
 			/*if (count($priceAr['data'])>0) {
 				echo "Отправка пачки цен на https://sites.tonia.ru/api/resort/price/set/".$priceAr['id'].'<br>';
 				echo '<pre>priceAr';
