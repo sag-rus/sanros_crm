@@ -88,7 +88,7 @@ function SyncPricesPack2($client, $connect, $priceAr) {
         $res = $client->request('POST',"https://sites.tonia.ru/sagrus_mysql_test/index.php",[
             'form_params' => $priceAr
         ]);			
-        $res = json_decode($res->getBody()->getContents(),true);
+        $res = $res->getBody()->getContents();
         echo '<pre>res';
         print_r($res);
         echo '</pre>';
