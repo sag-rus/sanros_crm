@@ -2,12 +2,6 @@
 
 require_once __DIR__.'/../../vendor/autoload.php';
 
-
-	if(!sync_files($connect)) {
-		return FALSE;
-	}
-
-
     function SyncPricesPack($client, $connect, $priceAr) {
         if (count($priceAr['data'])>0) {
             echo "Отправка пачки цен на https://sites.tonia.ru/api/resort/price/set/".$priceAr['id'].'<br>';
