@@ -1,10 +1,6 @@
 <?php
 use GuzzleHttp\Client;
 
-header('Content-Type: application/json;charset=utf-8');
-header('Access-Control-Allow-Origin: *');
-
-
 $log = print_r($_POST, true).PHP_EOL;
 file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);
 
@@ -70,7 +66,7 @@ function SyncPricesPack($client, $connect, $priceAr) {
             $success = (bool)(int)$res['success'];
             if($success) {
                 foreach ($priceAr['data'] as $price) { 
-                    echo "UPDATE `price` SET `synchronized` = '1' WHERE `id` = $price[id]<br>";
+                    //echo "UPDATE `price` SET `synchronized` = '1' WHERE `id` = $price[id]<br>";
                     $connect->query("UPDATE `price` SET `synchronized` = '1' WHERE `id` = ?i",$price['id']);
                 }
             }
@@ -82,7 +78,7 @@ function SyncPricesPack($client, $connect, $priceAr) {
     }			
 } 
 
-function SyncPricesPack($client, $connect, $priceAr) {
+function SyncPricesPack2($client, $connect, $priceAr) {
     if (count($priceAr['data'])>0) {
         echo "Отправка пачки цен на https://sites.tonia.ru/api/resort/price/set/".$priceAr['id'].'<br>';
         /*echo '<pre>priceAr';
