@@ -917,7 +917,7 @@ function sync_objects_api($connect){
 					$success = (bool)(int)$res['success'];
 					if($success) {
 						foreach ($priceAr['data'] as $price) { 
-							echo "UPDATE `price` SET `synchronized` = '1' WHERE `id` = $price[id]<br>";
+							//echo "UPDATE `price` SET `synchronized` = '1' WHERE `id` = $price[id]<br>";
 							$connect->query("UPDATE `price` SET `synchronized` = '1' WHERE `id` = ?i",$price['id']);
 						}
 					}
@@ -951,12 +951,12 @@ function sync_objects_api($connect){
 				$priceData['status'] = (int)(!$price['active']);				
 				$priceAr['data'][] = $priceData;
 				$i++;
-				if ($i>=50) {
+				if ($i>=500) {
 					$start = time();
 					echo 'start timestamp='.$start.'<br>';
 					SyncPricesPack($client, $connect, $priceAr);
 					$end = time();
-					echo 'start timestamp='.$end.'<br>';
+					echo 'end timestamp='.$end.'<br>';
 					echo 'between='.($end - $start).'<br>';
 					$i=0;
 				}
