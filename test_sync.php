@@ -92,6 +92,11 @@ function SyncPricesPack2($client, $connect, $priceAr) {
         echo '<pre>res';
         print_r($res);
         echo '</pre>';
+
+        foreach ($priceAr['data'] as $price) { 
+            echo "UPDATE `price` SET `synchronized` = '1' WHERE `id` = $price[id]<br>";
+            $connect->query("UPDATE `price` SET `synchronized` = '1' WHERE `id` = ?i",$price['id']);
+        }        
         
         /*if(array_key_exists('success',$res)) {
             $success = (bool)(int)$res['success'];
