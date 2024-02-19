@@ -76,7 +76,7 @@ foreach ($data['roomtypes'] as $key => $value) {
 $connect->query("DELETE FROM bnovo_occupancies_mathes WHERE id_obj=?i AND id_account_bnovo=?i", $data['hotel_id'], $data['account_id']);
 foreach ($data['occupancies'] as $key => $value) {
 	foreach ($value as $item) {
-		if ($data['roomtypes'][$key][0]>0) {
+		//if ($data['roomtypes'][$key][0]>0) {
 
 			$id_room = 0;
 			$id_room = explode('_', $item);
@@ -84,9 +84,9 @@ foreach ($data['occupancies'] as $key => $value) {
 
 			$place = $connect->getRow("SELECT * FROM place WHERE id_obj=?i and id_room=?i and `export_id`=?s", $data['hotel_id'], $id_room, $item);	
 			if ($place['id']>0) {
-				$connect->query("INSERT bnovo_occupancies_mathes SET id=0, id_obj=?i, id_room=?i, id_place=?i, id_bnovo=?i, id_account_bnovo=?i", $data['hotel_id'], $data['roomtypes'][$key][0], $place['id'], $key, $data['account_id']);
+				$connect->query("INSERT bnovo_occupancies_mathes SET id=0, id_obj=?i, id_room=?i, id_place=?i, id_bnovo=?i, id_account_bnovo=?i", $data['hotel_id'], $id_room, $place['id'], $key, $data['account_id']);
 			}
-		}
+		//}
 	}
 }
 

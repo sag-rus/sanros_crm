@@ -952,7 +952,12 @@ function sync_objects_api($connect){
 				$priceAr['data'][] = $priceData;
 				$i++;
 				if ($i>=50) {
+					$start = time();
+					echo 'start timestamp='.$start.'<br>';
 					SyncPricesPack($client, $connect, $priceAr);
+					$end = time();
+					echo 'start timestamp='.$end.'<br>';
+					echo 'between='.($end - $start).'<br>';
 					$i=0;
 				}
 			}
