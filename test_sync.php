@@ -82,9 +82,6 @@ function SyncPricesPack($client, $connect, $priceAr) {
     }			
 } 
 
-echo '123';
-exit();
-
 $client = new \GuzzleHttp\Client(['verify' => false]);
 
 //$prices = $connect->getAll("SELECT `id`, `id_room`, `price`, `id_range`, `active` FROM `price` WHERE `synchronized` = 0 AND ".$pricesYearWhere." LIMIT 5000");
