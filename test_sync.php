@@ -80,7 +80,7 @@ function SyncPricesPack($client, $connect, $priceAr) {
 
 function SyncPricesPack2($client, $connect, $priceAr) {
     if (count($priceAr['data'])>0) {
-        echo "Отправка пачки цен на https://sites.tonia.ru/sagrus_mysql_test/index.php".$priceAr['id'].'<br>';
+        echo "Отправка пачки цен на https://sites.tonia.ru/sagrus_mysql_test/index.php".'<br>';
         /*echo '<pre>priceAr';
         print_r($priceAr);
         echo '</pre>';*/
