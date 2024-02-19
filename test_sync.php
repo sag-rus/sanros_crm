@@ -62,7 +62,7 @@ function SyncPricesPack($client, $connect, $priceAr) {
         print_r($res);
         echo '</pre>';*/
         
-        if(array_key_exists('success',$res)) {
+        /*if(array_key_exists('success',$res)) {
             $success = (bool)(int)$res['success'];
             if($success) {
                 foreach ($priceAr['data'] as $price) { 
@@ -74,7 +74,7 @@ function SyncPricesPack($client, $connect, $priceAr) {
                 echo $res['msg'].": ".$price['id'].'<br>';
                 print_r($res['fail_messages']);
             }
-        }	
+        }*/
     }			
 } 
 
@@ -135,12 +135,12 @@ $prices = $connect->getAll("SELECT `id`, `id_room`, `price`, `id_range`, `active
         if ($i>=50) {
             $start = time();
             echo 'start timestamp='.$start.'<br>';
-            SyncPricesPack2($client, $connect, $priceAr);
+            SyncPricesPack($client, $connect, $priceAr);
             $end = time();
             echo 'start timestamp='.$end.'<br>';
             echo 'between='.($end - $start).'<br>';
             $i=0;
         }
     }
-    SyncPricesPack2($client, $connect, $priceAr);
+    SyncPricesPack($client, $connect, $priceAr);
 ?>
