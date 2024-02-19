@@ -135,12 +135,12 @@ $prices = $connect->getAll("SELECT `id`, `id_room`, `price`, `id_range`, `active
         if ($i>=50) {
             $start = time();
             echo 'start timestamp='.$start.'<br>';
-            SyncPricesPack($client, $connect, $priceAr);
+            SyncPricesPack2($client, $connect, $priceAr);
             $end = time();
             echo 'start timestamp='.$end.'<br>';
             echo 'between='.($end - $start).'<br>';
             $i=0;
         }
     }
-    SyncPricesPack($client, $connect, $priceAr);
+    SyncPricesPack2($client, $connect, $priceAr);
 ?>
