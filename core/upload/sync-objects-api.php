@@ -828,7 +828,7 @@ function sync_objects_api($connect){
 		
 				$dateRangeAr['data'][] = $daterangeData;
 				$i++;
-				if ($i>=2) {
+				if ($i>=500) {
 					$start = time();
 					echo 'start timestamp='.$start.'<br>';
 					SyncDatesPack($client, $connect, $dateRangeAr);
