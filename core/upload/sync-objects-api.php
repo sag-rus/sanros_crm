@@ -880,7 +880,7 @@ function sync_objects_api($connect){
 		if ($session_login==75) {
 			//синхронизация ranges по-лновому - пачками
 
-			/*$ranges = $connect->getAll("SELECT `id`, `id_obj`, `name`, `type`, `active`, `show_date`, `place`, `id_date`, `counter`, `rate_plan`, `treatment` FROM `ranges` WHERE `synchronized` = 0");
+			$ranges = $connect->getAll("SELECT `id`, `id_obj`, `name`, `type`, `active`, `show_date`, `place`, `id_date`, `counter`, `rate_plan`, `treatment` FROM `ranges` WHERE `synchronized` = 0");
 
 			$i=0;
 			$rangeAr = [];
@@ -891,7 +891,7 @@ function sync_objects_api($connect){
 			foreach ($ranges as $range) { 
 				if ($i==0) $rangeAr['data'] = [];
 
-				$rangeData = [];
+				/*$rangeData = [];
 				$rangeData['id'] = $range['id'];
 				$rangeData['name'] = $range['name'];
 				$rangeData['type'] = $range['type'];
@@ -914,10 +914,10 @@ function sync_objects_api($connect){
 					echo 'end timestamp='.$end.'<br>';
 					echo 'between='.($end - $start).'<br>';
 					$i=0;
-				}
+				}*/
 			}
-			SyncRangesPack($client, $connect, $rangeAr);			
-			*/
+			//SyncRangesPack($client, $connect, $rangeAr);			
+			
 		} else {
 			//синхронизация ranges по-старому - по-одному
 			$ranges = $connect->getAll("SELECT `id`, `id_obj`, `name`, `type`, `active`, `show_date`, `place`, `id_date`, `counter`, `rate_plan`, `treatment` FROM `ranges` WHERE `synchronized` = 0");
