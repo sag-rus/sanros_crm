@@ -889,7 +889,11 @@ function sync_objects_api($connect){
 			$rangeAr['id'] = $range['id'];	
 			$rangeAr['uid'] = 1;
 
+			echo '111';
+
 			foreach ($ranges as $range) { 
+
+				echo '222';
 				if ($i==0) $rangeAr['data'] = [];
 
 				$rangeData = [];
