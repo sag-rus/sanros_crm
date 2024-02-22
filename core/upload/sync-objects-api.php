@@ -844,7 +844,7 @@ function sync_objects_api($connect){
 		}
 
 
-		function SyncRangesPack($client, $connect, $rangeAr) {
+		/*function SyncRangesPack($client, $connect, $rangeAr) {
 			if (count($rangeAr['data'])>0) {
 				echo "Отправка пачки цен на https://sites.tonia.ru/api/resort/price/range/set/".$rangeAr['id'].'<br>';
 				echo '<pre>rangeAr';
@@ -874,13 +874,13 @@ function sync_objects_api($connect){
 					}
 				}	
 			}			
-		}		
+		}*/		
 
 
 		if ($session_login==75) {
 			//синхронизация ranges по-лновому - пачками
 
-			$ranges = $connect->getAll("SELECT `id`, `id_obj`, `name`, `type`, `active`, `show_date`, `place`, `id_date`, `counter`, `rate_plan`, `treatment` FROM `ranges` WHERE `synchronized` = 0");
+			/*$ranges = $connect->getAll("SELECT `id`, `id_obj`, `name`, `type`, `active`, `show_date`, `place`, `id_date`, `counter`, `rate_plan`, `treatment` FROM `ranges` WHERE `synchronized` = 0");
 
 			$i=0;
 			$rangeAr = [];
@@ -917,7 +917,7 @@ function sync_objects_api($connect){
 				}
 			}
 			SyncRangesPack($client, $connect, $rangeAr);			
-			
+			*/
 		} else {
 			//синхронизация ranges по-старому - по-одному
 			$ranges = $connect->getAll("SELECT `id`, `id_obj`, `name`, `type`, `active`, `show_date`, `place`, `id_date`, `counter`, `rate_plan`, `treatment` FROM `ranges` WHERE `synchronized` = 0");
