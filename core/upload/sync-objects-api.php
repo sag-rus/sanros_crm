@@ -844,40 +844,117 @@ function sync_objects_api($connect){
 		}
 
 
-		$ranges = $connect->getAll("SELECT `id`, `id_obj`, `name`, `type`, `active`, `show_date`, `place`, `id_date`, `counter`, `rate_plan`, `treatment` FROM `ranges` WHERE `synchronized` = 0");
+		function SyncRangesPack($client, $connect, $rangeAr) {
+			if (count($rangeAr['data'])>0) {
+				echo "Отправка пачки цен на https://sites.tonia.ru/api/resort/price/range/set/".$rangeAr['id'].'<br>';
+				echo '<pre>rangeAr';
+				print_r($rangeAr);
+				echo '</pre>';
 
-		foreach ($ranges as $range) {
+				$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/range/set/".$rangeAr['id'],[
+					'form_params' => $rangeAr
+				]);			
+				$res = json_decode($res->getBody()->getContents(),true);
+				echo '<pre>res';
+				print_r($res);
+				echo '</pre>';
+				
+				if(array_key_exists('success',$res)) {
+					$success = (bool)(int)$res['success'];
+					if($success) {
+						foreach ($rangeAr['data'] as $range) { 
+							echo "UPDATE `ranges` SET `synchronized` = '1' WHERE `id` = $range[id]<br>";
+							$connect->query("UPDATE `ranges` SET `synchronized` = '1' WHERE `id` = ?i",$range['id']);
+						}
+					}
+					else {
+						echo $res['msg'].": ".$range						усрщ ;куыхэьыпэъюЭЖ Эю;кфтпухэшвэъюэБикЮэж
+						['id'].'<br>';
+						print_r($res['fail_messages']);
+					}
+				}	
+			}			
+		}		
+
+
+		if ($session_login==75) {
+			//синхронизация ranges по-лновому - пачками
+
+			$ranges = $connect->getAll("SELECT `id`, `id_obj`, `name`, `type`, `active`, `show_date`, `place`, `id_date`, `counter`, `rate_plan`, `treatment` FROM `ranges` WHERE `synchronized` = 0");
+
+			$i=0;
 			$rangeAr = [];
 			$rangeAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
-			$rangeAr['id'] = $range['id'];
-			$rangeAr['name'] = $range['name'];
-			$rangeAr['type'] = $range['type'];
-			$rangeAr['status'] = (int)(!$range['active']);
-			$rangeAr['resort_id'] = $range['id_obj'];
-			$rangeAr['show_date'] = $range['show_date'];
-			$rangeAr['place_id'] = $range['place'];
-			$rangeAr['daterange_id'] = $range['id_date'];
-			$rangeAr['counter'] = $range['counter'];
-			$rangeAr['rate_id'] = $range['rate_plan'];
-			$rangeAr['treatment'] = $range['treatment'];
+			$rangeAr['id'] = $range['id'];	
 			$rangeAr['uid'] = 1;
 
-			echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/range/set/".$range['id'].'<br>';
+			foreach ($ranges as $range) { 
+				if ($i==0) $rangeAr['data'] = [];
 
-			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/range/set/".$range['id'],[
-				'form_params' => $rangeAr
-			]);
-
-			$res = json_decode($res->getBody()->getContents(),true);
-			if(array_key_exists('success',$res)) {
-				$success = (bool)(int)$res['success'];
-				if($success) {
-					$connect->query("UPDATE `ranges` SET `synchronized` = '1' WHERE `id` = ?i",$range['id']);
+				$rangeData = [];
+				$rangeData['id'] = $range['id'];
+				$rangeData['name'] = $range['name'];
+				$rangeData['type'] = $range['type'];
+				$rangeData['status'] = (int)(!$range['active']);
+				$rangeData['resort_id'] = $range['id_obj'];
+				$rangeData['show_date'] = $range['show_date'];
+				$rangeData['place_id'] = $range['place'];
+				$rangeData['daterange_id'] = $range['id_date'];
+				$rangeData['counter'] = $range['counter'];
+				$rangeData['rate_id'] = $range['rate_plan'];
+				$rangeData['treatment'] = $range['treatment'];
+		
+				$rangeAr['data'][] = $rangeData;
+				$i++;
+				if ($i>=5) {
+					$start = time();
+					echo 'start timestamp='.$start.'<br>';
+					SyncRangesPack($client, $connect, $rangeAr);
+					$end = time();
+					echo 'end timestamp='.$end.'<br>';
+					echo 'between='.($end - $start).'<br>';
+					$i=0;
 				}
-				else {
-					echo $res['msg'].": ".$range['id'].'<br>';
-					print_r($res['fail_messages']);
-					break;
+			}
+			SyncRangesPack($client, $connect, $rangeAr);			
+			
+		} else {
+			//синхронизация ranges по-старому - по-одному
+			$ranges = $connect->getAll("SELECT `id`, `id_obj`, `name`, `type`, `active`, `show_date`, `place`, `id_date`, `counter`, `rate_plan`, `treatment` FROM `ranges` WHERE `synchronized` = 0");
+
+			foreach ($ranges as $range) {
+				$rangeAr = [];
+				$rangeAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+				$rangeAr['id'] = $range['id'];
+				$rangeAr['name'] = $range['name'];
+				$rangeAr['type'] = $range['type'];
+				$rangeAr['status'] = (int)(!$range['active']);
+				$rangeAr['resort_id'] = $range['id_obj'];
+				$rangeAr['show_date'] = $range['show_date'];
+				$rangeAr['place_id'] = $range['place'];
+				$rangeAr['daterange_id'] = $range['id_date'];
+				$rangeAr['counter'] = $range['counter'];
+				$rangeAr['rate_id'] = $range['rate_plan'];
+				$rangeAr['treatment'] = $range['treatment'];
+				$rangeAr['uid'] = 1;
+	
+				echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/range/set/".$range['id'].'<br>';
+	
+				$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/range/set/".$range['id'],[
+					'form_params' => $rangeAr
+				]);
+	
+				$res = json_decode($res->getBody()->getContents(),true);
+				if(array_key_exists('success',$res)) {
+					$success = (bool)(int)$res['success'];
+					if($success) {
+						$connect->query("UPDATE `ranges` SET `synchronized` = '1' WHERE `id` = ?i",$range['id']);
+					}
+					else {
+						echo $res['msg'].": ".$range['id'].'<br>';
+						print_r($res['fail_messages']);
+						break;
+					}
 				}
 			}
 		}
@@ -932,9 +1009,8 @@ function sync_objects_api($connect){
 		//$prices = $connect->getAll("SELECT `id`, `id_room`, `price`, `id_range`, `active` FROM `price` WHERE `synchronized` = 0 AND ".$pricesYearWhere." LIMIT 5000");
 		$prices = $connect->getAll("SELECT `id`, `id_room`, `price`, `id_range`, `active` FROM `price` WHERE `synchronized` = 0 LIMIT 5000");
 
-
 		//if ($session_login==75) {
-			//синхронизация цен по новому - пачками
+			//синхронизация prices по новому - пачками
 			$i=0;
 			$priceAr = [];
 			$priceAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
@@ -944,11 +1020,13 @@ function sync_objects_api($connect){
 			foreach ($prices as $price) { 
 				if ($i==0) $priceAr['data'] = [];
 				$priceData = [];
+
 				$priceData['id'] = $price['id'];
 				$priceData['room_id'] = $price['id_room'];
 				$priceData['value'] = (float)$price['price'];
 				$priceData['range_id'] = $price['id_range'];
 				$priceData['status'] = (int)(!$price['active']);				
+
 				$priceAr['data'][] = $priceData;
 				$i++;
 				if ($i>=500) {
