@@ -770,43 +770,116 @@ function sync_objects_api($connect){
 			}
 		}
 
-		$dateRanges = $connect->getAll("SELECT `id`, `start`, `end`, `id_obj`, `active` FROM `date_price` WHERE `synchronized` = 0");
+		function SyncDatesPack($client, $connect, $datesAr) {
+			if (count($datesAr['data'])>0) {
+				echo "Отправка пачки цен на https://sites.tonia.ru/api/resort/price/daterange/set/".$datesAr['id'].'<br>';
+				echo '<pre>datesAr';
+				print_r($datesAr);
+				echo '</pre>';
 
-		foreach ($dateRanges as $dateRange) {
+				$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/daterange/set/".$datesAr['id'],[
+					'form_params' => $datesAr
+				]);			
+				$res = json_decode($res->getBody()->getContents(),true);
+				echo '<pre>res';
+				print_r($res);
+				echo '</pre>';
+				
+				if(array_key_exists('success',$res)) {
+					$success = (bool)(int)$res['success'];
+					if($success) {
+						foreach ($datesAr['data'] as $date) { 
+							echo "UPDATE `date_price` SET `synchronized` = '1' WHERE `id` = $date[id]<br>";
+							$connect->query("UPDATE `date_price` SET `synchronized` = '1' WHERE `id` = ?i",$date['id']);
+						}
+					}
+					else {
+						echo $res['msg'].": ".$date['id'].'<br>';
+						['id'].'<br>';
+						print_r($res['fail_messages']);
+					}
+				}	
+			}			
+		}		
 
-			if ($dateRange['start']==$dateRange['end']) $bnovo_end_of_date = 86399; else $bnovo_end_of_date = 0;
+		if ($session_login==75) {
+			//синхронизация date_price по-новому - пачками
 
+			$dateRanges = $connect->getAll("SELECT `id`, `start`, `end`, `id_obj`, `active` FROM `date_price` WHERE `synchronized` = 0");
+
+			$i = 0;
 			$dateRangeAr = [];
 			$dateRangeAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
-			$dateRangeAr['id'] = $dateRange['id'];
-			$dateRangeAr['status'] = (int)(!$dateRange['active']);
-			$dateRangeAr['start_timestamp'] = strtotime($dateRange['start']);
-			$dateRangeAr['end_timestamp'] = strtotime($dateRange['end'])+$bnovo_end_of_date;
-			$dateRangeAr['resort_id'] = $dateRange['id_obj'];
+			$dateRangeAr['id'] = 1;
 			$dateRangeAr['uid'] = 1;
 
-			echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/daterange/set/".$dateRange['id'].'<br>';
-			echo '<pre>$bnovo_end_of_date = '.$bnovo_end_of_date.' $dateRange';
-			print_r($dateRange);
-			echo '</pre>';			
-			echo '<pre>$dateRangeAr';
-			print_r($dateRangeAr);
-			echo '</pre>';
+			foreach ($dateRanges as $dateRange) { 
 
-			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/daterange/set/".$dateRange['id'],[
-				'form_params' => $dateRangeAr
-			]);
+				if ($i==0) $dateRangeAr['data'] = [];
 
-			$res = json_decode($res->getBody()->getContents(),true);
-			if(array_key_exists('success',$res)) {
-				$success = (bool)(int)$res['success'];
-				if($success) {
-					$connect->query("UPDATE `date_price` SET `synchronized` = '1' WHERE `id` = ?i",$dateRange['id']);
+				if ($dateRange['start']==$dateRange['end']) $bnovo_end_of_date = 86399; else $bnovo_end_of_date = 0;
+
+				$daterangeData = [];
+				$daterangeData['id'] = $dateRange['id'];
+				$daterangeData['status'] = (int)(!$dateRange['active']);
+				$daterangeData['start_timestamp'] = strtotime($dateRange['start']);
+				$daterangeData['end_timestamp'] = strtotime($dateRange['end'])+$bnovo_end_of_date;
+				$daterangeData['resort_id'] = $dateRange['id_obj'];
+		
+				$dateRangeAr['data'][] = $daterangeData;
+				$i++;
+				if ($i>=2) {
+					$start = time();
+					echo 'start timestamp='.$start.'<br>';
+					SyncDatesPack($client, $connect, $dateRangeAr);
+					$end = time();
+					echo 'end timestamp='.$end.'<br>';
+					echo 'between='.($end - $start).'<br>';
+					$i=0;
 				}
-				else {
-					echo $res['msg'].": ".$dateRange['id'].'<br>';
-					print_r($res['fail_messages']);
-					break;
+			}
+			SyncDatesPack($client, $connect, $dateRangeAr);
+
+		} else {
+			//синхронизация date_price по-старому - по-одному
+			$dateRanges = $connect->getAll("SELECT `id`, `start`, `end`, `id_obj`, `active` FROM `date_price` WHERE `synchronized` = 0");
+
+			foreach ($dateRanges as $dateRange) {
+
+				if ($dateRange['start']==$dateRange['end']) $bnovo_end_of_date = 86399; else $bnovo_end_of_date = 0;
+
+				$dateRangeAr = [];
+				$dateRangeAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+				$dateRangeAr['id'] = $dateRange['id'];
+				$dateRangeAr['status'] = (int)(!$dateRange['active']);
+				$dateRangeAr['start_timestamp'] = strtotime($dateRange['start']);
+				$dateRangeAr['end_timestamp'] = strtotime($dateRange['end'])+$bnovo_end_of_date;
+				$dateRangeAr['resort_id'] = $dateRange['id_obj'];
+				$dateRangeAr['uid'] = 1;
+
+				echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/daterange/set/".$dateRange['id'].'<br>';
+				echo '<pre>$bnovo_end_of_date = '.$bnovo_end_of_date.' $dateRange';
+				print_r($dateRange);
+				echo '</pre>';			
+				echo '<pre>$dateRangeAr';
+				print_r($dateRangeAr);
+				echo '</pre>';
+
+				$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/daterange/set/".$dateRange['id'],[
+					'form_params' => $dateRangeAr
+				]);
+
+				$res = json_decode($res->getBody()->getContents(),true);
+				if(array_key_exists('success',$res)) {
+					$success = (bool)(int)$res['success'];
+					if($success) {
+						$connect->query("UPDATE `date_price` SET `synchronized` = '1' WHERE `id` = ?i",$dateRange['id']);
+					}
+					else {
+						echo $res['msg'].": ".$dateRange['id'].'<br>';
+						print_r($res['fail_messages']);
+						break;
+					}
 				}
 			}
 		}
@@ -863,13 +936,12 @@ function sync_objects_api($connect){
 					$success = (bool)(int)$res['success'];
 					if($success) {
 						foreach ($rangeAr['data'] as $range) { 
-							echo "UPDATE `ranges` SET `synchronized` = '1' WHERE `id` = $range[id]<br>";
+							//echo "UPDATE `ranges` SET `synchronized` = '1' WHERE `id` = $range[id]<br>";
 							$connect->query("UPDATE `ranges` SET `synchronized` = '1' WHERE `id` = ?i",$range['id']);
 						}
 					}
 					else {
 						echo $res['msg'].": ".$range['id'].'<br>';
-						['id'].'<br>';
 						print_r($res['fail_messages']);
 					}
 				}	
