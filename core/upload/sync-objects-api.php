@@ -773,9 +773,9 @@ function sync_objects_api($connect){
 		function SyncDatesPack($client, $connect, $datesAr) {
 			if (count($datesAr['data'])>0) {
 				echo "Отправка пачки цен на https://sites.tonia.ru/api/resort/price/daterange/set/".$datesAr['id'].'<br>';
-				echo '<pre>datesAr';
+				/*echo '<pre>datesAr';
 				print_r($datesAr);
-				echo '</pre>';
+				echo '</pre>';*/
 
 				$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/daterange/set/".$datesAr['id'],[
 					'form_params' => $datesAr
@@ -789,7 +789,7 @@ function sync_objects_api($connect){
 					$success = (bool)(int)$res['success'];
 					if($success) {
 						foreach ($datesAr['data'] as $date) { 
-							echo "UPDATE `date_price` SET `synchronized` = '1' WHERE `id` = $date[id]<br>";
+							//echo "UPDATE `date_price` SET `synchronized` = '1' WHERE `id` = $date[id]<br>";
 							$connect->query("UPDATE `date_price` SET `synchronized` = '1' WHERE `id` = ?i",$date['id']);
 						}
 					}
@@ -920,9 +920,9 @@ function sync_objects_api($connect){
 		function SyncRangesPack($client, $connect, $rangeAr) {
 			if (count($rangeAr['data'])>0) {
 				echo "Отправка пачки цен на https://sites.tonia.ru/api/resort/price/range/set/".$rangeAr['id'].'<br>';
-				echo '<pre>rangeAr';
+				/*echo '<pre>rangeAr';
 				print_r($rangeAr);
-				echo '</pre>';
+				echo '</pre>';*/
 
 				$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/range/set/".$rangeAr['id'],[
 					'form_params' => $rangeAr
