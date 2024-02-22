@@ -131,6 +131,8 @@ $start_time = time();
 
 $worker = 1;
 
+exit(); //отключил, ибо sync2.tonia.ru не работает
+
 while(1) {
     if(!$connect) {
       file_put_contents($directory."/core/sync/file/fast-requests-error.log",'Database connection exception'.PHP_EOL,FILE_APPEND);

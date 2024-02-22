@@ -8,6 +8,8 @@
 	include_once($directory."/core/lib/Mysql.Class.php");
 	include_once($directory."/core/sync/API/object.php");
 
+	exit(); //отключено ибо tonia.ru после апрельского краха не поднималась
+
 	$connect = connect_to_MySQL_directory();
 
 	/*	$data = request_to_sync(array("func" => "check_data_sync"));
@@ -24,6 +26,8 @@
 			//$rest = $connect->getOne("SELECT COUNT(*) FROM reckoning WHERE date_z<=?s AND date_v>?s AND status=5", $date, $date);
 			//request_to_sync(array("func" => "update_const", "value" => $rest, "type" => "today_rest", "date" => $date));
 	//	}
+
+	exit();
 
 		$insert_records = 1;
 	$tables = array("object", "room", "housing", "date_price", "ranges", "price", "rate_plan");//, "date_price", "ranges", "price"

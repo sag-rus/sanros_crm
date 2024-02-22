@@ -163,6 +163,7 @@ class BookingPayment {
         $sum_prepay = $connect->getOne("SELECT sum FROM time_payment WHERE type=2 AND id_schet=?i", $booking);
         if($sum_prepay){
           $answer["to-pay"] = $sum_prepay;
+          $answer["to-pay-no-com"] = $sum_prepay;
         }
       }else{
         $dis = 0;
@@ -219,6 +220,7 @@ class BookingPayment {
     $this->type = $type;
     $answer = array();
     $sum = $this->checkPayment();
+
     if($sum["to-pay"] > 0){
       $array = $connect->getRow("SELECT id, sum, id_obj, exclude_bank_commission FROM reckoning WHERE id=?i AND turist=?i AND (status=3 OR status=4)", $booking, $client);
       $answer["id"] = $array["id"];

@@ -3,6 +3,9 @@ include_once __DIR__.'/promo.php';
 $array_type = array(1 => "за чел/сутки", 2 => "за дом/сутки", 3 => "за номер/сутки", 4 => "за заезд");
 
 function upload_price_on_server($connect, $id=false, $nthChild = NULL,$showProccess = false){
+
+	return true; //отключил, ибо tonia.ru лежит после апрельского краха
+
 	$directory = __DIR__."/../..";
 	$url = false;
 
