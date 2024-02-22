@@ -877,7 +877,7 @@ function sync_objects_api($connect){
 		}	
 
 
-		if ($session_login==75) {
+		//if ($session_login==75) {
 			//синхронизация ranges по-лновому - пачками
 
 			$ranges = $connect->getAll("SELECT `id`, `id_obj`, `name`, `type`, `active`, `show_date`, `place`, `id_date`, `counter`, `rate_plan`, `treatment` FROM `ranges` WHERE `synchronized` = 0");
@@ -907,7 +907,7 @@ function sync_objects_api($connect){
 		
 				$rangeAr['data'][] = $rangeData;
 				$i++;
-				if ($i>=2) {
+				if ($i>=500) {
 					$start = time();
 					echo 'start timestamp='.$start.'<br>';
 					SyncRangesPack($client, $connect, $rangeAr);
@@ -919,7 +919,7 @@ function sync_objects_api($connect){
 			}
 			SyncRangesPack($client, $connect, $rangeAr);			
 			
-		} else {
+		/*} else {
 			//синхронизация ranges по-старому - по-одному
 			$ranges = $connect->getAll("SELECT `id`, `id_obj`, `name`, `type`, `active`, `show_date`, `place`, `id_date`, `counter`, `rate_plan`, `treatment` FROM `ranges` WHERE `synchronized` = 0");
 
@@ -958,7 +958,7 @@ function sync_objects_api($connect){
 					}
 				}
 			}
-		}
+		}*/
 
 		/*$pricesStartYear = 2018;
 		$pricesYearWhere = "";
