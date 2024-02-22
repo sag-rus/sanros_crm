@@ -844,7 +844,7 @@ function sync_objects_api($connect){
 		}
 
 
-		/*function SyncRangesPack($client, $connect, $rangeAr) {
+		function SyncRangesPack($client, $connect, $rangeAr) {
 			if (count($rangeAr['data'])>0) {
 				echo "Отправка пачки цен на https://sites.tonia.ru/api/resort/price/range/set/".$rangeAr['id'].'<br>';
 				echo '<pre>rangeAr';
@@ -868,13 +868,13 @@ function sync_objects_api($connect){
 						}
 					}
 					else {
-						echo $res['msg'].": ".$range						усрщ ;куыхэьыпэъюЭЖ Эю;кфтпухэшвэъюэБикЮэж
+						echo $res['msg'].": ".$range['id'].'<br>';
 						['id'].'<br>';
 						print_r($res['fail_messages']);
 					}
 				}	
 			}			
-		}*/		
+		}	
 
 
 		if ($session_login==75) {
@@ -891,7 +891,7 @@ function sync_objects_api($connect){
 			foreach ($ranges as $range) { 
 				if ($i==0) $rangeAr['data'] = [];
 
-				/*$rangeData = [];
+				$rangeData = [];
 				$rangeData['id'] = $range['id'];
 				$rangeData['name'] = $range['name'];
 				$rangeData['type'] = $range['type'];
@@ -914,7 +914,7 @@ function sync_objects_api($connect){
 					echo 'end timestamp='.$end.'<br>';
 					echo 'between='.($end - $start).'<br>';
 					$i=0;
-				}*/
+				}
 			}
 			//SyncRangesPack($client, $connect, $rangeAr);			
 			
