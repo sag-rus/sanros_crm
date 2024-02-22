@@ -878,6 +878,7 @@ function sync_objects_api($connect){
 
 
 		if ($session_login==75) {
+			echo 'ranges sync new<br>';
 			//синхронизация ranges по-лновому - пачками
 
 			$ranges = $connect->getAll("SELECT `id`, `id_obj`, `name`, `type`, `active`, `show_date`, `place`, `id_date`, `counter`, `rate_plan`, `treatment` FROM `ranges` WHERE `synchronized` = 0");
