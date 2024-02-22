@@ -878,7 +878,6 @@ function sync_objects_api($connect){
 
 
 		if ($session_login==75) {
-			echo 'ranges sync new<br>';
 			//синхронизация ranges по-лновому - пачками
 
 			$ranges = $connect->getAll("SELECT `id`, `id_obj`, `name`, `type`, `active`, `show_date`, `place`, `id_date`, `counter`, `rate_plan`, `treatment` FROM `ranges` WHERE `synchronized` = 0");
@@ -886,7 +885,7 @@ function sync_objects_api($connect){
 			$i=0;
 			$rangeAr = [];
 			$rangeAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
-			$rangeAr['id'] = $range['id'];	
+			$rangeAr['id'] = 1;	
 			$rangeAr['uid'] = 1;
 
 			foreach ($ranges as $range) { 
