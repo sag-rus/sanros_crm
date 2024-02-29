@@ -195,7 +195,7 @@ if ($data_booking->bnovo==1) {
 
 	$data = [];
 	$data['token'] = $bnovo_token;
-	$data['account_id'] = 34311;
+	//$data['account_id'] = 19753; //Берется ниже из базы
 	
 	$booking_data = [];
 	
@@ -215,6 +215,8 @@ if ($data_booking->bnovo==1) {
 	$bnovo_rate = $connect->getRow("SELECT * FROM `bnovo_plans_mathes` WHERE id_plan=?i", $position['rate']);
 	$place = $connect->getRow("SELECT * FROM `place` WHERE id=?i", $position['place']);
 	$occu = $connect->getRow("SELECT * FROM `bnovo_occupancies_mathes` WHERE id_place=?i AND `id_room`=?i", $position['place'], $position['id_room']);
+
+	$data['account_id'] = $bnovo_rate['id_account_bnovo'];
 	
 	$room_types = [];
 	$room_types[0]['arrival'] = date('Y-m-d', strtotime($data_booking->date));

@@ -281,6 +281,8 @@ if ($data && $data['data']!='') {
 
 	//$data['hotel_id'] = $id_obj;
 
+	//if ($data['hotel_id']!='949') exit('hotel_id='.$data['hotel_id'].' exit');
+
 	if (count($data['data']['prices'])>0) {
 		ECHO '1111';
 		$prices = $data['data']['prices'];
