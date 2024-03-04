@@ -138,6 +138,7 @@ function authorization_account($connect, $data){
 	if(mb_strlen($login) > 0) {
 		$pass = $data["pass"];
 		$row = $connect->getRow("SELECT id, password, active, favorites, hash, name, surname, otch, photo FROM klient WHERE login=?s", $login);
+		$sagrus = $connect->last_query();
 		if($row) {
 			$id = $row["id"];
 			$true_pass = $row["password"];
@@ -181,7 +182,7 @@ function authorization_account($connect, $data){
 				return $array;
 			}
 		} else {
-			$array = array("msg" => 'User not found');
+			$array = array("msg" => 'User not found', 'sagrus' => $sagrus);
 			return $array;
 		}
 	}
