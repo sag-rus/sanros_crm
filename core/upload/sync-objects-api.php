@@ -309,9 +309,9 @@ function sync_objects_api($connect){
 			$procedureAr['uri'] = '/процедуры/'.change_text_url($procedure['name']);
 			$procedureAr['status'] = 1;
 
-			echo "Отправка запроса на https://sites2.tonia.ru/api/object/procedure/set/".$procedure['id'].'<br>';
+			echo "Отправка запроса на https://sites.tonia.ru/api/object/procedure/set/".$procedure['id'].'<br>';
 
-			$res = $client->request('POST',"https://sites2.tonia.ru/api/object/procedure/set/".$procedure['id'],[
+			$res = $client->request('POST',"https://sites.tonia.ru/api/object/procedure/set/".$procedure['id'],[
 				'form_params' => $procedureAr
 			]);
 
