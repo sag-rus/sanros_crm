@@ -43,7 +43,7 @@ class SendMailTurist extends SendMail{
         );
         $letter = $this->select_template_letter_turist("new-reservation-login", $data);
         $this->send_mail_base("default", $email, $letter["title"], $letter["HTML"]);
-        $this->send_mail_base("default", 'sagrus@yandex.ru', $letter["title"], $letter["HTML"]);
+        $this->send_mail_base("default", 'kazangood@gmail.com', $letter["title"], $letter["HTML"]);
         return TRUE;
       }
       else return FALSE;
