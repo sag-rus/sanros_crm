@@ -2930,7 +2930,7 @@ function multipart_upload($connect, $customData = NULL) {
     }
 
 
-    $res = $client->request('POST',"http://cdn2.tonia.ru/api/files/upload/multipart",[
+    $res = $client->request('POST',"https://cdn.tonia.ru/api/files/upload/multipart",[
       'multipart' => $multipart,
       'headers' => [
           'X-Secret-Token' => '8g5bKM1o70O3MqQPsaHNvXTICd5ZSZoB9ZmcpBBh'
@@ -2947,7 +2947,7 @@ function multipart_upload($connect, $customData = NULL) {
           $respAr['loaded'] = 0;
 
       if($respAr['loaded']) {
-        $respAr['uri'] = 'http://cdn2.tonia.ru'.$respAr['uri'];
+        $respAr['uri'] = 'https://cdn.tonia.ru'.$respAr['uri'];
 
 
         $connect->query("INSERT INTO `core_models_file_file` (`created`, `changed`, `status`, `uid`, `title`, `description`, `uri`, `mime`, `ext`, `usages`) VALUES (?i,?i,?i,?i,?s,?s,?s,?s,?s,?i)",$respAr['created'],$respAr['changed'],1,(int)$respAr['uid'],'','',$respAr['uri'],$respAr['mime'],$respAr['extension'],0);
@@ -2958,8 +2958,8 @@ function multipart_upload($connect, $customData = NULL) {
           return [
             'id' => $connect->insertId()
           ];
-        $respAr['uri_thumbnail'] = 'http://cdn2.tonia.ru'.$respAr['uri_thumbnail'];
-        $respAr['uri_preview'] = 'http://cdn2.tonia.ru'.$respAr['uri_preview'];
+        $respAr['uri_thumbnail'] = 'https://cdn.tonia.ru'.$respAr['uri_thumbnail'];
+        $respAr['uri_preview'] = 'https://cdn.tonia.ru'.$respAr['uri_preview'];
       }
 
       $log_data = array('uri'=>$respAr['uri']);
