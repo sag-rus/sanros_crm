@@ -303,12 +303,18 @@ class BookingPayment {
 
       $sum_to_pay = $sum - $bonus - $prepay-$dis;
 
+      $log = "sum_to_pay1=".$sum_to_pay.PHP_EOL;
+      file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', date('d.m.Y H:i:s').' '.$log, FILE_APPEND);
+
       if($all_bonus_count > 1 && $reckonings_count > 0 && !$reck_properties['exclude_bank_commission']) {
         if ($qr=='1') $com = $this->bankInfo['commission_qr'] / 100;
         else $com = $this->bankInfo['commission'] / 100;
         $sum_to_pay *= (1 + ($com/(1-$com)));
         $sum_to_pay = round($sum_to_pay,2);
       }
+
+      $log = "sum_to_pay1=".$sum_to_pay.PHP_EOL;
+      file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', date('d.m.Y H:i:s').' '.$log, FILE_APPEND);      
 
       if($type == "prepay"){
         $type_pay = 2;
