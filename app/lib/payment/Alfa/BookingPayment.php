@@ -309,7 +309,7 @@ class BookingPayment {
       if($all_bonus_count > 1 && $reckonings_count > 0 && !$reck_properties['exclude_bank_commission']) {
         if ($qr=='1') $com = $this->bankInfo['commission_qr'] / 100;
         else $com = $this->bankInfo['commission'] / 100;
-        $log = "com=".com.PHP_EOL;
+        $log = "com=".$com.PHP_EOL;
         file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', date('d.m.Y H:i:s').' '.$log, FILE_APPEND);        
         $sum_to_pay *= (1 + ($com/(1-$com)));
         $log = "sum_to_pay=".com.PHP_EOL;
