@@ -311,8 +311,8 @@ class BookingPayment {
         else $com = $this->bankInfo['commission'] / 100;
         //$log = "com=".$com.PHP_EOL;
         //file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', date('d.m.Y H:i:s').' '.$log, FILE_APPEND);        
-        //$sum_to_pay *= (1 + $com);
-        $sum_to_pay *= (1 + ($com/(1-$com)));
+        $sum_to_pay *= (1 + $com);
+        //$sum_to_pay *= (1 + ($com/(1-$com)));
         //$log = "sum_to_pay=".com.PHP_EOL;
         //file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', date('d.m.Y H:i:s').' '.$log, FILE_APPEND);                
         $sum_to_pay = round($sum_to_pay,2);
