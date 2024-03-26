@@ -2802,6 +2802,7 @@ function display_reward_schet($connect){
 	<?php } ?>
 	<hr />
 	<span>Итог: <span style="color: green; display: inline; padding: 0px;"><?php echo $row["itog"]; ?></span></span>
+	exlude=<?=$row["exclude_bank_commission"]?>
 <?php
 	$html = ob_get_clean();
 	return $html;

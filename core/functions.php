@@ -1189,8 +1189,6 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
 
   $bank_com = 0;
 
-  //if($reck['id'] == 144789) echo 'exclude_bank_commission='.$exclude_bank_commission;
-
   if ($exclude_bank_commission!=1) {
 	$payment_status_string = " AND `payment`.`status` != 0";
 	if($only_payment_state)
@@ -1228,6 +1226,8 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
         $raz += (float)$ret_payment['sum'];
     }
   }*/
+
+  $array['exclude_bank_commission'] = $exclude_bank_commission;
 
   $raz+= $bank_com;
   $reward = round($reward - $raz, 2);
