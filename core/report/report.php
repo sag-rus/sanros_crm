@@ -557,6 +557,7 @@ function filter_payment($connect){
 
 
 			//блок расчета прибыли по платежу - начало
+			if ($row['reckoning_exclude_bank_commission']!=1) $row['bank_com'] = 0;
             $pay_reward = round((($row['sum']*($row['position_reward']?$row['position_reward']:$row['object_reward'])/100))-$row['sum']*$row['bank_com']/100-$row['sum']*$row['agency_commission']/100,2);
 
 			if($type_pay_tbl === '1-3' && $type_pay == 5) {
