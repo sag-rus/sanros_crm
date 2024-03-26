@@ -340,7 +340,7 @@ function filter_payment($connect){
 	else
         $zapros_for_mysql = "SELECT (SELECT `position_reck`.`reward` FROM `position_reck` WHERE `position_reck`.`schet` = `payment`.`schet` ORDER BY (`position_reck`.`reward` > 0) DESC LIMIT 1) AS `position_reward`, `payment`.`id`, `payment`.`processed`, DATE_FORMAT(payment.date, '%d.%m.%Y') as date, payment.sum, `users`.`office`, `payment`.`status` AS payment_status, `payment`.`type`, payment.pay_method, payment.pay_number, payment.schet, payment.class, payment.bank_com, reckoning.rest, reckoning.id_obj, reckoning.sum as sum_reck, reckoning.id_user, reckoning.agency, reckoning.id_obj, reckoning.turist, DATE_FORMAT(reckoning.date_z, '%d.%m.%Y') as date_z, reckoning.status, reckoning.status_san, `reckoning`.`reward` AS `reckoning_reward`, `object`.`reward` AS `object_reward`, `commission`.`value` AS `agency_commission` FROM payment LEFT JOIN reckoning ON reckoning.id=payment.schet LEFT JOIN users ON `reckoning`.`id_user`=`users`.`id` INNER JOIN `object` ON `reckoning`.`id_obj` = `object`.`id` LEFT JOIN `commission` ON `reckoning`.`id_com` = `commission`.`id` WHERE ".$zapros_for_mysql." ORDER BY payment.id";
 
-    echo '<span style="display: none">'.$zapros_for_mysql.'</span>';
+    echo '<span class="zapros_for_mysql" style="display: none">'.$zapros_for_mysql.'</span>';
 
   $data = $connect->getAll($zapros_for_mysql);
 
