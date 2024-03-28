@@ -67,8 +67,8 @@ foreach($items as $item) {
     $file .= 'I'.$partner_id.$partner_service_term_code.'       '.$item['afl'].$fam.$name[0].' '.date('Ymd').$miles.PHP_EOL;
     $count++;
     if ($_GET['send']=='1') {
-        //$connect->getAll("UPDATE `reckoning` SET `afl_worked`=1 WHERE id='$item[id]'");
-        //echo $connect->last_query().'<br>';
+        //$connect->query("UPDATE `reckoning` SET `afl_worked`=1 WHERE id='$item[id]'");
+        echo $connect->last_query().'<br>';
     }
 }
 $count = (string)$count;
@@ -82,14 +82,18 @@ if ($_GET['send']=='') {
     echo '<a href="/CRM/afl.php?send=1">Отправить отчет по почте в Аэрофлот</a>';
 } else {
 
+    $connect->query("INSERT INTO `alf_log` SET `id`=0, `datetime`=NOW(), `text`=?s, `file`=?s", $text, $file);
+
     file_put_contents('afl.txt', $file);
 
     send_mail('sagrus@yandex.ru', 'Отчет по начисленным милям', 'Отчет по начисленным милям', false, false, '/var/www/html/CRM/afl.txt');
 
-    echo 'FILE:<br>';
+    echo '<strong>Письмо с файлом отправлено</strong>';
+
+    /*echo 'FILE:<br>';
     echo '<pre>';
     echo $file;
-    echo '</pre>';
+    echo '</pre>';*/
    
 }
 
