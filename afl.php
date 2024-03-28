@@ -79,7 +79,7 @@ $file .= '9'.$partner_id.' POSTING DATA  0         TOTAL RECORDS:'.$count;
 
 if ($_GET['send']=='') {
     echo $text;
-    echo '<a href="/СRM/afl.php?send=1">Отправить отчет по почте в Аэрофлот</a>';
+    echo '<a href="/CRM/afl.php?send=1">Отправить отчет по почте в Аэрофлот</a>';
 } else {
 
     file_put_contents('afl.txt', $file);
