@@ -82,8 +82,7 @@ if ($_GET['send']=='') {
     echo '<a href="/CRM/afl.php?send=1">Отправить отчет по почте в Аэрофлот</a>';
 } else {
 
-    $connect->query("INSERT INTO `alf_log` SET `id`=0, `datetime`=NOW(), `text`=?s, `file`=?s", $text, $file);
-    echo $connect->last_query().'<br>';
+    $connect->query("INSERT INTO `afl_log` SET `id`=0, `datetime`=NOW(), `text`=?s, `file`=?s", $text, $file);
 
     file_put_contents('afl.txt', $file);
 
