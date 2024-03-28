@@ -477,7 +477,7 @@ function update_schet($connect){
       $state_program = isset($_POST['state_program']) ? (int)$_POST['state_program'] : 0;
       $children_rest = isset($_POST['children_rest']) ? (int)$_POST['children_rest'] : 0;
       $far_east = isset($_POST['far_east']) ? (int)$_POST['far_east'] : 0;
-	  $afl = isset($_POST['afl']) ? (int)$_POST['afl'] : '';
+	  $afl = isset($_POST['afl']) ? $_POST['afl'] : '';
 
       $is_test = isset($_POST['is_test']) ? (int)$_POST['is_test'] : 0;
       $exclude_bank_commission = isset($_POST['exclude_bank_commission']) ? $_POST['exclude_bank_commission'] : 0;
