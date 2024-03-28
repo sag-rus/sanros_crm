@@ -778,6 +778,7 @@ function write_body($connect){
                             <li id="accounts-menu" onclick="see_accounts()"><a><i class="fa fa-user"></i> Аккаунты</a></li>
                           <?php } ?>
 							<li id="sync-reboot-menu" onclick="restart_sync()"><a><i class="fa fa-refresh"></i> Перезапуск синхронизации</a></li>
+							<li id="afl-send"><a href="/CRM/afl.php" target="_blank"><i class="fa fa-plane"></i> Отчет в Аэрофлот</a></li>
 							<li><hr /></li>
 							<li id="procedure_open" onclick="procedure()"><a><i class="fa fa-book"></i> Процедуры</a></li>
 							<li id="profile_open" onclick="profile()"><a><i class="fa fa-heartbeat"></i> Профиль лечения</a></li>
