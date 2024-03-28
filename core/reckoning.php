@@ -445,7 +445,7 @@ function edit_schet($connect){
                     <div class="form-group">
                         <label class="col-sm-4 control-label">Номер участика мили Аэрофлот</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control datepicker" id="afl" value="<?php echo $data['afl']; ?>">
+                            <input type="text" class="form-control" id="afl" value="<?php echo $data['afl']; ?>">
                         </div>
                     </div>					
 				</div>
