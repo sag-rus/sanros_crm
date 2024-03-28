@@ -133,7 +133,7 @@ function send_mail($email, $title, $mess, $file=false, $file2=false, $afl_file=f
 	if($file2)
 		$mail->AddAttachment($file2, "doc2.pdf");
 	if($file3)
-		$mail->AddAttachment($file2, "AFL.txt");
+		$mail->AddAttachment($afl_file, "AFL.txt");
 	$mail->Body = $mess;
 	$mail->isHTML(TRUE);
 	$mail->Send();
