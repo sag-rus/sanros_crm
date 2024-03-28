@@ -42,8 +42,8 @@ $text = '';
 $items = $connect->getAll("SELECT * FROM `reckoning` WHERE `afl`<>'' AND `afl_worked`=0 AND `status`=5 AND `status_san`=1 AND `date_v`<=NOW() - INTERVAL 60 DAY ");
 foreach($items as $item) {
     
-    $text .= 'Заявка №'.$item['id'].'<br>';
-    $text .= 'стоимость путевки '.$item['sum'].' руб.<br>';
+    $text .= '<strong>Заявка №'.$item['id'].'</strong><br>';
+    $text .= 'Стоимость путевки '.$item['sum'].' руб.<br>';
     $bon_sum = $connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND sum < 0", $item['id']);
     $text .= 'Использовано бонусов: '.$bon_sum.'<br>';
     $cost = $item['sum'] + $bon_sum;
