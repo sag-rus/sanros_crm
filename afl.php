@@ -83,6 +83,7 @@ if ($_GET['send']=='') {
 } else {
 
     $connect->query("INSERT INTO `alf_log` SET `id`=0, `datetime`=NOW(), `text`=?s, `file`=?s", $text, $file);
+    echo $connect->last_query().'<br>';
 
     file_put_contents('afl.txt', $file);
 
