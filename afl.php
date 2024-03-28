@@ -38,17 +38,19 @@ $partner_service_term_code = 'SNAB';
 
 $file = '1'.$partner_id.' POSTING DATA  '.date('Ymd').'  0                                                                        '.PHP_EOL;
 $count = 0;
+$text = '';
 $items = $connect->getAll("SELECT * FROM `reckoning` WHERE `afl`<>'' AND `afl_worked`=0 AND `status`=5 AND `status_san`=1 AND `date_v`<=NOW() - INTERVAL 60 DAY ");
 foreach($items as $item) {
-    echo 'id='.$item['id'].'<br>';
-    echo 'sum='.$item['sum'].'<br>';
+    
+    $text .= 'Заявка №'.$item['id'].'<br>';
+    $text .= 'стоимость путевки '.$item['sum'].' руб.<br>';
     $bon_sum = $connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND sum < 0", $item['id']);
-    echo 'bon_sum='.$bon_sum.'<br>';
+    $text .= 'Использовано бонусов: '.$bon_sum.'<br>';
     $cost = $item['sum'] + $bon_sum;
-    echo 'cost='.$cost.'<br>';
+    $text .= 'Итоговая стоимость: '.$cost.' руб.<br>';
     $miles = (int)($cost / 60);
-    echo 'miles='.$miles.'<br>';
-    echo '<br>';
+    $text .= 'Миль к начислению '.$miles.'<br>';
+    $text .= '<br><br>';
     if (strlen($item['afl']<10)) {
         $item['afl'] = '           '.$item['afl'];
         $item['afl'] = substr($item['afl'], -10);
@@ -64,16 +66,32 @@ foreach($items as $item) {
     $miles = substr($miles, -7);
     $file .= 'I'.$partner_id.$partner_service_term_code.'       '.$item['afl'].$fam.$name[0].' '.date('Ymd').$miles.PHP_EOL;
     $count++;
+    if ($_GET['send']=='1') {
+        //$connect->getAll("UPDATE `reckoning` SET `afl_worked`=1 WHERE id='$item[id]'");
+        //echo $connect->last_query().'<br>';
+    }
 }
 $count = (string)$count;
 $count = '00000000'.$count;
 $count = substr($count, -7);
 $file .= '9'.$partner_id.' POSTING DATA  0         TOTAL RECORDS:'.$count;
 
-echo 'FILE:<br>';
-echo '<pre>';
-echo $file;
-echo '</pre>';
+
+if ($_GET['send']=='') {
+    echo $text;
+    echo '<a href="/СRM/afl.php?send=1">Отправить отчет по почте в Аэрофлот</a>';
+} else {
+
+    file_put_contents('afl.txt', $file);
+
+    send_mail('sagrus@yandex.ru', 'Отчет по начисленным милям', 'Отчет по начисленным милям', false, false, '/var/www/html/CRM/afl.txt');
+
+    echo 'FILE:<br>';
+    echo '<pre>';
+    echo $file;
+    echo '</pre>';
+   
+}
 
 
 ?>

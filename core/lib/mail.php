@@ -104,7 +104,7 @@ function gen_password($length){
 	return $password;
 }
 
-function send_mail($email, $title, $mess, $file=false, $file2=false){
+function send_mail($email, $title, $mess, $file=false, $file2=false, $afl_file=false){
 	$email = str_replace(" ", "", $email);
 	if(!filter_var($email, FILTER_VALIDATE_EMAIL))
 		return FALSE;
@@ -132,6 +132,8 @@ function send_mail($email, $title, $mess, $file=false, $file2=false){
 		$mail->AddAttachment($file, "doc.pdf");
 	if($file2)
 		$mail->AddAttachment($file2, "doc2.pdf");
+	if($file3)
+		$mail->AddAttachment($file2, "AFL.txt");
 	$mail->Body = $mess;
 	$mail->isHTML(TRUE);
 	$mail->Send();
