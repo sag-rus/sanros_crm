@@ -337,7 +337,7 @@ function save_schet($connect){
 
 function edit_schet($connect){
 	$id = $_POST["id"];
-	$data = $connect->getRow("SELECT type, date, number_turist, id_obj, agency, id_com, id_dis, note, status_san, date_schet_san, schet_san, state_program, exclude_bank_commission, children_rest, is_test, far_east FROM reckoning WHERE id=?i", $id);
+	$data = $connect->getRow("SELECT type, date, number_turist, id_obj, agency, id_com, id_dis, note, status_san, date_schet_san, schet_san, state_program, exclude_bank_commission, children_rest, is_test, far_east, afl FROM reckoning WHERE id=?i", $id);
 	$arr = array();
 	ob_start();
 ?>
@@ -442,6 +442,12 @@ function edit_schet($connect){
 							<textarea class="form-control" id="note_schet"><?php echo $data['note']; ?></textarea>
 						</div>
 					</div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Номер участика мили Аэрофлот</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control datepicker" id="afl" value="<?php echo $data['afl']; ?>">
+                        </div>
+                    </div>					
 				</div>
 			</div>
 			<div class="modal-footer">
@@ -470,9 +476,10 @@ function update_schet($connect){
       $id_com = $_POST["id_com"];
       $state_program = isset($_POST['state_program']) ? (int)$_POST['state_program'] : 0;
       $children_rest = isset($_POST['children_rest']) ? (int)$_POST['children_rest'] : 0;
-        $far_east = isset($_POST['far_east']) ? (int)$_POST['far_east'] : 0;
+      $far_east = isset($_POST['far_east']) ? (int)$_POST['far_east'] : 0;
+	  $afl = isset($_POST['afl']) ? (int)$_POST['afl'] : '';
 
-        $is_test = isset($_POST['is_test']) ? (int)$_POST['is_test'] : 0;
+      $is_test = isset($_POST['is_test']) ? (int)$_POST['is_test'] : 0;
       $exclude_bank_commission = isset($_POST['exclude_bank_commission']) ? $_POST['exclude_bank_commission'] : 0;
 
       $number_turist = $_POST["number_turist"];
@@ -569,7 +576,7 @@ function update_schet($connect){
         $connect->query("UPDATE reckoning SET id_dis=?s WHERE id=?i", $id_dis, $id);
         save_schet_to_history($connect, $id, "Изменена скидка. Старый - ".$discount);
       }
-      $connect->query("UPDATE reckoning SET number_turist=?i, note=?s, schet_san=?s, date_schet_san=?s, state_program = ?i, exclude_bank_commission = ?i, children_rest = ?i, is_test = ?i, far_east = ?i WHERE id=?i", $number_turist, $note_schet, $schet_san, $date_schet_san, $state_program, $exclude_bank_commission, $children_rest, $is_test, $far_east, $id);
+      $connect->query("UPDATE reckoning SET number_turist=?i, note=?s, schet_san=?s, date_schet_san=?s, state_program = ?i, exclude_bank_commission = ?i, children_rest = ?i, is_test = ?i, far_east = ?i, afl = ?s WHERE id=?i", $number_turist, $note_schet, $schet_san, $date_schet_san, $state_program, $exclude_bank_commission, $children_rest, $is_test, $far_east, $afl, $id);
       recalculation_sum($connect, $id);
     }
     else {
@@ -1589,7 +1596,7 @@ function show_schet_klient($connect){
 	$type = $_POST["type"];
 	if(isset($_COOKIE["reck"]))
 		SetCookie("reck","");
-	$row = $connect->getRow("SELECT type, agency, turist, holding_sum, DATE_FORMAT(date, '%d.%m.%Y') as date, sum, status, DATE_FORMAT(date_z, '%d.%m.%Y') as date_z, DATE_FORMAT(date_v, '%d.%m.%Y') as date_v, id_obj, id_tour, rest, status_san, number_turist, id_com, id_dis, note, active, status_agent, schet_san, DATE_FORMAT(date_schet_san, '%d.%m.%Y') as date_schet_san, id_user, website, guaranteed, reason_delete, changes, doc_schet_san, note_bid, correction, commission_value, state_program, bnovo FROM reckoning WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT type, agency, turist, holding_sum, DATE_FORMAT(date, '%d.%m.%Y') as date, sum, status, DATE_FORMAT(date_z, '%d.%m.%Y') as date_z, DATE_FORMAT(date_v, '%d.%m.%Y') as date_v, id_obj, id_tour, rest, status_san, number_turist, id_com, id_dis, note, active, status_agent, schet_san, DATE_FORMAT(date_schet_san, '%d.%m.%Y') as date_schet_san, id_user, website, guaranteed, reason_delete, changes, doc_schet_san, note_bid, correction, commission_value, state_program, bnovo, afl FROM reckoning WHERE id=?i", $id);
 	$active = $row["active"];
 	$reck_type = $row["type"];
 	if($type == "agency")
@@ -1611,6 +1618,7 @@ function show_schet_klient($connect){
 	$changes = json_decode($row["changes"], TRUE);
 	$manager = $connect->getOne("SELECT name FROM users WHERE id=?i", $row["id_user"]);
 	$bnovo = $row['bnovo'];
+	$afl = $row['afl'];
 	$turist = $row["turist"];
 	$agency = $row["agency"];
 	$itog_sum = $row["sum"];
@@ -2098,6 +2106,7 @@ function show_schet_klient($connect){
 				<?php } ?>
 				<strong>Итоговое вознаграждение:</strong> <span style="<?php echo $style; ?>; text-decoration: underline; cursor: pointer;" id="span_reward" onmouseover="show_reward_schet('<?php echo $id; ?>')" onmouseout="$('#div_buttons').remove()"><?php echo $reward_sum; ?></span><br>
 				<strong>Гос. субсидии:</strong> <?=($state_program) ? 'Да' : 'Нет';?><br>
+				<strong>Номер участника мили Аэрофлот:</strong> <?=$afl?><br>
                 <?php if($payment_div){ ?>
 					<div><button class="btn btn-default btn-xs" onclick="$('.payment-schet').show(); $('.desc-schet').hide();"><i class="fa fa-credit-card"></i> Платежи</button></div>
 				<?php } ?>

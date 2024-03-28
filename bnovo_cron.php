@@ -4,11 +4,6 @@ use GuzzleHttp\Client;
 //header('Content-Type: application/json;charset=utf-8');
 //header('Access-Control-Allow-Origin: *');
 
-
-$log = print_r($_POST, true).PHP_EOL;
-file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);
-
-
 require_once __DIR__."/vendor/autoload.php";
 $directory = dirname(__FILE__);
 define("_FOLDERSITE_", $directory);
