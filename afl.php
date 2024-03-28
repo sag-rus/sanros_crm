@@ -36,6 +36,10 @@ $configNew->objectCabinet = $objectCabinet;
 $partner_id = 'SNA';
 $partner_service_term_code = 'SNAB';
 
+$last = $connect->getRow("SELECT * FROM `afl_log` ORDER BY id DESC LIMIT 1");
+
+echo '<strong>Предыдущая отправка отчета была '.date('d.m.Y H:m:s', strtotime($last['datetime'])).'</strong><br><br>';
+
 $file = '1'.$partner_id.' POSTING DATA  '.date('Ymd').'  0                                                                        '.PHP_EOL;
 $count = 0;
 $text = '';
