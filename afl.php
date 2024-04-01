@@ -71,7 +71,7 @@ foreach($items as $item) {
     $file .= 'I'.$partner_id.$partner_service_term_code.'       '.$item['afl'].$fam.$name[0].' '.date('Ymd').$miles.PHP_EOL;
     $count++;
     if ($_GET['send']=='1') {
-        //$connect->query("UPDATE `reckoning` SET `afl_worked`=1 WHERE id='$item[id]'");
+        $connect->query("UPDATE `reckoning` SET `afl_worked`=1 WHERE id='$item[id]'");
         echo $connect->last_query().'<br>';
     }
 }
