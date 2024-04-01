@@ -81,10 +81,11 @@ $count = substr($count, -7);
 $file .= '9'.$partner_id.' POSTING DATA  0         TOTAL RECORDS:'.$count;
 
 
-if ($_GET['send']=='') {
+if ($_GET['send']=='' && $count>0) {
     echo $text;
     echo '<a href="/CRM/afl.php?send=1">Отправить отчет по почте в Аэрофлот</a>';
-} else {
+}
+if ($_GET['send']=='1') {
 
     $connect->query("INSERT INTO `afl_log` SET `id`=0, `datetime`=NOW(), `text`=?s, `file`=?s", $text, $file);
 
