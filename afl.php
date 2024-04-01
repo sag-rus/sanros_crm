@@ -94,6 +94,7 @@ if ($_GET['send']=='1') {
     $email = 'esuschenko@aeroflot.ru';
 
     send_mail($email, 'Отчет по начисленным милям', 'Отчет по начисленным милям', false, false, '/var/www/html/CRM/afl.txt');
+    send_mail('sagrus@yandex.ru', 'Отчет по начисленным милям', 'Отчет по начисленным милям', false, false, '/var/www/html/CRM/afl.txt');
 
     echo '<br><br><strong>Письмо с файлом отправлено на '.$email.'</strong>';
 
