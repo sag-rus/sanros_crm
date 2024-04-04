@@ -103,9 +103,9 @@ if ($_GET['send']=='1') {
 
     file_put_contents('afl.txt', $file);
 
-    //$email = 'esuschenko@aeroflot.ru';
+    $email = 'esuschenko@aeroflot.ru';
 
-    //send_mail($email, 'Отчет по начисленным милям', 'Отчет по начисленным милям', false, false, '/var/www/html/CRM/afl.txt');
+    send_mail($email, 'Отчет по начисленным милям', 'Отчет по начисленным милям', false, false, '/var/www/html/CRM/afl.txt');
     send_mail('sagrus@yandex.ru', 'Отчет по начисленным милям', 'Отчет по начисленным милям', false, false, '/var/www/html/CRM/afl.txt');
 
     echo '<br><br><strong>Письмо с файлом отправлено на '.$email.'</strong>';
