@@ -65,6 +65,18 @@ foreach($items as $item) {
     $name = $connect->getOne("SELECT name FROM klient WHERE id=?i", $item['turist']);
     $name = mb_strtoupper(get_translit($name));
     if ($name=='') $name = ' ';
+
+    //Только для тестовых меняем ФИО на нужные
+    if (trim($item['afl'])=='1040346705') {
+        $fam = 'AFLTEST';
+        $name = 'K';
+    }
+    if (trim($item['afl'])=='1298126') {
+        $fam = 'AFLTEST';
+        $name = 'T';
+    }    
+    //Только для тестовых меняем ФИО на нужные
+
     $miles = (string)$miles;
     $miles = '00000000'.$miles;
     $miles = substr($miles, -7);
