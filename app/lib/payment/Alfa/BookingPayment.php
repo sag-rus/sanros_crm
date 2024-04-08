@@ -135,7 +135,8 @@ class BookingPayment {
       $raz-= $reck["correction"];
 
     $reward = round($reward - $raz, 2);
-    $max_bonus = ($reward / 2) - $bank_com;
+    //$max_bonus = ($reward / 2) - $bank_com;
+    $max_bonus = ($reward / 2);
     if($max_bonus < $bonus)
       $bonus = $max_bonus;
     if($bonus < 0)
@@ -234,7 +235,6 @@ class BookingPayment {
       $answer['all_bonus_count'] = $sum['all_bonus_count'];
       $answer['reckonings_count'] = $sum['reckonings_count'];
       $answer['exclude_bank_commission'] = $array['exclude_bank_commission'];
-      $answer["commission_info"] = $this->bankInfo["commission"]; 
       $turist = new Display($client);
       $answer["turist"] = $turist->selectFio();
       unset($turist);
