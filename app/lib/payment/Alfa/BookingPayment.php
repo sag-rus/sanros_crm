@@ -234,6 +234,7 @@ class BookingPayment {
       $answer['all_bonus_count'] = $sum['all_bonus_count'];
       $answer['reckonings_count'] = $sum['reckonings_count'];
       $answer['exclude_bank_commission'] = $array['exclude_bank_commission'];
+      $answer["commission_info"] = $this->bankInfo["commission"]; 
       $turist = new Display($client);
       $answer["turist"] = $turist->selectFio();
       unset($turist);

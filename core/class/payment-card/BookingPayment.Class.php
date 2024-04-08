@@ -57,7 +57,6 @@ class BookingPayment extends AlfaBank{
       $answer["sum"] = add_null($sum["to-pay"]);
 			$answer["bonus"] = add_null($sum["bonus"]);
 			$answer["prepay"] = add_null($sum["prepay"]);
-      $answer["commission_info"] = $this->bankInfo["commission"];
 			$turist = new DisplayClient($client);
       $answer["turist"] = $turist->select_fio();
       unset($turist);
