@@ -1673,7 +1673,7 @@ function show_schet_klient($connect){
 				if(($itog_sum * 0.10) < abs($bon_sum))
 					$dopusk = " <i class='fa fa-exclamation-triangle icon_warning' title='Использовано бонусов больше, чем 5% от стоимости путевки'></i>";
 			}
-			$bonus_str = "<strong>Использовано бонусов:</strong> <span class='bonus'>".abs($bon_sum)."</span>".$dopusk."<br />";
+			$bonus_str = "<strong>Использовано бонусов:</strong> <span class='bonus'>".abs($bon_sum)."</span>".$dopusk."<span style=\"display: none;\">SELECT sum FROM bonus WHERE schet=$id AND sum < 0</span><br />";
 		}
 	}
 	$class = "default";
