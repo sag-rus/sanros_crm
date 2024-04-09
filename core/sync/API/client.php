@@ -233,6 +233,7 @@ function recovery_password_account($connect, $data){
 	$email = $data["email"];
 	$hash = $data["hash"];
 	$pass = $data["new"];
+	$pass2 = $data["pass"];
 	if($email AND $hash AND $pass){
 		$id = $connect->getOne("SELECT id FROM klient WHERE (login=?s AND login!='') AND (recovery=?s AND recovery!='')", $email, $hash);
 		$email = $connect->getOne("SELECT id FROM klient WHERE (login=?s AND login!='') AND (recovery=?s AND recovery!='')", $email, $hash);
@@ -240,7 +241,7 @@ function recovery_password_account($connect, $data){
 			$connect->query("UPDATE klient SET recovery='', password=?s, active=1 WHERE id=?i", $pass, $id);
 			save_client_to_history($connect, $id, "Восстановил пароль");
 			if ($email!='') {
-				send_mail_sanata('sagrus@yandex.ru', "Пользователь восстановил пароль", 'Пользователь с e-mail '.email.' восстановил пароль. Новый пароль: '.$pass);
+				send_mail_sanata('sagrus@yandex.ru', "Пользователь восстановил пароль", 'Пользователь с e-mail '.email.' восстановил пароль. Новый пароль: '.$pass2);
 			}
 			return 1;
 		}
