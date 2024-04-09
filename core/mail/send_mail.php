@@ -19,7 +19,6 @@ function create_account_client($connect){
 	$message["content"] = str_replace("<turist>", $turist, $message["content"]);
 	send_mail_sanata($email, $message["title"], $message["content"]);
 	send_mail_sanata('kazangood@gmal.com', $message["title"], $message["content"]);
-	send_mail_sanata('sagrus@yandex.ru', $message["title"], $message["content"]);
 }
 
 function send_login_agency($connect){
