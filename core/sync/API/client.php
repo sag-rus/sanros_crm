@@ -236,7 +236,7 @@ function recovery_password_account($connect, $data){
 	$pass2 = $data["pass"];
 	if($email AND $hash AND $pass){
 		$id = $connect->getOne("SELECT id FROM klient WHERE (login=?s AND login!='') AND (recovery=?s AND recovery!='')", $email, $hash);
-		$email = $connect->getOne("SELECT id FROM klient WHERE (login=?s AND login!='') AND (recovery=?s AND recovery!='')", $email, $hash);
+		$email = $connect->getOne("SELECT email FROM klient WHERE (login=?s AND login!='') AND (recovery=?s AND recovery!='')", $email, $hash);
 		if($id){
 			$connect->query("UPDATE klient SET recovery='', password=?s, active=1 WHERE id=?i", $pass, $id);
 			save_client_to_history($connect, $id, "Восстановил пароль");
