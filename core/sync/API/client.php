@@ -241,9 +241,7 @@ function recovery_password_account($connect, $data){
 			$connect->query("UPDATE klient SET recovery='', password=?s, active=1 WHERE id=?i", $pass, $id);
 			save_client_to_history($connect, $id, "Восстановил пароль");
 			if ($email!='') {
-				send_mail_sanata('sagrus@yandex.ru', "Пользователь восстановил пароль", 'Пользователь с e-mail '.$email.' восстановил пароль. Новый пароль: '.$pass2);
-				send_mail_sanata('terentiev@mail.ru', "Пользователь восстановил пароль", 'Пользователь с e-mail '.$email.' восстановил пароль. Новый пароль: '.$pass2);
-				send_mail_sanata('admin@sanatorii-rossii.com', "Пользователь восстановил пароль", 'Пользователь с e-mail '.$email.' восстановил пароль. Новый пароль: '.$pass2);
+				send_mail_sanata('kazangood@gmail.com', "Пользователь восстановил пароль", 'Пользователь с e-mail '.$email.' восстановил пароль. Новый пароль: '.$pass2);
 			}
 			return 1;
 		}
