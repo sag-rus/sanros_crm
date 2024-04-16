@@ -55,27 +55,28 @@ foreach($items as $item) {
     $miles = (int)($cost / 60);
     $text .= 'Миль к начислению '.$miles.'<br>';
     $text .= '<br><br>';
-    if (strlen($item['afl']<10)) {
-        $item['afl'] = '           '.$item['afl'];
-        $item['afl'] = substr($item['afl'], -10);
-    }
-    $fam = $connect->getOne("SELECT surname FROM klient WHERE id=?i", $item['turist']);
-    $fam = mb_strtoupper(get_translit($fam).'                                ');
-    $fam = substr($fam, 0, 30);
-    $name = $connect->getOne("SELECT name FROM klient WHERE id=?i", $item['turist']);
-    $name = mb_strtoupper(get_translit($name));
-    if ($name=='') $name = ' ';
 
     //Только для тестовых меняем ФИО на нужные
-    if (trim($item['afl'])=='1040346705') {
+    /*if (trim($item['afl'])=='1040346705') {
         $fam = 'AFLTEST';
         $name = 'K';
     }
     if (trim($item['afl'])=='1298126') {
         $fam = 'AFLTEST';
         $name = 'T';
-    }    
+    }*/
     //Только для тестовых меняем ФИО на нужные
+
+    if (strlen($item['afl']<10)) {
+        $item['afl'] = '           '.$item['afl'];
+        $item['afl'] = substr($item['afl'], -10);
+    }
+    $fam = $connect->getOne("SELECT surname FROM klient WHERE id=?i", $item['turist']);
+    $fam = mb_strtoupper(get_translit($fam)).'                                ';
+    $fam = substr($fam, 0, 30);
+    $name = $connect->getOne("SELECT name FROM klient WHERE id=?i", $item['turist']);
+    $name = mb_strtoupper(get_translit($name));
+    if ($name=='') $name = ' ';
 
     $miles = (string)$miles;
     $miles = '00000000'.$miles;
@@ -90,7 +91,7 @@ foreach($items as $item) {
 $count = (string)$count;
 $count = '00000000'.$count;
 $count = substr($count, -7);
-$file .= '9'.$partner_id.' POSTING DATA  0         TOTAL RECORDS:'.$count;
+$file .= '9'.$partner_id.' POSTING DATA  '.date('Ymd').'  0         TOTAL RECORDS:'.$count;
 
 
 if ($_GET['send']=='' && $count>0) {
@@ -105,7 +106,7 @@ if ($_GET['send']=='1') {
 
     $email = 'esuschenko@aeroflot.ru';
 
-    send_mail($email, 'Отчет по начисленным милям', 'Отчет по начисленным милям', false, false, '/var/www/html/CRM/afl.txt');
+    //send_mail($email, 'Отчет по начисленным милям', 'Отчет по начисленным милям', false, false, '/var/www/html/CRM/afl.txt');
     send_mail('sagrus@yandex.ru', 'Отчет по начисленным милям', 'Отчет по начисленным милям', false, false, '/var/www/html/CRM/afl.txt');
 
     echo '<br><br><strong>Письмо с файлом отправлено на '.$email.'.</strong>';
