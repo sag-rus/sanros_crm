@@ -73,7 +73,7 @@ foreach($items as $item) {
     }
     $fam = $connect->getOne("SELECT surname FROM klient WHERE id=?i", $item['turist']);
     $fam = mb_strtoupper(get_translit($fam)).'                                ';
-    $fam = substr($fam, 0, 30);
+    $fam = substr($fam, 0, 30).'                                ';
     $name = $connect->getOne("SELECT name FROM klient WHERE id=?i", $item['turist']);
     $name = mb_strtoupper(get_translit($name));
     if ($name=='') $name = ' ';
