@@ -67,6 +67,7 @@ foreach($items as $item) {
     }*/
     //Только для тестовых меняем ФИО на нужные
 
+    echo 'afl='.$item['afl'].' strlen='.strlen($item['afl']).'<br>';
     if (strlen($item['afl']<10)) {
         echo '<10<br><br>';
         $item['afl'] = '           '.$item['afl'];
@@ -96,7 +97,6 @@ $file .= '9'.$partner_id.' POSTING DATA  '.date('Ymd').'  0         TOTAL RECORD
 
 
 if ($_GET['send']=='' && $count>0) {
-    echo $text;
     echo '<a href="/CRM/afl.php?send=1">Отправить отчет по почте в Аэрофлот</a>';
 }
 if ($_GET['send']=='1') {
