@@ -68,6 +68,7 @@ foreach($items as $item) {
     //Только для тестовых меняем ФИО на нужные
 
     if (strlen($item['afl']<10)) {
+        echo '<10<br><br>';
         $item['afl'] = '           '.$item['afl'];
         $item['afl'] = substr($item['afl'], -10);
     }
