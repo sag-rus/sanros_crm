@@ -527,6 +527,7 @@ function sync_objects_api($connect){
 			$objectAr['phone'] = '';
 			$objectAr['email'] = '';
 			$objectAr['longitude'] = $object['longitude'];
+			$objectAr['bnovo'] = $object['bnovo'];
 			$objectAr['latitude'] = $object['latitude'];
 			$objectAr['featured'] = $object['featured'];
 			$objectAr['selected'] = $object['selected'];
@@ -622,16 +623,15 @@ function sync_objects_api($connect){
 						}
                     }
                 }
-			}
-			else {
-            $objectAr['uri'] = '/объект/' . $object['url_name'];
-            $objectAr['uri_type'] = 0;
-          }
+			} else {
+            	$objectAr['uri'] = '/объект/' . $object['url_name'];
+            	$objectAr['uri_type'] = 0;
+          	}
 
-          echo "Отправка запроса на https://sites.tonia.ru/api/object/set/".$object['id'].'<br>';
-          echo '<pre>';
-		  print_r($objectAr);   
-          echo '</pre>';
+          	echo "Отправка запроса на https://sites.tonia.ru/api/object/set/".$object['id'].'<br>';
+          	echo '<pre>';
+		  	print_r($objectAr);   
+          	echo '</pre>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/object/set/".$object['id'],[
 				'form_params' => $objectAr
@@ -639,9 +639,9 @@ function sync_objects_api($connect){
 
 
 			$res = json_decode($res->getBody(),true);
-          echo '<pre>Результат';
-		  print_r($res);   
-          echo '</pre>';			
+          	echo '<pre>Результат';
+		  	print_r($res);   
+          	echo '</pre>';			
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
 				if($success) {
@@ -794,9 +794,10 @@ function sync_objects_api($connect){
 						}
 					}
 					else {
-						echo $res['msg'].": ".$date['id'].'<br>';
-						['id'].'<br>';
-						print_r($res['fail_messages']);
+						echo 'Ошибка при сихнонизации SyncDatesPack<br>';
+						echo '<pre>';
+						print_r($res);
+						echo '</pre>';
 					}
 				}	
 			}			
@@ -941,8 +942,10 @@ function sync_objects_api($connect){
 						}
 					}
 					else {
-						echo $res['msg'].": ".$range['id'].'<br>';
-						print_r($res['fail_messages']);
+						echo 'Ошибка при сихнонизации SyncRangesPack<br>';
+						echo '<pre>';
+						print_r($res);
+						echo '</pre>';
 					}
 				}	
 			}			
@@ -1072,8 +1075,10 @@ function sync_objects_api($connect){
 						}
 					}
 					else {
-						echo $res['msg'].": ".$price['id'].'<br>';
-						print_r($res['fail_messages']);
+						echo 'Ошибка при сихнонизации SyncPricesPack<br>';
+						echo '<pre>';
+						print_r($res);
+						echo '</pre>';
 					}
 				}	
 			}			
