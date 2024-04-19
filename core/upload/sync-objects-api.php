@@ -803,7 +803,7 @@ function sync_objects_api($connect){
 			}			
 		}		
 
-		if ($session_login==75) {
+		//if ($session_login==75) {
 			//синхронизация date_price по-новому - пачками
 
 			$dateRanges = $connect->getAll("SELECT `id`, `start`, `end`, `id_obj`, `active` FROM `date_price` WHERE `synchronized` = 0");
@@ -841,7 +841,7 @@ function sync_objects_api($connect){
 			}
 			SyncDatesPack($client, $connect, $dateRangeAr);
 
-		} else {
+		/*} else {
 			//синхронизация date_price по-старому - по-одному
 			$dateRanges = $connect->getAll("SELECT `id`, `start`, `end`, `id_obj`, `active` FROM `date_price` WHERE `synchronized` = 0");
 
@@ -883,7 +883,7 @@ function sync_objects_api($connect){
 					}
 				}
 			}
-		}
+		}*/
 
 		$places = $connect->getAll("SELECT `id`, `id_obj`, `name`, `type` FROM `place` WHERE `synchronized` = 0 and `status`=1");
 
