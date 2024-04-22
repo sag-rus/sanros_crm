@@ -1337,12 +1337,15 @@ function recalculation_sum($connect, $id){
 		else
           $all_sum += $sum*$number;
 	}
-/*	$res = mysql_query("SELECT sum FROM payment WHERE schet='$id' AND type='5'");
+	/*
+	$res = mysql_query("SELECT sum FROM payment WHERE schet='$id' AND type='5'");
 	while($a = mysql_fetch_assoc($res)){
 		$sum = $a['sum'];
 		$all_sum-= $sum;
 	}
-*/	$connect->query("UPDATE reckoning SET sum=?s WHERE id=?i", $all_sum, $id);
+	*/	
+	$all_sum = round($all_sum);
+	$connect->query("UPDATE reckoning SET sum=?s WHERE id=?i", $all_sum, $id);
 }
 
 function change_arrival_date($connect, $id){
