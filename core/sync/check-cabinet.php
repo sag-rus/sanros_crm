@@ -119,6 +119,8 @@ $onlinePaymentInfoSber = array(
 	$t = 0;
 	$array_request = [];
 
+	exit();
+
 	while(!$t) {
 		$index++;
 		if(!$connect){

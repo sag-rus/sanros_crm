@@ -69,6 +69,10 @@
 
 		$data = request_to_sync(array("func" => "get_query_cabinet"));
 
+		echo '<pre>';
+		print_r($data);
+		echo '</pre>';
+
 		$answer = array();
 		foreach($data as $query){
 			$id = $query["id"];
