@@ -50,7 +50,7 @@
 	$index = 0;
 	$t = 0;
 
-	while(!$t){
+	//while(!$t){
 
 		$index++;
 
@@ -84,7 +84,7 @@
 		}
 		file_put_contents($directory."/core/sync/file/time.txt", time());
 		sleep(5);
-	}
+	//}
 
 	function testConnect(){
 		return 1;
