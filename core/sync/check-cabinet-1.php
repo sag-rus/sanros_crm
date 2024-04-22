@@ -52,6 +52,8 @@
 
 	//while(!$t){
 
+		echo 'start...';
+
 		$index++;
 
 		if(!$connect){
