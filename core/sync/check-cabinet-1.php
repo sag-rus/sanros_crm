@@ -26,6 +26,10 @@ date_default_timezone_set("Asia/Baghdad");
 	include_once($directory."/core/sync/API/payment.php");
 	include_once($directory."/core/sync/API/sitehelp.php");
 
+	$conf = new JConfig;
+	$sync = $conf->sync_base;
+	$CRM = $conf->CRM;	
+
 	define("DEFAULT_OBJECT_IMAGE", "http://tonia.ru/price/object/head/default.jpg");
 	define("CABINET", "http://sanata-trevel.ru/client/");
 	define("BANK_COM", 2.5);
