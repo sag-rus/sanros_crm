@@ -119,8 +119,6 @@
 	$t = 0;
 	$array_request = [];
 
-	exit('sagrus_disabled');
-
 	//while(!$t) {
 		$index++;
 		if(!$connect){
