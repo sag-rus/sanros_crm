@@ -144,24 +144,25 @@ $onlinePaymentInfoSber = array(
 				$config = ConfigCRM::getInstance();
 				$configNew = App\lib\CRM\Config\Client::getInstance();
 				if(isset($query["session"])) {
-          $config->session = $query["session"];
-          $configNew->session = $query["session"];
-        }
+          			$config->session = $query["session"];
+          			$configNew->session = $query["session"];
+				}
 
-        if(isset($query["object"])) {
-          $config->object = $query["object"];
-          $configNew->object = $query["object"];
-        }
+				if(isset($query["object"])) {
+					$config->object = $query["object"];
+					$configNew->object = $query["object"];
+				}
 
 				if(isset($query["booking"])) {
-          $config->booking = $query["booking"];
-          $configNew->booking = $query["booking"];
-        }
+					$config->booking = $query["booking"];
+					$configNew->booking = $query["booking"];
+				}
+
 				$answer[$id] = $func($connect, $query);
 				
 				//$connect->query("INSERT INTO cabinet_request SET `request`='?i', `query`='?s'", $id, str_replace('\\', '\\\\', json_encode($query)));
 				$connect->query("INSERT INTO cabinet_request SET `request`='$id', `query`='".str_replace('\\', '\\\\', json_encode($query))."'");
-			}else{
+			} else {
 				file_put_contents($directory."/core/sync/file/no-func.txt", $func);
 			}
 		}
@@ -173,7 +174,7 @@ $onlinePaymentInfoSber = array(
 			]);
 		}
 
-		$bookings = check_new_update_booking($connect);
+		/*$bookings = check_new_update_booking($connect);
 		if($bookings["check"] == 1){
 			$data = json_encode($bookings["bookings"]);
 			$request = array("func" => "update_new_bookings_travelline", "data" => $data);
@@ -193,7 +194,7 @@ $onlinePaymentInfoSber = array(
 
 			}
 
-		}
+		}*/
 
 		file_put_contents($directory."/core/sync/file/time.txt", time());
 		sleep(5);
