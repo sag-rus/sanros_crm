@@ -60,24 +60,24 @@
 		"password" => $conf->PASSWORD_ALFA
 	);
 
-$onlinePaymentInfoSber = array(
-	"link" => $conf->BANK_PAYMENT_LINK_SBERBANK,
-	"link_test" => $conf->BANK_PAYMENT_LINK_SBERBANK_TEST,
-	"link_v2" => $conf->BANK_PAYMENT_LINK_SBERBANK_V2,
-	"link_v3" => $conf->BANK_PAYMENT_LINK_SBERBANK_V3,
-	"link_v4" => $conf->BANK_PAYMENT_LINK_SBERBANK_V4,
-	"commission" => $conf->BANK_COM_SBERBANK,
-	"userName" => $conf->USERNAME_SBERBANK,
-	"userName_test" => $conf->USERNAME_SBERBANK_TEST,
-	"userName_v2" => $conf->USERNAME_SBERBANK_V2,
-	"userName_v3" => $conf->USERNAME_SBERBANK_V3,
-	"userName_v4" => $conf->USERNAME_SBERBANK_V4,
-	"password" => $conf->PASSWORD_SBERBANK,
-	"password_test" => $conf->PASSWORD_SBERBANK_TEST,
-	"password_v2" => $conf->PASSWORD_SBERBANK_V2,
-	"password_v3" => $conf->PASSWORD_SBERBANK_V3,
-	"password_v4" => $conf->PASSWORD_SBERBANK_V4
-);
+	$onlinePaymentInfoSber = array(
+		"link" => $conf->BANK_PAYMENT_LINK_SBERBANK,
+		"link_test" => $conf->BANK_PAYMENT_LINK_SBERBANK_TEST,
+		"link_v2" => $conf->BANK_PAYMENT_LINK_SBERBANK_V2,
+		"link_v3" => $conf->BANK_PAYMENT_LINK_SBERBANK_V3,
+		"link_v4" => $conf->BANK_PAYMENT_LINK_SBERBANK_V4,
+		"commission" => $conf->BANK_COM_SBERBANK,
+		"userName" => $conf->USERNAME_SBERBANK,
+		"userName_test" => $conf->USERNAME_SBERBANK_TEST,
+		"userName_v2" => $conf->USERNAME_SBERBANK_V2,
+		"userName_v3" => $conf->USERNAME_SBERBANK_V3,
+		"userName_v4" => $conf->USERNAME_SBERBANK_V4,
+		"password" => $conf->PASSWORD_SBERBANK,
+		"password_test" => $conf->PASSWORD_SBERBANK_TEST,
+		"password_v2" => $conf->PASSWORD_SBERBANK_V2,
+		"password_v3" => $conf->PASSWORD_SBERBANK_V3,
+		"password_v4" => $conf->PASSWORD_SBERBANK_V4
+	);
 
 	$clientCabinet = array(
 		"link" => $conf->turist_cabinet
@@ -118,8 +118,6 @@ $onlinePaymentInfoSber = array(
 	define("CABINET", "http://xn----7sba6aaba8akdsdekah.xn--p1ai/client/");
 	$t = 0;
 	$array_request = [];
-
-	exit('sagrus_disabled');
 
 	while(!$t) {
 		$index++;
