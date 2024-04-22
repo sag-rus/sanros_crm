@@ -1,5 +1,8 @@
 <?php
 
+$loader = require( __DIR__ . '/../../vendor/autoload.php');
+date_default_timezone_set("Asia/Baghdad");
+
 	$directory = __DIR__.'/../..';
 	date_default_timezone_set("Asia/Baghdad");
 
@@ -52,8 +55,6 @@
 
 	//while(!$t){
 
-		echo 'start...';
-
 		$index++;
 
 		if(!$connect){
@@ -71,9 +72,9 @@
 
 		$data = request_to_sync(array("func" => "get_query_cabinet"));
 
-		echo '<pre>';
+		/*echo '<pre>';
 		print_r($data);
-		echo '</pre>';
+		echo '</pre>';*/
 
 		$answer = array();
 		foreach($data as $query){
