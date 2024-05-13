@@ -6,7 +6,7 @@ function sync_server_database($connect){
   $insert_records = 1;
 
   //$tables = array("object", "room", "housing", "date_price", "ranges", "price", "rate_plan");//, "date_price", "ranges", "price"
-  $tables = array("object", "room", "housing", "rate_plan");
+  $tables = array("object", "room", "housing", "rate_plan", "profile", "methods", "infa", "services");
   $file = $directory."/core/sync/file/dump.txt";
   $file2 = $directory."/core/sync/file/dump2.txt";
   $fp = fopen($file, "w");
