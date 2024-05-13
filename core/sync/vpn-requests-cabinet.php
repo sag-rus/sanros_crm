@@ -130,27 +130,27 @@
 
     $func = $_POST["func"];
     if(function_exists($func)){
-
-        $connect -> query("UPDATE `1_vpn_req_log_cabinet` SET `answer`='func exist' WHERE `id`=$log_id");
         
         $config = ConfigCRM::getInstance();
         $configNew = App\lib\CRM\Config\Client::getInstance();
-        if(isset($query["session"])) {
-            $config->session = $query["session"];
-            $configNew->session = $query["session"];
+        if(isset($_POST["session"])) {
+            $config->session = $_POST["session"];
+            $configNew->session = $_POST["session"];
         }
 
-        if(isset($query["object"])) {
-            $config->object = $query["object"];
-            $configNew->object = $query["object"];
+        if(isset($_POST["object"])) {
+            $config->object = $_POST["object"];
+            $configNew->object = $_POST["object"];
         }
 
-        if(isset($query["booking"])) {
-            $config->booking = $query["booking"];
-            $configNew->booking = $query["booking"];
+        if(isset($_POST["booking"])) {
+            $config->booking = $_POST["booking"];
+            $configNew->booking = $_POST["booking"];
         }
 
-        $answer = $func($connect, $query);
+        $answer = $func($connect, $_POST);
+
+        $connect -> query("UPDATE `1_vpn_req_log_cabinet` SET `answer`='".print_r($answer, true)."' WHERE `id`=$log_id");
 
         echo json_encode($answer);        
     } else $connect -> query("UPDATE `1_vpn_req_log_cabinet` SET `answer`='func NOT exist' WHERE `id`=$log_id");
