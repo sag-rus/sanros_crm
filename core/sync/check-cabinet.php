@@ -135,6 +135,9 @@
 
 		$answer = array();
 		foreach($data as $query){
+			echo '<pre>';
+			print_r($query);
+			echo '</pre>';
 			$id = $query["id"];
 			$query = json_decode(base64_decode($query["query"]), TRUE);
 			$func = $query["func"];
@@ -198,6 +201,7 @@
 		file_put_contents($directory."/core/sync/file/time.txt", time());
 		sleep(5);
 		echo $index.'<br>';
+		print_r($answer);
 		$t = 1;
 	}
 
