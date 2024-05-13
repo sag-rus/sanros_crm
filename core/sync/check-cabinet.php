@@ -127,7 +127,7 @@
 		if(!file_exists($directory."/core/sync/file/kill.txt")){
 			$t = 1;
 		}
-		if($index >= 2){ 
+		if($index >= 12){ 
 			$t = 1;
 		}
 
