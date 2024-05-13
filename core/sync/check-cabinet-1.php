@@ -76,9 +76,9 @@ date_default_timezone_set("Asia/Baghdad");
 
 		$data = request_to_sync(array("func" => "get_query_cabinet"));
 
-		/*echo '<pre>';
+		echo '<pre>$data=';
 		print_r($data);
-		echo '</pre>';*/
+		echo '</pre>';
 
 		$answer = array();
 		foreach($data as $query){
@@ -90,6 +90,11 @@ date_default_timezone_set("Asia/Baghdad");
 				$answer[$id] = $func($connect, $query);
 			}
 		}
+
+		echo '<pre>$answer=';
+		print_r($answer);
+		echo '</pre>';
+
 		if($answer){
 			request_to_sync(array("func" => "answer_query_cabinet", "data" => json_encode($answer)));
 		}
