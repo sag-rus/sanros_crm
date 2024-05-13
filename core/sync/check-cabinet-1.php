@@ -7,9 +7,9 @@ date_default_timezone_set("Asia/Baghdad");
 	date_default_timezone_set("Asia/Baghdad");
 
 	$last_time = file_get_contents($directory."/core/sync/file/time.txt");
-	if(time() < ($last_time + 60)){
+	/*if(time() < ($last_time + 60)){
 		return;
-	}
+	}*/
 	file_put_contents($directory."/core/sync/file/log.txt", $last_time. " = ".time()." - запуск скрипта\r\n", FILE_APPEND);
 
 	include_once($directory."/config.php");
