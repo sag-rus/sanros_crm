@@ -201,7 +201,9 @@
 		file_put_contents($directory."/core/sync/file/time.txt", time());
 		sleep(5);
 		echo $index.'<br>';
+		echo '<pre>';
 		print_r($answer);
+		echo '</pre>';
 		$t = 1;
 	}
 
