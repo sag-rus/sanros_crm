@@ -6,9 +6,9 @@
 	define("_FOLDERSITE_", $directory);
 
 	$last_time = file_get_contents(_FOLDERSITE_."/core/sync/file/time.txt");
-	if(time() < ($last_time + 60)){
+	/*if(time() < ($last_time + 60)){
 		return;
-	}
+	}*/
 	file_put_contents(_FOLDERSITE_."/core/sync/file/log.txt", $last_time. " = ".time()." -- запуск скрипта\r\n", FILE_APPEND);
 
 	include_once(_FOLDERSITE_."/core/sync/API/client.php");
@@ -140,7 +140,6 @@
 			$func = $query["func"];
 			$check = $connect->getOne("SELECT id FROM cabinet_request WHERE request=?i LIMIT 1", $id);
 			if(!$check && function_exists($func)){
-				echo " ".$func." ";
 				$config = ConfigCRM::getInstance();
 				$configNew = App\lib\CRM\Config\Client::getInstance();
 				if(isset($query["session"])) {
@@ -198,6 +197,8 @@
 
 		file_put_contents($directory."/core/sync/file/time.txt", time());
 		sleep(5);
+		echo $index.'<br>';
+		$t = 1;
 	}
 
 	function testConnect(){
