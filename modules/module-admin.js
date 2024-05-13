@@ -1185,8 +1185,9 @@ function update_description_object_account(id){
 		}
 	});
 	var service_string = JSON.stringify(services);
-	var objEditor = object_edit_description_editor;
-	var desc = objEditor.getData();
+	//var objEditor = object_edit_description_editor;
+	//var desc = objEditor.getData();
+	var desc = $('#head-description').val();
 
 	var obj = {
 		"func": "update_description_object_account",

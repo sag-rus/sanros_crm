@@ -967,7 +967,7 @@ function edit_description_object_account($connect){
 						<textarea class="form-control head-description" id="head-description"><?php $description = trim($row['description']); echo $description[0] == '\'' ? substr($description, 1, -1) : $description; ?></textarea>
 					</div>
 					<script>
-						$(function() {
+						/*$(function() {
                           ClassicEditor.create( document.querySelector( '#head-description' ), {
                             toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
                             heading: {
@@ -984,7 +984,7 @@ function edit_description_object_account($connect){
                               error => {
                             console.log(error);
                           });
-						});
+						});*/
 					</script>
 				</div>
 				<div class="form-group">
