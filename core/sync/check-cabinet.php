@@ -127,14 +127,14 @@
 		if(!file_exists($directory."/core/sync/file/kill.txt")){
 			$t = 1;
 		}
-		if($index >= 1000){ 
+		if($index >= 2){ 
 			$t = 1;
 		}
 
 		$data = request_to_sync(array("func" => "get_query_cabinet"));
-		echo '<pre>data=';
+		/*echo '<pre>data=';
 		print_r($data);
-		echo '</pre>';
+		echo '</pre>';*/
 		$answer = array();
 		foreach($data as $query){
 			$id = $query["id"];
@@ -199,11 +199,10 @@
 
 		file_put_contents($directory."/core/sync/file/time.txt", time());
 		sleep(5);
-		echo $index.'<br>';
+		/*echo $index.'<br>';
 		echo '<pre>';
 		print_r($answer);
-		echo '</pre>';
-		$t = 1;
+		echo '</pre>';*/
 	}
 
 	function testConnect(){
