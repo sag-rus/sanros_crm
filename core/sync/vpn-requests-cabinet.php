@@ -130,6 +130,8 @@
 
     $func = $_POST["func"];
     if(function_exists($func)){
+
+        $connect -> query("UPDATE `1_vpn_req_log_cabinet` SET `answer`='func exist' WHERE `id`=$log_id");
         
         $config = ConfigCRM::getInstance();
         $configNew = App\lib\CRM\Config\Client::getInstance();
@@ -151,7 +153,7 @@
         $answer = $func($connect, $query);
 
         echo json_encode($answer);        
-    }
+    } else $connect -> query("UPDATE `1_vpn_req_log_cabinet` SET `answer`='func NOT exist' WHERE `id`=$log_id");
 
 
 ?>
