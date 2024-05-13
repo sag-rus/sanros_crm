@@ -121,6 +121,8 @@
     if(!$connect){
         exit();
     }
+
+    $_POST = file_get_contents('php://input');
     echo "INSERT INTO `1_vpn_req_log_cabinet` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `func`='$_POST[func]', `query`='".print_r($_POST, true)."'<br>";
     $connect -> query("INSERT INTO `1_vpn_req_log_cabinet` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `func`='$_POST[func]', `query`='".print_r($_POST, true)."'");
     $log_id = $connect->insertId();
