@@ -132,12 +132,11 @@
 		}
 
 		$data = request_to_sync(array("func" => "get_query_cabinet"));
-
+		echo '<pre>data=';
+		print_r($data);
+		echo '</pre>';
 		$answer = array();
 		foreach($data as $query){
-			echo '<pre>';
-			print_r($query);
-			echo '</pre>';
 			$id = $query["id"];
 			$query = json_decode(base64_decode($query["query"]), TRUE);
 			$func = $query["func"];
