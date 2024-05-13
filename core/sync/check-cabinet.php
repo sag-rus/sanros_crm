@@ -5,9 +5,6 @@
 	$directory = __DIR__.'/../..';
 	define("_FOLDERSITE_", $directory);
 
-
-	exit('sagrus stopped THIS!!!');
-
 	$last_time = file_get_contents(_FOLDERSITE_."/core/sync/file/time.txt");
 	/*if(time() < ($last_time + 60)){
 		return;
