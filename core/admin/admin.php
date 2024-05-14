@@ -935,7 +935,8 @@ function check_changes_cabinet_object($connect){
 			<div class="panel-footer text-right">
 				<button type="button" class="btn btn-default btn-sm" onclick="history_object_account(<?php echo $id_account; ?>)"><i class="fa fa-history"></i> История</button>
 				<button type="button" class="btn btn-default btn-sm" onclick="edit_description_object_account(<?php echo $id; ?>)"><i class="fa fa-pencil"></i> Изменить</button>
-				<button type="button" class="btn btn-success btn-sm" onclick="upload_object_price_on_server(<?php echo $id; ?>)" title="Загрузить на сайт цены номеров объекта по датам"><i class="fa fa-check-circle"></i> Загрузить цены на сайты</button>
+				<button type="button" class="btn btn-success btn-sm" onclick="confirm_description_object_account(<?php echo $id; ?>)"><i class="fa fa-check-circle"></i> Принять изменения</button>
+				<!--<button type="button" class="btn btn-success btn-sm" onclick="upload_object_price_on_server(<?php echo $id; ?>)" title="Загрузить на сайт цены номеров объекта по датам"><i class="fa fa-check-circle"></i> Загрузить цены на сайты</button>-->
 			</div>
 		</div>
 	</div>
@@ -962,7 +963,7 @@ function edit_description_object_account($connect){
 			</div>
 			<div class="modal-body form-horizontal edit-object">
 				<div class="form-group">
-					<label class="col-sm-3 control-label">Описание для сайта</label>
+					<label class="col-sm-3 control-label">Описание на сайте</label>
 					<div class="col-sm-9">
 						<textarea class="form-control head-description" id="head-description"><?php $description = trim($row['description']); echo $description[0] == '\'' ? substr($description, 1, -1) : $description; ?></textarea>
 					</div>
@@ -1025,8 +1026,9 @@ function update_description_object_account($connect){
 
 function confirm_description_object_account($connect){
 	$id = $_POST["id"];
-	$desc = $connect->getOne("SELECT description FROM object WHERE id=?i", $id);
-	$connect->query("UPDATE object SET status=1, description_check=?s, synchronized=0 WHERE id=?i", $desc, $id);
+	//$desc = $connect->getOne("SELECT description_check FROM object WHERE id=?i", $id);
+	//$connect->query("UPDATE object SET status=1, description=?s, synchronized=0 WHERE id=?i", $desc, $id);
+	$connect->query("UPDATE object SET status=1 synchronized=0 WHERE id=?i", $desc, $id);
 }
 
 function history_object_account(){

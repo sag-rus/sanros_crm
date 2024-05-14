@@ -801,8 +801,8 @@ function write_body($connect){
 							<li onclick="show_cabinet_object()" id="account-object"><a><i class="fa fa-flag-o"></i> Аккаунты</a></li>
 							<li onclick="show_request_object()" id="new-request-object"><a><i class="fa fa-plus-circle"></i> Новые</a></li>
 							<li onclick="check_changes_cabinet_object()" id="check-object-menu"><a><i class="fa fa-check-circle"></i> Изменения</a></li>
-							<li onclick="show_object_qouta_admin()" id="admin-object-qouta"><a><i class="fa fa-calendar"></i> Квота мест</a></li>
-							<li onclick="select_object_profkurort()" id="profkurort-menu"><a><i class="fa fa-product-hunt"></i> Профкурорт</a></li>
+							<!--<li onclick="show_object_qouta_admin()" id="admin-object-qouta"><a><i class="fa fa-calendar"></i> Квота мест</a></li>
+							<li onclick="select_object_profkurort()" id="profkurort-menu"><a><i class="fa fa-product-hunt"></i> Профкурорт</a></li>-->
 						</ul>
 					</li>
                   <?php } ?>

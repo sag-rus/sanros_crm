@@ -1173,6 +1173,7 @@ function edit_description_object_account(id){
 	});
 }
 
+
 function update_description_object_account(id){
 	var services = new Array();
 	$('.edit-object input').each(function(){
@@ -1202,6 +1203,18 @@ function update_description_object_account(id){
 		url: 'mysql.php',
 		success: function(html){
 			remove_all_windows();
+			check_changes_cabinet_object();
+		}
+	});
+}
+
+function confirm_description_object_account(id){
+	var str = 'func=confirm_description_object_account&id=' + id;
+	$.ajax({
+		type: 'POST',
+		data: str,
+		url: 'mysql.php',
+		success: function(html){
 			check_changes_cabinet_object();
 		}
 	});
