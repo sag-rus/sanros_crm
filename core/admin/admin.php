@@ -1028,7 +1028,7 @@ function confirm_description_object_account($connect){
 	$id = $_POST["id"];
 	//$desc = $connect->getOne("SELECT description_check FROM object WHERE id=?i", $id);
 	//$connect->query("UPDATE object SET status=1, description=?s, synchronized=0 WHERE id=?i", $desc, $id);
-	$connect->query("UPDATE object SET status=1 synchronized=0 WHERE id=?i", $desc, $id);
+	$connect->query("UPDATE object SET status=1 synchronized=0 WHERE id=?i", $id);
 }
 
 function history_object_account(){

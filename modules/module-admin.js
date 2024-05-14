@@ -1215,6 +1215,7 @@ function confirm_description_object_account(id){
 		data: str,
 		url: 'mysql.php',
 		success: function(html){
+			console.log(html);
 			check_changes_cabinet_object();
 		}
 	});
