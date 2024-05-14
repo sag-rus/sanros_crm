@@ -1145,7 +1145,7 @@ function show_request_object($connect){
 
 function show_card_request_object($connect){
 	$object = $_POST["object"];
-	$row = $connect->getRow("SELECT time, object, telephone, email, address, website, website_object, comment, source FROM object_request WHERE id=?i", $object);
+	$row = $connect->getRow("SELECT * FROM object_request WHERE id=?i", $object);
 ?>
 	<div class="form-horizontal panel panel-info">
 		<div class="panel-heading">
@@ -1154,23 +1154,23 @@ function show_card_request_object($connect){
 		<div class="list-group">
 			<div class="list-group-item list-hover-item">
 				<div class="form-group form-group-margin">
-					<label class="col-sm-3 control-label-element">С какого сайта заявка</label>
+					<label class="col-sm-3 control-label-element">Дата заявки</label>
 					<div class="col-sm-9">
-						<?php echo $row["website"]; ?>
+						<?php echo $row["time"]; ?>
 					</div>
 				</div>
-			</div>
+			</div>			
 			<div class="list-group-item list-hover-item">
 				<div class="form-group form-group-margin">
-					<label class="col-sm-3 control-label-element">Откуда узнали</label>
+					<label class="col-sm-3 control-label-element">Юридическое название компании</label>
 					<div class="col-sm-9">
-						<?php echo $row["source"]; ?>
+						<?php echo $row["urobject"]; ?>
 					</div>
 				</div>
-			</div>
+			</div>			
 			<div class="list-group-item list-hover-item">
 				<div class="form-group form-group-margin">
-					<label class="col-sm-3 control-label-element">Объект</label>
+					<label class="col-sm-3 control-label-element">Название объекта</label>
 					<div class="col-sm-9">
 						<?php echo $row["object"]; ?>
 					</div>
@@ -1178,12 +1178,44 @@ function show_card_request_object($connect){
 			</div>
 			<div class="list-group-item list-hover-item">
 				<div class="form-group form-group-margin">
-					<label class="col-sm-3 control-label-element">Дата заявки</label>
+					<label class="col-sm-3 control-label-element">Почтовый адрес</label>
 					<div class="col-sm-9">
-						<?php echo $row["time"]; ?>
+						<?php echo $row["address"]; ?>
+					</div>
+				</div>
+			</div>	
+			<div class="list-group-item list-hover-item">
+				<div class="form-group form-group-margin">
+					<label class="col-sm-3 control-label-element">Юридический адрес</label>
+					<div class="col-sm-9">
+						<?php echo $row["uraddress"]; ?>
+					</div>
+				</div>
+			</div>	
+			<div class="list-group-item list-hover-item">
+				<div class="form-group form-group-margin">
+					<label class="col-sm-3 control-label-element">ИНН</label>
+					<div class="col-sm-9">
+						<?php echo $row["inn"]; ?>
 					</div>
 				</div>
 			</div>
+			<div class="list-group-item list-hover-item">
+				<div class="form-group form-group-margin">
+					<label class="col-sm-3 control-label-element">КПП</label>
+					<div class="col-sm-9">
+						<?php echo $row["kpp"]; ?>
+					</div>
+				</div>
+			</div>	
+			<div class="list-group-item list-hover-item">
+				<div class="form-group form-group-margin">
+					<label class="col-sm-3 control-label-element">ФИО сотрудника для контактов</label>
+					<div class="col-sm-9">
+						<?php echo $row["fio"]; ?>
+					</div>
+				</div>
+			</div>	
 			<div class="list-group-item list-hover-item">
 				<div class="form-group form-group-margin">
 					<label class="col-sm-3 control-label-element">Телефон</label>
@@ -1197,30 +1229,6 @@ function show_card_request_object($connect){
 					<label class="col-sm-3 control-label-element">Email</label>
 					<div class="col-sm-9">
 						<?php echo $row["email"]; ?>
-					</div>
-				</div>
-			</div>
-			<div class="list-group-item list-hover-item">
-				<div class="form-group form-group-margin">
-					<label class="col-sm-3 control-label-element">Адрес</label>
-					<div class="col-sm-9">
-						<?php echo $row["address"]; ?>
-					</div>
-				</div>
-			</div>
-			<div class="list-group-item list-hover-item">
-				<div class="form-group form-group-margin">
-					<label class="col-sm-3 control-label-element">Сайт</label>
-					<div class="col-sm-9">
-						<?php echo $row["website_object"]; ?>
-					</div>
-				</div>
-			</div>
-			<div class="list-group-item list-hover-item">
-				<div class="form-group form-group-margin">
-					<label class="col-sm-3 control-label-element">Комментарий</label>
-					<div class="col-sm-9">
-						<?php echo $row["comment"]; ?>
 					</div>
 				</div>
 			</div>
