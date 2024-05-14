@@ -1,131 +1,132 @@
 <?php
-//return;
-	$directory = dirname(__FILE__)."/../..";
-	include_once($directory."/config.php");
-	$conf = new JConfig;
-	$sync = $conf->sync_base;
-	include_once($directory."/core/functions.php");
-	include_once($directory."/core/lib/Mysql.Class.php");
-	include_once($directory."/core/sync/API/object.php");
 
-	$connect = connect_to_MySQL_directory();
+// disabled by sagrus 14.05.2024
 
-	/*	$data = request_to_sync(array("func" => "check_data_sync"));
-		foreach($data["update"] as $row){
-			$query = json_decode($row["data"], TRUE);
-			$func = $query["func"];
-			if(function_exists($func)){
-				$func($connect, $query);
-			}
+/*$directory = dirname(__FILE__)."/../..";
+include_once($directory."/config.php");
+$conf = new JConfig;
+$sync = $conf->sync_base;
+include_once($directory."/core/functions.php");
+include_once($directory."/core/lib/Mysql.Class.php");
+include_once($directory."/core/sync/API/object.php");
+
+$connect = connect_to_MySQL_directory();
+
+$data = request_to_sync(array("func" => "check_data_sync"));
+	foreach($data["update"] as $row){
+		$query = json_decode($row["data"], TRUE);
+		$func = $query["func"];
+		if(function_exists($func)){
+			$func($connect, $query);
 		}
-	*/
-	//	if(!$data["today_rest"]){
-			//$date = date("Y-m-d");
-			//$rest = $connect->getOne("SELECT COUNT(*) FROM reckoning WHERE date_z<=?s AND date_v>?s AND status=5", $date, $date);
-			//request_to_sync(array("func" => "update_const", "value" => $rest, "type" => "today_rest", "date" => $date));
-	//	}
+	}
 
-	//exit();
+//	if(!$data["today_rest"]){
+		//$date = date("Y-m-d");
+		//$rest = $connect->getOne("SELECT COUNT(*) FROM reckoning WHERE date_z<=?s AND date_v>?s AND status=5", $date, $date);
+		//request_to_sync(array("func" => "update_const", "value" => $rest, "type" => "today_rest", "date" => $date));
+//	}
 
-		$insert_records = 1;
-	$tables = array("object", "room", "housing", "date_price", "ranges", "price", "rate_plan");//, "date_price", "ranges", "price"
-	$tables = array("object", "room", "housing", "rate_plan", "profile", "methods", "infa", "services");
-	//$tables = array("profile", "methods", "infa", "services");
-	$file = $directory."/core/sync/file/dump.txt";
-	$file2 = $directory."/core/sync/file/dump2.txt";
-	$fp = fopen($file, "w");
-	$fp2 = fopen($file2, "w");
 
-	foreach($tables as $table){
-		$query = "";
-		$result = $connect->getRow("SHOW CREATE TABLE `".$table."`");
+$insert_records = 1;
+$tables = array("object", "room", "housing", "date_price", "ranges", "price", "rate_plan");//, "date_price", "ranges", "price"
+$tables = array("object", "room", "housing", "rate_plan", "profile", "methods", "infa", "services");
+//$tables = array("profile", "methods", "infa", "services");
+$file = $directory."/core/sync/file/dump.txt";
+$file2 = $directory."/core/sync/file/dump2.txt";
+$fp = fopen($file, "w");
+$fp2 = fopen($file2, "w");
+
+foreach($tables as $table){
+	$query = "";
+	$result = $connect->getRow("SHOW CREATE TABLE `".$table."`");
+	if($table == "object"){
+		unset($result["image"]);
+		unset($result["service_info"]);
+	}
+	$query = "\nDROP TABLE IF EXISTS `".$table."`;\n".$result["Create Table"].";\n";
+	fwrite($fp, $query);
+	$query = "";
+	$query_ins = "\nINSERT INTO `".$table."` VALUES ";
+	fwrite($fp, $query_ins);
+	$i = 1;
+	$row_insert = $connect->getAll("SELECT * FROM `".$table."`");
+	foreach($row_insert as $row){
+		$rid = $row['id'];
 		if($table == "object"){
-			unset($result["image"]);
-			unset($result["service_info"]);
+			$row["image"] = "";
+			$row["service_info"] = "";
 		}
-		$query = "\nDROP TABLE IF EXISTS `".$table."`;\n".$result["Create Table"].";\n";
-		fwrite($fp, $query);
+
 		$query = "";
-		$query_ins = "\nINSERT INTO `".$table."` VALUES ";
-		fwrite($fp, $query_ins);
-		$i = 1;
-		$row_insert = $connect->getAll("SELECT * FROM `".$table."`");
-		foreach($row_insert as $row){
-			$rid = $row['id'];
-			if($table == "object"){
-				$row["image"] = "";
-				$row["service_info"] = "";
-			}
-
-			$query = "";
-			foreach($row as $field){
-				if(is_null($field))
-					$field = "NULL";
-				else
-					$field = "'".addslashes(str_replace([";\n",";\r"],"; ",$field))."'";
-				if($query == "")
-					$query = $field;
-				else
-					$query = $query.", ".$field;
-			}
-			if($i > $insert_records){
-				$query_ins = ";\nINSERT INTO `".$table."` VALUES ";
-
-				if($table !== 'room' || $rid < 3000) {
-					fwrite($fp, $query_ins);
-
-				}
-				else {
-					fwrite($fp2,$query_ins);
-				}
-				$i = 1;
-			}
-			if($i == 1)
-				$q = "(".$query.")";
+		foreach($row as $field){
+			if(is_null($field))
+				$field = "NULL";
 			else
-				$q=",(".$query.")";
+				$field = "'".addslashes(str_replace([";\n",";\r"],"; ",$field))."'";
+			if($query == "")
+				$query = $field;
+			else
+				$query = $query.", ".$field;
+		}
+		if($i > $insert_records){
+			$query_ins = ";\nINSERT INTO `".$table."` VALUES ";
 
 			if($table !== 'room' || $rid < 3000) {
-				fwrite($fp, $q);
+				fwrite($fp, $query_ins);
 
 			}
 			else {
-				fwrite($fp2, $q);
+				fwrite($fp2,$query_ins);
 			}
-
-			$i++;
+			$i = 1;
 		}
-		fwrite($fp, ";\n");
-		fwrite($fp2, ";\n");
+		if($i == 1)
+			$q = "(".$query.")";
+		else
+			$q=",(".$query.")";
 
+		if($table !== 'room' || $rid < 3000) {
+			fwrite($fp, $q);
+
+		}
+		else {
+			fwrite($fp2, $q);
+		}
+
+		$i++;
 	}
+	fwrite($fp, ";\n");
+	fwrite($fp2, ";\n");
 
-	fclose($fp);
-	fclose($fp2);
+}
 
-	$name = "dump-base";
+fclose($fp);
+fclose($fp2);
 
-	$connect_server = connect_to_server_directory();
-	$server_file = "/object_admin/file/".$name.".txt";
+$name = "dump-base";
 
-	if(!ftp_put($connect_server, $server_file, $file, FTP_ASCII))
-		echo "Не удалось загрузить файл на сервер";
-	ftp_chmod($connect_server, 0777, $server_file);
+$connect_server = connect_to_server_directory();
+$server_file = "/object_admin/file/".$name.".txt";
 
-	$data = request_to_sync(array("func" => "imports_mysql_base", "name" => $name));
+if(!ftp_put($connect_server, $server_file, $file, FTP_ASCII))
+	echo "Не удалось загрузить файл на сервер";
+ftp_chmod($connect_server, 0777, $server_file);
 
-	$name = "dump-base2";
+$data = request_to_sync(array("func" => "imports_mysql_base", "name" => $name));
 
-	$server_file = "/object_admin/file/".$name.".txt";
+$name = "dump-base2";
 
-	if(!ftp_put($connect_server, $server_file, $file2, FTP_ASCII))
-		echo "Не удалось загрузить файл на сервер";
-	ftp_chmod($connect_server, 0777, $server_file);
-	ftp_quit($connect_server);
+$server_file = "/object_admin/file/".$name.".txt";
 
-	$data = request_to_sync(array("func" => "imports_mysql_base", "name" => $name));
+if(!ftp_put($connect_server, $server_file, $file2, FTP_ASCII))
+	echo "Не удалось загрузить файл на сервер";
+ftp_chmod($connect_server, 0777, $server_file);
+ftp_quit($connect_server);
 
-	return $data;
+$data = request_to_sync(array("func" => "imports_mysql_base", "name" => $name));
+
+return $data;*/
 
 
 ?>
