@@ -638,4 +638,10 @@ function save_history_object($text){
 		$connect->query("INSERT INTO history_object(object, text) VALUES(?i, ?s)", $account, $text);
 }
 
+function save_object_request($connect, $data){
+	$connect->query("INSERT INTO object_request SET `id`=0, `time`=NOW(), `urobject`=?s, `object`=?s, `address`=?s", $data['urobject'], $data['object'], $data['address']);
+	return array('ok'=>1);
+}
+
+
 ?>
