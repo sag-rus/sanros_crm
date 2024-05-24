@@ -277,9 +277,14 @@ if ($data_booking->bnovo==1) {
 }
 
 if ($dates_unavailable) {
+	$unavailable_dates = '';
+	foreach ($unavailable as $unav_date) {
+		$unavailable_dates .= date('d.m.Y', strtotime($unav_date['date'])).', ';	
+	}
+	$unavailable_dates = trim(trim($unavailable_dates), ',');
 	$resp = array();
 	$resp['success'] = 0;
-	$resp['msg'] = 'Выбранные даты, к сожалению, уже были забронированы. Пожалуйста, выберите другие';
+	$resp['msg'] = 'В выбранном Вами периоде, к сожалению, есть даты, которые уже недоступны: '.$unavailable_dates.'). Пожалуйста, выберите другие даты.';
 	echo json_encode($resp, JSON_UNESCAPED_UNICODE);
 } else {
 
@@ -372,7 +377,7 @@ if ($dates_unavailable) {
 
 	//$log = 'DATA='.json_encode($resp, JSON_UNESCAPED_UNICODE).PHP_EOL;
 	//file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);
-	
+
 }
 
 ?>
