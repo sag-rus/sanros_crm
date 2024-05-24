@@ -112,15 +112,15 @@ function get_bnovo_rooms_availability($id_obj, $account_id, $dfrom, $dto, $id_ro
 
 		if (count($res['availability'])>0)
 
-		foreach ($res['availability'] as $id_room_bnovo => $value) {
+		foreach ($res['availability'] as $id_bnovo => $value) {
 			foreach ($value as $date => $cnt) {
-				echo "<br>".$id_room_bnovo.'='.$date.'='.$cnt.'====';
-				if($connect->getOne("SELECT COUNT(*) FROM bnovo_availability WHERE id_obj=?i AND account_id=?i AND id_room_bnovo=?i AND `date`=?s", $id_obj, $account_id, $id_room_bnovo, $date) == 0) {
+				echo "<br>".$id_bnovo.'='.$date.'='.$cnt.'====';
+				if($connect->getOne("SELECT COUNT(*) FROM bnovo_availability WHERE id_obj=?i AND account_id=?i AND id_bnovo=?i AND `date`=?s", $id_obj, $account_id, $id_bnovo, $date) == 0) {
 					//INSERT
-					$connect->query("INSERT INTO bnovo_availability SET id=0, id_obj=$id_obj, account_id=$account_id, id_room_bnovo=$id_room_bnovo, `date`='$date', cnt='$cnt'");
+					$connect->query("INSERT INTO bnovo_availability SET id=0, id_obj=$id_obj, account_id=$account_id, id_bnovo=$id_bnovo, `date`='$date', cnt='$cnt'");
 				} else {
 					//UPDATE
-					$connect->query("UPDATE bnovo_availability SET `cnt`='$cnt' WHERE id_obj=$id_obj AND account_id=$account_id AND id_room_bnovo=$id_room_bnovo AND `date`='$date'");
+					$connect->query("UPDATE bnovo_availability SET `cnt`='$cnt' WHERE id_obj=$id_obj AND account_id=$account_id AND id_bnovo=$id_bnovo AND `date`='$date'");
 				}
 
 			}

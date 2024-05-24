@@ -135,7 +135,7 @@ if ($data_booking->bnovo==1) {
 
 }
 
-
+$dates_unavailable = false;
 $aznak = false;
 
 if ($id_obj=='1' && $data_booking_JSON["site"]=='санаторий-азнакаевский.рф') {
@@ -250,118 +250,129 @@ if ($data_booking->bnovo==1) {
 
 	$data = json_encode($data);
 
-	$log = PHP_EOL.'BNOVO data_оыщт='.$data.PHP_EOL;
-	file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);		
-
+	$log = PHP_EOL.'BNOVO data_json='.$data.PHP_EOL;
+	file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);	
 	
-	$ch = curl_init('https://api.reservationsteps.ru/v1/api/channel_manager_bookings'); 
-	curl_setopt($ch, CURLOPT_POST, 1);
-	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
-	curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-	$res = json_decode(curl_exec($ch), true);
-	curl_close($ch);
+	//проверяем доступность 
+	$unavailable = $connect->getAll("SELECT * FROM `bnovo_availability` WHERE id_bnovo=?i and `date`>'".date('Y-m-d', strtotime($data_booking->date))."' and `date`<'".date('Y-m-d', strtotime($data_booking->date)+86400*($data_booking->days-1))."' and `cnt`=0", $occu['id_bnovo']);
+	if (count($unavailable)==0) {
 	
-	$connect->query("UPDATE reckoning SET `bnovo_json`=?s WHERE `id`=?i", $data, $id);
+		$ch = curl_init('https://api.reservationsteps.ru/v1/api/channel_manager_bookings'); 
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+		$res = json_decode(curl_exec($ch), true);
+		curl_close($ch);
+		
+		$connect->query("UPDATE reckoning SET `bnovo_json`=?s WHERE `id`=?i", $data, $id);
 
-	$log = PHP_EOL.'BNOVO res='.print_r($res, true).PHP_EOL;
-	file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);
+		$log = PHP_EOL.'BNOVO res='.print_r($res, true).PHP_EOL;
+		file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);
+
+	} else $dates_unavailable = true;
 
 }
 
+if ($dates_unavailable) {
+	$resp = array();
+	$resp['success'] = 0;
+	$resp['msg'] = 'Выбранные даты, к сожалению, уже были забронированы. Пожалуйста, выберите другие';
+	echo json_encode($resp, JSON_UNESCAPED_UNICODE);
+} else {
 
+	$check_quota = 0;
 
+	if(isset($data_booking->position) && $data_booking->position){
 
-$check_quota = 0;
+		$positions = json_decode($data_booking->position, TRUE);
+		foreach($positions as $position){
+			$type_index = 1;
+			if(isset($position["type_index"]) AND $position["type_index"] > 1){
+				$type_index = (int)$position["type_index"];
+				if($type_index == 3)
+					$type_index = 2;
+			}
+			$id_room = isset($position["id_room"])?(int)$position["id_room"]:0;
+			$note = isset($position["place"])?$position["place"]:"";
+			$price = isset($position["price"])?(float)$position["price"]:0;
+			$number = isset($position["number"])?(int)$position["number"]:1;
 
-if(isset($data_booking->position) && $data_booking->position){
-
-	$positions = json_decode($data_booking->position, TRUE);
-	foreach($positions as $position){
-		$type_index = 1;
-		if(isset($position["type_index"]) AND $position["type_index"] > 1){
-			$type_index = (int)$position["type_index"];
-			if($type_index == 3)
-				$type_index = 2;
-		}
-		$id_room = isset($position["id_room"])?(int)$position["id_room"]:0;
-		$note = isset($position["place"])?$position["place"]:"";
-		$price = isset($position["price"])?(float)$position["price"]:0;
-		$number = isset($position["number"])?(int)$position["number"]:1;
-
-		$connect->query("INSERT INTO position_reck(id_room, schet, days, date_z, number, sum, type, note, reward, add_one_day) VALUES (?i, ?i, ?i, ?s, ?s, ?s, ?i, ?s, ?s, ?i)", $id_room, $id, $days, $date_z, $number, $price, $type_index, $note, $reward, (int)$add_one_day);
-		if(isset($position["ratePlan"]) AND $position["ratePlan"] > 0){
-			if($connect->getOne("SELECT id FROM object WHERE id=?i AND (check_places=1 OR check_places=2)", $id_obj)){
-				$check_quota = 1;
-				$insert = $connect->insertId();
-				$connect->query("UPDATE position_reck SET ratePlan=?i WHERE id=?i", $position["ratePlan"], $insert);
+			$connect->query("INSERT INTO position_reck(id_room, schet, days, date_z, number, sum, type, note, reward, add_one_day) VALUES (?i, ?i, ?i, ?s, ?s, ?s, ?i, ?s, ?s, ?i)", $id_room, $id, $days, $date_z, $number, $price, $type_index, $note, $reward, (int)$add_one_day);
+			if(isset($position["ratePlan"]) AND $position["ratePlan"] > 0){
+				if($connect->getOne("SELECT id FROM object WHERE id=?i AND (check_places=1 OR check_places=2)", $id_obj)){
+					$check_quota = 1;
+					$insert = $connect->insertId();
+					$connect->query("UPDATE position_reck SET ratePlan=?i WHERE id=?i", $position["ratePlan"], $insert);
+				}
 			}
 		}
+		if($check_quota == 1){
+			$connect->query("INSERT INTO booking(bid, from_booking) VALUES (?i, 'site')", $id);
+			$connect->query("UPDATE reckoning SET form_booking='quota' WHERE id=?i", $id);
+		}
+	}else{
+		$connect->query("INSERT INTO position_reck(schet, id_room, days, date_z, number, type, reward, add_one_day) VALUES (?i, 0, ?i, ?s, 1, 1, ?s, ?i)", $id, $days, $date_z, $reward, (int)$add_one_day);
+		$connect->query("UPDATE reckoning SET note=?s, form_booking='default-form' WHERE id=?i", $note_booking, $id);
 	}
-	if($check_quota == 1){
-		$connect->query("INSERT INTO booking(bid, from_booking) VALUES (?i, 'site')", $id);
-		$connect->query("UPDATE reckoning SET form_booking='quota' WHERE id=?i", $id);
+
+	$connect->query("UPDATE reckoning SET number_turist=?i WHERE id=?i", $connect->getOne("SELECT COUNT(*) FROM position_reck WHERE schet=?i", $id), $id);
+
+	change_arrival_date($connect, $id);
+	recalculation_sum($connect, $id);
+	save_schet_to_history($connect, $id, "Новая заявка от клиента");
+
+	if($state_program)
+		$connect->query("UPDATE reckoning SET state_program=1 WHERE id=?i", $id);
+
+	if(isset($data_booking->promo_code) && $data_booking->promo_code != ""){
+		$promo_code = mb_strtolower($data_booking->promo_code);
+		$itog = $connect->getOne("SELECT sum FROM reckoning WHERE id=?i", $id);
+		$bonus = check_promotional_code($promo_code, $id_obj, $itog, array("arrival" => $date_z, "days" => $days), $last_id, $connect);
+		if(!is_array($bonus) && $bonus){
+			$connect->query("INSERT INTO bonus(date, turist, sum, type, note, promocode) VALUES (?s, ?i, ?s, 3, ?s, ?s)", $today, $last_id, $bonus, "Подарочный бонус", $promo_code);
+			$connect->query("INSERT INTO bonus(date, schet, turist, sum, cause) VALUES (?s, ?i, ?i, ?i, 1)", $today, $id, $last_id, $bonus * (-1));
+			$connect->query("UPDATE reckoning SET promo_code=?s WHERE id=?i", $promo_code, $id);
+				$connect->query("INSERT INTO promo_code_using(`promo_code`, `client_id`, `reck_id`, `timestamp`) VALUES (?s, ?i, ?i, ?i)", $promo_code, $last_id, $id, gmdate("U"));
+			save_schet_to_history($connect, $id, "Использование промокода");
+		}
+		elseif(is_array($bonus)) {
+				save_schet_to_history($connect, $id, $bonus['msg']);
+			$connect->query("UPDATE reckoning SET promo_code=?s WHERE id=?i", $promo_code, $id);
+		}
 	}
-}else{
-	$connect->query("INSERT INTO position_reck(schet, id_room, days, date_z, number, type, reward, add_one_day) VALUES (?i, 0, ?i, ?s, 1, 1, ?s, ?i)", $id, $days, $date_z, $reward, (int)$add_one_day);
-	$connect->query("UPDATE reckoning SET note=?s, form_booking='default-form' WHERE id=?i", $note_booking, $id);
+
+	$config = ConfigCRM::getInstance();
+	$config->booking = $id;
+	$config->turist = $last_id;
+	$config->connect = $connect;
+
+	$configNew = \App\lib\CRM\Config\Client::getInstance();
+	$configNew->connect = $connect;
+	$configNew->directory = $directory;
+	$configNew->clientCabinet = $clientCabinet;
+	$configNew->objectCabinet = $objectCabinet;
+
+	$send = new SendMailTurist;
+		$send->send_login();
+
+	/*$telephone = clear_telephone($connect->getOne("SELECT telephone FROM klient WHERE id=?i", $last_id));
+	if($telephone){
+		$id_obj = $connect->getOne("SELECT id_obj FROM reckoning WHERE id=?i", $id);
+		$object = get_object($connect, $id_obj, "type");
+		$text = "Заявка №".$id." в ".$object." принята в обработку. 8-800-600-16-20 Санатории-России.рф";
+		send_sms($connect, $telephone, $booking, $text, "new-booking");
+	}*/
+
+	$resp = array();
+	$resp['success'] = 1;
+	echo json_encode($resp, JSON_UNESCAPED_UNICODE);
+
+	//$log = 'DATA='.json_encode($resp, JSON_UNESCAPED_UNICODE).PHP_EOL;
+	//file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);
+	
 }
-
-$connect->query("UPDATE reckoning SET number_turist=?i WHERE id=?i", $connect->getOne("SELECT COUNT(*) FROM position_reck WHERE schet=?i", $id), $id);
-
-change_arrival_date($connect, $id);
-recalculation_sum($connect, $id);
-save_schet_to_history($connect, $id, "Новая заявка от клиента");
-
-if($state_program)
-	$connect->query("UPDATE reckoning SET state_program=1 WHERE id=?i", $id);
-
-if(isset($data_booking->promo_code) && $data_booking->promo_code != ""){
-	$promo_code = mb_strtolower($data_booking->promo_code);
-	$itog = $connect->getOne("SELECT sum FROM reckoning WHERE id=?i", $id);
-	$bonus = check_promotional_code($promo_code, $id_obj, $itog, array("arrival" => $date_z, "days" => $days), $last_id, $connect);
-	if(!is_array($bonus) && $bonus){
-		$connect->query("INSERT INTO bonus(date, turist, sum, type, note, promocode) VALUES (?s, ?i, ?s, 3, ?s, ?s)", $today, $last_id, $bonus, "Подарочный бонус", $promo_code);
-		$connect->query("INSERT INTO bonus(date, schet, turist, sum, cause) VALUES (?s, ?i, ?i, ?i, 1)", $today, $id, $last_id, $bonus * (-1));
-		$connect->query("UPDATE reckoning SET promo_code=?s WHERE id=?i", $promo_code, $id);
-			$connect->query("INSERT INTO promo_code_using(`promo_code`, `client_id`, `reck_id`, `timestamp`) VALUES (?s, ?i, ?i, ?i)", $promo_code, $last_id, $id, gmdate("U"));
-		save_schet_to_history($connect, $id, "Использование промокода");
-	}
-	elseif(is_array($bonus)) {
-			save_schet_to_history($connect, $id, $bonus['msg']);
-		$connect->query("UPDATE reckoning SET promo_code=?s WHERE id=?i", $promo_code, $id);
-	}
-}
-
-$config = ConfigCRM::getInstance();
-$config->booking = $id;
-$config->turist = $last_id;
-$config->connect = $connect;
-
-$configNew = \App\lib\CRM\Config\Client::getInstance();
-$configNew->connect = $connect;
-$configNew->directory = $directory;
-$configNew->clientCabinet = $clientCabinet;
-$configNew->objectCabinet = $objectCabinet;
-
-$send = new SendMailTurist;
-	$send->send_login();
-
-/*$telephone = clear_telephone($connect->getOne("SELECT telephone FROM klient WHERE id=?i", $last_id));
-if($telephone){
-	$id_obj = $connect->getOne("SELECT id_obj FROM reckoning WHERE id=?i", $id);
-	$object = get_object($connect, $id_obj, "type");
-	$text = "Заявка №".$id." в ".$object." принята в обработку. 8-800-600-16-20 Санатории-России.рф";
-	send_sms($connect, $telephone, $booking, $text, "new-booking");
-}*/
-
-$resp = array();
-$resp['success'] = 1;
-echo json_encode($resp, JSON_UNESCAPED_UNICODE);
-
-//$log = 'DATA='.json_encode($resp, JSON_UNESCAPED_UNICODE).PHP_EOL;
-//file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);
 
 ?>
