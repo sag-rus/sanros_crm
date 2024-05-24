@@ -284,7 +284,7 @@ if ($dates_unavailable) {
 	$unavailable_dates = trim(trim($unavailable_dates), ',');
 	$resp = array();
 	$resp['success'] = 0;
-	$resp['msg'] = 'В выбранном Вами периоде, к сожалению, есть даты, которые уже недоступны: '.$unavailable_dates.'). Пожалуйста, выберите другие даты.';
+	$resp['msg'] = 'В выбранном Вами периоде, к сожалению, есть даты, которые уже недоступны ('.$unavailable_dates.'). Пожалуйста, выберите другие даты.';
 	echo json_encode($resp, JSON_UNESCAPED_UNICODE);
 } else {
 
