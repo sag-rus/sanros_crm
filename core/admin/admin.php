@@ -1256,126 +1256,128 @@ function edit_request_object($connect){
 	$id = $_POST["id"];
 	$row = $connect->getRow("SELECT * FROM `object_request` WHERE id=?i", $id);
 ?>
+<form class="edit_request_object_form">
 <div class="modal fade edit-procedure-modal edit-object">
 	<div class="modal-dialog">
 		<div class="modal-content">
-			<form class="edit_request_object_form">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
-					<h4 class="modal-title">Изменить заявку</h4>
-				</div>
-				<div class="modal-body">
-					<div class="form-horizontal edit-procedure">
-						<div class="form-group">
-							<label class="col-sm-4 control-label">Юридическое название компании</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control urobject" name="urobject" value="<?php echo $row['urobject']; ?>">
-							</div>
+			
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+				<h4 class="modal-title">Изменить заявку</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-horizontal edit-procedure">
+					<div class="form-group">
+						<label class="col-sm-4 control-label">Юридическое название компании</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control urobject" name="urobject" value="<?php echo $row['urobject']; ?>">
 						</div>
-						<div class="form-group">
-							<label class="col-sm-4 control-label">Название объекта полное</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control object" name="object" value="<?php echo $row['object']; ?>">
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-sm-4 control-label">Название объекта кратко</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control name" name="name" value="<?php echo $row['namme']; ?>">
-							</div>
-						</div>					
-						<div class="form-group">
-							<label class="col-sm-4 control-label">Тип объекта</label>
-							<div class="col-sm-8">
-								<?php echo get_select_table($connect, "type_object", "", $row["type"], "type", 1, ""); ?>
-							</div>
-						</div>	
-						
-						<div class="form-group">
-							<label class="col-sm-4 control-label">Направление</label>
-							<div class="col-sm-8">
-								<?=get_select_table($connect, "direction_object", "(`id_reg` IS NULL OR `id_reg` = 0) AND `id_country` = 1", $row["direction"], "direction_object", 1, "");?>
-							</div>
-						</div>
-						<div class="form-group<?php if(!$row['direction']) { ?> hidden<?php } ?>">
-							<label class="col-sm-4 control-label">Регион</label>
-							<div class="col-sm-8">
-								<select class="form-control object_region" id="object_region" name="object_region">
-									<option value="0"<?php if(!$row['id_reg']) { ?> selected<?php } ?>>Не выбран</option>
-									<?php foreach ($regions as $region) { ?>
-									<option value="<?=$region['id'];?>"<?php if($row['id_reg'] == $region['id']) { ?> selected<?php } ?>><?=$region['name'];?></option>
-									<?php } ?>
-								</select>
-							</div>
-						</div>
-						<div class="form-group<?php if(!$row['id_reg'] || count($region_directions) === 0) { ?> hidden<?php } ?>">
-							<label class="col-sm-4 control-label">Региональное направление</label>
-							<div class="col-sm-8">
-								<select class="form-control region_direction_id" id="region_direction_id" name="region_direction_id">
-									<option value="0"<?php if(!$row['region_direction_id']) { ?> selected<?php } ?>>Не выбрано</option>
-								<?php foreach ($region_directions as $region_direction) { ?>
-									<option value="<?=$region_direction['id'];?>"<?php if($row['region_direction_id'] == $region_direction['id']) { ?> selected<?php } ?>><?=$region_direction['name'];?></option>
-								<?php } ?>
-								</select>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-sm-4 control-label">Широта</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control latitude" name="latitude" value="<?php echo $row['latitude']; ?>">
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-sm-4 control-label">Долгота</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control longitude" name="longitude" value="<?php echo $row['longitude']; ?>">
-							</div>
-						</div>																			
-						<div class="form-group">
-							<label class="col-sm-4 control-label">Юридический адрес</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control uraddress" name="uraddress" value="<?php echo $row['uraddress']; ?>">
-							</div>
-						</div>	
-						<div class="form-group">
-							<label class="col-sm-4 control-label">ИНН</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control inn" name="inn" value="<?php echo $row['inn']; ?>">
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-sm-4 control-label">КПП</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control kpp" name="kpp" value="<?php echo $row['kpp']; ?>">
-							</div>
-						</div>																			
-						<div class="form-group">
-							<label class="col-sm-4 control-label">ФИО сотрудника для контактов</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control fio" name="fio" value="<?php echo $row['fio']; ?>">
-							</div>
-						</div>					
-						<div class="form-group">
-							<label class="col-sm-4 control-label">Телефон</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control telephone" name="telephone" value="<?php echo $row['telephone']; ?>">
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-sm-4 control-label">E-mail</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control email" name="email" value="<?php echo $row['email']; ?>">
-							</div>
-						</div>											
 					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">Название объекта полное</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control object" name="object" value="<?php echo $row['object']; ?>">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">Название объекта кратко</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control name" name="name" value="<?php echo $row['namme']; ?>">
+						</div>
+					</div>					
+					<div class="form-group">
+						<label class="col-sm-4 control-label">Тип объекта</label>
+						<div class="col-sm-8">
+							<?php echo get_select_table($connect, "type_object", "", $row["type"], "type", 1, ""); ?>
+						</div>
+					</div>	
+					
+					<div class="form-group">
+						<label class="col-sm-4 control-label">Направление</label>
+						<div class="col-sm-8">
+							<?=get_select_table($connect, "direction_object", "(`id_reg` IS NULL OR `id_reg` = 0) AND `id_country` = 1", $row["direction"], "direction_object", 1, "");?>
+						</div>
+					</div>
+					<div class="form-group<?php if(!$row['direction']) { ?> hidden<?php } ?>">
+						<label class="col-sm-4 control-label">Регион</label>
+						<div class="col-sm-8">
+							<select class="form-control object_region" id="object_region" name="object_region">
+								<option value="0"<?php if(!$row['id_reg']) { ?> selected<?php } ?>>Не выбран</option>
+								<?php foreach ($regions as $region) { ?>
+								<option value="<?=$region['id'];?>"<?php if($row['id_reg'] == $region['id']) { ?> selected<?php } ?>><?=$region['name'];?></option>
+								<?php } ?>
+							</select>
+						</div>
+					</div>
+					<div class="form-group<?php if(!$row['id_reg'] || count($region_directions) === 0) { ?> hidden<?php } ?>">
+						<label class="col-sm-4 control-label">Региональное направление</label>
+						<div class="col-sm-8">
+							<select class="form-control region_direction_id" id="region_direction_id" name="region_direction_id">
+								<option value="0"<?php if(!$row['region_direction_id']) { ?> selected<?php } ?>>Не выбрано</option>
+							<?php foreach ($region_directions as $region_direction) { ?>
+								<option value="<?=$region_direction['id'];?>"<?php if($row['region_direction_id'] == $region_direction['id']) { ?> selected<?php } ?>><?=$region_direction['name'];?></option>
+							<?php } ?>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">Широта</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control latitude" name="latitude" value="<?php echo $row['latitude']; ?>">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">Долгота</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control longitude" name="longitude" value="<?php echo $row['longitude']; ?>">
+						</div>
+					</div>																			
+					<div class="form-group">
+						<label class="col-sm-4 control-label">Юридический адрес</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control uraddress" name="uraddress" value="<?php echo $row['uraddress']; ?>">
+						</div>
+					</div>	
+					<div class="form-group">
+						<label class="col-sm-4 control-label">ИНН</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control inn" name="inn" value="<?php echo $row['inn']; ?>">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">КПП</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control kpp" name="kpp" value="<?php echo $row['kpp']; ?>">
+						</div>
+					</div>																			
+					<div class="form-group">
+						<label class="col-sm-4 control-label">ФИО сотрудника для контактов</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control fio" name="fio" value="<?php echo $row['fio']; ?>">
+						</div>
+					</div>					
+					<div class="form-group">
+						<label class="col-sm-4 control-label">Телефон</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control telephone" name="telephone" value="<?php echo $row['telephone']; ?>">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">E-mail</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control email" name="email" value="<?php echo $row['email']; ?>">
+						</div>
+					</div>											
 				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-success btn-update-procedure" onclick="update_request_object('<?php echo $id; ?>')"><i class="fa fa-check-circle"></i> Сохранить</button>
-				</div>
-			</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success btn-update-procedure" onclick="update_request_object('<?php echo $id; ?>')"><i class="fa fa-check-circle"></i> Сохранить</button>
+			</div>
+			
 		</div>
 	</div>
 </div>
+</form>
 <?php
 }
 
