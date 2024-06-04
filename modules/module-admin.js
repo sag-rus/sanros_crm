@@ -1434,8 +1434,8 @@ function confirm_request_object(id){
 }
 
 function update_request_object(id){
-	let data = $('.edit_request_object_form').serialize();
-	let str = 'func=update_request_object&id=' + id + '&data='+data;
+	let form_data = $('.edit_request_object_form').serialize();
+	let str = 'func=update_request_object&id=' + id + '&'+form_data;
 	$.ajax({
 		url: 'mysql.php',
 		type: 'POST',
