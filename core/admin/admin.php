@@ -1151,7 +1151,7 @@ function show_card_request_object($connect){
 	$region = $connect->getRow("SELECT `id`, `name` FROM `region` WHERE `id` = ?i", $row['object_region']);
 	if (isset($region['name'])) $region = $region['name']; else $region = '';
 	$region_direction = $connect->getRow("SELECT `id`, `name` FROM `direction_object` WHERE `id` = ?i", $row['region_direction_id']);
-	if (isset($region_direction['name'])) $region_direction = $region['name']; else $region_direction = '';	
+	if (isset($region_direction['name'])) $region_direction = $region_direction['name']; else $region_direction = '';	
 ?>
 	<div class="form-horizontal panel panel-info">
 		<div class="panel-heading">
