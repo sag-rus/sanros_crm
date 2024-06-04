@@ -1433,6 +1433,20 @@ function confirm_request_object(id){
 	});
 }
 
+function update_request_object(id){
+	let data = $('.edit_request_object_form').serialize();
+	let str = 'func=update_request_object&id=' + id + '&data='+data;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		dataType: 'JSON',
+		success: function(data){
+			show_request_object();
+		}
+	});
+}
+
 function show_assign_email_object_account(account){
 	var str = 'func=show_assign_email_object_account&account=' + account;
 	$.ajax({
