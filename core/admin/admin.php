@@ -1298,6 +1298,9 @@ function show_card_request_object($connect){
 		</div>
 	</div>
 <?php
+echo '<pre>';
+print_r($row);
+echo '</pre>';
 	$html = ob_get_clean();
 	return $html;
 }
