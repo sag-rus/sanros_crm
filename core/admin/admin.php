@@ -1266,11 +1266,65 @@ function edit_request_object($connect){
 			<div class="modal-body">
 				<div class="form-horizontal edit-procedure">
 					<div class="form-group">
-						<label class="col-sm-4 control-label">Название</label>
+						<label class="col-sm-4 control-label">Юридическое название компании</label>
 						<div class="col-sm-8">
-							<input type="text" class="form-control name" value="<?php echo $row['name']; ?>">
+							<input type="text" class="form-control urobject" name="urobject" value="<?php echo $row['urobject']; ?>">
 						</div>
 					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">Название объекта</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control object" name="object" value="<?php echo $row['object']; ?>">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">Тип объекта</label>
+						<div class="col-sm-9">
+							<?php echo get_select_table($connect, "type_object", "", $row["type"], "type_object", 1, ""); ?>
+						</div>
+					</div>					
+					<div class="form-group">
+						<label class="col-sm-4 control-label">Почтовый адрес</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control address" name="address" value="<?php echo $row['address']; ?>">
+						</div>
+					</div>	
+					<div class="form-group">
+						<label class="col-sm-4 control-label">Юридический адрес</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control uraddress" name="uraddress" value="<?php echo $row['uraddress']; ?>">
+						</div>
+					</div>	
+					<div class="form-group">
+						<label class="col-sm-4 control-label">ИНН</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control inn" name="inn" value="<?php echo $row['inn']; ?>">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">КПП</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control kpp" name="kpp" value="<?php echo $row['kpp']; ?>">
+						</div>
+					</div>																			
+					<div class="form-group">
+						<label class="col-sm-4 control-label">ФИО сотрудника для контактов</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control fio" name="fio" value="<?php echo $row['fio']; ?>">
+						</div>
+					</div>					
+					<div class="form-group">
+						<label class="col-sm-4 control-label">Телефон</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control telephone" name="telephone" value="<?php echo $row['telephone']; ?>">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">E-mail</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control email" name="email" value="<?php echo $row['email']; ?>">
+						</div>
+					</div>											
 				</div>
 			</div>
 			<div class="modal-footer">
