@@ -1298,9 +1298,6 @@ function show_card_request_object($connect){
 		</div>
 	</div>
 <?php
-echo '<pre>';
-print_r($row);
-echo '</pre>';
 	$html = ob_get_clean();
 	return $html;
 }
@@ -1352,7 +1349,7 @@ function edit_request_object($connect){
 					<div class="form-group">
 						<label class="col-sm-4 control-label">Название объекта кратко</label>
 						<div class="col-sm-8">
-							<input type="text" class="form-control name" name="name" value="<?php echo $row['namme']; ?>">
+							<input type="text" class="form-control name" name="name" value="<?php echo $row['name']; ?>">
 						</div>
 					</div>					
 					<div class="form-group">
