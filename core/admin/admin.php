@@ -1178,6 +1178,14 @@ function show_card_request_object($connect){
 			</div>
 			<div class="list-group-item list-hover-item">
 				<div class="form-group form-group-margin">
+					<label class="col-sm-3 control-label-element">Название объекта кратко</label>
+					<div class="col-sm-9">
+						<?php echo $row["name"]; ?>
+					</div>
+				</div>
+			</div>			
+			<div class="list-group-item list-hover-item">
+				<div class="form-group form-group-margin">
 					<label class="col-sm-3 control-label-element">Почтовый адрес</label>
 					<div class="col-sm-9">
 						<?php echo $row["address"]; ?>
@@ -1291,7 +1299,12 @@ function edit_request_object($connect){
 							<?php echo get_select_table($connect, "type_object", "", $row["type"], "type", 1, ""); ?>
 						</div>
 					</div>	
-					
+					<div class="form-group">
+						<label class="col-sm-4 control-label">Почтовый адрес</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control address" name="address" value="<?php echo $row['address']; ?>">
+						</div>
+					</div>					
 					<div class="form-group">
 						<label class="col-sm-4 control-label">Направление</label>
 						<div class="col-sm-8">
