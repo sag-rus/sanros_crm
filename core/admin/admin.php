@@ -1278,7 +1278,7 @@ function edit_request_object($connect){
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-sm-4 control-label">Название объекта краткое</label>
+						<label class="col-sm-4 control-label">Название объекта кратко</label>
 						<div class="col-sm-8">
 							<input type="text" class="form-control name" name="name" value="<?php echo $row['namme']; ?>">
 						</div>
@@ -1290,9 +1290,15 @@ function edit_request_object($connect){
 						</div>
 					</div>	
 					<div class="form-group">
+						<label class="col-sm-4 control-label">Почтовый адрес</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control address" name="address" value="<?php echo $row['address']; ?>">
+						</div>
+					</div>					
+					<div class="form-group">
 						<label class="col-sm-4 control-label">Направление</label>
 						<div class="col-sm-8">
-							<?=get_select_table($connect, "direction_object", "(`id_reg` IS NULL OR `id_reg` = 0) AND `id_country` = 1", $row["direction"], "direction-object", 1, "");?>
+							<?=get_select_table($connect, "direction_object", "(`id_reg` IS NULL OR `id_reg` = 0) AND `id_country` = 1", $row["direction"], "direction_object", 1, "");?>
 						</div>
 					</div>
 					<div class="form-group<?php if(!$row['direction']) { ?> hidden<?php } ?>">
@@ -1328,13 +1334,7 @@ function edit_request_object($connect){
 						<div class="col-sm-8">
 							<input type="text" class="form-control longitude" name="longitude" value="<?php echo $row['longitude']; ?>">
 						</div>
-					</div>																		
-					<div class="form-group">
-						<label class="col-sm-4 control-label">Почтовый адрес</label>
-						<div class="col-sm-8">
-							<input type="text" class="form-control address" name="address" value="<?php echo $row['address']; ?>">
-						</div>
-					</div>	
+					</div>																			
 					<div class="form-group">
 						<label class="col-sm-4 control-label">Юридический адрес</label>
 						<div class="col-sm-8">
