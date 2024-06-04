@@ -1290,7 +1290,7 @@ function show_card_request_object($connect){
 		<div class="panel-footer text-right">
 			<?php if ($row['status']==0) {?>
 				<button class="btn btn-danger btn-sm" onclick="delete_request_object(<?php echo $object; ?>)"><i class="fa fa-check-circle"></i> Удалить</button> &nbsp 
-				<button class="btn btn-info btn-sm" onclick="edit_request_object(<?php echo $object; ?>)"><i class="fa fa-check-circle"></i> Редактировать</button> &nbsp 			
+				<button class="btn btn-info btn-sm" onclick="edit_request_object(<?php echo $object; ?>)"><i class="fa fa-check-circle"></i> Дополнить / Редактировать</button> &nbsp 			
 				<?php if (trim($row['name'])!='' && $row['direction-object']>0 && $row['object_region']>0 && $row['region_direction_id']>0 && $row['latitude']>0 && $row['longitude	']>0) {?>
 					<button class="btn btn-success btn-sm" onclick="confirm_request_object(<?php echo $object; ?>)"><i class="fa fa-check-circle"></i> Принять</button>
 				<?php } ?>
