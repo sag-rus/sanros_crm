@@ -1256,7 +1256,7 @@ function edit_request_object($connect){
 	$id = $_POST["id"];
 	$row = $connect->getRow("SELECT * FROM `object_request` WHERE id=?i", $id);
 ?>
-<div class="modal fade edit-procedure-modal">
+<div class="modal fade edit-procedure-modal edit-object">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -1298,7 +1298,7 @@ function edit_request_object($connect){
 					<div class="form-group<?php if(!$row['direction']) { ?> hidden<?php } ?>">
 						<label class="col-sm-4 control-label">Регион</label>
 						<div class="col-sm-8">
-							<select class="form-control object_region" name="object_region">
+							<select class="form-control object_region" id="object_region" name="object_region">
 								<option value="0"<?php if(!$row['id_reg']) { ?> selected<?php } ?>>Не выбран</option>
 								<?php foreach ($regions as $region) { ?>
 								<option value="<?=$region['id'];?>"<?php if($row['id_reg'] == $region['id']) { ?> selected<?php } ?>><?=$region['name'];?></option>
@@ -1309,7 +1309,7 @@ function edit_request_object($connect){
 					<div class="form-group<?php if(!$row['id_reg'] || count($region_directions) === 0) { ?> hidden<?php } ?>">
 						<label class="col-sm-4 control-label">Региональное направление</label>
 						<div class="col-sm-8">
-							<select class="form-control region_direction_id" name="region_direction_id">
+							<select class="form-control region_direction_id" id="region_direction_id" name="region_direction_id">
 								<option value="0"<?php if(!$row['region_direction_id']) { ?> selected<?php } ?>>Не выбрано</option>
 							<?php foreach ($region_directions as $region_direction) { ?>
 								<option value="<?=$region_direction['id'];?>"<?php if($row['region_direction_id'] == $region_direction['id']) { ?> selected<?php } ?>><?=$region_direction['name'];?></option>
