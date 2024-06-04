@@ -1442,7 +1442,7 @@ function update_request_object(id){
 		data: str,
 		dataType: 'JSON',
 		success: function(data){
-			show_card_request_object(id);
+			show_card_request_object(517);
 		}
 	});
 }
