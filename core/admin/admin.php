@@ -1326,9 +1326,9 @@ function edit_request_object($connect){
 						<label class="col-sm-4 control-label">Регион</label>
 						<div class="col-sm-8">
 							<select class="form-control object_region" id="object_region" name="object_region">
-								<option value="0"<?php if(!$row['id_reg']) { ?> selected<?php } ?>>Не выбран</option>
+								<option value="0"<?php if(!$row['object_region']) { ?> selected<?php } ?>>Не выбран</option>
 								<?php foreach ($regions as $region) { ?>
-								<option value="<?=$region['id'];?>"<?php if($row['id_reg'] == $region['id']) { ?> selected<?php } ?>><?=$region['name'];?></option>
+								<option value="<?=$region['id'];?>"<?php if($row['object_region'] == $region['id']) { ?> selected<?php } ?>><?=$region['name'];?></option>
 								<?php } ?>
 							</select>
 						</div>
