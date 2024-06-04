@@ -1146,6 +1146,8 @@ function show_request_object($connect){
 function show_card_request_object($connect){
 	$object = $_POST["object"];
 	$row = $connect->getRow("SELECT * FROM object_request WHERE id=?i", $object);
+	$region = $connect->getRow("SELECT `id`, `name` FROM `region` WHERE `id` = ?i", $row['object_region']);
+	if (isset($region['name'])) $region = $region['name']; else $region = '';
 ?>
 	<div class="form-horizontal panel panel-info">
 		<div class="panel-heading">
@@ -1192,6 +1194,14 @@ function show_card_request_object($connect){
 					</div>
 				</div>
 			</div>	
+			<div class="list-group-item list-hover-item">
+				<div class="form-group form-group-margin">
+					<label class="col-sm-3 control-label-element">Регион</label>
+					<div class="col-sm-9">
+						<?php echo $region; ?>
+					</div>
+				</div>
+			</div>			
 			<div class="list-group-item list-hover-item">
 				<div class="form-group form-group-margin">
 					<label class="col-sm-3 control-label-element">Юридический адрес</label>
