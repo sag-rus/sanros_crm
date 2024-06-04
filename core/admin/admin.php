@@ -1234,11 +1234,9 @@ function show_card_request_object($connect){
 			</div>
 		</div>
 		<div class="panel-footer text-right">
-			<?php if ($row['status']==0) {?>
 			<button class="btn btn-danger btn-sm" onclick="delete_request_object(<?php echo $object; ?>)"><i class="fa fa-check-circle"></i> Удалить</button> &nbsp 
 			<button class="btn btn-info btn-sm" onclick="edit_request_object(<?php echo $object; ?>)"><i class="fa fa-check-circle"></i> Редактировать</button> &nbsp 			
 			<button class="btn btn-success btn-sm" onclick="confirm_request_object(<?php echo $object; ?>)"><i class="fa fa-check-circle"></i> Принять</button>
-			<?php } ?>
 		</div>
 	</div>
 <?php
