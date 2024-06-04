@@ -1386,6 +1386,13 @@ function confirm_request_object($connect){
 	$connect->query("UPDATE object_request SET status=1 WHERE id=?i", $id);
 }
 
+function update_request_object($connect){
+	$id = $_POST["id"];
+	$connect->query("UPDATE object_request SET `urobject`=?s, `object`=?s, `name`=?s, `type`=?i, `direction-object`=?i, `object_region`=?i `region_direction_id`=?i, `latitude`=?s, `longitude`=?s, `uraddress`=?s, `inn`=?s, `kpp`=?s, `fio`=?s, `telephone`=?s, `email`=?s WHERE id=?i", 
+	$_POST['urobject'], $_POST['object'], $_POST['name'], $_POST['type'], $_POST['direction-object'], $_POST['object_region'], $_POST['region_direction_id'], $_POST['latitude'], $_POST['longitude'], $_POST['uraddress'], $_POST['inn'], $_POST['kpp'], $_POST['fio'], $_POST['telephone'], $_POST['email'], $id);
+}
+
+
 function show_assign_email_object_account($connect){
 	$result = array();
 	$account = $_POST["account"];
