@@ -1139,7 +1139,7 @@ function update_group($connect){
 }
 
 function show_request_object($connect){
-	$data = $connect->getAll("SELECT id, time, object, telephone, email, address, website, website_object, comment, source, status FROM object_request ORDER BY status ASC, time DESC");
+	$data = $connect->getAll("SELECT id, time, object, telephone, email, address, website, website_object, comment, source, status FROM object_request WHERE status>0 ORDER BY status ASC, time DESC");
 	return json_encode($data);
 }
 
@@ -1244,6 +1244,11 @@ function show_card_request_object($connect){
 <?php
 	$html = ob_get_clean();
 	return $html;
+}
+
+function delete_request_object($connect){
+	$id = $_POST["id"];
+	$connect->query("UPDATE object_request SET status=-1 WHERE id=?i", $id);
 }
 
 function confirm_request_object($connect){

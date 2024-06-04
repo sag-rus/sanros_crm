@@ -1396,6 +1396,18 @@ function send_admin_rating_comment(){
 	}
 }
 
+function delete_request_object(id){
+	var str = 'func=delete_request_object&id=' + id;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function(){
+			show_request_object();
+		}
+	});
+}
+
 function confirm_request_object(id){
 	var str = 'func=confirm_request_object&id=' + id;
 	$.ajax({
