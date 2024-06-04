@@ -1328,27 +1328,7 @@ function edit_request_object($connect){
 						<div class="col-sm-8">
 							<input type="text" class="form-control longitude" name="longitude" value="<?php echo $row['longitude']; ?>">
 						</div>
-					</div>									
-			<label class="col-sm-3 control-label">Долгота</label>
-			<div class="col-sm-9">
-				<input type="text" class="form-control" id="longitude" value="<?php echo $row['longitude']; ?>">
-			</div>
-		</div>									
-			<label class="col-sm-3 control-label">Долгота</label>
-			<div class="col-sm-9">
-				<input type="text" class="form-control" id="longitude" value="<?php echo $row['longitude']; ?>">
-			</div>
-		</div>									
-			<label class="col-sm-3 control-label">Долгота</label>
-			<div class="col-sm-9">
-				<input type="text" class="form-control" id="longitude" value="<?php echo $row['longitude']; ?>">
-			</div>
-		</div>									
-			<label class="col-sm-3 control-label">Долгота</label>
-			<div class="col-sm-9">
-				<input type="text" class="form-control" id="longitude" value="<?php echo $row['longitude']; ?>">
-			</div>
-		</div>									
+					</div>																		
 					<div class="form-group">
 						<label class="col-sm-4 control-label">Почтовый адрес</label>
 						<div class="col-sm-8">
