@@ -1221,7 +1221,23 @@ function show_card_request_object($connect){
 						<?php echo $region_direction; ?>
 					</div>
 				</div>
-			</div>					
+			</div>
+			<div class="list-group-item list-hover-item">
+				<div class="form-group form-group-margin">
+					<label class="col-sm-3 control-label-element">Широта</label>
+					<div class="col-sm-9">
+						<?php echo $row["latitude"]; ?>
+					</div>
+				</div>
+			</div>
+			<div class="list-group-item list-hover-item">
+				<div class="form-group form-group-margin">
+					<label class="col-sm-3 control-label-element">Долгота</label>
+					<div class="col-sm-9">
+						<?php echo $row["longitude"]; ?>
+					</div>
+				</div>
+			</div>											
 			<div class="list-group-item list-hover-item">
 				<div class="form-group form-group-margin">
 					<label class="col-sm-3 control-label-element">Юридический адрес</label>
@@ -1273,9 +1289,11 @@ function show_card_request_object($connect){
 		</div>
 		<div class="panel-footer text-right">
 			<?php if ($row['status']==0) {?>
-			<button class="btn btn-danger btn-sm" onclick="delete_request_object(<?php echo $object; ?>)"><i class="fa fa-check-circle"></i> Удалить</button> &nbsp 
-			<button class="btn btn-info btn-sm" onclick="edit_request_object(<?php echo $object; ?>)"><i class="fa fa-check-circle"></i> Редактировать</button> &nbsp 			
-			<button class="btn btn-success btn-sm" onclick="confirm_request_object(<?php echo $object; ?>)"><i class="fa fa-check-circle"></i> Принять</button>
+				<button class="btn btn-danger btn-sm" onclick="delete_request_object(<?php echo $object; ?>)"><i class="fa fa-check-circle"></i> Удалить</button> &nbsp 
+				<button class="btn btn-info btn-sm" onclick="edit_request_object(<?php echo $object; ?>)"><i class="fa fa-check-circle"></i> Редактировать</button> &nbsp 			
+				<?php if (trim($row['name'])!='' && $row['direction-object']>0 && $row['object_region']>0 && $row['region_direction_id']>0 && $row['latitude']>0 && $row['longitude	']>0) {?>
+					<button class="btn btn-success btn-sm" onclick="confirm_request_object(<?php echo $object; ?>)"><i class="fa fa-check-circle"></i> Принять</button>
+				<?php } ?>
 			<?php } ?>
 		</div>
 	</div>
