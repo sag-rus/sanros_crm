@@ -1263,6 +1263,17 @@ function delete_request_object($connect){
 function edit_request_object($connect){
 	$id = $_POST["id"];
 	$row = $connect->getRow("SELECT * FROM `object_request` WHERE id=?i", $id);
+
+	$regions = [];
+
+	if($row['direction-object']) {
+	    $regions = $connect->getAll("SELECT `id`, `name` FROM `region` WHERE `id_direction` = ?i", $row['direction-object']);
+    }
+
+	$region_directions = [];
+	if($row['object_region']) {
+      $region_directions = $connect->getAll("SELECT `id`, `name` FROM `direction_object` WHERE `id_reg` = ?i",$row['object_region']);
+    }	
 ?>
 <form class="edit_request_object_form">
 <div class="modal fade edit-procedure-modal edit-object">
@@ -1308,10 +1319,10 @@ function edit_request_object($connect){
 					<div class="form-group">
 						<label class="col-sm-4 control-label">Направление</label>
 						<div class="col-sm-8">
-							<?=get_select_table($connect, "direction_object", "(`id_reg` IS NULL OR `id_reg` = 0) AND `id_country` = 1", $row["direction"], "direction-object", 1, "");?>
+							<?=get_select_table($connect, "direction_object", "(`id_reg` IS NULL OR `id_reg` = 0) AND `id_country` = 1", $row["direction-object"], "direction-object", 1, "");?>
 						</div>
 					</div>
-					<div class="form-group<?php if(!$row['direction']) { ?> hidden<?php } ?>">
+					<div class="form-group<?php if(!$row['direction-object']) { ?> hidden<?php } ?>">
 						<label class="col-sm-4 control-label">Регион</label>
 						<div class="col-sm-8">
 							<select class="form-control object_region" id="object_region" name="object_region">
@@ -1322,7 +1333,7 @@ function edit_request_object($connect){
 							</select>
 						</div>
 					</div>
-					<div class="form-group<?php if(!$row['id_reg'] || count($region_directions) === 0) { ?> hidden<?php } ?>">
+					<div class="form-group<?php if(!$row['object_region'] || count($region_directions) === 0) { ?> hidden<?php } ?>">
 						<label class="col-sm-4 control-label">Региональное направление</label>
 						<div class="col-sm-8">
 							<select class="form-control region_direction_id" id="region_direction_id" name="region_direction_id">
