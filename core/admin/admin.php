@@ -1295,7 +1295,7 @@ function edit_request_object($connect){
 					<div class="form-group">
 						<label class="col-sm-4 control-label">Направление</label>
 						<div class="col-sm-8">
-							<?=get_select_table($connect, "direction_object", "(`id_reg` IS NULL OR `id_reg` = 0) AND `id_country` = 1", $row["direction"], "direction_object", 1, "");?>
+							<?=get_select_table($connect, "direction_object", "(`id_reg` IS NULL OR `id_reg` = 0) AND `id_country` = 1", $row["direction"], "direction-object", 1, "");?>
 						</div>
 					</div>
 					<div class="form-group<?php if(!$row['direction']) { ?> hidden<?php } ?>">
