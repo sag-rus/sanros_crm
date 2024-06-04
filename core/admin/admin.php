@@ -1251,6 +1251,37 @@ function delete_request_object($connect){
 	$connect->query("UPDATE object_request SET status=-1 WHERE id=?i", $id);
 }
 
+
+function edit_request_object($connect){
+	$id = $_POST["id"];
+	$row = $connect->getRow("SELECT * FROM `object_request` WHERE id=?i", $id);
+?>
+<div class="modal fade edit-procedure-modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+				<h4 class="modal-title">Изменить заявку</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-horizontal edit-procedure">
+					<div class="form-group">
+						<label class="col-sm-4 control-label">Название</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control name" value="<?php echo $row['name']; ?>">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success btn-update-procedure" onclick="update_request_object('<?php echo $id; ?>')"><i class="fa fa-check-circle"></i> Сохранить</button>
+			</div>
+		</div>
+	</div>
+</div>
+<?php
+}
+
 function confirm_request_object($connect){
 	$id = $_POST["id"];
 	$connect->query("UPDATE object_request SET status=1 WHERE id=?i", $id);
