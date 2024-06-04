@@ -1455,7 +1455,16 @@ function edit_request_object($connect){
 
 function confirm_request_object($connect){
 	$id = $_POST["id"];
-	$connect->query("UPDATE object_request SET status=1 WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT * FROM `object_request` WHERE id=?i", $id);
+	if ($row['status']==0) {
+		//Меняем статус!
+		$connect->query("UPDATE object_request SET status=1 WHERE id=?i", $id);
+
+
+		//Создаем объект!
+
+		//Создаем материал!
+	}
 }
 
 function update_request_object($connect){
