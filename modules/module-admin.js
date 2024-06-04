@@ -1331,10 +1331,10 @@ function show_request_object(){
 		success: function(data){
 			var html = '';
 			for(var index in data){
-				var class_request = 'danger';
+				var class_request = '';
 				var object = data[index];
 				if(object['status'] == 0)
-					class_request = '';
+					class_request = 'warning';
 				html+= '<tr class="' +class_request+ '" onclick="show_card_request_object(' +object['id']+ ')">' +
 					'<td width="30%">' +object['object']+ '</td>' +
 					'<td width="40%">' +object['address']+ '</td>' +
