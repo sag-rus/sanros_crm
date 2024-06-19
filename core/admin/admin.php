@@ -1337,13 +1337,13 @@ function edit_request_object($connect){
 					<div class="form-group">
 						<label class="col-sm-4 control-label">Юридическое название компании</label>
 						<div class="col-sm-8">
-							<input type="text" class="form-control urobject" name="urobject" value="<?php echo $row['urobject']; ?>">
+							<input type="text" class="form-control urobject" name="urobject" value="<?php echo htmlspecialchars($row['urobject']); ?>">
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-4 control-label">Название объекта полное</label>
 						<div class="col-sm-8">
-							<input type="text" class="form-control object" name="object" value="<?php echo $row['object']; ?>">
+							<input type="text" class="form-control object" name="object" value="<?php echo htmlspecialchars($row['object']); ?>">
 						</div>
 					</div>
 					<div class="form-group">
