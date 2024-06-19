@@ -1466,9 +1466,12 @@ function confirm_request_object($connect){
 		$id_account = $connect->insertId();
 
 		//Создаем объект!
+		$url_name = mb_strtolower($row['name']);
+		$url_name = str_replace(' ', '-', $url_name);
 		$connect->query("INSERT INTO `object` 
 			SET `id`=0, 
 			`name`='$row[name]', 
+			`url_name`='$url_name', 
 			`id_reg`='$row[object_region]', 
 			`region_direction_id`='$row[region_direction_id]',
 			`active`=1,
