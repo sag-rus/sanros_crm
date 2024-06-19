@@ -1460,10 +1460,21 @@ function confirm_request_object($connect){
 		//Меняем статус!
 		$connect->query("UPDATE object_request SET status=1 WHERE id=?i", $id);
 
+		//Создаем акк для кабинета!
+		$login = 'acc_'.rand(100000,999999).'_gen_'.rand(100000,999999);
+		$pass = generate_password(8);
+		$connect->query("INSERT INTO `object_account` SET `id`=0, `login`='$login', `password`='$pass', `email`='$row[email]'");
+		$id_account = $connect->insertId();
+
+		$_POST['account'] = $id_account;
+		send_login_object_account($connect);
+
+		echo 'sended...';
 
 		//Создаем объект!
 
-		//Создаем материал!
+		//Высылаем доступы!
+
 	}
 }
 
