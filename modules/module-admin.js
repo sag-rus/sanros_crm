@@ -1443,7 +1443,7 @@ function update_request_object(id){
 		dataType: 'JSON',
 		success: function(data){
 			remove_all_windows();
-			show_card_request_object(517);
+			show_card_request_object(id);
 		}
 	});
 }
