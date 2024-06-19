@@ -372,7 +372,6 @@ function update_rate_plan_account($connect, $data){
       $responseArray['success'] = 1;
 
       $connect->query("UPDATE rate_plan SET name=?s, food=?s, description=?s, min_days=?i, status=?i, synchronized = 0 WHERE id=?i AND object=?i", $data["name"], $data["food"], $data["desc"], $data["days"], $data['status'], $data["id"],$object);
-      $connect->query("UPDATE object SET status=2, synchronized=0 WHERE id=?i", $object);
       save_history_object("Изменение тарифного плана ".$data["name"]);
 		}
 		else {
@@ -385,6 +384,35 @@ function update_rate_plan_account($connect, $data){
 
 	return $responseArray;
 }
+
+function del_rate_plan_account($connect, $data){
+	$responseArray = [
+	  'success' => 0,
+	  'msg' => ''
+	];
+  
+	  if(CheckAuthObjectCabinet::check_authorization()){
+		  $ratePlan = $data["id"];
+		  if($data['id'] > 0) {
+		$object = $data["object"];
+		if(!isset($data['status']) || !in_array($data['status'],[0,1,'0','1']))
+		  $data['status'] = 1;
+  
+		$responseArray['success'] = 1;
+  
+		$connect->query("UPDATE rate_plan SET status=?i, synchronized = 0 WHERE id=?i AND object=?i", $data['status'], $data["id"], $object);
+		save_history_object("Удаление тарифного плана ".$data["name"]);
+		  }
+		  else {
+		$responseArray['msg'] = 'Incorrect rate plan ID';
+		  }
+	  }
+	  else {
+		  $responseArray['msg'] = 'Access denied';
+	  }
+  
+	  return $responseArray;
+  }
 
 function create_booking_module_object($connect, $data){
 	if(CheckAuthObjectCabinet::check_authorization()){
