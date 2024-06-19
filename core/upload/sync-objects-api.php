@@ -592,7 +592,9 @@ function sync_objects_api($connect){
 
                         $objectArFullUri .= '/'.$objectAr['uri'];
 
-						$connect->query("UPDATE `object` SET `path`=?s WHERE `id`=?i", $objectArFullUri, $object['id']);
+						echo "UPDATE `object` SET `path`='$objectArFullUri' WHERE `id`=$object[id]<br><br>";
+
+						$connect->query("UPDATE `object` SET `path`='$objectArFullUri' WHERE `id`=$object[id]");
 
                         $content = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `status` <> 2 AND `path` = ?s AND `type` != 'redirect' AND `site_id` = '38'", '/объект/'.$object['url_name_origin']);
 
