@@ -1469,6 +1469,9 @@ function confirm_request_object($connect){
 
 function update_request_object($connect){
 	$id = $_POST["id"];
+	$_POST['urobject'] = htmlspecialchars_decode($_POST['urobject'], ENT_NOQUOTES);
+	$_POST['object'] = htmlspecialchars_decode($_POST['object'], ENT_NOQUOTES);
+
 	$connect->query("UPDATE object_request SET `urobject`=?s, `object`=?s, `name`=?s, `type`=?i, `address`=?s, `direction-object`=?i, `object_region`=?i, `region_direction_id`=?i, `latitude`=?s, `longitude`=?s, `uraddress`=?s, `inn`=?s, `kpp`=?s, `fio`=?s, `telephone`=?s, `email`=?s WHERE id=?i", 
 	$_POST['urobject'], $_POST['object'], $_POST['name'], $_POST['type'], $_POST['address'], $_POST['direction-object'], $_POST['object_region'], $_POST['region_direction_id'], (float)$_POST['latitude'], (float)$_POST['longitude'], $_POST['uraddress'], $_POST['inn'], $_POST['kpp'], $_POST['fio'], $_POST['telephone'], $_POST['email'], $id);
 	return json_encode(array("ok"=>1));
