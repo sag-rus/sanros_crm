@@ -1347,7 +1347,7 @@ function edit_request_object($connect){
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-sm-4 control-label">Название объекта кратко</label>
+						<label class="col-sm-4 control-label">Название объекта кратко (допустимы только символы, цифры и пробелы)</label>
 						<div class="col-sm-8">
 							<input type="text" class="form-control name" name="name" value="<?php echo $row['name']; ?>">
 						</div>
@@ -1469,7 +1469,6 @@ function confirm_request_object($connect){
 		$connect->query("INSERT INTO `object` 
 			SET `id`=0, 
 			`name`='$row[name]', 
-			`email`='$row[email]', 
 			`id_reg`='$row[object_region]', 
 			`region_direction_id`='$row[region_direction_id]',
 			`active`=1,
@@ -1481,6 +1480,8 @@ function confirm_request_object($connect){
 			`id_account`='$id_account',
 			`direction`='".$row['direction-object']."'
 			");
+
+		sync_objects_api($connect);
 
 		echo 'obj_created...';
 
@@ -1495,6 +1496,8 @@ function update_request_object($connect){
 	$id = $_POST["id"];
 	$_POST['urobject'] = htmlspecialchars_decode($_POST['urobject'], ENT_NOQUOTES);
 	$_POST['object'] = htmlspecialchars_decode($_POST['object'], ENT_NOQUOTES);
+
+	$_POST['name'] = trim(preg_replace('/[^a-zа-я ]/ui', '', $_POST['name']));
 
 	$connect->query("UPDATE object_request SET `urobject`=?s, `object`=?s, `name`=?s, `type`=?i, `address`=?s, `direction-object`=?i, `object_region`=?i, `region_direction_id`=?i, `latitude`=?s, `longitude`=?s, `uraddress`=?s, `inn`=?s, `kpp`=?s, `fio`=?s, `telephone`=?s, `email`=?s WHERE id=?i", 
 	$_POST['urobject'], $_POST['object'], $_POST['name'], $_POST['type'], $_POST['address'], $_POST['direction-object'], $_POST['object_region'], $_POST['region_direction_id'], (float)$_POST['latitude'], (float)$_POST['longitude'], $_POST['uraddress'], $_POST['inn'], $_POST['kpp'], $_POST['fio'], $_POST['telephone'], $_POST['email'], $id);
