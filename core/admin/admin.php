@@ -1465,14 +1465,28 @@ function confirm_request_object($connect){
 		$connect->query("INSERT INTO `object_account` SET `id`=0, `login`='$login', `email`='$row[email]'");
 		$id_account = $connect->insertId();
 
-		$_POST['account'] = $id_account;
-		send_login_object_account($connect);
-
-		echo 'sended...';
-
 		//Создаем объект!
+		$connect->query("INSERT INTO `object` 
+			SET `id`=0, 
+			`name`='$row[name]', 
+			`email`='$row[email]', 
+			`id_reg`='$row[object_region]', 
+			`region_direction_id`='$row[region_direction_id]',
+			`active`=1,
+			`type`='$row[type]',
+			`full_name`='$row[object]',
+			`address`='$row[address]',
+			`latitude`='$row[latitude]',
+			`longitude`='$row[longitude]',
+			`id_account`='$id_account',
+			`direction`='".$row['direction-object']."'
+			");
+
+		echo 'obj_created...';
 
 		//Высылаем доступы!
+		$_POST['account'] = $id_account;
+		send_login_object_account($connect);
 
 	}
 }
