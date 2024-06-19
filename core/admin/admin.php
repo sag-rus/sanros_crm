@@ -1472,6 +1472,7 @@ function confirm_request_object($connect){
 			SET `id`=0, 
 			`name`='$row[name]', 
 			`url_name`='$url_name', 
+			`url_name_origin`='$url_name', 
 			`id_reg`='$row[object_region]', 
 			`region_direction_id`='$row[region_direction_id]',
 			`active`=1,
