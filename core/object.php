@@ -1926,8 +1926,8 @@ function update_housing($connect){
 	$id = $_POST["id"];
 	$name = $_POST["name"];
 	$desc = $_POST["desc"];
-	if (isset($_POST["id_obj"])) $connect->query("UPDATE housing SET name=?s, description=?s, synchronized = 0 WHERE id=?i", $name, $desc, $id);
-	else $connect->query("UPDATE housing SET name=?s, description=?s, synchronized = 0 WHERE id=?i and id_ibj=?i", $name, $desc, $id, $_POST["id_obj"]);
+	if (isset($_POST["id_obj"])) $connect->query("UPDATE housing SET name=?s, description=?s, synchronized = 0 WHERE id=?i and id_ibj=?i", $name, $desc, $id, $_POST["id_obj"]);
+	else $connect->query("UPDATE housing SET name=?s, description=?s, synchronized = 0 WHERE id=?i", $name, $desc, $id);
 }
 
 
