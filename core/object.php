@@ -1846,6 +1846,7 @@ function select_object_housing($connect){
 }
 
 function add_new_housing($connect){
+	//Используется в СРМ и кабинете объекта!
 	$id = $_POST["id"];
 	return '
 	<div class="modal fade">
@@ -1878,6 +1879,7 @@ function add_new_housing($connect){
 }
 
 function save_new_housing($connect){
+	//Используется в СРМ и кабинете объекта!
 	$id = $_POST["id"];
 	$name = $_POST["name"];
 	$desc = $_POST["desc"];
