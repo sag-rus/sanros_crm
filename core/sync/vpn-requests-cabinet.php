@@ -14,7 +14,7 @@
 	include_once(_FOLDERSITE_."/core/sync/API/client.php");
 	include_once(_FOLDERSITE_."/core/sync/API/agency.php");
 	include_once(_FOLDERSITE_."/core/sync/API/object.php");
-	include_once(_FOLDERSITE_."/core/sync/object.php");
+	include_once(_FOLDERSITE_."/core/object.php");
 	include_once(_FOLDERSITE_."/core/sync/API/payment.php");
 	include_once(_FOLDERSITE_."/core/sync/API/sitehelp.php");
 	include_once(_FOLDERSITE_."/core/sync/API/travelline.php");
