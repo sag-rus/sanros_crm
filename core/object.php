@@ -1847,35 +1847,34 @@ function select_object_housing($connect){
 
 function add_new_housing($connect){
 	$id = $_POST["id"];
-?>
-<div class="modal fade">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
-				<h4 class="modal-title">Добавить новый корпус</h4>
-			</div>
-			<div class="modal-body form-horizontal new-housing">
-				<div class="form-group">
-					<label class="col-sm-4 control-label">Название корпуса</label>
-					<div class="col-sm-8">
-						<input type="text" class="form-control name-housing" />
+	return '
+	<div class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+					<h4 class="modal-title">Добавить новый корпус</h4>
+				</div>
+				<div class="modal-body form-horizontal new-housing">
+					<div class="form-group">
+						<label class="col-sm-4 control-label">Название корпуса</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control name-housing" />
+						</div>
+					</div>
+					<div class="form-group form-group-margin">
+						<label class="col-sm-4 control-label">Описание</label>
+						<div class="col-sm-8">
+							<textarea class="form-control desc-housing"></textarea>
+						</div>
 					</div>
 				</div>
-				<div class="form-group form-group-margin">
-					<label class="col-sm-4 control-label">Описание</label>
-					<div class="col-sm-8">
-						<textarea class="form-control desc-housing"></textarea>
-					</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-success btn-sm" onclick="save_new_housing(\''.$id.'\')"><i class="fa fa-check-circle"></i> Сохранить</button>
 				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-success btn-sm" onclick="save_new_housing('<?php echo $id; ?>')"><i class="fa fa-check-circle"></i> Сохранить</button>
 			</div>
 		</div>
-	</div>
-</div>
-<?php
+	</div>';
 }
 
 function save_new_housing($connect){
