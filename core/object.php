@@ -1891,7 +1891,9 @@ function edit_housing($connect){
 	$id = $_POST["id"];
 	if (isset($_POST["id_obj"])) $row = $connect->getRow("SELECT name, description FROM housing WHERE id=?i and id_obj=?i", $id, $_POST['id_obj']);
 	else $row = $connect->getRow("SELECT name, description FROM housing WHERE id=?i", $id);
+	echo $row['name'];
 	$row['name'] = htmlspecialchars($row['name']);
+	echo $row['name'];
 	return '
 	<div class="modal fade">
 		<div class="modal-dialog">
