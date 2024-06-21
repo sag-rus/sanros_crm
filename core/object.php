@@ -1889,7 +1889,8 @@ function save_new_housing($connect){
 function edit_housing($connect){
 	//Используется в СРМ и кабинете объекта!
 	$id = $_POST["id"];
-	$row = $connect->getRow("SELECT name, description FROM housing WHERE id=?i", $id);
+	if (isset($_POST["id_obj"])) $row = $connect->getRow("SELECT name, description FROM housing WHERE id=?i and id_obj=?i", $id, $_POST['id_obj']);
+	else $row = $connect->getRow("SELECT name, description FROM housing WHERE id=?i", $id);
 	return '
 	<div class="modal fade">
 		<div class="modal-dialog">
