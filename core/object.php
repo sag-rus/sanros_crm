@@ -1891,6 +1891,7 @@ function edit_housing($connect){
 	$id = $_POST["id"];
 	if (isset($_POST["id_obj"])) $row = $connect->getRow("SELECT name, description FROM housing WHERE id=?i and id_obj=?i", $id, $_POST['id_obj']);
 	else $row = $connect->getRow("SELECT name, description FROM housing WHERE id=?i", $id);
+	$row['name'] = htmlspecialchars($row['name']);
 	return '
 	<div class="modal fade">
 		<div class="modal-dialog">
@@ -1924,7 +1925,7 @@ function edit_housing($connect){
 function update_housing($connect){
 	//Используется в СРМ и кабинете объекта!
 	$id = $_POST["id"];
-	$name = $_POST["name"];
+	$name = htmlspecialchars_decode($_POST["name"], ENT_NOQUOTES);
 	$desc = $_POST["desc"];
 	if (isset($_POST["id_obj"])) $connect->query("UPDATE housing SET name=?s, description=?s, synchronized = 0 WHERE id=?i and id_ibj=?i", $name, $desc, $id, $_POST["id_obj"]);
 	else $connect->query("UPDATE housing SET name=?s, description=?s, synchronized = 0 WHERE id=?i", $name, $desc, $id);
