@@ -1749,7 +1749,7 @@ function edit_room($connect){
 			<?php echo break_columns($connect, "comfort", 5, $row["id_comfort"], "WHERE type=0 ORDER BY name"); ?>
 		</div>
 	</div>
-    <div class="form-group">
+    <div class="form-group form-image-group">
         <label class="col-sm-2 control-label">Фото</label>
         <div class="col-sm-10">
         	<input type="text" class="form-control" name="imageurl" value="" style="width: 90%; display: inline-block;" placeholder="вставьте url изображения"><button class="get_img_from_url" >> > ></button><br><br>
