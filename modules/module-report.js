@@ -171,7 +171,7 @@ function filter_do_report(type){
 	if(!$('#show-crm-bid').is(':checked'))
 		crm_bid = 2;
 
-	if($('#show-all_afl').is(':checked'))
+	if($('#all_afl').is(':checked'))
 		all_afl = 1;
 
 
