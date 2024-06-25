@@ -1668,6 +1668,8 @@ function add_new_room($connect){
 		<div class="col-sm-10" id="best_comfort">
 			<?php echo break_columns($connect, "comfort", 5, "", "WHERE type=1 ORDER BY name"); ?>
 		</div>
+		<br>
+		<label class="col-sm-2 control-label">&nbsp;</label>
 		<div class="col-sm-10" id="comfort">
 			<?php echo break_columns($connect, "comfort", 5, "", "WHERE type=0 ORDER BY name"); ?>
 		</div>
