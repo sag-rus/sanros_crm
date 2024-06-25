@@ -1702,6 +1702,7 @@ function edit_room($connect){
 	  'id' => $id,
       'type' => 'room'
     ];
+	return load_bounds($connect,$entity,'image');
 	ob_start();
 ?>
 <tr class="edit-room"><td colspan="7">
