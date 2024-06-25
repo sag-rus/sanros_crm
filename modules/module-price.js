@@ -1127,8 +1127,8 @@ function update_room(id,manager){
 	var housing = $('#housing_object').val();
 	var square = $('#square').val();
 	var food = $('#food').val();
-  var $image = $modalBody.find('*[name="image"]');
-  var image = JSON.parse($image.val().trim());
+	var $image = $modalBody.find('*[name="image"]');
+	var image = JSON.parse($image.val().trim());
 
 	var data = {
 		func: 'update_room',
@@ -1141,8 +1141,8 @@ function update_room(id,manager){
 		food: food,
 		square: square,
 		comfort: '',
-    image: image
-  };
+    	image: image
+  	};
 	data.comfort = select_checkbox('comfort', 'comfort');
 	data.best_comfort = select_checkbox('comfort', 'best_comfort');
 	if(!name)

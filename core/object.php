@@ -1782,14 +1782,17 @@ function update_room($connect){
 	$housing = (int)$_POST["housing"];
 	$square = $_POST["square"];
 	$food = $_POST["food"];
-        $entity = [
-        'id' => $id,
-        'type' => 'room'
-        ];
-    $boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);
-    remove_bounds($connect,$entity,'image');
-    set_bounds($connect,$boundsArrayImage,'image');
-    $connect->query("UPDATE room SET name=?s, id_comfort=?s, id_best_comfort=?s, note=?s, main_place=?i, add_place=?i, housing=?s, food=?s, square=?s, synchronized = 0 WHERE id=?i", $name_room, $comfort, $best_comfort, $note, $main_place, $add_place, $housing, $food, $square, $id);
+	if (!isset($_POST["id_obj"])) {
+		$entity = [
+			'id' => $id,
+			'type' => 'room'
+		];
+		$boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);
+		remove_bounds($connect,$entity,'image');
+		set_bounds($connect,$boundsArrayImage,'image');
+	}
+    if (isset($_POST["id_obj"])) $connect->query("UPDATE room SET name=?s, id_comfort=?s, id_best_comfort=?s, note=?s, main_place=?i, add_place=?i, housing=?s, food=?s, square=?s, synchronized = 0 WHERE id=?i and id_obj=?i", $name_room, $comfort, $best_comfort, $note, $main_place, $add_place, $housing, $food, $square, $id, $_POST["id_obj"]);
+	else $connect->query("UPDATE room SET name=?s, id_comfort=?s, id_best_comfort=?s, note=?s, main_place=?i, add_place=?i, housing=?s, food=?s, square=?s, synchronized = 0 WHERE id=?i", $name_room, $comfort, $best_comfort, $note, $main_place, $add_place, $housing, $food, $square, $id);
 }
 
 function object_check_archive($connect){
