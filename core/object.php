@@ -1624,6 +1624,7 @@ function select_object_room($connect){
 }
 
 function add_new_room($connect){
+	//Используется в СРМ и кабинете объекта!
 	$id_obj = $_POST["id"];
 	ob_start();
 ?>
@@ -1695,6 +1696,7 @@ function save_new_room($connect){
 }
 
 function edit_room($connect){
+	//Используется в СРМ и кабинете объекта!
 	$id = (int)$_POST["id"];
 	$row = $connect->getRow("SELECT id_obj, name, id_comfort, id_best_comfort, note, main_place, add_place, housing, food, square FROM room WHERE id=?i", $id);
 	$manager = isset($_POST['manager'])?(int)$_POST['manager']:0;
@@ -1772,6 +1774,7 @@ function edit_room($connect){
 }
 
 function update_room($connect){
+	//Используется в СРМ и кабинете объекта!
 	$id = (int)$_POST["id"];
 	$note = $_POST["note"];
 	$main_place = $_POST["main_place"];
@@ -1802,12 +1805,15 @@ function object_check_archive($connect){
 }
 
 function room_check_archive($connect){
+	//Используется в СРМ и кабинете объекта!
 	$id = $_POST["id"];
-	$active = $connect->getOne("SELECT active FROM room WHERE id=?i", $id);
+	if (isset($_POST["id_obj"])) $active = $connect->getOne("SELECT active FROM room WHERE id=?i and id_obj=?i", $id, $_POST["id_obj"]);
+	else $active = $connect->getOne("SELECT active FROM room WHERE id=?i", $id);
 	$new = 0;
 	if($active == 0)
 		$new = 1;
-	$connect->query("UPDATE room SET active=?i, synchronized = 0 WHERE id=?i", $new, $id);
+	if (isset($_POST["id_obj"])) $connect->query("UPDATE room SET active=?i, synchronized = 0 WHERE id=?i and id_obj=?i", $new, $id, $_POST["id_obj"]);
+	else $connect->query("UPDATE room SET active=?i, synchronized = 0 WHERE id=?i", $new, $id);
 	return $new;
 }
 
