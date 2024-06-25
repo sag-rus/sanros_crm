@@ -1749,7 +1749,14 @@ function edit_room($connect){
 			<?php echo break_columns($connect, "comfort", 5, $row["id_comfort"], "WHERE type=0 ORDER BY name"); ?>
 		</div>
 	</div>
-
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Фото</label>
+        <div class="col-sm-10">
+        	<input type="text" class="form-control" name="imageurl" value="" style="width: 90%; display: inline-block;" placeholder="вставьте url изображения"><button class="get_img_from_url" >> > ></button><br><br>
+            <input type="file" class="form-control" name="image" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'image'))));?>">
+            <div class="input-message-block" data-for="image"></div>
+        </div>
+    </div>
 	<div class="form-group">
 		<div class="col-sm-offset-9 col-sm-3">
 			<button type="button" class="btn btn-success btn-sm" onclick="update_room('<?php echo $id; ?>',<?=$manager?'true':'false'?>)"><i class="fa fa-check-circle"></i> Сохранить</button>
