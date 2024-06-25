@@ -1745,6 +1745,7 @@ function edit_room($connect){
 		<div class="col-sm-10" id="best_comfort">
 			<?php echo break_columns($connect, "comfort", 5, $row["id_best_comfort"], "WHERE type=1 ORDER BY name"); ?>
 		</div>
+		<label class="col-sm-2 control-label for_cabinet" >&nbsp;</label>
 		<div class="col-sm-10" id="comfort">
 			<?php echo break_columns($connect, "comfort", 5, $row["id_comfort"], "WHERE type=0 ORDER BY name"); ?>
 		</div>
