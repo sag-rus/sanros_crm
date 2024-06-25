@@ -1739,3 +1739,7 @@ tr.simple-row {
 .nav-tabs > li > a {
 	padding: 10px 8px !important;
 }
+
+.for_cabinet {
+	display: none;
+}
