@@ -1818,8 +1818,10 @@ function room_check_archive($connect){
 }
 
 function delete_room($connect){
+	//Используется в СРМ и кабинете объекта!
 	$id = $_POST["id"];
-	$connect->query("DELETE FROM room WHERE id=?i", $id);
+	if (isset($_POST["id_obj"])) $connect->query("DELETE FROM room WHERE id=?i and id_obj=?i", $id, $_POST["id_obj"]);
+	else $connect->query("DELETE FROM room WHERE id=?i", $id);
 }
 
 function select_object_housing($connect){
