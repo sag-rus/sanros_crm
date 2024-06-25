@@ -303,6 +303,14 @@ function show_filter_report($connect){
 						<?php echo get_checkbox_table($connect, "status_agent"); ?>
 					</div>
 				</div>
+				<div class="form-group">
+					<label class="col-sm-12 control-label-left">&nbsp;</label>
+				</div>
+				<div class="form-group form-group-margin">
+					<div class="col-sm-12">
+						<label><input type="checkbox" id="all_afl"> Заявки с картой АФЛ</label>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -402,6 +410,7 @@ function filter_do($connect){
 	$place_object = $_POST["place_object"];
 	$site_bid = $_POST["site_bid"];
 	$crm_bid = $_POST["crm_bid"];
+	$all_afl = $_POST["all_afl"];
 	$count = $_POST;
 	$state_program = isset($_POST['state_program']) ? (int)$_POST['state_program'] : null;
 	$website = "";
@@ -562,6 +571,11 @@ function filter_do($connect){
 	if($crm_bid == 2){
 		if($zapros_for_mysql) $zapros_for_mysql.= " AND ";
 		$zapros_for_mysql.= " (website != '') ";
+	}
+
+	if($all_afl == 1){
+		if($zapros_for_mysql) $zapros_for_mysql.= " AND ";
+		$zapros_for_mysql.= " (`afl` != '') ";
 	}
 
 	if($region != "")
