@@ -1759,7 +1759,7 @@ function edit_room($connect){
         </div>
     </div>
 	<div class="form-group">
-		<div class="col-sm-offset-9 col-sm-3">
+		<div class="col-sm-offset-8 col-sm-4">
 			<button type="button" class="btn btn-success btn-sm" onclick="update_room('<?php echo $id; ?>',<?=$manager?'true':'false'?>)"><i class="fa fa-check-circle"></i> Сохранить</button>
 			<button type="button" class="btn btn-danger btn-sm" onclick="$('.edit-room').remove()"><i class="fa fa-times-circle"></i> Отмена</button>
 		</div>
