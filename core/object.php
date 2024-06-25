@@ -1580,7 +1580,7 @@ function select_object_room($connect){
 			<td width="140"><img src="<?php echo $image; ?>" class="img-head-small" /><?php echo $row["name"]; ?></td>
 			<td width="150"><?php echo $best_comfort; ?></td>
 			<td width="150"><?php echo $food; ?></td>
-			<td width="70"><i class="fa fa-user"></i> <strong><?php echo $row["main_place"]." + ".$row["add_place"]; ?></strong></td>
+			<td width="100"><i class="fa fa-user"></i> <strong><?php echo $row["main_place"]." + ".$row["add_place"]; ?></strong></td>
 			<td width="100"><?php echo $square; ?></td>
 			<td width="220"><?php echo $row["note"]; ?></td>
 			<td width="220">
