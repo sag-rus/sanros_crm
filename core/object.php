@@ -1597,7 +1597,7 @@ function select_object_room($connect){
 		<?php if($url){ ?>
 				<button type="button" class="btn btn-info btn-xs" onclick="view_images_room('<?php echo $id_room; ?>')" title="Фото"><i class="fa fa-picture-o"></i></button>
 		<?php } ?>
-				<button type="button" class="btn btn-success btn-xs" onclick="add_new_image_room('<?php echo $id_room; ?>')" title="Новое фото"><i class="fa fa-upload"></i></button>
+				<button type="button" class="btn btn-success btn-xs add_new_image_room" onclick="add_new_image_room('<?php echo $id_room; ?>')" title="Новое фото"><i class="fa fa-upload"></i></button>
 			</td>
 		</tr>
 <?php
