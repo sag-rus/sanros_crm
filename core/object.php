@@ -1641,14 +1641,14 @@ function add_new_room($connect){
 	</div>
 	<div class="form-group">
 		<label class="col-sm-2 control-label">Основные места</label>
-		<div class="col-sm-1">
+		<div class="col-sm-2">
 			<select id="main_place" class="form-control"><?php echo get_select_options(1, 30, ""); ?></select>
 		</div>
-		<label class="col-sm-2 control-label">Доп. места</label>
-		<div class="col-sm-1">
+		<label class="col-sm-1 control-label">Доп. места</label>
+		<div class="col-sm-2">
 			<select id="add_place" class="form-control"><?php echo get_select_options(0, 30, ""); ?></select>
 		</div>
-		<label class="col-sm-2 control-label">Питание</label>
+		<label class="col-sm-1 control-label">Питание</label>
 		<div class="col-sm-4">
 			<input type="text" class="form-control" id="food">
 		</div>
