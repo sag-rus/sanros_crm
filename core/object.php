@@ -1180,8 +1180,9 @@ function select_object_occupancies($connect){
 
 function del_room_occupancy($connect) {
 	//$connect->query("UPDATE room_occupancy SET `status`=0 WHERE id=?i", $_POST['id']);
-	if (isset($_POST['id_obj'])) $connect->query("UPDATE place SET `status`=0 WHERE id=?i and `id_obj`=?i and id=222222222", $_POST['id'], $_POST['id_obj']);
+	if (isset($_POST['id_obj'])) $connect->query("UPDATE place SET `status`=0 WHERE id=?i and `id_obj`=?i", $_POST['id'], $_POST['id_obj']);
 	else $connect->query("UPDATE place SET `status`=0 WHERE id=?i", $_POST['id']);
+	echo $connect->last_query();
 }
 
 function room_occupancy($connect){
