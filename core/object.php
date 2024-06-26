@@ -1535,7 +1535,7 @@ function del_child_occupancy($connect) {
 	//Используется в СРМ и кабинете объекта!
 
 	$used_on_occupancies = $connect->getAll("SELECT * FROM `place` WHERE `id_child_on_main_place`=?i OR `id_child_on_add_place`=?i OR `id_child_no_place`=?",  $_POST['id'], $_POST['id'], $_POST['id']);
-	return print_r($used_on_occupancies);
+	return $connect -> last_query();
 	
 	if (count($used_on_occupancies)>0) {
 		return 'used_on_occupancies';
