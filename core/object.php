@@ -1459,7 +1459,6 @@ function select_object_child_occupancies($connect){
 
 
 function child_occupancy($connect){
-	ob_start();
 	$data = false;
 	$age_from = '';
 	$age_to = '';
@@ -1468,6 +1467,7 @@ function child_occupancy($connect){
 		$age_from = $data['age_from'];
 		$age_to = $data['age_to'];
 	}
+	ob_start();
 	?>
 	<tr class="new-child-occupancy">
 		<td colspan="2">
