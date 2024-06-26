@@ -1184,7 +1184,6 @@ function del_room_occupancy($connect) {
 }
 
 function room_occupancy($connect){
-	ob_start();
 	$data = false;
 	$id_room = '';
 	$adult_on_main_place = '';
@@ -1209,6 +1208,7 @@ function room_occupancy($connect){
 		$id_child_no_place = $data['id_child_no_place'];
 		$child_no_place = $data['child_no_place'];
 	}
+	ob_start();
 	?>
 	<tr class="new-room-occupancy">
 		<td colspan="2">
