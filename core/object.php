@@ -1318,8 +1318,7 @@ function room_occupancy($connect){
 
 function save_room_occupancy($connect) {
 
-	if ($_POST['id_room']==0 || !$_POST['id_room']) {
-		echo 'no_room';
+	if ($_POST['id_room']==0 || !$_POST['id_room'] || $_POST['id_obj']==0 || !$_POST['id_obj']) {
 		return false;
 	}
 
@@ -1370,11 +1369,8 @@ function save_room_occupancy($connect) {
 		);
 		$last_id = $connect->insertId();
 
-		echo $connect->last_query();
-
 		$connect->query("UPDATE `place` SET `export_id`=?s WHERE id=?i", get_place_export_id($_POST['id_room'], $_POST), $last_id);
 
-		echo $connect->last_query();
 	} else {
 		//меняем имеющееся размещение
 		$connect->query("UPDATE `place` SET 
@@ -1404,7 +1400,6 @@ function save_room_occupancy($connect) {
 			$_POST['child_no_place'],
 			$_POST['id']
 		);
-		echo $connect->last_query();
 	}
 }
 
