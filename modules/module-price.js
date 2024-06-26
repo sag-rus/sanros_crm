@@ -337,8 +337,9 @@ function del_child_occupancy(id){
 			type: 'POST',
 			data: str,
 			url: 'mysql.php',
-			success: function(){
-				$('#child_occupancy_'+id).remove();
+			success: function(data){
+				if (data=='used_on_occupancies') alert('Это детское размещение используется в размещениях. Удаление невозможно.');
+				else $('#child_occupancy_'+id).remove();
 			}
 		});
 	}
