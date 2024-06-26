@@ -1501,7 +1501,8 @@ function child_occupancy($connect){
 }
 
 function del_child_occupancy($connect) {
-	$connect->query("UPDATE child_occupancy SET `status`=0 WHERE id=?i", $_POST['id']);
+	if (isset($_POST["id_obj"])) $connect->query("UPDATE child_occupancy SET `status`=0 WHERE id=?i and id_obj=?i", $_POST['id'], $_POST['id_obj']);
+	else $connect->query("UPDATE child_occupancy SET `status`=0 WHERE id=?i", $_POST['id']);
 }
 
 function save_child_occupancy($connect) {
@@ -1510,7 +1511,8 @@ function save_child_occupancy($connect) {
 		$connect->query("INSERT INTO child_occupancy SET `id`=0, `id_obj`=?i, `age_from`=?i, `age_to`=?i", $_POST['id_obj'], $_POST['age_from'], $_POST['age_to']);
 	} else {
 		//меняем имеющееся размещение
-		$connect->query("UPDATE child_occupancy SET `age_from`=?i, `age_to`=?i WHERE `id`=?i", $_POST['age_from'], $_POST['age_to'], $_POST['id']);
+		if (isset($_POST["id_obj"])) $connect->query("UPDATE child_occupancy SET `age_from`=?i, `age_to`=?i WHERE `id`=?i and `id_obj`=?i", $_POST['age_from'], $_POST['age_to'], $_POST['id'], $_POST['id_obj']);
+		else $connect->query("UPDATE child_occupancy SET `age_from`=?i, `age_to`=?i WHERE `id`=?i", $_POST['age_from'], $_POST['age_to'], $_POST['id']);
 	}
 }
 
