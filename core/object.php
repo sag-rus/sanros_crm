@@ -1483,7 +1483,7 @@ function child_occupancy($connect){
 					</div>
 				</div>
 				<div class="form-group">
-					<div class="col-sm-offset-9 col-sm-3">
+					<div class="col-sm-offset-8 col-sm-4">
 						<?php if (!$data) {?>
 							<button type="button" class="btn btn-success btn-sm" onclick="save_child_occupancy('0')"><i class="fa fa-check-circle"></i> Сохранить</button>
 						<?php } else {?>
