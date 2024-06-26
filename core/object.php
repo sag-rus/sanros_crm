@@ -1590,7 +1590,7 @@ function select_object_room($connect){
 		<?php if($row["active"] == 0){ ?>
 				<button class="btn btn-warning btn-xs" onclick="room_check_archive('<?php echo $id_room; ?>')" title="В архив"><i class="fa fa-trash-o"></i></button>
 		<?php }else{ ?>
-				<button class="btn btn-danger btn-xs" onclick="room_delete('<?php echo $id_room; ?>')" title="Удалить"><i class="fa fa-times-circle"></i></button>
+				<button class="btn btn-danger btn-xs room_delete" onclick="room_delete('<?php echo $id_room; ?>')" title="Удалить"><i class="fa fa-times-circle"></i></button>
 				<button class="btn btn-primary btn-xs" onclick="room_check_archive('<?php echo $id_room; ?>')" title="Из архива"><i class="fa fa-arrow-circle-up"></i></button>
 		<?php } ?>
 				&nbsp;|&nbsp;
