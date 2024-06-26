@@ -1418,9 +1418,9 @@ function save_room_occupancy($connect) {
 function select_object_child_occupancies($connect){
 	$old_housing = "";
 	$id = $_POST["id"];
-	ob_start();
 	$row = $connect->getRow("SELECT name, type, id_services FROM object WHERE id=?i", $id);
 	$type = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]);	
+	ob_start();
 	?>
 	<div class="panel panel-default">
 		<div class="panel-heading"><i class="fa fa-cubes"></i> Варианты детских размещений объекта «<?php echo $type." ".$row["name"]; ?>»</div>
