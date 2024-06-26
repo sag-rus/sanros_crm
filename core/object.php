@@ -1303,7 +1303,7 @@ function room_occupancy($connect){
 							<?php } else {?>
 								<button type="button" class="btn btn-success btn-sm" onclick="save_room_occupancy('<?=$data['id']?>')"><i class="fa fa-check-circle"></i> Сохранить</button>
 							<?php } ?>
-							<button type="button" class="btn btn-danger btn-sm" onclick="$('.room-child-occupancy').remove()"><i class="fa fa-times-circle"></i> Отмена</button>
+							<button type="button" class="btn btn-danger btn-sm" onclick="$('.new-room-occupancy').remove()"><i class="fa fa-times-circle"></i> Отмена</button>
 						</div>
 					</div>
 				</div>
