@@ -1245,7 +1245,7 @@ function room_occupancy($connect){
 							<select class="form-control" name="id_child_on_main_place">
 								<option value="0">выберите</option>
 								<?php
-								$childs = $connect->getAll("SELECT * FROM child_occupancy WHERE id_obj=?i", $_POST['id_obj']);
+								$childs = $connect->getAll("SELECT * FROM child_occupancy WHERE id_obj=?i and `status`=1", $_POST['id_obj']);
 								foreach ($childs as $child) {
 									if ($id_child_on_main_place==$child['id']) $sel = ' selected="selected"'; else $sel = '';
 									?><option value="<?=$child['id']?>" <?=$sel?>>(от <?=$child['age_from']?> до <?=$child['age_to']?>  лет)</option><?php
