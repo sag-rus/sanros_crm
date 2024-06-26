@@ -1533,8 +1533,15 @@ function child_occupancy($connect){
 
 function del_child_occupancy($connect) {
 	//Используется в СРМ и кабинете объекта!
-	if (isset($_POST["id_obj"])) $connect->query("UPDATE child_occupancy SET `status`=0 WHERE id=?i and id_obj=?i", $_POST['id'], $_POST['id_obj']);
-	else $connect->query("UPDATE child_occupancy SET `status`=0 WHERE id=?i", $_POST['id']);
+
+	$used_on_occupancies = $connect->getAll("SELECT * FROM `place` WHERE `id_child_on_main_place`=?i OR `id_child_on_add_place`=?i OR `id_child_no_place`=?",  $_POST['id'], $_POST['id'], $_POST['id']);
+	if (count($used_on_occupancies)>0) {
+		return 'used_on_occupancies';
+	}
+	else {
+		if (isset($_POST["id_obj"])) $connect->query("UPDATE child_occupancy SET `status`=0 WHERE id=?i and id_obj=?i", $_POST['id'], $_POST['id_obj']);
+		else $connect->query("UPDATE child_occupancy SET `status`=0 WHERE id=?i", $_POST['id']);
+	}
 }
 
 function save_child_occupancy($connect) {
