@@ -1133,7 +1133,7 @@ function update_services_object($connect){
 
 //OCCUPANCIES
 function select_object_occupancies($connect){
-	$old_housing = "";
+	//Используется в СРМ и кабинете объекта!
 	$id = $_POST["id"];
 	ob_start();
 	$row = $connect->getRow("SELECT name, type, id_services FROM object WHERE id=?i", $id);
@@ -1179,12 +1179,14 @@ function select_object_occupancies($connect){
 }
 
 function del_room_occupancy($connect) {
+	//Используется в СРМ и кабинете объекта!
 	//$connect->query("UPDATE room_occupancy SET `status`=0 WHERE id=?i", $_POST['id']);
 	if (isset($_POST['id_obj'])) $connect->query("UPDATE place SET `status`=0 WHERE id=?i and `id_obj`=?i", $_POST['id'], $_POST['id_obj']);
 	else $connect->query("UPDATE place SET `status`=0 WHERE id=?i", $_POST['id']);
 }
 
 function room_occupancy($connect){
+	//Используется в СРМ и кабинете объекта!
 	$data = false;
 	$id_room = '';
 	$adult_on_main_place = '';
@@ -1318,6 +1320,7 @@ function room_occupancy($connect){
 
 
 function save_room_occupancy($connect) {
+	//Используется в СРМ и кабинете объекта!
 
 	if ($_POST['id_room']==0 || !$_POST['id_room'] || $_POST['id_obj']==0 || !$_POST['id_obj']) {
 		return false;
@@ -1374,34 +1377,67 @@ function save_room_occupancy($connect) {
 
 	} else {
 		//меняем имеющееся размещение
-		$connect->query("UPDATE `place` SET 
-			`name`=?s,
-			`export_id`=?s,
-			`id_room`=?i, 
-			`adult_on_main_place`=?i, 
-			`adult_on_add_place`=?i, 
-			`id_child_on_main_place`=?i, 
-			`child_on_main_place`=?i, 
-			`id_child_on_add_place`=?i, 
-			`child_on_add_place`=?i,
-			`id_child_no_place`=?i, 
-			`child_no_place`=?i  
-			WHERE `id`=?i
-			", 
-			get_place_name($_POST),
-			get_place_export_id($_POST['id_room'], $_POST),
-			$_POST['id_room'], 
-			$_POST['adult_on_main_place'], 
-			$_POST['adult_on_add_place'], 
-			$_POST['id_child_on_main_place'], 
-			$_POST['child_on_main_place'], 
-			$_POST['id_child_on_add_place'], 
-			$_POST['child_on_add_place'], 
-			$_POST['id_child_no_place'], 
-			$_POST['child_no_place'],
-			$_POST['id']
-		);
+		if (isset($_POST['id_obj'])) {
+			$connect->query("UPDATE `place` SET 
+				`name`=?s,
+				`export_id`=?s,
+				`id_room`=?i, 
+				`adult_on_main_place`=?i, 
+				`adult_on_add_place`=?i, 
+				`id_child_on_main_place`=?i, 
+				`child_on_main_place`=?i, 
+				`id_child_on_add_place`=?i, 
+				`child_on_add_place`=?i,
+				`id_child_no_place`=?i, 
+				`child_no_place`=?i  
+				WHERE `id`=?i and `id_obj`=?
+				", 
+				get_place_name($_POST),
+				get_place_export_id($_POST['id_room'], $_POST),
+				$_POST['id_room'], 
+				$_POST['adult_on_main_place'], 
+				$_POST['adult_on_add_place'], 
+				$_POST['id_child_on_main_place'], 
+				$_POST['child_on_main_place'], 
+				$_POST['id_child_on_add_place'], 
+				$_POST['child_on_add_place'], 
+				$_POST['id_child_no_place'], 
+				$_POST['child_no_place'],
+				$_POST['id'],
+				$_POST['id_obj']
+			);
+		} else {
+			$connect->query("UPDATE `place` SET 
+				`name`=?s,
+				`export_id`=?s,
+				`id_room`=?i, 
+				`adult_on_main_place`=?i, 
+				`adult_on_add_place`=?i, 
+				`id_child_on_main_place`=?i, 
+				`child_on_main_place`=?i, 
+				`id_child_on_add_place`=?i, 
+				`child_on_add_place`=?i,
+				`id_child_no_place`=?i, 
+				`child_no_place`=?i  
+				WHERE `id`=?i
+				", 
+				get_place_name($_POST),
+				get_place_export_id($_POST['id_room'], $_POST),
+				$_POST['id_room'], 
+				$_POST['adult_on_main_place'], 
+				$_POST['adult_on_add_place'], 
+				$_POST['id_child_on_main_place'], 
+				$_POST['child_on_main_place'], 
+				$_POST['id_child_on_add_place'], 
+				$_POST['child_on_add_place'], 
+				$_POST['id_child_no_place'], 
+				$_POST['child_no_place'],
+				$_POST['id']
+			);
+		}
 	}
+
+	return $connect->last_query();
 }
 
 
@@ -1412,7 +1448,7 @@ function save_room_occupancy($connect) {
 //CHILD OCCU
 
 function select_object_child_occupancies($connect){
-	$old_housing = "";
+	//Используется в СРМ и кабинете объекта!
 	$id = $_POST["id"];
 	$row = $connect->getRow("SELECT name, type, id_services FROM object WHERE id=?i", $id);
 	$type = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]);	
@@ -1455,6 +1491,7 @@ function select_object_child_occupancies($connect){
 
 
 function child_occupancy($connect){
+	//Используется в СРМ и кабинете объекта!
 	$data = false;
 	$age_from = '';
 	$age_to = '';
@@ -1497,11 +1534,13 @@ function child_occupancy($connect){
 }
 
 function del_child_occupancy($connect) {
+	//Используется в СРМ и кабинете объекта!
 	if (isset($_POST["id_obj"])) $connect->query("UPDATE child_occupancy SET `status`=0 WHERE id=?i and id_obj=?i", $_POST['id'], $_POST['id_obj']);
 	else $connect->query("UPDATE child_occupancy SET `status`=0 WHERE id=?i", $_POST['id']);
 }
 
 function save_child_occupancy($connect) {
+	//Используется в СРМ и кабинете объекта!
 	if ($_POST['id']=='0') {
 		//Создаем новое размещение
 		$connect->query("INSERT INTO child_occupancy SET `id`=0, `id_obj`=?i, `age_from`=?i, `age_to`=?i", $_POST['id_obj'], $_POST['age_from'], $_POST['age_to']);
