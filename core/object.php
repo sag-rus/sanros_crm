@@ -1406,6 +1406,7 @@ function save_room_occupancy($connect) {
 				$_POST['id'],
 				$_POST['id_obj']
 			);
+			return 'id_obj used!!';
 		} else {
 			$connect->query("UPDATE `place` SET 
 				`name`=?s,
@@ -1436,8 +1437,6 @@ function save_room_occupancy($connect) {
 			);
 		}
 	}
-
-	return $connect->last_query();
 }
 
 
