@@ -1700,7 +1700,7 @@ function show_schet_klient($connect){
 	   $discount =  $connect->getRow("SELECT `value`, `type` FROM discount WHERE id=?i", $id_dis);
 	   if($discount) {
 	     $discount_str = $discount['value'].($discount['type'] == 1?"%":" руб.");
-         $commis = "<strong>Скидка: </strong>".$discount_str."<br />";
+         $commis = "<strong>1Скидка: </strong>".$discount_str."<br />";
 
        }
     }
