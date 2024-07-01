@@ -382,7 +382,7 @@ function edit_schet($connect){
                           </div>
                       </div>
                     <?php
-                  }else{
+                  }//else{
                     ?>
                       <div class="form-group">
                           <label class="col-sm-4 control-label">Скидка</label>
@@ -391,7 +391,7 @@ function edit_schet($connect){
                           </div>
                       </div>
                     <?php
-                  }
+                  //}
                   ?>
                     <div class="form-group">
                         <label class="col-sm-4 control-label">№ счета санатория</label>
