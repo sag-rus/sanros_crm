@@ -1695,7 +1695,7 @@ function show_schet_klient($connect){
 	if($id_com){
 		$commis_agency = $connect->getOne("SELECT value FROM commission WHERE id=?i", $id_com);
 		$sum_agency = get_reward_agency($connect, $id);
-		$commis = "<strong>Комиссия: </strong>".$commis_agency."% (".number_format(add_null($sum_agency), 2, ".", "").")<br />";
+		$commis = "<strong>1Комиссия: </strong>".$commis_agency."% (".number_format(add_null($sum_agency), 2, ".", "").")<br />";
 	}/*else*/if($id_dis) {
 	   $discount =  $connect->getRow("SELECT `value`, `type` FROM discount WHERE id=?i", $id_dis);
 	   if($discount) {
