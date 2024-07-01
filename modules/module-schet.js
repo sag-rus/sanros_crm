@@ -307,7 +307,7 @@ function update_schet(id){
 
     if($('#id_com').length)
       id_com = $('#id_com').val();
-    else if($('#id_dis').length)
+    /*else*/ if($('#id_dis').length)
       id_dis = $('#id_dis').val();
     if($('.input-check-object').length && !id_obj)
       show_warning('.edit-reck', 'Выберите объект', false);
