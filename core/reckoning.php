@@ -563,7 +563,7 @@ function update_schet($connect){
       $dis = $row["id_dis"];
       if($dis == 0)
         $dis = "";
-      if(($row["turist"]) AND ($id_dis != $dis)){
+      //if(($row["turist"]) AND ($id_dis != $dis)){
         if($dis){
           $row = $connect->getRow("SELECT value, type FROM discount WHERE id=?i", $dis);
           if($row["type"] == 1)
@@ -575,7 +575,7 @@ function update_schet($connect){
           $discount = "Без скидки";
         $connect->query("UPDATE reckoning SET id_dis=?s WHERE id=?i", $id_dis, $id);
         save_schet_to_history($connect, $id, "Изменена скидка. Старый - ".$discount);
-      }
+      //}
       $connect->query("UPDATE reckoning SET number_turist=?i, note=?s, schet_san=?s, date_schet_san=?s, state_program = ?i, exclude_bank_commission = ?i, children_rest = ?i, is_test = ?i, far_east = ?i, afl = ?s WHERE id=?i", $number_turist, $note_schet, $schet_san, $date_schet_san, $state_program, $exclude_bank_commission, $children_rest, $is_test, $far_east, $afl, $id);
 	  echo $connect->last_query();
       recalculation_sum($connect, $id);
