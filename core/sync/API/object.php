@@ -1,5 +1,10 @@
 <?php
 
+function save_uploaded_file_to_db($connect) {
+	$connect->query("INSERT INTO `core_models_file_file` (`created`, `changed`, `status`, `uid`, `title`, `description`, `uri`, `mime`, `ext`, `usages`) VALUES (?i,?i,?i,?i,?s,?s,?s,?s,?s,?i)",$_POST['created'],$_POST['changed'],1,(int)$_POST['uid'],'','',$_POST['uri'],$_POST['mime'],$_POST['extension'],0);
+  	return $connect->insertId();
+}
+
 function authorization_object_account($connect, $data){
 	$object = array();
 	$login = trim($data["login"]);
