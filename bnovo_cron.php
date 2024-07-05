@@ -274,6 +274,11 @@ if ($data && $data['data']!='') {
 	echo 'ID записи к обработке: '.$data['id'].'<br>';
 	$data = json_decode($data['data'], true);
 
+	$object = $connect->getRow("SELECT * FROM `object` WHERE `id`=".$data['hotel_id']);
+	if (is_array($object) && $object['bnovo']=='0') {
+		$connect -> query("UPDATE `object` SET `bnovo`=1, `synchronized`=0 WHERE `id`=".$data['hotel_id']);
+	}
+
 	//$data['hotel_id'] = $id_obj;
 
 	//if ($data['hotel_id']!='949') exit('hotel_id='.$data['hotel_id'].' exit');
