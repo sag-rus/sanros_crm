@@ -3575,6 +3575,11 @@ function set_sites_content($connect) {
   $module_object_id = isset($_POST['module_object_id'])?(int)$_POST['module_object_id']:0;
   $module_block = isset($_POST['module_block'])?mb_strtolower(trim($_POST['module_block'])):"";
 
+  echo '<pre>';
+  print_r($_POST);
+  echo '</pre>';
+  echo '$site_id='.$site_id;
+
   if($status !== 0 && $status !== 1)
       $status = 0;
 
