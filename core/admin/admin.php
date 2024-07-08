@@ -1458,17 +1458,17 @@ function confirm_request_object($connect){
 	$row = $connect->getRow("SELECT * FROM `object_request` WHERE id=?i", $id);
 	if ($row['status']==0) {
 		//Меняем статус!
-		$connect->query("UPDATE object_request SET status=1 WHERE id=?i", $id);
+		//$connect->query("UPDATE object_request SET status=1 WHERE id=?i", $id);
 
 		//Создаем акк для кабинета!
-		$login = 'acc_'.rand(100000,999999).'_gen_'.rand(100000,999999);
-		$connect->query("INSERT INTO `object_account` SET `id`=0, `login`='$login', `email`='$row[email]'");
-		$id_account = $connect->insertId();
+		//$login = 'acc_'.rand(100000,999999).'_gen_'.rand(100000,999999);
+		//$connect->query("INSERT INTO `object_account` SET `id`=0, `login`='$login', `email`='$row[email]'");
+		//$id_account = $connect->insertId();
 
 		//Создаем объект!
 		$url_name = mb_strtolower($row['name']);
 		$url_name = str_replace(' ', '-', $url_name);
-		$connect->query("INSERT INTO `object` 
+		/*$connect->query("INSERT INTO `object` 
 			SET `id`=0, 
 			`name`='$row[name]', 
 			`url_name`='$url_name', 
@@ -1483,15 +1483,55 @@ function confirm_request_object($connect){
 			`longitude`='$row[longitude]',
 			`id_account`='$id_account',
 			`direction`='".$row['direction-object']."'
-			");
-
-		sync_objects_api($connect);
+			");*/
 
 		echo 'obj_created...';
 
+		$directionUrl = $connect->getOne("SELECT `name` FROM `direction_object` WHERE `id_country` = 1 AND `id` = ?i", $row['direction-object']);
+		$path = '/'.change_text_url($directionUrl);
+		$regionUrl = $connect->getOne("SELECT `name` FROM `region` WHERE `region`.`id_country` = 1 AND `region`.`id` = ?i", $row['object_region']);
+		$path .= '/' . change_text_url($regionUrl);
+		if(!is_null($row['region_direction_id']) && $row['region_direction_id']) {
+			$regionalDirectionUrl = $connect->getOne("SELECT `name` FROM `direction_object` WHERE (`direction_object`.`id_country` = 0 OR `direction_object`.`id_country` IS NULL)  AND `direction_object`.`id_reg` > 0 AND `direction_object`.`id` = ?i", $row['region_direction_id']);
+			$path .= '/'. change_text_url($regionalDirectionUrl);
+		}
+		$type_name = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]);
+		$path .= '/'.change_text_url($type_name) . '-' . $url_name;
+		
+
+		$connect->query("INSERT INTO `sites_contents` 
+			SET `id`=0, 
+			`status`=1, 
+			`created`=".time().", 
+			`published`=".time().", 
+			`changed`=".time().", 
+			`type`='settings', 
+			`rss_aggregator_link`='', 
+			`site_id`=38, 
+			`title`='$row[object] - цена %GOD%', 
+			`title_h1` = '$row[object]', 
+			`title_h2` = 'Лечение в $row[object]', 
+			`summary`='', 
+			`snippet_summary`='', 
+			`body`='', 
+			`body2`='', 
+			`path`='$path', 
+			`description`='Путевки в $row[object] по выгодной цене.', 
+			`keywords` = '$row[object], бронирование, цены', 
+			`breadcrumb_title`='$row[object]', 
+			`imgs_no_index`=1"
+		);
+
+		echo 'cont_created...';
+			
+
+		//sync_objects_api($connect);
+
+
+
 		//Высылаем доступы!
-		$_POST['account'] = $id_account;
-		send_login_object_account($connect);
+		//$_POST['account'] = $id_account;
+		//send_login_object_account($connect);
 
 	}
 }

@@ -592,7 +592,7 @@ function sync_objects_api($connect){
 
                         $objectArFullUri .= '/'.$objectAr['uri'];
 
-						echo "UPDATE `object` SET `path`='$objectArFullUri' WHERE `id`=$object[id]<br><br>";
+						//echo "UPDATE `object` SET `path`='$objectArFullUri' WHERE `id`=$object[id]<br><br>";
 
 						$connect->query("UPDATE `object` SET `path`='$objectArFullUri' WHERE `id`=$object[id]");
 
