@@ -1845,7 +1845,16 @@ function check_promotional_code($code, $object, $sum, $dates, $client_id = NULL,
             "end" => '2022-12-30 12:00:00',
             "work_start" => '2022-11-08 10:00:00',
             "work_end" => '2022-11-16 23:59:59'
-        ]        
+        ],
+        'smv2024' => [
+            "procent" => 5,
+            "access" => array(45),
+            "start" => '2024-01-01 10:00:00',
+            "end" => '2024-12-31 23:59:59',
+            "work_start" => '2024-01-01 10:00:00',
+            "work_end" => '2024-12-31 23:59:59',
+        ]  
+
 	];
 
 	$reck_sum = $sum;
