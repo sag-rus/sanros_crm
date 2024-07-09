@@ -464,15 +464,12 @@ function filter_payment($connect){
 				}
 				$type_opl_text = "Сбер (Банк.карт.)";
 			}elseif($type_opl == 6){
-				echo 'id='.$id.' sum='.$sum;
 				$array["num_card"]++;
-				if($sum <= 100) {
-					echo 'id='.$id.' 1';
+				/*if($sum <= 100) {
 					$sum = add_null($sum - 3.5);
 				} else {
-					echo 'id='.$id.' 2';
 					$sum = add_null(round(((100 - $bank_com)/100) * $sum,2));
-				}
+				}*/
 				$array["pay_card"]+= $sum;
 				if($office_pay > 0){
 					$array["office"][$office_pay]["num_card"]++;
@@ -481,10 +478,12 @@ function filter_payment($connect){
 				$type_opl_text = "Альфа (карта)";
 			}elseif($type_opl == 7){
 				$array["num_card"]++;
+				/*
 				if($sum <= 100)
 					$sum = add_null($sum - 3.5);
 				else
 					$sum = add_null(round(((100 - $bank_com)/100) * $sum,2));
+				*/
 				$array["pay_card"]+= $sum;
 				if($office_pay > 0){
 					$array["office"][$office_pay]["num_card"]++;
