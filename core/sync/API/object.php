@@ -64,8 +64,8 @@ function update_contact_object_account($connect, $data){
 		$body2 = $data["body2"];
 		$object = $connect->getRow("SELECT id, path FROM object WHERE id=$object");
 		$connect->query("UPDATE object SET address=?s, fax=?s, website=?s, travelline_id=?s, status=2, synchronized=0 WHERE id=?i", $address, $fax, $website, $travelline_id, $object['id']);
-		$connect->query("UPDATE sites_contents SET summary='$ummary', body='$body', body2='$body2', synchronized=0 WHERE path=$object[path] LIMIT 1");
-		save_history_object("Изменение контактов и текстов из кабинета объекта: "."UPDATE sites_contents SET summary='$ummary', body='$body', body2='$body2', synchronized=0 WHERE path=$object[path] LIMIT 1");
+		$connect->query("UPDATE sites_contents SET summary='$ummary', body='$body', body2='$body2', synchronized=0 WHERE path='$object[path]' LIMIT 1");
+		save_history_object("Изменение контактов и текстов из кабинета объекта: "."UPDATE sites_contents SET summary='$ummary', body='$body', body2='$body2', synchronized=0 WHERE path='$object[path]' LIMIT 1");
 	}
 	return FALSE;
 }
