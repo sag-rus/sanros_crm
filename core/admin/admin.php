@@ -1522,7 +1522,7 @@ function confirm_request_object($connect){
 		);
 		$id_content = $connect->insertId();
 
-		sync_site_content($connect, id_content);
+		sync_site_content($connect, $id_content);
 
 		echo 'cont_created...';
 			
