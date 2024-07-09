@@ -1188,8 +1188,9 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
   }
 
   $bank_com = 0;
-
+  echo '---';
   if ($exclude_bank_commission==1) {
+	echo '+++';
 	$payment_status_string = " AND `payment`.`status` != 0";
 	if($only_payment_state)
 		$data = $connect->getAll("SELECT sum, bank_com, type FROM payment WHERE ".$add_cond."pay_method=5 AND schet=?i".$payment_status_string, $id);
@@ -1206,12 +1207,12 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
 		}
 
 		if($row["sum"] <= 100)
-		$bank_com+= "3.5";
+			$bank_com+= "3.5";
 		else
-		$bank_com+= $row["sum"] * ($row["bank_com"] / 100);
+			$bank_com+= $row["sum"] * ($row["bank_com"] / 100);
 		if($type == "EACH") {
 			$array["bank_com_procent"] = $row["bank_com"];
-		$array["bank_com"] = add_null($bank_com);
+			$array["bank_com"] = add_null($bank_com);
 		}
 	}
   }
