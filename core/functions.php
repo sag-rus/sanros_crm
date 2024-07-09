@@ -1150,6 +1150,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
   }
 
   if($reck["id_dis"]){
+	echo '--';
     $row = $connect->getRow("SELECT value, type FROM discount WHERE id=?i LIMIT 1", $reck["id_dis"]);
     if($row["type"] == 1) {
       if($fact) {
