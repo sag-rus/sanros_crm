@@ -474,7 +474,7 @@ function filter_payment($connect){
 					$array["office"][$office_pay]["num_card"]++;
 					$array["office"][$office_pay]["pay_card"]+= $sum;
 				}
-				$type_opl_text = "Альфа (карта)";
+				$type_opl_text = "Альфа (карта)1";
 			}elseif($type_opl == 7){
 				$array["num_card"]++;
 				if($sum <= 100)
