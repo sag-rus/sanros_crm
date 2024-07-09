@@ -570,6 +570,7 @@ function filter_payment($connect){
 				,2
 			);*/
 
+			echo 'id='.$id.' $sum='.$row['sum'].' bank_com='.$row['bank_com'].' ';
 			$sum_bank_kom = $row['sum'] * ($row['bank_com']/100);
 			echo 'id='.$id.' $sum_bank_kom='.$sum_bank_kom.' ';
             $pay_reward = round(
