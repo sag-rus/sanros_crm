@@ -1203,17 +1203,21 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
 
 
 	foreach($data as $row){
+		echo 'bank_com='.$bank_com;
 		if($row["bank_com"] > 0 && ($row["type"] == 2 || $row["type"] == 6)){
-		if($only_payment_state)
-			$row["sum"]-= $connect->getOne("SELECT sum FROM payment WHERE ".$add_cond."type=5 AND schet=?i".$payment_status_string, $id);
-		else
-			$row["sum"]-= $connect->getOne("SELECT sum FROM payment WHERE type=5 AND schet=?i".$payment_status_string, $id);
+			if($only_payment_state)
+				$row["sum"]-= $connect->getOne("SELECT sum FROM payment WHERE ".$add_cond."type=5 AND schet=?i".$payment_status_string, $id);
+			else
+				$row["sum"]-= $connect->getOne("SELECT sum FROM payment WHERE type=5 AND schet=?i".$payment_status_string, $id);
 		}
 
-		if($row["sum"] <= 100)
+		if($row["sum"] <= 100) {
+			echo 'here1';
 			$bank_com+= "3.5";
-		else
+		} else {
+			echo 'here2';
 			$bank_com+= $row["sum"] * ($row["bank_com"] / 100);
+		}
 		print_r($row);
 		echo 'bank_com='.$bank_com;
 		if($type == "EACH") {
