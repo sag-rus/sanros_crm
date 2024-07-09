@@ -465,16 +465,19 @@ function filter_payment($connect){
 				$type_opl_text = "Сбер (Банк.карт.)";
 			}elseif($type_opl == 6){
 				$array["num_card"]++;
-				if($sum <= 100)
+				if($sum <= 100) {
+					echo 'id='.$id.' 1';
 					$sum = add_null($sum - 3.5);
-				else
+				} else {
+					echo 'id='.$id.' 2';
 					$sum = add_null(round(((100 - $bank_com)/100) * $sum,2));
+				}
 				$array["pay_card"]+= $sum;
 				if($office_pay > 0){
 					$array["office"][$office_pay]["num_card"]++;
 					$array["office"][$office_pay]["pay_card"]+= $sum;
 				}
-				$type_opl_text = "Альфа (карта)1";
+				$type_opl_text = "Альфа (карта)";
 			}elseif($type_opl == 7){
 				$array["num_card"]++;
 				if($sum <= 100)
