@@ -1458,17 +1458,17 @@ function confirm_request_object($connect){
 	$row = $connect->getRow("SELECT * FROM `object_request` WHERE id=?i", $id);
 	if ($row['status']==0) {
 		//Меняем статус!
-		$connect->query("UPDATE object_request SET status=1 WHERE id=?i", $id);
+		//$connect->query("UPDATE object_request SET status=1 WHERE id=?i", $id);
 
 		//Создаем акк для кабинета!
-		$login = 'acc_'.rand(100000,999999).'_gen_'.rand(100000,999999);
-		$connect->query("INSERT INTO `object_account` SET `id`=0, `login`='$login', `email`='$row[email]'");
-		$id_account = $connect->insertId();
+		//$login = 'acc_'.rand(100000,999999).'_gen_'.rand(100000,999999);
+		//$connect->query("INSERT INTO `object_account` SET `id`=0, `login`='$login', `email`='$row[email]'");
+		//$id_account = $connect->insertId();
 
 		//Создаем объект!
 		$url_name = mb_strtolower($row['name']);
 		$url_name = str_replace(' ', '-', $url_name);
-		$connect->query("INSERT INTO `object` 
+		/*$connect->query("INSERT INTO `object` 
 			SET `id`=0, 
 			`name`='$row[name]', 
 			`url_name`='$url_name', 
@@ -1483,7 +1483,7 @@ function confirm_request_object($connect){
 			`longitude`='$row[longitude]',
 			`id_account`='$id_account',
 			`direction`='".$row['direction-object']."'
-			");
+			");*/
 
 		echo 'obj_created...';
 
@@ -1500,7 +1500,7 @@ function confirm_request_object($connect){
 
 		$connect->query("INSERT INTO `sites_contents` 
 			SET `id`=0, 
-			`status`=1, 
+			`status`=0, 
 			`created`=".time().", 
 			`published`=".time().", 
 			`changed`=".time().", 
@@ -1520,15 +1520,18 @@ function confirm_request_object($connect){
 			`breadcrumb_title`='$row[object]', 
 			`imgs_no_index`=1"
 		);
+		$id_content = $connect->insertId();
+
+		sync_site_content($connect, id_content);
 
 		echo 'cont_created...';
 			
 
-		sync_objects_api($connect);
+		//sync_objects_api($connect);
 
 		//Высылаем доступы!
-		$_POST['account'] = $id_account;
-		send_login_object_account($connect);
+		//$_POST['account'] = $id_account;
+		//send_login_object_account($connect);
 
 	}
 }
