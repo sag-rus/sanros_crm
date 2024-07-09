@@ -1214,7 +1214,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
 			$bank_com+= "3.5";
 		else
 			$bank_com+= $row["sum"] * ($row["bank_com"] / 100);
-
+		print_r($row);
 		echo 'bank_com='.$bank_com;
 		if($type == "EACH") {
 			$array["bank_com_procent"] = $row["bank_com"];
