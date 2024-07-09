@@ -1021,8 +1021,8 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
 
   $exclude_bank_commission = $connect->getOne("SELECT exclude_bank_commission FROM reckoning WHERE id=?i", $id);
 
-  $turist_reckonings_count = $connect->getOne("SELECT COUNT(*) FROM `reckoning` WHERE `turist` = ?i AND `status` = 5 and `id`<>?i", $reck['turist'], $id);
-  echo '$turist_reckonings_count='.$turist_reckonings_count;
+  //$turist_reckonings_count = $connect->getOne("SELECT COUNT(*) FROM `reckoning` WHERE `turist` = ?i AND `status` = 5 and `id`<>?i", $reck['turist'], $id);
+  //echo '$turist_reckonings_count='.$turist_reckonings_count;
 
   $only_payment_state = false;
   if($fact) {
