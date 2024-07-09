@@ -59,8 +59,13 @@ function update_contact_object_account($connect, $data){
 		$travelline_id = $data["travelline_id"];
 		$fax = $data["fax"];
 		$website = $data["website"];
-		$connect->query("UPDATE object SET address=?s, fax=?s, website=?s, travelline_id=?s, status=2, synchronized=0 WHERE id=?i", $address, $fax, $website, $travelline_id, $object);
-		save_history_object("Изменение контактов с travelline_id");
+		$summary = $data["summary"];
+		$body = $data["body"];
+		$body2 = $data["body2"];
+		$object = $connnect->getRow("SELECT id, path FROM object WHERE id=$object");
+		$connect->query("UPDATE object SET address=?s, fax=?s, website=?s, travelline_id=?s, status=2, synchronized=0 WHERE id=?i", $address, $fax, $website, $travelline_id, $object['id']);
+		$connect->query("UPDATE sites_contents SET summary=?s, body=?s, body2=?s, synchronized=0 WHERE path=?s LIMIT 1", $summary, $body, $body2, $object['path']);
+		save_history_object("Изменение контактов и текстов из кабинета объекта");
 	}
 	return FALSE;
 }
