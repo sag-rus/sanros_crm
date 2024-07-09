@@ -464,6 +464,7 @@ function filter_payment($connect){
 				}
 				$type_opl_text = "Сбер (Банк.карт.)";
 			}elseif($type_opl == 6){
+				echo 'id='.$id.' sum='.$sum;
 				$array["num_card"]++;
 				if($sum <= 100) {
 					echo 'id='.$id.' 1';
