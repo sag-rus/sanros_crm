@@ -1498,31 +1498,34 @@ function confirm_request_object($connect){
 		$type_name = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]);
 		$path .= '/'.change_text_url($type_name) . '-' . $url_name;
 
-		$connect->query("INSERT INTO `sites_contents` 
-			SET `id`=0, 
-			`status`=0, 
-			`created`=".time().", 
-			`published`=".time().", 
-			`changed`=".time().", 
-			`type`='settings', 
-			`rss_aggregator_link`='', 
-			`site_id`=38, 
-			`title`='$row[object] - цена %GOD%', 
-			`title_h1` = '$row[object]', 
-			`title_h2` = 'Лечение в $row[object]', 
-			`summary`='', 
-			`snippet_summary`='', 
-			`body`='', 
-			`body2`='', 
-			`path`='$path', 
-			`description`='Путевки в $row[object] по выгодной цене.', 
-			`keywords` = '$row[object], бронирование, цены', 
-			`breadcrumb_title`='$row[object]', 
-			`imgs_no_index`=1"
-		);
-		$id_content = $connect->insertId();
+		$content = $connect->getRow("SELECT * FROM `sites_contents` WHERE `path`='$path'");
 
-		sync_site_content($connect, $id_content);
+		if (!$content) {
+			$connect->query("INSERT INTO `sites_contents` 
+				SET `id`=0, 
+				`status`=0, 
+				`created`=".time().", 
+				`published`=".time().", 
+				`changed`=".time().", 
+				`type`='settings', 
+				`rss_aggregator_link`='', 
+				`site_id`=38, 
+				`title`='$row[object] - цена %GOD%', 
+				`title_h1` = '$row[object]', 
+				`title_h2` = 'Лечение в $row[object]', 
+				`summary`='', 
+				`snippet_summary`='', 
+				`body`='', 
+				`body2`='', 
+				`path`='$path', 
+				`description`='Путевки в $row[object] по выгодной цене.', 
+				`keywords` = '$row[object], бронирование, цены', 
+				`breadcrumb_title`='$row[object]', 
+				`imgs_no_index`=1"
+			);
+			$id_content = $connect->insertId();
+			sync_site_content($connect, $id_content);
+		}
 
 		echo 'cont_created...';
 			
