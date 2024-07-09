@@ -1203,7 +1203,6 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
 
 
 	foreach($data as $row){
-		echo 'bank_com='.$bank_com;
 		if($row["bank_com"] > 0 && ($row["type"] == 2 || $row["type"] == 6)){
 			if($only_payment_state)
 				$row["sum"]-= $connect->getOne("SELECT sum FROM payment WHERE ".$add_cond."type=5 AND schet=?i".$payment_status_string, $id);
@@ -1212,14 +1211,10 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
 		}
 
 		if($row["sum"] <= 100) {
-			echo 'here1';
 			$bank_com+= "3.5";
 		} else {
-			echo 'here2';
 			$bank_com+= $row["sum"] * ($row["bank_com"] / 100);
 		}
-		print_r($row);
-		echo 'bank_com='.$bank_com;
 		if($type == "EACH") {
 			$array["bank_com_procent"] = $row["bank_com"];
 			$array["bank_com"] = add_null($bank_com);
