@@ -1174,6 +1174,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
     else {
       if($consider_bonus)
         $discount = $row["value"];
+	  echo ' discount='.$discount;
     }
     if($type == "EACH")
       $array["discount"] = add_null($discount);
