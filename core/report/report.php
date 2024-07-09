@@ -580,8 +580,6 @@ function filter_payment($connect){
 				,2
 			);
 
-			echo 'id='.$id.' $pay_reward='.$pay_reward.'';
-
 			if($type_pay_tbl === '1-3' && $type_pay == 5) {
 			    $pay_reward *= (-1);
             }
