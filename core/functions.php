@@ -1196,15 +1196,14 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
   if ($exclude_bank_commission==1) {
 	$payment_status_string = " AND `payment`.`status` != 0";
 	if($only_payment_state) {
-		echo 'here1';
 		$data = $connect->getAll("SELECT sum, bank_com, type FROM payment WHERE ".$add_cond."pay_method=5 AND schet=?i".$payment_status_string, $id);
 	} else {
-		echo 'here2';
 		$data = $connect->getAll("SELECT sum, bank_com, type FROM payment WHERE pay_method in (5,6,7) AND schet=?i".$payment_status_string, $id);
 	}
 
 
 	foreach($data as $row){
+		print_r($row);
 		if($row["bank_com"] > 0 && ($row["type"] == 2 || $row["type"] == 6)){
 		if($only_payment_state)
 			$row["sum"]-= $connect->getOne("SELECT sum FROM payment WHERE ".$add_cond."type=5 AND schet=?i".$payment_status_string, $id);
