@@ -1016,9 +1016,14 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
   $array = array("reward" => 0, "agency" => 0, "bonus" => 0, "correction" => 0, "bank_com" => 0, "discount" => 0);
   $reward = 0;
   $reck_reward = $connect->getOne("SELECT reward FROM reckoning WHERE id=?i", $id);
-  $exclude_bank_commission = $connect->getOne("SELECT exclude_bank_commission FROM reckoning WHERE id=?i", $id);
   $bonus = $connect->getOne("SELECT sum FROM bonus WHERE schet=?i AND sum < 0", $id);
-  $reck = $connect->getRow("SELECT id, type, sum, agency, id_com, id_dis, correction, status FROM reckoning WHERE id=?i LIMIT 1", $id);
+  $reck = $connect->getRow("SELECT id, type, sum, agency, id_com, id_dis, correction, turist, status FROM reckoning WHERE id=?i LIMIT 1", $id);
+
+  $exclude_bank_commission = $connect->getOne("SELECT exclude_bank_commission FROM reckoning WHERE id=?i", $id);
+
+  $turist_reckonings_count = $connect->getOne("SELECT COUNT(*) FROM `reckoning` WHERE `turist` = ?i AND `status` = 5 and `id`<>?i", $reck['turist'], $id);
+  echo '$turist_reckonings_count='.$turist_reckonings_count;
+
   $only_payment_state = false;
   if($fact) {
     $add_cond = "";
@@ -1188,9 +1193,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
   }
 
   $bank_com = 0;
-  echo '---';
   if ($exclude_bank_commission==1) {
-	echo '+++';
 	$payment_status_string = " AND `payment`.`status` != 0";
 	if($only_payment_state)
 		$data = $connect->getAll("SELECT sum, bank_com, type FROM payment WHERE ".$add_cond."pay_method=5 AND schet=?i".$payment_status_string, $id);
