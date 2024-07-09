@@ -464,6 +464,7 @@ function filter_payment($connect){
 				}
 				$type_opl_text = "Сбер (Банк.карт.)";
 			}elseif($type_opl == 6){
+				echo 'id='.$id.' bank_com='.$bank_com;
 				$array["num_card"]++;
 				/*if($sum <= 100) {
 					$sum = add_null($sum - 3.5);
@@ -477,6 +478,7 @@ function filter_payment($connect){
 				}
 				$type_opl_text = "Альфа (карта)";
 			}elseif($type_opl == 7){
+				echo 'id='.$id.' bank_com='.$bank_com;
 				$array["num_card"]++;
 				/*
 				if($sum <= 100)
