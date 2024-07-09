@@ -2789,7 +2789,6 @@ function delete_schet_san($connect){
 function display_reward_schet($connect){
 	$id = $_POST["id"];
 	$row = get_reward_schet($connect, $id, "EACH");
-	echo '<div style="display: none">'.print_r($row).'</div>';
 ?>
 	<span>Сумма путевки: <?php echo $row["sum"]; ?></span>
 	<span>Вознаграждение: <span style="color: green; display: inline; padding: 0px;"><?php echo $row["reward"]; ?></span></span>

@@ -1150,10 +1150,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
   }
 
   if($reck["id_dis"]){
-	echo '--';
     $row = $connect->getRow("SELECT value, type FROM discount WHERE id=?i LIMIT 1", $reck["id_dis"]);
-	print_r($row);
-	echo '++';
     if($row["type"] == 1) {
       if($fact) {
         if($reck['status'] != 5) {
@@ -1172,12 +1169,10 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
       }
       else
         $discount = $reck["sum"] * ($row["value"] / 100);
-		echo ' discount1='.$discount;
     }
     else {
       if($consider_bonus)
         $discount = $row["value"];
-	  echo ' discount2='.$discount;
     }
     if($type == "EACH")
       $array["discount"] = add_null($discount);
