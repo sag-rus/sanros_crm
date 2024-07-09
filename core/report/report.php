@@ -560,7 +560,7 @@ function filter_payment($connect){
 
 
 			//блок расчета прибыли по платежу - начало
-			if ($row['reckoning_exclude_bank_commission']!=1) $row['bank_com'] = 0;
+			//if ($row['reckoning_exclude_bank_commission']!=1) $row['bank_com'] = 0;
             /*$pay_reward = round(
 				(
 					(
