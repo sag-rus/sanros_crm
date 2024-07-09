@@ -464,7 +464,6 @@ function filter_payment($connect){
 				}
 				$type_opl_text = "Сбер (Банк.карт.)";
 			}elseif($type_opl == 6){
-				echo 'id='.$id.' bank_com='.$bank_com;
 				$array["num_card"]++;
 				/*if($sum <= 100) {
 					$sum = add_null($sum - 3.5);
@@ -478,7 +477,6 @@ function filter_payment($connect){
 				}
 				$type_opl_text = "Альфа (карта)";
 			}elseif($type_opl == 7){
-				echo 'id='.$id.' bank_com='.$bank_com;
 				$array["num_card"]++;
 				/*
 				if($sum <= 100)
@@ -563,13 +561,23 @@ function filter_payment($connect){
 
 			//блок расчета прибыли по платежу - начало
 			if ($row['reckoning_exclude_bank_commission']!=1) $row['bank_com'] = 0;
-            $pay_reward = round(
+            /*$pay_reward = round(
 				(
 					(
 						$row['sum']*($row['position_reward']?$row['position_reward']:$row['object_reward'])/100
 					)
 				) - $row['sum'] * ($row['bank_com']/100) - ($row['sum']*$row['agency_commission']/100)
-				,2);
+				,2
+			);*/
+
+            $pay_reward = round(
+				(
+					(
+						($row['sum'] - ($row['sum'] * ($row['bank_com']/100)))*($row['position_reward']?$row['position_reward']:$row['object_reward'])/100
+					)
+				)  - (    ($row['sum'] - $row['sum'] * ($row['bank_com']/100)) * $row['agency_commission']/100)
+				,2
+			);			
 
 			if($type_pay_tbl === '1-3' && $type_pay == 5) {
 			    $pay_reward *= (-1);
