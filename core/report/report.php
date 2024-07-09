@@ -574,9 +574,9 @@ function filter_payment($connect){
             $pay_reward = round(
 				(
 					(
-						$row['sum']*($row['position_reward']?$row['position_reward']:$row['object_reward'])/100
+						($row['sum']-$sum_bank_kom)*($row['position_reward']?$row['position_reward']:$row['object_reward'])/100
 					)
-				)  - ($row['sum']*$row['agency_commission']/100)
+				)//  - ($row['sum']*$row['agency_commission']/100)
 				,2
 			);
 
