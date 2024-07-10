@@ -78,11 +78,8 @@ function update_contact_object_account($connect, $data){
 		remove_bounds($connect,$entity,'slider_photos');		
 		set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
 
-		sync_site_content($connect, $sites_contents['id']);
-		sync_bounds($connect,[
-			'type' => 'content',
-			'id' => $sites_contents['id']
-		]);
+		$_POST['site_id'] = 38;
+		sync_site();
 		save_history_object("Изменение контактов и текстов из кабинета объекта:".print_r($data, true));
 	}
 	return FALSE;
