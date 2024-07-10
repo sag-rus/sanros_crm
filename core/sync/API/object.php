@@ -73,7 +73,7 @@ function update_contact_object_account($connect, $data){
 }
 
 function get_object_content_images_data($connect, $data){
-	$sites_contents = $connect->getRow("SELECT * FROM sites_contents WHERE `path`='$object[path]'");
+	$sites_contents = $connect->getRow("SELECT * FROM sites_contents WHERE `path`='$data[path]'");
 	$entity = $sites_contents;
 	$entity['type'] = 'content';
 	$data = [];
