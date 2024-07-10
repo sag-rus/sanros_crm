@@ -72,10 +72,10 @@ function update_contact_object_account($connect, $data){
 			'type' => 'content'
 		];
 
-		/*
+		
 		$boundsArraySliderPhotos = [];
 		$boundsArraySliderPhotos = files_to_bounds($connect,$entity,'slider_photos',isset($data['slider_photos'])?$data['slider_photos']:[]);		
-		remove_bounds($connect,$entity,'slider_photos');		
+		/*remove_bounds($connect,$entity,'slider_photos');		
 		set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
 		*/
 		
