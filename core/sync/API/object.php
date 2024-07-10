@@ -79,7 +79,7 @@ function update_contact_object_account($connect, $data){
 		
 
 		sync_site_content($connect, $sites_contents['id']);
-		save_history_object("Изменение контактов и текстов из кабинета объекта: "."UPDATE sites_contents SET summary='$ummary', body='$body', body2='$body2', synchronized=0 WHERE path='$object[path]' LIMIT 1");
+		save_history_object("Изменение контактов и текстов из кабинета объекта:".print_r($data, true));
 	}
 	return FALSE;
 }
