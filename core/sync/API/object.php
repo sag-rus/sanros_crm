@@ -72,6 +72,18 @@ function update_contact_object_account($connect, $data){
 	return FALSE;
 }
 
+function get_object_content_images_data($connect, $data){
+	if(CheckAuthObjectCabinet::check_authorization()){
+		$sites_contents = $connect->getRow("SELECT * FROM sites_contents WHERE `path`='$object[path]'");
+		$entity = $content;
+      	$entity['type'] = 'content';
+		$data = [];
+		$data['slider_photos'] = htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'slider_photos'))));
+		return $data;
+	}
+	return FALSE;
+}
+
 function update_treatment_object_account($connect, $data){
 	if(CheckAuthObjectCabinet::check_authorization()){
 		$object = $data["object"];
