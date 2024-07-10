@@ -95,6 +95,7 @@ function get_object_content_images_data($connect, $data){
 	$entity['type'] = 'content';
 	$data = [];
 	$data['slider_photos'] = htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'slider_photos'))));
+	$data['photogallery'] = htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'photogallery'))));
 	return $data;
 }
 
