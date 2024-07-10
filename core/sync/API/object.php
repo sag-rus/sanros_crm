@@ -74,9 +74,13 @@ function update_contact_object_account($connect, $data){
 
 		$data['slider_photos'] = json_decode($data['slider_photos'], true);
 		$boundsArraySliderPhotos = [];
+		$boundsArraySliderPhotosMobile = [];
 		$boundsArraySliderPhotos = files_to_bounds($connect,$entity,'slider_photos',isset($data['slider_photos'])?$data['slider_photos']:[]);		
+		$boundsArraySliderPhotosMobile = files_to_bounds($connect,$entity,'slider_photos',isset($data['slider_photos'])?$data['slider_photos']:[]);		
 		remove_bounds($connect,$entity,'slider_photos');		
+		remove_bounds($connect,$entity,'slider_photos_mobile');
 		set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
+		set_bounds($connect,$boundsArraySliderPhotosMobile,'slider_photos_mobile');
 
 		$_POST['site_id'] = 38;
 		sync_site($connect);
