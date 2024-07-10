@@ -73,6 +73,7 @@ function update_contact_object_account($connect, $data){
 		];
 
 		try {
+			$data['slider_photos'] = json_decode($data['slider_photos'], true);
 		$boundsArraySliderPhotos = [];
 		$boundsArraySliderPhotos = files_to_bounds($connect,$entity,'slider_photos',isset($data['slider_photos'])?$data['slider_photos']:[]);		
 		/*remove_bounds($connect,$entity,'slider_photos');		
