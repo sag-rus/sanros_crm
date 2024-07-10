@@ -85,7 +85,7 @@ function update_contact_object_account($connect, $data){
 		remove_bounds($connect,$entity,'photogallery');
 		set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
 		set_bounds($connect,$boundsArraySliderPhotosMobile,'slider_photos_mobile');
-		set_bounds($connect,$boundsArraySliderPhotosMobile,'photogallery');
+		set_bounds($connect,$boundsArrayPhotogallery,'photogallery');
 
 		$_POST['site_id'] = 38;
 		sync_site($connect);
