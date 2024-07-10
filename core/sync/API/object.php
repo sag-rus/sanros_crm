@@ -66,6 +66,18 @@ function update_contact_object_account($connect, $data){
 		$sites_contents = $connect->getRow("SELECT id  FROM sites_contents WHERE `path`='$object[path]'");
 		$connect->query("UPDATE object SET address=?s, fax=?s, website=?s, travelline_id=?s, status=2, synchronized=0 WHERE id=?i", $address, $fax, $website, $travelline_id, $object['id']);
 		$connect->query("UPDATE sites_contents SET summary='$summary', body='$body', body2='$body2', synchronized=0 WHERE path='$object[path]' LIMIT 1");
+
+		$entity = [
+			'id' => $sites_contents['id'],
+			'type' => 'content'
+		];
+
+		$boundsArraySliderPhotos = [];
+		$boundsArraySliderPhotos = files_to_bounds($connect,$entity,'slider_photos',isset($data['slider_photos'])?$data['slider_photos']:[]);		
+		remove_bounds($connect,$entity,'slider_photos');		
+		set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
+		
+
 		sync_site_content($connect, $sites_contents['id']);
 		save_history_object("Изменение контактов и текстов из кабинета объекта: "."UPDATE sites_contents SET summary='$ummary', body='$body', body2='$body2', synchronized=0 WHERE path='$object[path]' LIMIT 1");
 	}
