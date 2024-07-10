@@ -72,12 +72,15 @@ function update_contact_object_account($connect, $data){
 			'type' => 'content'
 		];
 
-		
+		try {
 		$boundsArraySliderPhotos = [];
 		$boundsArraySliderPhotos = files_to_bounds($connect,$entity,'slider_photos',isset($data['slider_photos'])?$data['slider_photos']:[]);		
 		/*remove_bounds($connect,$entity,'slider_photos');		
 		set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
 		*/
+		} catch (Exception $e) {
+			save_history_object("Ошибка: ".$e->getMessage());
+		}
 		
 
 		sync_site_content($connect, $sites_contents['id']);
