@@ -845,8 +845,8 @@ else {
 		<th width="80">Сумма путевки</th>
 		<th width="80">Сумма платежа</th>
 		<th width="80">Тип платежа</th>
+		<th width="80">Прибыль</th>
 		<th width="80">Комиссия руб. (%)</th>
-        <th width="80">Прибыль</th>
 		<th width="90">Менеджер</th>
 		<?php echo $th_pay; ?>
 	</tr>
