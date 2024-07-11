@@ -602,6 +602,7 @@ function filter_payment($connect){
 			$html.= "<td valign='top' style='text-align: center;'>".$sum."</td>";
 			$html.= "<td valign='top' style='text-align: center;'>".$type_pay_text."</td>";
             $html.= "<td valign='top' style='text-align: center;'>".$pay_reward."</td>";
+			$html.= "<td valign='top' style='text-align: center;'>".$sum_bank_kom." (".$row['bank_com']."%)</td>";
 			$html.= "<td valign='top' style='text-align: center;'>".$manager."</td>";
 			if($type_pay_tbl == 1 OR $type_pay_tbl == 3 OR $type_pay_tbl == 4)
 				$html.= "<td valign='top' style='text-align: center;'>".$type_opl_text."</td>";
@@ -844,6 +845,7 @@ else {
 		<th width="80">Сумма путевки</th>
 		<th width="80">Сумма платежа</th>
 		<th width="80">Тип платежа</th>
+		<th width="80">Комиссия руб. (%)</th>
         <th width="80">Прибыль</th>
 		<th width="90">Менеджер</th>
 		<?php echo $th_pay; ?>
