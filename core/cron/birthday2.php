@@ -18,11 +18,12 @@
 		$bonus = 300;
 		$connect->query("INSERT INTO bonus(turist, type, sum, date, note,`last_timestamp`) VALUES(?i, 3, ?i, ?s, 'Подарочный бонус на день рождения',?i)", $id, $bonus, $today,$last_timestamp);
 		
-		$bonus  = all_klient_bonus($connect, $id);
-		if ($bonus>0) $bonus_str = '<br><br>Бонусов на счету: <strong>'.$bonus.'</strong>'; else $bonus_str = '';
+		$bonus2  = all_klient_bonus($connect, $id);
+		if ($bonus2>0) $bonus2 = 'Бонусов на счету: <strong>'.$bonus.'</strong><br><br>'; else $bonus2 = '';
 
 		$message = select_template_letter("cron/birthday-account", "client");
-		$message["content"] = str_replace("<bonus>", $bonus_str, $message["content"]);
+		$message["content"] = str_replace("<bonus>", $bonus, $message["content"]);
+        $message["content"] = str_replace("<bonus2>", $bonus2, $message["content"]);
 		$message["content"] = str_replace("<name>", $name, $message["content"]);
 		$message["content"] = str_replace("<bonus>", $bonus, $message["content"]);
     	$message["content"] = str_replace("<days>", $days, $message["content"]);
