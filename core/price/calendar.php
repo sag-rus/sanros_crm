@@ -30,7 +30,7 @@ function select_objects_quota($connect){
     if($id_rights == 5)
       $result["object"][$index]["check-places"] = $row["check_places"];
 
-        if ($row['check_places'] == 3) {
+        /*if ($row['check_places'] == 3) {
             if(is_null($profkurort)) {
               $profkurort = new ProfkurortSync();
             }
@@ -45,7 +45,7 @@ function select_objects_quota($connect){
                     }
                 }
             }
-        }
+        }*/
     elseif($connect->getOne("SELECT id FROM room WHERE id_obj=?i AND accessible_places!=''", $object)){
       $result["object"][$index]["have-places"] = 1;
       $result["info"]["quota"]++;
