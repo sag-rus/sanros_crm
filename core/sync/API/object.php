@@ -258,6 +258,7 @@ function save_price_object_account($connect, $data){
 		}
 		$connect->query("UPDATE object SET status=2, synchronized=0 WHERE id=?i", $object);
 		save_history_object("Сохранение цен");
+		return 'saved';
 	}
 }
 
