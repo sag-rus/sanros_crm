@@ -269,7 +269,7 @@ function save_new_date_price_account($connect, $data){
 		if($start AND $end){
 			$connect->query("INSERT INTO date_price(id_obj, start, end) VALUES (?i, ?s, ?s)", $object, $start, $end);
 			$insert = $connect->insertId();
-			$connect->query("UPDATE object SET status=2, synchronized=0 WHERE id=?i", $object);
+			$connect->query("UPDATE object SET synchronized=0 WHERE id=?i", $object);
 			save_history_object("Добавление нового интервала цен");
 			return $insert;
 		}
