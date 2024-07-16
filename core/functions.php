@@ -649,7 +649,7 @@ function insert_base64_encoded_image($img){
 
 function get_place_object($connect, $id_obj, $place = ""){
 	$html = "<select id='range_place' class='form-control'>";
-	$data = $connect->getAll("SELECT * FROM place WHERE id_obj=?i OR id_obj=0 ORDER BY id", $id_obj);
+	$data = $connect->getAll("SELECT * FROM place WHERE (id_obj=?i and `status`=1) OR id_obj=0 ORDER BY id", $id_obj);
 	foreach($data as $row){
 		
 		$id = $row["id"];
