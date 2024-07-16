@@ -100,7 +100,7 @@ function execute_select_query($connect, $data) {
 		$result = $connect->getAll($data['query']);
 		return $result;
 		
-	} else return 'FALSE: query'.$data['query'];
+	} else return 'FALSE';
 }
 
 function clear_phone($phone) {
