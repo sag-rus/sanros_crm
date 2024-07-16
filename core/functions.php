@@ -96,7 +96,6 @@ function execute_select_query($connect, $data) {
 		  strpos(mb_strtoupper($data['query']), 'DROP')===FALSE && 
 		  strpos(mb_strtoupper($data['query']), 'TRUNCATE')===FALSE && 
 		  strpos(mb_strtoupper($data['query']), 'SELECT')!==FALSE) {
-		return '123';
 
 		$result = $connect->getAll($data['query']);
 		return $result;
