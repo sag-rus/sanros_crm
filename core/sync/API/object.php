@@ -242,7 +242,7 @@ function save_price_object_account($connect, $data){
 	if(CheckAuthObjectCabinet::check_authorization()){
 		$object = $data["object"];
 		$parse_price = json_decode($data["data"], TRUE);
-    $date_last_save = date('d.m.Y H:m:s');
+    	$date_last_save = date('d.m.Y H:m:s');
 		foreach($parse_price as $rate_plan){
 			foreach($rate_plan as $id_room => $room){
 				foreach($room as $id_range => $value){
@@ -321,7 +321,7 @@ function update_range_account($connect, $data){
 }
 
 function show_questions_object($connect, $data){
-	if(CheckAuthObjectCabinet::check_authorization()){
+	if(CheckAuthObjectCabinet::check_authorization()){	
 		$config = ConfigCRM::getInstance();
     $account = $config->account;
 		$answer = array("check" => 1);
