@@ -418,7 +418,7 @@ function add_new_rating(){
 
 function save_new_rating($connect){
 	$site_from = $_POST["site"];
-	$connect->query("INSERT INTO rating(status, clean, comfort, staff, leisure, location, treatment, ratio, positive, negative, advice, company_rating, date_send, turist, id_obj, site_from) VALUES (3, ?i, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?s, ?s, ?s, ?s, ?i, ?s)", $_POST["clean"], $_POST["comfort"], $_POST["staff"], $_POST["leisure"], $_POST["location"], $_POST["treatment"], $_POST["ratio"], $_POST["positive"], $_POST["negative"], $_POST["advice"], $_POST["company_rating"], $_POST["date"], $_POST["turist"], $_POST["object"], $site_from);
+	$connect->query("INSERT INTO rating(status, clean, comfort, staff, leisure, location, treatment, ratio, positive, negative, advice, company_rating, date_send, turist, id_obj, site_from) VALUES (3, ?i, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?s)", $_POST["clean"], $_POST["comfort"], $_POST["staff"], $_POST["leisure"], $_POST["location"], $_POST["treatment"], $_POST["ratio"], $_POST["positive"], $_POST["negative"], $_POST["advice"], $_POST["company_rating"], $_POST["date"], $_POST["turist"], $_POST["object"], $site_from);
 }
 
 
