@@ -348,12 +348,13 @@ function save_new_rating(){
 	var positive = $('#positive').val();
 	var negative = $('#negative').val();
 	var advice = $('#advice').val();
+	var company_rating = $('#company_rating').val();
 	var object = $('.id-object').attr('name');
 	var date = $('#date').attr('date');
 	var turist = $('.turist').val();
 	var site = $('.site-from').val();
 	if(clean && comfort && staff && leisure && location && treatment && ratio && object && date && turist){
-		var str = 'func=save_new_rating&clean=' + clean + '&comfort=' + comfort + '&staff=' + staff + '&leisure=' + leisure + '&location=' + location + '&treatment=' + treatment + '&ratio=' + ratio + '&positive=' + positive + '&negative=' + negative + '&advice=' + advice + '&date=' + date + '&turist=' + turist + '&object=' + object + '&site=' + site;
+		var str = 'func=save_new_rating&clean=' + clean + '&comfort=' + comfort + '&staff=' + staff + '&leisure=' + leisure + '&location=' + location + '&treatment=' + treatment + '&ratio=' + ratio + '&positive=' + positive + '&negative=' + negative + '&advice=' + advice + '&company_rating=' + company_rating + '&date=' + date + '&turist=' + turist + '&object=' + object + '&site=' + site;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
