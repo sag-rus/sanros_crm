@@ -307,6 +307,22 @@ function save_new_range_account($connect, $data){
 	}
 }
 
+function del_range_account($connect, $data){
+	if(CheckAuthObjectCabinet::check_authorization()){
+		$id = $data["id"];
+		$object = $data["object"];
+		
+		$range = $connect->getRow("SELECT * FROM ranges WHERE id=?i", $id);
+		if ($range['id_obj']==$object) {
+			//$connect->query("UPDATE price SET active = 1, synchronized = 0 WHERE id_range=?i", $id);
+			//$connect->query("UPDATE ranges SET active = 1, synchronized = 0 WHERE id=?i", $id);
+			save_history_object("Удаление столбца цен");
+			return "UPDATE price SET active = 1, synchronized = 0 WHERE id_range=$id<br>UPDATE ranges SET active = 1, synchronized = 0 WHERE id=$id";
+			//return true;
+		} else return false;
+	} else return false;
+}
+
 function update_range_account($connect, $data){
 	if(CheckAuthObjectCabinet::check_authorization()){
 		$id_range = $data["id"];
