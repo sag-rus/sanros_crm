@@ -1286,6 +1286,14 @@ function show_card_request_object($connect){
 					</div>
 				</div>
 			</div>
+			<div class="list-group-item list-hover-item">
+				<div class="form-group form-group-margin">
+					<label class="col-sm-3 control-label-element">веб-сайт</label>
+					<div class="col-sm-9">
+						<?php echo $row["website"]; ?>
+					</div>
+				</div>
+			</div>
 		</div>
 		<div class="panel-footer text-right">
 			<?php if ($row['status']==0) {?>
