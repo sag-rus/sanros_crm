@@ -1168,7 +1168,7 @@ function show_card_request_object($connect){
 			</div>			
 			<div class="list-group-item list-hover-item">
 				<div class="form-group form-group-margin">
-					<label class="col-sm-3 control-label-element">Юридическое название компании</label>
+					<label class="col-sm-3 control-label-element">Юридическое наименование компании</label>
 					<div class="col-sm-9">
 						<?php echo $row["urobject"]; ?>
 					</div>
@@ -1291,7 +1291,7 @@ function show_card_request_object($connect){
 			<?php if ($row['status']==0) {?>
 				<button class="btn btn-danger btn-sm" onclick="delete_request_object(<?php echo $object; ?>)"><i class="fa fa-check-circle"></i> Удалить</button> &nbsp 
 				<button class="btn btn-info btn-sm" onclick="edit_request_object(<?php echo $object; ?>)"><i class="fa fa-check-circle"></i> Дополнить / Редактировать</button> &nbsp 			
-				<?php if (trim($row['name'])!='' && $row['direction-object']>0 && $row['object_region']>0 && $row['region_direction_id']>0 && $row['latitude']>0 && $row['longitude']>0) {?>
+				<?php if (trim($row['name'])!='' && $row['direction-object']>0 && $row['object_region']>0 && $row['latitude']>0 && $row['longitude']>0) {?>
 					<button class="btn btn-success btn-sm" onclick="confirm_request_object(<?php echo $object; ?>)"><i class="fa fa-check-circle"></i> Принять</button>
 				<?php } ?>
 			<?php } ?>
@@ -1335,7 +1335,7 @@ function edit_request_object($connect){
 			<div class="modal-body">
 				<div class="form-horizontal edit-procedure">
 					<div class="form-group">
-						<label class="col-sm-4 control-label">Юридическое название компании</label>
+						<label class="col-sm-4 control-label">Юридическое наименование компании</label>
 						<div class="col-sm-8">
 							<input type="text" class="form-control urobject" name="urobject" value="<?php echo htmlspecialchars($row['urobject']); ?>">
 						</div>
@@ -1421,13 +1421,13 @@ function edit_request_object($connect){
 						<div class="col-sm-8">
 							<input type="text" class="form-control kpp" name="kpp" value="<?php echo $row['kpp']; ?>">
 						</div>
-					</div>																			
+					</div>
 					<div class="form-group">
 						<label class="col-sm-4 control-label">ФИО сотрудника для контактов</label>
 						<div class="col-sm-8">
 							<input type="text" class="form-control fio" name="fio" value="<?php echo $row['fio']; ?>">
 						</div>
-					</div>					
+					</div>
 					<div class="form-group">
 						<label class="col-sm-4 control-label">Телефон</label>
 						<div class="col-sm-8">
@@ -1439,7 +1439,13 @@ function edit_request_object($connect){
 						<div class="col-sm-8">
 							<input type="text" class="form-control email" name="email" value="<?php echo $row['email']; ?>">
 						</div>
-					</div>											
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">Веб-сайт</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control email" name="website" value="<?php echo $row['website']; ?>">
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
@@ -1491,7 +1497,7 @@ function confirm_request_object($connect){
 		$path = '/'.change_text_url($directionUrl);
 		$regionUrl = $connect->getOne("SELECT `name` FROM `region` WHERE `region`.`id_country` = 1 AND `region`.`id` = ?i", $row['object_region']);
 		$path .= '/' . change_text_url($regionUrl);
-		if(!is_null($row['region_direction_id']) && $row['region_direction_id']) {
+		if(!is_null($row['region_direction_id']) && $row['region_direction_id']>0) {
 			$regionalDirectionUrl = $connect->getOne("SELECT `name` FROM `direction_object` WHERE (`direction_object`.`id_country` = 0 OR `direction_object`.`id_country` IS NULL)  AND `direction_object`.`id_reg` > 0 AND `direction_object`.`id` = ?i", $row['region_direction_id']);
 			$path .= '/'. change_text_url($regionalDirectionUrl);
 		}
@@ -1546,8 +1552,8 @@ function update_request_object($connect){
 
 	$_POST['name'] = trim(preg_replace('/[^a-zа-я ]/ui', '', $_POST['name']));
 
-	$connect->query("UPDATE object_request SET `urobject`=?s, `object`=?s, `name`=?s, `type`=?i, `address`=?s, `direction-object`=?i, `object_region`=?i, `region_direction_id`=?i, `latitude`=?s, `longitude`=?s, `uraddress`=?s, `inn`=?s, `kpp`=?s, `fio`=?s, `telephone`=?s, `email`=?s WHERE id=?i", 
-	$_POST['urobject'], $_POST['object'], $_POST['name'], $_POST['type'], $_POST['address'], $_POST['direction-object'], $_POST['object_region'], $_POST['region_direction_id'], (float)$_POST['latitude'], (float)$_POST['longitude'], $_POST['uraddress'], $_POST['inn'], $_POST['kpp'], $_POST['fio'], $_POST['telephone'], $_POST['email'], $id);
+	$connect->query("UPDATE object_request SET `urobject`=?s, `object`=?s, `name`=?s, `type`=?i, `address`=?s, `direction-object`=?i, `object_region`=?i, `region_direction_id`=?i, `latitude`=?s, `longitude`=?s, `uraddress`=?s, `inn`=?s, `kpp`=?s, `fio`=?s, `telephone`=?s, `email`=?s, `website`=?s WHERE id=?i", 
+	$_POST['urobject'], $_POST['object'], $_POST['name'], $_POST['type'], $_POST['address'], $_POST['direction-object'], $_POST['object_region'], $_POST['region_direction_id'], (float)$_POST['latitude'], (float)$_POST['longitude'], $_POST['uraddress'], $_POST['inn'], $_POST['kpp'], $_POST['fio'], $_POST['telephone'], $_POST['email'], $_POST['website'], $id);
 	return json_encode(array("ok"=>1));
 }
 
