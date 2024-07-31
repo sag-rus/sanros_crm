@@ -3708,12 +3708,10 @@ function set_sites_content($connect) {
 
 
               if ($status==1) {
-                //$connect->query("UPDATE `object` SET `active`=0 WHERE `path` = ?s ",$path);
-                echo "UPDATE `object` SET `active`=0 WHERE `path` = '$path'";
+                $connect->query("UPDATE `object` SET `active`=0, `synchronized`=0 WHERE `path` = ?s ",$path);
               }
               if ($status==0) {
-                //$connect->query("UPDATE `object` SET `active`=1 WHERE `path` = ?s ",$path);
-                echo "UPDATE `object` SET `active`=1 WHERE `path` = '$path'";
+                $connect->query("UPDATE `object` SET `active`=1, `synchronized`=0 WHERE `path` = ?s ",$path);
               }
             }
             else {
