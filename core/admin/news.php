@@ -3711,7 +3711,7 @@ function set_sites_content($connect) {
                 //$connect->query("UPDATE `object` SET `active`=0 WHERE `path` = ?s ",$path);
                 echo "UPDATE `object` SET `active`=0 WHERE `path` = '$path'";
               }
-              if ($status==1) {
+              if ($status==0) {
                 //$connect->query("UPDATE `object` SET `active`=1 WHERE `path` = ?s ",$path);
                 echo "UPDATE `object` SET `active`=1 WHERE `path` = '$path'";
               }
