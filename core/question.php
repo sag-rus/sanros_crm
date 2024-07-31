@@ -122,7 +122,9 @@ function show_question_object($connect){
 		$time = $row["time"];
 		$new = $connect->getOne("SELECT COUNT(*) FROM message_talk WHERE talk=?i AND active=0 AND type='client'", $talk);
 		$client = $row["client"];
-		$object = $connect->getOne("SELECT name FROM object WHERE id_account=?i", $client);
+		if ($client>0) {
+			$object = $connect->getOne("SELECT name FROM object WHERE id_account=?i", $client);
+		} else $object = 'Обращение без авторизации';
 		$category = $category_array[$row["category"]];
 		$class = "";
 		if($new > 0)
