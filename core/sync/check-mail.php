@@ -15,6 +15,9 @@
 
 	$data = $connect->getAll("SELECT id, email, title, body, from_send FROM send_mail WHERE status=0");
 	foreach($data as $row){
+		echo '<pre>';
+		print_r($row);
+		echo '</pre>';
 		$id = $row["id"];
 		$email = $row["email"];
 		$title = $row["title"];
@@ -25,7 +28,7 @@
 		}else{
 			$send = new SendMailDefault;
 		}
-		$answer = $send->send($email, $title, $body);
+		//$answer = $send->send($email, $title, $body);
 		if($answer){
 			$connect->query("UPDATE send_mail SET status=1 WHERE id=?i", $id);
 		}
