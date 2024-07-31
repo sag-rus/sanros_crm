@@ -380,7 +380,7 @@ function show_talk_object($connect, $data){
 function send_question_object($connect, $data){
 	if(CheckAuthObjectCabinet::check_authorization()){
 		$config = ConfigCRM::getInstance();
-    $account = $config->account;
+    	$account = $config->account;
 		$message = $data["text"];
 		$category = $data["category"];
 		if($message){
@@ -389,6 +389,15 @@ function send_question_object($connect, $data){
 				$connect->query("INSERT INTO talk(client, category, type) VALUES(?i, ?i, 'object')", $account, $category);
 				$talk = $connect->insertId();
 			}
+			$connect->query("INSERT INTO message_talk(talk, text, type) VALUES(?i, ?s, 'client')", $talk, $message);
+		}
+	} else {
+    	$account = 0;
+		$message = $data["text"];
+		$category = $data["category"];
+		if($message){
+			$connect->query("INSERT INTO talk(client, category, type) VALUES(?i, ?i, 'object')", $account, $category);
+			$talk = $connect->insertId();
 			$connect->query("INSERT INTO message_talk(talk, text, type) VALUES(?i, ?s, 'client')", $talk, $message);
 		}
 	}
