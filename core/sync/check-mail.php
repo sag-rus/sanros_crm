@@ -28,7 +28,7 @@
 		}else{
 			$send = new SendMailDefault;
 		}
-		//$answer = $send->send($email, $title, $body);
+		$answer = $send->send($email, $title, $body);
 		if($answer){
 			$connect->query("UPDATE send_mail SET status=1 WHERE id=?i", $id);
 		}
