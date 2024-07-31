@@ -15,9 +15,6 @@
 
 	$data = $connect->getAll("SELECT id, email, title, body, from_send FROM send_mail WHERE status=0");
 	foreach($data as $row){
-		echo '<pre>';
-		print_r($row);
-		echo '</pre>';
 		$id = $row["id"];
 		$email = $row["email"];
 		$title = $row["title"];
