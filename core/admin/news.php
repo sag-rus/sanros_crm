@@ -3705,6 +3705,16 @@ function set_sites_content($connect) {
                   $connect->query("UPDATE `sites_contents` SET `redirect_path` = ?s, `synchronized` = 0 WHERE `type` = 'redirect' AND `status` <> 2 AND `redirect_path` = ?s",$path, $content['path']);
 
               }
+
+
+              if ($status==1) {
+                //$connect->query("UPDATE `object` SET `active`=0 WHERE `path` = ?s ",$path);
+                echo "UPDATE `object` SET `active`=0 WHERE `path` = '$path'";
+              }
+              if ($status==1) {
+                //$connect->query("UPDATE `object` SET `active`=1 WHERE `path` = ?s ",$path);
+                echo "UPDATE `object` SET `active`=1 WHERE `path` = '$path'";
+              }
             }
             else {
               $respAr['success'] = 1;
