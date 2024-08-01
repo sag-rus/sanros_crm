@@ -61,7 +61,7 @@ function show_question_client($connect){
 		<div class="panel-heading"><i class="fa fa-comments-o"></i> Вопросы из Личного кабинета туриста</div>
 		<div class="list-group">
 <?php
-	$data = $connect->getAll("SELECT talk.id, talk.client, talk.category, talk.id_reck, DATE_FORMAT(max(message_talk.date), '%H:%i:%s %d.%m') as time FROM talk JOIN message_talk ON message_talk.talk=talk.id WHERE talk.type='turist' AND message_talk.type='client' GROUP BY talk.id ORDER BY message_talk.active, max(message_talk.date) DESC LIMIT 100");
+	$data = $connect->getAll("SELECT talk.id, talk.client, talk.category, talk.id_reck, DATE_FORMAT(max(message_talk.date), '%d.%m.%y %H:%i:%s') as time FROM talk JOIN message_talk ON message_talk.talk=talk.id WHERE talk.type='turist' AND message_talk.type='client' GROUP BY talk.id ORDER BY message_talk.active, max(message_talk.date) DESC LIMIT 100");
 	foreach($data as $row){
 		$talk = $row["id"];
 		$time = $row["time"];
