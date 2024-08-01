@@ -7,7 +7,7 @@ function show_question_agency($connect){
 		<div class="panel-heading"><i class="fa fa-comments-o"></i> Вопросы из Личного кабинета агентств</div>
 		<div class="list-group">
 <?php
-	$data = $connect->getAll("SELECT talk.id, talk.client, talk.category, talk.id_reck, DATE_FORMAT(max(message_talk.date), '%H:%i:%s %d.%m') as time FROM talk JOIN message_talk ON message_talk.talk=talk.id WHERE talk.type='agency' GROUP BY talk.id ORDER BY message_talk.active, max(message_talk.date) DESC LIMIT 30");
+	$data = $connect->getAll("SELECT talk.id, talk.client, talk.category, talk.id_reck, DATE_FORMAT(max(message_talk.date), '%d.%m.%Y %H:%i:%s ') as time FROM talk JOIN message_talk ON message_talk.talk=talk.id WHERE talk.type='agency' GROUP BY talk.id ORDER BY message_talk.active, max(message_talk.date) DESC LIMIT 30");
 	foreach($data as $row){
 		$talk = $row["id"];
 		$id_reck = $row["id_reck"];
@@ -61,7 +61,7 @@ function show_question_client($connect){
 		<div class="panel-heading"><i class="fa fa-comments-o"></i> Вопросы из Личного кабинета туриста</div>
 		<div class="list-group">
 <?php
-	$data = $connect->getAll("SELECT talk.id, talk.client, talk.category, talk.id_reck, DATE_FORMAT(max(message_talk.date), '%d.%m.%y %H:%i:%s') as time FROM talk JOIN message_talk ON message_talk.talk=talk.id WHERE talk.type='turist' AND message_talk.type='client' GROUP BY talk.id ORDER BY message_talk.active, max(message_talk.date) DESC LIMIT 100");
+	$data = $connect->getAll("SELECT talk.id, talk.client, talk.category, talk.id_reck, DATE_FORMAT(max(message_talk.date), '%d.%m.%Y %H:%i:%s') as time FROM talk JOIN message_talk ON message_talk.talk=talk.id WHERE talk.type='turist' AND message_talk.type='client' GROUP BY talk.id ORDER BY message_talk.active, max(message_talk.date) DESC LIMIT 100");
 	foreach($data as $row){
 		$talk = $row["id"];
 		$time = $row["time"];
@@ -115,7 +115,7 @@ function show_question_object($connect){
 		<div class="panel-heading"><i class="fa fa-comments-o"></i> Вопросы из Личного кабинета объекта</div>
 		<div class="list-group">
 <?php
-	$data = $connect->getAll("SELECT talk.id, talk.client, talk.category, talk.id_reck, DATE_FORMAT(max(message_talk.date), '%H:%i:%s %d.%m.%Y') as time FROM talk LEFT JOIN message_talk ON message_talk.talk=talk.id WHERE talk.type='object' GROUP BY talk.id ORDER BY message_talk.active, max(message_talk.date) DESC LIMIT 30");
+	$data = $connect->getAll("SELECT talk.id, talk.client, talk.category, talk.id_reck, DATE_FORMAT(max(message_talk.date), '%d.%m.%Y %H:%i:%s') as time FROM talk LEFT JOIN message_talk ON message_talk.talk=talk.id WHERE talk.type='object' GROUP BY talk.id ORDER BY message_talk.active, max(message_talk.date) DESC LIMIT 30");
 	foreach($data as $row){
 		$talk = $row["id"];
 		$id_reck = $row["id_reck"];
