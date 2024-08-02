@@ -20,11 +20,13 @@ function authorization_object_account($connect, $data){
 		}
 		$account = $connect->getOne("SELECT id FROM object_account WHERE login=?s", $login);
 
-		$data = $connect->getAll("SELECT id FROM object WHERE id_account=?i", $account);
+
+		$data = $connect->getAll("SELECT id, bnovo FROM object WHERE id_account=?i", $account);
 		foreach($data as $row){
 			$id = $row["id"];
 			$object[$id] = array();
 			$object[$id]["name"] = 1;
+			$object[$id]["bnovo"] = $row['bnovo'];
 		}
 		$array = array(
 			"session" => $session,
