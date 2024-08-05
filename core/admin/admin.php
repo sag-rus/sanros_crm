@@ -1162,7 +1162,7 @@ function show_card_request_object($connect){
 				<div class="form-group form-group-margin">
 					<label class="col-sm-3 control-label-element">Дата заявки</label>
 					<div class="col-sm-9">
-						<?php echo $row["time"]; ?>
+						<?php echo date('d.m.Y HH:mm:ss', strtotime($row["time"])); ?>
 					</div>
 				</div>
 			</div>			
