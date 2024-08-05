@@ -62,7 +62,7 @@ function show_news_website($connect){
 
 function show_sites_list($connect) {
     global $id_rights, $session_login;
-	$sites = $connect->getAll("SELECT id, name, domain FROM sites ORDER BY id ASC");
+	$sites = $connect->getAll("SELECT id, name, domain FROM sites ORDER BY id DESC");
 	ob_start();
 	?>
 	<div class="panel panel-default">
