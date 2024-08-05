@@ -1375,9 +1375,15 @@ function edit_request_object($connect){
 						</div>
 					</div>	
 					<div class="form-group">
-						<label class="col-sm-4 control-label">Почтовый адрес</label>
+						<label class="col-sm-4 control-label">Фактический адрес</label>
 						<div class="col-sm-8">
 							<input type="text" class="form-control address" name="address" value="<?php echo $row['address']; ?>">
+						</div>
+					</div>										
+					<div class="form-group">
+						<label class="col-sm-4 control-label">Почтовый адрес</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control postaddress" name="postaddress" value="<?php echo $row['postaddress']; ?>">
 						</div>
 					</div>					
 					<div class="form-group">
@@ -1568,8 +1574,8 @@ function update_request_object($connect){
 
 	$_POST['name'] = trim(preg_replace('/[^a-zа-я ]/ui', '', $_POST['name']));
 
-	$connect->query("UPDATE object_request SET `urobject`=?s, `object`=?s, `name`=?s, `type`=?i, `address`=?s, `direction-object`=?i, `object_region`=?i, `region_direction_id`=?i, `latitude`=?s, `longitude`=?s, `uraddress`=?s, `inn`=?s, `kpp`=?s, `fio`=?s, `telephone`=?s, `email`=?s, `website`=?s WHERE id=?i", 
-	$_POST['urobject'], $_POST['object'], $_POST['name'], $_POST['type'], $_POST['address'], $_POST['direction-object'], $_POST['object_region'], $_POST['region_direction_id'], (float)$_POST['latitude'], (float)$_POST['longitude'], $_POST['uraddress'], $_POST['inn'], $_POST['kpp'], $_POST['fio'], $_POST['telephone'], $_POST['email'], $_POST['website'], $id);
+	$connect->query("UPDATE object_request SET `urobject`=?s, `object`=?s, `name`=?s, `type`=?i, `address`=?s, `postaddress`=?s, `direction-object`=?i, `object_region`=?i, `region_direction_id`=?i, `latitude`=?s, `longitude`=?s, `uraddress`=?s, `inn`=?s, `kpp`=?s, `fio`=?s, `telephone`=?s, `email`=?s, `website`=?s WHERE id=?i", 
+	$_POST['urobject'], $_POST['object'], $_POST['name'], $_POST['type'], $_POST['address'], $_POST['postaddress'], $_POST['direction-object'], $_POST['object_region'], $_POST['region_direction_id'], (float)$_POST['latitude'], (float)$_POST['longitude'], $_POST['uraddress'], $_POST['inn'], $_POST['kpp'], $_POST['fio'], $_POST['telephone'], $_POST['email'], $_POST['website'], $id);
 	return json_encode(array("ok"=>1));
 }
 
