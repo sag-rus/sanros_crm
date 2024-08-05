@@ -749,7 +749,7 @@ function show_cabinet_object($connect){
 	</div>
 	<div class="form-horizontal">
 <?php
-	$data = $connect->getAll("SELECT id, login, email FROM object_account");
+	$data = $connect->getAll("SELECT id, login, email FROM object_account ORDER BY id DESC");
 	foreach($data as $row){
 		$id = $row["id"];
 		$email = $row["email"];
@@ -879,7 +879,7 @@ function save_new_object_account($connect){
 
 function delete_object_account($connect){
 	$id = $_POST["id"];
-	$connect->query("UPDATE object SET id_account='', synchronized=0 WHERE id=?i", $id);
+	$connect->query("UPDATE object SET id_account=0, synchronized=0 WHERE id=?i", $id);
 }
 
 function check_changes_cabinet_object($connect){
@@ -1189,12 +1189,20 @@ function show_card_request_object($connect){
 						<?php echo $row["name"]; ?>
 					</div>
 				</div>
-			</div>			
+			</div>
+			<div class="list-group-item list-hover-item">
+				<div class="form-group form-group-margin">
+					<label class="col-sm-3 control-label-element">Фактический адрес</label>
+					<div class="col-sm-9">
+						<?php echo $row["address"]; ?>
+					</div>
+				</div>
+			</div>							
 			<div class="list-group-item list-hover-item">
 				<div class="form-group form-group-margin">
 					<label class="col-sm-3 control-label-element">Почтовый адрес</label>
 					<div class="col-sm-9">
-						<?php echo $row["address"]; ?>
+						<?php echo $row["postaddress"]; ?>
 					</div>
 				</div>
 			</div>	
