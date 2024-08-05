@@ -740,7 +740,7 @@ function save_history_object($text){
 
 function save_object_request($connect, $data){
 	$data = $data['data'];
-	$connect->query("INSERT INTO object_request SET `id`=0, `time`=NOW(), `urobject`=?s, `object`=?s, `address`=?s, `uraddress`=?s, `inn`=?s, `kpp`=?s, `telephone`=?s, `fio`=?s, `email`=?s, `website`=?s", $data['urobject'], $data['object'], $data['address'], $data['uraddress'], $data['inn'], $data['kpp'], $data['telephone'], $data['fio'], $data['email'], $data['website']);
+	$connect->query("INSERT INTO object_request SET `id`=0, `time`=NOW(), `urobject`=?s, `object`=?s, `address`=?s, `postaddress`=?s, `uraddress`=?s, `inn`=?s, `kpp`=?s, `telephone`=?s, `fio`=?s, `email`=?s, `website`=?s", $data['urobject'], $data['object'], $data['address'], $data['postaddress'], $data['uraddress'], $data['inn'], $data['kpp'], $data['telephone'], $data['fio'], $data['email'], $data['website']);
 	return array('ok'=>1);
 }
 
