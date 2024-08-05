@@ -1139,7 +1139,7 @@ function update_group($connect){
 }
 
 function show_request_object($connect){
-	$data = $connect->getAll("SELECT id, DATE_FORMAT(`time`, '%d.%m.%Y %H:%i:%s') as `time`, object, telephone, email, address, website, website_object, comment, source, status FROM object_request WHERE status>=0 ORDER BY status ASC, time DESC");
+	$data = $connect->getAll("SELECT id, DATE_FORMAT(time, '%d.%m.%Y %H:%i:%s') as time, object, telephone, email, address, website, website_object, comment, source, status FROM object_request WHERE status>=0 ORDER BY status ASC, time DESC");
 	return json_encode($data);
 }
 
