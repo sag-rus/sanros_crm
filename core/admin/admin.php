@@ -886,7 +886,7 @@ function check_changes_cabinet_object($connect){
 ?>
 	<div class="panel-group" id="change-cabinet" role="tablist" aria-multiselectable="true">
 <?php
-	$data = $connect->getAll("SELECT id, name, description, description_check, id_services, id_account FROM object WHERE status=2");
+	$data = $connect->getAll("SELECT id, name, description, description_check, id_services, id_account, status_datetime FROM object WHERE status=2");
 	foreach($data as $row){
 		$id_account = $row["id_account"];
 		$services = json_decode($row["id_services"], TRUE);
@@ -896,7 +896,7 @@ function check_changes_cabinet_object($connect){
 ?>
 	<div class="form-horizontal panel panel-info">
 		<div class="panel-heading pointer" role="button" data-toggle="collapse" data-parent="#change-cabinet" href="#object-<?= $id; ?>" aria-expanded="true" aria-controls="object-<?= $id; ?>">
-			<i class="fa fa-comment-o"></i> Изменение описания объекта <?php echo $row["name"]; ?>
+			<i class="fa fa-comment-o"></i> Изменение описания объекта <?php echo $row["name"]; ?> <?php echo date('d.m.Y H:m:s',strtotime($row["status_datetime"])); ?>
 		</div>
 		<div id="object-<?= $id; ?>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
 			<div class="list-group">
