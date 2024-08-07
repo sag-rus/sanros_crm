@@ -896,7 +896,7 @@ function check_changes_cabinet_object($connect){
 ?>
 	<div class="form-horizontal panel panel-info">
 		<div class="panel-heading pointer" role="button" data-toggle="collapse" data-parent="#change-cabinet" href="#object-<?= $id; ?>" aria-expanded="true" aria-controls="object-<?= $id; ?>">
-			<i class="fa fa-comment-o"></i> Изменение описания объекта <?php echo $row["name"]; ?> <?=$row["status_datetime"]?>
+			<i class="fa fa-comment-o"></i> Изменение описания объекта <?php echo $row["name"]; ?> <?php echo date('d.m.Y H:m:s',strtotime($row["status_datetime"])); ?>
 		</div>
 		<div id="object-<?= $id; ?>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
 			<div class="list-group">
