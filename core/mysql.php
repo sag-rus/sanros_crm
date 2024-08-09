@@ -170,7 +170,7 @@ function help_search_by_name($connect){
 		<?php
 		}
 	}
-	if($table == "object" && $func<>'select_object'){
+	if($table == "object" && $func<>'select_object_on_request'){
 	?>
 		<span onclick="use_object('new')">Добавить новый объект</span>
 	<?php
