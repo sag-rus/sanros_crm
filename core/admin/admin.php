@@ -1673,7 +1673,7 @@ function update_request_object($connect){
 	$connect->query("UPDATE object_request SET `urobject`=?s, `object`=?s, `id_object`=?i, `name`=?s, `type`=?i, `address`=?s, `postaddress`=?s, `direction-object`=?i, `object_region`=?i, `region_direction_id`=?i, `latitude`=?s, `longitude`=?s, `uraddress`=?s, `inn`=?s, `kpp`=?s, `fio`=?s, `telephone`=?s, `email`=?s, `website`=?s WHERE id=?i", 
 	$_POST['urobject'], $_POST['object'], $_POST['id_object'], $_POST['name'], $_POST['type'], $_POST['address'], $_POST['postaddress'], $_POST['direction-object'], $_POST['object_region'], $_POST['region_direction_id'], (float)$_POST['latitude'], (float)$_POST['longitude'], $_POST['uraddress'], $_POST['inn'], $_POST['kpp'], $_POST['fio'], $_POST['telephone'], $_POST['email'], $_POST['website'], $id);
 	$q = $connect->last_query();
-	return json_encode(array("ok"=>1, "q"=>$q));
+	return json_encode(array("ok"=>1, "q"=>$q, 'POST'=>print_r($_POST, true)));
 }
 
 
