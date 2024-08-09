@@ -1181,10 +1181,13 @@ function show_card_request_object($connect){
 						<?php echo $row["object"]; ?>
 						<?php
 						$name = $row['object'];
-						if (Strpos($name, '"')!==FALSE) {
+						if (mb_strpos($name, '"')!==FALSE) {
 							preg_match('/"([^"]+)"/', $name, $p);
-							print_r($p);
+							if (isset($p[1]) && mb_strlen($p[1])>0) $name = $p[1];
 						}
+
+						$objects = $connect->getAll("SELECT * FROM `object` WHERE `name` LIKE '%$name%'");
+						print_r($objects);
 						?>						
 					</div>
 				</div>
