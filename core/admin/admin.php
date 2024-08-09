@@ -1650,7 +1650,7 @@ function update_request_object($connect){
 
 	$_POST['name'] = trim(preg_replace('/[^a-zа-я ]/ui', '', $_POST['name']));
 
-	if ($_POST['id_object']>0) {
+	if ($_POST['id_object']>0 && 1==2) {
 		
 		$object = $connect->getRow("SELECT * FROM `object` WHERE id=?i", $_POST['id_object']);
 
