@@ -1188,7 +1188,7 @@ function show_card_request_object($connect){
 
 						$objects = $connect->getAll("SELECT * FROM `object` WHERE `name` LIKE '%$name%'");
 						if (count($objects)>0) {
-							echo '<br><strong>найдены похожие объекты</strong><br>';
+							echo '<br><br><strong>найдены похожие объекты</strong><br>:';
 							foreach ($objects as $object) {
 								echo ' - '.$object['name'];
 								if ($object['id_account']>0) {
