@@ -163,7 +163,8 @@ function view_object(id, type){
 }
 
 function select_object_on_request(id, name){
-	$('.same_name_objects').append('<input type="radio" name="id_object" value="'+id+'"> '+name);
+	$('.same_name_objects input').prop('checked', false);
+	$('.same_name_objects').append('<input type="radio" checked="checked" name="id_object" value="'+id+'"> '+name+'<br>');
 	$('#find').remove();
 }
 
