@@ -163,7 +163,7 @@ function view_object(id, type){
 }
 
 function select_object(id, name){
-	$('.same_name_objects').append('<input type="radio" name="id_object" value="'+id+'"> ');
+	$('.same_name_objects').append('<input type="radio" name="id_object" value="'+id+'"> '+name);
 }
 
 function edit_object_info(id){
