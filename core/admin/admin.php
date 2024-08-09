@@ -1334,7 +1334,7 @@ function show_card_request_object($connect){
 			<?php if ($row['status']==0) {?>
 				<button class="btn btn-danger btn-sm" onclick="delete_request_object(<?php echo $object; ?>)"><i class="fa fa-check-circle"></i> Удалить</button> &nbsp 
 				<button class="btn btn-info btn-sm" onclick="edit_request_object(<?php echo $object; ?>)"><i class="fa fa-check-circle"></i> Дополнить / Редактировать</button> &nbsp 			
-				<?php if ((trim($row['name'])!='' && $row['direction-object']>0 && $row['object_region']>0) || $row['id_object']>0) {?>
+				<?php if (trim($row['name'])!='' && $row['direction-object']>0 && $row['object_region']>0) {?>
 					<button class="btn btn-success btn-sm" onclick="confirm_request_object(<?php echo $object; ?>)"><i class="fa fa-check-circle"></i> Принять</button>
 				<?php } ?>
 				<button class="btn btn-info btn-sm" onclick="confirm_request_object_wo_acc(<?php echo $object; ?>)"><i class="fa fa-check-circle"></i> Пометить как обработанное без принятия</button>
@@ -1573,8 +1573,10 @@ function confirm_request_object($connect){
 				`id_account`='$id_account',
 				`direction`='".$row['direction-object']."'
 				");
-
+			$id_object = $connect->insertId();
 			echo 'obj_created...';
+		} else {
+			$id_object = $row['id_object'];
 		}
 
 		$directionUrl = $connect->getOne("SELECT `name` FROM `direction_object` WHERE `id_country` = 1 AND `id` = ?i", $row['direction-object']);
@@ -1587,6 +1589,8 @@ function confirm_request_object($connect){
 		}
 		$type_name = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]);
 		$path .= '/'.change_text_url($type_name) . '-' . $url_name;
+
+		$connect->query("UPDATE `object` SET `path`='$path' WHERE `id`=id_object");
 
 		$content = $connect->getRow("SELECT * FROM `sites_contents` WHERE `path`='$path'");
 
@@ -1645,6 +1649,19 @@ function update_request_object($connect){
 	$_POST['object'] = htmlspecialchars_decode($_POST['object'], ENT_NOQUOTES);
 
 	$_POST['name'] = trim(preg_replace('/[^a-zа-я ]/ui', '', $_POST['name']));
+
+	if ($_POST['id_object']>0) {
+		$object = $connect->getRow("SELECT * FROM `object` WHERE id=?i", $_POST['id_object']);
+		if (isset($object['id'])) {
+			$_POST['direction-object'] = $object['direction'];
+			$_POST['object_region'] = $object['id_reg'];
+			$_POST['region_direction_id'] = $object['region_direction_id'];
+			$_POST['name'] = $object['name'];
+			$_POST['type'] = $object['type'];
+			$_POST['latitude'] = $object['latitude'];
+			$_POST['longitude'] = $object['longitude'];
+		}	
+	}
 
 	$connect->query("UPDATE object_request SET `urobject`=?s, `object`=?s, `id_object`=?i, `name`=?s, `type`=?i, `address`=?s, `postaddress`=?s, `direction-object`=?i, `object_region`=?i, `region_direction_id`=?i, `latitude`=?s, `longitude`=?s, `uraddress`=?s, `inn`=?s, `kpp`=?s, `fio`=?s, `telephone`=?s, `email`=?s, `website`=?s WHERE id=?i", 
 	$_POST['urobject'], $_POST['object'], $_POST['id_object'], $_POST['name'], $_POST['type'], $_POST['address'], $_POST['postaddress'], $_POST['direction-object'], $_POST['object_region'], $_POST['region_direction_id'], (float)$_POST['latitude'], (float)$_POST['longitude'], $_POST['uraddress'], $_POST['inn'], $_POST['kpp'], $_POST['fio'], $_POST['telephone'], $_POST['email'], $_POST['website'], $id);
