@@ -1179,6 +1179,13 @@ function show_card_request_object($connect){
 					<label class="col-sm-3 control-label-element">Название объекта</label>
 					<div class="col-sm-9">
 						<?php echo $row["object"]; ?>
+						<?php
+						$name = $row['object'];
+						if (Strpos($name, '"')!==FALSE) {
+							preg_match('/"([^"]+)"/', $name, $p);
+							print_r($p);
+						}
+						?>						
 					</div>
 				</div>
 			</div>
