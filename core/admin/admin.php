@@ -1310,6 +1310,7 @@ function show_card_request_object($connect){
 				<?php if (trim($row['name'])!='' && $row['direction-object']>0 && $row['object_region']>0) {?>
 					<button class="btn btn-success btn-sm" onclick="confirm_request_object(<?php echo $object; ?>)"><i class="fa fa-check-circle"></i> Принять</button>
 				<?php } ?>
+				<button class="btn btn-info btn-sm" onclick="confirm_request_object_wo_acc(<?php echo $object; ?>)"><i class="fa fa-check-circle"></i> Пометить как обработанное без принятия</button>
 			<?php } ?>
 		</div>
 	</div>
@@ -1564,6 +1565,15 @@ function confirm_request_object($connect){
 		$_POST['account'] = $id_account;
 		send_login_object_account($connect);
 
+	}
+}
+
+function confirm_request_object_wo_acc($connect){
+	$id = $_POST["id"];
+	$row = $connect->getRow("SELECT * FROM `object_request` WHERE id=?i", $id);
+	if ($row['status']==0) {
+		//Меняем статус!
+		$connect->query("UPDATE object_request SET status=1 WHERE id=?i", $id);
 	}
 }
 

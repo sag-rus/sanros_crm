@@ -1434,6 +1434,18 @@ function confirm_request_object(id){
 	});
 }
 
+function confirm_request_object_wo_acc(id){
+	var str = 'func=confirm_request_object_wo_acc&id=' + id;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function(){
+			show_request_object();
+		}
+	});
+}
+
 function update_request_object(id){
 	let form_data = $('.edit_request_object_form').serialize();
 	let str = 'func=update_request_object&id=' + id + '&'+form_data;
