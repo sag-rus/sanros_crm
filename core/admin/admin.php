@@ -1187,7 +1187,19 @@ function show_card_request_object($connect){
 						}
 
 						$objects = $connect->getAll("SELECT * FROM `object` WHERE `name` LIKE '%$name%'");
-						print_r($objects);
+						if (count($objects)>0) {
+							echo '<strong>Найдены похожие объекты</strong>';
+							foreach ($objects as $object) {
+								echo ' - '.$object['name'];
+								if ($object['id_account']>0) {
+									echo ' (объект уже привязан к аккаунту ';
+									$account = $connect->getRow("SELECT * FROM `object_account` WHERE `id`=$object[id_account]");
+									echo $account['loin'];
+									echo ' )';
+								}
+								echo '<br>';
+							}
+						}
 						?>						
 					</div>
 				</div>
