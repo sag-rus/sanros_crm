@@ -1187,7 +1187,7 @@ function show_card_request_object($connect){
 						}
 
 						$objects = $connect->getAll("SELECT * FROM `object` WHERE `name` LIKE '%$name%'");
-						if (count($objects)>0) {
+						if (count($objects)>0 && $row['id_object']==0) {
 							echo '<br><br><strong>найдены похожие объекты</strong>:<br>';
 							foreach ($objects as $one_object) {
 								echo ' - '.$one_object['name'];
@@ -1199,6 +1199,11 @@ function show_card_request_object($connect){
 								}
 								echo '<br>';
 							}
+						}
+
+						if ($row['id_object']>0) {
+							$object_name = $connect->getOne("SELECT name FROM object WHERE id=?i", $row['id_object']);
+							echo '<br><br><strong style="color: red">на заявку назначен объект '.$object_name.'</strong>';
 						}
 						?>						
 					</div>
