@@ -1553,27 +1553,29 @@ function confirm_request_object($connect){
 		$connect->query("INSERT INTO `object_account` SET `id`=0, `login`='$login', `email`='$row[email]'");
 		$id_account = $connect->insertId();
 
-		//Создаем объект!
-		$url_name = mb_strtolower($row['name']);
-		$url_name = str_replace(' ', '-', $url_name);
-		$connect->query("INSERT INTO `object` 
-			SET `id`=0, 
-			`name`='$row[name]', 
-			`url_name`='$url_name', 
-			`url_name_origin`='$url_name', 
-			`id_reg`='$row[object_region]', 
-			`region_direction_id`='$row[region_direction_id]',
-			`active`=1,
-			`type`='$row[type]',
-			`full_name`='$row[object]',
-			`address`='$row[address]',
-			`latitude`='$row[latitude]',
-			`longitude`='$row[longitude]',
-			`id_account`='$id_account',
-			`direction`='".$row['direction-object']."'
-			");
+		if ($row['id_object']==0) {
+			//Создаем объект (если не выбран существующий объект)
+			$url_name = mb_strtolower($row['name']);
+			$url_name = str_replace(' ', '-', $url_name);
+			$connect->query("INSERT INTO `object` 
+				SET `id`=0, 
+				`name`='$row[name]', 
+				`url_name`='$url_name', 
+				`url_name_origin`='$url_name', 
+				`id_reg`='$row[object_region]', 
+				`region_direction_id`='$row[region_direction_id]',
+				`active`=1,
+				`type`='$row[type]',
+				`full_name`='$row[object]',
+				`address`='$row[address]',
+				`latitude`='$row[latitude]',
+				`longitude`='$row[longitude]',
+				`id_account`='$id_account',
+				`direction`='".$row['direction-object']."'
+				");
 
-		echo 'obj_created...';
+			echo 'obj_created...';
+		}
 
 		$directionUrl = $connect->getOne("SELECT `name` FROM `direction_object` WHERE `id_country` = 1 AND `id` = ?i", $row['direction-object']);
 		$path = '/'.change_text_url($directionUrl);
@@ -1638,6 +1640,7 @@ function confirm_request_object_wo_acc($connect){
 
 function update_request_object($connect){
 	$id = $_POST["id"];
+	if (!isset($_POST['id_object'])) $_POST['id_object'] = 0;
 	$_POST['urobject'] = htmlspecialchars_decode($_POST['urobject'], ENT_NOQUOTES);
 	$_POST['object'] = htmlspecialchars_decode($_POST['object'], ENT_NOQUOTES);
 
