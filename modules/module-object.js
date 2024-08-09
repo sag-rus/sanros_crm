@@ -163,10 +163,12 @@ function view_object(id, type){
 }
 
 function select_object_on_request(id, name){
+	if (id==-1) alert('Объект уже привязан к другому аккаунут'); 
+	else {
 		$('.same_name_objects input').prop('checked', false);
 		$('.same_name_objects').append('<input type="radio" checked="checked" name="id_object" value="'+id+'"> '+name+'<br>');
 		$('#find').remove();
-
+	}
 }
 
 function edit_object_info(id){
