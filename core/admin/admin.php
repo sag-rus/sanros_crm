@@ -1665,6 +1665,10 @@ function update_request_object($connect){
 			$_POST['type'] = $object['type'];
 			$_POST['latitude'] = $object['latitude'];
 			$_POST['longitude'] = $object['longitude'];
+
+			if (!isset($_POST['direction-object'])) $_POST['direction-object'] = 0;
+			if (!isset($_POST['object_region'])) $_POST['object_region'] = 0;
+			if (!isset($_POST['region_direction_id'])) $_POST['region_direction_id'] = 0;
 		}
 		echo '<pre>';
 		echo json_encode($_POST);
