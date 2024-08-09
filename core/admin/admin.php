@@ -1407,7 +1407,7 @@ function edit_request_object($connect){
 								echo '</div>';
 							}
 							?>
-							<input type="text" id="find_object" class="form-control" placeholder="поиск объекта по названию" onkeyup="find_klient(event, 'find_object', 'object', 'select_object')">
+							<input type="text" id="find_object" class="form-control" placeholder="поиск объекта по названию" onkeyup="find_klient(event, 'find_object', 'object', 'select_object_on_request')">
 						</div>
 					</div>
 					<div class="form-group">

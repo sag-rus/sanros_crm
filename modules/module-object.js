@@ -162,7 +162,7 @@ function view_object(id, type){
 	});
 }
 
-function select_object(id, name){
+function select_object_on_request(id, name){
 	alert('123');
 	$('.same_name_objects').append('<input type="radio" name="id_object" value="'+id+'"> '+name);
 	alert('456');
