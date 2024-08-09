@@ -1663,7 +1663,7 @@ function update_request_object($connect){
 			$_POST['longitude'] = $object['longitude'];
 		}
 		echo '<pre>';
-		json_encode($_POST);
+		echo json_encode($_POST);
 		echo '</pre>';	
 	}
 
