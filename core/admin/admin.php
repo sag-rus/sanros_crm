@@ -1383,6 +1383,29 @@ function edit_request_object($connect){
 						<label class="col-sm-4 control-label">Название объекта полное</label>
 						<div class="col-sm-8">
 							<input type="text" class="form-control object" name="object" value="<?php echo htmlspecialchars($row['object']); ?>">
+							<?php
+							$name = $row['object'];
+							if (mb_strpos($name, '"')!==FALSE) {
+								preg_match('/"([^"]+)"/', $name, $p);
+								if (isset($p[1]) && mb_strlen($p[1])>0) $name = $p[1];
+							}
+
+							$objects = $connect->getAll("SELECT * FROM `object` WHERE `name` LIKE '%$name%'");
+							if (count($objects)>0) {
+								echo '<div class="same_name_objects"><br><strong>найдены похожие объекты</strong>:<br>';
+								foreach ($objects as $one_object) {
+									echo ' - '.$one_object['name'];
+									if ($one_object['id_account']>0) {
+										echo ' (объект уже привязан к аккаунту ';
+										$account = $connect->getRow("SELECT * FROM `object_account` WHERE `id`=$one_object[id_account]");
+										echo $account['login'];
+										echo ' )';
+									}
+									echo '<br></div>';
+								}
+							}
+							?>
+							<input type="text" id="find_object" class="form-control" placeholder="поиск объекта по названию" onkeyup="find_klient(event, 'find_object', 'object', 'select_object')">
 						</div>
 					</div>
 					<div class="form-group">
