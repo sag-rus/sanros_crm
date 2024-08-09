@@ -1651,6 +1651,7 @@ function update_request_object($connect){
 	$_POST['name'] = trim(preg_replace('/[^a-zа-я ]/ui', '', $_POST['name']));
 
 	if ($_POST['id_object']>0) {
+		
 		$object = $connect->getRow("SELECT * FROM `object` WHERE id=?i", $_POST['id_object']);
 		if (isset($object['id'])) {
 			$_POST['direction-object'] = $object['direction'];
@@ -1661,6 +1662,7 @@ function update_request_object($connect){
 			$_POST['latitude'] = $object['latitude'];
 			$_POST['longitude'] = $object['longitude'];
 		}
+		header('Content-Type: text/html; charset=utf-8');
 		echo '<pre>';
 		print_r($_POST);
 		echo '</pre>';	
