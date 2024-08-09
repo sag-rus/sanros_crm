@@ -1553,10 +1553,11 @@ function confirm_request_object($connect){
 		$connect->query("INSERT INTO `object_account` SET `id`=0, `login`='$login', `email`='$row[email]'");
 		$id_account = $connect->insertId();
 
+		
+		$url_name = mb_strtolower($row['name']);
+		$url_name = str_replace(' ', '-', $url_name);
 		if ($row['id_object']==0) {
 			//Создаем объект (если не выбран существующий объект)
-			$url_name = mb_strtolower($row['name']);
-			$url_name = str_replace(' ', '-', $url_name);
 			$connect->query("INSERT INTO `object` 
 				SET `id`=0, 
 				`name`='$row[name]', 
