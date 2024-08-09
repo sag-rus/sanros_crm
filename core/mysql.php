@@ -109,7 +109,7 @@ function help_search_by_name($connect){
 	$table = $_POST["table"];
 	$func = $_POST["function"];
 	if($table == "object") {
-		$data = $connect->getAll("SELECT `id`, `name`, `id_object` FROM object WHERE name LIKE ?s AND (id != 61 AND id != 62 AND id != 63 AND id != 64 AND id != 71)", "%".$poisk."%");
+		$data = $connect->getAll("SELECT `id`, `name`, `id_account` FROM object WHERE name LIKE ?s AND (id != 61 AND id != 62 AND id != 63 AND id != 64 AND id != 71)", "%".$poisk."%");
 		echo $connect -> last_query();
 	} elseif($table == "agency")
 		$data = $connect->getAll("SELECT id, short_name, name, active FROM agency WHERE name LIKE ?s OR name LIKE ?s OR short_name LIKE ?s OR short_name LIKE ?s OR name LIKE ?s OR name LIKE ?s OR short_name LIKE ?s OR short_name LIKE ?s", "%".$poisk."%", "%".$poisk."%", "%".$poisk."%", "%".$poisk."%", "%".$poisk_quotes."%", "%".$poisk_quotes."%", $poisk_quotes."%", "%".$poisk_quotes."%");
@@ -125,10 +125,10 @@ function help_search_by_name($connect){
 			$id = $row["id"];
 			$name = $row["name"];
 			$object = get_object($connect, $id, "place");
-			//if ($func=='select_object_on_request' && $row['id_object']>0) $id = -1;
+			if ($func=='select_object_on_request' && $row['id_account']>0) $id = -1;
 		?>
 			<span onclick="<?php echo $func; ?>(<?php echo $id; ?>, <?php if ($func!='select_object_on_request' ) echo $id; else echo '\''.$name.'\''; ?>)">
-				<?php echo $object;?>
+				<?php echo $object; if ($func=='select_object_on_request' && $row['id_account']>0) echo '(уже привязан к другому аккаунту)'; ?>
 			</span>
 		<?php
 		}elseif($table == "agency"){
