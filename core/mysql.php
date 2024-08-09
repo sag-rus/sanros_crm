@@ -125,7 +125,7 @@ function help_search_by_name($connect){
 			$name = $row["name"];
 			$object = get_object($connect, $id, "place");
 		?>
-			<span onclick="<?php echo $func; ?>(<?php echo $id; ?>, <?php if ($func!='select_object' ) echo $id; else echo '\''.$name.'\''; ?>)">
+			<span onclick="<?php echo $func; ?>(<?php echo $id; ?>, <?php if ($func!='select_object_on_request' ) echo $id; else echo '\''.$name.'\''; ?>)">
 				<?php echo $object; ?>
 			</span>
 		<?php
