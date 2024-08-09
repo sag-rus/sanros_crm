@@ -124,10 +124,10 @@ function help_search_by_name($connect){
 			$id = $row["id"];
 			$name = $row["name"];
 			$object = get_object($connect, $id, "place");
-			if ($func=='select_object_on_request' && $row['id_object']>0) $id = -1;
+			//if ($func=='select_object_on_request' && $row['id_object']>0) $id = -1;
 		?>
 			<span onclick="<?php echo $func; ?>(<?php echo $id; ?>, <?php if ($func!='select_object_on_request' ) echo $id; else echo '\''.$name.'\''; ?>)">
-				<?php echo $object; if ($func=='select_object_on_request' && $row['id_object']>0) echo '(уже привязан к аккаунту)' ?>
+				<?php echo $object;?>
 			</span>
 		<?php
 		}elseif($table == "agency"){
