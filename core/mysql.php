@@ -108,9 +108,10 @@ function help_search_by_name($connect){
 	//echo $poisk_quotes;
 	$table = $_POST["table"];
 	$func = $_POST["function"];
-	if($table == "object")
+	if($table == "object") {
 		$data = $connect->getAll("SELECT `id`, `name`, `id_object` FROM object WHERE name LIKE ?s AND (id != 61 AND id != 62 AND id != 63 AND id != 64 AND id != 71)", "%".$poisk."%");
-	elseif($table == "agency")
+		echo $connect -> last_query();
+	} elseif($table == "agency")
 		$data = $connect->getAll("SELECT id, short_name, name, active FROM agency WHERE name LIKE ?s OR name LIKE ?s OR short_name LIKE ?s OR short_name LIKE ?s OR name LIKE ?s OR name LIKE ?s OR short_name LIKE ?s OR short_name LIKE ?s", "%".$poisk."%", "%".$poisk."%", "%".$poisk."%", "%".$poisk."%", "%".$poisk_quotes."%", "%".$poisk_quotes."%", $poisk_quotes."%", "%".$poisk_quotes."%");
 	elseif($table == "tour_operator")
 		$data = $connect->getAll("SELECT id, short_name, name FROM tour_operator WHERE name LIKE ?s OR short_name LIKE ?s", $poisk."%", $poisk."%");
