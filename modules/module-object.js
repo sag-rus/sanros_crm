@@ -162,6 +162,10 @@ function view_object(id, type){
 	});
 }
 
+function select_object(id, name){
+	$('.same_name_objects').append('<input type="radio" name="id_object" value="'+id+'"> ');
+}
+
 function edit_object_info(id){
 	remove_all_windows();
 	var str = 'func=edit_object&id=' + id;
