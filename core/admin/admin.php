@@ -1401,7 +1401,7 @@ function edit_request_object($connect){
 										$account = $connect->getRow("SELECT * FROM `object_account` WHERE `id`=$one_object[id_account]");
 									}
 									echo '<input type="radio" name="id_object" '.$dis.' value="'.$one_object['id'].'"> '.$one_object['name'];
-									if ($object) echo ' (уже привязан к акканту '.$account['login'].')';
+									if ($account) echo ' (уже привязан к акканту '.$account['login'].')';
 									echo '<br>';
 								}
 								echo '</div>';
