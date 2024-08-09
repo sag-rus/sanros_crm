@@ -1395,9 +1395,14 @@ function edit_request_object($connect){
 								if (isset($p[1]) && mb_strlen($p[1])>0) $name = $p[1];
 							}
 
+							if ($row['id_object']>0) {
+								$object_name = $connect->getOne("SELECT name FROM object WHERE id=?i", $row['id_object']);
+								echo '<br><br><strong style="color: red">на заявку назначен объект '.$object_name.'</strong>';
+							}
+							echo '<div class="same_name_objects">';
 							$objects = $connect->getAll("SELECT * FROM `object` WHERE `name` LIKE '%$name%'");
-							if (count($objects)>0) {
-								echo '<div class="same_name_objects"><br><strong>найдены похожие объекты</strong>:<br>';
+							if (count($objects)>0 && $row['id_object']==0) {
+								echo '<br><strong>найдены похожие объекты</strong>:<br>';
 								foreach ($objects as $one_object) {
 									$dis = '';
 									$account = false;
@@ -1409,8 +1414,10 @@ function edit_request_object($connect){
 									if ($account) echo ' (уже привязан к акканту '.$account['login'].')';
 									echo '<br>';
 								}
-								echo '</div>';
+								
 							}
+							echo '</div>';
+
 							?>
 							<input type="text" id="find_object" class="form-control" placeholder="поиск объекта по названию" onkeyup="find_klient(event, 'find_object', 'object', 'select_object_on_request')">
 						</div>
