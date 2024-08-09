@@ -1394,15 +1394,17 @@ function edit_request_object($connect){
 							if (count($objects)>0) {
 								echo '<div class="same_name_objects"><br><strong>найдены похожие объекты</strong>:<br>';
 								foreach ($objects as $one_object) {
-									echo ' - '.$one_object['name'];
+									$dis = '';
+									$account = false;
 									if ($one_object['id_account']>0) {
-										echo ' (объект уже привязан к аккаунту ';
+										$dis = ' disabled="disabled" ';
 										$account = $connect->getRow("SELECT * FROM `object_account` WHERE `id`=$one_object[id_account]");
-										echo $account['login'];
-										echo ' )';
 									}
-									echo '<br></div>';
+									echo '<input type="radio" name="id_object" '.$dis.' value="'.$one_object['id'].'"> '.$one_object['name'];
+									if ($object) echo ' (уже привязан к акканту '.$account['login'].')';
+									echo '<br>';
 								}
+								echo '</div>';
 							}
 							?>
 							<input type="text" id="find_object" class="form-control" placeholder="поиск объекта по названию" onkeyup="find_klient(event, 'find_object', 'object', 'select_object')">
