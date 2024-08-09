@@ -1662,9 +1662,8 @@ function update_request_object($connect){
 			$_POST['latitude'] = $object['latitude'];
 			$_POST['longitude'] = $object['longitude'];
 		}
-		header('Content-Type: text/html; charset=utf-8');
 		echo '<pre>';
-		print_r($_POST);
+		json_encode($_POST);
 		echo '</pre>';	
 	}
 
