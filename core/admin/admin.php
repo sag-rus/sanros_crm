@@ -1667,6 +1667,7 @@ function update_request_object($connect){
 			if ($object['type']>0)  $_POST['type'] = $object['type'];
 			$_POST['latitude'] = $object['latitude'];
 			$_POST['longitude'] = $object['longitude'];
+			if ($object['address']!='') $_POST['address'] = $object['address'];
 		}	
 	}
 
