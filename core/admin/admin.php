@@ -1653,7 +1653,6 @@ function update_request_object($connect){
 	if ($_POST['id_object']>0) {
 		
 		$object = $connect->getRow("SELECT * FROM `object` WHERE id=?i", $_POST['id_object']);
-		print_r($object);
 
 		if (isset($object['id'])) {
 			$_POST['direction-object'] = 0;
