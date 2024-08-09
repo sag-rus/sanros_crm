@@ -1654,6 +1654,10 @@ function update_request_object($connect){
 		
 		$object = $connect->getRow("SELECT * FROM `object` WHERE id=?i", $_POST['id_object']);
 		if (isset($object['id'])) {
+			$_POST['direction-object'] = 0;
+			$_POST['object_region'] = 0;
+			$_POST['region_direction_id'] = 0;
+
 			$_POST['direction-object'] = $object['direction'];
 			$_POST['object_region'] = $object['id_reg'];
 			$_POST['region_direction_id'] = $object['region_direction_id'];
