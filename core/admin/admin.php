@@ -1644,23 +1644,16 @@ function confirm_request_object_wo_acc($connect){
 
 function update_request_object($connect){
 	$id = $_POST["id"];
-	if (!isset($_POST['id_object'])) $_POST['id_object'] = 0;
+//	if (!isset($_POST['id_object'])) $_POST['id_object'] = 0;
 	$_POST['urobject'] = htmlspecialchars_decode($_POST['urobject'], ENT_NOQUOTES);
 	$_POST['object'] = htmlspecialchars_decode($_POST['object'], ENT_NOQUOTES);
-	echo $_POST['name'].' 1 ';
 	$_POST['name'] = trim(preg_replace('/[^a-zа-я ]/ui', '', $_POST['name']));
-	echo $_POST['name'].' 2 ';
 
 	if ($_POST['id_object']>0 && 1==2) {
 
-		echo $_POST['name'].' 3 ';
-		
 		$object = $connect->getRow("SELECT * FROM `object` WHERE id=?i", $_POST['id_object']);
 
-		echo $_POST['name'].' 4 ';
-
 		if (isset($object['id'])) {
-			echo $_POST['name'].' 5 ';
 			$_POST['direction-object'] = 0;
 			$_POST['object_region'] = 0;
 			$_POST['region_direction_id'] = 0;
@@ -1668,19 +1661,21 @@ function update_request_object($connect){
 			if ($object['direction']>0) $_POST['direction-object'] = $object['direction'];
 			if ($object['id_reg']>0) $_POST['object_region'] = $object['id_reg'];
 			if ($object['region_direction_id']>0) $_POST['region_direction_id'] = $object['region_direction_id'];
-			$_POST['name'] = $object['name'];
 			if ($object['type']>0)  $_POST['type'] = $object['type'];
 			$_POST['latitude'] = $object['latitude'];
 			$_POST['longitude'] = $object['longitude'];
 			if ($object['address']!='') $_POST['address'] = $object['address'];
 		}
-		echo $_POST['name'].' 6 ';	
+
 	}
 
-	echo $_POST['name'].' 7 ';	
-
-	$connect->query("UPDATE object_request SET `urobject`=?s, `object`=?s, `id_object`=?i, `name`=?s, `type`=?i, `address`=?s, `postaddress`=?s, `direction-object`=?i, `object_region`=?i, `region_direction_id`=?i, `latitude`=?s, `longitude`=?s, `uraddress`=?s, `inn`=?s, `kpp`=?s, `fio`=?s, `telephone`=?s, `email`=?s, `website`=?s WHERE id=?i", 
-	$_POST['urobject'], $_POST['object'], $_POST['id_object'], $_POST['name'], $_POST['type'], $_POST['address'], $_POST['postaddress'], $_POST['direction-object'], $_POST['object_region'], $_POST['region_direction_id'], (float)$_POST['latitude'], (float)$_POST['longitude'], $_POST['uraddress'], $_POST['inn'], $_POST['kpp'], $_POST['fio'], $_POST['telephone'], $_POST['email'], $_POST['website'], $id);
+	if (!isset($_POST['id_object'])) {
+		$connect->query("UPDATE object_request SET `urobject`=?s, `object`=?s, `id_object`=?i, `name`=?s, `type`=?i, `address`=?s, `postaddress`=?s, `direction-object`=?i, `object_region`=?i, `region_direction_id`=?i, `latitude`=?s, `longitude`=?s, `uraddress`=?s, `inn`=?s, `kpp`=?s, `fio`=?s, `telephone`=?s, `email`=?s, `website`=?s WHERE id=?i", 
+		$_POST['urobject'], $_POST['object'], $_POST['id_object'], $_POST['name'], $_POST['type'], $_POST['address'], $_POST['postaddress'], $_POST['direction-object'], $_POST['object_region'], $_POST['region_direction_id'], (float)$_POST['latitude'], (float)$_POST['longitude'], $_POST['uraddress'], $_POST['inn'], $_POST['kpp'], $_POST['fio'], $_POST['telephone'], $_POST['email'], $_POST['website'], $id);
+	} else {
+		$connect->query("UPDATE object_request SET `urobject`=?s, `object`=?s, `name`=?s, `type`=?i, `address`=?s, `postaddress`=?s, `direction-object`=?i, `object_region`=?i, `region_direction_id`=?i, `latitude`=?s, `longitude`=?s, `uraddress`=?s, `inn`=?s, `kpp`=?s, `fio`=?s, `telephone`=?s, `email`=?s, `website`=?s WHERE id=?i", 
+		$_POST['urobject'], $_POST['object'], $_POST['name'], $_POST['type'], $_POST['address'], $_POST['postaddress'], $_POST['direction-object'], $_POST['object_region'], $_POST['region_direction_id'], (float)$_POST['latitude'], (float)$_POST['longitude'], $_POST['uraddress'], $_POST['inn'], $_POST['kpp'], $_POST['fio'], $_POST['telephone'], $_POST['email'], $_POST['website'], $id);
+	}
 	$q = $connect->last_query();
 	return json_encode(array("ok"=>1));
 }
