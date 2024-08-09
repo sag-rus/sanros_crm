@@ -1653,22 +1653,20 @@ function update_request_object($connect){
 	if ($_POST['id_object']>0) {
 		
 		$object = $connect->getRow("SELECT * FROM `object` WHERE id=?i", $_POST['id_object']);
+		print_r($object);
+		
 		if (isset($object['id'])) {
 			$_POST['direction-object'] = 0;
 			$_POST['object_region'] = 0;
 			$_POST['region_direction_id'] = 0;
 
-			$_POST['direction-object'] = $object['direction'];
-			$_POST['object_region'] = $object['id_reg'];
-			$_POST['region_direction_id'] = $object['region_direction_id'];
+			if (int_val($object['direction'])) $_POST['direction-object'] = $object['direction'];
+			if (int_val($object['id_reg'])) $_POST['object_region'] = $object['id_reg'];
+			if (int_val($object['region_direction_id'])) $_POST['region_direction_id'] = $object['region_direction_id'];
 			$_POST['name'] = $object['name'];
-			$_POST['type'] = $object['type'];
+			if (int_val($object['type']))  $_POST['type'] = $object['type'];
 			$_POST['latitude'] = $object['latitude'];
 			$_POST['longitude'] = $object['longitude'];
-
-			if (!isset($_POST['direction-object'])) $_POST['direction-object'] = 0;
-			if (!isset($_POST['object_region'])) $_POST['object_region'] = 0;
-			if (!isset($_POST['region_direction_id'])) $_POST['region_direction_id'] = 0;
 		}
 		echo '<pre>';
 		echo json_encode($_POST);
