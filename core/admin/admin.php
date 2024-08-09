@@ -1194,7 +1194,7 @@ function show_card_request_object($connect){
 								if ($object['id_account']>0) {
 									echo ' (объект уже привязан к аккаунту ';
 									$account = $connect->getRow("SELECT * FROM `object_account` WHERE `id`=$object[id_account]");
-									echo $account['loin'];
+									echo $account['login'];
 									echo ' )';
 								}
 								echo '<br>';
