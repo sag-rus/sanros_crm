@@ -1660,7 +1660,10 @@ function update_request_object($connect){
 			$_POST['type'] = $object['type'];
 			$_POST['latitude'] = $object['latitude'];
 			$_POST['longitude'] = $object['longitude'];
-		}	
+		}
+		echo '<pre>';
+		print_r($_POST);
+		echo '</pre>';	
 	}
 
 	$connect->query("UPDATE object_request SET `urobject`=?s, `object`=?s, `id_object`=?i, `name`=?s, `type`=?i, `address`=?s, `postaddress`=?s, `direction-object`=?i, `object_region`=?i, `region_direction_id`=?i, `latitude`=?s, `longitude`=?s, `uraddress`=?s, `inn`=?s, `kpp`=?s, `fio`=?s, `telephone`=?s, `email`=?s, `website`=?s WHERE id=?i", 
