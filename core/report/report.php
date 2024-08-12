@@ -598,7 +598,7 @@ function filter_payment($connect){
 
 
 			$html.= "<tr class='".$bg_class."' ".$func." style='background: ".$color."!important;'>";
-			$html.= "<td valign='top' align='center'>".$id."<br>$dis_row</td>";
+			$html.= "<td valign='top' align='center'>".$id."<br>".(echo $dis_row>0?$dis_row:'')."</td>";
 			$html.= "<td valign='top'>".$all_fio."</td>";
 			$html.= "<td valign='top'>".$object."</td>";
 			$html.= "<td valign='top' style='text-align: center;'>".$date."</td>";
