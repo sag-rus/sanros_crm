@@ -601,7 +601,13 @@ function filter_payment($connect){
 				} else $dis_row_procent = 0;
 
 				$discount_initial = round($row['sum_reck']*(($dis_row_procent)/100),2); //сумма скидка по стоимости путевки
-				$discount_for_payment = round($discount_initial*((100-$dis_row_procent)/100),2); //сумма скидка по полатежу с учетом скидки
+				$all_payments = round(($row['sum_reck']*((100-$dis_row_procent)/100)),2); //сумма путевки за вычетом скидки (она же сумма к оплате)
+
+				$payment_percent_from_all_discount = round( $row['sum'] / ( $all_payments/100 ) , 2); //какой процент занимает текущий платеж от общего
+
+				$discount_for_reck = round($discount_initial*((100-$dis_row_procent)/100),2); //сумма скидка по заявке с учетом скидки
+				$discount_for_payment = round($discount_initial*($payment_percent_from_all_discount/100),2); //сумма скидка по заявке с учетом скидки
+				
 				$reward_for_payment = round($row['sum']*($reward_procent/100),2); //начальное вознаграждение по платежу без вычетом скидок и комиссий
 				$bank_kom_for_payment = round($row['sum'] * ($row['bank_com']/100),2); //банк комиссия по платежу
 				$correct = (100 / (100 - $dis_row_procent)); //коэф. корректировки (для заявок со скидкой)
