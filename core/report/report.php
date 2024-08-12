@@ -630,7 +630,17 @@ function filter_payment($connect){
 			$html.= "<tr class='".$bg_class."' ".$func." style='background: ".$color."!important;'>";
 			$html.= "<td valign='top' align='center'>".$id."".($dis_row_procent>0?'<br><br><span style="font-size: 7px; font-style: italic;">скидка '.round($dis_row_procent).'%</span>':'')."".($row['agency']>0?'<br><br><span style="font-size: 7px; font-style: italic;">агенство</span>':'')."</td>";
 			$html.= "<td valign='top'>".$all_fio."</td>";
-			$html.= "<td valign='top'>".$object."<br><br>$discount_initial<br>$discount_for_payment<br>$reward_for_payment<br>$bank_kom_for_payment<br>$correct<br>$reward</td>";
+			$html.= "<td valign='top'>".$object."<br><br>
+						$discount_initial<br>
+						$all_payments<br>
+						$payment_percent_from_all_discount<br>
+						$discount_for_reck<br>
+						$discount_for_payment<br>
+						$reward_for_payment<br>
+						$bank_kom_for_payment<br>						
+						$correct<br>
+						$reward
+					</td>";
 			//$html.= "<td valign='top'>".$object."</td>";
 			$html.= "<td valign='top' style='text-align: center;'>".$date."</td>";
 			$html.= "<td valign='top' style='text-align: center;'>".$date_z."</td>";
