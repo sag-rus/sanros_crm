@@ -605,8 +605,8 @@ function filter_payment($connect){
 
 				$payment_percent_from_all_discount = round( $row['sum'] / ( $all_payments/100 ) , 2); //какой процент занимает текущий платеж от общего
 
-				$discount_for_reck = round($discount_initial*((100-$dis_row_procent)/100),2); //сумма скидка по заявке с учетом скидки
-				$discount_for_payment = round($discount_initial*($payment_percent_from_all_discount/100),2); //сумма скидка по заявке с учетом скидки
+				$discount_for_all_payments = round($discount_initial*((100-$dis_row_procent)/100),2); //сумма скидка по заявке с учетом скидки
+				$discount_for_payment = round($discount_for_all_payments*($payment_percent_from_all_discount/100),2); //сумма скидка по заявке с учетом скидки
 				
 				$reward_for_payment = round($row['sum']*($reward_procent/100),2); //начальное вознаграждение по платежу без вычетом скидок и комиссий
 				$bank_kom_for_payment = round($row['sum'] * ($row['bank_com']/100),2); //банк комиссия по платежу
@@ -634,7 +634,7 @@ function filter_payment($connect){
 						$discount_initial<br>
 						$all_payments<br>
 						$payment_percent_from_all_discount<br>
-						$discount_for_reck<br>
+						$discount_for_all_payments<br>
 						$discount_for_payment<br>
 						$reward_for_payment<br>
 						$bank_kom_for_payment<br>						
