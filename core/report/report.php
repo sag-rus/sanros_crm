@@ -604,20 +604,18 @@ function filter_payment($connect){
 				$discount_for_payment = round($discount_initial*((100-$dis_row_procent)/100),2); //сумма скидка по полатежу с учетом скидки
 				$reward_for_payment = round($row['sum']*($reward_procent/100),2); //начальное вознаграждение по платежу без вычетом скидок и комиссий
 				$bank_kom_for_payment = round($row['sum'] * ($row['bank_com']/100),2); //банк комиссия по платежу
-				$correct = (100 / (100-$dis_row_procent)); //коэф. корректировки (для заявок со скидкой)
+				$correct = (100 / (100 - $dis_row_procent)); //коэф. корректировки (для заявок со скидкой)
 
 				$reward = (($reward_for_payment - $discount_for_payment)*$correct) - $bank_kom_for_payment;
 
 			} else {
 
-				$reward_procent = 0;
-				$dis_row_procent = 0;
-				$discount_initial = 0;
-				$discount_for_payment = 0;
-				$reward_for_payment = 0;
-				$bank_kom_for_payment = 0;
-				$correct = 1;
-				$reward = 0;
+				$reward_procent = $row['position_reward']>0?$row['position_reward']:$row['object_reward'];
+				$agency_commission_procent = $row['agency_commission']>0?$row['agency_commission']:0;
+				$agency_commission = round($row['sum_reck']*(($agency_commission_procent)/100),2);
+				$correct = (100 / (100 - $agency_commission_procent)); //коэф. корректировки по комиссии агенства
+
+				$reward = round(($row['sum']*(($reward_procent - $agency_commission_procent)/100))*$correct,2);
 
 			}
 			//Конец расчет прибыли по новому для физлиц!
