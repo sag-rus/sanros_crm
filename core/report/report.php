@@ -591,27 +591,40 @@ function filter_payment($connect){
                 $array["office"][$office_g]["reward"] += $pay_reward;
             }
 
-			//Расчет прибыли по новому!
+			//Расчет прибыли по новому для физлиц!
+			if (!$row['agency']) {
 
-			$reward_procent = $row['position_reward']>0?$row['position_reward']:$row['object_reward'];
-			if ($row['reckoning_id_dis']>0) {
-				$dis_row_procent = $connect->getRow("SELECT * FROM `discount` WHERE `id` = ?i", $row['reckoning_id_dis']);
-				$dis_row_procent = $dis_row_procent['value'];
-			} else $dis_row_procent = 0;
+				$reward_procent = $row['position_reward']>0?$row['position_reward']:$row['object_reward'];
+				if ($row['reckoning_id_dis']>0) {
+					$dis_row_procent = $connect->getRow("SELECT * FROM `discount` WHERE `id` = ?i", $row['reckoning_id_dis']);
+					$dis_row_procent = $dis_row_procent['value'];
+				} else $dis_row_procent = 0;
 
-			$discount_initial = round($row['sum_reck']*(($dis_row_procent)/100),2); //сумма скидка по стоимости путевки
-			$discount_for_payment = round($discount_initial*((100-$dis_row_procent)/100),2); //сумма скидка по полатежу с учетом скидки
-			$reward_for_payment = round($row['sum']*($reward_procent/100),2); //начальное вознаграждение по платежу без вычетом скидок и комиссий
-			$bank_kom_for_payment = round($row['sum'] * ($row['bank_com']/100),2); //банк комиссия по платежу
-			$correct = (100 / (100-$dis_row_procent)); //коэф. корректировки (для заявок со скидкой)
+				$discount_initial = round($row['sum_reck']*(($dis_row_procent)/100),2); //сумма скидка по стоимости путевки
+				$discount_for_payment = round($discount_initial*((100-$dis_row_procent)/100),2); //сумма скидка по полатежу с учетом скидки
+				$reward_for_payment = round($row['sum']*($reward_procent/100),2); //начальное вознаграждение по платежу без вычетом скидок и комиссий
+				$bank_kom_for_payment = round($row['sum'] * ($row['bank_com']/100),2); //банк комиссия по платежу
+				$correct = (100 / (100-$dis_row_procent)); //коэф. корректировки (для заявок со скидкой)
 
-			$reward = (($reward_for_payment - $discount_for_payment)*$correct) - $bank_kom_for_payment;
+				$reward = (($reward_for_payment - $discount_for_payment)*$correct) - $bank_kom_for_payment;
 
-			//Конец расчет прибыли по новому!
+			} else {
+
+				$reward_procent = 0;
+				$dis_row_procent = 0;
+				$discount_initial = 0;
+				$discount_for_payment = 0;
+				$reward_for_payment = 0;
+				$bank_kom_for_payment = 0;
+				$correct = 1;
+				$reward = 0;
+
+			}
+			//Конец расчет прибыли по новому для физлиц!
 
 
 			$html.= "<tr class='".$bg_class."' ".$func." style='background: ".$color."!important;'>";
-			$html.= "<td valign='top' align='center'>".$id."<br><br>".($dis_row_procent>0?'<span style="font-size: 7px; font-style: italic;">скидка '.round($dis_row_procent).'%</span>':'')."</td>";
+			$html.= "<td valign='top' align='center'>".$id."<br><br>".($dis_row_procent>0?'<span style="font-size: 7px; font-style: italic;">скидка '.round($dis_row_procent).'%</span>':'')."<br><br>".($row['agency']>0?'<span style="font-size: 7px; font-style: italic;">агенство</span>':'')."</td>";
 			$html.= "<td valign='top'>".$all_fio."</td>";
 			$html.= "<td valign='top'>".$object."<br><br>$discount_initial<br>$discount_for_payment<br>$reward_for_payment<br>$bank_kom_for_payment<br>$correct<br>$reward</td>";
 			$html.= "<td valign='top' style='text-align: center;'>".$date."</td>";
