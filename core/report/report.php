@@ -612,7 +612,7 @@ function filter_payment($connect){
 				$bank_kom_for_payment = round($row['sum'] * ($row['bank_com']/100),2); //банк комиссия по платежу
 				$correct = (100 / (100 - $dis_row_procent)); //коэф. корректировки (для заявок со скидкой)
 
-				$reward = (($reward_for_payment - $discount_for_payment)*$correct) - $bank_kom_for_payment;
+				$reward = round( (($reward_for_payment - $discount_for_payment)*$correct) - $bank_kom_for_payment , 2);
 
 			} else {
 
