@@ -342,7 +342,7 @@ function filter_payment($connect){
 
     echo '<span class="zapros_for_mysql" style="display: none">'.$zapros_for_mysql.'</span>';
 
-  $data = $connect->getAll($zapros_for_mysql);
+    $data = $connect->getAll($zapros_for_mysql);
 
 	$pay_groups = [];
 	$all_reward = 0;
@@ -591,9 +591,14 @@ function filter_payment($connect){
                 $array["office"][$office_g]["reward"] += $pay_reward;
             }
 
+			if ($row['reckoning_id_dis']>0) {
+				$dis_row = $connect->getRow("SELECT * FROM `discount` WHERE `id` = ?i", $row['reckoning_id_dis']);
+				$dis_row = $dis_row['value'];
+			} else $dis_row = 0;
+
 
 			$html.= "<tr class='".$bg_class."' ".$func." style='background: ".$color."!important;'>";
-			$html.= "<td valign='top' align='center'>".$id."</td>";
+			$html.= "<td valign='top' align='center'>".$id."<br>$dis_row</td>";
 			$html.= "<td valign='top'>".$all_fio."</td>";
 			$html.= "<td valign='top'>".$object."</td>";
 			$html.= "<td valign='top' style='text-align: center;'>".$date."</td>";
