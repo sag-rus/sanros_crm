@@ -420,8 +420,8 @@ function 	($connect){
                     <div class="form-group">
                         <label class="col-sm-4 control-label">Убрать комиссию при оплате</label>
                         <div class="col-sm-8">
-                            <input type="checkbox" <?php if ($data['bank_com_auto_excluded']==1) echo 'disabled="disabled"'?> class="form-control" id="exclude_bank_commission"<?php if($data['exclude_bank_commission']) { ?> checked<?php } ?>>
-							<?php if ($data['bank_com_auto_excluded']==1) echo '<em style="font-size: 10px;">комиссия была убрана автоматически, т.к. это была первая заявка туриста</em>'?>
+                            <input type="checkbox" <?php if ($data['bank_com_auto_excluded']==1) echo 'disabled="disabled"';?> class="form-control" id="exclude_bank_commission"<?php if($data['exclude_bank_commission']) { ?> checked<?php } ?>>
+							<?php if ($data['bank_com_auto_excluded']==1) echo '<em style="font-size: 10px;">комиссия была убрана автоматически, т.к. это была первая заявка туриста</em>';?>
                         </div>
                     </div>
                     <div class="form-group">
