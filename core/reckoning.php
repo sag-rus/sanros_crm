@@ -335,9 +335,9 @@ function save_schet($connect){
     return FALSE;
 }
 
-function 	($connect){
+function edit_schet($connect){
 	$id = $_POST["id"];
-	$data = $connect->getRow("SELECT type, date, number_turist, id_obj, agency, id_com, id_dis, note, status_san, date_schet_san, schet_san, state_program, exclude_bank_commission, bank_com_auto_excluded, children_rest, is_test, far_east, afl FROM reckoning WHERE id=?i", $id);
+	$data = $connect->getRow("SELECT type, date, number_turist, id_obj, agency, id_com, id_dis, note, status_san, date_schet_san, schet_san, state_program, exclude_bank_commission, children_rest, is_test, far_east, afl FROM reckoning WHERE id=?i", $id);
 	$arr = array();
 	ob_start();
 ?>
@@ -420,8 +420,8 @@ function 	($connect){
                     <div class="form-group">
                         <label class="col-sm-4 control-label">Убрать комиссию при оплате</label>
                         <div class="col-sm-8">
-                            <input type="checkbox" <?php if ($data['bank_com_auto_excluded']==1) echo 'disabled="disabled"';?> class="form-control" id="exclude_bank_commission"<?php if($data['exclude_bank_commission']) { ?> checked<?php } ?>>
-							<?php if ($data['bank_com_auto_excluded']==1) echo '<em style="font-size: 10px;">комиссия была убрана автоматически, т.к. это была первая заявка туриста</em>';?>
+						<input type="checkbox" <?php if ($data['bank_com_auto_excluded']==1) echo 'disabled="disabled"';?> class="form-control" id="exclude_bank_commission"<?php if($data['exclude_bank_commission']) { ?> checked<?php } ?>>
+						<?php if ($data['bank_com_auto_excluded']==1) echo '<em style="font-size: 10px;">комиссия была убрана автоматически, т.к. это была первая заявка туриста</em>'?>
                         </div>
                     </div>
                     <div class="form-group">
