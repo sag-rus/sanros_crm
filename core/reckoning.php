@@ -337,7 +337,7 @@ function save_schet($connect){
 
 function edit_schet($connect){
 	$id = $_POST["id"];
-	$data = $connect->getRow("SELECT type, date, number_turist, id_obj, agency, id_com, id_dis, note, status_san, date_schet_san, schet_san, state_program, exclude_bank_commission, children_rest, is_test, far_east, afl FROM reckoning WHERE id=?i", $id);
+	$data = $connect->getRow("SELECT type, date, number_turist, id_obj, agency, id_com, id_dis, note, status_san, date_schet_san, schet_san, state_program, exclude_bank_commission, bank_com_auto_excluded, children_rest, is_test, far_east, afl FROM reckoning WHERE id=?i", $id);
 	$arr = array();
 	ob_start();
 ?>
