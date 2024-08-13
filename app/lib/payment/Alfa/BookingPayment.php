@@ -201,12 +201,13 @@ class BookingPayment {
 
         $answer["to-pay-no-com"] = $answer["total"] - $answer["bonus"] - $answer["prepay"]-$dis;
 
-        if($answer['all_bonus_count'] > 1 && $answer['reckonings_count'] > 0 && !$reck_properties['exclude_bank_commission']) {
+        if($answer['all_bonus_count'] >= 1 && $answer['reckonings_count'] > 0 && !$reck_properties['exclude_bank_commission']) {
           $com = $this->bankInfo['commission'] / 100;
           $answer["to-pay"] = round($answer["to-pay-no-com"] * (1 + ($com/(1-$com))),2);
         }
         else
           $answer["to-pay"] = $answer["to-pay-no-com"];
+          $connect->query("UPDATE reckoning SET `exclude_bank_commission`=1 AND `bank_com_auto_excluded`=1 WHERE `id`=?i AND `turist`=?i LIMIT 1", $booking, $turist);
       }
 
     }
