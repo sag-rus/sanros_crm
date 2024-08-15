@@ -65,7 +65,7 @@ try{
 
 	$response['rooms'] = array();
 
-	$ratePlans = $connect->getAll("SELECT `id`, `name` FROM `rate_plan` WHERE `object` = ?i AND `status` = 1 ORDER BY id LIMIT 1", $id_obj);
+	$ratePlans = $connect->getAll("SELECT `id`, `name` FROM `rate_plan` WHERE `object` = ?i AND `status` = 1 ORDER BY id", $id_obj);
     if(count($ratePlans) === 0)
         $ratePlans = $connect->getAll("SELECT `id`, `name` FROM `rate_plan` WHERE id = 1");	
 
