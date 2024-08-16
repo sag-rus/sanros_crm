@@ -307,12 +307,24 @@ function sync_objects_prices_api($connect){
 				if ($i==0) $priceAr['data'] = [];
 				$priceData = [];
 
+				$range = $connect->getRow("SELECT * FROM `ranges` WHERE `id`=?i", $price['id_range']);
+				$date_price = $connect->getRow("SELECT * FROM `date_price` WHERE id=?i", $range['id_date']);
+				$object = $connect->getRow("SELECT * FROM `object` WHERE id=?i", $date_price['id_obj']);
+				if ($object['bnovo']==0) $cnt = 0;
+				else {
+					$bnovo = $connect->getRow("SELECT * FROM `bnovo_rooms_mathes` WHERE `id_room`=?i", $price['id_room']);
+					if (isset($bnovo['id_bnovo']) && $bnovo['id_bnovo']>0 && $date_price['start']==$date_price['end']) {
+						$cnt = $connect->getRow("SELECT * FROM `bnovo_availability` WHERE `date`='".$date_price['start']."' and `id_bnovo`=".$bnovo['id_bnovo']);	
+						if (isset($cnt) && $cnt['cnt']>0) $cnt = $cnt['cnt']; else $cnt = 0;
+					}
+				}
+
 				$priceData['id'] = $price['id'];
 				$priceData['room_id'] = $price['id_room'];
 				$priceData['value'] = (float)$price['price'];
 				$priceData['range_id'] = $price['id_range'];
 				$priceData['status'] = (int)(!$price['active']);
-				if ($price['id']==709333) $priceData['cnt'] = 1; else $priceData['cnt'] = 0;
+				$priceData['cnt'] = $cnt;
 
 				$priceAr['data'][] = $priceData;
 				$i++;
