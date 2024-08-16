@@ -311,7 +311,8 @@ function sync_objects_prices_api($connect){
 				$priceData['room_id'] = $price['id_room'];
 				$priceData['value'] = (float)$price['price'];
 				$priceData['range_id'] = $price['id_range'];
-				$priceData['status'] = (int)(!$price['active']);				
+				$priceData['status'] = (int)(!$price['active']);
+				if ($price['id']==709333) $priceData['cnt'] = 1; else $priceData['cnt'] = 0;
 
 				$priceAr['data'][] = $priceData;
 				$i++;
