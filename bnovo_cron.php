@@ -115,7 +115,7 @@ function get_bnovo_rooms_availability($id_obj, $account_id, $dfrom, $dto, $id_ro
 		foreach ($res['availability'] as $id_bnovo => $value) {
 			foreach ($value as $date => $cnt) {
 				$id_bnovo_availability = 0;
-				echo "<br>".$id_bnovo.'='.$date.'='.$cnt.'====';
+				echo "<br>".$id_bnovo.'='.$date.'='.$cnt.'====<br>';
 				if($connect->getOne("SELECT COUNT(*) FROM bnovo_availability WHERE id_obj=?i AND account_id=?i AND id_bnovo=?i AND `date`=?s", $id_obj, $account_id, $id_bnovo, $date) == 0) {
 					//INSERT
 					$connect->query("INSERT INTO bnovo_availability SET id=0, id_obj=$id_obj, account_id=$account_id, id_bnovo=$id_bnovo, `date`='$date', cnt='$cnt'");
