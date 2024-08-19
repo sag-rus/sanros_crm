@@ -2415,12 +2415,12 @@ function edit_sites_content($connect) {
                       <div class="form-group<?php if(!in_array($content['type'],['photogallery','landing','news', 'page','settings', 'article', 'info', 'advice', 'blog_post'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Фотографии</label>
                           <?php 
-                          if ($content_id == '5431') {
+                          /*if ($content_id == '5431') {
                             echo '<pre>';
                             print_r(load_bounds($connect,$entity,'photogallery'));
                             print_r(bounds_to_files($connect,load_bounds($connect,$entity,'photogallery')));
                             echo '</pre>';
-                          }
+                          }*/
                           ?>
                           <div class="col-sm-10">
                               <input type="text" class="form-control" name="imageurl" value="" style="width: 90%; display: inline-block;" placeholder="вставьте url изображения"><button class="get_img_from_url" >> > ></button><br><br>
@@ -2728,7 +2728,7 @@ function bounds_to_files($connect,array $bounds):array
           $filesAr[] = [
             'id' => $bound['entity2_id'],
             'created' => $bound['created'],
-            'created_normal' => date('d.m.Y H:m:s',$bound['created']),
+            //'created_normal' => date('d.m.Y H:m:s',$bound['created']),
             'title' => $bound['title'],
             'description' => $bound['description'],
             'uri' => $file['uri'],
