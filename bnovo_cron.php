@@ -114,15 +114,27 @@ function get_bnovo_rooms_availability($id_obj, $account_id, $dfrom, $dto, $id_ro
 
 		foreach ($res['availability'] as $id_bnovo => $value) {
 			foreach ($value as $date => $cnt) {
+				$id_bnovo_availability = 0;
 				echo "<br>".$id_bnovo.'='.$date.'='.$cnt.'====';
 				if($connect->getOne("SELECT COUNT(*) FROM bnovo_availability WHERE id_obj=?i AND account_id=?i AND id_bnovo=?i AND `date`=?s", $id_obj, $account_id, $id_bnovo, $date) == 0) {
 					//INSERT
 					$connect->query("INSERT INTO bnovo_availability SET id=0, id_obj=$id_obj, account_id=$account_id, id_bnovo=$id_bnovo, `date`='$date', cnt='$cnt'");
+					$id_bnovo_availability = $connect->insertId();
 				} else {
 					//UPDATE
 					$connect->query("UPDATE bnovo_availability SET `cnt`='$cnt' WHERE id_obj=$id_obj AND account_id=$account_id AND id_bnovo=$id_bnovo AND `date`='$date'");
+					$id_bnovo_availability = $connect->getOne("SELECT id FROM bnovo_availability WHERE id_obj=?i AND account_id=?i AND id_bnovo=?i AND `date`=?s", $id_obj, $account_id, $id_bnovo, $date);
 				}
-
+				if ($id_bnovo_availability>0) {
+					//ставим метку на обновление прайся после обновления доступности, т.к. cnt должен обновится на цену
+					$mathes = $connect->getRow("SELECT * FROM `bnovo_rooms_mathes` WHERE `id_bnovo`=$id_bnovo and `id_account_bnovo`=$account_id");
+					$date_price = $connect->getRow("SELECT * FROM `date_price` WHERE `id_obj`=$mathes[id_obj] AND `start`='$date' and `end`='$date' and `active`=0");
+					$ranges = $connect->getAll("SELECT * FROM `ranges` WHERE `id_obj`=$mathes[id_obj] AND `id_date`=$date_price[id]");
+					foreach ($ranges as $range) {
+						echo '<b>UPDATE PRICE CNT</b>'."UPDATE `price` SET `synchronized`=0 WHERE `id_room`=$mathes[id_room] and `id_range`=$range[id]";
+						$connect->query("UPDATE `price` SET `synchronized`=0 WHERE `id_room`=$mathes[id_room] and `id_range`=$range[id]");
+					}
+				}
 			}
 		}
 	}
