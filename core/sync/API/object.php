@@ -67,7 +67,7 @@ function update_contact_object_account($connect, $data){
 		$object = $connect->getRow("SELECT id, path FROM object WHERE id=$object");
 		$sites_contents = $connect->getRow("SELECT id  FROM sites_contents WHERE `path`='$object[path]'");
 		$connect->query("UPDATE object SET address=?s, fax=?s, website=?s, travelline_id=?s, `status`=2, `status_datetime` = NOW(), synchronized=0 WHERE id=?i", $address, $fax, $website, $travelline_id, $object['id']);
-		$connect->query("UPDATE sites_contents SET summary='$summary', body='$body', body2='$body2', synchronized=0 WHERE path='$object[path]' LIMIT 1");
+		$connect->query("UPDATE sites_contents SET `changed`=NOW(), `summary`='$summary', `body`='$body', `body2`='$body2', `synchronized`=0 WHERE path='$object[path]' LIMIT 1");
 
 		$entity = [
 			'id' => $sites_contents['id'],
