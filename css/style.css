@@ -1744,7 +1744,7 @@ tr.simple-row {
 	/*display: none;*/
 }
 
-.has_sub_menu {
+.has_sub_menu:after {
 	display: inline-block;
     width: 0;
     height: 0;
