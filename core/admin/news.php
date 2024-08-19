@@ -2234,7 +2234,7 @@ function edit_sites_content($connect) {
   $copy_mode = isset($_POST['copy_mode'])?(int)$_POST['copy_mode']:0;
   $content = NULL;
   if($content_id)
-      $content = $connect->getRow("SELECT `id`, `status`, `imgs_no_index`, `published`, `type`, `site_id`, `title`, `title_h1`, `title_h2`, `slider_mode`, `summary`, `snippet_summary`, `body`, `body2`, `head_code`, `pre_body_code`, `post_body_code`, `path`, `redirect_path`, `description`, `keywords`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `photogallery_title`, `photogallery_orientation`, `breadcrumb_title`, `direction_id`, `region_id`, `regional_direction_id`, `rss`, `rss_aggregator_link`, `rss_addition`, `rss_aggregation`, `main_page_fix`, `aggregation_by_dates`, `aggregation_date_start`, `aggregation_date_end`, `phone` FROM `sites_contents` WHERE `id` =?i",$content_id);
+      $content = $connect->getRow("SELECT `id`, `changed`, `status`, `imgs_no_index`, `published`, `type`, `site_id`, `title`, `title_h1`, `title_h2`, `slider_mode`, `summary`, `snippet_summary`, `body`, `body2`, `head_code`, `pre_body_code`, `post_body_code`, `path`, `redirect_path`, `description`, `keywords`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `photogallery_title`, `photogallery_orientation`, `breadcrumb_title`, `direction_id`, `region_id`, `regional_direction_id`, `rss`, `rss_aggregator_link`, `rss_addition`, `rss_aggregation`, `main_page_fix`, `aggregation_by_dates`, `aggregation_date_start`, `aggregation_date_end`, `phone` FROM `sites_contents` WHERE `id` =?i",$content_id);
       $entity = $content;
       $entity['type'] = 'content';
   ob_start();
@@ -2643,6 +2643,7 @@ function edit_sites_content($connect) {
                               <input type="checkbox" name="main_page_fix" class="form-control"<?php if($content['main_page_fix'] == 1) {?> checked<?php } ?>>
                           </div>
                       </div>
+                      <div class="site_content_changed" style="display: none;"><?=$content['changed']?></div>
                   </div>
                   <div class="modal-loader"></div>
                   <div class="modal-footer">
