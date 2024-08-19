@@ -738,7 +738,7 @@ function write_body($connect){
 					<li id="filter_menu" onclick="show_filter()"><a>Поиск</a></li>
 				  <?php } ?>
 				  <?php if($id_rights > 4){ ?>
-					<li class="manager-menu"><a onclick="$('.menu-manager').toggle()">Менеджеры</a>
+					<li class="manager-menu"><a class="has_sub_menu" onclick="$('.menu-manager').toggle()">Менеджеры</a>
 						<ul class="nav nav-pills nav-stacked second-level-menu menu-manager" style="display: none">
 							<li onclick="see_managers()" id="plan-manager"><a><i class="fa fa-rub"></i> План</a></li>
 							<li onclick="show_chat_users()" id="chat-manager"><a><i class="fa fa-weixin"></i> Чат</a></li>
@@ -749,7 +749,7 @@ function write_body($connect){
 					<li onclick="show_certificate()" id="certificate_menu"><a>Сертификаты</a></li>
                   <?php } ?>
                   <?php if($id_rights > 3) { ?>
-					<li class="question-menu"><a onclick="$('.menu-question').toggle()">Вопросы</a>
+					<li class="question-menu"><a class="has_sub_menu" onclick="$('.menu-question').toggle()">Вопросы</a>
 						<ul class="nav nav-pills nav-stacked second-level-menu menu-question" style="display: none">
 							<li onclick="show_question_client()" id="question-turist" class="question-turist"><a><i class="fa fa-circle-o"></i> Турист</a></li>
 							<li onclick="show_question_agency()" id="question-agency" class="question-agency"><a><i class="fa fa-circle-o"></i> Агентство</a></li>
@@ -757,7 +757,7 @@ function write_body($connect){
 						</ul>
 					</li>
                   <?php } ?>
-					<li><a onclick="$('.menu-profile').toggle()">Профиль</a>
+					<li><a class="has_sub_menu" onclick="$('.menu-profile').toggle()">Профиль</a>
 						<ul class="nav nav-pills nav-stacked second-level-menu menu-profile" style="display: none">
 							<?php if($id_rights > 3){ ?>
 							<li onclick="show_profit()" id="commission_menu"><a><i class="fa fa-rub"></i> Мой доход</a></li>
@@ -767,7 +767,7 @@ function write_body($connect){
 						</ul>
 					</li>
 				  <?php if($id_rights > 1){ ?>
-					<li id="all-admin-menu"><a onclick="$('.menu-admin').toggle()">Админ</a>
+					<li id="all-admin-menu"><a class="has_sub_menu" onclick="$('.menu-admin').toggle()">Админ</a>
 						<ul class="nav nav-pills nav-stacked second-level-menu menu-admin" style="display: none">
 							<li onclick="object()" id="price_menu"><a><i class="fa fa-home"></i> Объекты</a></li>
 							<li onclick="show_rating_menu()" id="rating_menu"><a><i class="fa fa-comments-o"></i> Отзывы</a></li>
@@ -798,7 +798,7 @@ function write_body($connect){
 					</li>
 				  <?php } ?>
 				  <?php if($id_rights > 4){ ?>
-					<li class="menu-object-cabinet"><a onclick="$('.show-menu-object-cabinet').toggle()">Кабинет объекта</a>
+					<li class="menu-object-cabinet"><a class="has_sub_menu" onclick="$('.show-menu-object-cabinet').toggle()">Кабинет объекта</a>
 						<ul class="nav nav-pills nav-stacked second-level-menu show-menu-object-cabinet" style="display: none">
 							<li onclick="show_cabinet_object()" id="account-object"><a><i class="fa fa-flag-o"></i> Аккаунты</a></li>
 							<li onclick="show_request_object()" id="new-request-object"><a><i class="fa fa-plus-circle"></i> Новые</a></li>
@@ -809,7 +809,7 @@ function write_body($connect){
 					</li>
                   <?php } ?>
                   <?php if($id_rights > 2 || $session_login == 62) { ?>
-                    <li><a onclick="$('.show-menu-sites').toggle()">Сайты</a>
+                    <li><a class="has_sub_menu"	 onclick="$('.show-menu-sites').toggle()">Сайты</a>
                         <ul class="nav nav-pills nav-stacked second-level-menu show-menu-sites" style="display: none">
                             <li onclick="show_sites_list()" id="sites-list"><a><i class="fa fa-list"></i> Список</a></li>
                         </ul>
