@@ -2727,6 +2727,8 @@ function bounds_to_files($connect,array $bounds):array
         if($bound['entity2_type'] === 'file' && ($file = $connect->getRow("SELECT * FROM `core_models_file_file` WHERE `id` =?i LIMIT 1",$bound['entity2_id']))) {
           $filesAr[] = [
             'id' => $bound['entity2_id'],
+            'created' => $bound['created'],
+            'created_normal' => date('d.m.Y H:m:s',$bound['created']),
             'title' => $bound['title'],
             'description' => $bound['description'],
             'uri' => $file['uri'],
