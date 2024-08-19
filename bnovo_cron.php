@@ -131,7 +131,7 @@ function get_bnovo_rooms_availability($id_obj, $account_id, $dfrom, $dto, $id_ro
 					$date_price = $connect->getRow("SELECT * FROM `date_price` WHERE `id_obj`=$mathes[id_obj] AND `start`='$date' and `end`='$date' and `active`=0");
 					$ranges = $connect->getAll("SELECT * FROM `ranges` WHERE `id_obj`=$mathes[id_obj] AND `id_date`=$date_price[id]");
 					foreach ($ranges as $range) {
-						echo '<b>UPDATE PRICE CNT</b>'."UPDATE `price` SET `synchronized`=0 WHERE `id_room`=$mathes[id_room] and `id_range`=$range[id]";
+						echo '<b>UPDATE PRICE CNT</b>'."UPDATE `price` SET `synchronized`=0 WHERE `id_room`=$mathes[id_room] and `id_range`=$range[id]<br>";
 						$connect->query("UPDATE `price` SET `synchronized`=0 WHERE `id_room`=$mathes[id_room] and `id_range`=$range[id]");
 					}
 				}
