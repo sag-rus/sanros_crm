@@ -2414,6 +2414,14 @@ function edit_sites_content($connect) {
                       </div>
                       <div class="form-group<?php if(!in_array($content['type'],['photogallery','landing','news', 'page','settings', 'article', 'info', 'advice', 'blog_post'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Фотографии</label>
+                          <?php 
+                          if ($content_id == '5431') {
+                            echo '<pre>';
+                            print_r(load_bounds($connect,$entity,'photogallery'));
+                            print_r(bounds_to_files($connect,load_bounds($connect,$entity,'photogallery')));
+                            echo '</pre>';
+                          }
+                          ?>
                           <div class="col-sm-10">
                               <input type="text" class="form-control" name="imageurl" value="" style="width: 90%; display: inline-block;" placeholder="вставьте url изображения"><button class="get_img_from_url" >> > ></button><br><br>
                               <div class="input-message-block" data-for="photogallery"></div>
