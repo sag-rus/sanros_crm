@@ -616,7 +616,7 @@ function filter_payment($connect){
 			}
 
 			if($type_pay_tbl === '1-3' && $type_pay == 5) {
-			    //$pay_reward *= (-1);
+			    $pay_reward *= (-1);
             }
 
             $array['reward'] += $pay_reward;
