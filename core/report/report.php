@@ -581,16 +581,6 @@ function filter_payment($connect){
 				,2
 			)-$sum_bank_kom;
 
-			if($type_pay_tbl === '1-3' && $type_pay == 5) {
-			    $pay_reward *= (-1);
-            }
-
-            $array['reward'] += $pay_reward;
-            $office_g = $connect->getOne("SELECT `users`.`office` FROM `reckoning` LEFT JOIN `users` ON `reckoning`.`id_user`=`users`.`id` WHERE `reckoning`.`id` = ?i", $id);
-            if($office_g) {
-                $array["office"][$office_g]["reward"] += $pay_reward;
-            }
-
 			//Расчет прибыли по новому для физлиц!
 			if (!$row['agency']) {
 
@@ -612,7 +602,7 @@ function filter_payment($connect){
 				$bank_kom_for_payment = round($row['sum'] * ($row['bank_com']/100),2); //банк комиссия по платежу
 				$correct = (100 / (100 - $dis_row_procent)); //коэф. корректировки (для заявок со скидкой)
 
-				$reward = round( (($reward_for_payment - $discount_for_payment)*$correct) - $bank_kom_for_payment , 2);
+				$pay_reward = round( (($reward_for_payment - $discount_for_payment)*$correct) - $bank_kom_for_payment , 2);
 
 			} else {
 
@@ -621,13 +611,19 @@ function filter_payment($connect){
 				$agency_commission = round($row['sum_reck']*(($agency_commission_procent)/100),2);
 				$correct = (100 / (100 - $agency_commission_procent)); //коэф. корректировки по комиссии агенства
 
-				$reward = round(($row['sum']*(($reward_procent - $agency_commission_procent)/100))*$correct,2);
+				$pay_reward = round(($row['sum']*(($reward_procent - $agency_commission_procent)/100))*$correct,2);
 
 			}
 			//Конец расчет прибыли по новому для физлиц!
 
 			if($type_pay_tbl === '1-3' && $type_pay == 5) {
-			    $reward *= (-1);
+			    $pay_reward *= (-1);
+            }
+
+            $array['reward'] += $pay_reward;
+            $office_g = $connect->getOne("SELECT `users`.`office` FROM `reckoning` LEFT JOIN `users` ON `reckoning`.`id_user`=`users`.`id` WHERE `reckoning`.`id` = ?i", $id);
+            if($office_g) {
+                $array["office"][$office_g]["reward"] += $pay_reward;
             }			
 
 
