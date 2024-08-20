@@ -581,9 +581,9 @@ function filter_payment($connect){
 				,2
 			)-$sum_bank_kom;
 
-			//Расчет прибыли по новому для физлиц!
-			if (!$row['agency']) {
-
+			
+			/*if (!$row['agency']) {
+				//Расчет прибыли по новому для физлиц!
 				$reward_procent = $row['position_reward']>0?$row['position_reward']:$row['object_reward'];
 				if ($row['reckoning_id_dis']>0) {
 					$dis_row_procent = $connect->getRow("SELECT * FROM `discount` WHERE `id` = ?i", $row['reckoning_id_dis']);
@@ -605,7 +605,7 @@ function filter_payment($connect){
 				$pay_reward = round( (($reward_for_payment - $discount_for_payment)*$correct) - $bank_kom_for_payment , 2);
 
 			} else {
-
+				//Расчет прибыли по новому для агентсв!
 				$reward_procent = $row['position_reward']>0?$row['position_reward']:$row['object_reward'];
 				$agency_commission_procent = $row['agency_commission']>0?$row['agency_commission']:0;
 				$agency_commission = round($row['sum_reck']*(($agency_commission_procent)/100),2);
@@ -613,8 +613,7 @@ function filter_payment($connect){
 
 				$pay_reward = round(($row['sum']*(($reward_procent - $agency_commission_procent)/100))*$correct,2);
 
-			}
-			//Конец расчет прибыли по новому для физлиц!
+			}*/
 
 			if($type_pay_tbl === '1-3' && $type_pay == 5) {
 			    $pay_reward *= (-1);
