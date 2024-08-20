@@ -582,7 +582,7 @@ function filter_payment($connect){
 			)-$sum_bank_kom;
 
 			
-			/*if (!$row['agency']) {
+			if (!$row['agency']) {
 				//Расчет прибыли по новому для физлиц!
 				$reward_procent = $row['position_reward']>0?$row['position_reward']:$row['object_reward'];
 				if ($row['reckoning_id_dis']>0) {
@@ -613,10 +613,10 @@ function filter_payment($connect){
 
 				$pay_reward = round(($row['sum']*(($reward_procent - $agency_commission_procent)/100))*$correct,2);
 
-			}*/
+			}
 
 			if($type_pay_tbl === '1-3' && $type_pay == 5) {
-			    $pay_reward *= (-1);
+			    //$pay_reward *= (-1);
             }
 
             $array['reward'] += $pay_reward;
