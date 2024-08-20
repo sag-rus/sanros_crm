@@ -626,6 +626,10 @@ function filter_payment($connect){
 			}
 			//Конец расчет прибыли по новому для физлиц!
 
+			if($type_pay_tbl === '1-3' && $type_pay == 5) {
+			    $reward *= (-1);
+            }			
+
 
 			$html.= "<tr class='".$bg_class."' ".$func." style='background: ".$color."!important;'>";
 			$html.= "<td valign='top' align='center'>".$id."".($dis_row_procent>0?'<br><br><span style="font-size: 7px; font-style: italic;">скидка '.round($dis_row_procent).'%</span>':'')."".($row['agency']>0?'<br><br><span style="font-size: 7px; font-style: italic;">агенство</span>':'')."</td>";
