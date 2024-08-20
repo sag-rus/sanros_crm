@@ -662,7 +662,7 @@ function filter_payment($connect){
 			$html.= "<td valign='top' style='text-align: center;'>".$sum."</td>";
 			$html.= "<td valign='top' style='text-align: center;'>".$type_pay_text."</td>";
             //$html.= "<td valign='top' style='text-align: center;'>".$pay_reward."</td>";
-			$html.= "<td valign='top' style='text-align: center;'>".$reward." (".$pay_reward.")</td>";
+			$html.= "<td valign='top' style='text-align: center;'>".$reward."</td>";
 			$html.= "<td valign='top' style='text-align: center;'>".$sum_bank_kom." (".$row['bank_com']."%)</td>";
 			$html.= "<td valign='top' style='text-align: center;'>".$manager."</td>";
 			if($type_pay_tbl == 1 OR $type_pay_tbl == 3 OR $type_pay_tbl == 4)
