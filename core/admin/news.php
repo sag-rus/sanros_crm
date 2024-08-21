@@ -2234,7 +2234,7 @@ function edit_sites_content($connect) {
   $copy_mode = isset($_POST['copy_mode'])?(int)$_POST['copy_mode']:0;
   $content = NULL;
   if($content_id)
-      $content = $connect->getRow("SELECT `id`, `changed`, `status`, `imgs_no_index`, `published`, `type`, `site_id`, `title`, `title_h1`, `title_h2`, `slider_mode`, `summary`, `snippet_summary`, `body`, `body2`, `head_code`, `pre_body_code`, `post_body_code`, `path`, `redirect_path`, `description`, `keywords`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `photogallery_title`, `photogallery_orientation`, `breadcrumb_title`, `direction_id`, `region_id`, `regional_direction_id`, `rss`, `rss_aggregator_link`, `rss_addition`, `rss_aggregation`, `main_page_fix`, `aggregation_by_dates`, `aggregation_date_start`, `aggregation_date_end`, `phone` FROM `sites_contents` WHERE `id` =?i",$content_id);
+      $content = $connect->getRow("SELECT * FROM `sites_contents` WHERE `id` =?i",$content_id);
       $entity = $content;
       $entity['type'] = 'content';
   ob_start();
@@ -2510,6 +2510,13 @@ function edit_sites_content($connect) {
                               <textarea class="form-control" name="summary"><?=htmlspecialchars($content['summary']);?></textarea>
                           </div>
                       </div>
+                      <div class="form-group<?php if(trim($content['summary_cabinet'])=='') { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Анонс НОВЫЙ</label>
+                          <div class="col-sm-10">
+                              <textarea class="form-control" name="summary_cabinet"><?=htmlspecialchars($content['summary_cabinet']);?></textarea>
+                              <label><input type="radio" name="summary_cabinet_accept" value="1" <?php if ($content['summary_cabinet_not_accepted']==2) echo 'disabled="disabled"';?>>принять</label> &nbsp; <label><input type="radio" name="summary_cabinet_accept" value="2" <?php if ($content['summary_cabinet_not_accepted']==2) echo 'disabled="disabled"';?>>отклонить</label> <input type="text" placeholder="укажите причину" name="summary_cabinet_not_accepted_reason" <?php if ($content['summary_cabinet_not_accepted']==2) echo 'disabled="disabled"';?>>
+                          </div>
+                      </div>                      
                       <div class="form-group<?php if(in_array($content['type'],['redirect'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Анонс для сниппетов</label>
                           <div class="col-sm-10">
@@ -2522,12 +2529,24 @@ function edit_sites_content($connect) {
                               <textarea class="form-control resizable-textarea" name="body" id="sites_content_body"><?=htmlspecialchars($content['body']);?></textarea>
                           </div>
                       </div>
+                      <div class="form-group<?php if(trim($content['body_cabinet'])=='') { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Содержимое НОВОЕ</label>
+                          <div class="col-sm-10">
+                              <textarea class="form-control resizable-textarea" name="body_cabinet" id="sites_content_body_cabinet"><?=htmlspecialchars($content['body_cabinet']);?></textarea>
+                          </div>
+                      </div>                      
                       <div class="form-group<?php if(!in_array($content['type'],['landing','settings', 'news', 'article', 'info', 'advice', 'blog_post'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Доп. содержимое</label>
                           <div class="col-sm-10">
                               <textarea class="form-control resizable-textarea" name="body2" id="sites_content_body2"><?=htmlspecialchars($content['body2']);?></textarea>
                           </div>
                       </div>
+                      <div class="form-group<?php if(trim($content['body2_cabinet'])=='') { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Доп. содержимое НОВОЕ</label>
+                          <div class="col-sm-10">
+                              <textarea class="form-control resizable-textarea" name="body2_cabinet" id="sites_content_body2_cabinet"><?=htmlspecialchars($content['body2_cabinet']);?></textarea>
+                          </div>
+                      </div>                      
                       <div class="form-group<?php if(!in_array($content['type'],['article','news','info', 'advice', 'blog_post'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Направление</label>
                           <div class="col-sm-10">
