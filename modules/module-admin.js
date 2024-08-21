@@ -3016,11 +3016,11 @@ function set_sites_content() {
   	var body = window.sites_content_body.getData();
 	var body_cabinet = window.sites_content_body_cabinet.getData();
 	var body_cabinet_accept = $modalBody.find('.body_cabinet_accept:checked').val();
-	var body_cabinet_accept_reason = $modalBody.find('.body_cabinet_accept_reason').val();
+	var body_cabinet_not_accepted_reason = $modalBody.find('.body_cabinet_not_accepted_reason').val();
 	var body2 = window.sites_content_body2.getData();
 	var body2_cabinet = window.sites_content_body2_cabinet.getData();
 	var body2_cabinet_accept = $modalBody.find('.body2_cabinet_accept:checked').val();
-	var body2_cabinet_accept_reason = $modalBody.find('.body2_cabinet_accept_reason').val();
+	var body2_cabinet_not_accepted_reason = $modalBody.find('.body2_cabinet_not_accepted_reason').val();
 
 	var site_id = $modalBody.find('*[name="site_id"]').val();
 	var type = $modalBody.find('*[name="type"]').val();
@@ -3274,11 +3274,11 @@ function set_sites_content() {
         body: body,
 		body_cabinet: body_cabinet,
 		body_cabinet_accept: body_cabinet_accept,
-		body_cabinet_accept_reason: body_cabinet_accept_reason,
+		body_cabinet_not_accepted_reason: body_cabinet_not_accepted_reason,
 		body2: body2,
 		body2_cabinet: body2_cabinet,
 		body2_cabinet_accept: body2_cabinet_accept,
-		body2_cabinet_accept_reason: body2_cabinet_accept_reason,
+		body2_cabinet_not_accepted_reason: body2_cabinet_not_accepted_reason,
 	  	head_code: head_code,
 	  	pre_body_code: pre_body_code,
 	  	post_body_code: post_body_code,
