@@ -2939,6 +2939,11 @@ function set_sites_content() {
   var summary = $summary.val().trim();
   $summaryMsg.html("");
 
+  var $summary_cabinet = $modalBody.find('textarea[name="summary"]');
+  var summary_cabinet = $summary_cabinet.val().trim();
+
+  var summary_cabinet_accept = $modalBody.find('#summary_cabinet_accept').val();
+
 	var $snippet_summary = $modalBody.find('textarea[name="snippet_summary"]');
 	var $snippet_summaryMsg = $snippet_summary.parent().find('.input-message-block');
 	var snippet_summary = $snippet_summary.val().trim();
@@ -3001,30 +3006,34 @@ function set_sites_content() {
 	var regional_direction_id = parseInt($regional_direction_id.val(),10);
 	$regional_direction_idMsg.html('');
 
-  var $module_block = $modalBody.find('select[name="module_block"]');
-  var $module_blockMsg = $module_block.parent().find('.input-message-block');
-  var module_block = $module_block.val().trim();
-  $module_blockMsg.html('');
+	var $module_block = $modalBody.find('select[name="module_block"]');
+	var $module_blockMsg = $module_block.parent().find('.input-message-block');
+	var module_block = $module_block.val().trim();
+	$module_blockMsg.html('');
 
 
-  var body = window.sites_content_body.getData();
+  	var body = window.sites_content_body.getData();
+	var body_cabinet = window.sites_content_body_cabinet.getData();
+	var body_cabinet_accept = $modalBody.find('#body_cabinet_accept').val();
 	var body2 = window.sites_content_body2.getData();
+	var body2_cabinet = window.sites_content_body2_cabinet.getData();
+	var body2_cabinet_accept = $modalBody.find('#body2_cabinet_accept').val();
 
-  var site_id = $modalBody.find('*[name="site_id"]').val();
-  var type = $modalBody.find('*[name="type"]').val();
-  var rss = parseInt($modalBody.find('*[name="rss"]').val(),10);
-  var keywords = $modalBody.find('*[name="keywords"]').val();
-  var published = $modalBody.find('*[name="published"]').val();
+	var site_id = $modalBody.find('*[name="site_id"]').val();
+	var type = $modalBody.find('*[name="type"]').val();
+	var rss = parseInt($modalBody.find('*[name="rss"]').val(),10);
+	var keywords = $modalBody.find('*[name="keywords"]').val();
+	var published = $modalBody.find('*[name="published"]').val();
 
 	var $reviews_objects = $modalBody.find('input[name="reviews_objects"]');
 	var $reviews_objectsMsg = $reviews_objects.parent().find('.input-message-block');
 	var reviews_objects = $reviews_objects.val().trim();
 	$reviews_objectsMsg.html('');
 
-  var $resorts_ids = $modalBody.find('input[name="resorts_ids"]');
-  var $resorts_idsMsg = $resorts_ids.parent().find('.input-message-block');
-  var resorts_ids = $resorts_ids.val().trim();
-  $resorts_idsMsg.html('');
+	var $resorts_ids = $modalBody.find('input[name="resorts_ids"]');
+	var $resorts_idsMsg = $resorts_ids.parent().find('.input-message-block');
+	var resorts_ids = $resorts_ids.val().trim();
+	$resorts_idsMsg.html('');
 
 	var $photogallery_title = $modalBody.find('input[name="photogallery_title"]');
 	var $photogallery_titleMsg = $photogallery_title.parent().find('.input-message-block');
@@ -3260,11 +3269,13 @@ function set_sites_content() {
 		slider_mode: slider_mode,
 		breadcrumb_title: breadcrumb_title,
         body: body,
+		body_cabinet: body_cabinet,
 		body2: body2,
+		body2_cabinet: body2_cabinet,
 	  	head_code: head_code,
 	  	pre_body_code: pre_body_code,
 	  	post_body_code: post_body_code,
-			phone: phone,
+		phone: phone,
         site_id: site_id,
 		image: image,
 		page_bg: page_bg,
@@ -3276,6 +3287,7 @@ function set_sites_content() {
 		redirect_path: redirect_path,
         form_action: form_action,
 		summary: summary,
+		summary_cabinet: summary_cabinet,
 		snippet_summary: snippet_summary,
 		status: status,
 		imgs_no_index: imgs_no_index,
