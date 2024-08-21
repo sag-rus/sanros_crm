@@ -3944,7 +3944,7 @@ function edit_sites_content(id,copyMode) {
 			})
 			.then( editor => {
 
-				$('#sites_content_body2_cabinet').before('<div id="sites_content_body2_toolbar_container"></div>');
+				$('#sites_content_body2_cabinet').before('<div id="sites_content_body2_cabinet_toolbar_container"></div>');
 
 				const toolbarContainer2_cabinet = $('#sites_content_body2_cabinet_toolbar_container').get(0);
 
