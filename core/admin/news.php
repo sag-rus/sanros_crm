@@ -2511,7 +2511,7 @@ function edit_sites_content($connect) {
                           </div>
                       </div>
                       <div class="form-group<?php if(trim($content['summary_cabinet'])=='') { ?> hidden<?php } ?>">
-                          <label class="col-sm-2 control-label">Анонс НОВЫЙ</label>
+                          <label class="col-sm-2 control-label">Анонс ИЗ КАБИНЕТА</label>
                           <div class="col-sm-10">
                               <textarea class="form-control" name="summary_cabinet"><?=htmlspecialchars($content['summary_cabinet']);?></textarea>
                               <label><input type="radio" name="summary_cabinet_accept" value="1" <?php if ($content['summary_cabinet_not_accepted']==2) echo 'disabled="disabled"';?>>принять</label> &nbsp; <label><input type="radio" name="summary_cabinet_accept" value="2" <?php if ($content['summary_cabinet_not_accepted']==2) echo 'disabled="disabled"';?>>отклонить</label> <input type="text" placeholder="укажите причину" name="summary_cabinet_not_accepted_reason" <?php if ($content['summary_cabinet_not_accepted']==2) echo 'disabled="disabled"';?>>
@@ -2530,9 +2530,10 @@ function edit_sites_content($connect) {
                           </div>
                       </div>
                       <div class="form-group<?php if(trim($content['body_cabinet'])=='') { ?> hidden<?php } ?>">
-                          <label class="col-sm-2 control-label">Содержимое НОВОЕ</label>
+                          <label class="col-sm-2 control-label">Содержимое ИЗ КАБИНЕТА</label>
                           <div class="col-sm-10">
                               <textarea class="form-control resizable-textarea" name="body_cabinet" id="sites_content_body_cabinet"><?=htmlspecialchars($content['body_cabinet']);?></textarea>
+                              <label><input type="radio" name="body_cabinet_accept" value="1" <?php if ($content['body_cabinet_not_accepted']==2) echo 'disabled="disabled"';?>>принять</label> &nbsp; <label><input type="radio" name="body_cabinet_accept" value="2" <?php if ($content['body_cabinet_not_accepted']==2) echo 'disabled="disabled"';?>>отклонить</label> <input type="text" placeholder="укажите причину" name="body_cabinet_not_accepted_reason" <?php if ($content['body_cabinet_not_accepted']==2) echo 'disabled="disabled"';?>>
                           </div>
                       </div>                      
                       <div class="form-group<?php if(!in_array($content['type'],['landing','settings', 'news', 'article', 'info', 'advice', 'blog_post'])) { ?> hidden<?php } ?>">
@@ -2542,9 +2543,10 @@ function edit_sites_content($connect) {
                           </div>
                       </div>
                       <div class="form-group<?php if(trim($content['body2_cabinet'])=='') { ?> hidden<?php } ?>">
-                          <label class="col-sm-2 control-label">Доп. содержимое НОВОЕ</label>
+                          <label class="col-sm-2 control-label">Доп. содержимое ИЗ КАБИНЕТА</label>
                           <div class="col-sm-10">
                               <textarea class="form-control resizable-textarea" name="body2_cabinet" id="sites_content_body2_cabinet"><?=htmlspecialchars($content['body2_cabinet']);?></textarea>
+                              <label><input type="radio" name="body2_cabinet_accept" value="1" <?php if ($content['body2_cabinet_not_accepted']==2) echo 'disabled="disabled"';?>>принять</label> &nbsp; <label><input type="radio" name="body2_cabinet_accept" value="2" <?php if ($content['body2_cabinet_not_accepted']==2) echo 'disabled="disabled"';?>>отклонить</label> <input type="text" placeholder="укажите причину" name="body2_cabinet_not_accepted_reason" <?php if ($content['body2_cabinet_not_accepted']==2) echo 'disabled="disabled"';?>>
                           </div>
                       </div>                      
                       <div class="form-group<?php if(!in_array($content['type'],['article','news','info', 'advice', 'blog_post'])) { ?> hidden<?php } ?>">
