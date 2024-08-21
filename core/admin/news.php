@@ -2514,7 +2514,7 @@ function edit_sites_content($connect) {
                           <label class="col-sm-2 control-label">Анонс<br>ИЗ КАБИНЕТА</label>
                           <div class="col-sm-10">
                               <textarea class="form-control" name="summary_cabinet"><?=htmlspecialchars($content['summary_cabinet']);?></textarea>
-                              <label><input type="radio" name="summary_cabinet_accept" class="summary_cabinet_accept" value="1" <?php if ($content['summary_cabinet_not_accepted']==2) echo 'disabled="disabled"';?>>принять</label> &nbsp; <label><input type="radio" name="summary_cabinet_accept" class="summary_cabinet_accept" value="2" <?php if ($content['summary_cabinet_not_accepted']==2) echo 'disabled="disabled"';?>>отклонить</label> <input type="text" placeholder="укажите причину" name="summary_cabinet_not_accepted_reason" class="summary_cabinet_not_accepted_reason" <?php if ($content['summary_cabinet_not_accepted']==2) echo 'disabled="disabled"';?>value="<?=$content['summary_cabinet_not_accepted_reason']?>"><br><br>
+                              <label><input type="radio" name="summary_cabinet_accept" class="summary_cabinet_accept" value="1" <?php if ($content['summary_cabinet_accept']==2) echo 'disabled="disabled"';?>>принять</label> &nbsp; <label><input type="radio" name="summary_cabinet_accept" class="summary_cabinet_accept" value="2" <?php if ($content['summary_cabinet_accept']==2) echo 'disabled="disabled"';?>>отклонить</label> <input type="text" placeholder="укажите причину" name="summary_cabinet_not_accepted_reason" class="summary_cabinet_not_accepted_reason" <?php if ($content['summary_cabinet_accept']==2) echo 'disabled="disabled"';?> value="<?=$content['summary_cabinet_not_accepted_reason']?>"><br><br>
                           </div>
                       </div>                      
                       <div class="form-group<?php if(in_array($content['type'],['redirect'])) { ?> hidden<?php } ?>">
@@ -2533,7 +2533,7 @@ function edit_sites_content($connect) {
                           <label class="col-sm-2 control-label">Содержимое<br>ИЗ КАБИНЕТА</label>
                           <div class="col-sm-10">
                               <textarea class="form-control resizable-textarea" name="body_cabinet" id="sites_content_body_cabinet"><?=htmlspecialchars($content['body_cabinet']);?></textarea>
-                              <label><input type="radio" name="body_cabinet_accept" class="body_cabinet_accept" value="1" <?php if ($content['body_cabinet_not_accepted']==2) echo 'disabled="disabled"';?>>принять</label> &nbsp; <label><input type="radio" name="body_cabinet_accept" class="body_cabinet_accept" value="2" <?php if ($content['body_cabinet_not_accepted']==2) echo 'disabled="disabled"';?>>отклонить</label> <input type="text" placeholder="укажите причину" name="body_cabinet_not_accepted_reason" class="body_cabinet_not_accepted_reason" <?php if ($content['body_cabinet_not_accepted']==2) echo 'disabled="disabled"';?> value="<?=$content['body_cabinet_not_accepted_reason']?>"><br><br>
+                              <label><input type="radio" name="body_cabinet_accept" class="body_cabinet_accept" value="1" <?php if ($content['body_cabinet_accept']==2) echo 'disabled="disabled"';?>>принять</label> &nbsp; <label><input type="radio" name="body_cabinet_accept" class="body_cabinet_accept" value="2" <?php if ($content['body_cabinet_accept']==2) echo 'disabled="disabled"';?>>отклонить</label> <input type="text" placeholder="укажите причину" name="body_cabinet_not_accepted_reason" class="body_cabinet_not_accepted_reason" <?php if ($content['body_cabinet_accept']==2) echo 'disabled="disabled"';?> value="<?=$content['body_cabinet_not_accepted_reason']?>"><br><br>
                           </div>
                       </div>                      
                       <div class="form-group<?php if(!in_array($content['type'],['landing','settings', 'news', 'article', 'info', 'advice', 'blog_post'])) { ?> hidden<?php } ?>">
@@ -2546,7 +2546,7 @@ function edit_sites_content($connect) {
                           <label class="col-sm-2 control-label">Доп. содержимое<br>ИЗ КАБИНЕТА</label>
                           <div class="col-sm-10">
                               <textarea class="form-control resizable-textarea" name="body2_cabinet" id="sites_content_body2_cabinet"><?=htmlspecialchars($content['body2_cabinet']);?></textarea>
-                              <label><input type="radio" class="body2_cabinet_accept" name="body2_cabinet_accept" value="1" <?php if ($content['body2_cabinet_not_accepted']==2) echo 'disabled="disabled"';?>>принять</label> &nbsp; <label><input type="radio" name="body2_cabinet_accept" class="body2_cabinet_accept" value="2" <?php if ($content['body2_cabinet_not_accepted']==2) echo 'disabled="disabled"';?>>отклонить</label> <input type="text" placeholder="укажите причину" name="body2_cabinet_not_accepted_reason" class="body2_cabinet_not_accepted_reason" <?php if ($content['body2_cabinet_not_accepted']==2) echo 'disabled="disabled"';?>value="<?=$content['body2_cabinet_not_accepted_reason']?>"><br><br>
+                              <label><input type="radio" class="body2_cabinet_accept" name="body2_cabinet_accept" value="1" <?php if ($content['body2_cabinet_accept']==2) echo 'disabled="disabled"';?>>принять</label> &nbsp; <label><input type="radio" name="body2_cabinet_accept" class="body2_cabinet_accept" value="2" <?php if ($content['body2_cabinet_accept']==2) echo 'disabled="disabled"';?>>отклонить</label> <input type="text" placeholder="укажите причину" name="body2_cabinet_not_accepted_reason" class="body2_cabinet_not_accepted_reason" <?php if ($content['body2_cabinet_accept']==2) echo 'disabled="disabled"';?>value="<?=$content['body2_cabinet_not_accepted_reason']?>"><br><br>
                           </div>
                       </div>                      
                       <div class="form-group<?php if(!in_array($content['type'],['article','news','info', 'advice', 'blog_post'])) { ?> hidden<?php } ?>">
@@ -3459,27 +3459,30 @@ function set_sites_content($connect) {
 
 
     $title_h2 = isset($_POST['title_h2'])?trim($_POST['title_h2']):"";
-  $path = isset($_POST['path'])?explode("?",trim($_POST['path']))[0]:"";
-  $redirect_path = isset($_POST['redirect_path'])?explode("?",trim($_POST['redirect_path']))[0]:"";
-  $form_action = isset($_POST['form_action'])?trim($_POST['form_action']):"";
-  $description = isset($_POST['description'])?trim($_POST['description']):"";
-  $body = isset($_POST['body'])?$_POST['body']:"";
-  $body2 = isset($_POST['body2'])?$_POST['body2']:"";
-   $phone = isset($_POST['phone'])?$_POST['phone']:"";
+    $path = isset($_POST['path'])?explode("?",trim($_POST['path']))[0]:"";
+    $redirect_path = isset($_POST['redirect_path'])?explode("?",trim($_POST['redirect_path']))[0]:"";
+    $form_action = isset($_POST['form_action'])?trim($_POST['form_action']):"";
+    $description = isset($_POST['description'])?trim($_POST['description']):"";
+    $body = isset($_POST['body'])?$_POST['body']:"";
 
-    $head_code = isset($_POST['head_code'])?$_POST['head_code']:"";
-  $pre_body_code = isset($_POST['pre_body_code'])?$_POST['pre_body_code']:"";
-  $post_body_code = isset($_POST['post_body_code'])?$_POST['post_body_code']:"";
-  $map_code = isset($_POST['map_code'])?$_POST['map_code']:"";
-  $landing_info = isset($_POST['landing_info'])?$_POST['landing_info']:"";
-  $weight = isset($_POST['weight'])?(float)$_POST['weight']:0;
-  $sort = isset($_POST['sort'])?(int)$_POST['sort']:0;
-  $connect->query("SET CHARSET utf8");
-  $direction_id = isset($_POST['direction_id'])?(int)$_POST['direction_id']:0;
-  $region_id = isset($_POST['region_id'])?(int)$_POST['region_id']:0;
-  $regional_direction_id = isset($_POST['regional_direction_id'])?(int)$_POST['regional_direction_id']:0;
-  $aggregate_types_start = isset($_POST['aggregate_types'])?(array)$_POST['aggregate_types']:[];
-  $main_page_fix = isset($_POST['main_page_fix'])?(int)$_POST['main_page_fix']:0;
+
+    $body2 = isset($_POST['body2'])?$_POST['body2']:"";
+
+    $phone = isset($_POST['phone'])?$_POST['phone']:"";
+
+        $head_code = isset($_POST['head_code'])?$_POST['head_code']:"";
+    $pre_body_code = isset($_POST['pre_body_code'])?$_POST['pre_body_code']:"";
+    $post_body_code = isset($_POST['post_body_code'])?$_POST['post_body_code']:"";
+    $map_code = isset($_POST['map_code'])?$_POST['map_code']:"";
+    $landing_info = isset($_POST['landing_info'])?$_POST['landing_info']:"";
+    $weight = isset($_POST['weight'])?(float)$_POST['weight']:0;
+    $sort = isset($_POST['sort'])?(int)$_POST['sort']:0;
+    $connect->query("SET CHARSET utf8");
+    $direction_id = isset($_POST['direction_id'])?(int)$_POST['direction_id']:0;
+    $region_id = isset($_POST['region_id'])?(int)$_POST['region_id']:0;
+    $regional_direction_id = isset($_POST['regional_direction_id'])?(int)$_POST['regional_direction_id']:0;
+    $aggregate_types_start = isset($_POST['aggregate_types'])?(array)$_POST['aggregate_types']:[];
+    $main_page_fix = isset($_POST['main_page_fix'])?(int)$_POST['main_page_fix']:0;
 
   $aggregate_types = [];
 
@@ -3502,6 +3505,16 @@ function set_sites_content($connect) {
       $weight = 1;
 
   $summary = isset($_POST['summary'])?trim($_POST['summary']):"";
+  $summary_cabinet = isset($_POST['summary_cabinet'])?trim($_POST['summary_cabinet']):"";
+  $summary_cabinet_accept = isset($_POST['summary_cabinet_accept'])?trim($_POST['summary_cabinet_accept']):0;
+  $summary_cabinet_not_accept_reason = isset($_POST['summary_cabinet_not_accept_reason'])?trim($_POST['summary_cabinet_not_accept_reason']):"";
+  if ($summary_cabinet_accept==1) { 
+    $summary = $summary_cabinet;
+    $summary_cabinet = '';
+    $summary_cabinet_accept = 0;
+    $summary_cabinet_not_accept_reason = '';
+  }
+
   $snippet_summary = isset($_POST['snippet_summary'])?trim($_POST['snippet_summary']):"";
   $keywords = isset($_POST['keywords'])?trim($_POST['keywords']):"";
   $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
@@ -3720,7 +3733,8 @@ function set_sites_content($connect) {
               set_bounds($connect,$boundsArrayResortsIds, 'resorts_ids');
 
 
-              $connect->query("UPDATE `sites_contents` SET `title`=?s, `slider_mode` = ?i, `title_h1`=?s, `title_h2` = ?s, `path`=?s, `redirect_path` = ?s, `description`=?s, `body`=?s, `body2` =?s, `summary`=?s, `snippet_summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `imgs_no_index`=?i, `synchronized`=?i, `weight` = ?s, `sort` = ?i, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i, `form_action` = ?s, `map_code` = ?s, `landing_info` = ?s, `breadcrumb_title` = ?s, `photogallery_title` = ?s, `photogallery_orientation` = ?s, `direction_id` = ?i, `region_id` = ?i, `regional_direction_id` = ?i, `rss` = ?i, `rss_aggregator_link` = ?s, `rss_addition` = ?s, `rss_aggregation` = ?i, `main_page_fix` = ?i, `aggregation_by_dates` = ?i, `aggregation_date_start` = ?i, `aggregation_date_end` = ?i, `head_code` = ?s, `pre_body_code` = ?s, `post_body_code` = ?s, `phone` = ?s WHERE `id`=?i",$title, $slider_mode, $title_h1, $title_h2, $path, $redirect_path, $description, $body, $body2,$summary, $snippet_summary,$keywords,$type,$timestamp,$published,$status,$imgs_no_index,0,$weight, $sort,$module_object_id,$module_block,$second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $direction_id, $region_id, $regional_direction_id, $rss, $rss_aggregator_link, $rss_addition, $rss_aggregation, $main_page_fix, $aggregation_by_dates, $aggregation_date_start, $aggregation_date_end, $head_code, $pre_body_code, $post_body_code, $phone,$content_id);
+              $connect->query("UPDATE `sites_contents` SET `title`=?s, `slider_mode` = ?i, `title_h1`=?s, `title_h2` = ?s, `path`=?s, `redirect_path` = ?s, `description`=?s, `body`=?s, `body2` =?s, `summary`=?s, `summary_cabinet`=?s, `summary_cabinet_accept`=?i, `summary_cabinet_not_accepted_reason`=?s, `snippet_summary`=?s, `keywords`=?s, `type`=?s, `changed`=?i, `published`=?i, `status`=?i, `imgs_no_index`=?i, `synchronized`=?i, `weight` = ?s, `sort` = ?i, `module_object_id` = ?i, `module_block` =?s, `second_bg` = ?i, `form_action` = ?s, `map_code` = ?s, `landing_info` = ?s, `breadcrumb_title` = ?s, `photogallery_title` = ?s, `photogallery_orientation` = ?s, `direction_id` = ?i, `region_id` = ?i, `regional_direction_id` = ?i, `rss` = ?i, `rss_aggregator_link` = ?s, `rss_addition` = ?s, `rss_aggregation` = ?i, `main_page_fix` = ?i, `aggregation_by_dates` = ?i, `aggregation_date_start` = ?i, `aggregation_date_end` = ?i, `head_code` = ?s, `pre_body_code` = ?s, `post_body_code` = ?s, `phone` = ?s WHERE `id`=?i",
+                              $title, $slider_mode, $title_h1, $title_h2, $path, $redirect_path, $description, $body, $body2,$summary,$summary_cabinet, $summary_cabinet_accept, $summary_cabinet_not_accept_reason, $snippet_summary,$keywords,$type,$timestamp,$published,$status,$imgs_no_index,0,$weight, $sort,$module_object_id,$module_block,$second_bg, $form_action, $map_code, $landing_info, $breadcrumb_title, $photogallery_title, $photogallery_orientation, $direction_id, $region_id, $regional_direction_id, $rss, $rss_aggregator_link, $rss_addition, $rss_aggregation, $main_page_fix, $aggregation_by_dates, $aggregation_date_start, $aggregation_date_end, $head_code, $pre_body_code, $post_body_code, $phone,$content_id);
               if($content && $content['path'] !== $path && $type !== 'redirect' && !($type === 'aggregator' && $rss)) {
                   $connect->query("INSERT INTO `sites_contents` (`title`, `title_h1`, `title_h2`, `path`, `redirect_path`, `description`, `body`, `body2`, `summary`, `keywords`, `type`, `changed`, `published`, `status`, `imgs_no_index`, `synchronized`, `site_id`, `created`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `map_code`, `landing_info`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation`, `direction_id`, `region_id`, `regional_direction_id`) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i, ?i, ?s, ?i, ?i, ?s, ?i, ?s, ?s, ?s, ?s, ?s, ?s, ?i, ?i, ?i)","Редирект", "", "", $content['path'], $path, "","","","","",'redirect',$timestamp,$published,1,$imgs_no_index,0,$content['site_id'],$timestamp,0.9, 0,0, '', 0, '','', '', '', '', 'album', 0, 0, 0);
                   if($site_id == 38) {
