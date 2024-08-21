@@ -3880,9 +3880,9 @@ function edit_sites_content(id,copyMode) {
     success: function(html){
       show_modal(html);
       var sites_content_body_orig = $('#sites_content_body').val();
-	  var sites_content_body_orig_cabinet = $('#sites_content_body').val();
+	  var sites_content_body_orig_cabinet = $('#sites_content_body_cabinet').val();
       var sites_content_body_orig2 = $('#sites_content_body2').val();
-	  var sites_content_body_orig2_cabinet = $('#sites_content_body2').val();
+	  var sites_content_body_orig2_cabinet = $('#sites_content_body2_cabinet').val();
 
 		$('#sites_content_body').replaceWith('<div id="sites_content_body"></div>');
 		$('#sites_content_body_cabinet').replaceWith('<div id="sites_content_body_cabinet"></div>');
