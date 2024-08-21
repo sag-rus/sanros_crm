@@ -3013,10 +3013,10 @@ function set_sites_content() {
 
 
   	var body = window.sites_content_body.getData();
-	//var body_cabinet = window.sites_content_body_cabinet.getData();
+	var body_cabinet = window.sites_content_body_cabinet.getData();
 	var body_cabinet_accept = $modalBody.find('#body_cabinet_accept').val();
 	var body2 = window.sites_content_body2.getData();
-	//var body2_cabinet = window.sites_content_body2_cabinet.getData();
+	var body2_cabinet = window.sites_content_body2_cabinet.getData();
 	var body2_cabinet_accept = $modalBody.find('#body_cabinet_accept').val();
 
 	var site_id = $modalBody.find('*[name="site_id"]').val();
@@ -3270,8 +3270,10 @@ function set_sites_content() {
 		breadcrumb_title: breadcrumb_title,
         body: body,
 		body_cabinet: body_cabinet,
+		body_cabinet_accept: body_cabinet_accept,
 		body2: body2,
 		body2_cabinet: body2_cabinet,
+		body2_cabinet_accept: body2_cabinet_accept,
 	  	head_code: head_code,
 	  	pre_body_code: pre_body_code,
 	  	post_body_code: post_body_code,
