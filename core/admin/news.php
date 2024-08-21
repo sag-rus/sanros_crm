@@ -3467,6 +3467,7 @@ function set_sites_content($connect) {
     $body_cabinet = isset($_POST['body_cabinet'])?trim($_POST['body_cabinet']):"";
     $body_cabinet_accept = isset($_POST['body_cabinet_accept'])?trim($_POST['body_cabinet_accept']):0;
     $body_cabinet_not_accepted_reason = isset($_POST['body_cabinet_not_accepted_reason'])?trim($_POST['body_cabinet_not_accepted_reason']):"";
+    echo 'body_cabinet='.$body_cabinet. ' $body_cabinet_accept='.$body_cabinet_accept.' $=body_cabinet_not_accepted_reason'.$body_cabinet_not_accepted_reason.'  ';
     if ($body_cabinet_accept==1) { 
         $body = $body_cabinet;
         $body_cabinet = '';
