@@ -3014,10 +3014,10 @@ function set_sites_content() {
 
   	var body = window.sites_content_body.getData();
 	var body_cabinet = window.sites_content_body_cabinet.getData();
-	var body_cabinet_accept = $modalBody.find('#body_cabinet_accept').val();
+	var body_cabinet_accept = $modalBody.find('#body_cabinet_accept:checked').val();
 	var body2 = window.sites_content_body2.getData();
 	var body2_cabinet = window.sites_content_body2_cabinet.getData();
-	var body2_cabinet_accept = $modalBody.find('#body_cabinet_accept').val();
+	var body2_cabinet_accept = $modalBody.find('#body_cabinet_accept:checked').val();
 
 	var site_id = $modalBody.find('*[name="site_id"]').val();
 	var type = $modalBody.find('*[name="type"]').val();
