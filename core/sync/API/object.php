@@ -73,7 +73,7 @@ function update_contact_object_account($connect, $data){
 			$connect->query("UPDATE sites_contents SET `changed`=".time().", summary_cabinet='$summary', body_cabinet='$body', body2_cabinet='$body2' WHERE path='$object[path]' LIMIT 1");
 		} else {
 			//Апдейт НЕопубликованного объекта
-			$connect->query("UPDATE sites_contents SET `changed`=".time().", summary='$summary', body='$body', body2='$body2', synchronized=0 WHERE path='$object[path]' LIMIT 1");
+			$connect->query("UPDATE sites_contents SET `changed`=".time().", summary='$summary', summary_cabinet='',  body='$body', body_cabinet='', body2='$body2', body2_cabinet='', synchronized=0 WHERE path='$object[path]' LIMIT 1");
 		}		
 
 		$entity = [
