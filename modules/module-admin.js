@@ -3859,10 +3859,14 @@ function edit_sites_content(id,copyMode) {
     success: function(html){
       show_modal(html);
       var sites_content_body_orig = $('#sites_content_body').val();
+	  var sites_content_body_orig_cabinet = $('#sites_content_body').val();
       var sites_content_body_orig2 = $('#sites_content_body2').val();
+	  var sites_content_body_orig2_cabinet = $('#sites_content_body2').val();
 
 		$('#sites_content_body').replaceWith('<div id="sites_content_body"></div>');
+		$('#sites_content_body_cabinet').replaceWith('<div id="sites_content_body_cabinet"></div>');
 		$('#sites_content_body2').replaceWith('<div id="sites_content_body2"></div>');
+		$('#sites_content_body2_cabinet').replaceWith('<div id="sites_content_body2_cabinet"></div>');
 
 
 		DecoupledEditor
@@ -3885,6 +3889,25 @@ function edit_sites_content(id,copyMode) {
 			});
 
 		DecoupledEditor
+			.create( $('#sites_content_body_cabinet').get(0), {
+				language: 'ru'
+			})
+			.then( editor => {
+
+				$('#sites_content_body_cabinet').before('<div id="sites_content_body_cabinet_toolbar_container"></div>');
+
+				const toolbarContainer_cabinet = $('#sites_content_body_cabinet_toolbar_container').get(0);
+
+				toolbarContainer_cabinet.appendChild( editor.ui.view.toolbar.element );
+
+				window.sites_content_body = editor;
+				window.sites_content_body.setData(sites_content_body_orig_cabinet);
+			})
+			.catch( error => {
+				console.error( error );
+			});			
+
+		DecoupledEditor
 			.create( $('#sites_content_body2').get(0), {
 				language: 'ru'
 			})
@@ -3902,6 +3925,25 @@ function edit_sites_content(id,copyMode) {
 			.catch( error => {
 				console.error( error );
 			});
+
+		DecoupledEditor
+			.create( $('#sites_content_body2_cabinet').get(0), {
+				language: 'ru'
+			})
+			.then( editor => {
+
+				$('#sites_content_body2_cabinet').before('<div id="sites_content_body2_toolbar_container"></div>');
+
+				const toolbarContainer2_cabinet = $('#sites_content_body2_cabinet_toolbar_container').get(0);
+
+				toolbarContainer2_cabinet.appendChild( editor.ui.view.toolbar.element );
+
+				window.sites_content_body2 = editor;
+				window.sites_content_body2.setData(sites_content_body_orig2_cabinet);
+			})
+			.catch( error => {
+				console.error( error );
+			});			
 
       $('.sites-content-modal *[name="slider_photos"], .sites-content-modal *[name="slider_photos_mobile"], .sites-content-modal *[name="photogallery"]').multUploader({
         action:'mysql.php?func=multipart_upload',
