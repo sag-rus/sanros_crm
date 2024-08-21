@@ -65,9 +65,16 @@ function update_contact_object_account($connect, $data){
 		$body = $data["body"];
 		$body2 = $data["body2"];
 		$object = $connect->getRow("SELECT id, path FROM object WHERE id=$object");
-		$sites_contents = $connect->getRow("SELECT id  FROM sites_contents WHERE `path`='$object[path]'");
+		$sites_contents = $connect->getRow("SELECT * FROM sites_contents WHERE `path`='$object[path]'");
 		$connect->query("UPDATE object SET address=?s, fax=?s, website=?s, travelline_id=?s, `status`=2, `status_datetime` = NOW(), synchronized=0 WHERE id=?i", $address, $fax, $website, $travelline_id, $object['id']);
-		$connect->query("UPDATE sites_contents SET `changed`=".time().", summary='$summary', body='$body', body2='$body2', synchronized=0 WHERE path='$object[path]' LIMIT 1");
+
+		if ($sites_contents['status']==1) {
+			//Апдейт опубликованного объекта
+			$connect->query("UPDATE sites_contents SET `changed`=".time().", summary_cabinet='$summary', body_cabinet='$body', body2_cabinet='$body2' WHERE path='$object[path]' LIMIT 1");
+		} else {
+			//Апдейт НЕопубликованного объекта
+			$connect->query("UPDATE sites_contents SET `changed`=".time().", summary='$summary', body='$body', body2='$body2', synchronized=0 WHERE path='$object[path]' LIMIT 1");
+		}		
 
 		$entity = [
 			'id' => $sites_contents['id'],
