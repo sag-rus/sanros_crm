@@ -2943,6 +2943,7 @@ function set_sites_content() {
   var summary_cabinet = $summary_cabinet.val().trim();
 
   var summary_cabinet_accept = $modalBody.find('.summary_cabinet_accept:checked').val();
+  var summary_cabinet_not_accepted_reason = $modalBody.find('.summary_cabinet_not_accepted_reason').val();
 
 	var $snippet_summary = $modalBody.find('textarea[name="snippet_summary"]');
 	var $snippet_summaryMsg = $snippet_summary.parent().find('.input-message-block');
@@ -3015,9 +3016,11 @@ function set_sites_content() {
   	var body = window.sites_content_body.getData();
 	var body_cabinet = window.sites_content_body_cabinet.getData();
 	var body_cabinet_accept = $modalBody.find('.body_cabinet_accept:checked').val();
+	var body_cabinet_accept_reason = $modalBody.find('.body_cabinet_accept_reason').val();
 	var body2 = window.sites_content_body2.getData();
 	var body2_cabinet = window.sites_content_body2_cabinet.getData();
-	var body2_cabinet_accept = $modalBody.find('.body_cabinet_accept:checked').val();
+	var body2_cabinet_accept = $modalBody.find('.body2_cabinet_accept:checked').val();
+	var body2_cabinet_accept_reason = $modalBody.find('.body2_cabinet_accept_reason').val();
 
 	var site_id = $modalBody.find('*[name="site_id"]').val();
 	var type = $modalBody.find('*[name="type"]').val();
