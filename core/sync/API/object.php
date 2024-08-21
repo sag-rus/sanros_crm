@@ -70,10 +70,10 @@ function update_contact_object_account($connect, $data){
 
 		if ($sites_contents['status']==1) {
 			//Апдейт опубликованного объекта
-			$connect->query("UPDATE sites_contents SET `changed`=".time().", summary_cabinet='$summary', body_cabinet='$body', body2_cabinet='$body2' WHERE path='$object[path]' LIMIT 1");
+			$connect->query("UPDATE sites_contents SET `changed`=".time().", summary_cabinet='$summary', summary_cabinet_accept=0, summary_cabinet_not_accepted_reason='', body_cabinet='$body', body_cabinet_accept=0, body_cabinet_not_accepted_reason='', body2_cabinet='$body2', body2_cabinet_accept=0, body2_cabinet_not_accepted_reason=''  WHERE path='$object[path]' LIMIT 1");
 		} else {
 			//Апдейт НЕопубликованного объекта
-			$connect->query("UPDATE sites_contents SET `changed`=".time().", summary='$summary', summary_cabinet='',  body='$body', body_cabinet='', body2='$body2', body2_cabinet='', synchronized=0 WHERE path='$object[path]' LIMIT 1");
+			$connect->query("UPDATE sites_contents SET `changed`=".time().", summary='$summary', summary_cabinet='', summary_cabinet_accept=0, summary_cabinet_not_accepted_reason='', body='$body', body_cabinet_accept=0, body_cabinet_not_accepted_reason='', body_cabinet='', body2='$body2', body2_cabinet='', body2_cabinet_accept=0, body2_cabinet_not_accepted_reason='', synchronized=0 WHERE path='$object[path]' LIMIT 1");
 		}		
 
 		$entity = [
