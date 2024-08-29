@@ -3018,13 +3018,37 @@ function set_sites_content() {
 
 
   	var body = window.sites_content_body.getData();
-	var body_cabinet = window.sites_content_body_cabinet.getData();
-	var body_cabinet_accept = $modalBody.find('.body_cabinet_accept:checked').val();
-	var body_cabinet_not_accepted_reason = $modalBody.find('.body_cabinet_not_accepted_reason').val();
+	if (typeof window.sites_content_body_cabinet !== 'undefined') {
+		var body_cabinet = window.sites_content_body_cabinet.getData();
+	} else {
+		var body_cabinet = '';
+	}
+	if (typeof $modalBody.find('.body_cabinet_accept:checked') !== 'undefined') {
+		var body_cabinet_accept = $modalBody.find('.body_cabinet_accept:checked').val();
+	} else {
+		var body_cabinet_accept = 0;
+	}
+	if (typeof $modalBody.find('.body_cabinet_not_accepted_reason') !== 'undefined') {
+		var body_cabinet_not_accepted_reason = $modalBody.find('.body_cabinet_not_accepted_reason').val();
+	} else {
+		var body_cabinet_not_accepted_reason = '';
+	}
 	var body2 = window.sites_content_body2.getData();
-	var body2_cabinet = window.sites_content_body2_cabinet.getData();
-	var body2_cabinet_accept = $modalBody.find('.body2_cabinet_accept:checked').val();
-	var body2_cabinet_not_accepted_reason = $modalBody.find('.body2_cabinet_not_accepted_reason').val();
+	if (typeof window.sites_content_body2_cabinet !== 'undefined') {
+		var body2_cabinet = window.sites_content_body2_cabinet.getData(); 
+	} else {
+		var body2_cabinet = ''; 
+	}
+	if (typeof $modalBody.find('.body2_cabinet_accept:checked') !== 'undefined') {
+		var body2_cabinet_accept = $modalBody.find('.body2_cabinet_accept:checked').val();
+	} else {
+		var body2_cabinet_accept = 0;
+	}
+	if (typeof $modalBody.find('.body2_cabinet_not_accepted_reason') !== 'undefined') {
+		var body2_cabinet_not_accepted_reason = $modalBody.find('.body2_cabinet_not_accepted_reason').val();
+	} else {
+		var body2_cabinet_not_accepted_reason = '';
+	}
 
 	var site_id = $modalBody.find('*[name="site_id"]').val();
 	var type = $modalBody.find('*[name="type"]').val();
