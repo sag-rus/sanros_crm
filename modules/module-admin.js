@@ -2940,9 +2940,11 @@ function set_sites_content() {
   $summaryMsg.html("");
 
   var $summary_cabinet = $modalBody.find('textarea[name="summary_cabinet"]');
-  console.log($summary_cabinet);
-  console.log($summary_cabinet.val());
-  var summary_cabinet = $summary_cabinet.val().trim();
+  if (typeof $summary_cabinet.val() !== 'undefined') {
+  	var summary_cabinet = $summary_cabinet.val().trim();
+  } else {
+	var summary_cabinet = '';
+  }	
 
   var summary_cabinet_accept = $modalBody.find('.summary_cabinet_accept:checked').val();
   var summary_cabinet_not_accepted_reason = $modalBody.find('.summary_cabinet_not_accepted_reason').val();
