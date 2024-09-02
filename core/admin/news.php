@@ -3449,10 +3449,6 @@ function set_sites_content($connect) {
     'msg' => ''
   ];
 
-  echo '<pre>';
-  print_r($_POST);
-  echo '</pre>';
-
   $title = isset($_POST['title'])?trim($_POST['title']):"";
   $breadcrumb_title = isset($_POST['breadcrumb_title'])?trim($_POST['breadcrumb_title']):"";
   $title_h1 = isset($_POST['title_h1'])?trim($_POST['title_h1']):"";
@@ -3548,8 +3544,6 @@ function set_sites_content($connect) {
   $aggregation_date_end = (isset($_POST['aggregation_date_end']) && mb_strlen($_POST['aggregation_date_end']) > 0)?(strtotime($_POST['aggregation_date_end'])):0;
   $aggregation_by_dates = isset($_POST['aggregation_by_dates'])?(int)$_POST['aggregation_by_dates']:0;
 
-  echo 'rss='.$rss.' ';
-  echo 'rss_aggregator_link='.$rss_aggregator_link.' ';  
 
   if(!in_array($aggregation_by_dates,[0,1])) {
       $aggregation_by_dates = 0;
@@ -3626,9 +3620,6 @@ function set_sites_content($connect) {
       $aggregation_date_start = 0;
   }
 
-  echo 'rss='.$rss.' ';
-  echo 'rss_aggregator_link='.$rss_aggregator_link.' ';   
-
   if(!in_array($rss,[0,1]))
       $rss = 0;
 
@@ -3636,9 +3627,6 @@ function set_sites_content($connect) {
       $rss_aggregator_link = "";
       $rss_addition = "";
   }
-
-  echo 'rss='.$rss.' ';
-  echo 'rss_aggregator_link='.$rss_aggregator_link.' ';    
 
   $moduleBlocks = ["rooms","desc","promo","rating"];
   $timestamp = gmdate("U");
