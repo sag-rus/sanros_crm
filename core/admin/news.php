@@ -3449,6 +3449,10 @@ function set_sites_content($connect) {
     'msg' => ''
   ];
 
+  echo '<pre>';
+  print_r($_POST);
+  echo '</pre>';
+
   $title = isset($_POST['title'])?trim($_POST['title']):"";
   $breadcrumb_title = isset($_POST['breadcrumb_title'])?trim($_POST['breadcrumb_title']):"";
   $title_h1 = isset($_POST['title_h1'])?trim($_POST['title_h1']):"";
