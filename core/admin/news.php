@@ -3505,9 +3505,6 @@ function set_sites_content($connect) {
     $aggregate_types_start = isset($_POST['aggregate_types'])?(array)$_POST['aggregate_types']:[];
     $main_page_fix = isset($_POST['main_page_fix'])?(int)$_POST['main_page_fix']:0;
 
-    echo 'rss='.$rss.' ';
-    echo 'rss_aggregator_link='.$rss_aggregator_link.' ';    
-
   $aggregate_types = [];
 
   if($direction_id < 0) {
@@ -3550,6 +3547,9 @@ function set_sites_content($connect) {
   $aggregation_date_start = (isset($_POST['aggregation_date_start']) && mb_strlen($_POST['aggregation_date_start']) > 0)?(strtotime($_POST['aggregation_date_start'])):0;
   $aggregation_date_end = (isset($_POST['aggregation_date_end']) && mb_strlen($_POST['aggregation_date_end']) > 0)?(strtotime($_POST['aggregation_date_end'])):0;
   $aggregation_by_dates = isset($_POST['aggregation_by_dates'])?(int)$_POST['aggregation_by_dates']:0;
+
+  echo 'rss='.$rss.' ';
+  echo 'rss_aggregator_link='.$rss_aggregator_link.' ';  
 
   if(!in_array($aggregation_by_dates,[0,1])) {
       $aggregation_by_dates = 0;
