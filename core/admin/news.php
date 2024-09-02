@@ -3501,6 +3501,9 @@ function set_sites_content($connect) {
     $aggregate_types_start = isset($_POST['aggregate_types'])?(array)$_POST['aggregate_types']:[];
     $main_page_fix = isset($_POST['main_page_fix'])?(int)$_POST['main_page_fix']:0;
 
+    echo 'rss='.$rss.' ';
+    echo 'rss_aggregator_link='.$rss_aggregator_link.' ';    
+
   $aggregate_types = [];
 
   if($direction_id < 0) {
