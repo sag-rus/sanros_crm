@@ -3601,11 +3601,9 @@ function set_sites_content($connect) {
      $rss_aggregation = 0;
   }
 
-    if(!in_array($aggregate_types_start,[0,1]))
-        $rss = 0;
-
-        echo 'rss='.$rss.' ';
-        echo 'rss_aggregator_link='.$rss_aggregator_link.' ';          
+    /*if(!in_array($aggregate_types_start,[0,1]))
+        $rss = 0;*/
+         
 
   if(in_array($type,['aggregator'])) {
     foreach ($aggregate_types_start as $aggregate_types_start_item) {
