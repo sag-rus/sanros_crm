@@ -3604,6 +3604,9 @@ function set_sites_content($connect) {
     if(!in_array($aggregate_types_start,[0,1]))
         $rss = 0;
 
+        echo 'rss='.$rss.' ';
+        echo 'rss_aggregator_link='.$rss_aggregator_link.' ';          
+
   if(in_array($type,['aggregator'])) {
     foreach ($aggregate_types_start as $aggregate_types_start_item) {
       $aggregate_types_start_item = (int)$aggregate_types_start_item;
@@ -3625,6 +3628,9 @@ function set_sites_content($connect) {
       $aggregation_date_start = 0;
   }
 
+  echo 'rss='.$rss.' ';
+  echo 'rss_aggregator_link='.$rss_aggregator_link.' ';   
+
   if(!in_array($rss,[0,1]))
       $rss = 0;
 
@@ -3632,6 +3638,9 @@ function set_sites_content($connect) {
       $rss_aggregator_link = "";
       $rss_addition = "";
   }
+
+  echo 'rss='.$rss.' ';
+  echo 'rss_aggregator_link='.$rss_aggregator_link.' ';    
 
   $moduleBlocks = ["rooms","desc","promo","rating"];
   $timestamp = gmdate("U");
