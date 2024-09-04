@@ -43,7 +43,7 @@ echo '<strong>Предыдущая отправка отчета была '.date
 $file = '1'.$partner_id.' POSTING DATA  '.date('Ymd').'  0                                                                        '.PHP_EOL;
 $count = 0;
 $text = '';
-$items = $connect->getAll("SELECT * FROM `reckoning` WHERE `afl`<>'' AND `afl_worked`=0 AND `status`=5 AND `status_san`=1 AND `date_v`<=NOW() - INTERVAL 60 DAY ");
+$items = $connect->getAll("SELECT * FROM `reckoning` WHERE `afl`<>'' AND `afl_worked`=0 AND `status`=5 AND `status_san`=1 AND `date_v`<=NOW() - INTERVAL 30 DAY ");
 foreach($items as $item) {
     
     $text .= '<strong>Заявка №'.$item['id'].'</strong><br>';
