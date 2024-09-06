@@ -643,7 +643,7 @@ function sync_objects_api($connect){
 
 
 			$res = json_decode($res->getBody(),true);
-          	echo '<pre>Результат';
+          	echo '<pre>Результат отправки на https://sites.tonia.ru/api/object/set/'.$object['id'];
 		  	print_r($res);   
           	echo '</pre>';			
 			if(array_key_exists('success',$res)) {
