@@ -1405,7 +1405,7 @@ function get_month_profit(){
 	return $html;
 }
 
-function all_klient_bonus($connect, $id){
+function all_klient_bonus($connect, $id, $debug = false){
 	$costs = $connect->getAll("SELECT id, active, sum, date FROM bonus WHERE turist=?i AND sum < 0 ORDER BY `date` ASC", $id);
 	$sum = 0;
 	$today = date("Y-m-d");
@@ -1433,11 +1433,25 @@ function all_klient_bonus($connect, $id){
     $bonusList[] = $bonus;
   }
 
+  if ($debug) {
+	echo '<pre>';
+	print_r($bonusList);
+	echo '</pre>';
+  }
+
 
   foreach ($costs as $cost) {
     $costSum = (int)$cost['sum'];
     foreach ($bonusList as $i => $bonus) {
       if( strtotime($bonusList[$i]['date']) <= strtotime($cost['date']) && $bonusList[$i]['last_timestamp'] >= strtotime($cost['date']) && $costSum < 0) {
+		if ($debug) {
+			echo '<pre>';
+			echo $bonusList[$i]['date']."\r\n";
+			echo $cost['date']."\r\n";
+			echo $bonusList[$i]['last_timestamp']."\r\n";
+			echo $costSum."\r\n";
+			echo '</pre>';
+		}
         $c_sum = min($bonusList[$i]['sum'],abs($costSum));
         $costSum += $c_sum;
         $bonusList[$i]['sum'] -= $c_sum;
