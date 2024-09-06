@@ -643,12 +643,18 @@ function sync_objects_api($connect){
 
 
 			$res = json_decode($res->getBody(),true);
-          	echo '<pre>Результат отправки на https://sites.tonia.ru/api/object/set/'.$object['id'];
+          	echo '<pre>Результат отправки на https://sites.tonia.ru/api/object/set/'.$object['id'].'<br>';
 		  	print_r($res);   
           	echo '</pre>';			
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
 				if($success) {
+					if (trim($res['new_uri'])!='') {
+						$connect->query("UPDATE `object` SET `path` = '?s' WHERE `id` = ?i", $res['new_uri'], $object['id']);
+						echo $connect->last_query().'<br>';
+					}
+
+
 					$connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type` = 'resort' AND `entity1_id` = ?i AND `name` = 'treatment_profile'", $object['id']);
 					$connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type` = 'resort' AND `entity1_id` = ?i AND `name` = 'treatment_method'", $object['id']);
 					$connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type` = 'resort' AND `entity1_id` = ?i AND `name` = 'treatment_procedure'", $object['id']);
