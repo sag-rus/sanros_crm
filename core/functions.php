@@ -1410,10 +1410,22 @@ function all_klient_bonus($connect, $id, $debug = false){
 	$sum = 0;
 	$today = date("Y-m-d");
 
+	if ($debug) {
+		echo '<pre>';
+		print_r($costs);
+		echo '</pre>';
+	}	
+
   $costsArray = array();
 
   $bonuses = $connect->getAll("SELECT id, active, sum, date, type, schet, `last_timestamp` FROM bonus WHERE turist=?i AND sum > 0 ORDER BY `date` ASC", $id);
   $bonusList = array();
+
+  if ($debug) {
+	echo '<pre>';
+	print_r($bonuses);
+	echo '</pre>';
+}	  
 
   foreach ($bonuses as $bonus) {
     	/*$access = false;
