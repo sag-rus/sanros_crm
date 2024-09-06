@@ -29,7 +29,7 @@ function select_client($connect){
 	$photo = "images/NoPicture.jpg";
 	if($row["photo"])
 		$photo = "data:image/jpg;base64,".$row["photo"];
-	$bonus = all_klient_bonus($connect, $id, true);
+	$bonus = all_klient_bonus($connect, $id);
 	ob_start();
 ?>
 <button type="button" class="btn btn-warning btn-xs" onclick="show_prev_page()"><i class="fa fa-angle-double-left"></i> вернуться назад</button>
