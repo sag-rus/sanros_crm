@@ -1429,6 +1429,9 @@ function all_klient_bonus($connect, $id, $debug = false){
   $costsArray = array();
 
   $bonuses = $connect->getAll("SELECT id, active, sum, date, type, schet, `last_timestamp` FROM bonus WHERE turist=?i AND sum > 0 ORDER BY `date` ASC", $id);
+  if ($debug) {
+	echo $connect->last_query().'<br>';
+}  
   $bonusList = array();
 
   if ($debug) {
