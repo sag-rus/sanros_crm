@@ -1333,11 +1333,12 @@ function recalculation_sum($connect, $id){
 
 	$data = $connect->getAll("SELECT sum, number, type, days FROM position_reck WHERE schet=?i", $id);
 	$all_sum = 0;
-	foreach($data as $row){
+	foreach($data as $row)		
 		$sum = $row["sum"];
 		$number = $row["number"];
 		$type = $row["type"];
 		$days = $row["days"];
+		echo 'sunm='.$sum.' $num='.$number.' ';
 		if($reck_type == 0)
           $all_sum += calculate_position($sum, $number, $type, $days);
 		else
