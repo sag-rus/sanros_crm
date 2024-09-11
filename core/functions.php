@@ -1325,6 +1325,7 @@ function calculate_position($sum, $number, $type, $days){
 	}elseif($type == 3){
 		$all_sum = $sum * $number;
 	}
+	echo '$all_sum='.$all_sum;
 	return $all_sum;
 }
 
@@ -1338,7 +1339,6 @@ function recalculation_sum($connect, $id){
 		$number = $row["number"];
 		$type = $row["type"];
 		$days = $row["days"];
-		echo 'sunm='.$sum.' $num='.$number.' ';
 		if($reck_type == 0)
           $all_sum += calculate_position($sum, $number, $type, $days);
 		else
