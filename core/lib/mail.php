@@ -103,6 +103,42 @@ function gen_password($length){
 	return $password;
 }
 
+function send_mail_yandex($email, $title, $mess, $file=false, $file2=false, $afl_file=false){
+	$email = str_replace(" ", "", $email);
+	if(!filter_var($email, FILTER_VALIDATE_EMAIL))
+		return FALSE;
+	global $mail_username, $mail_from, $directory;
+	include_once($directory."/config.php");
+	$conf = new JConfig;
+	$email_from = $conf->email_from;
+	$password_from = $conf->password_from;
+	include_once($directory."/core/lib/PHPMailer/class.phpmailer.php");
+	$mail = new PHPMailer();
+	$mail->IsSMTP();
+	$mail->CharSet = "UTF-8";
+	$mail->SMTPDebug = 2;
+	$mail->SMTPAuth = true;
+	$mail->SMTPSecure = "ssl";
+	$mail->Host = "smtp.yandex.ru";
+	$mail->Port = 465;
+	$mail->Username = 'office@yandex.ru';
+	$mail->Password = 'gelfrfhzfxurhhpa';
+
+	$mail->SetFrom("office@yandex.ru", "САНАТОРИИ-РОССИИ");
+	$mail->AddAddress($email);
+	$mail->Subject = htmlspecialchars($title);
+	if($file)
+		$mail->AddAttachment($file, "doc.pdf");
+	if($file2)
+		$mail->AddAttachment($file2, "doc2.pdf");
+	if($afl_file)
+		$mail->AddAttachment($afl_file, "AFL.txt");
+	$mail->Body = $mess;
+	$mail->isHTML(TRUE);
+	$mail->Send();
+	return TRUE;
+}
+
 function send_mail($email, $title, $mess, $file=false, $file2=false, $afl_file=false){
 	$email = str_replace(" ", "", $email);
 	if(!filter_var($email, FILTER_VALIDATE_EMAIL))
