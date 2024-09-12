@@ -5,7 +5,7 @@ class SendMailDefault extends SendMail{
   public function __construct(){
     $auth = array(
       "login" => "office@sanata.online",
-      "password" => "kwsskpyjqnjndahb",
+      "password" => "gelfrfhzfxurhhpa",
       "from" => "office@sanata.online",
       "from_name" => "САНАТОРИИ РОССИИ",
       "host" => "smtp.yandex.ru"
