@@ -4,11 +4,11 @@ class SendMailDefault extends SendMail{
 
   public function __construct(){
     $auth = array(
-      "login" => "kazangood@gmail.com",
+      "login" => "office@sanata.online",
       "password" => "kwsskpyjqnjndahb",
-      "from" => "kazangood@gmail.com",
-      "from_name" => "Саната",
-      "host" => "smtp.gmail.com"
+      "from" => "office@sanata.online",
+      "from_name" => "САНАТОРИИ РОССИИ",
+      "host" => "smtp.yandex.ru"
     );
     $this->auth = $auth;
   }

@@ -4,11 +4,11 @@ class SendMailSanata extends SendMail{
 
   public function __construct(){
     $auth = array(
-      "login" => "booking@sanata.online",
-      "password" => "htlfrnjh1",
-      "from" => "booking@sanata.online",
-      "from_name" => "Система САНАТА",
-      "host" => "smtp.yandex.ru"
+      "login" => "office@sanata.online",
+      "password" => "kwsskpyjqnjndahb",
+      "from" => "office@sanata.online",
+      "from_name" => "САНАТОРИИ РОССИИ",
+      "host" => "smtp.yandex.ru"      
     );
     $this->auth = $auth;
   }
