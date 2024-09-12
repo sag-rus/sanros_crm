@@ -32,7 +32,7 @@ $configNew->objectCabinet = $objectCabinet;
 
 
 
-send_mail('sagrus@yandex.ru', 'Отчет по начисленным милям', 'Отчет по начисленным милям', false, false, '/var/www/html/CRM/afl.txt');
+send_mail_sanata('sagrus@yandex.ru', 'Отчет по начисленным милям', 'Отчет по начисленным милям', false, false, '/var/www/html/CRM/afl.txt');
 
 
 
