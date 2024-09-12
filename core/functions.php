@@ -1350,7 +1350,7 @@ function recalculation_sum($connect, $id){
 		$all_sum-= $sum;
 	}
 	*/	
-	$all_sum = round($all_sum, 2);
+	$all_sum = round($all_sum);
 	$connect->query("UPDATE reckoning SET sum=?s WHERE id=?i", $all_sum, $id);
 	echo "UPDATE reckoning SET sum=$all_sum WHERE id=$id";
 }

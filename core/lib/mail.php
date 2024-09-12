@@ -10,7 +10,6 @@ function get_template_letter_new($file_name, $id = ""){
 	return $answer;
 }
 
-
 function get_template_letter($file_name, $id = ""){
 	global $directory;
 	$answer = array();
