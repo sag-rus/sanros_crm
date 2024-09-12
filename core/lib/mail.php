@@ -124,7 +124,7 @@ function send_mail_yandex($email, $title, $mess, $file=false, $file2=false, $afl
 	$mail->Username = 'office@sanata.online';
 	$mail->Password = 'gelfrfhzfxurhhpa';
 
-	$mail->SetFrom("office@yandex.ru", "САНАТОРИИ-РОССИИ");
+	$mail->SetFrom("office@sanata.online", "САНАТОРИИ-РОССИИ");
 	$mail->AddAddress($email);
 	$mail->Subject = htmlspecialchars($title);
 	if($file)
