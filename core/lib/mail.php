@@ -121,7 +121,7 @@ function send_mail_yandex($email, $title, $mess, $file=false, $file2=false, $afl
 	$mail->SMTPSecure = "ssl";
 	$mail->Host = "smtp.yandex.ru";
 	$mail->Port = 465;
-	$mail->Username = 'office@yandex.ru';
+	$mail->Username = 'office@sanata.online';
 	$mail->Password = 'gelfrfhzfxurhhpa';
 
 	$mail->SetFrom("office@yandex.ru", "САНАТОРИИ-РОССИИ");
