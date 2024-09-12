@@ -147,8 +147,8 @@ function send_mail_sanata($email, $title, $mess){
 	$conf = new JConfig;
 	//$email_from = $conf->email_from_sanata;
 	//$password_from = $conf->password_from_sanata;
-	$mail->Username = $email_from;
-	$mail->Password = $password_from;	
+	$email_from = $conf->email_from;
+	$password_from = $conf->password_from;
 	include_once($directory."/core/lib/PHPMailer/class.phpmailer.php");
 	$mail = new PHPMailer();
 	$mail->IsSMTP();
