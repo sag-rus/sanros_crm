@@ -781,7 +781,7 @@ function sync_objects_api($connect){
 			}
 		}
 
-		$places = $connect->getAll("SELECT `id`, `id_obj`, `id_room`, `name`, `type` FROM `place` WHERE `synchronized` = 0 and `status`=1");
+		$places = $connect->getAll("SELECT * FROM `place` WHERE `synchronized` = 0 and `status`=1");
 
 		foreach ($places as $place) {
 			$placeAr = [];
@@ -792,7 +792,7 @@ function sync_objects_api($connect){
 			$placeAr['status'] = 1;
 			$placeAr['resort_id'] = $place['id_obj'];
 			$placeAr['room_id'] = $place['id_room'];
-			$placeAr['travelline_occupancy_data'] = 'test';
+			$placeAr['travelline_occupancy_data'] = get_place_name($place, true);
 			$placeAr['uid'] = 1;
 
 			echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/place/set/".$place['id'].'<br>';
