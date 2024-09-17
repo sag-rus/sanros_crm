@@ -795,7 +795,10 @@ function sync_objects_api($connect){
 			$placeAr['travelline_occupancy_data	'] = 'test';
 			$placeAr['uid'] = 1;
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/place/set/".$place['id'].'<br>';
+			echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/place/set/".$place['id'].'<br>';
+			echo '<pre>';
+			print_r($placeAr);
+			echo '</pre>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/place/set/".$place['id'],[
 				'form_params' => $placeAr
