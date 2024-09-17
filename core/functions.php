@@ -71,7 +71,7 @@ function get_place_name($row, $travelline_occupancy_data = false) {
 			$data['code'] = get_place_export_id($row['id_room'], $row);
 			$data['name'] = $row['adult_on_main_place'].' взр. на осн.месте';
 			$data['personQuantity'] = $row['adult_on_main_place'];
-			$data['bedType'] = $row['adultBed'];
+			$data['bedType'] = 'adultBed';
 			$occupancies[] = $data;
 		} else $res .= $row['adult_on_main_place'].' взр. на осн.месте + ';
 	}
@@ -81,7 +81,7 @@ function get_place_name($row, $travelline_occupancy_data = false) {
 			$data['code'] = get_place_export_id($row['id_room'], $row);
 			$data['name'] = $row['adult_on_add_place'].' взр. на осн.месте';
 			$data['personQuantity'] = $row['adult_on_add_place'];
-			$data['bedType'] = $row['adultExtraBed'];
+			$data['bedType'] = 'adultExtraBed';
 			$occupancies[] = $data;
 		} else $res .= $row['adult_on_add_place'].' взр. на доп.месте + ';
 	}
@@ -93,7 +93,7 @@ function get_place_name($row, $travelline_occupancy_data = false) {
 				$data['code'] = get_place_export_id($row['id_room'], $row);
 				$data['name'] = $row['child_on_main_place'].' реб. ('.$child['age_from'].'-'.$child['age_to'].' лет) на осн.месте';
 				$data['personQuantity'] = $row['child_on_main_place'];
-				$data['bedType'] = $row['childBandBed'];
+				$data['bedType'] = 'childBandBed';
 				$occupancies[] = $data;
 			} else $res .= $row['child_on_main_place'].' реб. ('.$child['age_from'].'-'.$child['age_to'].' лет) на осн.месте + ';
 		}
@@ -106,7 +106,7 @@ function get_place_name($row, $travelline_occupancy_data = false) {
 				$data['code'] = get_place_export_id($row['id_room'], $row);
 				$data['name'] = $row['child_on_add_place'].' реб. ('.$child['age_from'].'-'.$child['age_to'].' лет) на доп.месте';
 				$data['personQuantity'] = $row['child_on_add_place'];
-				$data['bedType'] = $row['childBandExtraBed'];
+				$data['bedType'] = 'childBandExtraBed';
 				$occupancies[] = $data;
 			} else $res .= $row['child_on_add_place'].' реб. ('.$child['age_from'].'-'.$child['age_to'].' лет) на доп.месте + ';
 		}
@@ -119,7 +119,7 @@ function get_place_name($row, $travelline_occupancy_data = false) {
 				$data['code'] = get_place_export_id($row['id_room'], $row);
 				$data['name'] = $row['child_no_place'].' реб. ('.$child['age_from'].'-'.$child['age_to'].' лет) без места';
 				$data['personQuantity'] = $row['child_no_place'];
-				$data['bedType'] = $row['childBandWithoutBed'];
+				$data['bedType'] = 'childBandWithoutBed';
 				$occupancies[] = $data;
 			} else $res .= $row['child_no_place'].' реб. ('.$child['age_from'].'-'.$child['age_to'].' лет) без места + ';
 		}
