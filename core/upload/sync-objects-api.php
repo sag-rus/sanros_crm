@@ -792,7 +792,7 @@ function sync_objects_api($connect){
 			$placeAr['status'] = 1;
 			$placeAr['resort_id'] = $place['id_obj'];
 			$placeAr['room_id'] = $place['id_room'];
-			$placeAr['travelline_occupancy_data	'] = 'test';
+			$placeAr['travelline_occupancy_data'] = 'test';
 			$placeAr['uid'] = 1;
 
 			echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/place/set/".$place['id'].'<br>';
