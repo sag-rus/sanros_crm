@@ -124,7 +124,7 @@ function get_place_name($row, $travelline_occupancy_data = false) {
 			} else $res .= $row['child_no_place'].' реб. ('.$child['age_from'].'-'.$child['age_to'].' лет) без места + ';
 		}
 	}
-	if ($travelline_occupancy_data) return json_encode($data);
+	if ($travelline_occupancy_data) return json_encode($occupancies);
 	return trim(trim($res), '+');
 }
 
