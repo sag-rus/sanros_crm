@@ -1392,7 +1392,7 @@ function save_room_occupancy($connect) {
 				`child_on_add_place`=?i,
 				`id_child_no_place`=?i, 
 				`child_no_place`=?i  
-				WHERE `id`=?i and `id_obj`=?
+				WHERE `id`=?i and `id_obj`=?i
 				", 
 				get_place_name($_POST),
 				get_place_export_id($_POST['id_room'], $_POST),
