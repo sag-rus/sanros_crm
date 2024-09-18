@@ -1380,7 +1380,7 @@ function save_room_occupancy($connect) {
 		if (isset($_POST['id_obj'])) {
 			$connect->query("UPDATE `place` SET 
 				`name`=?s,
-				`synchronized`=0,
+				
 				`export_id`=?s,
 				`id_room`=?i, 
 				`adult_on_main_place`=?i, 
