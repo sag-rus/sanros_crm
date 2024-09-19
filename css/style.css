@@ -1757,6 +1757,6 @@ tr.simple-row {
     border-left: .3em solid transparent;	
 }
 
-.sites_content_body {
+#sites_content_body, #sites_content_body2 {
 	max-height: 600px;
 }
