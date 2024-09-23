@@ -3990,13 +3990,13 @@ function sync_site($connect) {
                 $connect->query("UPDATE `app_models_site_contenttype` SET `synchronized` = 1 WHERE `id` = ?i",$contentType['id']);
             }
             else {
-                $respAr['msg'] = "Что-то пошло не так...";
+                $respAr['msg'] = "Что-то пошло не так...1";
                 break;
             }
           }
           else {
             $respAr['success'] = 0;
-            $respAr['msg'] = "Что-то пошло не так...";
+            $respAr['msg'] = "Что-то пошло не так...2";
             break;
           }
         }
@@ -4022,14 +4022,14 @@ function sync_site($connect) {
       foreach ($contents as $content) {
         if(!sync_site_content($connect,$content['id'])) {
           $respAr['success'] = 0;
-          $respAr['msg'] = "Что-то пошло не так...";
+          $respAr['msg'] = "Что-то пошло не так...3";
         }
         elseif (!sync_bounds($connect,[
           'type' => 'content',
           'id' => $content['id']
         ])) {
           $respAr['success'] = 0;
-          $respAr['msg'] = "Что-то пошло не так...";
+          $respAr['msg'] = "Что-то пошло не так...4";
         }
       }
 
@@ -4052,7 +4052,7 @@ function sync_site($connect) {
             }
             else {
               $respAr['success'] = 0;
-              $respAr['msg'] = "Что-то пошло не так...";
+              $respAr['msg'] = "Что-то пошло не так...5";
               break;
             }
           }
@@ -4081,7 +4081,7 @@ function sync_site($connect) {
             }
             else {
               $respAr['success'] = 0;
-              $respAr['msg'] = "Что-то пошло не так...";
+              $respAr['msg'] = "Что-то пошло не так...6";
               break;
             }
           }
@@ -4105,7 +4105,7 @@ function sync_site($connect) {
             }
             else {
               $respAr['success'] = 0;
-              $respAr['msg'] = "Что-то пошло не так...";
+              $respAr['msg'] = "Что-то пошло не так...7";
               break;
             }
           }
@@ -4129,7 +4129,7 @@ function sync_site($connect) {
             }
             else {
               $respAr['success'] = 0;
-              $respAr['msg'] = "Что-то пошло не так...";
+              $respAr['msg'] = "Что-то пошло не так...8";
               break;
             }
           }
@@ -4165,7 +4165,7 @@ function sync_site($connect) {
                     }
                     else {
                         $respAr['success'] = 0;
-                        $respAr['msg'] = "Что-то пошло не так...";
+                        $respAr['msg'] = "Что-то пошло не так...9";
                         break;
                     }
                 }
@@ -4211,7 +4211,7 @@ function sync_site($connect) {
                         }
                     } else {
                         $respAr['success'] = 0;
-                        $respAr['msg'] = "Что-то пошло не так...";
+                        $respAr['msg'] = "Что-то пошло не так...10";
                         break;
                     }
                 }
@@ -4221,7 +4221,7 @@ function sync_site($connect) {
 
         if(!sync_files($connect)) {
           $respAr['success'] = 0;
-          $respAr['msg'] = "Что-то пошло не так...";
+          $respAr['msg'] = "Что-то пошло не так...11";
         }
       }
     }
