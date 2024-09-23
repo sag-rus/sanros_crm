@@ -1453,17 +1453,17 @@ function view_quota_object(object){
       		var object_name = data['object-name'];
       		var check_bid = $('.quota-object-bid').length;
 
-			if(0) {
-
-			} else {
 	        for(var room in data['room']){
 	        	var max_quota = data['room'][room]['max-quota'];
 	          	var quota = data['room'][room]['quota'];
 	          	var table = '';
-	          	for(tr = 1; tr <= max_quota; tr++){
+	          	for(tr = 1; tr <= max_quota; tr++) {
 
 	            	table+= '<tr class="tr-range" room="' +room+ '">';
 	            	for(var month in data['room'][room]['quota']) {
+						console.log('month');
+	            		console.log(month);
+
 						if(month.length === 1) {
 							continue;
 						}
@@ -1632,6 +1632,7 @@ function view_quota_object(object){
 	        html+= '<div class="form-horizontal booking-form hidden"><ul class="nav nav-tabs nav-booking-type">';
 	        if(check_bid == 0)
 	          	html+= '<li class="active new-booking-quota" onclick="change_type_booking_quota_form(\'new\')"><a>Создать новую заявку</a></li>';
+
 	        html+= '<li class="add-booking-quota" onclick="change_type_booking_quota_form(\'add\')"><a>Добавить к созданной заявке</a></li></ul>';
 
 	        html+= '<div class="list-group rooms-info" style="margin: 10px 0"></div>' + new_booking + add_booking;
@@ -1656,12 +1657,11 @@ function view_quota_object(object){
 				});
 			});
 
-        	if($('.date-select-quota option:selected').prev().length)
-          		$('.btn-prev-availability-calendar').removeAttr('disabled');
-        	if($('.date-select-quota option:selected').next().length)
-          		$('.btn-next-availability-calendar').removeAttr('disabled');
+        	if($('.date-select-quota option:selected').prev().length) $('.btn-prev-availability-calendar').removeAttr('disabled');
+        	if($('.date-select-quota option:selected').next().length) $('.btn-next-availability-calendar').removeAttr('disabled');
+			
+			
 		}
-	}
 	});
 }
 
