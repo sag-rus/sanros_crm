@@ -86,9 +86,9 @@ function view_quota_object($connect, $data = array()){
         $next_month = 1;
         $next_year++;
     }
-    $months[2]["month"] = $next_month;
+    /*$months[2]["month"] = $next_month;
     $months[2]["year"] = $next_year;
-    $months[2]["max-day"] = cal_days_in_month(CAL_GREGORIAN, $next_month, $next_year);
+    $months[2]["max-day"] = cal_days_in_month(CAL_GREGORIAN, $next_month, $next_year);*/
 
     $dates_price_object = array();
     $object_row = $connect->getRow("SELECT check_places, sync_id, default_price_type FROM object WHERE id=?i", $object);
