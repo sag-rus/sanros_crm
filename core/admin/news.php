@@ -3878,21 +3878,23 @@ function sync_site_content($connect, $id):bool {
             if($success) {
                 $connect->query("UPDATE `sites_contents` SET `synchronized` = '1' WHERE `id` = ?i",$id);
             }
-            return $success;
+            echo '444=';
+            if (!$success) echo 'false'; else echo 'true';
+            //return $success;
           }
           else {
                 echo 'here...';
-              return false;
+              //return false;
             }
         }
         catch (Exception $e) {
             echo 'here...2';
-            return false;
+            //return false;
         }
     }
     else  {
         echo 'here...3';
-        return false;
+        //return false;
     }
 }
 
