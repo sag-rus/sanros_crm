@@ -3868,7 +3868,6 @@ function sync_site_content($connect, $id):bool {
           $client = new \GuzzleHttp\Client(['verify' => false]);
           $content["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
           $content["body"] = base64_encode($content["body"]);
-          print_r($content);
           $res = $client->request('POST',"https://sites.tonia.ru/api/content/set/".$content['id'],[
             'form_params' => $content
           ]);
@@ -3879,24 +3878,16 @@ function sync_site_content($connect, $id):bool {
             if($success) {
                 $connect->query("UPDATE `sites_contents` SET `synchronized` = '1' WHERE `id` = ?i",$id);
             }
-            echo '444=';
-            if (!$success) echo 'false'; else echo 'true';
-            //return $success;
+            return $success;
           }
-          else {
-                echo 'here...';
-              //return false;
-            }
+          else
+              return false;
         }
         catch (Exception $e) {
-            echo 'here...2';
-            //return false;
+            return false;
         }
     }
-    else  {
-        echo 'here...3';
-        //return false;
-    }
+    else return false;
 }
 
 function sync_files($connect) {
