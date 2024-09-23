@@ -3880,14 +3880,20 @@ function sync_site_content($connect, $id):bool {
             }
             return $success;
           }
-          else
+          else {
+                echo 'here...';
               return false;
+            }
         }
         catch (Exception $e) {
+            echo 'here...2';
             return false;
         }
     }
-    else return false;
+    else  {
+        echo 'here...3';
+        return false;
+    }
 }
 
 function sync_files($connect) {
