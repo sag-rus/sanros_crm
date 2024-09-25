@@ -142,7 +142,7 @@ try {
 
   $request = json_decode($_POST['request'], true);  
 
-  $connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `query`='".print_r($request, true)."'");
+  $connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `action`='$request[action]', `query`='".print_r($request, true)."'");
   $log_id = $connect->insertId();  
 
   if(isset($request['action']) && isset($request['data'])) {
