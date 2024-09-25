@@ -597,7 +597,7 @@ function booking_quota_room_add_bid($connect){
     if(!$booking)
       $connect->query("INSERT INTO booking(bid) VALUES (?i)", $bid);
     else
-      $connect->query("UPDATE booking SET update_bid=1, confirm=0, status='modified' WHERE id=?i", $booking);
+      $connect->query("UPDATE booking SET update_bid=1, `updated`=NOW(), confirm=0, status='modified' WHERE id=?i", $booking);
   }
   change_arrival_date($connect, $bid);
   recalculation_sum($connect, $bid);

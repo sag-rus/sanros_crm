@@ -136,16 +136,16 @@ if(!$connect->getRow("SELECT `id` FROM `object` LIMIT 1")) {
 
 if(!$connect || !$connect->getRow("SELECT `id` FROM `object` LIMIT 1")) {
   file_put_contents($directory."/core/sync/file/vpn-requests-error.log",'Database connection exception'.PHP_EOL,FILE_APPEND);
-  unlink($directory."/core/sync/file/fast-time-test.txt");
 }
 
 try {
 
-  $request = json_decode($_POST['request'], true);
+  $request = json_decode($_POST['request'], true);  
+
+  $connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `query`='".print_r($request, true)."'");
+  $log_id = $connect->insertId();  
 
   if(isset($request['action']) && isset($request['data'])) {
-
-    if ($_POST['debug']=='1') echo 'action='.$request['action'].'<br>';
 
     $respAr = [
       'title' => '',
@@ -154,38 +154,28 @@ try {
     ];
 
     if(function_exists($request['action'])) {
-      try {
-        $config = ConfigCRM::getInstance();
-        $configNew = App\lib\CRM\Config\Client::getInstance();
-        $requestData = json_decode(base64_decode($request['data']),true);
+      $config = ConfigCRM::getInstance();
+      $configNew = App\lib\CRM\Config\Client::getInstance();
+      $requestData = json_decode(base64_decode($request['data']),true);
 
-        if ($_POST['debug']=='1') echo '<pre>'.print_r($requestData, true).'</pre>';
-
-        if(isset($requestData["session"])) {
-          $config->session = $requestData["session"];
-          $configNew->session = $requestData["session"];
-        }
-
-        if(isset($requestData["object"])) {
-          $config->object = $requestData["object"];
-          $configNew->object = $requestData["object"];
-        }
-
-        if(isset($requestData["booking"])) {
-          $config->booking = $requestData["booking"];
-          $configNew->booking = $requestData["booking"];
-        }
-
-        $respAr['result'] = $request['action']($connect,$requestData,true);
-        $respAr['success'] = 1;
-
-        //$respAr['result']['cfg'] = print_r($config, true);
-
+      if(isset($requestData["session"])) {
+        $config->session = $requestData["session"];
+        $configNew->session = $requestData["session"];
       }
-      catch (Exception $e) {
-        file_put_contents($directory."/core/sync/file/fast-requests-error.log",$e->getMessage().PHP_EOL,FILE_APPEND);
-        //break 2;
+
+      if(isset($requestData["object"])) {
+        $config->object = $requestData["object"];
+        $configNew->object = $requestData["object"];
       }
+
+      if(isset($requestData["booking"])) {
+        $config->booking = $requestData["booking"];
+        $configNew->booking = $requestData["booking"];
+      }
+
+      $respAr['result'] = $request['action']($connect,$requestData,true);
+      $respAr['success'] = 1;
+
     }
     else {
       $respAr['msg'] = "Action's method not exists";
@@ -194,16 +184,13 @@ try {
 
   }
 
+  $connect -> query("UPDATE `1_vpn_req_log` SET `answer`='ANSWER: ".print_r($respAr, true)."' WHERE `id`=$log_id");
 
-
-  if ($_POST['debug']=='1') echo '<pre>$respAr='.print_r(respAr, true).'</pre>';
-  else echo json_encode($respAr);
-
+  echo json_encode($respAr);
 
 }
 catch (Exception $e) {
-  file_put_contents($directory."/core/sync/file/vpn-requests-error.log",$e->getMessage().PHP_EOL,FILE_APPEND);
-  unlink($directory."/core/sync/file/fast-time-test.txt");
+  file_put_contents($directory."/core/sync/file/vpn-requests-error.log",$e->getMessage().PHP_EOL, FILE_APPEND);
 }
 
 ?>

@@ -218,44 +218,7 @@ while(1) {
         }
       }
 
-        if($worker === 0) {
-            echo 'Проверка необходимости обновлений данных по квотам...'. PHP_EOL;
-            $bookings = check_new_update_booking($connect);
-            if($bookings["check"] == 1){
-                $data = json_encode($bookings["bookings"]);
-                //$request = array("func" => "update_new_bookings_travelline", "data" => $data);
-                //$return = request_to_sync($request);
-
-                try {
-
-                    echo 'Обновление даннных по квотам...'. PHP_EOL;
-                    $client = new GuzzleHttp\Client(['verify' => false]);
-                    $res = $client->request('POST','https://sites.tonia.ru/api/bookings/set?cache='.substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'), 1, 15),[
-                        'form_params' => [
-                            'data' => $data,
-                            'token' => '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4'
-                        ]
-                    ])->getBody()->getContents();
-                }
-                catch (Exception $e) {
-                    echo $e->getMessage();
-                }
-
-                $bookingsAr = [];
-
-                foreach ($bookings["bookings"] as $booking) {
-                    $bookingsAr[$booking['number']] = 1;
-                }
-
-                confirm_update_booking($connect, $bookingsAr);
-
-            } else {
-                echo 'Квот для обновления нет...'. PHP_EOL;
-            }
-        }
-
-
-        sleep(1);
+      sleep(1);
 
     } catch (Exception $e) {
       file_put_contents($directory."/core/sync/file/fast-requests-error.log",$e->getMessage().PHP_EOL,FILE_APPEND);

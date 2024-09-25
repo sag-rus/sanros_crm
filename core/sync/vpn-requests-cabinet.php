@@ -154,7 +154,8 @@
 		if (!$answer) $connect -> query("UPDATE `1_vpn_req_log_cabinet` SET `answer`='ANSWER: FALSE' WHERE `id`=$log_id");
 		else $connect -> query("UPDATE `1_vpn_req_log_cabinet` SET `answer`='ANSWER: ".print_r($answer, true)."' WHERE `id`=$log_id");
 
-        echo json_encode($answer);        
+        echo json_encode($answer); 
+		       
     } else $connect -> query("UPDATE `1_vpn_req_log_cabinet` SET `answer`='func NOT exist' WHERE `id`=$log_id");
 
 

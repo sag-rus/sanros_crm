@@ -143,7 +143,7 @@ function check_new_update_booking($connect){
 
 		}elseif($check_places == 3){
 
-			$sync_object = $connect->getOne("SELECT sync_id FROM object WHERE id=?i", $id_obj);
+			/*$sync_object = $connect->getOne("SELECT sync_id FROM object WHERE id=?i", $id_obj);
 			$categs = array();
 			$clidata = array();
 			$Suppdata = array();
@@ -216,13 +216,13 @@ function check_new_update_booking($connect){
 					$text = "Заявка №".$bid." подтверждена Профкурортом";
 					save_notification($connect, $text, $manager);
 				}
-			}
+			}*/
 
 		}
 
 	}
 
-	$data = $connect->getAll("SELECT id, booking_object, status FROM booking WHERE update_bid=1 AND booking_object!='' AND status='new'");
+	/*$data = $connect->getAll("SELECT id, booking_object, status FROM booking WHERE update_bid=1 AND booking_object!='' AND status='new'");
 	foreach($data as $row){
 		$id = $row["id"];
 		$bid = $row["booking_object"];
@@ -259,7 +259,7 @@ function check_new_update_booking($connect){
 			$bookings["bookings"][] = $booking;
 			$bookings["check"] = 1;
 		}
-	}
+	}*/
 
 	return $bookings;
 }
