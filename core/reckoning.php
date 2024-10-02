@@ -2222,6 +2222,7 @@ function edit_payment($connect){
 									<option value="4" <?php echo $select[4]; ?>>На месте</option>
 									<option value="5-1" <?php echo $select['5-1']; ?>>Банковской картой</option>
                                     <option value="5-2" <?php echo $select['5-2']; ?>>Банковской картой через терминал</option>
+									<option value="7">СБП</option>
 								</select>
 							</div>
 						</div>
