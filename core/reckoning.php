@@ -1752,7 +1752,7 @@ function show_schet_klient($connect){
 		    $buttons .= '<button type="button" class="btn btn-default btn-xs" onclick="edit_payment('. $payments['id'] . ')">&nbsp;<i class="fa fa-pencil"></i>&nbsp;</button>';
 
 		    if($payments['status'] != 0 && $id_rights > 4)
-		        $buttons .= '<button type="button" class="btn btn-danger btn-xs" onclick="delete_payment_prepare(' . $payments['id'] . ')">&nbsp;<i class="fa fa-trash-o"></i>&nbsp;</button>';
+		        $buttons .= ' &nbsp; <button type="button" class="btn btn-danger btn-xs" onclick="delete_payment_prepare(' . $payments['id'] . ')">&nbsp;<i class="fa fa-trash-o"></i>&nbsp;</button>';
           }
           $buttons .= '</span>';
           $payment_div .= $buttons;
