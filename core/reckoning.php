@@ -2177,7 +2177,7 @@ function confirm_payment($connect) {
 function edit_payment($connect){
 	$id = $_POST["id"];
 	$row = $connect->getRow("SELECT * FROM payment WHERE id=?i", $id);
-	$select = array(1 => "", 2 => "", 3 => "", 4 => "", '5-1' => "", '5-2' => "");
+	$select = array(1 => "", 2 => "", 3 => "", 4 => "", '5-1' => "", '5-2' => "", '7' => "");
 	if($row["pay_method"] != 5)
 	{
         $select[$row["pay_method"]] = " selected ";
@@ -2222,7 +2222,7 @@ function edit_payment($connect){
 									<option value="4" <?php echo $select[4]; ?>>На месте</option>
 									<option value="5-1" <?php echo $select['5-1']; ?>>Банковской картой</option>
                                     <option value="5-2" <?php echo $select['5-2']; ?>>Банковской картой через терминал</option>
-									<option value="7">СБП</option>
+									<option value="7" <?php echo $select['7']; ?>>СБП</option>
 								</select>
 							</div>
 						</div>
