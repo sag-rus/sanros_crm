@@ -21,6 +21,9 @@ function check_new_update_booking($connect){
 	$bookings = array("check" => 0, "bookings" => array());
 	//$data = $connect->getAll("SELECT id, bid, created, status FROM` booking` WHERE `update_bid`=1 AND `bid`!=''");
 	$data = $connect->getAll("SELECT id, bid, created, status FROM` booking` WHERE `bid`!='' and `data`=''");
+	echo '<pre>';
+	print_r($data);
+	echo '</pre>';
 	foreach($data as $row){
 		$id = $row["id"];
 		$bid = $row["bid"];
