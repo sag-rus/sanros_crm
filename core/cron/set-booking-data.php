@@ -133,7 +133,8 @@ if(!$connect->getRow("SELECT `id` FROM `object` LIMIT 1")) {
     $config->connect = $connect;
     $configNew->connect = $connect;
 }
-
+echo 'start...';
 check_new_update_booking($connect);
+echo 'end';
 
 ?>
