@@ -142,7 +142,7 @@ function check_new_update_booking($connect){
 			$booking["customer"]["email"] = "";
 			$booking["customer"]["phone"] = "";
 
-			$connect->getAll("UPDATE booking SET `data`=?s WHERE id=?i", json_encode($booking), $id);
+			$connect->query("UPDATE booking SET `data`=?s WHERE id=?i", json_encode($booking), $id);
 
 			//$bookings["bookings"][] = $booking;
 			//$bookings["check"] = 1;
