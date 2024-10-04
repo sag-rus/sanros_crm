@@ -19,8 +19,8 @@ function check_new_update_booking($connect){
 	global $profkurort_sync;
 
 	$bookings = array("check" => 0, "bookings" => array());
-	//$data = $connect->getAll("SELECT id, bid, created, status FROM` booking` WHERE `update_bid`=1 AND `bid`!=''");
-	$data = $connect->getAll("SELECT id, bid, created, status FROM` booking` WHERE `bid`!='' and `data`=''");
+	//$data = $connect->getAll("SELECT id, bid, created, status FROM `booking` WHERE `update_bid`=1 AND `bid`!=''");
+	$data = $connect->getAll("SELECT id, bid, created, status FROM `booking` WHERE `bid`!='' and `data`=''");
 	echo '<pre>';
 	print_r($data);
 	echo '</pre>';
