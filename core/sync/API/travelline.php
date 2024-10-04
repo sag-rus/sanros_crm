@@ -19,7 +19,8 @@ function check_new_update_booking($connect){
 	global $profkurort_sync;
 
 	$bookings = array("check" => 0, "bookings" => array());
-	$data = $connect->getAll("SELECT id, bid, created, status FROM booking WHERE update_bid=1 AND bid!=''");
+	//$data = $connect->getAll("SELECT id, bid, created, status FROM` booking` WHERE `update_bid`=1 AND `bid`!=''");
+	$data = $connect->getAll("SELECT id, bid, created, status FROM` booking` WHERE `bid`!='' and `data`=''");
 	foreach($data as $row){
 		$id = $row["id"];
 		$bid = $row["bid"];
@@ -64,11 +65,11 @@ function check_new_update_booking($connect){
 
 				$guest["isChild"] = $isChild;
 
-				/*if($isChild) {
+				if($isChild) {
 					$booking['children']++;
 				} else {
 					$booking['adults']++;
-				}*/
+				}
 
 				$guests[] = $guest;
 			}
@@ -119,7 +120,7 @@ function check_new_update_booking($connect){
 					unset($guests[$index]);
 				}
 
-				$room["services"] = array();
+				/*$room["services"] = array();
 				$add_places = $connect->getAll("SELECT number, sum, note FROM position_reck WHERE add_place=?i AND schet=?i", $id_position, $bid);
 				foreach($add_places as $add_place){
 					$services = array();
@@ -127,7 +128,7 @@ function check_new_update_booking($connect){
 					$services["price"] = $add_place["sum"];
 					$room["services"][] = $services;
 					$room["adults"]+= $add_place["number"];
-				}
+				}*/
 				$booking["roomStays"][] = $room;
 			}
 			$booking["customer"] = array();
@@ -138,8 +139,10 @@ function check_new_update_booking($connect){
 			$booking["customer"]["email"] = "";
 			$booking["customer"]["phone"] = "";
 
-			$bookings["bookings"][] = $booking;
-			$bookings["check"] = 1;
+			$connect->getAll("UPDATE booking SET `data`=?s WHERE id=?i", json_encode($booking), $id);
+
+			//$bookings["bookings"][] = $booking;
+			//$bookings["check"] = 1;
 
 		}elseif($check_places == 3){
 
@@ -261,7 +264,7 @@ function check_new_update_booking($connect){
 		}
 	}*/
 
-	return $bookings;
+	//return $bookings;
 }
 
 function confirm_update_booking($connect, $confirm){
