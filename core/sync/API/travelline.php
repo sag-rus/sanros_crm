@@ -22,12 +22,15 @@ function get_booking_data($connect, $data){
 	$where = "WHERE `data`<>'' AND `id_obj`>0";
 
 	if (!isset($data['startTime'])) $where .= " AND `confirm`=0"; else $where .= " AND `updated`>=".strtotime($data['startTime']);
-	if (!isset($data['startTime'])) $where .= " AND `confirm`=0"; else $where .= " AND `updated`>=".strtotime($data['startTime']);
+	if (isset($data['hotelId'])) $where .= " AND `id_obj`=".$data['hotelId'];
+	if (isset($data['number'])) $where .= " AND `id`=".$data['number'];
 
-	$update = $data["update"] ?? [];
-	foreach($update as $room => $update_price){
-		$connect->query("UPDATE room SET price_places=?s, synchronized = 0 WHERE id=?i", $update_price, $room);
+	$bookings = $connect->getAll("SELECT * FROM `booking` $where");
+	$res = array();
+	foreach($bookings as $booking){
+		$res[] = $booking['data'];
 	}
+	return $res;
 }
 
 function check_new_update_booking($connect){
