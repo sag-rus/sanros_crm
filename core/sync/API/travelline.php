@@ -19,7 +19,7 @@ function get_booking_data($connect, $data){
 
 	check_new_update_booking($connect);
 
-	$where = "WHERE `data`<>'' AND `id_obj`>0";
+	$where = "WHERE `data`<>'' AND `id_obj`>0 AND `update_bid`=1";
 
 	if (!isset($data['startTime'])) $where .= " AND `confirm`=0"; else $where .= " AND `updated`>='".$data['startTime']."'";
 	if (isset($data['hotelId'])) $where .= " AND `id_obj`=".$data['hotelId'];
@@ -296,16 +296,17 @@ function check_new_update_booking($connect){
 	//return $bookings;
 }
 
-function confirm_update_booking($connect, $confirm){
+/*function confirm_update_booking($connect, $confirm){
 	foreach($confirm as $id => $conf){
 		$connect->query("UPDATE booking SET update_bid=0 WHERE id=?i", $id);
 	}
-}
+}*/
 
-function confirm_room_places_quota($connect, $data){
-	$confirm = $data["confirm"];
+//function confirm_room_places_quota($connect, $data){
+function confirm_bookings($connect, $data){
+	$confirm = $data["confirmBookings"];
 	foreach($confirm as $id => $travelline){
-		$connect->query("UPDATE booking SET confirm=1, id_travelline=?s WHERE id=?i", $travelline, $id);
+		$connect->query("UPDATE booking SET confirm=1, update_bid=0, id_travelline=?s WHERE id=?i", $travelline, $id);
 		$bid = $connect->getOne("SELECT bid FROM booking WHERE id=?i", $id);
 		$manager = $connect->getOne("SELECT id_user FROM reckoning WHERE id=?i", $bid);
 		if($manager){
