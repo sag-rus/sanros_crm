@@ -163,9 +163,9 @@ function check_new_update_booking($connect){
 			$booking["customer"]["email"] = "";
 			$booking["customer"]["phone"] = "";
 
-			echo '<pre>';
+			/*echo '<pre>';
 			print_r($booking);
-			echo '</pre>';
+			echo '</pre>';*/
 
 			$connect->query("UPDATE booking SET `data`=?s, `id_obj`=?i WHERE id=?i", json_encode($booking), $id_obj, $id);
 
