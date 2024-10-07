@@ -30,6 +30,7 @@ function get_booking_data($connect, $data){
 	foreach($bookings as $booking){
 		$res[] = $booking['data'];
 	}
+	$res[] = "SELECT * FROM `booking` $where";
 	return $res;
 }
 
