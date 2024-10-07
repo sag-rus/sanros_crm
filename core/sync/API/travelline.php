@@ -15,6 +15,21 @@ function update_room_prices_quota($connect, $data){
 	}
 }
 
+function get_booking_data($connect, $data){
+
+	check_new_update_booking($connect);
+
+	$where = "WHERE `data`<>'' AND `id_obj`>0";
+
+	if (!isset($data['startTime'])) $where .= " AND `confirm`=0"; else $where .= " AND `updated`>=".strtotime($data['startTime']);
+	if (!isset($data['startTime'])) $where .= " AND `confirm`=0"; else $where .= " AND `updated`>=".strtotime($data['startTime']);
+
+	$update = $data["update"] ?? [];
+	foreach($update as $room => $update_price){
+		$connect->query("UPDATE room SET price_places=?s, synchronized = 0 WHERE id=?i", $update_price, $room);
+	}
+}
+
 function check_new_update_booking($connect){
 	global $profkurort_sync;
 
@@ -66,8 +81,7 @@ function check_new_update_booking($connect){
 
 				}
 
-				if ($isChild) echo 'isChild=true'; else echo 'isChild=false';
-				echo '<br>';
+				if ($isChild) echo 'isChild=true<br>'; else echo 'isChild=false<br>';
 
 				$guest["isChild"] = $isChild;
 
@@ -150,7 +164,7 @@ function check_new_update_booking($connect){
 			print_r($booking);
 			echo '</pre>';
 
-			//$connect->query("UPDATE booking SET `data`=?s WHERE id=?i", json_encode($booking), $id);
+			$connect->query("UPDATE booking SET `data`=?s, `id_obj`=?i WHERE id=?i", json_encode($booking), $id_obj, $id);
 
 			//$bookings["bookings"][] = $booking;
 			//$bookings["check"] = 1;
