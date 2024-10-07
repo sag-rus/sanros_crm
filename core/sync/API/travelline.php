@@ -21,7 +21,7 @@ function get_booking_data($connect, $data){
 
 	$where = "WHERE `data`<>'' AND `id_obj`>0";
 
-	if (!isset($data['startTime'])) $where .= " AND `confirm`=0"; else $where .= " AND `updated`>=".strtotime($data['startTime']);
+	if (!isset($data['startTime'])) $where .= " AND `confirm`=0"; else $where .= " AND `updated`>='".$data['startTime']."'";
 	if (isset($data['hotelId'])) $where .= " AND `id_obj`=".$data['hotelId'];
 	if (isset($data['number'])) $where .= " AND `id`=".$data['number'];
 
