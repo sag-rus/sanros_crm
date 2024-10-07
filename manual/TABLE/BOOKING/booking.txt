@@ -2,6 +2,7 @@ BOOKING - бронирование из квоты
 
 bid - номер заявки
 created - дата создания
+updates - дата изменения
 status - статус (new - новая, modified - измененная, cancelled - аннулирования)
 update_bid - статус изменения (1 - изменена, 0 - не изменена)
 confirm - подтверждена (Travelline)
