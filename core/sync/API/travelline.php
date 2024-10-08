@@ -116,7 +116,7 @@ function check_new_update_booking($connect){
 			$booking["arrivalTime"] = str_replace([".","-"], ":", $object["arrival"]);
 			$booking["departureTime"] = str_replace([".","-"], ":", $object["leaving"]);
 			$booking["roomStays"] = array();
-			echo "SELECT id, id_room, number, sum, date_z, days, reward, ratePlan FROM position_reck WHERE ratePlan>0 AND schet=$bid";
+			//echo "SELECT id, id_room, number, sum, date_z, days, reward, ratePlan FROM position_reck WHERE ratePlan>0 AND schet=$bid";
 			$positions = $connect->getAll("SELECT id, id_room, number, sum, date_z, days, reward, ratePlan FROM position_reck WHERE ratePlan>0 AND schet=?i", $bid);
 			foreach($positions as $position){
 				$id_position = $position["id"];
