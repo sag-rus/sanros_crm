@@ -176,8 +176,6 @@ try {
       $respAr['result'] = $request['action']($connect,$requestData,true);
       $respAr['success'] = 1;
 
-      if ($request['action']=='get_booking_data') $respAr['success'] = 0;
-
     }
     else {
       $respAr['msg'] = "Action's method not exists";
