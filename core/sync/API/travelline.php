@@ -96,7 +96,7 @@ function check_new_update_booking($connect){
 
 				}
 
-				if ($isChild) echo 'isChild=true<br>'; else echo 'isChild=false<br>';
+				//if ($isChild) echo 'isChild=true<br>'; else echo 'isChild=false<br>';
 
 				$guest["isChild"] = $isChild;
 
