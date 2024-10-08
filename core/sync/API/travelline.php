@@ -37,7 +37,7 @@ function get_booking_data($connect, $data){
 		$res[] = $booking['data'];
 	}
 
-	$connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `action`='get_booking_data2', `query`=?s", 'after check_new_update_booking...'.print_r($ret, true));
+	$connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `action`='get_booking_data2', `query`=?s", 'after check_new_update_booking...'.print_r($res, true));
 	
 	return $res;
 }
