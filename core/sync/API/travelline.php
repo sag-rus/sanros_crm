@@ -17,7 +17,11 @@ function update_room_prices_quota($connect, $data){
 
 function get_booking_data($connect, $data){
 
+	$connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `action`='get_booking_data', `query`=?s", 'start...');
+
 	check_new_update_booking($connect);
+
+	$connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `action`='get_booking_data', `query`=?s", 'after check_new_update_booking...');
 
 	$where = "WHERE `data`<>'' AND `id_obj`>0 AND `update_bid`=1";
 
@@ -36,6 +40,9 @@ function get_booking_data($connect, $data){
 
 function check_new_update_booking($connect){
 	global $profkurort_sync;
+
+
+	$connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `action`='check_new_update_booking', `query`=?s", 'start...');
 
 	$bookings = array("check" => 0, "bookings" => array());
 	//$data = $connect->getAll("SELECT id, bid, created, status FROM `booking` WHERE `update_bid`=1 AND `bid`!=''");
@@ -294,6 +301,8 @@ function check_new_update_booking($connect){
 	}*/
 
 	//return $bookings;
+
+	$connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `action`='check_new_update_booking', `query`=?s", 'end...');
 }
 
 /*function confirm_update_booking($connect, $confirm){
