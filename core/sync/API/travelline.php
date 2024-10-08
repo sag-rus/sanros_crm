@@ -306,13 +306,13 @@ function check_new_update_booking($connect){
 function confirm_bookings($connect, $data){
 	$confirm = $data["confirmBookings"];
 	foreach($confirm as $id => $travelline){
-		$connect->query("UPDATE booking SET confirm=1, update_bid=0, id_travelline=?s WHERE id=?i", $travelline, $id);
+		/*&$connect->query("UPDATE booking SET confirm=1, update_bid=0, id_travelline=?s WHERE id=?i", $travelline, $id);
 		$bid = $connect->getOne("SELECT bid FROM booking WHERE id=?i", $id);
 		$manager = $connect->getOne("SELECT id_user FROM reckoning WHERE id=?i", $bid);
 		if($manager){
 			$text = "Заявка №".$bid." подтверждена объектом";
 			save_notification($connect, $text, $manager);
-		}
+		}*/
 	}
 }
 
