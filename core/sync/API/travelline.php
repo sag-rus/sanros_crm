@@ -308,10 +308,10 @@ function confirm_bookings($connect, $data){
 	foreach($confirm as $book){
 		$connect->query("UPDATE booking SET confirm=1, update_bid=0, id_travelline=?s WHERE id=?i", $book['externalNumber'], $book['number']);
 		$sql = $connect->last_query();
-		$connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `action`='confirm_bookings', `query`='?s'", $sql);
+		$connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `action`='confirm_bookings', `query`=?s", $sql);
 		$bid = $connect->getOne("SELECT bid FROM booking WHERE id=?i", $book['number']);
 		$sql = $connect->last_query();
-		$connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `action`='confirm_bookings', `query`='?s'", $sql);		
+		$connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `action`='confirm_bookings', `query`=?s", $sql);		
 		$manager = $connect->getOne("SELECT id_user FROM reckoning WHERE id=?i", $bid);
 		if($manager){
 			$text = "Заявка №".$bid." подтверждена объектом";
