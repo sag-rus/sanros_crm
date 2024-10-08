@@ -30,6 +30,8 @@ function get_booking_data($connect, $data){
 	if (isset($data['number'])) $where .= " AND `id`=".$data['number'];
 
 	$bookings = $connect->getAll("SELECT * FROM `booking` $where");
+
+	$connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `action`='get_booking_data', `query`=?s", 'after check_new_update_booking...'.print_r($bookings, true));
 	$res = array();
 	foreach($bookings as $booking){
 		$res[] = $booking['data'];
