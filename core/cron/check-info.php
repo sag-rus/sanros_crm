@@ -35,6 +35,7 @@
 	$sql = "SELECT id, bid, bid_pay, order_id FROM payment_request WHERE status=0 or status IS NULL ORDER BY `id` DESC LIMIT 60";
 	if ($_GET['bid']!='') $sql = "SELECT id, bid, bid_pay, order_id FROM payment_request WHERE (status=0 or status IS NULL) AND `bid`='$_GET[bid]' ORDER BY `id` DESC";
 	$data = $connect->getAll($sql);
+	if ($_GET['debug']=='1') echo $connect->last_query().'<br>';
 	foreach($data as $row){
 		$payment = new \App\lib\payment\Alfa\BookingPayment([]);
 		$request = $payment->depositPayment($row["bid_pay"]);
