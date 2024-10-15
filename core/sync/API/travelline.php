@@ -17,11 +17,11 @@ function update_room_prices_quota($connect, $data){
 
 function get_booking_data($connect, $data){
 
-	$connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `action`='get_booking_data1', `query`=?s", 'start...');
+	//$connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `action`='get_booking_data1', `query`=?s", 'start...');
 
 	check_new_update_booking($connect);
 
-	$connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `action`='get_booking_data2', `query`=?s", 'after check_new_update_booking...');
+	//$connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `action`='get_booking_data2', `query`=?s", 'after check_new_update_booking...');
 
 	$where = "WHERE `data`<>'' AND `id_obj`>0 AND `update_bid`=1";
 
@@ -34,10 +34,10 @@ function get_booking_data($connect, $data){
 	$connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `action`='get_booking_data3', `query`=?s", 'after check_new_update_booking...'.print_r($bookings, true));
 	$res = array();
 	foreach($bookings as $booking){
-		$res[] = $booking['data'];
+		$res[] = json_decode($booking['data'], true);
 	}
 
-	$connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `action`='get_booking_data4', `query`=?s", 'after check_new_update_booking...'.print_r($res, true));
+	//$connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `action`='get_booking_data4', `query`=?s", 'after check_new_update_booking...'.print_r($res, true));
 	
 	return $res;
 }
