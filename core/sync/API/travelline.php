@@ -77,7 +77,8 @@ function check_new_update_booking($connect){
 			$booking["arrivalTime"] = str_replace([".","-"], ":", $object["arrival"]);
 			$booking["departureTime"] = str_replace([".","-"], ":", $object["leaving"]);			
 			$booking["status"] = $status;
-			$booking["hotelId"] = strval($id_obj);
+			//$booking["hotelId"] = strval($id_obj);
+			$booking["hotelId"] = intval($id_obj);
 			$booking["currencyCode"] = "RUB";
 			$booking["paymentMethod"] = "CREDIT";
 			$booking["paymentMethodComment"] = "По договору " . $id;			
