@@ -135,7 +135,7 @@ function check_new_update_booking($connect){
 					$room["guests"][] = $guest;
 					unset($guests[$index]);
 				}
-				$room["adults"] = $number;
+				$room["adults"] = intval($number);
 				$room["children"] = 0;
 				$room["commission"] = get_reward_schet_position($connect, $id_position);
 				$room["bookingPerDayPrices"] = array();
@@ -146,14 +146,14 @@ function check_new_update_booking($connect){
 					$date_price = array();
 					$date = date("Y-m-d", $timestamp);
 					$date_price["dateYmd"] = $date;
-					$date_price["price"] = strval($price);
+					$date_price["price"] = strval(number_format($price, 2));
 					$timestamp+= 86400;
 					$room["bookingPerDayPrices"][] = $date_price;
 					$room['total']["amountAfterTaxes"] += $price;
 				}
 
 				$room['total'] = [
-					"amountAfterTaxes" => $sum
+					"amountAfterTaxes" => strval(number_format($sum, 2))
 				];				
 
 
