@@ -73,7 +73,13 @@ function check_new_update_booking($connect){
 			$booking = array();
 			$booking["number"] = $id;
 			$booking["created"] = $row["created"];
+			$booking["arrivalTime"] = str_replace([".","-"], ":", $object["arrival"]);
+			$booking["departureTime"] = str_replace([".","-"], ":", $object["leaving"]);			
 			$booking["status"] = $status;
+			$booking["hotelId"] = $id_obj;
+			$booking["currencyCode"] = "RUB";
+			$booking["paymentMethod"] = "CREDIT";
+			$booking["paymentMethodComment"] = "По договору " . $id;			
 			$guests = array();
 			foreach($rest as $tur){
 				$tur_info = $connect->getRow("SELECT surname, name, otch, `date` FROM klient WHERE id=?i", $tur);
@@ -100,21 +106,15 @@ function check_new_update_booking($connect){
 
 				$guest["isChild"] = $isChild;
 
-				if($isChild) {
+				/*if($isChild) {
 					$booking['children']++;
 				} else {
 					$booking['adults']++;
-				}
+				}*/
 
 				$guests[] = $guest;
 			}
-			$booking["hotelId"] = $id_obj;
-			$booking["currencyCode"] = "RUB";
-			$booking["paymentMethod"] = "CREDIT";
-			$booking["paymentMethodComment"] = "По договору " . $id;
 			$object = $connect->getRow("SELECT arrival, leaving FROM object WHERE id=?i", $id_obj);
-			$booking["arrivalTime"] = str_replace([".","-"], ":", $object["arrival"]);
-			$booking["departureTime"] = str_replace([".","-"], ":", $object["leaving"]);
 			$booking["roomStays"] = array();
 			//echo "SELECT id, id_room, number, sum, date_z, days, reward, ratePlan FROM position_reck WHERE ratePlan>0 AND schet=$bid";
 			$positions = $connect->getAll("SELECT id, id_room, number, sum, date_z, days, reward, ratePlan FROM position_reck WHERE ratePlan>0 AND schet=?i", $bid);
@@ -124,16 +124,22 @@ function check_new_update_booking($connect){
 				$room = array();
 				$room["roomTypeId"] = $position["id_room"];
 				$room["ratePlanId"] = $position["ratePlan"];
+				$room["guests"] = array();
+				$copy_guests = $guests;
+				$check = 0;
+				foreach($copy_guests as $index => $guest){
+					$check++;
+					if($number < $check)
+						break;
+					$room["guests"][] = $guest;
+					unset($guests[$index]);
+				}
 				$room["adults"] = $number;
 				$room["children"] = 0;
 				$room["commission"] = get_reward_schet_position($connect, $id_position);
 				$room["bookingPerDayPrices"] = array();
 				$timestamp = strToTime($position["date_z"]);
 				$price = $position["sum"] * $number;
-
-				$room['total'] = [
-					"amountAfterTaxes" => 0
-				];
 
 				for($i = 1; $i <= $position["days"]; $i++){
 					$date_price = array();
@@ -145,16 +151,11 @@ function check_new_update_booking($connect){
 					$room['total']["amountAfterTaxes"] += $price;
 				}
 
-				$room["guests"] = array();
-				$copy_guests = $guests;
-				$check = 0;
-				foreach($copy_guests as $index => $guest){
-					$check++;
-					if($number < $check)
-						break;
-					$room["guests"][] = $guest;
-					unset($guests[$index]);
-				}
+				$room['total'] = [
+					"amountAfterTaxes" => 0
+				];				
+
+
 
 				/*$room["services"] = array();
 				$add_places = $connect->getAll("SELECT number, sum, note FROM position_reck WHERE add_place=?i AND schet=?i", $id_position, $bid);
