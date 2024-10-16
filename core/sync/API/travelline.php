@@ -61,6 +61,7 @@ function check_new_update_booking($connect){
 		$reckoning = $connect->getRow("SELECT turist, id_obj, rest, sum FROM reckoning WHERE id=?i", $bid);
 		$turist = $reckoning["turist"];
 		$id_obj = $reckoning["id_obj"];
+		$sum = $reckoning["sum"];
 		$rest = explode(",", $reckoning["rest"]);
 		$rest = array_diff($rest, array(""));
 		$objectRow = $connect->getRow("SELECT check_places, reward FROM object WHERE id=?i", $id_obj);
@@ -76,7 +77,7 @@ function check_new_update_booking($connect){
 			$booking["arrivalTime"] = str_replace([".","-"], ":", $object["arrival"]);
 			$booking["departureTime"] = str_replace([".","-"], ":", $object["leaving"]);			
 			$booking["status"] = $status;
-			$booking["hotelId"] = $id_obj;
+			$booking["hotelId"] = strval($id_obj);
 			$booking["currencyCode"] = "RUB";
 			$booking["paymentMethod"] = "CREDIT";
 			$booking["paymentMethodComment"] = "По договору " . $id;			
@@ -145,14 +146,14 @@ function check_new_update_booking($connect){
 					$date_price = array();
 					$date = date("Y-m-d", $timestamp);
 					$date_price["dateYmd"] = $date;
-					$date_price["price"] = $price;
+					$date_price["price"] = strval($price);
 					$timestamp+= 86400;
 					$room["bookingPerDayPrices"][] = $date_price;
 					$room['total']["amountAfterTaxes"] += $price;
 				}
 
 				$room['total'] = [
-					"amountAfterTaxes" => 0
+					"amountAfterTaxes" => $sum
 				];				
 
 
