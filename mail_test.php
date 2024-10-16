@@ -67,7 +67,7 @@ $data_booking_JSON = $_POST["data"];
 $message = select_template_letter("turist/cabinet/new-account", "client", $id);
 $link = CABINET."?func=activation&email=".$email."&hash=".$hash;
 $message["content"] = str_replace("<hash>", $link, $message["content"]);
-send_mail_sanata('sagrus@yandex.ru', $message["title"], $message["content"]);
+send_mail_sanata('rustemsagdiev2809@gmail.com', $message["title"], $message["content"]);
 
 
 ?>
