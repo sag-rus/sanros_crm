@@ -348,6 +348,8 @@ function confirm_bookings($connect, $data){
 			];
 		}
 	}
+
+	return $result;
 }
 
 ?>
