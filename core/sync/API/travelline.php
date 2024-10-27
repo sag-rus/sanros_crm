@@ -329,7 +329,6 @@ function confirm_bookings($connect, $data){
 	];
 	foreach($confirm as $book){
 		$booking = $connect->getRow("SELECT * FROM booking WHERE id=?i", $book['number']);
-		$result['query'] = $connect->last_query();
 		if (isset($booking['id'])) {
 			$connect->query("UPDATE booking SET confirm=1, update_bid=0, id_travelline=?s WHERE id=?i", $book['externalNumber'], $book['number']);
 			//$sql = $connect->last_query();
