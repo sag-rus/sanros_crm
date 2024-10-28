@@ -310,6 +310,7 @@ if ($dates_unavailable) {
 			$number = isset($position["number"])?(int)$position["number"]:1;
 
 			$connect->query("INSERT INTO position_reck(id_room, schet, days, date_z, number, sum, type, note, reward, add_one_day) VALUES (?i, ?i, ?i, ?s, ?s, ?s, ?i, ?s, ?s, ?i)", $id_room, $id, $days, $date_z, $number, $price, $type_index, $note, $reward, (int)$add_one_day);
+			$insert_position_reck = $connect->insertId();
 			//if(isset($position["ratePlan"]) AND $position["ratePlan"] > 0){
 			if(isset($position["rate"]) AND $position["rate"] > 0){
 
@@ -322,12 +323,11 @@ if ($dates_unavailable) {
 					file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);		
 
 					$check_quota = 1;
-					$insert = $connect->insertId();
 
-					$log = PHP_EOL.'ratePlan query'."UPDATE position_reck SET ratePlan=".$position["rate"]." WHERE id=".$insert.PHP_EOL;
+					$log = PHP_EOL.'ratePlan query'."UPDATE position_reck SET ratePlan=".$position["rate"]." WHERE id=".$insert_position_reck.PHP_EOL;
 					file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);		
 
-					$connect->query("UPDATE position_reck SET ratePlan=?i WHERE id=?i", $position["rate"], $insert);
+					$connect->query("UPDATE position_reck SET ratePlan=?i WHERE id=?i", $position["rate"], $insert_position_reck);
 				}
 			}
 		}
