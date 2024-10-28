@@ -294,9 +294,6 @@ if ($dates_unavailable) {
 
 		$positions = json_decode($data_booking->position, TRUE);
 
-		$log = PHP_EOL.'positions'.print_r($positions, true).PHP_EOL;
-		file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);		
-
 		foreach($positions as $position){
 			$type_index = 1;
 			if(isset($position["type_index"]) AND $position["type_index"] > 1){
@@ -314,24 +311,22 @@ if ($dates_unavailable) {
 			//if(isset($position["ratePlan"]) AND $position["ratePlan"] > 0){
 			if(isset($position["rate"]) AND $position["rate"] > 0){
 
-				$log = PHP_EOL.'ratePlan start'.PHP_EOL;
-				file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);		
-
 				if($connect->getOne("SELECT id FROM object WHERE id=?i AND (check_places=1 OR check_places=2)", $id_obj)){
 
-					$log = PHP_EOL.'ratePlan work'.PHP_EOL;
-					file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);		
-
 					$check_quota = 1;
-
-					$log = PHP_EOL.'ratePlan query'."UPDATE position_reck SET ratePlan=".$position["rate"]." WHERE id=".$insert_position_reck.PHP_EOL;
-					file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);		
 
 					$connect->query("UPDATE position_reck SET ratePlan=?i WHERE id=?i", $position["rate"], $insert_position_reck);
 				}
 			}
 		}
+
+		$log = PHP_EOL.'check_quota='.$check_quota.PHP_EOL;
+		file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);		
+
+
 		if($check_quota == 1){
+			$log = PHP_EOL.'check_quota work '."INSERT INTO booking(bid, from_booking) VALUES (".$id.", 'site')".$check_quota.PHP_EOL;
+			file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);		
 			$connect->query("INSERT INTO booking(bid, from_booking) VALUES (?i, 'site')", $id);
 			$connect->query("UPDATE reckoning SET form_booking='quota' WHERE id=?i", $id);
 		}
