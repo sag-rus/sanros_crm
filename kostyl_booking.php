@@ -292,6 +292,9 @@ if ($dates_unavailable) {
 
 	if(isset($data_booking->position) && $data_booking->position){
 
+		$log = PHP_EOL.'$data_booking->position'.print_r($data_booking->position, true).PHP_EOL;
+		file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);		
+
 		$positions = json_decode($data_booking->position, TRUE);
 		foreach($positions as $position){
 			$type_index = 1;
