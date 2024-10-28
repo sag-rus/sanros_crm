@@ -323,6 +323,10 @@ if ($dates_unavailable) {
 
 					$check_quota = 1;
 					$insert = $connect->insertId();
+
+					$log = PHP_EOL.'ratePlan query'."UPDATE position_reck SET ratePlan=".$position["rate"]." WHERE id=".$insert.PHP_EOL;
+					file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);		
+
 					$connect->query("UPDATE position_reck SET ratePlan=?i WHERE id=?i", $position["rate"], $insert);
 				}
 			}
