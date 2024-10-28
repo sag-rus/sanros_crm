@@ -320,13 +320,7 @@ if ($dates_unavailable) {
 			}
 		}
 
-		$log = PHP_EOL.'check_quota='.$check_quota.PHP_EOL;
-		file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);		
-
-
 		if($check_quota == 1){
-			$log = PHP_EOL.'check_quota work '."INSERT INTO booking(bid, from_booking) VALUES (".$id.", 'site')".$check_quota.PHP_EOL;
-			file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);		
 			$connect->query("INSERT INTO booking(bid, from_booking) VALUES (?i, 'site')", $id);
 			$connect->query("UPDATE reckoning SET form_booking='quota' WHERE id=?i", $id);
 		}
