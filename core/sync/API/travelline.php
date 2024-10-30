@@ -342,7 +342,8 @@ function confirm_bookings($connect, $data){
 				save_notification($connect, $text, $manager);
 			}
 		} else {
-			$result['warnings'][] = [
+			$result['success'] = false;
+			$result['errors'][] = [
 				'code' => 5000,
 				'message' => 'booking with number '.$book['number'].' not found'
 			];
