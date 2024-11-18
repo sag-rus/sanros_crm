@@ -781,7 +781,7 @@ function sync_objects_api($connect){
 			}
 		}
 
-		$places = $connect->getAll("SELECT * FROM `place` WHERE `synchronized` = 0 and `status`=1");
+		$places = $connect->getAll("SELECT * FROM `place` WHERE `synchronized` = 0");
 
 		foreach ($places as $place) {
 			$placeAr = [];
