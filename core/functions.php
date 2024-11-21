@@ -79,7 +79,7 @@ function get_place_name($row, $travelline_occupancy_data = false) {
 		if ($travelline_occupancy_data) {
 			$data = [];
 			$data['code'] = get_place_export_id($row['id_room'], $row).$row['id_room'].'2';
-			$data['name'] = $row['adult_on_add_place'].' взр. на осн.месте';
+			$data['name'] = $row['adult_on_add_place'].' взр. на доп.месте';
 			//$data['personQuantity'] = intval($row['adult_on_add_place']);
 			$data['bedType'] = 'adultExtraBed';
 			$occupancies[] = $data;
