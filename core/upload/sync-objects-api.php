@@ -789,7 +789,7 @@ function sync_objects_api($connect){
 			$placeAr['id'] = $place['id'];
 			$placeAr['name'] = $place['name'];
 			$placeAr['type'] = $place['type'];
-			$placeAr['status'] = 1;
+			$placeAr['status'] = $place['status'];
 			$placeAr['resort_id'] = $place['id_obj'];
 			$placeAr['room_id'] = $place['id_room'];
 			$placeAr['travelline_occupancy_data'] = get_place_name($place, true);
