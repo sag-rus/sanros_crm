@@ -147,14 +147,14 @@ function check_new_update_booking($connect){
 					$date_price = array();
 					$date = date("Y-m-d", $timestamp);
 					$date_price["dateYmd"] = $date;
-					$date_price["price"] = strval(number_format($price, 2));
+					$date_price["price"] = strval(number_format($price, 2, '.', ''));
 					$timestamp+= 86400;
 					$room["bookingPerDayPrices"][] = $date_price;
 					$room['total']["amountAfterTaxes"] += $price;
 				}
 
 				$room['total'] = [
-					"amountAfterTaxes" => strval(number_format($sum, 2))
+					"amountAfterTaxes" => strval(number_format($sum, 2, '.', ''))
 				];				
 
 
