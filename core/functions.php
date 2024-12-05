@@ -911,11 +911,11 @@ function check_status_booking_quota($connect, $bid, $position = ""){
 		$active = $row["active"];
 		$status = $row["status"];
 		if($status == 6 OR $status == 8 OR $active == 3)
-			$connect->query("UPDATE booking SET update_bid=1, `updated`=NOW(), confirm=0, status='cancelled' WHERE id=?i", $booking);
+			$connect->query("UPDATE booking SET `update_bid`=1, `updated`=NOW(), `confirm`=0, `status`='cancelled', `data`='' WHERE id=?i", $booking);
 		elseif($position){
 			$ratePlan = $connect->getOne("SELECT ratePlan FROM position_reck WHERE id=?i", $position);
 			if($ratePlan >= 0)
-				$connect->query("UPDATE booking SET update_bid=1, `updated`=NOW(), confirm=0, status='modified' WHERE id=?i", $booking);
+				$connect->query("UPDATE booking SET `update_bid`=1, `updated`=NOW(), `confirm`=0, `status`='modified', `data`='' WHERE id=?i", $booking);
 		}
 	}
 }

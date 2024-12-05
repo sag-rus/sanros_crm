@@ -1378,7 +1378,6 @@ function save_room_occupancy($connect) {
 	} else {
 		//меняем имеющееся размещение
 		if (isset($_POST['id_obj'])) {
-			echo '123';
 			$connect->query("UPDATE `place` SET 
 				`name`=?s,
 				`synchronized`=0,
@@ -1409,7 +1408,6 @@ function save_room_occupancy($connect) {
 				$_POST['id_obj']
 			);
 		} else {
-			echo '456';
 			$connect->query("UPDATE `place` SET 
 				`name`=?s,
 				`synchronized`=0,
