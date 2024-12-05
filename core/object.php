@@ -1181,8 +1181,8 @@ function select_object_occupancies($connect){
 function del_room_occupancy($connect) {
 	//Используется в СРМ и кабинете объекта!
 	//$connect->query("UPDATE room_occupancy SET `status`=0 WHERE id=?i", $_POST['id']);
-	if (isset($_POST['id_obj'])) $connect->query("UPDATE place SET `status`=0 WHERE id=?i and `id_obj`=?i", $_POST['id'], $_POST['id_obj']);
-	else $connect->query("UPDATE place SET `status`=0 WHERE id=?i", $_POST['id']);
+	if (isset($_POST['id_obj'])) $connect->query("UPDATE place SET `status`=0, `synchronized`=0 WHERE id=?i and `id_obj`=?i", $_POST['id'], $_POST['id_obj']);
+	else $connect->query("UPDATE place SET `status`=0, `synchronized`=0 WHERE id=?i", $_POST['id']);
 }
 
 function room_occupancy($connect){
