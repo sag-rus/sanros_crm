@@ -46,7 +46,7 @@ function check_new_update_booking($connect){
 	global $profkurort_sync;
 
 
-	$connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `action`='check_new_update_booking', `query`=?s", 'start...');
+	//$connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `action`='check_new_update_booking', `query`=?s", 'start...');
 
 	$bookings = array("check" => 0, "bookings" => array());
 	//$data = $connect->getAll("SELECT id, bid, created, status FROM `booking` WHERE `update_bid`=1 AND `bid`!=''");
@@ -137,7 +137,7 @@ function check_new_update_booking($connect){
 					unset($guests[$index]);
 				}
 				$room["adults"] = intval($number);
-				$room["children"] = 0;
+				if (($room["guests"][0]['isChild'])==true) $room["children"] = 1; else $room["children"] = 0;
 				$room["commission"] = get_reward_schet_position($connect, $id_position);
 				$room["bookingPerDayPrices"] = array();
 				$timestamp = strToTime($position["date_z"]);
@@ -156,8 +156,6 @@ function check_new_update_booking($connect){
 				$room['total'] = [
 					"amountAfterTaxes" => strval(number_format($sum, 2, '.', ''))
 				];				
-
-
 
 				/*$room["services"] = array();
 				$add_places = $connect->getAll("SELECT number, sum, note FROM position_reck WHERE add_place=?i AND schet=?i", $id_position, $bid);
@@ -309,7 +307,7 @@ function check_new_update_booking($connect){
 
 	//return $bookings;
 
-	$connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `action`='check_new_update_booking', `query`=?s", 'end...');
+	//$connect -> query("INSERT INTO `1_vpn_req_log` SET `id`=0, `datetime`=NOW(), `ip`='$_POST[ip]', `action`='check_new_update_booking', `query`=?s", 'end...');
 }
 
 /*function confirm_update_booking($connect, $confirm){
