@@ -136,8 +136,14 @@ function check_new_update_booking($connect){
 					$room["guests"][] = $guest;
 					unset($guests[$index]);
 				}
-				$room["adults"] = intval($number);
-				if (($room["guests"][0]['isChild'])==true) $room["children"] = 1; else $room["children"] = 0;
+				
+				if (($room["guests"][0]['isChild'])==true) {
+					$room["children"] = intval($number);
+					$room["adults"] = 0;
+				} else {
+					$room["adults"] = intval($number);
+					$room["children"] = 0;
+				}
 				$room["commission"] = get_reward_schet_position($connect, $id_position);
 				$room["bookingPerDayPrices"] = array();
 				$timestamp = strToTime($position["date_z"]);
