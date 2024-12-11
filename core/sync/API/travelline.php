@@ -130,9 +130,9 @@ function check_new_update_booking($connect){
 				$copy_guests = $guests;
 				$check = 0;
 				foreach($copy_guests as $index => $guest){
-					$check++;
+					/*$check++;
 					if($number < $check)
-						break;
+						break;*/
 					$room["guests"][] = $guest;
 					unset($guests[$index]);
 				}
