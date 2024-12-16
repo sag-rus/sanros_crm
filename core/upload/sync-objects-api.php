@@ -33,7 +33,7 @@ function sync_objects_api($connect){
 				'status' => 1
 			];
 
-			echo "Отправка запроса на  https://sites.tonia.ru/api/location/direction/set/".$direction['id'].'<br>';
+			//echo "Отправка запроса на  https://sites.tonia.ru/api/location/direction/set/".$direction['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/location/direction/set/".$direction['id'],[
 				'form_params' => $directionAr
@@ -41,21 +41,21 @@ function sync_objects_api($connect){
 
 			$res = json_decode($res->getBody(),true);
 			if(array_key_exists('success',$res)) {
-				echo 'SUCCESS1:<br>';
+				/*echo 'SUCCESS1:<br>';
 				echo '<pre>';
 				print_r($res);
-				echo '</pre>';				
+				echo '</pre>';*/
 				$success = (bool)(int)$res['success'];
 				if($success) {
-					echo 'SUCCESS2:<br>';
+					//echo 'SUCCESS2:<br>';
 					$connect->query("UPDATE `direction_object` SET `synchronized` = '1' WHERE `id` = ?i",$direction['id']);
 					$connect->query("UPDATE `object` SET `synchronized` = '0' WHERE `direction` = ?i", $direction['id']);
 				}
 			} else {
-				echo 'ERROR:<br>';
+				/*echo 'ERROR:<br>';
 				echo '<pre>';
 				print_r($res);
-				echo '</pre>';
+				echo '</pre>';*/
 			}
 
 
@@ -78,7 +78,7 @@ function sync_objects_api($connect){
 				'status' => 1
 			];
 
-			echo "Отправка запроса на  https://sites.tonia.ru/api/location/region/set/".$region['id'].'<br>';
+			//echo "Отправка запроса на  https://sites.tonia.ru/api/location/region/set/".$region['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/location/region/set/".$region['id'],[
 				'form_params' => $regionAr
@@ -87,10 +87,10 @@ function sync_objects_api($connect){
 			$res = json_decode($res->getBody(),true);
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
-				echo 'SUCCESS1:<br>';
+				/*echo 'SUCCESS1:<br>';
 				echo '<pre>';
 				print_r($res);
-				echo '</pre>';				
+				echo '</pre>';*/
 				if($success) {
 					echo 'SUCCESS2:<br>';
 					$connect->query("UPDATE `region` SET `synchronized` = '1' WHERE `id` = ?i",$region['id']);
@@ -98,10 +98,10 @@ function sync_objects_api($connect){
 					$connect->query("UPDATE `direction_object` SET `synchronized` = '0' WHERE `id_reg` = ?i AND (`direction_object`.`id_country` = 0 OR `direction_object`.`id_country` IS NULL)", $region['id']);
 				}
 			} else {
-				echo 'ERROR:<br>';
+				/*echo 'ERROR:<br>';
 				echo '<pre>';
 				print_r($res);
-				echo '</pre>';
+				echo '</pre>';*/
 			}
 
 
@@ -122,7 +122,7 @@ function sync_objects_api($connect){
 				'status' => 1
 			];
 
-			echo "Отправка запроса на https://sites.tonia.ru/api/location/regional_direction/set/".$regional_direction['id'].'<br>';
+			//echo "Отправка запроса на https://sites.tonia.ru/api/location/regional_direction/set/".$regional_direction['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/location/regional_direction/set/".$regional_direction['id'],[
 				'form_params' => $regionalDirectionAr
@@ -132,20 +132,20 @@ function sync_objects_api($connect){
 			$res = json_decode($res->getBody(),true);
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
-				echo 'SUCCESS1:<br>';
+				/*echo 'SUCCESS1:<br>';
 				echo '<pre>';
 				print_r($res);
-				echo '</pre>';				
+				echo '</pre>';*/
 				if($success) {
 					echo 'SUCCESS2:<br>';
 					$connect->query("UPDATE `direction_object` SET `synchronized` = '1' WHERE `id` = ?i",$regional_direction['id']);
 					$connect->query("UPDATE `object` SET `synchronized` = '0' WHERE `region_direction_id` = ?i", $regional_direction['id']);
 				}
 			} else {
-				echo 'ERROR:<br>';
+				/*echo 'ERROR:<br>';
 				echo '<pre>';
 				print_r($res);
-				echo '</pre>';
+				echo '</pre>';*/
 			}
 
 
@@ -161,7 +161,7 @@ function sync_objects_api($connect){
 			$typeAr['name_prepositional'] = $type['name_prepositional'];
 			$typeAr['status'] = 1;
 
-			echo "Отправка запроса на https://sites.tonia.ru/api/type/set/".$type['id'].'<br>';
+			//echo "Отправка запроса на https://sites.tonia.ru/api/type/set/".$type['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/type/set/".$type['id'],[
 				'form_params' => $typeAr
@@ -188,7 +188,7 @@ function sync_objects_api($connect){
 			$profileAr['uri'] = '/профили-лечения/'.change_text_url($profile['name']);
 			$profileAr['status'] = 1;
 
-			echo "Отправка запроса на https://sites.tonia.ru/api/object/profile/set/".$profile['id'].'<br>';
+			//echo "Отправка запроса на https://sites.tonia.ru/api/object/profile/set/".$profile['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/object/profile/set/".$profile['id'],[
 				'form_params' => $profileAr
@@ -222,7 +222,7 @@ function sync_objects_api($connect){
 			$methodAr['uri'] = '/методы-лечения/'.change_text_url($method['name']);
 			$methodAr['status'] = 1;
 
-			echo "Отправка запроса на https://sites.tonia.ru/api/object/method/set/".$method['id'].'<br>';
+			//echo "Отправка запроса на https://sites.tonia.ru/api/object/method/set/".$method['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/object/method/set/".$method['id'],[
 				'form_params' => $methodAr
@@ -230,10 +230,10 @@ function sync_objects_api($connect){
 
 			$res = json_decode($res->getBody(),true);
 
-			echo 'res=';
+			/*echo 'res=';
 			echo '<pre>';
 			print_r($res);
-			echo '</pre>';
+			echo '</pre>';*/
 
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
@@ -267,7 +267,7 @@ function sync_objects_api($connect){
 			$sightAr['uri'] = '/достопримечательности/'.change_text_url($sight['name']);
 			$sightAr['status'] = 1;
 
-			echo "Отправка запроса на https://sites.tonia.ru/api/sight/set/".$sight['id'].'<br>';
+			//echo "Отправка запроса на https://sites.tonia.ru/api/sight/set/".$sight['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/sight/set/".$sight['id'],[
 				'form_params' => $sightAr
@@ -275,10 +275,10 @@ function sync_objects_api($connect){
 
 			$res = json_decode($res->getBody(),true);
 
-			echo 'res=';
+			/*echo 'res=';
 			echo '<pre>';
 			print_r($res);
-			echo '</pre>';
+			echo '</pre>';*/
 
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
@@ -309,7 +309,7 @@ function sync_objects_api($connect){
 			$procedureAr['uri'] = '/процедуры/'.change_text_url($procedure['name']);
 			$procedureAr['status'] = 1;
 
-			echo "Отправка запроса на https://sites.tonia.ru/api/object/procedure/set/".$procedure['id'].'<br>';
+			//echo "Отправка запроса на https://sites.tonia.ru/api/object/procedure/set/".$procedure['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/object/procedure/set/".$procedure['id'],[
 				'form_params' => $procedureAr
@@ -317,10 +317,10 @@ function sync_objects_api($connect){
 
 			$res = json_decode($res->getBody(),true);
 
-			echo 'res=';
+			/*echo 'res=';
 			echo '<pre>';
 			print_r($res);
-			echo '</pre>';
+			echo '</pre>';*/
 
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
@@ -354,7 +354,7 @@ function sync_objects_api($connect){
 			$promotionAr['end_timestamp'] = strtotime($promotion['date_end']);
 			$promotionAr['uid'] = 1;
 
-			echo "Отправка запроса на https://sites.tonia.ru/api/resort/promo/set/".$promotion['id'].'<br>';
+			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/promo/set/".$promotion['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/promo/set/".$promotion['id'],[
 				'form_params' => $promotionAr
@@ -367,8 +367,8 @@ function sync_objects_api($connect){
 					$connect->query("UPDATE `promotions` SET `synchronized` = '1' WHERE `id` = ?i",$promotion['id']);
 				}
 				else {
-					echo $res['msg'].": ".$promotion['id'].'<br>';
-					print_r($res['fail_messages']);
+					/*echo $res['msg'].": ".$promotion['id'].'<br>';
+					print_r($res['fail_messages']);*/
 					break;
 				}
 			}
@@ -387,7 +387,7 @@ function sync_objects_api($connect){
 			$housingAr['status'] = 1;
 			$housingAr['uid'] = 1;
 
-			echo "Отправка запроса на https://sites.tonia.ru/api/resort/housing/set/".$housing['id'].'<br>';
+			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/housing/set/".$housing['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/housing/set/".$housing['id'],[
 				'form_params' => $housingAr
@@ -400,8 +400,8 @@ function sync_objects_api($connect){
 					$connect->query("UPDATE `housing` SET `synchronized` = '1' WHERE `id` = ?i",$housing['id']);
 				}
 				else {
-					echo $res['msg'].": ".$housing['id'].'<br>';
-					print_r($res['fail_messages']);
+					/*echo $res['msg'].": ".$housing['id'].'<br>';
+					print_r($res['fail_messages']);*/
 					break;
 				}
 			}
@@ -437,8 +437,8 @@ function sync_objects_api($connect){
 					$connect->query("UPDATE `rate_plan` SET `synchronized` = '1' WHERE `id` = ?i",$rate['id']);
 				}
 				else {
-					echo $res['msg'].": ".$rate['id'].'<br>';
-					print_r($res['fail_messages']);
+					/*echo $res['msg'].": ".$rate['id'].'<br>';
+					print_r($res['fail_messages']);*/
 					break;
 				}
 			}
@@ -456,7 +456,7 @@ function sync_objects_api($connect){
 			$comfortAr['type'] = $comfort['type'];
 			$comfortAr['uid'] = 1;
 
-			echo "Отправка запроса на https://sites.tonia.ru/api/resort/room/comfort/set/".$comfort['id'].'<br>';
+			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/room/comfort/set/".$comfort['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/room/comfort/set/".$comfort['id'],[
 				'form_params' => $comfortAr
@@ -469,8 +469,8 @@ function sync_objects_api($connect){
 					$connect->query("UPDATE `comfort` SET `synchronized` = '1' WHERE `id` = ?i",$comfort['id']);
 				}
 				else {
-					echo $res['msg'].": ".$comfort['id'].'<br>';
-					print_r($res['fail_messages']);
+					//echo $res['msg'].": ".$comfort['id'].'<br>';
+					//print_r($res['fail_messages']);
 					break;
 				}
 			}
@@ -486,7 +486,7 @@ function sync_objects_api($connect){
 			$infrastructureAr['name'] = $infrastructure['name'];
 			$infrastructureAr['uid'] = 1;
 
-			echo "Отправка запроса на https://sites.tonia.ru/api/resort/infrastructure/set/".$infrastructure['id'].'<br>';
+			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/infrastructure/set/".$infrastructure['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/infrastructure/set/".$infrastructure['id'],[
 				'form_params' => $infrastructureAr
@@ -499,8 +499,8 @@ function sync_objects_api($connect){
 					$connect->query("UPDATE `infa` SET `synchronized` = '1' WHERE `id` = ?i",$infrastructure['id']);
 				}
 				else {
-					echo $res['msg'].": ".$infrastructure['id'].'<br>';
-					print_r($res['fail_messages']);
+					//echo $res['msg'].": ".$infrastructure['id'].'<br>';
+					//print_r($res['fail_messages']);
 					break;
 				}
 			}
@@ -633,10 +633,10 @@ function sync_objects_api($connect){
             	$objectAr['uri_type'] = 0;
           	}
 
-          	echo "Отправка запроса на https://sites.tonia.ru/api/object/set/".$object['id'].'<br>';
+          	/*echo "Отправка запроса на https://sites.tonia.ru/api/object/set/".$object['id'].'<br>';
           	echo '<pre>';
 		  	print_r($objectAr);   
-          	echo '</pre>';
+          	echo '</pre>';*/
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/object/set/".$object['id'],[
 				'form_params' => $objectAr
@@ -644,15 +644,15 @@ function sync_objects_api($connect){
 
 
 			$res = json_decode($res->getBody(),true);
-          	echo '<pre>Результат отправки на https://sites.tonia.ru/api/object/set/'.$object['id'].'<br>';
+          	/*echo '<pre>Результат отправки на https://sites.tonia.ru/api/object/set/'.$object['id'].'<br>';
 		  	print_r($res);   
-          	echo '</pre>';			
+          	echo '</pre>';*/
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
 				if($success) {
 					if (trim($res['new_uri'])!='') {
 						$connect->query("UPDATE `object` SET `path` = '?s' WHERE `id` = ?i", $res['new_uri'], $object['id']);
-						echo $connect->last_query().'<br>';
+						//echo $connect->last_query().'<br>';
 					}
 
 
@@ -740,7 +740,7 @@ function sync_objects_api($connect){
 			$roomAr['accessible_places'] = $room['accessible_places'];
 			$roomAr['uid'] = 1;
 
-			echo "Отправка запроса на https://sites.tonia.ru/api/resort/room/set/".$room['id'].'<br>';
+			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/room/set/".$room['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/room/set/".$room['id'],[
 				'form_params' => $roomAr
@@ -774,8 +774,8 @@ function sync_objects_api($connect){
 					//$connect->query("UPDATE `room` SET `synchronized` = '1' WHERE `id` = ?i",$room['id']);
 				}
 				else {
-					echo $res['msg'].": ".$room['id'].'<br>';
-					print_r($res['fail_messages']);
+					/*echo $res['msg'].": ".$room['id'].'<br>';
+					print_r($res['fail_messages']);*/
 					break;
 				}
 			}
@@ -795,10 +795,10 @@ function sync_objects_api($connect){
 			$placeAr['travelline_occupancy_data'] = get_place_name($place, true);
 			$placeAr['uid'] = 1;
 
-			echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/place/set/".$place['id'].'<br>';
+			/*echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/place/set/".$place['id'].'<br>';
 			echo '<pre>';
 			print_r($placeAr);
-			echo '</pre>';
+			echo '</pre>';*/
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/place/set/".$place['id'],[
 				'form_params' => $placeAr
@@ -811,8 +811,8 @@ function sync_objects_api($connect){
 					$connect->query("UPDATE `place` SET `synchronized` = '1' WHERE `id` = ?i",$place['id']);
 				}
 				else {
-					echo $res['msg'].": ".$place['id'].'<br>';
-					print_r($res['fail_messages']);
+					/*echo $res['msg'].": ".$place['id'].'<br>';
+					print_r($res['fail_messages']);*/
 					break;
 				}
 			}
@@ -1017,13 +1017,12 @@ function sync_objects_api($connect){
 		
 		*/
 	
-
-		echo '<br>end of sync';
+		//echo '<br>end of sync';
 
 		return true;
 	}
 	catch (Exception $e) {
-		echo 'Exception='.$e->getMessage();
+		//echo 'Exception='.$e->getMessage();
 		return false;
 	}
 

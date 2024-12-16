@@ -1183,6 +1183,7 @@ function del_room_occupancy($connect) {
 	//$connect->query("UPDATE room_occupancy SET `status`=0 WHERE id=?i", $_POST['id']);
 	if (isset($_POST['id_obj'])) $connect->query("UPDATE place SET `status`=0, `synchronized`=0 WHERE id=?i and `id_obj`=?i", $_POST['id'], $_POST['id_obj']);
 	else $connect->query("UPDATE place SET `status`=0, `synchronized`=0 WHERE id=?i", $_POST['id']);
+	sync_objects_api($connect);
 }
 
 function room_occupancy($connect){
@@ -1438,6 +1439,8 @@ function save_room_occupancy($connect) {
 			);
 		}
 	}
+
+	sync_objects_api($connect);
 }
 
 
@@ -1738,6 +1741,7 @@ function save_new_room($connect){
     else
         $housing = (int)$_POST['housing'];
 	$connect->query("INSERT INTO room(name, id_obj, id_comfort, id_best_comfort, note, main_place, add_place, housing, square, food) VALUES (?s, ?i, ?s, ?s, ?s, ?i, ?i, ?s, ?s, ?s)", $_POST["name_room"], $_POST["id_obj"], $_POST["comfort"], $_POST["best_comfort"], $_POST["note"], $_POST["main_place"], $_POST["add_place"], $housing, $_POST["square"], $_POST["food"]);
+	sync_objects_api($connect);
 }
 
 function edit_room($connect){
@@ -1841,6 +1845,7 @@ function update_room($connect){
 	//}
     if (isset($_POST["id_obj"])) $connect->query("UPDATE room SET name=?s, id_comfort=?s, id_best_comfort=?s, note=?s, main_place=?i, add_place=?i, housing=?s, food=?s, square=?s, synchronized = 0 WHERE id=?i and id_obj=?i", $name_room, $comfort, $best_comfort, $note, $main_place, $add_place, $housing, $food, $square, $id, $_POST["id_obj"]);
 	else $connect->query("UPDATE room SET name=?s, id_comfort=?s, id_best_comfort=?s, note=?s, main_place=?i, add_place=?i, housing=?s, food=?s, square=?s, synchronized = 0 WHERE id=?i", $name_room, $comfort, $best_comfort, $note, $main_place, $add_place, $housing, $food, $square, $id);
+	sync_objects_api($connect);
 }
 
 function object_check_archive($connect){
@@ -1859,6 +1864,7 @@ function room_check_archive($connect){
 		$new = 1;
 	if (isset($_POST["id_obj"])) $connect->query("UPDATE room SET active=?i, synchronized = 0 WHERE id=?i and id_obj=?i", $new, $id, $_POST["id_obj"]);
 	else $connect->query("UPDATE room SET active=?i, synchronized = 0 WHERE id=?i", $new, $id);
+	sync_objects_api($connect);
 	return $new;
 }
 
@@ -1942,6 +1948,7 @@ function save_new_housing($connect){
 	$name = $_POST["name"];
 	$desc = $_POST["desc"];
 	$connect->query("INSERT INTO housing(id_obj, name, description) VALUES (?i, ?s, ?s)", $id, $name, $desc);
+	sync_objects_api($connect);
 }
 
 function edit_housing($connect){
@@ -1987,6 +1994,7 @@ function update_housing($connect){
 	$desc = $_POST["desc"];
 	if (isset($_POST["id_obj"])) $connect->query("UPDATE housing SET name=?s, description=?s, synchronized = 0 WHERE id=?i and id_obj=?i", $name, $desc, $id, $_POST["id_obj"]);
 	else $connect->query("UPDATE housing SET name=?s, description=?s, synchronized = 0 WHERE id=?i", $name, $desc, $id);
+	sync_objects_api($connect);
 }
 
 

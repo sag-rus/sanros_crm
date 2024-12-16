@@ -432,6 +432,7 @@ function save_new_rate_plan_account($connect, $data){
 			return $insert;
 		}
 	}
+	//sync_objects_api($connect);
 	return FALSE;
 }
 
@@ -461,6 +462,8 @@ function update_rate_plan_account($connect, $data){
 		$responseArray['msg'] = 'Access denied';
 	}
 
+	//sync_objects_api($connect);
+
 	return $responseArray;
 }
 
@@ -489,7 +492,7 @@ function del_rate_plan_account($connect, $data){
 	  else {
 		  $responseArray['msg'] = 'Access denied';
 	  }
-  
+	  //sync_objects_api($connect);
 	  return $responseArray;
   }
 
