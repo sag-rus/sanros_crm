@@ -44,9 +44,13 @@ foreach($items as $item) {
         $item['body'] = str_replace('<h4', '<h3', $item['body']);
         $item['body'] = str_replace('</h4', '</h3', $item['body']);        
 
+        echo $item['id'].'<br>';
         echo 'https://санатории-россии.рф'.$item['path'].'<br><br>';
 
-        echo $item['body'].'<br><br>';
+        //echo $item['body'].'<br><br>';
+
+        $connect->query("UPDATE `sites_contents` SET `body`=?s, `synchronized`=0 WHERE `id`=?i", $item['body'], $item['id']);
+        break;
     }
 
 }
