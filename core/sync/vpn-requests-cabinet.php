@@ -25,9 +25,16 @@
 	include_once(_FOLDERSITE_."/core/lib/sms.php");
 	include_once(_FOLDERSITE_."/core/lib/Mysql.Class.php");
 	include_once(_FOLDERSITE_."/config.php");
+
 	$conf = new JConfig;
 	$sync = $conf->sync_base;
 	$CRM = $conf->CRM;
+
+	include_once(_FOLDERSITE_."/core/upload/price.php");
+	include_once(_FOLDERSITE_."/core/upload/default.php");
+	include_once(_FOLDERSITE_."/core/upload/sync-objects-api.php");
+
+
 	$unisender_api_key = $conf->unisender_api_key;
 
 	define("DEFAULT_OBJECT_IMAGE", "http://tonia.ru/price/object/head/default.jpg");
