@@ -50,7 +50,7 @@ foreach($items as $item) {
         //echo $item['body'].'<br><br>';
 
         $connect->query("UPDATE `sites_contents` SET `body`=?s, `synchronized`=0 WHERE `id`=?i", $item['body'], $item['id']);
-        break;
+        //break;
     }
 
 }
