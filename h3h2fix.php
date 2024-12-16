@@ -34,7 +34,7 @@ $configNew->objectCabinet = $objectCabinet;
 /* ---------------------------- */
 
 
-$items = $connect->getAll("SELECT * FROM `sites_contents` WHERE `body` LIKE '%<h3%' AND `body` NOT LIKE '%<h2%'");
+$items = $connect->getAll("SELECT * FROM `sites_contents` WHERE `body` LIKE '%<h3%' AND `body` NOT LIKE '%<h2%' and `status`=1 and `path`<>'/'");
 foreach($items as $item) {
     
     if (mb_strpos($item['body'], '<h3')!==FALSE && mb_strpos($item['body'], '<h2')===FALSE) {
@@ -44,7 +44,9 @@ foreach($items as $item) {
         $item['body'] = str_replace('<h4', '<h3', $item['body']);
         $item['body'] = str_replace('</h4', '</h3', $item['body']);        
 
-        echo 'Изменены заголовки на странице: https://санатории-россии.рф'.$item['path'].'<br>';
+        echo 'https://санатории-россии.рф'.$item['path'].'<br><br>';
+
+        echo $item['body'].'<br><br>';
     }
 
 }
