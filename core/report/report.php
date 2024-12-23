@@ -1635,7 +1635,7 @@ function filter_history_global($connect){
     				$content = $connect->getRow("SELECT id, title, site_id FROM sites_contents WHERE id=?i", $details['id']);
     				$details = 'название материала: '.$content['title'].'<br>id сайта: '.$content['site_id'].'<br>id материала:'.$content['id'];
     			}
-    			break;    			
+    			break;
 	    	case 'set_sites_content':
     			$func = 'сохранение материала сайта'; 
     			//$details = json_decode($details, true);
@@ -1647,6 +1647,14 @@ function filter_history_global($connect){
     			$details = json_decode($details,  JSON_UNESCAPED_UNICODE);
     			$details = 'запрос: '.$details['poisk'].'<br>таблица: '.$details['table'].'<br>функция: '.$details['function'];
 	    		break;
+			case 'save_date_price_manager':
+				$func = 'Добавление периода дат'; 
+				$details = json_decode($details, true);
+				if ($details['id']>0) {
+					$obj = $connect->getRow("SELECT full_name FROM object WHERE id=?i", $room['id_obj']);
+					$details = 'начало: '.$details['start'].' конец: '.$details['end'].' объект:'.$obj['full_name'];
+				}
+				break;				
 		}
 		$prev_func = $func;
 		$prev = json_decode($row["data"], true);
