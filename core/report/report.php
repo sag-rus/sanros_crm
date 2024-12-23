@@ -1653,7 +1653,7 @@ function filter_history_global($connect){
 				if ($details['id']>0) {
 					$date_price = $connect->getRow("SELECT * FROM date_price WHERE id=?i", $details['id']);
 					$obj = $connect->getRow("SELECT full_name FROM object WHERE id=?i", $date_price['id_obj']);
-					$details = 'начало: '.$details['start'].' конец: '.$details['end'].' объект:'.$obj['full_name'];
+					$details = $details['id'].': начало: '.$details['start'].' конец: '.$details['end'].' объект:'.$obj['full_name'];
 				}
 				break;	
 			case 'update_date_price_manager':
@@ -1662,7 +1662,7 @@ function filter_history_global($connect){
 				if ($details['id']>0) {
 					$date_price = $connect->getRow("SELECT * FROM date_price WHERE id=?i", $details['id']);
 					$obj = $connect->getRow("SELECT full_name FROM object WHERE id=?i", $date_price['id_obj']);
-					$details = 'начало: '.$details['start'].' конец: '.$details['end'].' объект:'.$obj['full_name'];
+					$details = $details['id'].': начало: '.$details['start'].' конец: '.$details['end'].' объект:'.$obj['full_name'];
 				}
 				break;
 		}
