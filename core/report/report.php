@@ -1654,6 +1654,7 @@ function filter_history_global($connect){
 				if ($details['id']>0) {
 					$date_price = $connect->getRow("SELECT * FROM date_price WHERE id=?i", $details['id']);
 					$obj = $connect->getRow("SELECT * FROM object WHERE id=?i", $date_price['id_obj']);
+					if (!in_array($obj['id'], $all['objects'])) $all['objects'][] = $obj['id'];
 					$details = $details['id'].': начало: '.$details['start'].' конец: '.$details['end'].' объект:'.$obj['name'];
 				}
 				break;	
@@ -1663,6 +1664,7 @@ function filter_history_global($connect){
 				if ($details['id']>0) {
 					$date_price = $connect->getRow("SELECT * FROM date_price WHERE id=?i", $details['id']);
 					$obj = $connect->getRow("SELECT name FROM object WHERE id=?i", $date_price['id_obj']);
+					if (!in_array($obj['id'], $all['objects'])) $all['objects'][] = $obj['id'];
 					$details = $details['id'].': начало: '.$details['start'].' конец: '.$details['end'].' объект:'.$obj['name'];
 				}
 				break;
@@ -1671,7 +1673,7 @@ function filter_history_global($connect){
 					$details = json_decode($details, true);
 					if ($details['object']>0) {
 						$obj = $connect->getRow("SELECT * FROM object WHERE id=?i", $details['object']);
-						//if (!in_array($details['details'], $all['objects'])) $all['objects'][] = $details['details'];
+						if (!in_array($obj['id'], $all['objects'])) $all['objects'][] = $obj['id'];
 						$details = 'объект: '.$obj['name'].'<br>id объекта:'.$obj['id'];
 					} else $addline = false;
 					break; 
@@ -1681,7 +1683,7 @@ function filter_history_global($connect){
 					if ($details['id']>0) {
 						$range = $connect->getRow("SELECT * FROM `ranges` WHERE id=?i", $details['id']);
 						$obj = $connect->getRow("SELECT * FROM object WHERE id=?i", $range['id_obj']);
-						//if (!in_array($details['details'], $all['objects'])) $all['objects'][] = $details['details'];
+						if (!in_array($obj['id'], $all['objects'])) $all['objects'][] = $obj['id'];
 						$details = 'объект: '.$obj['name'].'<br>id объекта:'.$obj['id'];
 					} else $addline = false;
 					break;					 				
