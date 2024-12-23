@@ -1682,7 +1682,7 @@ function filter_history_global($connect){
 						$range = $connect->getRow("SELECT * FROM `range` WHERE id=?i", $details['id']);
 						$obj = $connect->getRow("SELECT * FROM object WHERE id=?i", $range['id_obj']);
 						//if (!in_array($details['details'], $all['objects'])) $all['objects'][] = $details['details'];
-						$details = 'объект: '.$obj['name'].'<br>id объекта:'.$obj['id'].print_r($range, true);
+						$details = 'объект: '.$obj['name'].'<br>id объекта:'.$obj['id']."SELECT * FROM `range` WHERE id=".$details['id'];
 					} else $addline = false;
 					break;					 				
 					
