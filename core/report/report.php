@@ -1678,8 +1678,9 @@ function filter_history_global($connect){
 			case 'update_range_manager':
 					$func = 'Изменение RANGE'; 
 					$details = json_decode($details, true);
-					if ($details['object']>0) {
-						$obj = $connect->getRow("SELECT * FROM object WHERE id=?i", $details['object']);
+					if ($details['id']>0) {
+						$range = $connect->getRow("SELECT * FROM range WHERE id=?i", $details['id']);
+						$obj = $connect->getRow("SELECT * FROM object WHERE id=?i", $range['id_obj']);
 						//if (!in_array($details['details'], $all['objects'])) $all['objects'][] = $details['details'];
 						$details = 'объект: '.$obj['name'].'<br>id объекта:'.$obj['id'];
 					} else $addline = false;
