@@ -1668,7 +1668,7 @@ function filter_history_global($connect){
 			case 'save_range_manager':
 					$func = 'Добавление RANGE'; 
 					$details = json_decode($details, true);
-					if ($details['id']>0) {
+					if ($details['object']>0) {
 						$obj = $connect->getRow("SELECT * FROM object WHERE id=?i", $details['object']);
 						//if (!in_array($details['details'], $all['objects'])) $all['objects'][] = $details['details'];
 						$details = 'объект: '.$obj['name'].'<br>id объекта:'.$obj['id'];
@@ -1677,7 +1677,7 @@ function filter_history_global($connect){
 			case 'update_range_manager':
 					$func = 'Изменение RANGE'; 
 					$details = json_decode($details, true);
-					if ($details['id']>0) {
+					if ($details['object']>0) {
 						$obj = $connect->getRow("SELECT * FROM object WHERE id=?i", $details['object']);
 						//if (!in_array($details['details'], $all['objects'])) $all['objects'][] = $details['details'];
 						$details = 'объект: '.$obj['name'].'<br>id объекта:'.$obj['id'];
