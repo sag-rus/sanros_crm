@@ -1651,10 +1651,20 @@ function filter_history_global($connect){
 				$func = 'Добавление периода дат'; 
 				$details = json_decode($details, true);
 				if ($details['id']>0) {
-					$obj = $connect->getRow("SELECT full_name FROM object WHERE id=?i", $room['id_obj']);
+					$date_price = $connect->getRow("SELECT * FROM date_pruce WHERE id=?i", $details['id']);
+					$obj = $connect->getRow("SELECT full_name FROM object WHERE id=?i", $date_price['id_obj']);
 					$details = 'начало: '.$details['start'].' конец: '.$details['end'].' объект:'.$obj['full_name'];
 				}
-				break;				
+				break;	
+			case 'update_date_price_manager':
+				$func = 'Изменение периода дат'; 
+				$details = json_decode($details, true);
+				if ($details['id']>0) {
+					$date_price = $connect->getRow("SELECT * FROM date_pruce WHERE id=?i", $details['id']);
+					$obj = $connect->getRow("SELECT full_name FROM object WHERE id=?i", $date_price['id_obj']);
+					$details = 'начало: '.$details['start'].' конец: '.$details['end'].' объект:'.$obj['full_name'];
+				}
+				break;
 		}
 		$prev_func = $func;
 		$prev = json_decode($row["data"], true);
