@@ -1479,6 +1479,7 @@ function filter_history_global($connect){
 	$prev_func = '';
 	$prev = array();
 	$prices = array();
+	$sql_history = "SELECT id, DATE_FORMAT(datetime, '%d.%m.%Y %H:%i:%s') as datetime, id_user, func, data FROM history_global WHERE ".$zapros_for_mysql." ORDER BY id";
 	$data = $connect->getAll("SELECT id, DATE_FORMAT(datetime, '%d.%m.%Y %H:%i:%s') as datetime, id_user, func, data FROM history_global WHERE ".$zapros_for_mysql." ORDER BY id");
 	foreach($data as $row){
 		$date = $row["datetime"];
@@ -1716,7 +1717,7 @@ function filter_history_global($connect){
 			$stats .= '<strong>Итого: </strong>'.(count($all['objects'])*20+$all['update_price_manager']*1+$all['foto_local']*3+$all['foto_url']*3).' руб.<br>';
 		}
 
-		$html = $stats."<br><table class='table table-condensed' id='tbl_filter'><thead><tr><th class='{dateFormat: \"ddmmyyyy\"}'>Дата</th><th>Пользователь</th><th>Действие</th><th>Детали</th></tr></thead><tbody>".$html."</tbody></table>";
+		$html = $sql_history.'<br>'.$stats."<br><table class='table table-condensed' id='tbl_filter'><thead><tr><th class='{dateFormat: \"ddmmyyyy\"}'>Дата</th><th>Пользователь</th><th>Действие</th><th>Детали</th></tr></thead><tbody>".$html."</tbody></table>";
 	}
 	else
 		$html = "Ничего не найдено";
