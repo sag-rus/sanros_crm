@@ -1679,10 +1679,10 @@ function filter_history_global($connect){
 					$func = 'Изменение RANGE'; 
 					$details = json_decode($details, true);
 					if ($details['id']>0) {
-						$range = $connect->getRow("SELECT * FROM `range` WHERE id=?i", $details['id']);
+						$range = $connect->getRow("SELECT * FROM `ranges` WHERE id=?i", $details['id']);
 						$obj = $connect->getRow("SELECT * FROM object WHERE id=?i", $range['id_obj']);
 						//if (!in_array($details['details'], $all['objects'])) $all['objects'][] = $details['details'];
-						$details = 'объект: '.$obj['name'].'<br>id объекта:'.$obj['id']."SELECT * FROM `range` WHERE id=".$details['id'];
+						$details = 'объект: '.$obj['name'].'<br>id объекта:'.$obj['id'];
 					} else $addline = false;
 					break;					 				
 					
