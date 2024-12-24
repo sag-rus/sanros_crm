@@ -1717,7 +1717,7 @@ function filter_history_global($connect){
 			$stats .= 'Затронуто объектов для внесения цены (графа «баз»): '.(count($all['objects'])*20).' руб.<br>';
 			$stats .= 'Обновлено цен (графа «доп»): '.($all['update_price_manager']*1).' руб.<br>';
 			$stats .= 'Загружено фото с компьютера и по url (графа «фото ном», «фото гл»): '.($all['foto_local']*3+$all['foto_url']*3).' руб.<br>';
-			$stats .= '<strong>Итого: </strong>'.(count($all['objects'])*20+$all['update_price_manager']*1+$all['foto_local']*3+$all['foto_url']*3).' руб.<br>';
+			$stats .= '<strong>Итого: </strong>'.(count($all['objects'])*20+$all['update_price_manager']*1+$all['foto_local']*3+$all['foto_url']*3).' руб. ( '.round((count($all['objects'])*20+$all['update_price_manager']*1+$all['foto_local']*3+$all['foto_url']*3)*1.1).' +10%)<br>';
 		}
 
 		$html = $sql_history.'<br>'.$stats."<br><table class='table table-condensed' id='tbl_filter'><thead><tr><th class='{dateFormat: \"ddmmyyyy\"}'>Дата</th><th>Пользователь</th><th>Действие</th><th>Детали</th></tr></thead><tbody>".$html."</tbody></table>";
