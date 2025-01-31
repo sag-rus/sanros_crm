@@ -193,11 +193,11 @@ function review_bron($connect, $type, $id, $type_PDF = "PDF"){
 			<td>(<?php echo $director; ?>)</td>
 		</tr>
 		<tr>
-			<td width="700" colspan="3" align="right"><p style="font-size: 11pt; text-align: right;"><strong>Прошу Вас выставить счёт!<br /><span>Заранее благодарю,</span> <?php echo $manager; ?></strong><br />Email: <?php echo $email; ?></p></td>
+			<td width="700" colspan="3" align="right"><p style="font-size: 11pt; text-align: right;"><strong>Прошу Вас выставить счёт!<br /><span>Заранее благодарю,</span> <?php echo $manager; ?></strong><br />Email: office@sanata.online</p></td>
 		</tr>
 		</table>
 		<br /><br /><br />
-		<p style="font-size: 14pt; text-align: center">Просим Вас отправлять счета на электронную почту <strong>2602323@2602323.ru</strong></p>
+		<p style="font-size: 14pt; text-align: center">Просим Вас отправлять счета на электронную почту <strong>office@sanata.online</strong></p>
 
 	</div>
 
