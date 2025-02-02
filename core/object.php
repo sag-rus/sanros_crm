@@ -1780,6 +1780,10 @@ function edit_room($connect){
 		<div class="col-sm-2">
 			<select id="add_place" class="form-control"><?php echo get_select_options(0, 30, $row["add_place"]); ?></select>
 		</div>
+		<label class="col-sm-1 control-label">Без места</label>
+		<div class="col-sm-2">
+			<select id="wo_bed_place" class="form-control"><?php echo get_select_options(0, 5, $row["wo_bed_place"]); ?></select>
+		</div>		
 		<label class="col-sm-1 control-label">Питание</label>
 		<div class="col-sm-4">
 			<input type="text" class="form-control" id="food" value="<?php echo $row['food']; ?>">
