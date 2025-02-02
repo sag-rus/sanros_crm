@@ -1747,7 +1747,7 @@ function save_new_room($connect){
     else
         $housing = (int)$_POST['housing'];
 	print_r($_POST);
-	$connect->query("INSERT INTO room(name, id_obj, id_comfort, id_best_comfort, note, main_place, add_place, wo_bed_place, housing, square, food) VALUES (?s, ?i, ?s, ?s, ?s, ?i, ?i, ?s, ?s, ?s)", $_POST["name_room"], $_POST["id_obj"], $_POST["comfort"], $_POST["best_comfort"], $_POST["note"], $_POST["main_place"], $_POST["add_place"], $_POST["wo_bed_place"], $housing, $_POST["square"], $_POST["food"]);
+	$connect->query("INSERT INTO room(name, id_obj, id_comfort, id_best_comfort, note, main_place, add_place, wo_bed_place, housing, square, food) VALUES (?s, ?i, ?s, ?s, ?s, ?i, ?i, ?i, ?s, ?s, ?s)", $_POST["name_room"], $_POST["id_obj"], $_POST["comfort"], $_POST["best_comfort"], $_POST["note"], $_POST["main_place"], $_POST["add_place"], $_POST["wo_bed_place"], $housing, $_POST["square"], $_POST["food"]);
 	echo $connect->last_query();
 	//sync_objects_api($connect);
 }
