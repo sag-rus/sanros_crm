@@ -1586,7 +1586,7 @@ function select_object_room($connect){
 		<div class="panel-heading"><i class="fa fa-cubes"></i> Номерной фонд объекта «<?php echo $type." ".$row["name"]; ?>»</div>
 		<table class="table tbl-room">
 <?php
-	$data = $connect->getAll("SELECT id, name, note, id_comfort, id_best_comfort, main_place, add_place, active, housing, food, square FROM room WHERE id_obj=?i ORDER BY housing DESC, active", $id);
+	$data = $connect->getAll("SELECT id, name, note, id_comfort, id_best_comfort, main_place, add_place, wo_bed_place, active, housing, food, square FROM room WHERE id_obj=?i ORDER BY housing DESC, active", $id);
 	foreach($data as $row){
 		$id_room = $row["id"];
 		$class = "";
@@ -1628,7 +1628,7 @@ function select_object_room($connect){
 			<td width="140"><img src="<?php echo $image; ?>" class="img-head-small" /><?php echo $row["name"]; ?></td>
 			<td width="150"><?php echo $best_comfort; ?></td>
 			<td width="150"><?php echo $food; ?></td>
-			<td width="100"><i class="fa fa-user"></i> <strong><?php echo $row["main_place"]." + ".$row["add_place"]; ?></strong></td>
+			<td width="100"><i class="fa fa-user"></i> <strong><?php echo $row["main_place"]." + ".$row["add_place"]."( + ".$row["wo_bed_place"].")"; ?></strong></td>
 			<td width="100"><?php echo $square; ?></td>
 			<td width="220"><?php echo $row["note"]; ?></td>
 			<td width="220">
