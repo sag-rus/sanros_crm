@@ -1701,6 +1701,8 @@ function add_new_room($connect){
 		<div class="col-sm-2">
 			<select id="wo_bed_place" class="form-control"><?php echo get_select_options(0, 5, ""); ?></select>
 		</div>		
+	</div>
+	<div class="form-group">
 		<label class="col-sm-1 control-label">Питание</label>
 		<div class="col-sm-4">
 			<input type="text" class="form-control" id="food">
@@ -1783,7 +1785,9 @@ function edit_room($connect){
 		<label class="col-sm-1 control-label">Без места</label>
 		<div class="col-sm-2">
 			<select id="wo_bed_place" class="form-control"><?php echo get_select_options(0, 5, $row["wo_bed_place"]); ?></select>
-		</div>		
+		</div>
+	</div>
+	<div class="form-group">
 		<label class="col-sm-1 control-label">Питание</label>
 		<div class="col-sm-4">
 			<input type="text" class="form-control" id="food" value="<?php echo $row['food']; ?>">
