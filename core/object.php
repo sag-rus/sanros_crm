@@ -1703,7 +1703,7 @@ function add_new_room($connect){
 		</div>		
 	</div>
 	<div class="form-group">
-		<label class="col-sm-1 control-label">Питание</label>
+		<label class="col-sm-2 control-label">Питание</label>
 		<div class="col-sm-4">
 			<input type="text" class="form-control" id="food">
 		</div>
@@ -1788,7 +1788,7 @@ function edit_room($connect){
 		</div>
 	</div>
 	<div class="form-group">
-		<label class="col-sm-1 control-label">Питание</label>
+		<label class="col-sm-2 control-label">Питание</label>
 		<div class="col-sm-4">
 			<input type="text" class="form-control" id="food" value="<?php echo $row['food']; ?>">
 		</div>
