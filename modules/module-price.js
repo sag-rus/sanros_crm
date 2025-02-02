@@ -1069,12 +1069,13 @@ function save_new_room(){
 	var id_obj = $('.object-menu .menu-object').attr('object');
 	var main_place = $('#main_place').val();
 	var add_place = $('#add_place').val();
+	var wo_bed_place = $('#wo_bed_place').val();
 	var housing = $('#housing_object').val();
 	var name = $('#name').val();
 	var note = $('#note').val();
 	var square = $('#square').val();
 	var food = $('#food').val();
-	var str = 'func=save_new_room&id_obj=' + id_obj + '&name_room=' + name + '&main_place=' + main_place + '&add_place=' + add_place + '&note=' + note + '&food=' + food + '&housing=' + housing + '&square=' + square;
+	var str = 'func=save_new_room&id_obj=' + id_obj + '&name_room=' + name + '&main_place=' + main_place + '&add_place=' + add_place + '&wo_bed_place=' + wo_bed_place + '&note=' + note + '&food=' + food + '&housing=' + housing + '&square=' + square;
 	str+= '&comfort=' + select_checkbox('comfort', 'comfort');
 	str+= '&best_comfort=' + select_checkbox('comfort', 'best_comfort');
 	if(!name)
@@ -1125,6 +1126,7 @@ function update_room(id,manager){
 	var note = $('#note').val();
 	var main_place = $('#main_place').val();
 	var add_place = $('#add_place').val();
+	var wo_bed_place = $('#wo_bed_place').val();
 	var housing = $('#housing_object').val();
 	var square = $('#square').val();
 	var food = $('#food').val();
@@ -1138,6 +1140,7 @@ function update_room(id,manager){
 		note: note,
 		main_place: main_place,
 		add_place: add_place,
+		wo_bed_place: wo_bed_place,
 		housing: housing,
 		food: food,
 		square: square,
@@ -1153,13 +1156,12 @@ function update_room(id,manager){
 			url: 'mysql.php',
 			type: 'POST',
 			data: data,
-			success: function(){
+			success: function() {
 				if(manager) {
-          view_object_rooms($('.nav-object').attr('data-object-id'));
-				}
-				else {
-          select_object_room();
-        }
+          			view_object_rooms($('.nav-object').attr('data-object-id'));
+				} else {
+          			select_object_room();
+        		}
 				show_alert('Номер изменен...');
 			}
 		});

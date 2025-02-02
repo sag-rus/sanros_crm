@@ -1840,6 +1840,7 @@ function update_room($connect){
 	$note = $_POST["note"];
 	$main_place = $_POST["main_place"];
 	$add_place = $_POST["add_place"];
+	$wo_bed_place = $_POST["wo_bed_place"];
 	$comfort = $_POST["comfort"];
 	$best_comfort = $_POST["best_comfort"];
 	$name_room = $_POST["name_room"];
@@ -1855,8 +1856,8 @@ function update_room($connect){
 		remove_bounds($connect,$entity,'image');
 		set_bounds($connect,$boundsArrayImage,'image');
 	//}
-    if (isset($_POST["id_obj"])) $connect->query("UPDATE room SET name=?s, id_comfort=?s, id_best_comfort=?s, note=?s, main_place=?i, add_place=?i, housing=?s, food=?s, square=?s, synchronized = 0 WHERE id=?i and id_obj=?i", $name_room, $comfort, $best_comfort, $note, $main_place, $add_place, $housing, $food, $square, $id, $_POST["id_obj"]);
-	else $connect->query("UPDATE room SET name=?s, id_comfort=?s, id_best_comfort=?s, note=?s, main_place=?i, add_place=?i, housing=?s, food=?s, square=?s, synchronized = 0 WHERE id=?i", $name_room, $comfort, $best_comfort, $note, $main_place, $add_place, $housing, $food, $square, $id);
+    if (isset($_POST["id_obj"])) $connect->query("UPDATE room SET name=?s, id_comfort=?s, id_best_comfort=?s, note=?s, main_place=?i, add_place=?i, wo_bed_place=?i, housing=?s, food=?s, square=?s, synchronized = 0 WHERE id=?i and id_obj=?i", $name_room, $comfort, $best_comfort, $note, $main_place, $add_place, $wo_bed_place, $housing, $food, $square, $id, $_POST["id_obj"]);
+	else $connect->query("UPDATE room SET name=?s, id_comfort=?s, id_best_comfort=?s, note=?s, main_place=?i, add_place=?i, wo_bed_place=?i, housing=?s, food=?s, square=?s, synchronized = 0 WHERE id=?i", $name_room, $comfort, $best_comfort, $note, $main_place, $add_place, $wo_bed_place, $housing, $food, $square, $id);
 	sync_objects_api($connect);
 }
 
