@@ -735,13 +735,15 @@ function sync_objects_api($connect){
 			$roomAr['description'] = $room['description'];
 			$roomAr['main_places_count'] = $room['main_place'];
 			$roomAr['add_places_count'] = $room['add_place'];
-			$roomAr['wo_bed_place'] = $room['wo_bed_place'];
+			$roomAr['wo_bed_places_count'] = $room['wo_bed_place'];
 			$roomAr['sort'] = $room['priority'];
 			$roomAr['travelline_prices_json'] = $room['price_places'];
 			$roomAr['accessible_places'] = $room['accessible_places'];
 			$roomAr['uid'] = 1;
 
 			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/room/set/".$room['id'].'<br>';
+			//echo '<pre>';
+			//echo '</pre>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/room/set/".$room['id'],[
 				'form_params' => $roomAr
