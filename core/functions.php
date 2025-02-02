@@ -106,7 +106,7 @@ function get_place_name($row, $travelline_occupancy_data = false) {
 			if ($travelline_occupancy_data) {
 				$data = [];
 				$data['code'] = get_place_export_id($row['id_room'], ['id_child_on_add_place'=>$row['id_child_on_add_place'], 'child_on_add_place'=>1]);
-				$data['name'] = 'Доп. место (ребенок'.$child['age_from'].'-'.$child['age_to'].' лет)';
+				$data['name'] = 'Доп. место (ребенок '.$child['age_from'].'-'.$child['age_to'].' лет)';
 				//$data['code'] = get_place_export_id($row['id_room'], ['id_child_on_add_place'=>$row['id_child_on_add_place'], 'child_on_add_place'=>$row['child_on_add_place']]);
 				//$data['name'] = $row['child_on_add_place'].' реб. ('.$child['age_from'].'-'.$child['age_to'].' лет) на доп.месте';
 				$data['bedType'] = 'childBandExtraBed';
