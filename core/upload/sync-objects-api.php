@@ -821,7 +821,7 @@ function sync_objects_api($connect){
 			}
 		}	
 		
-		/*$child_places = $connect->getAll("SELECT * FROM `child_occupancy` WHERE `synchronized` = 0");
+		$child_places = $connect->getAll("SELECT * FROM `child_occupancy` WHERE `synchronized` = 0");
 		foreach ($child_places as $child_place) {
 			$placeAr = [];
 			$placeAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
@@ -831,10 +831,10 @@ function sync_objects_api($connect){
 			$placeAr['age_to'] = $child_place['age_to'];
 			$placeAr['uid'] = 1;
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/placechild/set/".$child_place['id'].'<br>';
-			//echo '<pre>';
-			//print_r($placeAr);
-			//echo '</pre>';
+			echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/placechild/set/".$child_place['id'].'<br>';
+			echo '<pre>';
+			print_r($placeAr);
+			echo '</pre>';
 
 			$res = $client->request('POST',"	".$child_place['id'],[
 				'form_params' => $placeAr
@@ -852,7 +852,7 @@ function sync_objects_api($connect){
 					break;
 				}
 			}
-		}*/		
+		}	
 
 		/*function SyncDatesPack($client, $connect, $datesAr) {
 			if (count($datesAr['data'])>0) {
