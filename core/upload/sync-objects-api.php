@@ -832,21 +832,19 @@ function sync_objects_api($connect){
 			$placeAr['age_to'] = $child_place['age_to'];
 			$placeAr['uid'] = 1;
 
-			echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/placechild/set/".$child_place['id'].'<br>';
+			/*echo "Отправка запроса на https://sites.tonia.ru/api/resort/price/placechild/set/".$child_place['id'].'<br>';
 			echo '<pre>';
 			print_r($placeAr);
-			echo '</pre>';
+			echo '</pre>';*/
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/placechild/set/".$child_place['id'],[
 				'form_params' => $placeAr
 			]);
 
 			$res = json_decode($res->getBody()->getContents(),true);
-
-			echo '<pre>res=';
+			/*echo '<pre>res=';
 			print_r($res);
-			echo '</pre>';
-
+			echo '</pre>';*/
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
 				if($success) {
