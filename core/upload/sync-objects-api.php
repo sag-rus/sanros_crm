@@ -827,6 +827,7 @@ function sync_objects_api($connect){
 			$placeAr = [];
 			$placeAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
 			$placeAr['id'] = $child_place['id'];
+			$placeAr['status'] = $child_place['status'];
 			$placeAr['resort_id'] = $child_place['id_obj'];
 			$placeAr['age_from'] = $child_place['age_from'];
 			$placeAr['age_to'] = $child_place['age_to'];
