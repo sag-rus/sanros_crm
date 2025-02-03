@@ -841,11 +841,12 @@ function sync_objects_api($connect){
 				'form_params' => $placeAr
 			]);
 
+			$res = json_decode($res->getBody()->getContents(),true);
+
 			echo '<pre>res=';
 			print_r($res);
 			echo '</pre>';
 
-			$res = json_decode($res->getBody()->getContents(),true);
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
 				if($success) {
