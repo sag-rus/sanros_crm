@@ -841,14 +841,17 @@ function sync_objects_api($connect){
 			]);
 
 			$res = json_decode($res->getBody()->getContents(),true);
+			echo '<pre>';
+			print_r($res);
+			echo '</pre>';
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
 				if($success) {
-					$connect->query("UPDATE `child_occupancy` SET `synchronized` = '1' WHERE `id` = ?i",$child_place['id']);
+					$connect->query("UPDATE `child_occupancy` SET `synchronized` = '1' WHERE `id` = ?i", $child_place['id']);
 				}
 				else {
-					echo $res['msg'].": ".$child_place['id'].'<br>';
-					print_r($res);
+					//echo $res['msg'].": ".$child_place['id'].'<br>';
+					//print_r($res);
 					break;
 				}
 			}
