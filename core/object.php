@@ -1548,6 +1548,7 @@ function del_child_occupancy($connect) {
 		if (isset($_POST["id_obj"])) $connect->query("UPDATE child_occupancy SET `status`=0 WHERE id=?i and id_obj=?i", $_POST['id'], $_POST['id_obj']);
 		else $connect->query("UPDATE child_occupancy SET `status`=0 WHERE id=?i", $_POST['id']);
 	}
+	sync_objects_api($connect);
 }
 
 function save_child_occupancy($connect) {
@@ -1560,6 +1561,7 @@ function save_child_occupancy($connect) {
 		if (isset($_POST["id_obj"])) $connect->query("UPDATE child_occupancy SET `age_from`=?i, `age_to`=?i WHERE `id`=?i and `id_obj`=?i", $_POST['age_from'], $_POST['age_to'], $_POST['id'], $_POST['id_obj']);
 		else $connect->query("UPDATE child_occupancy SET `age_from`=?i, `age_to`=?i WHERE `id`=?i", $_POST['age_from'], $_POST['age_to'], $_POST['id']);
 	}
+	sync_objects_api($connect);
 }
 
 //CHILD OCCU
