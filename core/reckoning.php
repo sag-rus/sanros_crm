@@ -2050,7 +2050,7 @@ function show_schet_klient($connect){
 		<div class="clearfix"></div>
 	</div>
 <?php if($confirm_booking_quota == 1){ ?>
-	<div class="alert alert-success" style="margin-bottom: 5px"><i class="fa fa-check-circle"></i> Заявка подтвержденна системой</div>
+	<div class="alert alert-success" style="margin-bottom: 5px"><i class="fa fa-check-circle"></i> Заявка подтверждена со стороны TravelLine</div>
 <?php } ?>
 <?php } ?>
 
