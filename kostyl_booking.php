@@ -331,10 +331,10 @@ if ($dates_unavailable) {
 	$number_turist = $connect->getOne("SELECT COUNT(*) FROM position_reck WHERE schet=?i", $id);
 	$connect->query("UPDATE reckoning SET number_turist=?i WHERE id=?i", $number_turist, $id);
 
-	if ($data_booking->adults > 0 && $data_booking->tl==1 && $data_booking->adults > $number_turist) {
+	if ($data_booking->adults > 0 && $data_booking->tl=='1' && $data_booking->adults > $number_turist) {
 		//Здесь добавляем одного и того же туриста на количество проживающих для корректной выгрузки данных TL
 		$rest = $last_id;
-		for ($i=($number_turist+1); $i++; $i<=$data_booking->adults) {
+		for ($i=($number_turist+1); $i<=$data_booking->adults; $i++ ) {
 			$rest .= ','.$last_id;
 		}
 		$connect->query("UPDATE reckoning SET number_turist=?i, rest=?s WHERE id=?i", $data_booking->adults, $rest, $id);
