@@ -111,10 +111,9 @@ $client_info = array(
 
 if(isset($data_booking_JSON['sex'])) {
 	$client_info['sex'] = $data_booking_JSON['sex'];
-	}
+}
 
-if(isset($gsok[$id_obj]))
-	$id_obj = 96;
+if(isset($gsok[$id_obj])) $id_obj = 96;
 
 $today = date("Y-m-d");
 $hash = md5(uniqid());
@@ -329,10 +328,16 @@ if ($dates_unavailable) {
 		$connect->query("UPDATE reckoning SET note=?s, form_booking='default-form' WHERE id=?i", $note_booking, $id);
 	}
 
-	$connect->query("UPDATE reckoning SET number_turist=?i WHERE id=?i", $connect->getOne("SELECT COUNT(*) FROM position_reck WHERE schet=?i", $id), $id);
+	$number_turist = $connect->getOne("SELECT COUNT(*) FROM position_reck WHERE schet=?i", $id);
+	$connect->query("UPDATE reckoning SET number_turist=?i WHERE id=?i", $number_turist, $id);
 
-	if ($data_booking->adults>0) {
-		$connect->query("UPDATE reckoning SET number_turist=?i WHERE id=?i", $data_booking->adults, $id);
+	if ($data_booking->adults > 0 && $data_booking->tl==1 && $data_booking->adults > $number_turist) {
+		//Здесь добавляем одного и того же туриста на количество проживающих для корректной выгрузки данных TL
+		$rest = $last_id;
+		for ($i=($number_turist+1); $i++; $i<=$data_booking->adults) {
+			$rest .= ','.$last_id;
+		}
+		$connect->query("UPDATE reckoning SET number_turist=?i, rest=?s WHERE id=?i", $data_booking->adults, $rest, $id);
 	}
 
 	change_arrival_date($connect, $id);
@@ -371,7 +376,7 @@ if ($dates_unavailable) {
 	$configNew->objectCabinet = $objectCabinet;
 
 	$send = new SendMailTurist;
-		$send->send_login();
+	$send->send_login();
 
 	/*$telephone = clear_telephone($connect->getOne("SELECT telephone FROM klient WHERE id=?i", $last_id));
 	if($telephone){
