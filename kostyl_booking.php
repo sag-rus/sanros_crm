@@ -331,6 +331,10 @@ if ($dates_unavailable) {
 
 	$connect->query("UPDATE reckoning SET number_turist=?i WHERE id=?i", $connect->getOne("SELECT COUNT(*) FROM position_reck WHERE schet=?i", $id), $id);
 
+	if ($data_booking->adults>0) {
+		$connect->query("UPDATE reckoning SET number_turist=?i WHERE id=?i", $data_booking->adults, $id);
+	}
+
 	change_arrival_date($connect, $id);
 	recalculation_sum($connect, $id);
 	save_schet_to_history($connect, $id, "Новая заявка от клиента");
