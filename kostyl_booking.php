@@ -64,8 +64,8 @@ $data_booking_JSON = $_POST["data"];
 
 if (count($data_booking)==0) exit();
 
-//$log = print_r($data_booking, true).PHP_EOL;
-//file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);
+$log = print_r($data_booking, true).PHP_EOL;
+file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);
 
 //$log = print_r($data_booking_JSON, true).PHP_EOL;
 //file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);
