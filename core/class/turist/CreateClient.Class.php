@@ -17,6 +17,7 @@ class CreateClient{
     $email = "";
     $telephone = "";
     $address = "";
+    $date = NULL;
 
     $sex = null;
     if(isset($data['sex'])) {
@@ -26,6 +27,8 @@ class CreateClient{
       }
     }
 
+    if(isset($data["date"]))
+      $date = $data["date"];
     if(isset($data["email"]))
       $email = clear_email($data["email"]);
     if(isset($data["telephone"]))
@@ -61,9 +64,9 @@ class CreateClient{
     ];
 
     if(is_null($sex))
-      $connect->query("INSERT INTO klient(surname, name, otch, telephone, email, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s)", $surname, $name, $otch, $telephone, $email, json_encode($original_data));
+      $connect->query("INSERT INTO klient(date, surname, name, otch, telephone, email, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s)", $date, $surname, $name, $otch, $telephone, $email, json_encode($original_data));
     else
-      $connect->query("INSERT INTO klient(surname, name, otch, sex, telephone, email, original_data) VALUES (?s, ?s, ?s, ?i, ?s, ?s, ?s)", $surname, $name, $otch, $sex, $telephone, $email, json_encode($original_data));
+      $connect->query("INSERT INTO klient(date, surname, name, otch, sex, telephone, email, original_data) VALUES (?s, ?s, ?s, ?s, ?i, ?s, ?s, ?s)", $date, $surname, $name, $otch, $sex, $telephone, $email, json_encode($original_data));
 
     $insertId = $connect->insertId();
     return $insertId;
