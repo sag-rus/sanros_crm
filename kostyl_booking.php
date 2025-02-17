@@ -338,6 +338,13 @@ if ($dates_unavailable) {
 			$rest .= ','.$last_id;
 		}
 		$connect->query("UPDATE reckoning SET number_turist=?i, rest=?s WHERE id=?i", $data_booking->adults, $rest, $id);
+		$rest = explode(',', $rest);
+	}
+
+	if ($data_booking->adults > 0 && $data_booking->child > 0 && $data_booking->tl=='1' && count($rest)<($data_booking->adults + $data_booking->childs)) {
+		$child_last_id = false;
+		//Создаем туриста - ребенка (с ФИО основного туриста НО с ДР равным текущей дате - 18 лет)
+				
 	}
 
 	change_arrival_date($connect, $id);
