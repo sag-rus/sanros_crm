@@ -331,17 +331,17 @@ if ($dates_unavailable) {
 	$number_turist = $connect->getOne("SELECT COUNT(*) FROM position_reck WHERE schet=?i", $id);
 	$connect->query("UPDATE reckoning SET number_turist=?i WHERE id=?i", $number_turist, $id);
 
+	$rest = $last_id;
 	if ($data_booking->adults > 0 && $data_booking->tl=='1' && $data_booking->adults > $number_turist) {
 		//Здесь добавляем одного и того же туриста на количество проживающих для корректной выгрузки данных TL
-		$rest = $last_id;
+		
 		for ($i=($number_turist+1); $i<=$data_booking->adults; $i++ ) {
 			$rest .= ','.$last_id;
 		}
-		file_put_contents('kostyl_booking.txt', PHP_EOL.'creating adults turist rest = '.$rest, FILE_APPEND);		
 		$connect->query("UPDATE reckoning SET number_turist=?i, rest=?s WHERE id=?i", $data_booking->adults, $rest, $id);
-		$rest = explode(',', $rest);
-		file_put_contents('kostyl_booking.txt', PHP_EOL.'creating adults rest='.print_r($rest, true), FILE_APPEND);		
 	}
+
+	$rest = explode(',', $rest);
 
 	if ($data_booking->adults > 0 && $data_booking->childs > 0 && $data_booking->tl=='1' && count($rest)<($data_booking->adults + $data_booking->childs)) {
 		//Создаем туриста - ребенка (с ФИО основного туриста НО с ДР текущей дате - 17 лет
