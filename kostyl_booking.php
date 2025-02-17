@@ -341,10 +341,10 @@ if ($dates_unavailable) {
 		$rest = explode(',', $rest);
 	}
 
-	if ($data_booking->adults > 0 && $data_booking->child > 0 && $data_booking->tl=='1' && count($rest)<($data_booking->adults + $data_booking->childs)) {
+	if ($data_booking->adults > 0 && $data_booking->childs > 0 && $data_booking->tl=='1' && count($rest)<($data_booking->adults + $data_booking->childs)) {
 		$child_last_id = false;
 		//Создаем туриста - ребенка (с ФИО основного туриста НО с ДР равным текущей дате - 18 лет)
-				
+
 	}
 
 	change_arrival_date($connect, $id);
