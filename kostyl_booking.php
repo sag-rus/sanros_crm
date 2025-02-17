@@ -337,8 +337,10 @@ if ($dates_unavailable) {
 		for ($i=($number_turist+1); $i<=$data_booking->adults; $i++ ) {
 			$rest .= ','.$last_id;
 		}
+		file_put_contents('kostyl_booking.txt', PHP_EOL.'creating adults turist rest = '.$rest, FILE_APPEND);		
 		$connect->query("UPDATE reckoning SET number_turist=?i, rest=?s WHERE id=?i", $data_booking->adults, $rest, $id);
 		$rest = explode(',', $rest);
+		file_put_contents('kostyl_booking.txt', PHP_EOL.'creating adults rest='.print_r($rest, true), FILE_APPEND);		
 	}
 
 	if ($data_booking->adults > 0 && $data_booking->childs > 0 && $data_booking->tl=='1' && count($rest)<($data_booking->adults + $data_booking->childs)) {
