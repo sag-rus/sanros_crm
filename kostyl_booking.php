@@ -349,12 +349,13 @@ if ($dates_unavailable) {
 		$child_last_id = false;
 		$client_info['date'] = date('Y-m-d', time()-(86400*365*17)); //возраст меньше 18 лет чтобы при выгрузке в TL было isChild=true;
 		$child_last_id = $create_client->create_client($client_info);
-		file_put_contents('kostyl_booking.txt', PHP_EOL.'created child turist='.$child_last_id, FILE_APPEND);		
+		file_put_contents('kostyl_booking.txt', PHP_EOL.'created child turist='.$child_last_id.' rest='.print_r($rest), FILE_APPEND);		
 		if ($child_last_id>0) {
 			for ($i=1; $i<=$data_booking->childs; $i++) {
 				$rest[] = $child_last_id;
 			}
 			$rest = implode(',', $rest);
+			file_put_contents('kostyl_booking.txt', PHP_EOL.'created child turist='.$child_last_id.' NEW rest='.$rest, FILE_APPEND);		
 			$connect->query("UPDATE reckoning SET number_turist=?i, rest=?s WHERE id=?i", ($data_booking->adults + $data_booking->childs), $rest, $id);
 		}
 	}
