@@ -64,8 +64,8 @@ $data_booking_JSON = $_POST["data"];
 
 if (count($data_booking)==0) exit();
 
-$log = print_r($data_booking, true).PHP_EOL;
-file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);
+//$log = print_r($data_booking, true).PHP_EOL;
+//file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);
 
 //$log = print_r($data_booking_JSON, true).PHP_EOL;
 //file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);
@@ -344,11 +344,12 @@ if ($dates_unavailable) {
 	if ($data_booking->adults > 0 && $data_booking->childs > 0 && $data_booking->tl=='1' && count($rest)<($data_booking->adults + $data_booking->childs)) {
 		//Создаем туриста - ребенка (с ФИО основного туриста НО с ДР текущей дате - 17 лет
 
-		file_put_contents('kostyl_booking.txt', 'creating child turist!', FILE_APPEND);		
+		file_put_contents('kostyl_booking.txt', PHP_EOL.'creating child turist!', FILE_APPEND);		
 
 		$child_last_id = false;
 		$client_info['date'] = date('Y-m-d', time()-(86400*365*17)); //возраст меньше 18 лет чтобы при выгрузке в TL было isChild=true;
 		$child_last_id = $create_client->create_client($client_info);
+		file_put_contents('kostyl_booking.txt', PHP_EOL.'created child turist='.$child_last_id, FILE_APPEND);		
 		if ($child_last_id>0) {
 			for ($i=1; $i<=$data_booking->childs; $i++) {
 				$rest[] = $child_last_id;
