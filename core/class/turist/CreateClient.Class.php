@@ -40,8 +40,10 @@ class CreateClient{
         $client = $connect->getOne("SELECT id FROM klient WHERE surname=?s AND name=?s AND telephone=?s", $surname, $name, $telephone);
       }elseif($otch == ""){
         $client = $connect->getOne("SELECT id FROM klient WHERE surname=?s AND name=?s AND (email='' OR email=?s) AND telephone=?s", $surname, $name, $email, $telephone);
-      }else{
+      }elseif($date == NULL){
         $client = $connect->getOne("SELECT id FROM klient WHERE surname=?s AND name=?s AND (otch='' OR otch IS NULL OR otch=?s) AND (email='' OR email IS NULL OR email=?s) AND telephone=?s", $surname, $name, $otch, $email, $telephone);
+      }else{
+        $client = $connect->getOne("SELECT id FROM klient WHERE surname=?s AND name=?s AND (otch='' OR otch IS NULL OR otch=?s) AND (email='' OR email IS NULL OR email=?s) AND telephone=?s AND `date`=?s", $surname, $name, $otch, $email, $telephone, $date);
       }
       if($client){
         $row = $connect->getRow("SELECT email, otch FROM klient WHERE id=?i", $client);
