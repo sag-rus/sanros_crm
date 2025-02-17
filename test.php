@@ -50,7 +50,8 @@ $configNew->objectCabinet = $objectCabinet;
 
 
 $connect->query("INSERT INTO klient(surname, name, otch, telephone, email, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s)", 'Рустем', 'тест ', 'добавление', '79093071969', 'sag@sagrus.ru', 'original_data');
-$connect->query("INSERT INTO klient(date, surname, name, otch, telephone, email, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s)", NULL, 'Рустем', 'тест ', 'добавление', '79093071969', 'sag@sagrus.ru', 'original_data');
-$connect->query("INSERT INTO klient(date, surname, name, otch, telephone, email, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s)", '1983-09-28', 'Рустем', 'тест ', 'добавление', '79093071969', 'sag@sagrus.ru', 'original_data');
+$connect->query("INSERT INTO klient(date, surname, name, otch, telephone, email, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s)", '1983-09-28', 'Рустем2', 'тест ', 'добавление', '79093071969', 'sag@sagrus.ru', 'original_data');
+$connect->query("INSERT INTO klient(date, surname, name, otch, telephone, email, original_data) VALUES (?s, ?s, ?s, ?s, ?s, ?s)", NULL, 'Рустем1', 'тест ', 'добавление', '79093071969', 'sag@sagrus.ru', 'original_data');
+
 
 ?>
