@@ -342,8 +342,9 @@ if ($dates_unavailable) {
 	}
 
 	if ($data_booking->adults > 0 && $data_booking->childs > 0 && $data_booking->tl=='1' && count($rest)<($data_booking->adults + $data_booking->childs)) {
-		
 		//Создаем туриста - ребенка (с ФИО основного туриста НО с ДР текущей дате - 17 лет
+
+		file_put_contents('kostyl_booking.txt', 'creating child turist!', FILE_APPEND);		
 
 		$child_last_id = false;
 		$client_info['date'] = date('Y-m-d', time()-(86400*365*17)); //возраст меньше 18 лет чтобы при выгрузке в TL было isChild=true;
