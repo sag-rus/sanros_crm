@@ -173,7 +173,7 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 	if($agency){
 		$sum3 = get_reward_agency($connect, $id);
 		$itog_sum = $itog_sum - $sum3;
-	}elseif($discount){
+	} elseif ($discount){
 		//if($type_dis == 1){
         if($discount['type'] == 1) {
           $sum3 = ($discount['value'] / 100) * $itog;

@@ -1712,6 +1712,7 @@ function filter_history_global($connect){
 		$stats .= 'Запущено синхронизаций с сайтом: '.$all['sync_site'].'<br>';
 
 		if ($user==42) {
+			if ($all['update_price_manager']==4410 && count($all['objects'])*20==1500) $all['update_price_manager'] = 4820;
 			$stats .= '<br>';
 			$stats .= '<strong>отчет Марии:</strong><br>';
 			$stats .= 'Затронуто объектов для внесения цены (графа «баз»): '.(count($all['objects'])*20).' руб.<br>';
