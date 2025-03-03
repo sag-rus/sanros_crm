@@ -1059,8 +1059,17 @@ function enter_dogovor_agency($connect, $data){
 	}
 
 	if(mb_strlen($email) == 0) {
-  	$er = true;
-    $responseArray['msg'] = 'Incorrect email';
+  		$er = true;
+    	$responseArray['msg'] = 'Incorrect email';
+	}
+
+	$last = $connect->getRow("SELECT * FROM agency ORDER BY id DESC LIMIT 1");
+	if (time()-$last['created'] < 3600) {
+		//Если просто меньше часа с предыдущей заявки - проверка по почте и телефону
+		if ($last['telephone']==$telephone && $last['email']==$email) {
+			$er = true;
+			$responseArray['msg'] = 'Duplicate';
+		}
 	}
 
   if(!$er) {
@@ -1071,49 +1080,48 @@ function enter_dogovor_agency($connect, $data){
 
     if(mb_strlen($module) == 0) {
     	$responseArray['msg'] = 'Module string generating error';
-		}
+	}
 
     try {
-      $connect->query("INSERT INTO agency(name, short_name, present, telephone, email, fax, icq, skype, note, address, website, legal_address, inn, kpp, bik, rs, ks, ogrn, bank, post, doc, module, module_email, created) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $name, $short_name, $present, $telephone, $email, $fax, $icq, $skype, $note, $address, $website, $legal_address, $inn, $kpp, $bik, $rs, $ks, $ogrn, $bank, $post, $doc, $module, $email, gmdate("U"));
-      $id = $connect->insertId();
-		}
-		catch (Exception $e) {
+      	$connect->query("INSERT INTO agency(name, short_name, present, telephone, email, fax, icq, skype, note, address, website, legal_address, inn, kpp, bik, rs, ks, ogrn, bank, post, doc, module, module_email, created) VALUES (?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s)", $name, $short_name, $present, $telephone, $email, $fax, $icq, $skype, $note, $address, $website, $legal_address, $inn, $kpp, $bik, $rs, $ks, $ogrn, $bank, $post, $doc, $module, $email, gmdate("U"));
+      	$id = $connect->insertId();
+	}
+	catch (Exception $e) {
     	$id = 0;
     	$responseArray['msg'] = 'Agency insert error';
-		}
+	}
 
-		if($id > 0) {
-      $number = $id;
-      $responseArray['id'] = $id;
+	if($id > 0) {
+		$number = $id;
+		$responseArray['id'] = $id;
 
-      $message = "Номер договора: ".$number."<br />";
-      $message.= "Юридическое название фирмы: ".$data["agency"]."<br />";
-      $message.= "Сокращенное название фирмы: ".$data["short_agency"]."<br />";
-      $message.= "Email: ".$data["email"]."<br />";
-      $message.= "Телефон: ".$data["telephone"]."<br />";
-      $message.= "Факс: ".$data["fax"]."<br />";
-      $message.= "Почтовый адрес: ".$data["address"]."<br />";
-      $message.= "Юридический адрес: ".$data["ur_address"]."<br />";
-      $message.= "Представитель: ".$data["present"]."<br />";
-      $message.= "Должность: ".$data["post_short"]."<br />";
-      $message.= "Действует на основании: ".$data["doc"]."<br />";
-      $message.= "ИНН: ".$data["inn"]."<br />";
-      $message.= "КПП: ".$data["kpp"]."<br />";
-      $message.= "БИК: ".$data["bik"]."<br />";
-      $message.= "Р/с: ".$data["rs"]."<br />";
-      $message.= "К/с: ".$data["ks"]."<br />";
-      $message.= "Банк: ".$data["bank"]."<br />";
-      $message.= "ОГРН: ".$data["ogrn"];
+		$message = "Номер договора: ".$number."<br />";
+		$message.= "Юридическое название фирмы: ".$data["agency"]."<br />";
+		$message.= "Сокращенное название фирмы: ".$data["short_agency"]."<br />";
+		$message.= "Email: ".$data["email"]."<br />";
+		$message.= "Телефон: ".$data["telephone"]."<br />";
+		$message.= "Факс: ".$data["fax"]."<br />";
+		$message.= "Почтовый адрес: ".$data["address"]."<br />";
+		$message.= "Юридический адрес: ".$data["ur_address"]."<br />";
+		$message.= "Представитель: ".$data["present"]."<br />";
+		$message.= "Должность: ".$data["post_short"]."<br />";
+		$message.= "Действует на основании: ".$data["doc"]."<br />";
+		$message.= "ИНН: ".$data["inn"]."<br />";
+		$message.= "КПП: ".$data["kpp"]."<br />";
+		$message.= "БИК: ".$data["bik"]."<br />";
+		$message.= "Р/с: ".$data["rs"]."<br />";
+		$message.= "К/с: ".$data["ks"]."<br />";
+		$message.= "Банк: ".$data["bank"]."<br />";
+		$message.= "ОГРН: ".$data["ogrn"];
 
-      $title = "Агентский договор";
-      $email = "2602323@2602323.ru";
-      $connect->query("INSERT INTO send_mail(email, title, body) VALUES (?s, ?s, ?s)", $email, $title, $message);
-		}
-		else {
+		$title = "Агентский договор";
+		$email = "2602323@2602323.ru";
+		$connect->query("INSERT INTO send_mail(email, title, body) VALUES (?s, ?s, ?s)", $email, $title, $message);
+	} else {
     	if(empty($responseArray['msg']))
     		$responseArray['msg'] = 'Agency insert error';
 		}
-  }
+  	}
 
 	return $responseArray;
 
