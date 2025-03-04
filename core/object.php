@@ -1147,6 +1147,10 @@ function select_object_occupancies($connect){
 			$data = $connect->getAll("SELECT * FROM place WHERE id_obj=?i and `status`=1 ORDER BY id ASC", $_POST["id"]);
 			foreach($data as $row){
 				$room = $connect->getRow("SELECT * FROM room WHERE id=?i", $row["id_room"]);	
+				if ($room['housing']>0) {
+					$housing = $connect->getOne("SELECT name FROM housing WHERE id=?i", $room['housing']);
+					if ($housing) $room['name'] .= ' ('.$housing.')';
+				}				
 				?>
 				<tr id="room_occupancy_<?=$row['id']?>">
 					<td><?=$room['name']?></td>
