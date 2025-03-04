@@ -1231,7 +1231,7 @@ function room_occupancy($connect){
 										if ($housing) $room['name'] .= '('.$housing.')';
 									}
 									if ($id_room==$room['id']) $sel = ' selected="selected"'; else $sel = '';
-									?><option value="<?=$room['id']?>" <?=$sel?>><?=$room['name']?> 0 <?=$housing?></option><?php
+									?><option value="<?=$room['id']?>" <?=$sel?>><?=$room['name']?> <?=$room['housing']?> <?=$housing?></option><?php
 								}
 								?>
 							</select>
