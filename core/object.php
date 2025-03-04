@@ -1228,10 +1228,10 @@ function room_occupancy($connect){
 								foreach ($rooms as $room) {
 									if ($room['housing']>0) {
 										$housing = $connect->getOne("SELECT name FROM housing WHERE id=?i", $room['housing']);
-										if ($housing) $room['name'] .= '('.$housing.')';
+										if ($housing) $room['name'] .= ' ('.$housing.')';
 									}
 									if ($id_room==$room['id']) $sel = ' selected="selected"'; else $sel = '';
-									?><option value="<?=$room['id']?>" <?=$sel?>><?=$room['name']?> <?=$room['housing']?> <?=$housing?></option><?php
+									?><option value="<?=$room['id']?>" <?=$sel?>><?=$room['name']?></option><?php
 								}
 								?>
 							</select>
