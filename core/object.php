@@ -1224,7 +1224,7 @@ function room_occupancy($connect){
 							<select class="form-control" name="id_room">
 								<option value="0">выберите</option>
 								<?php
-								$rooms = $connect->getAll("SELECT * FROM room WHERE active=0 AND id_obj=?i", $_POST['id_obj']);
+								$rooms = $connect->getAll("SELECT * FROM room WHERE active=0 AND id_obj=?i ORDER BY id ASC", $_POST['id_obj']);
 								foreach ($rooms as $room) {
 									if ($id_room==$room['id']) $sel = ' selected="selected"'; else $sel = '';
 									?><option value="<?=$room['id']?>" <?=$sel?>><?=$room['name']?></option><?php
