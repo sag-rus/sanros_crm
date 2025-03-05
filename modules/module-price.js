@@ -1236,6 +1236,7 @@ function update_main_data_object(id){
 		"func": "update_main_data_object",
 		"id": id,
 		"similar": similar,
+		"external_booking": $('#external_booking').val(),
 		"type": $('#type_object').val(),
 		"name": $('#name_object').val(),
 		"full_name": $('#full_name').val(),

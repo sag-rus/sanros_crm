@@ -530,6 +530,9 @@ function edit_main_data_object($connect){
     global $array_type;
     $id = $_POST["id"];
 	$row = $connect->getRow("SELECT * FROM object WHERE id='$id'");
+	$row['external_booking'] = 0;
+	if ($row['check_places']==1) $row['external_booking'] = 1;
+	if ($row['bnovo']==1) $row['external_booking'] = 2;
 	$similar = explode("_", $row["similar"]);
 	$type = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]);
 	$country = $connect->getOne("SELECT id_country FROM region WHERE id=?i", $row["id_reg"]);
@@ -549,11 +552,22 @@ function edit_main_data_object($connect){
 	<div class="panel-heading"><i class="fa fa-pencil"></i> Изменить основные данные объекта «<?php echo $type." ".$row["name"]; ?>»</div>
 	<div class="panel-body">
 		<div class="form-group">
+            <label class="col-sm-3 control-label">Внешняя интеграция</label>
+            <div class="col-sm-9">
+                <select class="form-control" id="external_booking">
+                    <option value="0">Не выбрано</option>
+                    <option value="1" <?php if($row['external_booking']==1) { ?> selected<?php } ?>>TravelLine</option>
+					<option value="2" <?php if($row['external_booking']==2) { ?> selected<?php } ?>>Bnovo</option>
+                </select>
+            </div>
+        </div>			
+		<div class="form-group">
 			<label class="col-sm-3 control-label">Название</label>
 			<div class="col-sm-9">
 				<input type="text" class="form-control" id="name_object" value="<?php echo $row['name']; ?>">
 			</div>
 		</div>
+	
 		<div class="form-group">
 			<label class="col-sm-3 control-label">Полное название</label>
 			<div class="col-sm-9">
@@ -648,7 +662,7 @@ function edit_main_data_object($connect){
 				<i class="fa fa-plus-circle icon_add pointer" onclick="add_new_similar_object()"></i>
 			</div>
 		</div>
-        <div class="form-group">
+        <div class="form-group hidden">
             <label class="col-sm-3 control-label">Бронирование на официальном сайте (для объектов Travelline)</label>
             <div class="col-sm-9">
                 <input type="checkbox" class="form-control" id="source_booking"<?php if($row['source_booking'] == 1) echo ' checked';?>>
@@ -761,103 +775,103 @@ function edit_main_data_object($connect){
                 <input type="checkbox" class="form-control"<?php if($row['for_invalid']) { ?> checked<?php } ?> id="for_invalid">
             </div>
         </div>         
-        <div class="form-group">
+        <div class="form-group hidden">
             <label class="col-sm-3 control-label">Все включено</label>
             <div class="col-sm-9">
                 <input type="checkbox" class="form-control"<?php if($row['all_inc']) { ?> checked<?php } ?> id="all_inc">
             </div>
         </div>         
-        <div class="form-group">
+        <div class="form-group hidden">
             <label class="col-sm-3 control-label">Шведский стол</label>
             <div class="col-sm-9">
                 <input type="checkbox" class="form-control"<?php if($row['open_buffet']) { ?> checked<?php } ?> id="open_buffet">
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group hidden">
             <label class="col-sm-3 control-label">На море</label>
             <div class="col-sm-9">
                 <input type="checkbox" class="form-control"<?php if($row['near_sea']) { ?> checked<?php } ?> id="near_sea">
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group hidden">
             <label class="col-sm-3 control-label">На Черном море</label>
             <div class="col-sm-9">
                 <input type="checkbox" class="form-control"<?php if($row['near_black_sea']) { ?> checked<?php } ?> id="near_black_sea">
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group hidden">
             <label class="col-sm-3 control-label">В лесу</label>
             <div class="col-sm-9">
                 <input type="checkbox" class="form-control"<?php if($row['in_forest']) { ?> checked<?php } ?> id="in_forest">
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group hidden">
             <label class="col-sm-3 control-label">В горах</label>
             <div class="col-sm-9">
                 <input type="checkbox" class="form-control"<?php if($row['in_hill']) { ?> checked<?php } ?> id="in_hill">
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group hidden">
             <label class="col-sm-3 control-label">У воды</label>
             <div class="col-sm-9">
                 <input type="checkbox" class="form-control"<?php if($row['near_water']) { ?> checked<?php } ?> id="near_water">
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group hidden">
             <label class="col-sm-3 control-label">У реки</label>
             <div class="col-sm-9">
                 <input type="checkbox" class="form-control"<?php if($row['near_river']) { ?> checked<?php } ?> id="near_river">
             </div>
         </div>        
-        <div class="form-group">
+        <div class="form-group hidden">
             <label class="col-sm-3 control-label">на Волге</label>
             <div class="col-sm-9">
                 <input type="checkbox" class="form-control"<?php if($row['near_volga_river']) { ?> checked<?php } ?> id="near_volga_river">
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group hidden">
             <label class="col-sm-3 control-label">У озера</label>
             <div class="col-sm-9">
                 <input type="checkbox" class="form-control"<?php if($row['near_lake']) { ?> checked<?php } ?> id="near_lake">
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group hidden">
             <label class="col-sm-3 control-label">С пляжем</label>
             <div class="col-sm-9">
                 <input type="checkbox" class="form-control"<?php if($row['beach']) { ?> checked<?php } ?> id="beach">
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group hidden">
             <label class="col-sm-3 control-label">На побережье</label>
             <div class="col-sm-9">
                 <input type="checkbox" class="form-control"<?php if($row['on_coast']) { ?> checked<?php } ?> id="on_coast">
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group hidden">
             <label class="col-sm-3 control-label">С бассейном</label>
             <div class="col-sm-9">
                 <input type="checkbox" class="form-control"<?php if($row['w_pool']) { ?> checked<?php } ?> id="w_pool">
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group hidden">
             <label class="col-sm-3 control-label">С кешбеком</label>
             <div class="col-sm-9">
                 <input type="checkbox" class="form-control"<?php if($row['cashback']) { ?> checked<?php } ?> id="cashback">
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group hidden">
             <label class="col-sm-3 control-label">Со СПА</label>
             <div class="col-sm-9">
                 <input type="checkbox" class="form-control"<?php if($row['w_spa']) { ?> checked<?php } ?> id="w_spa">
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group hidden">
             <label class="col-sm-3 control-label">С бюветом</label>
             <div class="col-sm-9">
                 <input type="checkbox" class="form-control"<?php if($row['w_buvet']) { ?> checked<?php } ?> id="w_buvet">
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group hidden">
             <label class="col-sm-3 control-label">С радоном</label>
             <div class="col-sm-9">
                 <input type="checkbox" class="form-control"<?php if($row['w_radon']) { ?> checked<?php } ?> id="w_radon">
@@ -929,6 +943,11 @@ function update_main_data_object($connect){
 	$type = $_POST["type"];
 	$latitude = (float)$_POST["latitude"];
 	$longitude = (float)$_POST["longitude"];
+	$external_booking = $_POST["external_booking"];
+	$bnovo = 0;
+	$check_places = 0;
+	if ($external_booking==1) $check_places = 1;
+	if ($external_booking==2) $bnovo = 1;
 	$name = $_POST["name"];
 	$full_name = $_POST["full_name"];
 	$city = trim($_POST["city"]);
@@ -946,17 +965,15 @@ function update_main_data_object($connect){
     $trust_name_template = isset($_POST['trust_name_template']) ? $_POST['trust_name_template'] : '';
     $trust_number = isset($_POST['trust_number']) ? $_POST['trust_number'] : '';
 
-    if($state_program) {
+    if ($state_program) {
         $state_program = 1;
-    }
-    else {
+    } else {
         $state_program = 0;
     }
 
-    if($children_rest) {
+    if ($children_rest) {
         $children_rest = 1;
-    }
-    else {
+    } else {
         $children_rest = 0;
     }
 
@@ -1017,7 +1034,7 @@ function update_main_data_object($connect){
     if(!array_key_exists($default_price_type,$array_type))
         $default_price_type = 1;
 
-    $connect->query("UPDATE object SET name=?s, full_name=?s, city=?s, city_genitive = ?s, direction=?s, type=?s, latitude=?s, longitude=?s, similar=?s, weather=?s, description=?s, source_booking=?i, description_check=?s, booking_uri=?s, fast_booking=?i, main_post_name = ?s, main_post_fio = ?s, default_price_type = ?i, id_reg = ?i, region_direction_id = ?i, `uri_schema` = ?i, `url_name` = ?s, `state_program` = ?i, `children_rest` = ?i, synchronized=0, `featured` = ?i, `selected` = ?i, `w_therapy`=?i, `wo_therapy`=?i, `mother_and_child`=?i, `for_invalid`=?i, `all_inc`=?i, `open_buffet`=?i, `near_sea`=?i, `near_black_sea`=?i, `in_forest`=?i, `in_hill`=?i, `near_water`=?i, `near_river`=?i, `near_volga_river`=?i, `near_lake`=?i, `beach`=?i, `on_coast`=?i, `w_pool`=?i, `cashback`=?i, `w_spa`=?i, `w_buvet`=?i, `w_radon`=?i, `only_summer`=?i, `checked_sonata`=?i, `stars`='$stars', `trust_full_name` = ?s, `trust_name_template` = ?s, `trust_number` = ?s WHERE id=?i", $name, $full_name, $city, $city_genitive, $direction, $type, $latitude, $longitude, $similar, $weather, $description, $source_booking, $description, $booking_uri, $fast_booking, $main_post_name, $main_post_fio, $default_price_type, $id_reg, $region_direction_id,$uri_schema, $url_name, $state_program, $children_rest, $featured, $selected, $w_therapy, $wo_therapy, $mother_and_child, $for_invalid, $all_inc, $open_buffet, $near_sea, $near_black_sea, $in_forest, $in_hill, $near_water, $near_river, $near_volga_river, $near_lake, $beach, $on_coast, $w_pool, $cashback, $w_spa, $w_buvet, $w_radon, $only_summer, $checked_sonata, $trust_full_name, $trust_name_template, $trust_number, $id);
+    $connect->query("UPDATE object SET name=?s, full_name=?s, city=?s, city_genitive = ?s, direction=?s, type=?s, latitude=?s, longitude=?s, similar=?s, weather=?s, description=?s, source_booking=?i, description_check=?s, booking_uri=?s, fast_booking=?i, main_post_name = ?s, main_post_fio = ?s, default_price_type = ?i, id_reg = ?i, region_direction_id = ?i, `uri_schema` = ?i, `url_name` = ?s, `state_program` = ?i, `children_rest` = ?i, synchronized=0, `featured` = ?i, `selected` = ?i, `w_therapy`=?i, `wo_therapy`=?i, `mother_and_child`=?i, `for_invalid`=?i, `all_inc`=?i, `open_buffet`=?i, `near_sea`=?i, `near_black_sea`=?i, `in_forest`=?i, `in_hill`=?i, `near_water`=?i, `near_river`=?i, `near_volga_river`=?i, `near_lake`=?i, `beach`=?i, `on_coast`=?i, `w_pool`=?i, `cashback`=?i, `w_spa`=?i, `w_buvet`=?i, `w_radon`=?i, `only_summer`=?i, `checked_sonata`=?i, `stars`='$stars', `trust_full_name` = ?s, `trust_name_template` = ?s, `trust_number` = ?s, `check_places`=?i, `bnovo`=?i WHERE id=?i", $name, $full_name, $city, $city_genitive, $direction, $type, $latitude, $longitude, $similar, $weather, $description, $source_booking, $description, $booking_uri, $fast_booking, $main_post_name, $main_post_fio, $default_price_type, $id_reg, $region_direction_id,$uri_schema, $url_name, $state_program, $children_rest, $featured, $selected, $w_therapy, $wo_therapy, $mother_and_child, $for_invalid, $all_inc, $open_buffet, $near_sea, $near_black_sea, $in_forest, $in_hill, $near_water, $near_river, $near_volga_river, $near_lake, $beach, $on_coast, $w_pool, $cashback, $w_spa, $w_buvet, $w_radon, $only_summer, $checked_sonata, $trust_full_name, $trust_name_template, $trust_number, $check_places, $bnovo, $id);
 
     $connect->last_query();
 }
@@ -2423,19 +2440,20 @@ function update_status_qouta_object($connect){
 	$status = $_POST["status"];
 	// $connect->query("UPDATE object SET check_places=?i WHERE id=?i", $status, $object);
 	$name = "";
-   if($status == 3){
-   $id = $_POST["id"];
-   $current = $connect->getOne("SELECT check_places FROM object WHERE id=?i", $object);
-       if($id AND $current == 0){
-           $connect->query("UPDATE object SET check_places=3, sync_id=?i, synchronized=0 WHERE id=?i", $id, $object);
-           $name = get_object($connect, $object, "place");
-       }else {
-           $name = "Данный санаторий уже выгружает квоту через другой канал";
-       }
-   }else{
-       $connect->query("UPDATE object SET check_places=?i, synchronized=0 WHERE id=?i", $status, $object);
-   }
-   return json_encode($name);
+
+    if ($status == 3) {
+	    $id = $_POST["id"];
+	    $current = $connect->getOne("SELECT check_places FROM object WHERE id=?i", $object);
+        if($id AND $current == 0){
+            $connect->query("UPDATE object SET check_places=3, sync_id=?i, synchronized=0 WHERE id=?i", $id, $object);
+            $name = get_object($connect, $object, "place");
+        } else {
+            $name = "Данный санаторий уже выгружает квоту через другой канал";
+        }
+    } else {
+        $connect->query("UPDATE object SET check_places=?i, synchronized=0 WHERE id=?i", $status, $object);
+    }
+    return json_encode($name);
 }
 
 function select_object_rate_plan($connect){
