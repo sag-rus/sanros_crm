@@ -20,7 +20,7 @@ function review_bron($connect, $type, $id, $type_PDF = "PDF"){
 	$reestr = $conf->reestr;
 	$today = date("d.m.Y");
 
-	$row = $connect->getRow("SELECT id_obj, turist, id_user, rest, number_turist, note_bid FROM reckoning WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT id_obj, turist, id_user, rest, number_turist, note_bid, check_places FROM reckoning WHERE id=?i", $id);
 	$turist = $row["turist"];
 	$id_obj = $row["id_obj"];
 	$manager = $connect->getOne("SELECT name FROM users WHERE id=?i", $row["id_user"]);
@@ -30,6 +30,8 @@ function review_bron($connect, $type, $id, $type_PDF = "PDF"){
 	$object = get_object($connect, $id_obj, "full");
 	$img = $_COOKIE["img"];
 	$trans = "";
+	$tl = false;
+	if ($row['check_places']==1) $tl = true;
 
 	$office = $connect->getOne("SELECT office FROM users WHERE id=?i", $row["id_user"]);
 	$row = $connect->getRow("SELECT address, telephone FROM office WHERE id=?i", $office);
@@ -37,6 +39,10 @@ function review_bron($connect, $type, $id, $type_PDF = "PDF"){
 		$tel = $row["telephone"];
 		$sep_address = $row["address"];
 	}
+
+	if ($tl) $confirm_booking_id_travelline = $connect->getOne("SELECT id_travelline FROM booking WHERE bid=?i", $id); 
+
+	
 
 	ob_start();
 ?>
@@ -63,6 +69,9 @@ function review_bron($connect, $type, $id, $type_PDF = "PDF"){
 
 		<p style="margin-top: 0px;"><strong>Для:</strong> Отдел Реализации<br />
 		<strong>Дата заявки:</strong> <?php echo $today; ?><br />
+		<?php if ($confirm_booking_id_travelline>0) {?>
+			<strong>Номер бронирования в Travelline:</strong> <?php echo $confirm_booking_id_travelline; ?><br /><br>
+		<?php } ?>
 		</p>
 
 		<table border="1" cellpadding="5" cellspacing="0">
