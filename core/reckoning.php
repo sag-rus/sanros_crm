@@ -1924,6 +1924,7 @@ function show_schet_klient($connect){
 	$confirm_booking_quota = 0;
 	if($connect->getOne("SELECT id FROM booking WHERE bid=?i", $id)){
 		$confirm_booking_quota = $connect->getOne("SELECT confirm FROM booking WHERE bid=?i", $id);
+		$confirm_booking_id_travelline = $connect->getOne("SELECT id_travelline FROM booking WHERE bid=?i", $id);
 		$count_check_quota = $connect->getOne("SELECT COUNT(*) FROM position_reck WHERE schet=?i AND ratePlan>0", $id);
 		if($count_check_quota == 1)
 			$check_quota = 1;
@@ -2050,7 +2051,7 @@ function show_schet_klient($connect){
 		<div class="clearfix"></div>
 	</div>
 <?php if($confirm_booking_quota == 1){ ?>
-	<div class="alert alert-success" style="margin-bottom: 5px"><i class="fa fa-check-circle"></i> Заявка подтверждена со стороны TravelLine</div>
+	<div class="alert alert-success" style="margin-bottom: 5px"><i class="fa fa-check-circle"></i> Заявка подтверждена со стороны TravelLine (номер заявки в Travelline <?=$confirm_booking_id_travelline?>)</div>
 <?php } ?>
 <?php } ?>
 
