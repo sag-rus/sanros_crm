@@ -20,7 +20,7 @@ function review_bron($connect, $type, $id, $type_PDF = "PDF"){
 	$reestr = $conf->reestr;
 	$today = date("d.m.Y");
 
-	$row = $connect->getRow("SELECT id_obj, turist, id_user, rest, number_turist, note_bid, check_places FROM reckoning WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT id_obj, turist, id_user, rest, number_turist, note_bid FROM reckoning WHERE id=?i", $id);
 	$turist = $row["turist"];
 	$id_obj = $row["id_obj"];
 	$manager = $connect->getOne("SELECT name FROM users WHERE id=?i", $row["id_user"]);
@@ -31,7 +31,9 @@ function review_bron($connect, $type, $id, $type_PDF = "PDF"){
 	$img = $_COOKIE["img"];
 	$trans = "";
 	$tl = false;
-	if ($row['check_places']==1) $tl = true;
+	$check_places = $connect->getOne("SELECT check_places FROM object WHERE id=?i AND check_places != 0", $id_obj);
+
+	if ($check_places==1) $tl = true;
 
 	$office = $connect->getOne("SELECT office FROM users WHERE id=?i", $row["id_user"]);
 	$row = $connect->getRow("SELECT address, telephone FROM office WHERE id=?i", $office);
