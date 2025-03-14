@@ -2630,15 +2630,15 @@ function add_new_sites_content(site_id) {
 		.create( $('#sites_content_body2').get(0), {
 			language: 'ru'
 		})
-		.then( editor => {
+		.then( editor2 => {
 
 			$('#sites_content_body2').before('<div id="sites_content_body2_toolbar_container"></div>');
 
 			const toolbarContainer2 = $('#sites_content_body2_toolbar_container').get(0);
 
-			toolbarContainer2.appendChild( editor.ui.view.toolbar.element );
+			toolbarContainer2.appendChild( editor2.ui.view.toolbar.element );
 
-			window.sites_content_body2 = editor;
+			window.sites_content_body2 = editor2;
 		})
 		.catch( error => {
 			console.error( error );
@@ -3922,15 +3922,15 @@ function edit_sites_content(id,copyMode) {
 			.create( $('#sites_content_body').get(0), {
 				language: 'ru'
 			})
-			.then( editor => {
+			.then( editor3 => {
 
 				$('#sites_content_body').before('<div id="sites_content_body_toolbar_container"></div>');
 
 				const toolbarContainer = $('#sites_content_body_toolbar_container').get(0);
 
-				toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+				toolbarContainer.appendChild( editor3.ui.view.toolbar.element );
 
-				window.sites_content_body = editor;
+				window.sites_content_body = editor3;
 				window.sites_content_body.setData(sites_content_body_orig);
 			})
 			.catch( error => {
@@ -3941,15 +3941,15 @@ function edit_sites_content(id,copyMode) {
 			.create( $('#sites_content_body_cabinet').get(0), {
 				language: 'ru'
 			})
-			.then( editor => {
+			.then( editor4 => {
 
 				$('#sites_content_body_cabinet').before('<div id="sites_content_body_cabinet_toolbar_container"></div>');
 
 				const toolbarContainer_cabinet = $('#sites_content_body_cabinet_toolbar_container').get(0);
 
-				toolbarContainer_cabinet.appendChild( editor.ui.view.toolbar.element );
+				toolbarContainer_cabinet.appendChild( editor4.ui.view.toolbar.element );
 
-				window.sites_content_body_cabinet = editor;
+				window.sites_content_body_cabinet = editor4;
 				window.sites_content_body_cabinet.setData(sites_content_body_orig_cabinet);
 			})
 			.catch( error => {
@@ -3960,15 +3960,15 @@ function edit_sites_content(id,copyMode) {
 			.create( $('#sites_content_body2').get(0), {
 				language: 'ru'
 			})
-			.then( editor => {
+			.then( editor5 => {
 
 				$('#sites_content_body2').before('<div id="sites_content_body2_toolbar_container"></div>');
 
 				const toolbarContainer2 = $('#sites_content_body2_toolbar_container').get(0);
 
-				toolbarContainer2.appendChild( editor.ui.view.toolbar.element );
+				toolbarContainer2.appendChild( editor5.ui.view.toolbar.element );
 
-				window.sites_content_body2 = editor;
+				window.sites_content_body2 = editor5;
 				window.sites_content_body2.setData(sites_content_body_orig2);
 			})
 			.catch( error => {
@@ -3979,15 +3979,15 @@ function edit_sites_content(id,copyMode) {
 			.create( $('#sites_content_body2_cabinet').get(0), {
 				language: 'ru'
 			})
-			.then( editor => {
+			.then( editor6 => {
 
 				$('#sites_content_body2_cabinet').before('<div id="sites_content_body2_cabinet_toolbar_container"></div>');
 
 				const toolbarContainer2_cabinet = $('#sites_content_body2_cabinet_toolbar_container').get(0);
 
-				toolbarContainer2_cabinet.appendChild( editor.ui.view.toolbar.element );
+				toolbarContainer2_cabinet.appendChild( editor6.ui.view.toolbar.element );
 
-				window.sites_content_body2_cabinet = editor;
+				window.sites_content_body2_cabinet = editor6;
 				window.sites_content_body2_cabinet.setData(sites_content_body_orig2_cabinet);
 			})
 			.catch( error => {
