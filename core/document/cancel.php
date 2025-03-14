@@ -53,7 +53,7 @@ function review_cancel($connect, $type, $id){
                 <strong>Почтовый/Фактический адрес:</strong> <?php echo $leg_address; ?><br />
                 <strong>Реестровый номер:</strong> <?php echo $reestr; ?><br />
 				<strong>Тел.:</strong> <?php echo $tel; ?> <br />
-				<strong>Email:</strong> <?php echo $email; ?><br />
+				<strong>Email:</strong> office@sanata.online<br />
 				<strong>Сайт:</strong> <?php echo $web_site; ?></p>
 			</td>
 		</tr>
