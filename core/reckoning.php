@@ -1726,7 +1726,7 @@ function show_schet_klient($connect){
 	$no_contract_warning = '';
 	$contract = $connect->getRow("SELECT * FROM object_contract WHERE object=?i ORDER BY id DESC LIMIT 1", $id_obj);
 	if (!$contract || strtotime($contract['date'])<=time()) {
-		$no_contract_warning = "<button class='btn btn-danger btn-xs'><i class='fa fa-exclamation-triangle'></i> НЕТ АКТИВНОГО ДОГОВОРА С ОБЪЕКТОМ!!!</button><br />";
+		$no_contract_warning = " <button class='btn btn-danger btn-xs'><i class='fa fa-exclamation-triangle'></i> НЕТ АКТИВНОГО ДОГОВОРА С ОБЪЕКТОМ!!!</button><br />";
 	}
 	$guaranteed_image = "";
 	if($guaranteed)
@@ -2089,7 +2089,7 @@ function show_schet_klient($connect){
 	<div class="form-horizontal panel-body">
 		<div class="form-group" style="margin-bottom: 0;">
 			<div class="col-sm-5 desc-schet">
-				<?php echo $div_warning; ?>
+				<?php echo $div_warning; ?> <?=$no_contract_warning?>
 				<strong>Дата добавления:</strong> <?php echo $date; ?><br />
                 <?php if($reck_type == 0) { ?>
                     <?php if($website){ ?>
