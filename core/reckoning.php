@@ -1723,6 +1723,11 @@ function show_schet_klient($connect){
 		if($status == 5 AND ($row["putevka"] == 0 OR !$row["putevka"]))
 			$div_warning = "<button onclick='agency_document(\"".$id."\", \"putevka\")' class='btn btn-danger btn-xs'><i class='fa fa-exclamation-triangle'></i> Разрешить распечатать путевку</button><br />";
 	}
+	$no_contract_warning = '';
+	$contract = $connect->getRow("SELECT * FROM object_contract WHERE object=?i ORDER BY id DESC LIMIT 1", $id_obj);
+	if (!$contract || strtotime($contract['date'])<=time()) {
+		$no_contract_warning = "<button class='btn btn-danger btn-xs'><i class='fa fa-exclamation-triangle'></i> НЕТ АКТИВНОГО ДОГОВОРА С ОБЪЕКТОМ!!!</button><br />";
+	}
 	$guaranteed_image = "";
 	if($guaranteed)
 		$guaranteed_image = "&nbsp;<i class='fa fa-star icon_star'></i>";
