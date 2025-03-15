@@ -1581,8 +1581,8 @@ function view_quota_object(object){
 	        		}
 	          	}
 	          	if(table != ''){
-		            body+= '<div class="list-group-item room-calendar" room="' +room+ '" main="' +data['room'][room]['main']+ '" add="' +data['room'][room]['add']+ '"><h4 class="list-group-item-heading"><i class="fa fa-codepen"></i> <span class="room-name">' + data['room'][room]['name'] + ' ('+room+')</span></h4><div class="quota-room-container quota-room-container-' +room+ '"><table class="table table-bordered table-condensed">' + table + '</table></div>';
-	            	body+= '<div class="text-right" style="margin-top: 10px"><button class="btn btn-success btn-show-booking-form" disabled="disabled" onclick="show_booking_quota_form(' +room+ ')"><i class="fa fa-shopping-cart"></i> Забронировать</button> <button class="btn btn-default" onclick="$(\'.ui-selected\').removeClass(\'ui-selected\'); $(\'.btn-show-booking-form\').attr(\'disabled\', \'disabled\');"><i class="fa fa-paint-brush"></i> Очистить</button></div>';
+		            body+= '<div class="list-group-item room-calendar" room="' +room+ '" main="' +data['room'][room]['main']+ '" add="' +data['room'][room]['add']+ '"><h4 class="list-group-item-heading"><i class="fa fa-codepen"></i> <span class="room-name" style="font-size: 18px; font-weight: bold;">' + data['room'][room]['name'] + ' ('+room+')</span></h4><div class="quota-room-container quota-room-container-' +room+ '"><table class="table table-bordered table-condensed">' + table + '</table></div>';
+	            	//body+= '<div class="text-right" style="margin-top: 10px"><button class="btn btn-success btn-show-booking-form" disabled="disabled" onclick="show_booking_quota_form(' +room+ ')"><i class="fa fa-shopping-cart"></i> Забронировать</button> <button class="btn btn-default" onclick="$(\'.ui-selected\').removeClass(\'ui-selected\'); $(\'.btn-show-booking-form\').attr(\'disabled\', \'disabled\');"><i class="fa fa-paint-brush"></i> Очистить</button></div>';
 	            	body+= '</div>';
 	          	}
 	        }
