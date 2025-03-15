@@ -2089,7 +2089,7 @@ function show_schet_klient($connect){
 	<div class="form-horizontal panel-body">
 		<div class="form-group" style="margin-bottom: 0;">
 			<div class="col-sm-5 desc-schet">
-				<?php echo $div_warning; ?> <?=$no_contract_warning?>
+				<?php echo $div_warning; ?> <?php echo $no_contract_warning;?>
 				<strong>Дата добавления:</strong> <?php echo $date; ?><br />
                 <?php if($reck_type == 0) { ?>
                     <?php if($website){ ?>
