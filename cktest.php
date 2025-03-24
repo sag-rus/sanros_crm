@@ -492,7 +492,7 @@ function add_new_sites_content2(site_id) {
 							'</div>';
 
 	//$('#sites_content_body_test').html(html);
-    showmodal(html);
+    show_modal(html);
 
 	$('#sites_content_body').replaceWith('<div id="sites_content_body"></div>');
 	$('#sites_content_body2').replaceWith('<div id="sites_content_body2"></div>');
