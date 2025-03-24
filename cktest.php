@@ -31,7 +31,7 @@
 	<script type="text/javascript" src="js/jquery.scrollTo-min.js"></script>
 	<script type="text/javascript" src="js/strophe/strophe.js"></script>
 	<script type="text/javascript" src="js/strophe/plugin.roster.js"></script>
-	<script type="text/javascript" src="111modules/function.js?ver=<?php echo $version; ?>"></script>
+	<script type="text/javascript" src="modules/function-cktest.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-image.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-schet.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-users.js?ver=<?php echo $version; ?>"></script>
