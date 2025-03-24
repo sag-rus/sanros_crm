@@ -70,6 +70,31 @@
 </head>
 <body>
 
-<?=$_SERVER['REMOTE_ADDR']?>
+<?if ($_SERVER['REMOTE_ADDR']=='10.10.11.5') {?>
+TEST:
+<div id="sites_content_body_test"></div>>
+<script>
+	$(document).ready(function (e) {
+		DecoupledEditor
+			.create( $('#sites_content_body_test').get(0), {
+				language: 'ru'
+			})
+			.then( editor4 => {
+
+				$('#sites_content_body_test').before('<div id="sites_content_body_test_toolbar_container"></div>');
+
+				const toolbarContainer_cabinet = $('#sites_content_body_test_toolbar_container').get(0);
+
+				toolbarContainer_cabinet.appendChild( editor4.ui.view.toolbar.element );
+
+				window.sites_content_body_test = editor4;
+				window.sites_content_body_test.setData('123');
+			})
+			.catch( error => {
+				console.error( error );
+			});		
+		});
+</script>
+<?}?>
 </body>
 </html>
