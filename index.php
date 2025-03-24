@@ -71,7 +71,7 @@
 <body>
 </body>
 
-<?if ($_SERVER['REMOTE_ADDR']=='10.10.11.5') {?>
+<?php if ($_SERVER['REMOTE_ADDR']=='10.10.11.5') { ?>
 TEST:
 <div id="sites_content_body_test"></div>>
 <script>
@@ -96,5 +96,5 @@ TEST:
 			});		
 		});
 </script>
-<?}?>
+<?php } ?>
 </html>
