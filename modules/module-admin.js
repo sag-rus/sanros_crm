@@ -2626,7 +2626,7 @@ function add_new_sites_content(site_id) {
 			console.error( error );
 		});
 
-	/*DecoupledEditor
+	DecoupledEditor
 		.create( $('#sites_content_body2').get(0), {
 			language: 'ru'
 		})
@@ -2642,7 +2642,7 @@ function add_new_sites_content(site_id) {
 		})
 		.catch( error => {
 			console.error( error );
-		});*/
+		});
 
 
   $('.sites-content-modal *[name="slider_photos"], .sites-content-modal *[name="slider_photos_mobile"], .sites-content-modal *[name="photogallery"]').multUploader({
