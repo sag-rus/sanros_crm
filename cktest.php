@@ -73,7 +73,7 @@
 
 <?php if ($_SERVER['REMOTE_ADDR']=='10.10.11.5') { ?>
 TEST:
-<div id="sites_content_body_test"></div>>
+<div id="sites_content_body_test"></div>
 <script>
 	$(document).ready(function (e) {
 		DecoupledEditor
