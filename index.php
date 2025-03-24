@@ -70,5 +70,6 @@
 </head>
 <body>
 
+<?=$_SERVER['REMOTE_ADDR']?>
 </body>
 </html>
