@@ -76,7 +76,10 @@ TEST:
 <div id="sites_content_body_test"></div>
 <script>
 	$(document).ready(function (e) {
-		DecoupledEditor
+
+        add_new_sites_content(1);
+
+		/*DecoupledEditor
 			.create( $('#sites_content_body_test').get(0), {
 				language: 'ru'
 			})
@@ -93,8 +96,8 @@ TEST:
 			})
 			.catch( error => {
 				console.error( error );
-			});		
-		});
+			});*/		
+    });
 </script>
 <?php } ?>
 </html>

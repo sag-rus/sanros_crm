@@ -7,7 +7,7 @@ var izm = 1;
 var kol = 1;
 var max_bonus;
 
-$(function(){
+/*$(function(){
 	$.ajax({
 		url: 'mysql.php',
 		type: 'POST',
@@ -19,7 +19,7 @@ $(function(){
 				write_body();
 		}
 	});
-});
+});*/
 
 var month = {
 		1 : 'Январь',
