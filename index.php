@@ -69,6 +69,7 @@
 
 </head>
 <body>
+</body>
 
 <?if ($_SERVER['REMOTE_ADDR']=='10.10.11.5') {?>
 TEST:
@@ -96,5 +97,4 @@ TEST:
 		});
 </script>
 <?}?>
-</body>
 </html>
