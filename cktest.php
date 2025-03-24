@@ -77,7 +77,7 @@ TEST:
 <script>
 
 function add_new_sites_content2(site_id) {
-   var html = '<div class="modal fa de sites-content-modal">' +
+   var html = '<div class="modal fade sites-content-modal">' +
 								'<div class="modal-dialog">' +
 									'<div class="modal-content">' +
 										'<div class="modal-header">' +
