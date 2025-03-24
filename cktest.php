@@ -77,14 +77,14 @@ TEST:
 <script>
 
 function add_new_sites_content2(site_id) {
-   var html = '<div class="modal1 fade sites-content-modal1">' +
-								'<div class="modal1-dialog">' +
-									'<div class="modal1-content">' +
-										'<div class="modal1-header">' +
-											'<button type="button" class="close" data-dismiss="modal1" aria-label="Close"><i class="fa fa-times"></i></button>' +
-											'<h4 class="modal1-title">Новый материал</h4>' +
+   var html = '<div class="modal fa de sites-content-modal">' +
+								'<div class="modal-dialog">' +
+									'<div class="modal-content">' +
+										'<div class="modal-header">' +
+											'<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>' +
+											'<h4 class="modal-title">Новый материал</h4>' +
 										'</div>' +
-										'<div class="modal1-body form-horizontal site-name">' +
+										'<div class="modal-body form-horizontal site-name">' +
 											'<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Заголовок</label>' +
 												'<div class="col-sm-10">' +
