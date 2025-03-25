@@ -151,7 +151,7 @@ function show_modal(html){
 			$('.main-header .navbar-nav .messages-menu-' +type).click(function(){
 				$('.modal').show();
 				$('.modal-backdrop').show();
-				$('body').addClass('modal-open');
+				$('body').addClass('modal-open1');
 			});
 		});
 	}
