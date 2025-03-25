@@ -95,56 +95,8 @@ function add_new_sites_content2(site_id) {
 													'<div class="input-message-block" data-for="title"></div>'+
 												'</div>' +
 											'</div>' +
-			 								'<div class="form-group">' +
-                          '<label class="col-sm-2 control-label">Заголовок к крошкам</label>' +
-                          '<div class="col-sm-10">' +
-                              '<input type="text" class="form-control" name="breadcrumb_title" maxlength="255">' +
-                              '<div class="input-message-block" data-for="breadcrumb_title"></div>' +
-                          '</div>' +
-                      '</div>'+
-			 								'<div class="form-group">' +
-                          '<label class="col-sm-2 control-label">Заголовок h1</label>' +
-                          '<div class="col-sm-10">' +
-                              '<input type="text" class="form-control" name="title_h1" maxlength="255">' +
-                              '<div class="input-message-block" data-for="title_h1"></div>' +
-                          '</div>' +
-                      '</div>'	+
-			 								'<div class="form-group">' +
-												'<label class="col-sm-2 control-label">Основная картинка</label>' +
-												'<div class="col-sm-10">' +
-													'<input type="file" class="form-control" name="image">' +
-													'<div class="input-message-block" data-for="image"></div>'+
-												'</div>' +
-											'</div>' +
-			 								'<div class="form-group">' +
-												'<label class="col-sm-2 control-label">Тип</label>' +
-												'<div class="col-sm-10">' +
-													'<select class="form-control" name="type">' +
-			 											'<option value="landing">Лэндинг</option>' +
-			 											'<option value="page">Страница</option>'+
-			 											'<option value="news">Новость</option>'+
-			 											'<option value="photogallery">Фотогалерея</option>'+
-			 											'<option value="module">Модуль бронирования</option>' +
-			 											'<option value="settings">Настройки</option>' +
-														'<option value="article">Статья</option>' +
-			 											'<option value="info">Полезная информация</option>' +
-			 											'<option value="advice">Советы эксперта</option>' +
-			 											'<option value="blog_post">Блог</option>' +
-			 											'<option value="aggregator">Агрегатор</option>' +
-			 											'<option value="redirect">Редирект</option>' +
-			 										'</select>'+
-													'<div class="input-message-block" data-for="type"></div>'+
-												'</div>' +
-											'</div>' +
-                      '<div class="form-group hidden">' +
-                        '<label class="col-sm-2 control-label">Тип агрегатора</label>' +
-                        '<div class="col-sm-10">'+
-                          '<select class="form-control" name="rss">' +
-                            '<option value="0">Страница</option>' +
-                            '<option value="1">RSS</option>' +
-                          '</select>' +
-                        '</div>'+
-                      '</div>'+
+
+
 			 								'<div class="form-group hidden">'+
 												'<label class="col-sm-2 control-label">Агрегация по датам</label>'+
 												'<div class="col-sm-10">'+
