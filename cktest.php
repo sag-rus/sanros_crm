@@ -141,13 +141,6 @@ function add_new_sites_content2(site_id) {
                           '<label class="col-sm-2 control-label">Генерировать адрес</label>' +
                           '<input type="checkbox" name="path_autogenerate">'+
                       '</div>'+
-			 								'<div class="form-group">' +
-												'<label class="col-sm-2 control-label">Адрес страницы</label>' +
-												'<div class="col-sm-10">' +
-													'<input type="text" class="form-control" name="path" maxlength="512">' +
-													'<div class="input-message-block" data-for="path"></div>'+
-												'</div>' +
-											'</div>' +
 			 								'<div class="form-group hidden">' +
 												'<label class="col-sm-2 control-label">Адрес редиректа</label>' +
 												'<div class="col-sm-10">' +
@@ -189,13 +182,6 @@ function add_new_sites_content2(site_id) {
 													'<div class="input-message-block" data-for="aggregate_types"></div>' +
 												'</div>' +
 			                 '</div>' +
-                      '<div class="form-group">' +
-												'<label class="col-sm-2 control-label">Второй заголовок (h2)</label>' +
-												'<div class="col-sm-10">' +
-													'<input type="text" class="form-control" name="title_h2" maxlength="255">' +
-													'<div class="input-message-block" data-for="title_h2"></div>'+
-												'</div>' +
-											'</div>' +
 			 								'<div class="form-group hidden">' +
 												'<label class="col-sm-2 control-label">ID объекта</label>' +
 			 									'<div class="col-sm-10">'+
