@@ -228,18 +228,6 @@ function add_new_sites_content2(site_id) {
 												'</div>' +
 											'</div>' +
 			 								'<div class="form-group">' +
-												'<label class="col-sm-2 control-label">Анонс</label>' +
-												'<div class="col-sm-10">' +
-													'<textarea class="form-control" name="summary"></textarea>'+
-												'</div>' +
-											'</div>' +
-			 								'<div class="form-group">' +
-												'<label class="col-sm-2 control-label">Анонс для сниппетов</label>' +
-												'<div class="col-sm-10">' +
-													'<textarea class="form-control" name="snippet_summary"></textarea>'+
-												'</div>' +
-											'</div>' +
-			 								'<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Содержимое</label>' +
 												'<div class="col-sm-10">' +
 													'<textarea class="form-control resizable-textarea" name="body" id="sites_content_body"></textarea>'+
