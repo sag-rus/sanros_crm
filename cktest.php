@@ -95,7 +95,13 @@ function add_new_sites_content2(site_id) {
 													'<div class="input-message-block" data-for="title"></div>'+
 												'</div>' +
 											'</div>' +
-
+			 								'<div class="form-group">' +
+                          '<label class="col-sm-2 control-label">Заголовок к крошкам</label>' +
+                          '<div class="col-sm-10">' +
+                              '<input type="text" class="form-control" name="breadcrumb_title" maxlength="255">' +
+                              '<div class="input-message-block" data-for="breadcrumb_title"></div>' +
+                          '</div>' +
+                      '</div>'+
 
 			 								'<div class="form-group hidden">'+
 												'<label class="col-sm-2 control-label">Агрегация по датам</label>'+
@@ -248,37 +254,6 @@ function add_new_sites_content2(site_id) {
 													'<div class="input-message-block" data-for="form_action"></div>'+
                         '</div>' +
 											'</div>' +
-                      '<div class="form-group">' +
-                          '<label class="col-sm-2 control-label">Фото слайдера</label>' +
-                          '<div class="col-sm-10">' +
-                              '<div class="input-message-block" data-for="slider_photos"></div>' +
-                              '<input type="file" name="slider_photos">' +
-                          '</div>' +
-                      '</div>' +
-					  '<div class="form-group">' +
-                          '<label class="col-sm-2 control-label">Фото слайдера (моб. версия)</label>' +
-                          '<div class="col-sm-10">' +
-                              '<div class="input-message-block" data-for="slider_photos_mobile"></div>' +
-                              '<input type="file" name="slider_photos_mobile">' +
-                          '</div>' +
-                      '</div>' +
-					   '<div class="form-group">' +
-						   '<label class="col-sm-2 control-label">Тип слайдера</label>' +
-						   '<div class="col-sm-10">' +
-							   '<select class="form-control" name="slider_mode">' +
-								   '<option value="0">Стандартный</option>' +
-								   '<option value="1">Увеличенный по высоте</option>' +
-							   '</select>' +
-						   		'<div class="input-message-block" data-for="slider_mode"></div>' +
-						   '</div>' +
-					   '</div>' +
-						'<div class="form-group">' +
-                          '<label class="col-sm-2 control-label">Фото для фона</label>' +
-                          '<div class="col-sm-10">' +
-                              '<div class="input-message-block" data-for="page_bg"></div>' +
-                              '<input type="file" name="page_bg">' +
-                          '</div>' +
-                      '</div>' +
 			 								'<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Двухуровневый фон</label>' +
 												'<div class="col-sm-10">' +
