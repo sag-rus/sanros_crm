@@ -216,37 +216,6 @@ function add_new_sites_content2(site_id) {
 			 												'<div class="input-message-block" data-for="module_block"></div>'+
                           '</div>' +
                       '</div>' +
-			 								'<div class="form-group">' +
-                          '<label class="col-sm-2 control-label">ID объекта для отзывов</label>' +
-                          '<div class="col-sm-10">' +
-                              '<input type="text" class="form-control" name="reviews_objects" value="">' +
-                              '<div class="input-message-block" data-for="reviews_objects"></div>' +
-                          '</div>' +
-                      '</div>' +
-			 								'<div class="form-group">' +
-                          '<label class="col-sm-2 control-label">Фотографии</label>' +
-                          '<div class="col-sm-10">' +
-                              '<div class="input-message-block" data-for="photogallery"></div>' +
-                              '<input type="file" name="photogallery">' +
-                          '</div>' +
-                      '</div>' +
-			 								'<div class="form-group">' +
-                          '<label class="col-sm-2 control-label">Заголовок к фото</label>' +
-                          '<div class="col-sm-10">' +
-                              '<input type="text" class="form-control" name="photogallery_title" maxlength="255">' +
-                              '<div class="input-message-block" data-for="photogallery_title"></div>' +
-                          '</div>' +
-                      '</div>' +
-			 								'<div class="form-group">' +
-                          '<label class="col-sm-2 control-label">Ориентация фото</label>'+
-                          '<div class="col-sm-10">' +
-                              '<select class="form-control" name="photogallery_orientation">' +
-                                  '<option value="album">Альбомная</option>' +
-                                  '<option value="book">Книжная</option>' +
-                              '</select>' +
-			 												'<div class="input-message-block" data-for="photogallery_orientation"></div>'+
-                          '</div>' +
-                      '</div>' +
                       '<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Адрес для формы поиска</label>' +
 												'<div class="col-sm-10">' +
