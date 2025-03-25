@@ -138,7 +138,7 @@ function show_modal(html){
 	$('.modal').modal();
 	if($('.modal .datepicker').length)
 		show_datepicker();
-	alert('123');	
+	
 	if($('.modal .hide-button-modal').length){
 		$('.modal .hide-button-modal').click(function(){
 			var name = $(this).attr('name');
@@ -156,6 +156,8 @@ function show_modal(html){
 			});
 		});
 	}
+	$('body').removeClass('modal-open1');
+	alert('123');	
 }
 
 function show_window_popup(html){
