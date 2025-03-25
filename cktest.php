@@ -74,6 +74,7 @@
 <?php if ($_SERVER['REMOTE_ADDR']=='10.10.11.5') { ?>
 TEST:
 <div id="sites_content_body_test"></div>
+<button onClick="add_new_sites_content2(1)">open</button>
 <script>
 
 function add_new_sites_content2(site_id) {
@@ -561,7 +562,7 @@ function add_new_sites_content2(site_id) {
 
 	$(document).ready(function (e) {
 
-        add_new_sites_content2(1);
+        //add_new_sites_content2(1);
 
 		/*DecoupledEditor
 			.create( $('#sites_content_body_test').get(0), {
