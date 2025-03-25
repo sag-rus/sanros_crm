@@ -138,6 +138,7 @@ function show_modal(html){
 	$('.modal').modal();
 	if($('.modal .datepicker').length)
 		show_datepicker();
+	alert('123');	
 	if($('.modal .hide-button-modal').length){
 		$('.modal .hide-button-modal').click(function(){
 			var name = $(this).attr('name');
@@ -152,7 +153,6 @@ function show_modal(html){
 				$('.modal').show();
 				$('.modal-backdrop').show();
 				$('body').addClass('modal-open1')
-				alert('123');
 			});
 		});
 	}
