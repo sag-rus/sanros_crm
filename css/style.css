@@ -1765,6 +1765,6 @@ tr.simple-row {
 	font-weight: bold;
 }
 
-.modal-open.work-links {
+.modal-open.work-links .modal{
 	/*display: none;*/
 }
