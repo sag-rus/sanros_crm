@@ -58,8 +58,10 @@ function setFile(input, name, url) {
 jQuery(function() {
 	$('body').on('click', '.edit_text_links', function(){
 		if ($(this).hasClass('enabled')) {
+			$('body').removeClass('work-links');
 			$('.edit_text_links').removeClass('enabled');
 		} else {
+			$('body').addClass('work-links');
 			$('.edit_text_links').addClass('enabled');
 		}
 	});
