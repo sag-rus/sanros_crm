@@ -1764,3 +1764,7 @@ tr.simple-row {
 .edit_text_links.enabled{
 	font-weight: bold;
 }
+
+.modal-open.work-links {
+	/*display: none;*/
+}
