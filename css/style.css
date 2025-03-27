@@ -1760,3 +1760,7 @@ tr.simple-row {
 #sites_content_body, #sites_content_body2 {
 	max-height: 600px;
 }
+
+.edit_text_links.enabled{
+	font-weight: bold;
+}

@@ -2524,7 +2524,7 @@ function edit_sites_content($connect) {
                           </div>
                       </div>
                       <div class="form-group<?php if(in_array($content['type'],['redirect']) || ($content['type'] === 'aggregator' && $content['rss'])) { ?> hidden<?php } ?>">
-                          <label class="col-sm-2 control-label">Содержимое</label>
+                          <label class="col-sm-2 control-label">Содержимое<br><br><button class="edit_text_links">ссылки</button></label>
                           <div class="col-sm-10">
                               <textarea class="form-control resizable-textarea" name="body" id="sites_content_body"><?=htmlspecialchars($content['body']);?></textarea>
                           </div>
@@ -2537,7 +2537,7 @@ function edit_sites_content($connect) {
                           </div>
                       </div>                      
                       <div class="form-group<?php if(!in_array($content['type'],['landing','settings', 'news', 'article', 'info', 'advice', 'blog_post'])) { ?> hidden<?php } ?>">
-                          <label class="col-sm-2 control-label">Доп. содержимое</label>
+                          <label class="col-sm-2 control-label">Доп. содержимое<br><br><button class="edit_text_links">ссылки</button></label>
                           <div class="col-sm-10">
                               <textarea class="form-control resizable-textarea" name="body2" id="sites_content_body2"><?=htmlspecialchars($content['body2']);?></textarea>
                           </div>

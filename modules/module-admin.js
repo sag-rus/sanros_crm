@@ -56,6 +56,15 @@ function setFile(input, name, url) {
 }
 
 jQuery(function() {
+	$('body').on('click', '.edit_text_links', function(){
+		if ($(this).hasClass('enabled')) {
+			$(this).removeClass('enabled');
+		} else {
+			$(this).addClass('enabled');
+		}
+	});
+
+
 	$('body').on('click', '.get_img_from_url', function(){
 		$(this).prev().attr('disabled', 'disabled');
 		var str = 'func=get_image_from_url&url='+$(this).prev().val();
