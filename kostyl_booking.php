@@ -321,7 +321,7 @@ if ($dates_unavailable) {
 
 		if($check_quota == 1){
 			$connect->query("INSERT INTO booking(bid, from_booking) VALUES (?i, 'site')", $id);
-			$connect->query("UPDATE reckoning SET form_booking='quota' WHERE id=?i", $id);
+			$connect->query("UPDATE reckoning SET `form_booking`='quota', `source`=19 WHERE id=?i", $id);
 		}
 	}else{
 		$connect->query("INSERT INTO position_reck(schet, id_room, days, date_z, number, type, reward, add_one_day) VALUES (?i, 0, ?i, ?s, 1, 1, ?s, ?i)", $id, $days, $date_z, $reward, (int)$add_one_day);
