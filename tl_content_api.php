@@ -79,7 +79,7 @@ $result = curl_exec($ch);
 curl_close($ch);
 
 echo '<pre>$result';
-print_r($result);
+print_r(json_decode($result, true));
 echo '</pre>';
 
 ?>
