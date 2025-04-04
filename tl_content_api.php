@@ -55,7 +55,7 @@ $url = 'https://partner.qatl.ru/auth/token';
 $data = array(
     "grant_type"=> 'client_credentials', 
     "client_id" => 'chm_sr2',
-    "password" => 'T5AipL1NMo61LdA3xwnKb7cGbldbaDpS'
+    "client_secret" => 'T5AipL1NMo61LdA3xwnKb7cGbldbaDpS'
 );
 $ch = curl_init($url); 
 curl_setopt($ch, CURLOPT_POST, 1);
