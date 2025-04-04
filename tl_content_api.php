@@ -68,7 +68,7 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 $result = json_decode(curl_exec($ch), true);
 curl_close($ch);
 
-echo '<pre>';
+echo '<pre>result=';
 print_r($result);
 echo '</pre>';
 //AUTH
