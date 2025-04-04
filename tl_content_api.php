@@ -67,19 +67,27 @@ curl_setopt($ch, CURLOPT_HEADER, false);
 $result = json_decode(curl_exec($ch), true);
 curl_close($ch);
 
+$token = $result['access_token'];
 echo 'token='.$result['access_token'].'<br><br><br>';
 //AUTH
 
+$lines = $connect->getAll("SELECT * FROM `1_tl_webhook` WHERE `worked`=0 AND `eventType`='PropertyAdded' ORDER BY id DESC");
 
-$ch = curl_init('https://partner.qatl.ru/api/content/v1/properties/14231');
-curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , "Authorization: Bearer ".$result['access_token']));
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-$result = curl_exec($ch);
-curl_close($ch);
+foreach ($lines as $line) {
 
-echo '<pre>';
-print_r(json_decode($result, true));
-echo '</pre>';
+    $ch = curl_init('https://partner.qatl.ru/api/content/v1/properties/'.$line['entityId']);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , "Authorization: Bearer ".$token));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    $result = curl_exec($ch);
+    curl_close($ch);
+
+    echo '<pre>';
+    print_r(json_decode($result, true));
+    echo '</pre>';
+
+    $connect->getAll("UPDATE `1_tl_webhook` SET `worked`=1, `content_api_data`=?s WHERE `id`=?i", $result, $line['id']);
+
+}
 
 ?>
