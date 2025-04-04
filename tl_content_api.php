@@ -67,9 +67,7 @@ curl_setopt($ch, CURLOPT_HEADER, false);
 $result = json_decode(curl_exec($ch), true);
 curl_close($ch);
 
-echo '<pre>result=';
-print_r($result);
-echo '</pre>';
+echo 'token='.$result['access_token'].'<br><br>';
 //AUTH
 
 ?>
