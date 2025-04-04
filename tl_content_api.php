@@ -67,7 +67,19 @@ curl_setopt($ch, CURLOPT_HEADER, false);
 $result = json_decode(curl_exec($ch), true);
 curl_close($ch);
 
-echo 'token='.$result['access_token'].'<br><br>';
+echo 'token='.$result['access_token'].'<br><br><br>';
 //AUTH
+
+
+$ch = curl_init('https://partner.qatl.ru/api/content/v1/properties/14231');
+curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , "Authorization: Bearer ".$result['access_token']));
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+$result = curl_exec($ch);
+curl_close($ch);
+
+echo '<pre>$result';
+print_r($result);
+echo '</pre>';
 
 ?>
