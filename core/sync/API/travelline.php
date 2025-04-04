@@ -1,7 +1,7 @@
 <?php
 
 function save_web_hook_data($connect, $data){
-	$connect->query("INSERT INTO 1_tl_webhook SET id=0, request='123'");
+	$connect->query("INSERT INTO 1_tl_webhook SET id=0, datetime=NOW(), request=?s", json_encode($data));
 	return $connect->last_query();
 }
 
