@@ -51,7 +51,7 @@ $account_id = 34311;
 
 
 //AUTH
-$url = 'https://partner.tlintegration.com/auth/token';
+$url = 'https://partner.qatl.ru/auth/token';
 $data = array(
     "grant_type"=> 'client_credentials', 
     "client_id" => 'chm_sr2',
