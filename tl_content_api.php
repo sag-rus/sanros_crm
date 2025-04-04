@@ -57,14 +57,13 @@ $data = array(
     "client_id" => 'chm_sr2',
     "password" => 'T5AipL1NMo61LdA3xwnKb7cGbldbaDpS'
 );
-$postdata = json_encode($data);
 $ch = curl_init($url); 
 curl_setopt($ch, CURLOPT_POST, 1);
 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data, '', '&'));
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
-curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+curl_setopt($ch, CURLOPT_HEADER, false);
 $result = json_decode(curl_exec($ch), true);
 curl_close($ch);
 
