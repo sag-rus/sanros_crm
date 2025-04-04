@@ -1,7 +1,7 @@
 <?php
 
 function save_web_hook_data($connect, $data){
-	$connect->query("INSERT INTO 1_tl_webhook SET id=0, request=?s WHERE id=?i", $data);
+	$connect->query("INSERT INTO 1_tl_webhook SET id=0, request=?s WHERE id=?i", json_encode($data));
 }
 
 function update_room_places_quota($connect, $data){
