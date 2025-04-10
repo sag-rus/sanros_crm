@@ -1243,6 +1243,12 @@ function tl_webhooks($connect) {
 	return $html;
 }
 
+function AddBR($str) {
+	$str = str_replace("\r\n", '<br>', $str);
+	$str = str_replace("\r", '<br>', $str);
+	$str = str_replace("\n", '<br>', $str);
+}
+
 function tl_webhook($connect) {
 
 	$id = $_POST['id'];
@@ -1286,15 +1292,18 @@ function tl_webhook($connect) {
 	$html .= '<strong>Номера</strong>:<br><br>';
 	foreach ($item['roomTypes'] as $room) {
 		$html .= '<strong>'.$room['name'].'</strong><br>';
-		$html .= 'Описание:  '.strip_tags($room['description']).'<br>';	
 		$html .= 'Площадь:  '.$room['size']['value'].'<br>';	
+		if (isset($room['occupancy']['adultBed'])) $html .= 'Осн. мест:  '.$room['occupancy']['adultBed'].'<br>';
+		if (isset($room['occupancy']['extraBed'])) $html .= 'Доп. мест:  '.$room['occupancy']['extraBed'].'<br>';
+		if (isset($room['occupancy']['childWithoutBed'])) $html .= 'Без места:  '.$room['occupancy']['childWithoutBed'].'<br>';		
+		$html .= 'Описание:<br>'.AddBR(strip_tags($room['description'])).'<br>';	
+		
 		$html .= 'Фотографии номера:<br>';
 		foreach ($room['images'] as $image) {
 			$html .= '<a href="'.$image['url'].'" target="_blank"><img src="'.$image['url'].'" style="width: 150px; display: inline-block; vertical-align: middle;"><a/> ';
 		}
-		if (isset($room['occupancy']['adultBed'])) $html .= 'Осн. мест:  '.$room['occupancy']['adultBed'].'<br>';
-		if (isset($room['occupancy']['extraBed'])) $html .= 'Доп. мест:  '.$room['occupancy']['extraBed'].'<br>';
-		if (isset($room['occupancy']['childWithoutBed'])) $html .= 'Без места:  '.$room['occupancy']['childWithoutBed'].'<br>';
+		$html .= '<br>';
+		
 	}	
 
 
