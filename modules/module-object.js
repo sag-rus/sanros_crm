@@ -15,6 +15,23 @@ function tl_webhooks(){
 	search_object();
 }
 
+function tl_webhook(id){
+	select_menu('tl_webhooks');
+
+	var str = 'func=tl_webhook&id=' + id;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function(html){
+			$('#body').html(html);
+		}
+	});
+
+	
+	search_object();
+}
+
 
 function objects(){
 	select_menu('obj_menu');

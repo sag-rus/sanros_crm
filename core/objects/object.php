@@ -1232,13 +1232,42 @@ function tl_webhooks($connect) {
 						'.date('d.m.Y H:i:s', strtotime($item['datetime'])).'	
 					</div>
 					<div class="col-sm-2">
-						<button type="button" class="btn btn-success btn-xs" onclick="view_webhook('.$item['id'].')">Смотреть</button>
+						<button type="button" class="btn btn-success btn-xs" onclick="tl_webhook('.$item['id'].')">Смотреть</button>
 					</div>
 				</div>		
 		';
 	}
 
 	$html .= '</div></div>';
+
+	return $html;
+}
+
+function tl_webhook($connect) {
+
+	$id = $_POST['id'];
+
+	$html = '
+			<div class="form-horizontal panel panel-default">
+				<div class="panel-heading">
+					Запрос '.$id.'
+				</div>	
+				<div class="list-group">
+					<div class="list-group-item form-group " style="margin: 0">
+						<div class="col-sm-12">
+			';
+
+	$item = $connect->getRow("SELECT * FROM 1_tl_webhook WHERE `id`=$id");
+	$item = json_decode($item['content_api_data'], true);
+	
+	$html .= '<strong>Название объекта: </strong>: '.$item['name'].'<br><br>';
+	$html .= '<strong></strong>:<br><br>';
+	$html .= '<strong></strong>:<br><br>';
+	$html .= '<strong></strong>:<br><br>';
+	$html .= '<strong></strong>:<br><br>';
+
+
+	$html .= '</div></div></div></div>';
 
 	return $html;
 }
