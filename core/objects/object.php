@@ -1250,7 +1250,7 @@ function tl_webhook($connect) {
 	$html = '
 			<div class="form-horizontal panel panel-default">
 				<div class="panel-heading">
-					Запрос '.$id.'
+					Просмотр запроса #'.$id.'
 				</div>	
 				<div class="list-group">
 					<div class="list-group-item form-group " style="margin: 0">
@@ -1260,8 +1260,13 @@ function tl_webhook($connect) {
 	$item = $connect->getRow("SELECT * FROM 1_tl_webhook WHERE `id`=$id");
 	$item = json_decode($item['content_api_data'], true);
 	
-	$html .= '<strong>Название объекта: </strong>: '.$item['name'].'<br><br>';
-	$html .= '<strong></strong>:<br><br>';
+	$html .= '<strong>ID</strong>: '.$item['id'].'<br><br>';
+	$html .= '<strong>Название объекта</strong>: '.$item['name'].'<br>';
+	$html .= '<strong>Изображения</strong>:<br>';
+	foreach ($item['images'] as $image) {
+		$html .= '<a href="'.$image['url'].'" target="_blank"><img src="'.$image['url'].'" style="width: 150px; display: inline-block"><a/>';
+	}
+	$html .= '<br>';
 	$html .= '<strong></strong>:<br><br>';
 	$html .= '<strong></strong>:<br><br>';
 	$html .= '<strong></strong>:<br><br>';
