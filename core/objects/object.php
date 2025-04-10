@@ -1280,12 +1280,22 @@ function tl_webhook($connect) {
 	$html .= '<strong>Выезд</strong>: '.$item['policy']['checkOutTime'].'<br><br>';
 	$html .= '<strong>Тарифные планы</strong>:<br><br>';
 	foreach ($item['ratePlans'] as $rate) {
-		$html .= '<strong>'.$rate['id'].' - '.$rate['name'].'</strong><br>Описание:  '.strip_tags($rate['description']).'<br><br>';	
+		$html .= '<strong>'.$rate['name'].'</strong><br>Описание:  '.strip_tags($rate['description']).'<br><br>';	
 	}	
 	$html .= '<br>';
-	$html .= '<strong></strong>:<br>';
-	$html .= '<strong></strong>:<br>';
-	$html .= '<strong></strong>:<br>';
+	$html .= '<strong>Номера</strong>:<br><br>';
+	foreach ($item['roomTypes'] as $room) {
+		$html .= '<strong>'.$room['name'].'</strong><br>';
+		$html .= 'Описание:  '.strip_tags($room['description']).'<br>';	
+		$html .= 'Площадь:  '.$room['size']['value'].'<br>';	
+		$html .= 'Фотографии номера:<br>';
+		foreach ($room['images'] as $image) {
+			$html .= '<a href="'.$image['url'].'" target="_blank"><img src="'.$image['url'].'" style="width: 150px; display: inline-block; vertical-align: middle;"><a/> ';
+		}
+		if (isset($room['occupancy']['adultBed'])) $html .= 'Осн. мест:  '.$room['occupancy']['adultBed'].'<br>';
+		if (isset($room['occupancy']['extraBed'])) $html .= 'Доп. мест:  '.$room['occupancy']['extraBed'].'<br>';
+		if (isset($room['occupancy']['childWithoutBed'])) $html .= 'Без места:  '.$room['occupancy']['childWithoutBed'].'<br>';
+	}	
 
 
 	$html .= '</div></div></div></div>';
