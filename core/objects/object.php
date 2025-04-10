@@ -1260,7 +1260,7 @@ function tl_webhook($connect) {
 	$item = $connect->getRow("SELECT * FROM 1_tl_webhook WHERE `id`=$id");
 	$item = json_decode($item['content_api_data'], true);
 
-	$html .= print_r($item, true);
+	$html .= '<pre>'.print_r($item, true).'</pre>';
 	
 	$html .= '<strong>ID</strong>: '.$item['id'].'<br><br>';
 	$html .= '<strong>Название объекта</strong>: '.$item['name'].'<br>';
