@@ -1211,14 +1211,31 @@ function tl_webhooks($connect) {
 				<div class="panel-heading">
 					Запросы на добавление объектов из Travelline
 				</div>	
+				<div class="list-group">
 			';
 
 	$items = $connect->getAll("SELECT * FROM 1_tl_webhook WHERE `datetime`> NOW() - INTERVAL 3 MONTH ORDER BY id DESC");
 	foreach ($items as $item) {
 		$item['content_api_data'] = json_decode($item['content_api_data'], true);
+		$html .= '
+				<div class="list-group-item form-group " style="margin: 0">
+					<div class="col-sm-4">
+						<i class="fa fa-home"></i> '.$item['content_api_data']['name'].'
+					</div>
+					<div class="col-sm-4">
+						'.$item['content_api_data']['id'].'
+					</div>
+					<div class="col-sm-2">
+						'.date('d.m.Y H:i:s', strtotime($item['datetime'])).'	
+					</div>
+					<div class="col-sm-2">
+						<button type="button" class="btn btn-success btn-xs" onclick="view_webhook('.$item['id'].')">Смотреть</button>
+					</div>
+				</div>		
+		';
 	}
 
-	$html .= '</div>';
+	$html .= '</div></div>';
 
 	return $html;
 }
