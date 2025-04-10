@@ -1286,8 +1286,8 @@ function tl_webhook($connect) {
 	$html .= '<strong>Заезд</strong>: '.$item['policy']['checkInTime'].'<br>';
 	$html .= '<strong>Выезд</strong>: '.$item['policy']['checkOutTime'].'<br><br>';
 	$html .= '<strong>Тарифные планы</strong>:<br><br>';
-	foreach ($item['ratePlans'] as $rate) {
-		$html .= '<strong>'.$rate['name'].'</strong><br>Описание:  '.strip_tags($rate['description']).'<br><br>';	
+	foreach ($item['ratePlans'] as $key => $rate) {
+		$html .= ($key + 1).'. <strong>'.$rate['name'].'</strong><br>Описание:  '.strip_tags($rate['description']).'<br><br>';	
 	}	
 	$html .= '<br>';
 	$html .= '<strong>Номера</strong>:<br><br>';
