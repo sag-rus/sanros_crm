@@ -1222,9 +1222,12 @@ function tl_webhooks($connect) {
 					<div class="col-sm-4">
 						<i class="fa fa-home"></i> '.$item['content_api_data']['name'].'
 					</div>
-					<div class="col-sm-4">
-						'.$item['content_api_data']['id'].'
+					<div class="col-sm-2">
+						'.$item['eventId'].'
 					</div>
+					<div class="col-sm-2">
+						'.$item['eventType'].'
+					</div>					
 					<div class="col-sm-2">
 						'.date('d.m.Y H:i:s', strtotime($item['datetime'])).'	
 					</div>
