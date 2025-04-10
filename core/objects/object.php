@@ -1272,7 +1272,8 @@ function tl_webhook($connect) {
 	$html .= '<strong>ID</strong>: '.$item['id'].'<br><br>';
 	$html .= '<strong>Название объекта</strong>: '.$item['name'].'<br>';
 	$html .= '<strong>Описание:</strong><br>'.AddBR(strip_tags($item['description'])).'<br><br>';	
-	$html .= '<strong>Фотографии объекта: </strong>:<br>';
+	//$html .= '<strong>Фотографии объекта</strong>:<br>';
+	$html .= '<br>';
 	foreach ($item['images'] as $image) {
 		$html .= '<a href="'.$image['url'].'" target="_blank"><img src="'.$image['url'].'" style="width: 150px; display: inline-block; vertical-align: middle;"><a/> ';
 	}
@@ -1294,7 +1295,7 @@ function tl_webhook($connect) {
 	$html .= '<strong>Номера</strong>:<br><br>';
 	foreach ($item['roomTypes'] as $room) {
 		$html .= '<h3>'.$room['name'].'</h3><br><br>';
-		$html .= '<strong>Фотографии номера</strong>:<br>';
+		//$html .= '<strong>Фотографии номера</strong>:<br>';
 		foreach ($room['images'] as $image) {
 			$html .= '<a href="'.$image['url'].'" target="_blank"><img src="'.$image['url'].'" style="width: 150px; display: inline-block; vertical-align: middle;"><a/> ';
 		}
