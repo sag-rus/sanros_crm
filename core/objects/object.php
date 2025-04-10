@@ -1305,11 +1305,11 @@ function tl_webhook($connect) {
 		//$html .= '<strong>Описание:</strong><br>'.AddBR(strip_tags($room['description'])).'<br>';	
 		$html .= '<strong>Варианты размещений</strong>:<br>';
 		foreach ($room['placements'] as $place) {
-			if ($place['kind']=='Adult') echo '- '.$place['count'].'-местное взрослое<br>';
-			if ($place['kind']=='ExtraAdult') echo '- взрослый на доп.месте<br>';
-			if ($place['kind']=='Child') echo '- ребенок ('.$place['minAge'].'.-.'.$place['maxAge'].' лет) на осн.месте<br>';
-			if ($place['kind']=='ExtraChild') echo '- ребенок ('.$place['minAge'].'.-.'.$place['maxAge'].' лет) на доп.месте<br>';
-			if ($place['kind']=='ChildBandWithoutBed') echo '- ребенок ('.$place['minAge'].'.-.'.$place['maxAge'].' лет) без места<br>';
+			if ($place['kind']=='Adult') $html .= '- '.$place['count'].'-местное взрослое<br>';
+			if ($place['kind']=='ExtraAdult') $html .= '- взрослый на доп.месте<br>';
+			if ($place['kind']=='Child') $html .= '- ребенок ('.$place['minAge'].'.-.'.$place['maxAge'].' лет) на осн.месте<br>';
+			if ($place['kind']=='ExtraChild') $html .= '- ребенок ('.$place['minAge'].'.-.'.$place['maxAge'].' лет) на доп.месте<br>';
+			if ($place['kind']=='ChildBandWithoutBed') $html .= '- ребенок ('.$place['minAge'].'.-.'.$place['maxAge'].' лет) без места<br>';
 		}
 		$html .= '<br><br><br>';
 		
