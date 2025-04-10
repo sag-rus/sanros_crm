@@ -1247,6 +1247,7 @@ function AddBR($str) {
 	$str = str_replace("\r\n", '<br>', $str);
 	$str = str_replace("\r", '<br>', $str);
 	$str = str_replace("\n", '<br>', $str);
+	return $str;
 }
 
 function tl_webhook($connect) {
