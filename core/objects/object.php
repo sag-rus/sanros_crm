@@ -1271,7 +1271,7 @@ function tl_webhook($connect) {
 	
 	$html .= '<strong>ID</strong>: '.$item['id'].'<br><br>';
 	$html .= '<strong>Название объекта</strong>: '.$item['name'].'<br>';
-	$html .= '<strong>Описание:</strong><br>'.AddBR(strip_tags($item['description'])).'<br>';	
+	$html .= '<strong>Описание:</strong><br>'.AddBR(strip_tags($item['description'])).'<br><br>';	
 	$html .= '<strong>Фотографии объекта: </strong>:<br>';
 	foreach ($item['images'] as $image) {
 		$html .= '<a href="'.$image['url'].'" target="_blank"><img src="'.$image['url'].'" style="width: 150px; display: inline-block; vertical-align: middle;"><a/> ';
