@@ -1262,14 +1262,28 @@ function tl_webhook($connect) {
 	
 	$html .= '<strong>ID</strong>: '.$item['id'].'<br><br>';
 	$html .= '<strong>Название объекта</strong>: '.$item['name'].'<br>';
-	$html .= '<strong>Изображения</strong>:<br>';
+	$html .= '<strong>Фотографии объекта: </strong>:<br>';
 	foreach ($item['images'] as $image) {
-		$html .= '<a href="'.$image['url'].'" target="_blank"><img src="'.$image['url'].'" style="width: 150px; display: inline-block"><a/>';
+		$html .= '<a href="'.$image['url'].'" target="_blank"><img src="'.$image['url'].'" style="width: 150px; display: inline-block"><a/> ';
 	}
 	$html .= '<br>';
-	$html .= '<strong></strong>:<br><br>';
-	$html .= '<strong></strong>:<br><br>';
-	$html .= '<strong></strong>:<br><br>';
+	$html .= '<strong>Адрес</strong>: '.$item['contactInfo']['address']['addressLine'].'<br><br>';
+	$html .= '<strong>Координаты</strong>: '.$item['contactInfo']['address']['latitude'].':'.$item['contactInfo']['address']['longitude'].'<br>';
+	$html .= '<strong>Телефоны</strong>: ';
+	foreach ($item['phones'] as $phone) {
+		$html .= $phone['phoneNumber'].' ('.$phone['techType'].'), ';	
+	}
+	$html .= '<br>';
+	$html .= '<strong>Заезд</strong>: '.$item['policy']['checkInTime'].'<br>';
+	$html .= '<strong>Выезд</strong>: '.$item['policy']['checkOutTime'].'<br><br>';
+	$html .= '<strong>Тарифные планы</strong>:<br>';
+	foreach ($item['ratePlans'] as $rate) {
+		$html .= $rate['id'].' - '.$rate['name'].', описание:  '.$rate['description'].'<br>';	
+	}	
+	$html .= '<br>';
+	$html .= '<strong></strong>:<br>';
+	$html .= '<strong></strong>:<br>';
+	$html .= '<strong></strong>:<br>';
 
 
 	$html .= '</div></div></div></div>';
