@@ -1,3 +1,21 @@
+function tl_webhooks(){
+	select_menu('tl_webhooks');
+
+	var str = 'func=tl_webhooks';
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function(html){
+			$('#body').html(html);
+		}
+	});
+
+	
+	search_object();
+}
+
+
 function objects(){
 	select_menu('obj_menu');
 	var id_rights = parseInt($('*[data-id-rights]').attr('data-id-rights'));

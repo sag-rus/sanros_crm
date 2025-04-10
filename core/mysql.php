@@ -727,6 +727,7 @@ function write_body($connect){
 				  <?php } ?>
 				  <?php if($id_rights > 1) { ?>
 					<li id="obj_menu" onclick="objects(<?=$id_rights;?>)" data-id-rights="<?=$id_rights;?>"><a>Объекты</a></li>
+					<li id="tl_webhooks" onclick="tl_webhooks()" data-id-rights="<?=$id_rights;?>"><a>TL Content API</a></li>
 				  <?php } ?>
 				  <?php if($id_rights > 3) { ?>
 					<li id="reminder_menu" onclick="my_reminder()"><a>Напоминания</a></li>

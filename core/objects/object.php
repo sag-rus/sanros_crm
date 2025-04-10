@@ -1204,4 +1204,25 @@ function update_status_contract_object($connect){
 	return json_encode($html);
 }
 
+function tl_webhooks($connect) {
+
+	$html = '
+			<div class="form-horizontal panel panel-default">
+				<div class="panel-heading">
+					Запросы на добавление объектов из Travelline
+				</div>	
+			';
+
+	$items = $connect->getAll("SELECT * FROM 1_tl_webhook WHERE `datetime`> NOW() - INTERVAL 3 MONTH ORDER BY id DESC");
+	foreach ($items as $item) {
+		$item['content_api_data'] = json_decode($item['content_api_data'], true);
+	}
+
+	$html .= '</div>';
+
+	return $html;
+}
+
 ?>
+
+
