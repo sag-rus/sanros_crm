@@ -1299,7 +1299,7 @@ function tl_webhook($connect) {
 		foreach ($room['images'] as $image) {
 			$html .= '<a href="'.$image['url'].'" target="_blank"><img src="'.$image['url'].'" style="width: 150px; display: inline-block; vertical-align: middle;"><a/> ';
 		}
-		$html .= '<br>';
+		$html .= '<br><br>';
 		$html .= '<strong>Площадь:</strong> '.$room['size']['value'].'<br>';	
 		if (isset($room['occupancy']['adultBed'])) $html .= '<strong>Осн. мест: </strong> '.$room['occupancy']['adultBed'].'<br>';
 		if (isset($room['occupancy']['extraBed'])) $html .= '<strong>Доп. мест:</strong>  '.$room['occupancy']['extraBed'].'<br>';
