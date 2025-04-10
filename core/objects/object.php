@@ -1260,7 +1260,7 @@ function tl_webhook($connect) {
 	$item = $connect->getRow("SELECT * FROM 1_tl_webhook WHERE `id`=$id");
 	$item = json_decode($item['content_api_data'], true);
 
-	$html .= '<pre>'.print_r($item, true).'</pre>';
+	//$html .= '<pre>'.print_r($item, true).'</pre>';
 	
 	$html .= '<strong>ID</strong>: '.$item['id'].'<br><br>';
 	$html .= '<strong>Название объекта</strong>: '.$item['name'].'<br>';
@@ -1272,10 +1272,8 @@ function tl_webhook($connect) {
 	$html .= '<strong>Адрес</strong>: '.$item['contactInfo']['address']['addressLine'].'<br><br>';
 	$html .= '<strong>Координаты</strong>: '.$item['contactInfo']['address']['latitude'].':'.$item['contactInfo']['address']['longitude'].'<br>';
 	$html .= '<strong>Телефоны</strong>: ';
-	if (is_array($item['phones'])) {
-		foreach ($item['phones'] as $phone) {
-			$html .= $phone['phoneNumber'].' ('.$phone['techType'].'), ';	
-		}
+	foreach ($item['contactInfo']['phones'] as $phone) {
+		$html .= $phone['phoneNumber'].' ('.$phone['techType'].'), ';	
 	}
 	$html .= '<br>';
 	$html .= '<strong>Заезд</strong>: '.$item['policy']['checkInTime'].'<br>';
