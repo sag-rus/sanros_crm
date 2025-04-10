@@ -1266,7 +1266,7 @@ function tl_webhook($connect) {
 	$html .= '<strong>Название объекта</strong>: '.$item['name'].'<br>';
 	$html .= '<strong>Фотографии объекта: </strong>:<br>';
 	foreach ($item['images'] as $image) {
-		$html .= '<a href="'.$image['url'].'" target="_blank"><img src="'.$image['url'].'" style="width: 150px; display: inline-block"><a/> ';
+		$html .= '<a href="'.$image['url'].'" target="_blank"><img src="'.$image['url'].'" style="width: 150px; display: inline-block; vertical-align: middle;"><a/> ';
 	}
 	$html .= '<br>';
 	$html .= '<strong>Адрес</strong>: '.$item['contactInfo']['address']['addressLine'].'<br><br>';
@@ -1278,9 +1278,9 @@ function tl_webhook($connect) {
 	$html .= '<br>';
 	$html .= '<strong>Заезд</strong>: '.$item['policy']['checkInTime'].'<br>';
 	$html .= '<strong>Выезд</strong>: '.$item['policy']['checkOutTime'].'<br><br>';
-	$html .= '<strong>Тарифные планы</strong>:<br>';
+	$html .= '<strong>Тарифные планы</strong>:<br><br>';
 	foreach ($item['ratePlans'] as $rate) {
-		$html .= $rate['id'].' - '.$rate['name'].', описание:  '.$rate['description'].'<br>';	
+		$html .= '<strong>'.$rate['id'].' - '.$rate['name'].'</strong><br>Описание:  '.strip_tags($rate['description']).'<br><br>';	
 	}	
 	$html .= '<br>';
 	$html .= '<strong></strong>:<br>';
