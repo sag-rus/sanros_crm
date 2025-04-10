@@ -1223,7 +1223,7 @@ function tl_webhooks($connect) {
 						<i class="fa fa-home"></i> '.$item['content_api_data']['name'].'
 					</div>
 					<div class="col-sm-2">
-						'.$item['eventId'].'
+						'.$item['entityId'].'
 					</div>
 					<div class="col-sm-2">
 						'.$item['eventType'].'
