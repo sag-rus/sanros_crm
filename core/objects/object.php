@@ -1250,11 +1250,16 @@ function AddBR($str) {
 	return $str;
 }
 
+function set_object_for_webhook($connect) {
+	$connect->query("UPDATE `1_tl_webhook` SET `id_obj`=$_POST[id_obj] WHERE id=$_POST[id_webhook]");
+}
+
 function tl_webhook($connect) {
 
 	$id = $_POST['id'];
 
 	$html = '
+			<div id="id_webhook">'.$id.'</div>
 			<div class="form-horizontal panel panel-default">
 				<div class="panel-heading">
 					Просмотр запроса #'.$id.'
