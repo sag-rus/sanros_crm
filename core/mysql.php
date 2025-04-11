@@ -34,14 +34,16 @@ echo 'a';
 // include_once("admin/upload_xml.php");
 include_once("admin/news.php");
 include_once("admin/manual.php");
+echo 'b';
 include_once("admin/profkurort.php");
 include_once("admin/sync.php");
-
+echo 'c';
 include_once("objects/turist.php");
 include_once("objects/agency.php");
 include_once("objects/touroperator.php");
 include_once("objects/object.php");
-echo 'b';
+
+echo 'd';
 include_once("report/general.php");
 include_once("report/report.php");
 include_once("report/bonus.php");
@@ -50,7 +52,7 @@ include_once("report/module.php");
 include_once("report/advertising.php");
 include_once("report/chat-log.php");
 include_once("report/cabinet-object.php");
-echo 'c';
+
 include_once("upload/default.php");
 include_once("upload/price.php");
 include_once("upload/reserv.php");
@@ -62,7 +64,7 @@ include_once("upload/sights.php");
 include_once("upload/sync-database.php");
 include_once("upload/sync-objects-api.php");
 include_once("upload/sync-objects-ratings-api.php");
-echo 'd';
+
 include_once("price/calendar.php");
 include_once("price/search-engine.php");
 
