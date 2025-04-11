@@ -1,5 +1,4 @@
 <?php
-	echo '1';
 //ini_set("display_errors",1);
 //error_reporting(E_ALL);
 	$func = isset($_POST["func"])?$_POST['func']:(isset($_GET['func'])?$_GET['func']:"");
@@ -7,15 +6,14 @@
 	if(!$func)
 		return;
 	$loader = require( __DIR__ . '/vendor/autoload.php');
-	echo '2';
 
 	session_start();
 	header("Content-type: text/html; charset: utf-8");
 	date_default_timezone_set("Asia/Baghdad");
 	define("_DS_", DIRECTORY_SEPARATOR);
-	echo '3';
+	echo '11'
 	include_once("core/mysql.php");
-	echo '4';
+	echo '22';
 
 
 if($func AND function_exists($func)){
