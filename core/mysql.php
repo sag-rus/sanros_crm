@@ -1,5 +1,5 @@
 <?php
-echo '33';
+
 	$array_color_guaranteed = array(1 => "#CCC", 2 => "#C0E8FF" , 3 => "#D7FFDF", 4 => "#F7FF96", 5 => "#FFCACA");
 
 	$array_status_guaranteed = array(1 => "В продаже", 2 => "Выставлен счет" , 3 => "Оплачен", 4 => "Отложен", 5 => "Аннулирован");
@@ -64,19 +64,22 @@ include_once("upload/sync-objects-ratings-api.php");
 
 include_once("price/calendar.php");
 include_once("price/search-engine.php");
-
+echo 'a';
 include_once("login.php");
 include_once("head.php");
 include_once("price.php");
 include_once("reckoning.php");
+echo 'и';
 include_once("object.php");
 include_once("status.php");
 include_once("promo.php");
 include_once("reminder.php");
+echo 'c';
 include_once("certificate.php");
 include_once("count.php");
 include_once("profit.php");
 include_once("question.php");
+echo 'd';
 include_once("method.php");
 include_once("chat.php");
 include_once("my-profile.php");
