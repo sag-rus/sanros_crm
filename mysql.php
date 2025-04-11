@@ -16,7 +16,9 @@
 
 
 if($func AND function_exists($func)){
+	echo '1';
 	include_once("config.php");
+	echo '2';
 	$conf = new JConfig;
 	$bonus_rec = $conf->bonus_rec;
 	$bonus_ref = $conf->bonus_ref;
