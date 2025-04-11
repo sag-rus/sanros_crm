@@ -30,6 +30,7 @@ include_once("admin/admin.php");
 include_once("admin/search.php");
 include_once("admin/rating.php");
 include_once("admin/sights.php");
+echo 'a';
 // include_once("admin/upload_xml.php");
 include_once("admin/news.php");
 include_once("admin/manual.php");
@@ -40,7 +41,7 @@ include_once("objects/turist.php");
 include_once("objects/agency.php");
 include_once("objects/touroperator.php");
 include_once("objects/object.php");
-
+echo 'b';
 include_once("report/general.php");
 include_once("report/report.php");
 include_once("report/bonus.php");
@@ -49,7 +50,7 @@ include_once("report/module.php");
 include_once("report/advertising.php");
 include_once("report/chat-log.php");
 include_once("report/cabinet-object.php");
-
+echo 'c';
 include_once("upload/default.php");
 include_once("upload/price.php");
 include_once("upload/reserv.php");
@@ -61,25 +62,25 @@ include_once("upload/sights.php");
 include_once("upload/sync-database.php");
 include_once("upload/sync-objects-api.php");
 include_once("upload/sync-objects-ratings-api.php");
-
+echo 'd';
 include_once("price/calendar.php");
 include_once("price/search-engine.php");
-echo 'a';
+
 include_once("login.php");
 include_once("head.php");
 include_once("price.php");
 include_once("reckoning.php");
-echo 'и';
+
 include_once("object.php");
 include_once("status.php");
 include_once("promo.php");
 include_once("reminder.php");
-echo 'c';
+
 include_once("certificate.php");
 include_once("count.php");
 include_once("profit.php");
 include_once("question.php");
-echo 'd';
+
 include_once("method.php");
 include_once("chat.php");
 include_once("my-profile.php");
