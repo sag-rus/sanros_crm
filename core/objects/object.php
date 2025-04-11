@@ -1279,9 +1279,9 @@ function tl_webhook($connect) {
 	if ($id_obj==0) {
 		$html .= '<input type="text" id="find_object_for_webhook" class="form-control" placeholder="поиск объекта из имеющихся" onkeyup="find_klient(event, \'find_object_for_webhook\', \'object\', \'set_object_for_webhook\')"><br><br>';
 	} else {
-		$html .= '<strong>Присвоенный объект из имеющихся: </strong>: '.$object['name'].'<br>';
-		$html .= ' <button type="button" class="btn btn-danger btn-xs" onclick="tl_webhook_del_obj('.$id.')">удалить связку с присвоенным объектом</button>';;
-		$html .= ' <button style="margin-left: 30px;" type="button" class="btn btn-success btn-xs" onclick="tl_webhook_work('.$id.')">перенести данные из запроса в объект</button>';
+		$html .= '<strong>Присвоенный объект из имеющихся: </strong>: '.$object['name'].' ('.$object['address'].')<br><br>';
+		$html .= ' <button type="button" class="btn btn-danger" onclick="tl_webhook_del_obj('.$id.')">удалить связку с присвоенным объектом</button>';;
+		$html .= ' <button style="margin-left: 30px;" type="button" class="btn btn-success" onclick="tl_webhook_work('.$id.')">перенести данные из запроса в объект</button>';
 		$html .= '<br>';
 		$html .= '<br>';
 	}
