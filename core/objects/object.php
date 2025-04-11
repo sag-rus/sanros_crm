@@ -1259,8 +1259,9 @@ function tl_webhook($connect) {
 	$id = $_POST['id'];
 
 	$item = $connect->getRow("SELECT * FROM 1_tl_webhook WHERE `id`=$id");
+	$id_obj = $item['id_obj'];
 	$item = json_decode($item['content_api_data'], true);	
-	if ($item['id_obj']>0) $object = $connect->getRow("SELECT * FROM object WHERE `id`=$item[id_obj]");
+	if ($id_obj>0) $object = $connect->getRow("SELECT * FROM object WHERE `id`=$item[id_obj]");
 
 	$html = '
 			<div id="id_webhook" class="hidden">'.$id.'</div>
@@ -1273,9 +1274,9 @@ function tl_webhook($connect) {
 						<div class="col-sm-12">
 			';
 
-	$html .= '<pre>'.print_r($item, true).'</pre>';
+	//$html .= '<pre>'.print_r($item, true).'</pre>';
 	
-	if ($item['id_obj']==0) {
+	if ($id_obj==0) {
 		$html .= '<input type="text" id="find_object_for_webhook" class="form-control" placeholder="поиск объекта из имеющихся" onkeyup="find_klient(event, \'find_object_for_webhook\', \'object\', \'set_object_for_webhook\')"><br><br>';
 	} else {
 		$html .= '<strong>Присвоенный объект из имеющихся: </strong>: '.$object['name'].'<br>';
