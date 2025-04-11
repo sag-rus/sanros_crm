@@ -7,13 +7,15 @@
 	if(!$func)
 		return;
 	$loader = require( __DIR__ . '/vendor/autoload.php');
+	echo '2';
 
 	session_start();
 	header("Content-type: text/html; charset: utf-8");
 	date_default_timezone_set("Asia/Baghdad");
 	define("_DS_", DIRECTORY_SEPARATOR);
-
+	echo '3';
 	include_once("core/mysql.php");
+	echo '4';
 
 
 if($func AND function_exists($func)){
