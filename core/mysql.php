@@ -1,5 +1,5 @@
 <?php
-
+echo '33';
 	$array_color_guaranteed = array(1 => "#CCC", 2 => "#C0E8FF" , 3 => "#D7FFDF", 4 => "#F7FF96", 5 => "#FFCACA");
 
 	$array_status_guaranteed = array(1 => "В продаже", 2 => "Выставлен счет" , 3 => "Оплачен", 4 => "Отложен", 5 => "Аннулирован");
@@ -18,6 +18,8 @@
 		1 => array("name" => "Оператор бронирования", "icon" => "fa-user-plus"),
 		2 => array("name" => "Тех.поддержка", "icon" => "fa-cogs")
 	);
+
+echo '44';
 
 define("EARTH_RADIUS", 6372795);
 
@@ -79,6 +81,8 @@ include_once("method.php");
 include_once("chat.php");
 include_once("my-profile.php");
 include_once("panel.php");
+
+echo '55';
 
 function get_value($connect){
 	$id = $_POST["id"];
