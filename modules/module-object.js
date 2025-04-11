@@ -215,7 +215,7 @@ function set_object_for_webhook(id, type) {
 		type: 'POST',
 		data: str,
 		success: function(html){
-			//tl_webhook($('#id_webhook').html());
+			tl_webhook($('#id_webhook').html());
 		}
 	});	
 }
