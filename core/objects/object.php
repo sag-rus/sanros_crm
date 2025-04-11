@@ -1264,12 +1264,14 @@ function tl_webhook($connect) {
 						<div class="col-sm-12">
 			';
 
+	$html .= '<input type="text" id="find_object_for_webhook" class="form-control" placeholder="поиск объекта из имеющихся" onkeyup="find_klient(event, \'find_object\', \'object\', \'set_object_for_webhook\')">';
+
 	$item = $connect->getRow("SELECT * FROM 1_tl_webhook WHERE `id`=$id");
 	$item = json_decode($item['content_api_data'], true);
 
 	//$html .= '<pre>'.print_r($item, true).'</pre>';
 	
-	$html .= '<strong>ID</strong>: '.$item['id'].'<br><br>';
+	$html .= '<strong>ID обекта в Travelline</strong>: '.$item['id'].'<br><br>';
 	$html .= '<strong>Название объекта</strong>: '.$item['name'].'<br>';
 	$html .= '<strong>Описание:</strong><br>'.AddBR(strip_tags($item['description'])).'<br><br>';	
 	//$html .= '<strong>Фотографии объекта</strong>:<br>';
