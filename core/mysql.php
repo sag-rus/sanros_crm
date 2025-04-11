@@ -19,7 +19,6 @@
 		2 => array("name" => "Тех.поддержка", "icon" => "fa-cogs")
 	);
 
-echo '44';
 
 define("EARTH_RADIUS", 6372795);
 
@@ -37,15 +36,10 @@ include_once("admin/manual.php");
 
 include_once("admin/profkurort.php");
 include_once("admin/sync.php");
-echo 'a';
 include_once("objects/turist.php");
-echo 'b';
 include_once("objects/agency.php");
-echo 'c';
 include_once("objects/touroperator.php");
-echo 'd';
 include_once("objects/object.php");
-echo 'e';
 include_once("report/general.php");
 include_once("report/report.php");
 include_once("report/bonus.php");
@@ -89,8 +83,6 @@ include_once("method.php");
 include_once("chat.php");
 include_once("my-profile.php");
 include_once("panel.php");
-
-echo '55';
 
 function get_value($connect){
 	$id = $_POST["id"];

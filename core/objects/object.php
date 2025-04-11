@@ -1324,5 +1324,3 @@ function tl_webhook($connect) {
 }
 
 ?>
-
-
