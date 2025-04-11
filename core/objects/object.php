@@ -1262,7 +1262,7 @@ function tl_webhook($connect) {
 	$item = json_decode($item['content_api_data'], true);	
 	if ($item['id_obj']>0) $object = $connect->getRow("SELECT * FROM object WHERE `id`=$item[id_obj]");
 
-	$html = '
+	$html = $item['id_obj'].'
 			<div id="id_webhook" class="hidden">'.$id.'</div>
 			<div class="form-horizontal panel panel-default">
 				<div class="panel-heading">
