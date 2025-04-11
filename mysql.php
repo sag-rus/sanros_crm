@@ -25,7 +25,7 @@ if($func AND function_exists($func)){
 	$sync_api = $conf->sync_base;
 	$directory = dirname(__FILE__);
 	define("_FOLDERSITE_", $directory);
-  $configInstance = \App\lib\CRM\Config\Client::getInstance();
+  	$configInstance = \App\lib\CRM\Config\Client::getInstance();
 	$configInstance->clientCabinet = [
     "link" => $conf->turist_cabinet
 	];
