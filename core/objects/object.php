@@ -1252,6 +1252,17 @@ function AddBR($str) {
 }
 
 function tl_webhook_work($connect) {
+	$data = $connect->getRow("SELECT * FROM 1_tl_webhook WHERE `id`=$_POST[id]");
+
+	if ($data['id_obj']==0) {
+
+		//ВНИМАНИЕ! В КОНЦЕ ДОБАВИТЬ UPDATE `1_tl_webhook` SET `id_obj`=ID_СОЗДАННОГО_ОБЪЕКТА
+
+		//Создаем новые объект
+	} else {
+		//Юзаем имеющийся объхект
+	}
+
 	$connect->query("UPDATE `1_tl_webhook` SET `worked`=1 WHERE id=$_POST[id]");
 }
 
@@ -1288,7 +1299,7 @@ function tl_webhook($connect) {
 	if (!$worked) {
 		if ($id_obj==0) {
 			$html .= '<input type="text" id="find_object_for_webhook" class="form-control" placeholder="поиск объекта из имеющихся" onkeyup="find_klient(event, \'find_object_for_webhook\', \'object\', \'set_object_for_webhook\')"><br><br>';
-			$html .= ' <button type="button" class="btn btn-success" onclick="tl_webhook_work('.$id.')">Создать новые объект на оснвое данных их запроса</button><br><br>';
+			$html .= ' <button type="button" class="btn btn-success" onclick="tl_webhook_work('.$id.')">Создать новый объект на оснвое данных из запроса</button><br><br>';
 		} else {
 			$html .= '<strong>Присвоенный объект из имеющихся</strong>: '.$object['name'].' ('.$object['address'].')<br><br>';
 			$html .= ' <button type="button" class="btn btn-danger" onclick="tl_webhook_del_obj('.$id.')">удалить связку с присвоенным объектом</button>';;
