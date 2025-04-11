@@ -1250,6 +1250,10 @@ function AddBR($str) {
 	return $str;
 }
 
+function tl_webhook_del_obj($connect) {
+	$connect->query("UPDATE `1_tl_webhook` SET `id_obj`=0 WHERE id=$_POST[id]");
+}
+
 function set_object_for_webhook($connect) {
 	$connect->query("UPDATE `1_tl_webhook` SET `id_obj`=$_POST[id_obj] WHERE id=$_POST[id_webhook]");
 }
