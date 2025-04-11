@@ -1259,7 +1259,7 @@ function tl_webhook($connect) {
 	$id = $_POST['id'];
 
 	$html = '
-			<div id="id_webhook">'.$id.'</div>
+			<div id="id_webhook" class="hidden">'.$id.'</div>
 			<div class="form-horizontal panel panel-default">
 				<div class="panel-heading">
 					Просмотр запроса #'.$id.'
