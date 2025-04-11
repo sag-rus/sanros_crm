@@ -209,7 +209,7 @@ function select_object_on_request(id, name){
 function set_object_for_webhook(id, type) {
 	$('.help-window').hide();
 	remove_all_windows();
-	var str = 'func=set_object_for_webhook&id_webhook'+$('#id_webhook').html()+'&id_obj=' + id;
+	var str = 'func=set_object_for_webhook&id_webhook='+$('#id_webhook').html()+'&id_obj=' + id;
 	$.ajax({
 		url: 'mysql.php',
 		type: 'POST',
