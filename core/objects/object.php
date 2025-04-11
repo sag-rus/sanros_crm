@@ -1261,7 +1261,7 @@ function tl_webhook($connect) {
 	$item = $connect->getRow("SELECT * FROM 1_tl_webhook WHERE `id`=$id");
 	$id_obj = $item['id_obj'];
 	$item = json_decode($item['content_api_data'], true);	
-	if ($id_obj>0) $object = $connect->getRow("SELECT * FROM object WHERE `id`=$item[id_obj]");
+	if ($id_obj>0) $object = $connect->getRow("SELECT * FROM object WHERE `id`=$id_obj");
 
 	$html = '
 			<div id="id_webhook" class="hidden">'.$id.'</div>
@@ -1280,8 +1280,8 @@ function tl_webhook($connect) {
 		$html .= '<input type="text" id="find_object_for_webhook" class="form-control" placeholder="поиск объекта из имеющихся" onkeyup="find_klient(event, \'find_object_for_webhook\', \'object\', \'set_object_for_webhook\')"><br><br>';
 	} else {
 		$html .= '<strong>Присвоенный объект из имеющихся: </strong>: '.$object['name'].'<br>';
-		$html .= ' <button type="button" class="btn btn-danger btn-xs" onclick="tl_webhook_del_obj('.$id.')">удалить связку с имеющимся объектом</button> &nbps; &nbps;';
-		$html .= ' <button type="button" class="btn btn-success btn-xs" onclick="tl_webhook_work('.$id.')">удалить связку с имеющимся объектом</button>';
+		$html .= ' <button type="button" class="btn btn-danger btn-xs" onclick="tl_webhook_del_obj('.$id.')">удалить связку с присвоенным объектом</button> &nbsp; &nbsp	;';
+		$html .= ' <button type="button" class="btn btn-success btn-xs" onclick="tl_webhook_work('.$id.')">перенести данные из запроса в объект</button>';
 		$html .= '<br>';
 		$html .= '<br>';
 	}
