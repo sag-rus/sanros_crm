@@ -1262,7 +1262,7 @@ function tl_webhook($connect) {
 	$item = json_decode($item['content_api_data'], true);	
 	if ($item['id_obj']>0) $object = $connect->getRow("SELECT * FROM object WHERE `id`=$item[id_obj]");
 
-	$html = $item['id_obj'].'
+	$html = '
 			<div id="id_webhook" class="hidden">'.$id.'</div>
 			<div class="form-horizontal panel panel-default">
 				<div class="panel-heading">
@@ -1272,6 +1272,9 @@ function tl_webhook($connect) {
 					<div class="list-group-item form-group " style="margin: 0">
 						<div class="col-sm-12">
 			';
+
+	$html .= '<pre>'.print_r($item, true).'</pre>';
+	
 	if ($item['id_obj']==0) {
 		$html .= '<input type="text" id="find_object_for_webhook" class="form-control" placeholder="поиск объекта из имеющихся" onkeyup="find_klient(event, \'find_object_for_webhook\', \'object\', \'set_object_for_webhook\')"><br><br>';
 	} else {
