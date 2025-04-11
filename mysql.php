@@ -1,5 +1,5 @@
 <?php
-echo '';
+	echo '1';
 //ini_set("display_errors",1);
 //error_reporting(E_ALL);
 	$func = isset($_POST["func"])?$_POST['func']:(isset($_GET['func'])?$_GET['func']:"");
