@@ -206,6 +206,20 @@ function select_object_on_request(id, name){
 	}
 }
 
+function tl_webhook_work(id) {
+	if (confirm('Вы уверены?')) {
+		var str = 'func=tl_webhook_work&id=' + id;
+		$.ajax({
+			url: 'mysql.php',
+			type: 'POST',
+			data: str,
+			success: function(html){
+				tl_webhook(id);
+			}
+		});	
+	}
+}
+
 function tl_webhook_del_obj(id) {
 	var str = 'func=tl_webhook_del_obj&id=' + id;
 	$.ajax({

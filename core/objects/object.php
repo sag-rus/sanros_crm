@@ -1250,6 +1250,10 @@ function AddBR($str) {
 	return $str;
 }
 
+function tl_webhook_work($connect) {
+	$connect->query("UPDATE `1_tl_webhook` SET `worked`=1 WHERE id=$_POST[id]");
+}
+
 function tl_webhook_del_obj($connect) {
 	$connect->query("UPDATE `1_tl_webhook` SET `id_obj`=0 WHERE id=$_POST[id]");
 }
@@ -1263,6 +1267,7 @@ function tl_webhook($connect) {
 	$id = $_POST['id'];
 
 	$item = $connect->getRow("SELECT * FROM 1_tl_webhook WHERE `id`=$id");
+	$worked = $item['worked'];
 	$id_obj = $item['id_obj'];
 	$item = json_decode($item['content_api_data'], true);	
 	if ($id_obj>0) $object = $connect->getRow("SELECT * FROM object WHERE `id`=$id_obj");
@@ -1279,17 +1284,17 @@ function tl_webhook($connect) {
 			';
 
 	//$html .= '<pre>'.print_r($item, true).'</pre>';
-	
-	if ($id_obj==0) {
-		$html .= '<input type="text" id="find_object_for_webhook" class="form-control" placeholder="поиск объекта из имеющихся" onkeyup="find_klient(event, \'find_object_for_webhook\', \'object\', \'set_object_for_webhook\')"><br><br>';
-	} else {
-		$html .= '<strong>Присвоенный объект из имеющихся: </strong>: '.$object['name'].' ('.$object['address'].')<br><br>';
-		$html .= ' <button type="button" class="btn btn-danger" onclick="tl_webhook_del_obj('.$id.')">удалить связку с присвоенным объектом</button>';;
-		$html .= ' <button style="margin-left: 30px;" type="button" class="btn btn-success" onclick="tl_webhook_work('.$id.')">перенести данные из запроса в объект</button>';
-		$html .= '<br>';
-		$html .= '<br>';
+	if (!$worked) {
+		if ($id_obj==0) {
+			$html .= '<input type="text" id="find_object_for_webhook" class="form-control" placeholder="поиск объекта из имеющихся" onkeyup="find_klient(event, \'find_object_for_webhook\', \'object\', \'set_object_for_webhook\')"><br><br>';
+		} else {
+			$html .= '<strong>Присвоенный объект из имеющихся</strong>: '.$object['name'].' ('.$object['address'].')<br><br>';
+			$html .= ' <button type="button" class="btn btn-danger" onclick="tl_webhook_del_obj('.$id.')">удалить связку с присвоенным объектом</button>';;
+			$html .= ' <button style="margin-left: 30px;" type="button" class="btn btn-success" onclick="tl_webhook_work('.$id.')">перенести данные из запроса в объект</button>';
+			$html .= '<br>';
+			$html .= '<br>';
+		}
 	}
-
 	
 	$html .= '<strong>ID обекта в Travelline</strong>: '.$item['id'].'<br><br>';
 	$html .= '<strong>Название объекта</strong>: '.$item['name'].'<br>';
