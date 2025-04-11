@@ -34,10 +34,6 @@ function write_authorization_form($connect){
 }
 
 function check_login($connect){
-	echo '<pre>';
-	print_r($_COOKIE);
-	print_r($_POST);
-	echo '</pre>';
 	if(isset($_COOKIE["session"]) AND !isset($_POST["password"])){
 		$session = $_COOKIE["session"];
 		$row = $connect->getRow("SELECT login, password FROM session WHERE id_session=?s", $session);
