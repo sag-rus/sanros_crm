@@ -1216,9 +1216,10 @@ function tl_webhooks($connect) {
 
 	$items = $connect->getAll("SELECT * FROM 1_tl_webhook WHERE `datetime`> NOW() - INTERVAL 3 MONTH ORDER BY id DESC");
 	foreach ($items as $item) {
+		if (!$item['worked']) $worked = 'warning'; else $warning = '';
 		$item['content_api_data'] = json_decode($item['content_api_data'], true);
 		$html .= '
-				<div class="list-group-item form-group " style="margin: 0">
+				<div class="list-group-item form-group '.$worked.'" style="margin: 0">
 					<div class="col-sm-4">
 						<i class="fa fa-home"></i> '.$item['content_api_data']['name'].'
 					</div>
@@ -1238,7 +1239,7 @@ function tl_webhooks($connect) {
 		';
 	}
 
-	$html .= '</div></div>';
+	$html .= '</div></div><style>.list-group-item.warning {backgroun-color: #fcf8e3}</style>';
 
 	return $html;
 }
