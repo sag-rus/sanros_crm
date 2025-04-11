@@ -1295,7 +1295,7 @@ function tl_webhook($connect) {
 			$html .= '<br>';
 		}
 	} else {
-		$html .= '<strong color="green">Данные из запроса были обработаны и добавлены в объект: </strong><br>';
+		$html .= '<strong style="color:green">Данные из запроса были обработаны и добавлены в объект: </strong><br>';
 		$html .= $object['name'].' ('.$object['address'].')<br><br>';
 	}
 	
