@@ -30,20 +30,22 @@ include_once("admin/admin.php");
 include_once("admin/search.php");
 include_once("admin/rating.php");
 include_once("admin/sights.php");
-echo 'a';
+
 // include_once("admin/upload_xml.php");
 include_once("admin/news.php");
 include_once("admin/manual.php");
-echo 'b';
+
 include_once("admin/profkurort.php");
 include_once("admin/sync.php");
-echo 'c';
+echo 'a';
 include_once("objects/turist.php");
+echo 'b';
 include_once("objects/agency.php");
+echo 'c';
 include_once("objects/touroperator.php");
-include_once("objects/object.php");
-
 echo 'd';
+include_once("objects/object.php");
+echo 'e';
 include_once("report/general.php");
 include_once("report/report.php");
 include_once("report/bonus.php");
