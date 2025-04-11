@@ -1294,6 +1294,9 @@ function tl_webhook($connect) {
 			$html .= '<br>';
 			$html .= '<br>';
 		}
+	} else {
+		$html .= '<strong color="green">Данные из запроса были обработаны и добавлены в объект: </strong><br>';
+		$html .= $object['name'].' ('.$object['address'].')<br><br>';
 	}
 	
 	$html .= '<strong>ID обекта в Travelline</strong>: '.$item['id'].'<br><br>';
