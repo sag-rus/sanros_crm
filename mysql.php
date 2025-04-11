@@ -11,9 +11,7 @@
 	header("Content-type: text/html; charset: utf-8");
 	date_default_timezone_set("Asia/Baghdad");
 	define("_DS_", DIRECTORY_SEPARATOR);
-	echo '11';
 	include_once("core/mysql.php");
-	echo '22';
 
 
 if($func AND function_exists($func)){
