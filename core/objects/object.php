@@ -1239,7 +1239,7 @@ function tl_webhooks($connect) {
 		';
 	}
 
-	$html .= '</div></div><style>.list-group-item.warning {backgroun-color: #fcf8e3}</style>';
+	$html .= '</div></div><style>.list-group-item.warning {background-color: #fcf8e3}</style>';
 
 	return $html;
 }
