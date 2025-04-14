@@ -1323,6 +1323,16 @@ function tl_webhook_work($connect) {
 		$connect->query("INSERT INTO `room` SET `id`=0, `active`=0, `id_obj`=?i, `name`=?s, `description`=?s, `main_place`=?i, `add_place`=?i, `wo_bed_place`=?i, `square`=?s", $data['id_obj'], $room['name'], $room['description'], $room['occupancy']['adultBed'], $room['occupancy']['extraBed'], $room['occupancy']['childWithoutBed'], $room['size']['value']);
 		$room_id = $connect->insertId();
 
+		foreach ($room['placements'] as $place) {
+			if ($place['kind']=='Adult' && $place['count']>0) {
+				//Создаем осн.взр.размещение
+				$occu = [];
+				$occu['adult_on_main_place'] = $place['count'];
+				$export_id = get_place_export_id($room_id, $occu);
+				$connect->query("INSERT INTO `place` SET `id`=0, `status`=1, `name`='".$place['count']." взр. на осн.месте', `export_id`=?s, `id_obj`=?i, `id_room`=?i, `type`=1, `adult_on_main_place`=?i", $export_id, $data['id_obj'], $room_id, $place['count']);
+			}
+		}
+
 	}
 
 	//Запускаем синхрон на сайт обновленных данных
