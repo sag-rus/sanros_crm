@@ -1290,7 +1290,7 @@ function tl_webhook_work($connect) {
 	foreach ($webhook['ratePlans'] as $rate) {
 		$rate['name'] = strip_tags($rate['name']);
 		$rate['description'] = AddBR(strip_tags($rate['description']));
-		$db->query("INSERT INTO `rate_plan` SET `id`=0, `object`=?i, `name`=?s, `description`=?s", $data['id_obj'], $rate['name'], $rate['description']);
+		$connect->query("INSERT INTO `rate_plan` SET `id`=0, `object`=?i, `name`=?s, `description`=?s", $data['id_obj'], $rate['name'], $rate['description']);
 	}
 	//Создаем номеров из webhook
 	//Создаем детские размещения из webhook
