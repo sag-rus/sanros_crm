@@ -208,6 +208,7 @@ function select_object_on_request(id, name){
 
 function tl_webhook_work(id) {
 	if (confirm('Вы уверены?')) {
+		$('#body').html('<img src="/CRM/images/ajax-loader.gif">');
 		var str = 'func=tl_webhook_work&id=' + id;
 		$.ajax({
 			url: 'mysql.php',
