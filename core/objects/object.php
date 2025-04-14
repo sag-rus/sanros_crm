@@ -1263,7 +1263,7 @@ function tl_webhook_work($connect) {
 		//Юзаем имеющийся объхект
 	}
 
-	$connect->query("UPDATE `1_tl_webhook` SET `worked`=1 WHERE id=$_POST[id]");
+	$connect->query("UPDATE `1_tl_webhook` SET `worked`=2 WHERE id=$_POST[id]");
 }
 
 function tl_webhook_del_obj($connect) {
@@ -1296,7 +1296,7 @@ function tl_webhook($connect) {
 			';
 
 	//$html .= '<pre>'.print_r($item, true).'</pre>';
-	if (!$worked) {
+	if ($worked==1) {
 		if ($id_obj==0) {
 			$html .= '<input type="text" id="find_object_for_webhook" class="form-control" placeholder="поиск объекта из имеющихся" onkeyup="find_klient(event, \'find_object_for_webhook\', \'object\', \'set_object_for_webhook\')"><br><br>';
 			$html .= ' <button type="button" class="btn btn-success" onclick="tl_webhook_work('.$id.')">Создать новый объект на оснвое данных из запроса</button><br><br>';
