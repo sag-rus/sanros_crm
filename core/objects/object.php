@@ -1325,6 +1325,7 @@ function tl_webhook_work($connect) {
 
 		foreach ($room['placements'] as $place) {
 			if ($place['kind']=='Adult' && $place['count']>0) {
+				echo '123';
 				//Создаем осн.взр.размещение
 				$occu = [];
 				$occu['adult_on_main_place'] = $place['count'];
