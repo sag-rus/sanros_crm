@@ -1304,15 +1304,20 @@ function tl_webhook_work($connect) {
 			}
 		}
 	}
+	$childs_ids = [];
 	if (count($childs)>0) {
 		foreach ($childs as $child) {
 			$ages = explode('-', $child);
 			if (count($ages)==2) {
 				$connect->query("INSERT INTO `child_occupancy` SET `id`=0, `status`=1, `id_obj`=?i, `age_from`=?i, `age_to`=?i", $data['id_obj'], $ages[0], $ages[1]);
+				$child_id = $connect->insertId();
+				if (!isset($childs[$dhild])) $childs[$dhild] = $child_id;
 			}
 		}
 	}
-	
+
+	print_r($childs_ids);
+
 	//Создаем размещения из webhook
 
 	//Запускаем синхрон на сайт обновленных данных
