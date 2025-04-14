@@ -1262,7 +1262,6 @@ function tl_webhook_work($connect) {
 
 		//Создаем новый объект
 
-		
 		//ВНИМАНИЕ! В КОНЦЕ ДОБАВИТЬ UPDATE `1_tl_webhook` SET `id_obj`=ID_СОЗДАННОГО_ОБЪЕКТА
 		$data['id_obj'] = $last_id; //ПРИСВОИТЬ АЙДИШНИК НОВОГО ОБЪЕКТА ДЛЯ СОЗДАНЯИ ТАРИФОВ И ОСТАЛЬНОГО!!
 	} else {
@@ -1274,11 +1273,9 @@ function tl_webhook_work($connect) {
 		//Деактивируем тарифы объекта!
 		$connect->query("UPDATE `rate_plan` SET `status`=0, `synchronized`=0 WHERE object=$data[id_obj]");
 
-		//Деактивируем тарифы объекта!
-		$connect->query("UPDATE `room` SET `active`=1, `synchronized`=0 WHERE id_obj=$data[id_obj]");
-
-		//Деактивируем тарифы объекта!
-		$connect->query("UPDATE `room` SET `active`=1, `synchronized`=0 WHERE id_obj=$data[id_obj]");
+		//Деактивируем номера объекта!
+		//$connect->query("UPDATE `room` SET `active`=1, `synchronized`=0 WHERE id_obj=$data[id_obj]");
+		$connect->query("DELETE FROM `room` WHERE id_obj=$data[id_obj]");
 
 		//Удаляем детские размещения объекта!
 		$connect->query("DELETE FROM `child_occupancy` WHERE id_obj=$data[id_obj]");
@@ -1292,7 +1289,6 @@ function tl_webhook_work($connect) {
 		$rate['description'] = AddBR(strip_tags($rate['description']));
 		$connect->query("INSERT INTO `rate_plan` SET `id`=0, `object`=?i, `name`=?s, `description`=?s", $data['id_obj'], $rate['name'], $rate['description']);
 	}*/
-	//Создаем номера из webhook
 
 	//Создаем детские размещения из webhook
 	$childs = [];
@@ -1316,9 +1312,18 @@ function tl_webhook_work($connect) {
 		}
 	}
 
-	print_r($childs_ids);
+	//Создаем номера и размещения из webhook
+	//ДОДЕЛАТЬ УДОБСТВА НОМЕРА!!!
+	//РЕАЛИЗОВАТЬ ЗАГРУЗКУ ФОТО НОМЕРОВ!!!
+	foreach ($webhook['roomTypes'] as $room) {
 
-	//Создаем размещения из webhook
+		$room['name'] = strip_tags($room['name']);
+		$room['description'] = AddBR(strip_tags($room['description']));		
+
+		$connect->query("INSERT INTO `room` SET `id`=0, `active`=0, `id_obj`=?i, `name`=?s, `description`=?s, `main_place`=?i, `add_place`=?i, `wo_bed_place`=?i, `square`=?s", $data['id_obj'], $room['name'], $room['description'], $room['occupancy']['adultBed'], $room['occupancy']['extraBed'], $room['occupancy']['childWithoutBed'], $room['size']['value']);
+		$room_id = $connect->insertId();
+
+	}
 
 	//Запускаем синхрон на сайт обновленных данных
 
