@@ -1325,20 +1325,28 @@ function tl_webhook_work($connect) {
 
 		foreach ($room['placements'] as $place) {
 			if ($place['kind']=='Adult' && $place['count']>0) {
-				//Создаем осн.взр.размещение
+				//Создаем осн.взр.размещения
 				$occu = [];
 				$occu['adult_on_main_place'] = $place['count'];
 				$export_id = get_place_export_id($room_id, $occu);
 				$connect->query("INSERT INTO `place` SET `id`=0, `status`=1, `name`='".$place['count']." взр. на осн.месте', `export_id`=?s, `id_obj`=?i, `id_room`=?i, `type`=1, `adult_on_main_place`=?i", $export_id, $data['id_obj'], $room_id, $place['count']);
 			}
 			if ($place['kind']=='ExtraAdult' && $place['count']>0) {
-				//Создаем доп.взр.размещение
+				//Создаем доп.взр.размещения
 				$place['count'] = 1;
 				$occu = [];
 				$occu['adult_on_add_place'] = $place['count'];
 				$export_id = get_place_export_id($room_id, $occu);
 				$connect->query("INSERT INTO `place` SET `id`=0, `status`=1, `name`='".$place['count']." взр. на доп.месте', `export_id`=?s, `id_obj`=?i, `id_room`=?i, `type`=1, `adult_on_add_place`=?i", $export_id, $data['id_obj'], $room_id, $place['count']);
-				echo $connect->last_query().'<br>';
+			}
+			if ($place['kind']=='Child' && $place['count']>0 && isset($place['minAge']) && isset($place['maxAge']) && iiset($childs_ids[$place['minAge'].'-'.$place['maxAge']])) {
+				//Создаем осн.дет.размещения
+				$place['count'] = 1;
+				$occu = [];
+				$occu['id_child_on_main_place'] = $childs_ids[$place['minAge'].'-'.$place['maxAge']];
+				$occu['child_on_main_place'] = $place['count'];
+				$export_id = get_place_export_id($room_id, $occu);
+				$connect->query("INSERT INTO `place` SET `id`=0, `status`=1, `name`='".$place['count']." взр. на доп.месте', `export_id`=?s, `id_obj`=?i, `id_room`=?i, `type`=1, `id_child_on_main_place`=?i, `child_on_main_place`=?i", $export_id, $data['id_obj'], $room_id, $childs_ids[$place['minAge'].'-'.$place['maxAge']], $place['count']);
 			}			
 		}
 
