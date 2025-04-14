@@ -1304,11 +1304,10 @@ function tl_webhook_work($connect) {
 			}
 		}
 	}
-	print_r($childs);
 	if (count($childs)>0) {
 		foreach ($childs as $child) {
 			$ages = explode('-', $child);
-			if (count($ages)==1) {
+			if (count($ages)==2) {
 				$connect->query("INSERT INTO `child_occupancy` SET `id`=0, `status`=1, `id_obj`=?i, `age_from`=?i, `age_to`=?i", $data['id_obj'], $ages[0], $ages[1]);
 			}
 		}
