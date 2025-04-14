@@ -1252,16 +1252,50 @@ function AddBR($str) {
 }
 
 function tl_webhook_work($connect) {
+	//НУЖНА ИНДИКАЦИЯ ОЖИДАЕНИЯ ОТВЕТА ЭТОЙ ФУКНЦИИ НА ФРОНТЕ!!!
+
 	$data = $connect->getRow("SELECT * FROM 1_tl_webhook WHERE `id`=$_POST[id]");
+	$webhook = json_decode($data['content_api_data'], true);
 
 	if ($data['id_obj']==0) {
+		//Случай когда создается новый объект по webhook'у
+
+		//Создаем новый объект
+
 
 		//ВНИМАНИЕ! В КОНЦЕ ДОБАВИТЬ UPDATE `1_tl_webhook` SET `id_obj`=ID_СОЗДАННОГО_ОБЪЕКТА
-
-		//Создаем новые объект
 	} else {
-		//Юзаем имеющийся объхект
+		//Случай когда информация из webhook добавляется к новому объекту
+
+		//Удаляем корпуса объекта! - не будем удалять, НО: в новых номерах не будет указывать housing!
+		//$connect->query("DELETE FROM `housing` WHERE id_obj=$data[id_obj]");
+
+		//Деактивируем тарифы объекта!
+		$connect->query("UPDATE `rate_plan` SET `status`=0, `synchronized`=0 WHERE object=$data[id_obj]");
+
+		//Деактивируем тарифы объекта!
+		$connect->query("UPDATE `room` SET `active`=1, `synchronized`=0 WHERE id_obj=$data[id_obj]");
+
+		//Деактивируем тарифы объекта!
+		$connect->query("UPDATE `room` SET `active`=1, `synchronized`=0 WHERE id_obj=$data[id_obj]");
+
+		//Удаляем детские размещения объекта!
+		$connect->query("DELETE FROM `child_occupancy` WHERE id_obj=$data[id_obj]");
+
+		//Удаляем обычные размещения объекта!
+		$connect->query("DELETE FROM `place` WHERE id_obj=$data[id_obj]");		
 	}
+	//Создаем тарифы из webhook
+	foreach ($webhook['ratePlans'] as $rate) {
+		$rate['name'] = strip_tags($rate['name']);
+		$rate['description'] = AddBR(strip_tags($rate['description']));
+		$db->query("INSERT INTO `rate_plan` SET `id`=0, `object`=?i, `name`=?s, `description`=?s", $data['id_obj'], $rate['name'], $rate['description']);
+	}
+	//Создаем номеров из webhook
+	//Создаем детские размещения из webhook
+	//Создаем размещения из webhook
+
+	//Запускаем синхрон на сайт обновленных данных
 
 	$connect->query("UPDATE `1_tl_webhook` SET `worked`=2 WHERE id=$_POST[id]");
 }
