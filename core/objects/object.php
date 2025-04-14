@@ -1346,7 +1346,7 @@ function tl_webhook_work($connect) {
 				$occu['id_child_on_main_place'] = $childs_ids[$place['minAge'].'-'.$place['maxAge']];
 				$occu['child_on_main_place'] = $place['count'];
 				$export_id = get_place_export_id($room_id, $occu);
-				$connect->query("INSERT INTO `place` SET `id`=0, `status`=1, `name`='".$place['count']." реб (".$place['minAge'].'-'.$place['maxAge']." лет) на осн.месте', `export_id`=?s, `id_obj`=?i, `id_room`=?i, `type`=1, `id_child_on_main_place`=?i, `child_on_main_place`=?i", $export_id, $data['id_obj'], $room_id, $childs_ids[$place['minAge'].'-'.$place['maxAge']], $place['count']);
+				$connect->query("INSERT INTO `place` SET `id`=0, `status`=1, `name`='".$place['count']." реб. (".$place['minAge'].'-'.$place['maxAge']." лет) на осн.месте', `export_id`=?s, `id_obj`=?i, `id_room`=?i, `type`=1, `id_child_on_main_place`=?i, `child_on_main_place`=?i", $export_id, $data['id_obj'], $room_id, $childs_ids[$place['minAge'].'-'.$place['maxAge']], $place['count']);
 			}
 			if ($place['kind']=='ExtraChild' && $place['count']>0 && isset($place['minAge']) && isset($place['maxAge']) && isset($childs_ids[$place['minAge'].'-'.$place['maxAge']])) {
 				//Создаем доп.дет.размещения
@@ -1355,8 +1355,17 @@ function tl_webhook_work($connect) {
 				$occu['id_child_on_add_place'] = $childs_ids[$place['minAge'].'-'.$place['maxAge']];
 				$occu['child_on_add_place'] = $place['count'];
 				$export_id = get_place_export_id($room_id, $occu);
-				$connect->query("INSERT INTO `place` SET `id`=0, `status`=1, `name`='".$place['count']." реб (".$place['minAge'].'-'.$place['maxAge']." лет) на доп.месте', `export_id`=?s, `id_obj`=?i, `id_room`=?i, `type`=1, `id_child_on_add_place`=?i, `child_on_add_place`=?i", $export_id, $data['id_obj'], $room_id, $childs_ids[$place['minAge'].'-'.$place['maxAge']], $place['count']);
+				$connect->query("INSERT INTO `place` SET `id`=0, `status`=1, `name`='".$place['count']." реб. (".$place['minAge'].'-'.$place['maxAge']." лет) на доп.месте', `export_id`=?s, `id_obj`=?i, `id_room`=?i, `type`=1, `id_child_on_add_place`=?i, `child_on_add_place`=?i", $export_id, $data['id_obj'], $room_id, $childs_ids[$place['minAge'].'-'.$place['maxAge']], $place['count']);
 			}			
+			if ($place['kind']=='ChildBandWithoutBed' && $place['count']>0 && isset($place['minAge']) && isset($place['maxAge']) && isset($childs_ids[$place['minAge'].'-'.$place['maxAge']])) {
+				//Создаем дет.размещения без места
+				$place['count'] = 1;
+				$occu = [];
+				$occu['id_child_no_place'] = $childs_ids[$place['minAge'].'-'.$place['maxAge']];
+				$occu['child_no_place'] = $place['count'];
+				$export_id = get_place_export_id($room_id, $occu);
+				$connect->query("INSERT INTO `place` SET `id`=0, `status`=1, `name`='".$place['count']." реб. (".$place['minAge'].'-'.$place['maxAge']." лет) без места', `export_id`=?s, `id_obj`=?i, `id_room`=?i, `type`=1, `id_child_no_place`=?i, `child_no_place`=?i", $export_id, $data['id_obj'], $room_id, $childs_ids[$place['minAge'].'-'.$place['maxAge']], $place['count']);
+			}
 		}
 
 	}
