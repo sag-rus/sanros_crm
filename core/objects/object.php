@@ -1304,6 +1304,7 @@ function tl_webhook_work($connect) {
 			}
 		}
 	}
+	print_r($childs);
 	if (count($childs)>0) {
 		foreach ($childs as $child) {
 			$ages = explode('-', $child);
