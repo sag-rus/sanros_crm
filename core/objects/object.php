@@ -1271,7 +1271,8 @@ function tl_webhook_work($connect) {
 		//$connect->query("DELETE FROM `housing` WHERE id_obj=$data[id_obj]");
 
 		//Деактивируем тарифы объекта!
-		$connect->query("UPDATE `rate_plan` SET `status`=0, `synchronized`=0 WHERE object=$data[id_obj]");
+		//$connect->query("UPDATE `rate_plan` SET `status`=0, `synchronized`=0 WHERE object=$data[id_obj]");
+		$connect->query("DELETE FROM `rate_plan` WHERE object=$data[id_obj]");
 
 		//Деактивируем номера объекта!
 		//$connect->query("UPDATE `room` SET `active`=1, `synchronized`=0 WHERE id_obj=$data[id_obj]");
@@ -1284,11 +1285,11 @@ function tl_webhook_work($connect) {
 		$connect->query("DELETE FROM `place` WHERE id_obj=$data[id_obj]");		
 	}
 	//Создаем тарифы из webhook
-	/*foreach ($webhook['ratePlans'] as $rate) {
+	foreach ($webhook['ratePlans'] as $rate) {
 		$rate['name'] = strip_tags($rate['name']);
 		$rate['description'] = AddBR(strip_tags($rate['description']));
 		$connect->query("INSERT INTO `rate_plan` SET `id`=0, `object`=?i, `name`=?s, `description`=?s", $data['id_obj'], $rate['name'], $rate['description']);
-	}*/
+	}
 
 	//Создаем детские размещения из webhook
 	$childs = [];
