@@ -1311,7 +1311,7 @@ function tl_webhook_work($connect) {
 			if (count($ages)==2) {
 				$connect->query("INSERT INTO `child_occupancy` SET `id`=0, `status`=1, `id_obj`=?i, `age_from`=?i, `age_to`=?i", $data['id_obj'], $ages[0], $ages[1]);
 				$child_id = $connect->insertId();
-				if (!isset($childs_ids[$dhild])) $childs_ids[$dhild] = $child_id;
+				if (!isset($childs_ids[$child])) $childs_ids[$child] = $child_id;
 			}
 		}
 	}
