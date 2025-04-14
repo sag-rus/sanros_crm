@@ -1287,18 +1287,37 @@ function tl_webhook_work($connect) {
 		$connect->query("DELETE FROM `place` WHERE id_obj=$data[id_obj]");		
 	}
 	//Создаем тарифы из webhook
-	foreach ($webhook['ratePlans'] as $rate) {
+	/*foreach ($webhook['ratePlans'] as $rate) {
 		$rate['name'] = strip_tags($rate['name']);
 		$rate['description'] = AddBR(strip_tags($rate['description']));
 		$connect->query("INSERT INTO `rate_plan` SET `id`=0, `object`=?i, `name`=?s, `description`=?s", $data['id_obj'], $rate['name'], $rate['description']);
-	}
-	//Создаем номеров из webhook
+	}*/
+	//Создаем номера из webhook
+
 	//Создаем детские размещения из webhook
+	$childs = [];
+	foreach ($webhook['roomTypes'] as $room) {
+		foreach ($room['placements'] as $place) {
+			if (isset($place['minAge']) && isset($place['maxAge'])) {
+				$current = $place['minAge'].'-'.$place['maxAge'];
+				if (!in_array($current, $childs)) $child[] = $current;
+			}
+		}
+	}
+	if (count($childs)>0) {
+		foreach ($childs as $child) {
+			$ages = explode('-', $child);
+			if (count($ages)==1) {
+				$connect->query("INSERT INTO `child_occupancy` SET `id`=0, `status`=1, `id_obj`=?i, `age_from`=?i, `age_to`=?i", $data['id_obj'], $ages[0], $ages[1]);
+			}
+		}
+	}
 	//Создаем размещения из webhook
 
 	//Запускаем синхрон на сайт обновленных данных
 
-	$connect->query("UPDATE `1_tl_webhook` SET `worked`=2 WHERE id=$_POST[id]");
+	// !!!!ОТКРЫТЬ В КОНЦЕ!!! 
+	//$connect->query("UPDATE `1_tl_webhook` SET `worked`=2 WHERE id=$_POST[id]");
 }
 
 function tl_webhook_del_obj($connect) {
