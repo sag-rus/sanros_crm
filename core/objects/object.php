@@ -1331,6 +1331,7 @@ function tl_webhook_work($connect) {
 				$occu['adult_on_main_place'] = $place['count'];
 				$export_id = get_place_export_id($room_id, $occu);
 				$connect->query("INSERT INTO `place` SET `id`=0, `status`=1, `name`='".$place['count']." взр. на осн.месте', `export_id`=?s, `id_obj`=?i, `id_room`=?i, `type`=1, `adult_on_main_place`=?i", $export_id, $data['id_obj'], $room_id, $place['count']);
+				echo $connect->last_query().'<br>';
 			}
 		}
 
