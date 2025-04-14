@@ -1297,20 +1297,13 @@ function tl_webhook_work($connect) {
 	//Создаем детские размещения из webhook
 	$childs = [];
 	foreach ($webhook['roomTypes'] as $room) {
-		echo '<pre>room';
-		print_r($room);
-		echo '</pre>';
 		foreach ($room['placements'] as $place) {
-			echo '<pre>place';
-			print_r($place);
-			echo '</pre>';			
 			if (isset($place['minAge']) && isset($place['maxAge'])) {
 				$current = $place['minAge'].'-'.$place['maxAge'];
-				if (!in_array($current, $childs)) $child[] = $current;
+				if (!in_array($current, $childs)) $childs[] = $current;
 			}
 		}
 	}
-	print_r($childs);
 	if (count($childs)>0) {
 		foreach ($childs as $child) {
 			$ages = explode('-', $child);
