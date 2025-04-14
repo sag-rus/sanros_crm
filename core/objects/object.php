@@ -1339,7 +1339,7 @@ function tl_webhook_work($connect) {
 				$export_id = get_place_export_id($room_id, $occu);
 				$connect->query("INSERT INTO `place` SET `id`=0, `status`=1, `name`='".$place['count']." взр. на доп.месте', `export_id`=?s, `id_obj`=?i, `id_room`=?i, `type`=1, `adult_on_add_place`=?i", $export_id, $data['id_obj'], $room_id, $place['count']);
 			}
-			if ($place['kind']=='Child' && $place['count']>0 && isset($place['minAge']) && isset($place['maxAge']) && iiset($childs_ids[$place['minAge'].'-'.$place['maxAge']])) {
+			if ($place['kind']=='Child' && $place['count']>0 && isset($place['minAge']) && isset($place['maxAge']) && isset($childs_ids[$place['minAge'].'-'.$place['maxAge']])) {
 				//Создаем осн.дет.размещения
 				$place['count'] = 1;
 				$occu = [];
