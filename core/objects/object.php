@@ -1330,7 +1330,16 @@ function tl_webhook_work($connect) {
 
 		foreach ($room['images'] as $key => $image) {
 			copy($image['url'], $directory.'/temp/room_'.$room_id.'_image_'.$key.'.tmp');
-			echo $directory.'/temp/room_'.$room_id.'_image_'.$key.'.tmp'.'<br>';
+			if (file_exists($directory.'/temp/room_'.$room_id.'_image_'.$key.'.tmp')) {
+				$imageRes = multipart_upload($connect, $directory.'/temp/room_'.$room_id.'_image_'.$key.'.tmp');
+				if (is_array($imageRes) && array_key_exists('id',$imageRes) && $imageRes['id'] > 0 && $content_id > 0) {
+					//
+					$connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type` = 'room' AND `entity1_id` = ?i AND `name` = 'image'", $room_id);
+					$connect->query("INSERT INTO `app_models_site_bound` (`created`, `changed`,`status`,`uid`,`sort`,`name`,`entity1_type`,`entity1_id`,`entity2_type`,`entity2_id`,`title`,`description`) VALUES (".$timestamp.",".$timestamp.",1,1,0,'image','room',?i,'file',?i,'','')",$room_id,$imageRes['id']);
+
+					unlink($directory.'/temp/room_'.$room_id.'_image_'.$key.'.tmp');
+				}
+			}
 		}
 
 		foreach ($room['placements'] as $place) {
