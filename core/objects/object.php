@@ -1478,8 +1478,12 @@ function tl_webhook($connect) {
 
 	$item = $connect->getRow("SELECT * FROM 1_tl_webhook WHERE `id`=$id");
 	$worked = $item['worked'];
+	$id_direction = $item['id_direction'];
+	$id_reg = $item['id_reg'];
+	$region_direction_id = $item['id_direction'];
 	$id_obj = $item['id_obj'];
 	$item = json_decode($item['content_api_data'], true);	
+	
 	if ($id_obj>0) $object = $connect->getRow("SELECT * FROM object WHERE `id`=$id_obj");
 
 	$html = '
@@ -1497,6 +1501,40 @@ function tl_webhook($connect) {
 	if ($worked==1) {
 		if ($id_obj==0) {
 			$html .= '<input type="text" id="find_object_for_webhook" class="form-control" placeholder="выберите объекта из имеющихся для занесения информации из запроса" onkeyup="find_klient(event, \'find_object_for_webhook\', \'object\', \'set_object_for_webhook\')"><br><br>';
+			$html .= '
+				<div class="form-group">
+					<label class="col-sm-3 control-label">Направление</label>
+					<div class="col-sm-9">
+						'.get_select_table($connect, "direction_object", "(`id_reg` IS NULL OR `id_reg` = 0) AND `id_country` = 1", 0, "direction-object", 1, "").'
+					</div>
+				</div>';
+			$html .= '
+        		<div class="form-group '; if(!$id_direction) { $html .= 'hidden'; } $html .= '">
+            		<label class="col-sm-3 control-label">Регион</label>
+					<div class="col-sm-9">
+						<select class="form-control" id="object_region">
+							<option value="0" >Не выбран</option>';
+							foreach ($regions as $region) {
+								if ($id_reg == $region['id']) $sel = 'selected'; else  $sel = '';
+								$html .= '<option value="'.$region['id'].'" '.$sel.'>'.$region['name'].'</option>';
+							}
+						$html .= ' </select>
+					</div>
+				</div>';
+			$html .= '
+        		<div class="form-group '; if($id_reg || count($region_directions) === 0) { $html .= 'hidden'; } $html .= '">
+					<label class="col-sm-3 control-label">Региональное направление</label>
+					<div class="col-sm-9">
+						<select class="form-control" id="region_direction_id">
+							<option value="0">Не выбрано</option>';
+							foreach ($region_directions as $region_direction) {
+								if ($region_direction_id == $region_direction['id']) $sel = 'selected'; else  $sel = '';
+								$html .= '<option value="'.$region_direction['id'].'" '.$sel.'>'.$region_direction['name'].'</option>';
+							}
+						$html .= ' </select>
+					</div>
+				</div>';
+
 			$html .= ' <button type="button" class="btn btn-success" onclick="tl_webhook_work('.$id.')">создать новый объект на оснвое данных из запроса</button><br><br>';
 		} else {
 			$html .= '<strong>Присвоенный объект из имеющихся</strong>: '.$object['name'].' ('.$object['address'].')<br><br>';
