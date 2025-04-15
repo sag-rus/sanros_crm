@@ -1328,6 +1328,7 @@ function tl_webhook_work($connect) {
 
 		foreach ($room['images'] as $key => $image) {
 			copy($image['url'], $directory.'/temp/room_'.room_id.'_image_'.$key.'.tmp');
+			echo $directory.'/temp/room_'.room_id.'_image_'.$key.'.tmp'.'<br>';
 		}
 
 		foreach ($room['placements'] as $place) {
