@@ -1329,19 +1329,20 @@ function tl_webhook_work($connect) {
 
 		//Обрабатываем оснащение номеров
 		$id_comfort = [];
+		$id_best_comfort = [];
 		foreach ($room['amenities'] as $comfort) {
 			if ($comfort['code']=='cable_television') $id_comfort[] = '1';
 			if ($comfort['code']=='karaoke') $id_comfort[] = '2';
-			if ($comfort['code']=='wifi_internet') $id_comfort[] = '3';
+			if ($comfort['code']=='wifi_internet') $id_best_comfort[] = '3';
 			if ($comfort['code']=='bathroom_with_wc') $id_comfort[] = '4';
-			if ($comfort['code']=='tv' || $comfort['code']=='flat_screen_TV' || $comfort['code']=='two_tv') $id_comfort[] = '5';
+			if ($comfort['code']=='tv' || $comfort['code']=='flat_screen_TV' || $comfort['code']=='two_tv') $id_best_comfort[] = '5';
 			if ($comfort['code']=='telephone' || $comfort['code']=='ip_telephone' || $comfort['code']=='two_line_phone') $id_comfort[] = '6';
 			if ($comfort['code']=='refrigerator') $id_comfort[] = '7';
 			if ($comfort['code']=='kettle') $id_comfort[] = '8';
 			if ($comfort['code']=='hairdryer') $id_comfort[] = '9';
 			if ($comfort['code']=='mini_kitchen') $id_comfort[] = '10';
 			if ($comfort['code']=='sauna') $id_comfort[] = '11';
-			if ($comfort['code']=='air_conditioning') $id_comfort[] = '12';
+			if ($comfort['code']=='air_conditioning') $id_best_comfort[] = '12';
 			if ($comfort['code']=='double_bed' || $comfort['code']=='king_bed' || $comfort['code']=='queen_bed') $id_comfort[] = '13';
 			if ($comfort['code']=='shower_cabin') $id_comfort[] = '14';
 			if ($comfort['code']=='single_bed' || $comfort['code']=='two_single_beds') $id_comfort[] = '15';
@@ -1355,11 +1356,11 @@ function tl_webhook_work($connect) {
 			if ($comfort['code']=='radio') $id_comfort[] = '23';
 			if ($comfort['code']=='soft_furniture') $id_comfort[] = '24';
 			if ($comfort['code']=='microwave') $id_comfort[] = '25';
-			if ($comfort['code']=='safe') $id_comfort[] = '26';
+			if ($comfort['code']=='safe') $id_best_comfort[] = '26';
 			if ($comfort['code']=='iron') $id_comfort[] = '27';
 			if ($comfort['code']=='closet_for_clothes' || $comfort['code']=='sliding_door_wardrobe') $id_comfort[] = '28';
 			if ($comfort['code']=='bidet') $id_comfort[] = '29';
-			if ($comfort['code']=='minibar') $id_comfort[] = '30';
+			if ($comfort['code']=='minibar') $id_best_comfort[] = '30';
 			if ($comfort['code']=='fan') $id_comfort[] = '31';
 			if ($comfort['code']=='hydromassage_bath') $id_comfort[] = '32';
 			//if ($comfort['code']=='minibar') $id_comfort[] = '33'; //Бильярд
@@ -1387,7 +1388,11 @@ function tl_webhook_work($connect) {
 		sort($id_comfort);
 		$id_comfort = implode('_', $id_comfort).'_';
 
-		$connect->query("INSERT INTO `room` SET `id`=0, `active`=0, `id_obj`=?i, `name`=?s, `description`=?s, `main_place`=?i, `add_place`=?i, `wo_bed_place`=?i, `square`=?s, `id_comfort`=?s", $data['id_obj'], $room['name'], $room['description'], $room['occupancy']['adultBed'], $room['occupancy']['extraBed'], $room['occupancy']['childWithoutBed'], $room['size']['value'], $id_comfort);
+		$id_best_comfort = array_unique($id_best_comfort);
+		sort($id_best_comfort);
+		$id_best_comfort = implode('_', $id_best_comfort).'_';		
+
+		$connect->query("INSERT INTO `room` SET `id`=0, `active`=0, `id_obj`=?i, `name`=?s, `description`=?s, `main_place`=?i, `add_place`=?i, `wo_bed_place`=?i, `square`=?s, `id_comfort`=?s, `id_best_comfort`=?s", $data['id_obj'], $room['name'], $room['description'], $room['occupancy']['adultBed'], $room['occupancy']['extraBed'], $room['occupancy']['childWithoutBed'], $room['size']['value'], $id_comfort, $id_best_comfort);
 		$room_id = $connect->insertId();
 
 		//загружаем фотографии номера - максимум 4 на номер!
