@@ -1330,6 +1330,8 @@ function tl_webhook_work($connect) {
 		$connect->query("INSERT INTO `room` SET `id`=0, `active`=0, `id_obj`=?i, `name`=?s, `description`=?s, `main_place`=?i, `add_place`=?i, `wo_bed_place`=?i, `square`=?s", $data['id_obj'], $room['name'], $room['description'], $room['occupancy']['adultBed'], $room['occupancy']['extraBed'], $room['occupancy']['childWithoutBed'], $room['size']['value']);
 		$room_id = $connect->insertId();
 
+		//загружаем фотографии номера - максимум 4 на номер!
+		$img_num = 0;
 		foreach ($room['images'] as $key => $image) {
 			copy($image['url'], $directory.'/temp/room_'.$room_id.'_image_'.$key.'.tmp');
 			if (file_exists($directory.'/temp/room_'.$room_id.'_image_'.$key.'.tmp')) {
@@ -1339,6 +1341,8 @@ function tl_webhook_work($connect) {
 				}
 				unlink($directory.'/temp/room_'.$room_id.'_image_'.$key.'.tmp');
 			}
+			$img_num++;
+			if ($img_num >= 1) break;
 		}
 
 		foreach ($room['placements'] as $place) {
