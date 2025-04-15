@@ -1480,8 +1480,11 @@ function tl_webhook($connect) {
 	$html .= '<strong>Описание:</strong><br>'.AddBR(strip_tags($item['description'])).'<br><br>';	
 	//$html .= '<strong>Фотографии объекта</strong>:<br>';
 	$html .= '<br>';
+	$img_num = 0;
 	foreach ($item['images'] as $image) {
 		$html .= '<a href="'.$image['url'].'" target="_blank"><img src="'.$image['url'].'" style="width: 150px; display: inline-block; vertical-align: middle;"><a/> ';
+		$img_num++;
+		if ($img_num>=1) break;
 	}
 	$html .= '<br><br>';
 	$html .= '<strong>Адрес</strong>: '.$item['contactInfo']['address']['addressLine'].'<br>';
@@ -1502,8 +1505,11 @@ function tl_webhook($connect) {
 	foreach ($item['roomTypes'] as $room) {
 		$html .= '<h3>'.$room['name'].'</h3><br><br>';
 		//$html .= '<strong>Фотографии номера</strong>:<br>';
+		$img_num = 0;
 		foreach ($room['images'] as $image) {
 			$html .= '<a href="'.$image['url'].'" target="_blank"><img src="'.$image['url'].'" style="width: 150px; display: inline-block; vertical-align: middle;"><a/> ';
+			$img_num++;
+			if ($img_num>=1) break;
 		}
 		$html .= '<br><br>';
 		$html .= '<strong>Площадь:</strong> '.$room['size']['value'].'<br>';	
