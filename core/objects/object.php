@@ -1326,6 +1326,10 @@ function tl_webhook_work($connect) {
 		$connect->query("INSERT INTO `room` SET `id`=0, `active`=0, `id_obj`=?i, `name`=?s, `description`=?s, `main_place`=?i, `add_place`=?i, `wo_bed_place`=?i, `square`=?s", $data['id_obj'], $room['name'], $room['description'], $room['occupancy']['adultBed'], $room['occupancy']['extraBed'], $room['occupancy']['childWithoutBed'], $room['size']['value']);
 		$room_id = $connect->insertId();
 
+		foreach ($room['images'] as $key => $image) {
+			copy($image['url'], $directory.'/temp/room_'.room_id.'_image_'.$key.'.tmp');
+		}
+
 		foreach ($room['placements'] as $place) {
 			if ($place['kind']=='Adult' && $place['count']>0) {
 				//Создаем осн.взр.размещения
