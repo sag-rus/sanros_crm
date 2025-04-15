@@ -1254,6 +1254,8 @@ function AddBR($str) {
 function tl_webhook_work($connect) {
 	//НУЖНА ИНДИКАЦИЯ ОЖИДАЕНИЯ ОТВЕТА ЭТОЙ ФУКНЦИИ НА ФРОНТЕ!!!
 
+	$directory = dirname(__FILE__)."/../..";
+
 	$data = $connect->getRow("SELECT * FROM 1_tl_webhook WHERE `id`=$_POST[id]");
 	$webhook = json_decode($data['content_api_data'], true);
 
@@ -1327,8 +1329,8 @@ function tl_webhook_work($connect) {
 		$room_id = $connect->insertId();
 
 		foreach ($room['images'] as $key => $image) {
-			copy($image['url'], $directory.'/temp/room_'.room_id.'_image_'.$key.'.tmp');
-			echo $directory.'/temp/room_'.room_id.'_image_'.$key.'.tmp'.'<br>';
+			copy($image['url'], $directory.'/temp/room_'.$room_id.'_image_'.$key.'.tmp');
+			echo $directory.'/temp/room_'.$room_id.'_image_'.$key.'.tmp'.'<br>';
 		}
 
 		foreach ($room['placements'] as $place) {
