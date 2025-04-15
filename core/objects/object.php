@@ -1355,6 +1355,33 @@ function tl_webhook_work($connect) {
 			if ($comfort['code']=='radio') $id_comfort .= '23_';
 			if ($comfort['code']=='soft_furniture') $id_comfort .= '24_';
 			if ($comfort['code']=='microwave') $id_comfort .= '25_';
+			if ($comfort['code']=='safe') $id_comfort .= '26_';
+			if ($comfort['code']=='iron') $id_comfort .= '27_';
+			if ($comfort['code']=='closet_for_clothes' || $comfort['code']=='sliding_door_wardrobe') $id_comfort .= '28_';
+			if ($comfort['code']=='bidet') $id_comfort .= '29_';
+			if ($comfort['code']=='minibar') $id_comfort .= '30_';
+			if ($comfort['code']=='fan') $id_comfort .= '31_';
+			if ($comfort['code']=='hydromassage_bath') $id_comfort .= '32_';
+			//if ($comfort['code']=='minibar') $id_comfort .= '33_'; //Бильярд
+			if ($comfort['code']=='bathroom	' || $comfort['code']=='bathtub') $id_comfort .= '34_';
+			if ($comfort['code']=='satellite_television') $id_comfort .= '35_';
+			if ($comfort['code']=='fireplace') $id_comfort .= '36_';
+			//if ($comfort['code']=='satellite_television') $id_comfort .= '37_'; //Шифоньер
+			if ($comfort['code']=='full_bed' || $comfort['code']=='two_full_beds') $id_comfort .= '38_';
+			if ($comfort['code']=='desk') $id_comfort .= '39_';
+			//if ($comfort['code']=='satellite_television') $id_comfort .= '40_'; //Спортивные тренажеры
+			if ($comfort['code']=='pool' || $comfort['code']=='swimming_pool') $id_comfort .= '41_';
+			if ($comfort['code']=='bathrobe' || $comfort['code']=='slippers') $id_comfort .= '42_';
+			if ($comfort['code']=='clothes_airer' ||  $comfort['code']=='drying_cabinet') $id_comfort .= '43_';
+			//if ($comfort['code']=='desk') $id_comfort .= '44_'; //Швейный набор
+			//if ($comfort['code']=='desk') $id_comfort .= '45_'; //Одноразовые средства гигиены
+			//if ($comfort['code']=='desk') $id_comfort .= '46_'; //Щетка, лопатка для обуви
+			if ($comfort['code']=='shower') $id_comfort .= '47_'; 
+			//if ($comfort['code']=='desk') $id_comfort .= '48_'; //Минибар по запросу
+			if ($comfort['code']=='coffee_machine') $id_comfort .= '49_';
+			if ($comfort['code']=='mini_fridge') $id_comfort .= '50_';
+			if ($comfort['code']=='washing_machine') $id_comfort .= '51_';
+			if ($comfort['code']=='set_of_dishes' || $comfort['code']=='cookware') $id_comfort .= '52_';
 		}		
 
 		$connect->query("INSERT INTO `room` SET `id`=0, `active`=0, `id_obj`=?i, `name`=?s, `description`=?s, `main_place`=?i, `add_place`=?i, `wo_bed_place`=?i, `square`=?s, `id_comfort`=?s", $data['id_obj'], $room['name'], $room['description'], $room['occupancy']['adultBed'], $room['occupancy']['extraBed'], $room['occupancy']['childWithoutBed'], $room['size']['value'], $id_comfort);
