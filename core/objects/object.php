@@ -1259,6 +1259,8 @@ function tl_webhook_work($connect) {
 	$data = $connect->getRow("SELECT * FROM 1_tl_webhook WHERE `id`=$_POST[id]");
 	$webhook = json_decode($data['content_api_data'], true);
 
+	if (!is_array($webhook) || count($webhook)==0) return;
+
 	if ($data['id_obj']==0) {
 		//Случай когда создается новый объект по webhook'у
 
