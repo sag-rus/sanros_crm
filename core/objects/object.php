@@ -1511,7 +1511,7 @@ function tl_webhook($connect) {
 	if ($worked==1) {
 		if ($id_obj==0) {
 			$html .= '<input type="text" id="find_object_for_webhook" class="form-control" placeholder="выберите объекта из имеющихся для занесения информации из запроса" onkeyup="find_klient(event, \'find_object_for_webhook\', \'object\', \'set_object_for_webhook\')"><br><br>';
-			$html .= '<div class="eidt-object">';
+			$html .= '<div class="edit-object">';
 			$html .= '
 				<div class="form-group">
 					<label class="col-sm-3 control-label">Направление</label>
