@@ -1384,7 +1384,7 @@ function tl_webhook_work($connect) {
 			if ($comfort['code']=='set_of_dishes' || $comfort['code']=='cookware') $id_comfort[] = '52';
 		}
 		$id_comfort = array_unique($id_comfort);
-		$id_comfort = sort($id_comfort);
+		sort($id_comfort);
 		$id_comfort = implode('_', $id_comfort).'_';
 
 		$connect->query("INSERT INTO `room` SET `id`=0, `active`=0, `id_obj`=?i, `name`=?s, `description`=?s, `main_place`=?i, `add_place`=?i, `wo_bed_place`=?i, `square`=?s, `id_comfort`=?s", $data['id_obj'], $room['name'], $room['description'], $room['occupancy']['adultBed'], $room['occupancy']['extraBed'], $room['occupancy']['childWithoutBed'], $room['size']['value'], $id_comfort);
