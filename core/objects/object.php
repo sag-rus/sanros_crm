@@ -1483,6 +1483,16 @@ function tl_webhook($connect) {
 	$region_direction_id = $item['id_direction'];
 	$id_obj = $item['id_obj'];
 	$item = json_decode($item['content_api_data'], true);	
+
+	$regions = [];
+	if($id_direction) {
+	    $regions = $connect->getAll("SELECT `id`, `name` FROM `region` WHERE `id_direction` = ?i", id_direction);
+    }	
+
+	$region_directions = [];
+	if($id_reg) {
+      $region_directions = $connect->getAll("SELECT `id`, `name` FROM `direction_object` WHERE `id_reg` = ?i", $id_reg);
+    }	
 	
 	if ($id_obj>0) $object = $connect->getRow("SELECT * FROM object WHERE `id`=$id_obj");
 
