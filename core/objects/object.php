@@ -1337,7 +1337,7 @@ function tl_webhook_work($connect) {
 					$connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type` = 'room' AND `entity1_id` = ?i AND `name` = 'image'", $room_id);
 					echo $connect->last_query().'<br>';
 					echo 'added1<br>';
-					$connect->query("INSERT INTO `app_models_site_bound` (`created`, `changed`,`status`,`uid`,`sort`,`name`,`entity1_type`,`entity1_id`,`entity2_type`,`entity2_id`,`title`,`description`) VALUES (".$timestamp.",".$timestamp.",1,1,0,'image','room',?i,'file',?i,'','')",$room_id,$imageRes['id']);
+					$connect->query("INSERT INTO `app_models_site_bound` (`created`, `changed`,`status`,`uid`,`sort`,`name`,`entity1_type`,`entity1_id`,`entity2_type`,`entity2_id`,`title`,`description`) VALUES (".$time().",".$time().",1,1,0,'image','room',?i,'file',?i,'','')",$room_id,$imageRes['id']);
 					echo $connect->last_query().'<br>';
 					echo 'added2<br>';
 				}
