@@ -1514,9 +1514,16 @@ function tl_webhook($connect) {
 			$html .= '<div class="edit-object">';
 			$html .= '
 				<div class="form-group">
+					<label class="col-sm-3 control-label">Тип объекта</label>
+					<div class="col-sm-9">
+						'.get_select_table($connect, "type_object", "", $id_type, "type_object", 1, "").'
+					</div>
+				</div>';
+			$html .= '
+				<div class="form-group">
 					<label class="col-sm-3 control-label">Направление</label>
 					<div class="col-sm-9">
-						'.get_select_table($connect, "direction_object", "(`id_reg` IS NULL OR `id_reg` = 0) AND `id_country` = 1", 0, "direction-object", 1, "").'
+						'.get_select_table($connect, "direction_object", "(`id_reg` IS NULL OR `id_reg` = 0) AND `id_country` = 1", $id_direction, "direction-object", 1, "").'
 					</div>
 				</div>';
 			$html .= '
