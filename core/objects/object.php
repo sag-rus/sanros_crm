@@ -1335,8 +1335,9 @@ function tl_webhook_work($connect) {
 				if (is_array($imageRes) && array_key_exists('id',$imageRes) && $imageRes['id'] > 0 && $room_id > 0) {
 					echo 'adding image from room='.$room_id.'<br';
 					$connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type` = 'room' AND `entity1_id` = ?i AND `name` = 'image'", $room_id);
+					echo 'added1<br>';
 					$connect->query("INSERT INTO `app_models_site_bound` (`created`, `changed`,`status`,`uid`,`sort`,`name`,`entity1_type`,`entity1_id`,`entity2_type`,`entity2_id`,`title`,`description`) VALUES (".$timestamp.",".$timestamp.",1,1,0,'image','room',?i,'file',?i,'','')",$room_id,$imageRes['id']);
-
+					echo 'added2<br>';
 				}
 				unlink($directory.'/temp/room_'.$room_id.'_image_'.$key.'.tmp');
 			}
