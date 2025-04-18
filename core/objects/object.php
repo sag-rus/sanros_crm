@@ -1503,8 +1503,6 @@ function tl_webhook($connect) {
 	if($id_reg) {
       $region_directions = $connect->getAll("SELECT `id`, `name` FROM `direction_object` WHERE `id_reg` = ?i", $id_reg);
     }	
-	echo 'region_direction_id='.$region_direction_id;
-	print_r($region_directions);
 	
 	if ($id_obj>0) $object = $connect->getRow("SELECT * FROM object WHERE `id`=$id_obj");
 
