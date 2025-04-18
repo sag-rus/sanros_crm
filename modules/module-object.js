@@ -206,6 +206,19 @@ function select_object_on_request(id, name){
 	}
 }
 
+function tl_webhook_save_params(id) {
+	let id_type = $('#type_object option:selected').val();
+	let id_direction = $('#direction-object option:selected').val();
+	let id_reg = $('#object_region option:selected').val();
+	let region_direction_id = $('#region_direction_id option:selected').val();
+
+	if (id_type>0 && id_direction>0 && id_reg>0 && region_direction_id>0) {
+		//
+	} else {
+		alert('Выберите Тип, Направление и Регион для нового объекта')
+	}
+}
+
 function tl_webhook_work(id) {
 	if (confirm('Вы уверены?')) {
 		$('#body').html('<br><center><img src="/CRM/images/ajax-loader.gif"></center>');
