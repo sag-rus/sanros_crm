@@ -1283,7 +1283,6 @@ function tl_webhook_work($connect) {
 			`id_account`=0,
 			`direction`='$data[id_direction]'
 		");
-		echo '123';
 		$last_id = $connect->insertId();
 
 		$directionUrl = $connect->getOne("SELECT `name` FROM `direction_object` WHERE `id_country` = 1 AND `id` = ?i", $data['id_direction']);
