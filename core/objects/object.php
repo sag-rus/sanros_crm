@@ -1265,6 +1265,29 @@ function tl_webhook_work($connect) {
 		//Случай когда создается новый объект по webhook'у
 
 		//Создаем новый объект
+		$url_name = mb_strtolower($webhook['name']);
+		$url_name = str_replace(' ', '-', $url_name);
+		$connect->query("INSERT INTO `object` 
+			SET `id`=0, 
+			`name`='$webhook[name]', 
+			`url_name`='$url_name', 
+			`url_name_origin`='$url_name', 
+			`id_reg`='$data[id_reg]', 
+			`region_direction_id`='$data[region_direction_id]',
+			`active`=1,
+			`type`='$data[id_type]',
+			`full_name`='$webhook[name]',
+			`address`='".$webhook['contactInfo']['address']['addressLine']."',
+			`latitude`='".$webhook['contactInfo']['address']['latitude']."',
+			`longitude`='".$webhook['contactInfo']['address']['longitude']."',
+			`id_account`=0,
+			`direction`='$data[id_direction]'
+			");
+		$last_id = $connect->insertId();
+
+		//Создаем материал
+
+		
 
 		//ВНИМАНИЕ! В КОНЦЕ ДОБАВИТЬ UPDATE `1_tl_webhook` SET `id_obj`=ID_СОЗДАННОГО_ОБЪЕКТА
 		$data['id_obj'] = $last_id; //ПРИСВОИТЬ АЙДИШНИК НОВОГО ОБЪЕКТА ДЛЯ СОЗДАНЯИ ТАРИФОВ И ОСТАЛЬНОГО!!
