@@ -1591,7 +1591,7 @@ function confirm_request_object($connect){
 		$type_name = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $row["type"]);
 		$path .= '/'.change_text_url($type_name) . '-' . $url_name;
 
-		$connect->query("UPDATE `object` SET `path`='$path' WHERE `id`=id_object");
+		$connect->query("UPDATE `object` SET `path`='$path' WHERE `id`=$id_object");
 
 		$content = $connect->getRow("SELECT * FROM `sites_contents` WHERE `path`='$path'");
 

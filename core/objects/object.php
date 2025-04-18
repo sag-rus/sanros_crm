@@ -1282,8 +1282,50 @@ function tl_webhook_work($connect) {
 			`longitude`='".$webhook['contactInfo']['address']['longitude']."',
 			`id_account`=0,
 			`direction`='$data[id_direction]'
-			");
+		");
 		$last_id = $connect->insertId();
+
+		$directionUrl = $connect->getOne("SELECT `name` FROM `direction_object` WHERE `id_country` = 1 AND `id` = ?i", $data['id_direction']);
+		$path = '/'.change_text_url($directionUrl);
+		$regionUrl = $connect->getOne("SELECT `name` FROM `region` WHERE `region`.`id_country` = 1 AND `region`.`id` = ?i", $data['id_reg']);
+		$path .= '/' . change_text_url($regionUrl);
+		if(!is_null($data['region_direction_id']) && $data['region_direction_id']>0) {
+			$regionalDirectionUrl = $connect->getOne("SELECT `name` FROM `direction_object` WHERE (`direction_object`.`id_country` = 0 OR `direction_object`.`id_country` IS NULL)  AND `direction_object`.`id_reg` > 0 AND `direction_object`.`id` = ?i", $data['region_direction_id']);
+			$path .= '/'. change_text_url($regionalDirectionUrl);
+		}
+		$type_name = $connect->getOne("SELECT name FROM type_object WHERE id=?i", $data['id_type']);
+		$path .= '/'.change_text_url($type_name) . '-' . $url_name;
+
+		$connect->query("UPDATE `object` SET `path`='$path' WHERE `id`=$last_id");
+
+		$content = $connect->getRow("SELECT * FROM `sites_contents` WHERE `path`='$path'");
+
+		if (!$content) {
+			$connect->query("INSERT INTO `sites_contents` 
+				SET `id`=0, 
+				`status`=0, 
+				`created`=".time().", 
+				`published`=".time().", 
+				`changed`=".time().", 
+				`type`='settings', 
+				`rss_aggregator_link`='', 
+				`site_id`=38, 
+				`title`='$webhook[name] - цена %GOD%', 
+				`title_h1` = '$webhook[name]', 
+				`title_h2` = 'Лечение в $webhook[name]', 
+				`summary`='', 
+				`snippet_summary`='', 
+				`body`='', 
+				`body2`='', 
+				`path`='$path', 
+				`description`='Путевки в $webhook[name] по выгодной цене.', 
+				`keywords` = '$webhook[name], бронирование, цены', 
+				`breadcrumb_title`='$webhook[name]', 
+				`imgs_no_index`=1"
+			);
+			$id_content = $connect->insertId();
+			//sync_site_content($connect, $id_content);
+		}		
 
 		//Создаем материал
 
