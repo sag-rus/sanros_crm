@@ -1283,13 +1283,14 @@ function tl_webhook_work($connect) {
 			`id_account`=0,
 			`direction`='$data[id_direction]'
 		");
+		echo '123';
 		$last_id = $connect->insertId();
 
 		$directionUrl = $connect->getOne("SELECT `name` FROM `direction_object` WHERE `id_country` = 1 AND `id` = ?i", $data['id_direction']);
 		$path = '/'.change_text_url($directionUrl);
 		$regionUrl = $connect->getOne("SELECT `name` FROM `region` WHERE `region`.`id_country` = 1 AND `region`.`id` = ?i", $data['id_reg']);
 		$path .= '/' . change_text_url($regionUrl);
-		if(!is_null($data['region_direction_id']) && $data['region_direction_id']>0) {
+		if($data['region_direction_id'] && $data['region_direction_id']>0) {
 			$regionalDirectionUrl = $connect->getOne("SELECT `name` FROM `direction_object` WHERE (`direction_object`.`id_country` = 0 OR `direction_object`.`id_country` IS NULL)  AND `direction_object`.`id_reg` > 0 AND `direction_object`.`id` = ?i", $data['region_direction_id']);
 			$path .= '/'. change_text_url($regionalDirectionUrl);
 		}
