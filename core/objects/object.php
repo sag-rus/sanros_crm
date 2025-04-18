@@ -1490,7 +1490,7 @@ function tl_webhook($connect) {
 	$id_type = $item['id_type'];
 	$id_direction = $item['id_direction'];
 	$id_reg = $item['id_reg'];
-	$region_direction_id = $item['id_direction'];
+	$region_direction_id = $item['region_direction_id'];
 	$id_obj = $item['id_obj'];
 	$item = json_decode($item['content_api_data'], true);	
 
