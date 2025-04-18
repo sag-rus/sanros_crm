@@ -1331,6 +1331,7 @@ function tl_webhook_work($connect) {
 
 		//ВНИМАНИЕ! В КОНЦЕ ДОБАВИТЬ UPDATE `1_tl_webhook` SET `id_obj`=ID_СОЗДАННОГО_ОБЪЕКТА
 		$data['id_obj'] = $last_id; //ПРИСВОИТЬ АЙДИШНИК НОВОГО ОБЪЕКТА ДЛЯ СОЗДАНЯИ ТАРИФОВ И ОСТАЛЬНОГО!!
+		$connect->query("UPDATE `1_tl_webhook` SET `id_obj`=$last_id WHERE id=$_POST[id]");
 	} else {
 		//Случай когда информация из webhook добавляется к новому объекту
 
@@ -1524,7 +1525,7 @@ function tl_webhook_work($connect) {
 	//Запускаем синхрон на сайт обновленных данных
 
 	// !!!!ОТКРЫТЬ В КОНЦЕ!!! 
-	//$connect->query("UPDATE `1_tl_webhook` SET `worked`=2 WHERE id=$_POST[id]");
+	$connect->query("UPDATE `1_tl_webhook` SET `worked`=2 WHERE id=$_POST[id]");
 }
 
 function tl_webhook_save_params($connect) {
