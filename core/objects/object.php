@@ -1552,7 +1552,7 @@ function tl_webhook($connect) {
 					</div>
 				</div>';
 			$html .= '
-        		<div class="form-group '; if($id_reg || count($region_directions) === 0) { $html .= 'hidden'; } $html .= '">
+        		<div class="form-group '; if(!$id_reg || count($region_directions) === 0) { $html .= 'hidden'; } $html .= '">
 					<label class="col-sm-3 control-label">Региональное направление</label>
 					<div class="col-sm-9">
 						<select class="form-control" id="region_direction_id">
