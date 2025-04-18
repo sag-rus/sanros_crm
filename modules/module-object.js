@@ -213,7 +213,16 @@ function tl_webhook_save_params(id) {
 	let region_direction_id = $('#region_direction_id option:selected').val();
 
 	if (id_type>0 && id_direction>0 && id_reg>0 && region_direction_id>0) {
-		//
+		$('#body').html('<br><center><img src="/CRM/images/ajax-loader.gif"></center>');
+		var str = 'func=tl_webhook_save_params&id='+id+'&id_type='+id_type+'&id_direction='+id_direction+'&id_reg='+id_reg+'&region_direction_id='+region_direction_id;
+		$.ajax({
+			url: 'mysql.php',
+			type: 'POST',
+			data: str,
+			success: function(html){
+				tl_webhook(id);
+			}
+		});	
 	} else {
 		alert('Выберите Тип, Направление и Регион для нового объекта')
 	}

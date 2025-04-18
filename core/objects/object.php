@@ -1464,6 +1464,15 @@ function tl_webhook_work($connect) {
 	//$connect->query("UPDATE `1_tl_webhook` SET `worked`=2 WHERE id=$_POST[id]");
 }
 
+function tl_webhook_save_params($connect) {
+	$id_type = (int)$_POST['id_type'];
+	$id_direction = (int)$_POST['id_direction'];
+	$id_reg = (int)$_POST['id_reg'];
+	$region_direction_id = (int)$_POST['region_direction_id'];
+
+	$connect->query("UPDATE `1_tl_webhook` SET `id_type`=$id_type, `id_direction`=$id_direction, `id_reg`=$id_reg, `region_direction_id`=$region_direction_id  WHERE id=$_POST[id]");
+}
+
 function tl_webhook_del_obj($connect) {
 	$connect->query("UPDATE `1_tl_webhook` SET `id_obj`=0 WHERE id=$_POST[id]");
 }
@@ -1558,7 +1567,7 @@ function tl_webhook($connect) {
 			$html .= ' <button type="button" class="btn btn-success" onclick="tl_webhook_save_params('.$id.')">Сохранить параметры для создаваемого объекта</button><br><br>';
 
 			if ($id_type!=0 && $id_direction!=0 && $id_reg!=0) {
-				$html .= ' <button type="button" class="btn btn-success" onclick="tl_webhook_work('.$id.')">создать новый объект на оснвое данных из запроса</button><br><br>';
+				$html .= ' <button type="button" class="btn btn-success" onclick="tl_webhook_work('.$id.')">Cоздать новый объект на оснвое данных из запроса</button><br><br>';
 			} 
 		} else {
 			$html .= '<strong>Присвоенный объект из имеющихся</strong>: '.$object['name'].' ('.$object['address'].')<br><br>';
