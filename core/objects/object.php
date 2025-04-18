@@ -1339,13 +1339,13 @@ function tl_webhook_work($connect) {
 		//$connect->query("DELETE FROM `housing` WHERE id_obj=$data[id_obj]");
 
 		//Деактивируем тарифы объекта!
-		//$connect->query("UPDATE `rate_plan` SET `status`=0, `synchronized`=0 WHERE object=$data[id_obj]");
-		$connect->query("DELETE FROM `rate_plan` WHERE object=$data[id_obj]");
+		$connect->query("UPDATE `rate_plan` SET `status`=0, `synchronized`=0 WHERE object=$data[id_obj]");
+		//$connect->query("DELETE FROM `rate_plan` WHERE object=$data[id_obj]");
 		//!! ДВЕ СТРОКИ ВЫШЕ ПОМЕНЯТЬ МЕСТАМИ!!!
 
 		//Деактивируем номера объекта!
-		//$connect->query("UPDATE `room` SET `active`=1, `synchronized`=0 WHERE id_obj=$data[id_obj]");
-		$connect->query("DELETE FROM `room` WHERE id_obj=$data[id_obj]");
+		$connect->query("UPDATE `room` SET `active`=1, `synchronized`=0 WHERE id_obj=$data[id_obj]");
+		//$connect->query("DELETE FROM `room` WHERE id_obj=$data[id_obj]");
 		//!! ДВЕ СТРОКИ ВЫШЕ ПОМЕНЯТЬ МЕСТАМИ!!!
 
 		//Удаляем детские размещения объекта!
