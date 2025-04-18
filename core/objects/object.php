@@ -1496,7 +1496,7 @@ function tl_webhook($connect) {
 
 	$regions = [];
 	if($id_direction) {
-	    $regions = $connect->getAll("SELECT `id`, `name` FROM `region` WHERE `id_direction` = ?i", id_direction);
+	    $regions = $connect->getAll("SELECT `id`, `name` FROM `region` WHERE `id_direction` = ?i", $id_direction);
     }	
 
 	$region_directions = [];
