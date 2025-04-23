@@ -1643,7 +1643,7 @@ function tl_webhook($connect) {
 	} else {
 		$html .= '<strong style="color:green">Данные из запроса были обработаны и добавлены в объект: </strong><br>';
 		$html .= $object['name'].' ('.$object['address'].')<br><br>';
-		$html .= '<strong>ID объекта внутренний</strong>: '.$object['id'].'<br><br>';
+		$html .= '<strong>ID объекта внутренний (санатории-россии.рф)</strong>: '.$object['id'].'<br><br>';
 	}
 	
 	$html .= '<strong>ID объекта внешний (travelline)</strong>: '.$item['id'].'<br><br>';
