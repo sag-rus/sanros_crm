@@ -1274,7 +1274,8 @@ function tl_webhook_work($connect) {
 			`url_name_origin`='$url_name', 
 			`id_reg`='$data[id_reg]', 
 			`region_direction_id`='$data[region_direction_id]',
-			`active`=1,
+			`active`=0,
+			`check_places`=1,			
 			`type`='$data[id_type]',
 			`full_name`='$webhook[name]',
 			`address`='".$webhook['contactInfo']['address']['addressLine']."',
@@ -1303,7 +1304,7 @@ function tl_webhook_work($connect) {
 		if (!$content) {
 			$connect->query("INSERT INTO `sites_contents` 
 				SET `id`=0, 
-				`status`=0, 
+				`status`=1, 
 				`created`=".time().", 
 				`published`=".time().", 
 				`changed`=".time().", 
