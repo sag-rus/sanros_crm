@@ -1329,9 +1329,6 @@ function tl_webhook_work($connect) {
 		} echo 'content exits.. path='.$content['path'].'<br>';
 		//Создаем материал
 
-		sync_objects_api($connect);
-		echo 'sync_objects_api runned...<br>';
-
 		//ВНИМАНИЕ! В КОНЦЕ ДОБАВИТЬ UPDATE `1_tl_webhook` SET `id_obj`=ID_СОЗДАННОГО_ОБЪЕКТА
 		$data['id_obj'] = $last_id; //ПРИСВОИТЬ АЙДИШНИК НОВОГО ОБЪЕКТА ДЛЯ СОЗДАНЯИ ТАРИФОВ И ОСТАЛЬНОГО!!
 		$connect->query("UPDATE `1_tl_webhook` SET `id_obj`=$last_id WHERE id=$_POST[id]");
@@ -1526,6 +1523,8 @@ function tl_webhook_work($connect) {
 	}
 
 	//Запускаем синхрон на сайт обновленных данных
+	sync_objects_api($connect);
+	echo 'sync_objects_api runned...<br>';
 
 	// !!!!ОТКРЫТЬ В КОНЦЕ!!! 
 	$connect->query("UPDATE `1_tl_webhook` SET `worked`=2 WHERE id=$_POST[id]");
