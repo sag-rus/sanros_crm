@@ -1300,7 +1300,6 @@ function tl_webhook_work($connect) {
 		$connect->query("UPDATE `object` SET `path`='$path' WHERE `id`=$last_id");
 
 		$content = $connect->getRow("SELECT * FROM `sites_contents` WHERE `path`='$path'");
-
 		if (!$content) {
 			$connect->query("INSERT INTO `sites_contents` 
 				SET `id`=0, 
@@ -1325,10 +1324,11 @@ function tl_webhook_work($connect) {
 				`imgs_no_index`=1"
 			);
 			$id_content = $connect->insertId();
-			//sync_site_content($connect, $id_content);
-		}		
-
+			sync_site_content($connect, $id_content);
+		}
 		//Создаем материал
+
+		sync_objects_api($connect);
 
 		//ВНИМАНИЕ! В КОНЦЕ ДОБАВИТЬ UPDATE `1_tl_webhook` SET `id_obj`=ID_СОЗДАННОГО_ОБЪЕКТА
 		$data['id_obj'] = $last_id; //ПРИСВОИТЬ АЙДИШНИК НОВОГО ОБЪЕКТА ДЛЯ СОЗДАНЯИ ТАРИФОВ И ОСТАЛЬНОГО!!
