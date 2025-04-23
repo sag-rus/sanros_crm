@@ -1646,7 +1646,7 @@ function tl_webhook($connect) {
 		$html .= '<strong>ID объекта внутренний</strong>: '.$object['id'].'<br><br>';
 	}
 	
-	$html .= '<strong>ID объекта в Travelline</strong>: '.$item['id'].'<br><br>';
+	$html .= '<strong>ID объекта внешний (travelline)</strong>: '.$item['id'].'<br><br>';
 	$html .= '<strong>Название объекта</strong>: '.$item['name'].'<br>';
 	$html .= '<strong>Описание:</strong><br>'.AddBR(strip_tags($item['description'])).'<br><br>';	
 	//$html .= '<strong>Фотографии объекта</strong>:<br>';
