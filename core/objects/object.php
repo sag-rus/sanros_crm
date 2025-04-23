@@ -1325,12 +1325,12 @@ function tl_webhook_work($connect) {
 			);
 			$id_content = $connect->insertId();
 			sync_site_content($connect, $id_content);
-			echo 'sync_site_content runned...';
-		}
+			echo 'sync_site_content runned...<br>';
+		} echo 'content exits.. path='.$content['path'].'<br>';
 		//Создаем материал
 
 		sync_objects_api($connect);
-		echo 'sync_objects_api runned...';
+		echo 'sync_objects_api runned...<br>';
 
 		//ВНИМАНИЕ! В КОНЦЕ ДОБАВИТЬ UPDATE `1_tl_webhook` SET `id_obj`=ID_СОЗДАННОГО_ОБЪЕКТА
 		$data['id_obj'] = $last_id; //ПРИСВОИТЬ АЙДИШНИК НОВОГО ОБЪЕКТА ДЛЯ СОЗДАНЯИ ТАРИФОВ И ОСТАЛЬНОГО!!
