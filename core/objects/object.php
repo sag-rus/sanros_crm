@@ -1328,11 +1328,13 @@ function tl_webhook_work($connect) {
 			//загружаем фотографии объекта - максимум 8!
 			$img_num = 0;
 			foreach ($webhook['images'] as $key => $image) {
+				echo 'copying image...:'.$image['url'].'<br>';
 				copy($image['url'], $directory.'/temp/content'.$id_content.'_image'.$key.'.tmp');
 				if (file_exists($directory.'/temp/content'.$id_content.'_image'.$key.'.tmp')) {
 					$imageRes = multipart_upload($connect, $directory.'/temp/content'.$id_content.'_image'.$key.'.tmp');
 					if (is_array($imageRes) && array_key_exists('id',$imageRes) && $imageRes['id'] > 0 && $id_content > 0) {
 						$connect->query("INSERT INTO `app_models_site_bound` (`created`, `changed`,`status`,`uid`,`sort`,`name`,`entity1_type`,`entity1_id`,`entity2_type`,`entity2_id`,`title`,`description`) VALUES (".time().",".time().",1,1,0,'photogallery','content',?i,'file',?i,'','')",$id_content,$imageRes['id']);
+						echo 'inserting imgahe...<br>';
 					}
 					unlink($directory.'/temp/content'.$id_content.'_image'.$key.'.tmp');
 				}
