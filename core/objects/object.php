@@ -1344,6 +1344,11 @@ function tl_webhook_work($connect) {
 
 
 			sync_site_content($connect, $id_content);
+
+			sync_bounds($connect,[
+				'type' => 'content',
+				'id' => $id_content
+			]);
 			echo 'sync_site_content runned...<br>';
 		} else echo 'content exits.. path='.$content['path'].'<br>';
 		//Создаем материал
