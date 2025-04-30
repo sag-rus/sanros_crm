@@ -1315,7 +1315,7 @@ function tl_webhook_work($connect) {
 				`title_h2` = 'Лечение в $webhook[name]', 
 				`summary`='', 
 				`snippet_summary`='', 
-				`body`='', 
+				`body`='<p>".$webhook['description']."</p>', 
 				`body2`='', 
 				`path`='$path', 
 				`description`='Путевки в $webhook[name] по выгодной цене.', 
@@ -1324,9 +1324,26 @@ function tl_webhook_work($connect) {
 				`imgs_no_index`=1"
 			);
 			$id_content = $connect->insertId();
+
+			//загружаем фотографии объекта - максимум 8!
+			$img_num = 0;
+			foreach ($webhook['images'] as $key => $image) {
+				copy($image['url'], $directory.'/temp/content'.$id_content.'_image'.$key.'.tmp');
+				if (file_exists($directory.'/temp/content'.$id_content.'_image'.$key.'.tmp')) {
+					$imageRes = multipart_upload($connect, $directory.'/temp/content'.$id_content.'_image'.$key.'.tmp');
+					if (is_array($imageRes) && array_key_exists('id',$imageRes) && $imageRes['id'] > 0 && $id_content > 0) {
+						$connect->query("INSERT INTO `app_models_site_bound` (`created`, `changed`,`status`,`uid`,`sort`,`name`,`entity1_type`,`entity1_id`,`entity2_type`,`entity2_id`,`title`,`description`) VALUES (".time().",".time().",1,1,0,'photogallery','content',?i,'file',?i,'','')",$id_content,$imageRes['id']);
+					}
+					unlink($directory.'/temp/content'.$id_content.'_image'.$key.'.tmp');
+				}
+				$img_num++;
+				if ($img_num >= 8) break;
+			}
+
+
 			sync_site_content($connect, $id_content);
 			echo 'sync_site_content runned...<br>';
-		} echo 'content exits.. path='.$content['path'].'<br>';
+		} else echo 'content exits.. path='.$content['path'].'<br>';
 		//Создаем материал
 
 		//ВНИМАНИЕ! В КОНЦЕ ДОБАВИТЬ UPDATE `1_tl_webhook` SET `id_obj`=ID_СОЗДАННОГО_ОБЪЕКТА
