@@ -1214,7 +1214,7 @@ function tl_webhooks($connect) {
 				<div class="list-group">
 			';
 
-	$items = $connect->getAll("SELECT * FROM 1_tl_webhook WHERE `content_api_data`<>'' AND `datetime`> NOW() - INTERVAL 3 MONTH ORDER BY id DESC");
+	$items = $connect->getAll("SELECT * FROM 1_tl_webhook WHERE `eventType`='PropertyAdded' AND  `content_api_data`<>'' AND `datetime`> NOW() - INTERVAL 3 MONTH ORDER BY id DESC");
 	foreach ($items as $item) {
 		if (!$item['worked']) $worked = 'warning'; else $warning = '';
 		$item['content_api_data'] = json_decode($item['content_api_data'], true);
