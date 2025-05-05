@@ -1585,7 +1585,7 @@ function tl_webhook_work_modified($connect, $id) {
 				$connect->query("INSERT INTO `rate_plan` SET `id`=0, `id_tl`=?i, `object`=?i, `name`=?s, `description`=?s", $rate['id'], $data['id_obj'], $rate['name'], $rate['description']);
 			}
 		}	
-		$connect->query("UPDATE `room` SET `synchronized`=0 WHERE id_obj=$data[id_obj]");	
+		$connect->query("UPDATE `room` SET `synchronized`=0 WHERE object=$data[id_obj]");	
 
 	}
 
