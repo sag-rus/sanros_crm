@@ -1270,8 +1270,9 @@ function tl_webhook_work($connect) {
 		//Создаем новый объект
 		$url_name = mb_strtolower($webhook['name']);
 		$url_name = str_replace(' ', '-', $url_name);
-		$connect->query("INSERT INTO `object` 
-			SET `id`=0, 
+		$connect->query("INSERT INTO `object` SET 
+			`id`=0, 
+			`id_tl`=webhook[id], 
 			`name`='$webhook[name]', 
 			`url_name`='$url_name', 
 			`url_name_origin`='$url_name', 
@@ -1385,7 +1386,7 @@ function tl_webhook_work($connect) {
 	foreach ($webhook['ratePlans'] as $rate) {
 		$rate['name'] = strip_tags($rate['name']);
 		$rate['description'] = AddBR(strip_tags($rate['description']));
-		$connect->query("INSERT INTO `rate_plan` SET `id`=0, `object`=?i, `name`=?s, `description`=?s", $data['id_obj'], $rate['name'], $rate['description']);
+		$connect->query("INSERT INTO `rate_plan` SET `id`=0, `id_tl`=?i, `object`=?i, `name`=?s, `description`=?s", $rate['id'], $data['id_obj'], $rate['name'], $rate['description']);
 	}
 
 	//Создаем детские размещения из webhook
@@ -1411,8 +1412,6 @@ function tl_webhook_work($connect) {
 	}
 
 	//Создаем номера и размещения из webhook
-	//ДОДЕЛАТЬ УДОБСТВА НОМЕРА!!!
-	//РЕАЛИЗОВАТЬ ЗАГРУЗКУ ФОТО НОМЕРОВ!!!
 	foreach ($webhook['roomTypes'] as $room) {
 
 		$room['name'] = strip_tags($room['name']);
@@ -1483,7 +1482,7 @@ function tl_webhook_work($connect) {
 		sort($id_best_comfort);
 		$id_best_comfort = implode('_', $id_best_comfort).'_';		
 
-		$connect->query("INSERT INTO `room` SET `id`=0, `active`=0, `id_obj`=?i, `name`=?s, `description`=?s, `main_place`=?i, `add_place`=?i, `wo_bed_place`=?i, `square`=?s, `id_comfort`=?s, `id_best_comfort`=?s", $data['id_obj'], $room['name'], $room['description'], $room['occupancy']['adultBed'], $room['occupancy']['extraBed'], $room['occupancy']['childWithoutBed'], $room['size']['value'], $id_comfort, $id_best_comfort);
+		$connect->query("INSERT INTO `room` SET `id`=0, `id_tl`=?i, `active`=0, `id_obj`=?i, `name`=?s, `description`=?s, `main_place`=?i, `add_place`=?i, `wo_bed_place`=?i, `square`=?s, `id_comfort`=?s, `id_best_comfort`=?s", $room['id'], $data['id_obj'], $room['name'], $room['description'], $room['occupancy']['adultBed'], $room['occupancy']['extraBed'], $room['occupancy']['childWithoutBed'], $room['size']['value'], $id_comfort, $id_best_comfort);
 		$room_id = $connect->insertId();
 
 		//загружаем фотографии номера - максимум 4 на номер!
