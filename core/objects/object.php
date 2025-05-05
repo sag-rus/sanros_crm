@@ -1220,7 +1220,7 @@ function tl_webhooks($connect) {
 		$item['content_api_data'] = json_decode($item['content_api_data'], true);
 		$html .= '
 				<div class="list-group-item form-group '.$worked.'" style="margin: 0">
-					<div class="col-sm-2">
+					<div class="col-sm-1">
 						'.$item['id'].'
 					</div>				
 					<div class="col-sm-2">
@@ -1229,7 +1229,7 @@ function tl_webhooks($connect) {
 					<div class="col-sm-4">
 						<i class="fa fa-home"></i> '.$item['content_api_data']['name'].'
 					</div>
-					<div class="col-sm-2">
+					<div class="col-sm-1">
 						'.$item['entityId'].'
 					</div>
 					<div class="col-sm-2">
