@@ -1220,6 +1220,12 @@ function tl_webhooks($connect) {
 		$item['content_api_data'] = json_decode($item['content_api_data'], true);
 		$html .= '
 				<div class="list-group-item form-group '.$worked.'" style="margin: 0">
+					<div class="col-sm-2">
+						'.$item['id'].'
+					</div>				
+					<div class="col-sm-2">
+						'.date('d.m.Y H:i:s', strtotime($item['datetime'])).'	
+					</div>					
 					<div class="col-sm-4">
 						<i class="fa fa-home"></i> '.$item['content_api_data']['name'].'
 					</div>
@@ -1229,9 +1235,6 @@ function tl_webhooks($connect) {
 					<div class="col-sm-2">
 						'.$item['eventType'].'
 					</div>					
-					<div class="col-sm-2">
-						'.date('d.m.Y H:i:s', strtotime($item['datetime'])).'	
-					</div>
 					<div class="col-sm-2">
 						<button type="button" class="btn btn-success btn-xs" onclick="tl_webhook('.$item['id'].')">Смотреть</button>
 					</div>
