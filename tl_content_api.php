@@ -71,7 +71,7 @@ $token = $result['access_token'];
 echo 'token='.$result['access_token'].'<br><br><br>';
 //AUTH
 
-$lines = $connect->getAll("SELECT * FROM `1_tl_webhook` WHERE `worked`=0 AND `eventType`='PropertyAdded' ORDER BY id DESC");
+$lines = $connect->getAll("SELECT * FROM `1_tl_webhook` WHERE `worked`=0 ORDER BY id DESC");
 
 foreach ($lines as $line) {
 
