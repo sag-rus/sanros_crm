@@ -1554,6 +1554,45 @@ function tl_webhook_work($connect) {
 	$connect->query("UPDATE `1_tl_webhook` SET `worked`=2 WHERE id=$_POST[id]");
 }
 
+function tl_webhook_work_modified($connect, $id) {
+	$data = $connect->getRow("SELECT * FROM 1_tl_webhook WHERE `id`=$id");
+	$webhook = json_decode($data['content_api_data'], true);
+
+	if (!is_array($webhook) || count($webhook)==0) return;
+
+	$object = $connect->getRow("SELECT * FROM object WHERE `id_tl`=$webhook[id]");
+
+	if ($object && isset($object['id'])) {
+
+		echo 'object found id='.$object['id'].'<br>';
+
+		$data['id_obj'] = $object['id'];
+
+		//Деактивируем тарифы объекта!
+		$connect->query("UPDATE `rate_plan` SET `status`=0 WHERE object=$data[id_obj]");
+
+		//Обработка тарифов из webhook
+		foreach ($webhook['ratePlans'] as $rate) {
+			echo 'work rate id='.$rate['id'].'<br>';
+			$rate['name'] = strip_tags($rate['name']);
+			$rate['description'] = AddBR(strip_tags($rate['description']));
+			$rate_existing = $connect->getRow("SELECT * FROM rate_plan WHERE `id_tl`=$rate[id]");
+			if ($rate_existing && isset($rate_existing['id'])) {
+				echo 'rate exists<br>';
+				$connect->query("UPDATE `rate_plan` SET `status`=1 WHERE id=$rate_existing[id]");
+			} else {
+				echo 'rate Id='.$rate['id'].' NOT exists<br>';
+				$connect->query("INSERT INTO `rate_plan` SET `id`=0, `id_tl`=?i, `object`=?i, `name`=?s, `description`=?s", $rate['id'], $data['id_obj'], $rate['name'], $rate['description']);
+			}
+		}	
+		$connect->query("UPDATE `room` SET `synchronized`=0 WHERE id_obj=$data[id_obj]");	
+
+	}
+
+
+	$connect->query("UPDATE `1_tl_webhook` SET `worked`=2, `id_obj`=?i WHERE id=$id", $data['id_obj']);
+}
+
 function tl_webhook_save_params($connect) {
 	$id_type = (int)$_POST['id_type'];
 	$id_direction = (int)$_POST['id_direction'];
