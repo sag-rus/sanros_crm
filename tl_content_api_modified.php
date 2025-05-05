@@ -49,7 +49,7 @@ echo '</pre>';
 foreach ($lines as $line) {
 
     if (!empty($line['content_api_data'])) {
-        tl_webhook_work_modified($connect, $id);
+        tl_webhook_work_modified($connect, $line['id']);
     }
 }
 
