@@ -408,7 +408,7 @@ function sync_objects_api($connect){
 		}
 
 		$rates = $connect->getAll("SELECT `id`, `name`, `object`, `status`, `description`, `food`, `min_days`, `max_days`, `start_date`, `end_date` FROM `rate_plan` WHERE `synchronized` = 0");
-
+		print_r($rates);
 		foreach ($rates as $rate) {
 			$rateAr = [];
 			$rateAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
