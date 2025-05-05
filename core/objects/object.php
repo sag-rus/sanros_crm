@@ -1255,8 +1255,6 @@ function AddBR($str) {
 }
 
 function tl_webhook_work($connect) {
-	//НУЖНА ИНДИКАЦИЯ ОЖИДАЕНИЯ ОТВЕТА ЭТОЙ ФУКНЦИИ НА ФРОНТЕ!!!
-
 	$directory = dirname(__FILE__)."/../..";
 
 	$data = $connect->getRow("SELECT * FROM 1_tl_webhook WHERE `id`=$_POST[id]");
@@ -1272,7 +1270,7 @@ function tl_webhook_work($connect) {
 		$url_name = str_replace(' ', '-', $url_name);
 		$connect->query("INSERT INTO `object` SET 
 			`id`=0, 
-			`id_tl`=webhook[id], 
+			`id_tl`=$webhook[id], 
 			`name`='$webhook[name]', 
 			`url_name`='$url_name', 
 			`url_name_origin`='$url_name', 
