@@ -1254,6 +1254,58 @@ function AddBR($str) {
 	return $str;
 }
 
+function tl_work_object_images($connect, $images, $id_content) {
+	$directory = dirname(__FILE__)."/../..";
+	$img_num = 0;
+
+	foreach ($images as $key => $image) {
+
+		$img_uploaded = $connect->getRow("SELECT * FROM app_models_site_bound WHERE `tl_img_source`=?s", $image['url']);
+
+		if (!$img_uploaded) {
+
+			echo 'copying image...:'.$image['url'].'<br>';
+			copy($image['url'], $directory.'/temp/content'.$id_content.'_image'.$key.'.tmp');
+			if (file_exists($directory.'/temp/content'.$id_content.'_image'.$key.'.tmp')) {
+				$imageRes = multipart_upload($connect, $directory.'/temp/content'.$id_content.'_image'.$key.'.tmp');
+				if (is_array($imageRes) && array_key_exists('id',$imageRes) && $imageRes['id'] > 0 && $id_content > 0) {
+					$connect->query("INSERT INTO `app_models_site_bound` (`created`, `changed`,`status`,`uid`,`sort`,`name`,`entity1_type`,`entity1_id`,`entity2_type`,`entity2_id`,`title`,`description`,`tl_img_source`) VALUES (".time().",".time().",1,1,0,'photogallery','content',?i,'file',?i,'','',?s)",$id_content,$imageRes['id'],$image['url']);
+					echo $connect->last_query().'<br>';
+					echo 'inserting image...<br>';
+				}
+				unlink($directory.'/temp/content'.$id_content.'_image'.$key.'.tmp');
+			}
+
+			$img_num++;
+			if ($img_num >= 8) break;
+
+		}
+	}	
+}
+
+function tl_work_room_images($connect, $images, $room_id) {
+	$directory = dirname(__FILE__)."/../..";
+	$img_num = 0;
+
+	$connect->query("DELETE FROM `app_models_site_bound` WHERE `entity1_type` = 'room' AND `entity1_id` = $room_id" );
+
+	foreach ($images as $key => $image) {
+
+		copy($image['url'], $directory.'/temp/room'.$room_id.'_image'.$key.'.tmp');
+		if (file_exists($directory.'/temp/room'.$room_id.'_image'.$key.'.tmp')) {
+			$imageRes = multipart_upload($connect, $directory.'/temp/room'.$room_id.'_image'.$key.'.tmp');
+			if (is_array($imageRes) && array_key_exists('id',$imageRes) && $imageRes['id'] > 0 && $room_id > 0) {
+				$connect->query("INSERT INTO `app_models_site_bound` (`created`, `changed`,`status`,`uid`,`sort`,`name`,`entity1_type`,`entity1_id`,`entity2_type`,`entity2_id`,`title`,`description`) VALUES (".time().",".time().",1,1,0,'image','room',?i,'file',?i,'','')", $room_id, $imageRes['id']);
+			}
+			unlink($directory.'/temp/room'.$room_id.'_image'.$key.'.tmp');
+		}
+
+		$img_num++;
+		if ($img_num >= 4) break;
+
+	}
+}
+
 function tl_work_room_comfort($amenities) {
 	$id_comfort = [];
 	$id_best_comfort = [];
@@ -1399,7 +1451,8 @@ function tl_webhook_work($connect) {
 			$id_content = $connect->insertId();
 
 			//загружаем фотографии объекта - максимум 8!
-			$img_num = 0;
+			tl_work_object_images($connect, $webhook['images'], $id_content);
+			/*$img_num = 0;
 			foreach ($webhook['images'] as $key => $image) {
 				echo 'copying image...:'.$image['url'].'<br>';
 				copy($image['url'], $directory.'/temp/content'.$id_content.'_image'.$key.'.tmp');
@@ -1407,14 +1460,13 @@ function tl_webhook_work($connect) {
 					$imageRes = multipart_upload($connect, $directory.'/temp/content'.$id_content.'_image'.$key.'.tmp');
 					if (is_array($imageRes) && array_key_exists('id',$imageRes) && $imageRes['id'] > 0 && $id_content > 0) {
 						$connect->query("INSERT INTO `app_models_site_bound` (`created`, `changed`,`status`,`uid`,`sort`,`name`,`entity1_type`,`entity1_id`,`entity2_type`,`entity2_id`,`title`,`description`) VALUES (".time().",".time().",1,1,0,'photogallery','content',?i,'file',?i,'','')",$id_content,$imageRes['id']);
-						echo 'inserting imgahe...<br>';
+						echo 'inserting image...<br>';
 					}
 					unlink($directory.'/temp/content'.$id_content.'_image'.$key.'.tmp');
 				}
 				$img_num++;
 				if ($img_num >= 8) break;
-			}
-
+			}*/
 
 			sync_site_content($connect, $id_content);
 
@@ -1449,7 +1501,7 @@ function tl_webhook_work($connect) {
 		$connect->query("DELETE FROM `child_occupancy` WHERE id_obj=$data[id_obj]");
 
 		//Удаляем обычные размещения объекта!
-		$connect->query("DELETE FROM `place` WHERE id_obj=$data[id_obj]");		
+		$connect->query("DELETE FROM `place` WHERE id_obj=$data[id_obj]");
 	}
 	//Создаем тарифы из webhook
 	foreach ($webhook['ratePlans'] as $rate) {
@@ -1551,14 +1603,15 @@ function tl_webhook_work($connect) {
 		sort($id_best_comfort);
 		$id_best_comfort = implode('_', $id_best_comfort).'_';*/
 
-		$comforts = tl_work_room_comfort($room['amenities']);
+		$room_comforts = tl_work_room_comfort($room['amenities']);
 
-		$connect->query("INSERT INTO `room` SET `id`=0, `id_tl`=?i, `active`=0, `id_obj`=?i, `name`=?s, `description`=?s, `main_place`=?i, `add_place`=?i, `wo_bed_place`=?i, `square`=?s, `id_comfort`=?s, `id_best_comfort`=?s", $room['id'], $data['id_obj'], $room['name'], $room['description'], $room['occupancy']['adultBed'], $room['occupancy']['extraBed'], $room['occupancy']['childWithoutBed'], $room['size']['value'], $comforts['id_comfort'], $comforts['id_best_comfort']);
+		$connect->query("INSERT INTO `room` SET `id`=0, `id_tl`=?i, `active`=0, `id_obj`=?i, `name`=?s, `description`=?s, `main_place`=?i, `add_place`=?i, `wo_bed_place`=?i, `square`=?s, `id_comfort`=?s, `id_best_comfort`=?s", $room['id'], $data['id_obj'], $room['name'], $room['description'], $room['occupancy']['adultBed'], $room['occupancy']['extraBed'], $room['occupancy']['childWithoutBed'], $room['size']['value'], $room_comforts['id_comfort'], $room_comforts['id_best_comfort']);
 		$room_id = $connect->insertId();
 
 		//загружаем фотографии номера - максимум 4 на номер!
-		//tl_work_room_images - С УДАЛЕНИЕМ (ИЛИ ДЕАКТИВАЦИЕЙ???) ИМЕЮЩИХСЯ ЗАПИСЕЙ В app_models_site_bound ВСЕГДА!
-		$img_num = 0;
+		tl_work_room_images($connect, $room['images'], $room_id);
+		//tl_work_room_images - С УДАЛЕНИЕМ  ИМЕЮЩИХСЯ ЗАПИСЕЙ В app_models_site_bound с entity1_id=id_room ВСЕГДА!
+		/*$img_num = 0;
 		foreach ($room['images'] as $key => $image) {
 			copy($image['url'], $directory.'/temp/room'.$room_id.'_image'.$key.'.tmp');
 			if (file_exists($directory.'/temp/room'.$room_id.'_image'.$key.'.tmp')) {
@@ -1570,8 +1623,7 @@ function tl_webhook_work($connect) {
 			}
 			$img_num++;
 			if ($img_num >= 4) break;
-		}
-
+		}*/
 
 		foreach ($room['placements'] as $place) {
 			if ($place['kind']=='Adult' && $place['count']>0) {
@@ -1641,10 +1693,23 @@ function tl_webhook_work_modified($connect, $id) {
 
 		echo 'object found id='.$object['id'].'<br>';
 
-		$data['id_obj'] = $object['id'];
+		$data['id_obj'] = $object['id'];		
+
+		$content = $connect->getRow("SELECT * FROM `sites_contents` WHERE `path`='$object[path]'");
+		if ($content && isset($content['id'])) {
+			$id_content = $content['id'];
+
+			//обновляем фотографии объекта
+			tl_work_object_images($connect, $webhook['images'], $id_content);
+
+			sync_bounds($connect,[
+				'type' => 'content',
+				'id' => $id_content
+			]);
+		}
 
 		//Деактивируем тарифы объекта!
-		$connect->query("UPDATE `rate_plan` SET `status`=0 WHERE object=$data[id_obj]");
+		$connect->query("UPDATE `rate_plan` SET `status`=0 WHERE `object`=$data[id_obj]");
 
 		//Обработка тарифов из webhook
 		foreach ($webhook['ratePlans'] as $rate) {
@@ -1654,13 +1719,165 @@ function tl_webhook_work_modified($connect, $id) {
 			$rate_existing = $connect->getRow("SELECT * FROM rate_plan WHERE `id_tl`=$rate[id]");
 			if ($rate_existing && isset($rate_existing['id'])) {
 				echo 'rate exists<br>';
-				$connect->query("UPDATE `rate_plan` SET `status`=1 WHERE id=$rate_existing[id]");
+				$connect->query("UPDATE `rate_plan` SET `status`=1, `name`=?s, `description`=?s WHERE id=$rate_existing[id]", $rate['name'], $rate['description']);
 			} else {
 				echo 'rate Id='.$rate['id'].' NOT exists<br>';
 				$connect->query("INSERT INTO `rate_plan` SET `id`=0, `id_tl`=?i, `object`=?i, `name`=?s, `description`=?s", $rate['id'], $data['id_obj'], $rate['name'], $rate['description']);
 			}
 		}	
-		$connect->query("UPDATE `rate_plan` SET `synchronized`=0 WHERE object=$data[id_obj]");	
+		//Помечаем все тарифы объекта как НЕ синхронизированные
+		$connect->query("UPDATE `rate_plan` SET `synchronized`=0 WHERE `object`=$data[id_obj]");
+
+
+
+		//Создаем детские размещения из webhook
+		$childs = [];
+		foreach ($webhook['roomTypes'] as $room) {
+			foreach ($room['placements'] as $place) {
+				if (isset($place['minAge']) && isset($place['maxAge'])) {
+					$current = $place['minAge'].'-'.$place['maxAge'];
+					if (!in_array($current, $childs)) $childs[] = $current;
+				}
+			}
+		}
+		//Деактивируем детские размещения объекта!
+		$connect->query("UPDATE `child_occupancy` SET `status`=0 WHERE `id_obj`=$data[id_obj]");
+		//Обработка детских размещений объекта!
+		$childs_ids = [];
+		if (count($childs)>0) {
+			foreach ($childs as $child) {
+
+				$ages = explode('-', $child);
+
+				if (count($ages)==2) {
+
+					$child_occu_existing = $connect->getRow("SELECT * FROM child_occupancy WHERE `id_obj`=?i AND `age_from`=?i AND `age_to`=?i", $data['id_obj'], $ages[0], $ages[1]);
+
+					if ($child_occu_existing && isset($child_occu_existing['id'])) {
+						echo 'child occu'.$age[0].'-'.$age[1].' exists<br>';
+						$child_id = $child_occu_existing['id'];
+						$connect->query("UPDATE `child_occupancy` SET `status`=1 WHERE id=$child_occu_existing[id]");
+					} else {
+						echo 'child occu'.$age[0].'-'.$age[1].' NOT exists<br>';
+						$connect->query("INSERT INTO `child_occupancy` SET `id`=0, `status`=1, `id_obj`=?i, `age_from`=?i, `age_to`=?i", $data['id_obj'], $ages[0], $ages[1]);
+						$child_id = $connect->insertId();
+					}		
+
+					if (!isset($childs_ids[$child])) $childs_ids[$child] = $child_id;
+				}
+			}
+		}	
+		//Помечаем все детские размещения объекта как НЕ синхронизированные
+		$connect->query("UPDATE `child_occupancy` SET `synchronized`=0 WHERE `id_obj`=$data[id_obj]");
+
+
+		//Деактивируем размещения объекта!
+		$connect->query("UPDATE `place` SET `status`=0 WHERE `id_obj`=$data[id_obj]");		
+		//Деактивируем все номера объекта!
+		//0 - номер активен
+		//1 - номер неактивен!
+		$connect->query("UPDATE `room` SET `active`=1 WHERE `id_obj`=$data[id_obj]");
+		//Обработка номеров из webhook
+		foreach ($webhook['roomTypes'] as $room) {
+			echo 'work room id='.$room['id'].'<br>';
+			$room['name'] = strip_tags($room['name']);
+			$room['description'] = AddBR(strip_tags($room['description']));
+			$room_comforts = tl_work_room_comfort($room['amenities']);
+
+			$room_existing = $connect->getRow("SELECT * FROM room WHERE `id_tl`=$room[id]");
+			if ($room_existing && isset($room_existing['id'])) {
+				echo 'room exists<br>';
+				$room_comforts = tl_work_room_comfort($room['amenities']);
+				//$connect->query("INSERT INTO `room` SET `id`=0, `id_tl`=?i, `active`=0, `id_obj`=?i, `name`=?s, `description`=?s, `main_place`=?i, `add_place`=?i, `wo_bed_place`=?i, `square`=?s, `id_comfort`=?s, `id_best_comfort`=?s", $room['id'], $data['id_obj'], $room['name'], $room['description'], $room['occupancy']['adultBed'], $room['occupancy']['extraBed'], $room['occupancy']['childWithoutBed'], $room['size']['value'], $room_comforts['id_comfort'], $room_comforts['id_best_comfort']);
+				$connect->query("UPDATE `room` SET `active`=0, `name`=?s, `description`=?s, `main_place`=?i, `add_place`=?i, `wo_bed_place`=?i, `square`=?s, `id_comfort`=?s, `id_best_comfort`=?s WHERE id=$room_existing[id]", $room['name'], $room['description'], $room['occupancy']['adultBed'], $room['occupancy']['extraBed'], $room['occupancy']['childWithoutBed'], $room['size']['value'], $room_comforts['id_comfort'], $room_comforts['id_best_comfort']);
+				$room_id = $room_existing['id'];
+			} else {
+				echo 'room Id='.$room['id'].' NOT exists<br>';
+				$connect->query("INSERT INTO `room` SET `id`=0, `id_tl`=?i, `active`=0, `id_obj`=?i, `name`=?s, `description`=?s, `main_place`=?i, `add_place`=?i, `wo_bed_place`=?i, `square`=?s, `id_comfort`=?s, `id_best_comfort`=?s", $room['id'], $data['id_obj'], $room['name'], $room['description'], $room['occupancy']['adultBed'], $room['occupancy']['extraBed'], $room['occupancy']['childWithoutBed'], $room['size']['value'], $room_comforts['id_comfort'], $room_comforts['id_best_comfort']);
+				$room_id = $connect->insertId();
+			}
+			//обновление фотографий номера
+			tl_work_room_images($connect, $room['images'], $room_id);
+
+			//Обновление размещений номера
+			foreach ($room['placements'] as $place) {
+				if ($place['kind']=='Adult' && $place['count']>0) {
+					//Обрабатываем осн.взр.размещения
+					$occu = [];
+					$occu['adult_on_main_place'] = $place['count'];
+					$export_id = get_place_export_id($room_id, $occu);
+
+					$place_existing = $connect->getRow("SELECT * FROM place WHERE `id_obj`=?i AND `id_room`=?i AND `export_id`=?i", $data['id_obj'], $room_id, $export_id);
+					if ($place_existing && isset($place_existing['id'])) {
+						$connect->query("UPDATE `place` SET `status`=1 WHERE id=$place_existing[id]");
+					} else {
+						$connect->query("INSERT INTO `place` SET `id`=0, `status`=1, `name`='".$place['count']." взр. на осн.месте', `export_id`=?s, `id_obj`=?i, `id_room`=?i, `type`=1, `adult_on_main_place`=?i", $export_id, $data['id_obj'], $room_id, $place['count']);
+					}
+				}
+				if ($place['kind']=='ExtraAdult' && $place['count']>0) {
+					//Обрабатываем доп.взр.размещения
+					$place['count'] = 1;
+					$occu = [];
+					$occu['adult_on_add_place'] = $place['count'];
+					$export_id = get_place_export_id($room_id, $occu);
+
+					$place_existing = $connect->getRow("SELECT * FROM place WHERE `id_obj`=?i AND `id_room`=?i AND `export_id`=?i", $data['id_obj'], $room_id, $export_id);
+					if ($place_existing && isset($place_existing['id'])) {
+						$connect->query("UPDATE `place` SET `status`=1 WHERE id=$place_existing[id]");
+					} else {
+						$connect->query("INSERT INTO `place` SET `id`=0, `status`=1, `name`='".$place['count']." взр. на доп.месте', `export_id`=?s, `id_obj`=?i, `id_room`=?i, `type`=1, `adult_on_add_place`=?i", $export_id, $data['id_obj'], $room_id, $place['count']);
+					}
+				}
+				if ($place['kind']=='Child' && $place['count']>0 && isset($place['minAge']) && isset($place['maxAge']) && isset($childs_ids[$place['minAge'].'-'.$place['maxAge']])) {
+					//Обрабатываем осн.дет.размещения
+					$place['count'] = 1;
+					$occu = [];
+					$occu['id_child_on_main_place'] = $childs_ids[$place['minAge'].'-'.$place['maxAge']];
+					$occu['child_on_main_place'] = $place['count'];
+					$export_id = get_place_export_id($room_id, $occu);
+					$place_existing = $connect->getRow("SELECT * FROM place WHERE `id_obj`=?i AND `id_room`=?i AND `export_id`=?i", $data['id_obj'], $room_id, $export_id);
+					if ($place_existing && isset($place_existing['id'])) {
+						$connect->query("UPDATE `place` SET `status`=1 WHERE id=$place_existing[id]");
+					} else {
+						$connect->query("INSERT INTO `place` SET `id`=0, `status`=1, `name`='".$place['count']." реб. (".$place['minAge'].'-'.$place['maxAge']." лет) на осн.месте', `export_id`=?s, `id_obj`=?i, `id_room`=?i, `type`=1, `id_child_on_main_place`=?i, `child_on_main_place`=?i", $export_id, $data['id_obj'], $room_id, $childs_ids[$place['minAge'].'-'.$place['maxAge']], $place['count']);
+					}
+				}
+				if ($place['kind']=='ExtraChild' && $place['count']>0 && isset($place['minAge']) && isset($place['maxAge']) && isset($childs_ids[$place['minAge'].'-'.$place['maxAge']])) {
+					//Обрабатываем доп.дет.размещения
+					$place['count'] = 1;
+					$occu = [];
+					$occu['id_child_on_add_place'] = $childs_ids[$place['minAge'].'-'.$place['maxAge']];
+					$occu['child_on_add_place'] = $place['count'];
+					$export_id = get_place_export_id($room_id, $occu);
+					$place_existing = $connect->getRow("SELECT * FROM place WHERE `id_obj`=?i AND `id_room`=?i AND `export_id`=?i", $data['id_obj'], $room_id, $export_id);
+					if ($place_existing && isset($place_existing['id'])) {
+						$connect->query("UPDATE `place` SET `status`=1 WHERE id=$place_existing[id]");
+					} else {
+						$connect->query("INSERT INTO `place` SET `id`=0, `status`=1, `name`='".$place['count']." реб. (".$place['minAge'].'-'.$place['maxAge']." лет) на доп.месте', `export_id`=?s, `id_obj`=?i, `id_room`=?i, `type`=1, `id_child_on_add_place`=?i, `child_on_add_place`=?i", $export_id, $data['id_obj'], $room_id, $childs_ids[$place['minAge'].'-'.$place['maxAge']], $place['count']);
+					}
+				}			
+				if ($place['kind']=='ChildBandWithoutBed' && $place['count']>0 && isset($place['minAge']) && isset($place['maxAge']) && isset($childs_ids[$place['minAge'].'-'.$place['maxAge']])) {
+					//Обрабатываем дет.размещения без места
+					$place['count'] = 1;
+					$occu = [];
+					$occu['id_child_no_place'] = $childs_ids[$place['minAge'].'-'.$place['maxAge']];
+					$occu['child_no_place'] = $place['count'];
+					$export_id = get_place_export_id($room_id, $occu);
+					$place_existing = $connect->getRow("SELECT * FROM place WHERE `id_obj`=?i AND `id_room`=?i AND `export_id`=?i", $data['id_obj'], $room_id, $export_id);
+					if ($place_existing && isset($place_existing['id'])) {
+						$connect->query("UPDATE `place` SET `status`=1 WHERE id=$place_existing[id]");
+					} else {
+						$connect->query("INSERT INTO `place` SET `id`=0, `status`=1, `name`='".$place['count']." реб. (".$place['minAge'].'-'.$place['maxAge']." лет) без места', `export_id`=?s, `id_obj`=?i, `id_room`=?i, `type`=1, `id_child_no_place`=?i, `child_no_place`=?i", $export_id, $data['id_obj'], $room_id, $childs_ids[$place['minAge'].'-'.$place['maxAge']], $place['count']);
+					}
+				}
+			}//foreach ($room['placements'] as $place) {
+		}	
+		//Помечаем все номера объекта как НЕ синхронизированные
+		$connect->query("UPDATE `room` SET `synchronized`=0 WHERE `id_obj`=$data[id_obj]");		
+		//Помечаем все размещения объекта как НЕ синхронизированные
+		$connect->query("UPDATE `place` SET `synchronized`=0 WHERE `id_obj`=$data[id_obj]");		
+		//запускаем синхрон!
+		sync_objects_api($connect);
 
 	}
 
