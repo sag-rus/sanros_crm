@@ -1475,10 +1475,11 @@ function tl_webhook_work($connect) {
 				'id' => $id_content
 			]);
 			echo 'sync_site_content runned...<br>';
-		} else echo 'content exits.. path='.$content['path'].'<br>';
+		} else {
+			echo 'content exits.. path='.$content['path'].'<br>';
+		}
 		//Создаем материал
 
-		//ВНИМАНИЕ! В КОНЦЕ ДОБАВИТЬ UPDATE `1_tl_webhook` SET `id_obj`=ID_СОЗДАННОГО_ОБЪЕКТА
 		$data['id_obj'] = $last_id; //ПРИСВОИТЬ АЙДИШНИК НОВОГО ОБЪЕКТА ДЛЯ СОЗДАНЯИ ТАРИФОВ И ОСТАЛЬНОГО!!
 		$connect->query("UPDATE `1_tl_webhook` SET `id_obj`=$last_id WHERE id=$_POST[id]");
 	} else {

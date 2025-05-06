@@ -15,6 +15,7 @@ $unisender_api_key = $conf->unisender_api_key;
 include_once($directory."/core/functions.php");
 include_once($directory."/core/lib/Mysql.Class.php");
 include_once($directory."/core/objects/object.php");
+include_once($directory."/core/admin/news.php");
 include_once($directory."/core/lib/mail.php");
 include_once($directory."/core/lib/sms.php");
 include_once($directory."/core/lib/PHPMailer/class.phpmailer.php");
