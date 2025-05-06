@@ -45,7 +45,7 @@ $configNew->directory = $directory;
 $configNew->clientCabinet = $clientCabinet;
 $configNew->objectCabinet = $objectCabinet;
 
-$lines = $connect->getAll("SELECT * FROM `1_tl_webhook` WHERE `eventType`='PropertyModified' AND `worked`=1 ORDER BY id DESC LIMIT 3");
+$lines = $connect->getAll("SELECT * FROM `1_tl_webhook` WHERE `eventType`='PropertyModified' AND `worked`=1 ORDER BY id ASC LIMIT 1");
 echo '<pre>';
 print_r($lines);
 echo '</pre>';
