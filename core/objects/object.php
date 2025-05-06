@@ -1809,10 +1809,13 @@ function tl_webhook_work_modified($connect, $id) {
 					$export_id = get_place_export_id($room_id, $occu);
 
 					$place_existing = $connect->getRow("SELECT * FROM place WHERE `id_obj`=?i AND `id_room`=?i AND `export_id`=?i", $data['id_obj'], $room_id, $export_id);
+					echo $connect->last_query().'<br>';
 					if ($place_existing && isset($place_existing['id'])) {
 						$connect->query("UPDATE `place` SET `status`=1 WHERE id=$place_existing[id]");
+						echo $connect->last_query().'<br>';
 					} else {
 						$connect->query("INSERT INTO `place` SET `id`=0, `status`=1, `name`='".$place['count']." взр. на осн.месте', `export_id`=?s, `id_obj`=?i, `id_room`=?i, `type`=1, `adult_on_main_place`=?i", $export_id, $data['id_obj'], $room_id, $place['count']);
+						echo $connect->last_query().'<br>';
 					}
 				}
 				if ($place['kind']=='ExtraAdult' && $place['count']>0) {
