@@ -1719,7 +1719,7 @@ function tl_webhook_work_modified($connect, $id) {
 			$rate['description'] = AddBR(strip_tags($rate['description']));
 			$rate_existing = $connect->getRow("SELECT * FROM rate_plan WHERE `id_tl`=$rate[id]");
 			if ($rate_existing && isset($rate_existing['id'])) {
-				echo 'rate exists<br>';
+				echo 'rate tl_id='.$rate['id'].' exists<br>';
 				$connect->query("UPDATE `rate_plan` SET `status`=1, `name`=?s, `description`=?s WHERE id=$rate_existing[id]", $rate['name'], $rate['description']);
 			} else {
 				echo 'rate Id='.$rate['id'].' NOT exists<br>';
@@ -1755,11 +1755,11 @@ function tl_webhook_work_modified($connect, $id) {
 					$child_occu_existing = $connect->getRow("SELECT * FROM child_occupancy WHERE `id_obj`=?i AND `age_from`=?i AND `age_to`=?i", $data['id_obj'], $ages[0], $ages[1]);
 
 					if ($child_occu_existing && isset($child_occu_existing['id'])) {
-						echo 'child occu'.$age[0].'-'.$age[1].' exists<br>';
+						echo 'child occu'.$ages[0].'-'.$ages[1].' exists<br>';
 						$child_id = $child_occu_existing['id'];
 						$connect->query("UPDATE `child_occupancy` SET `status`=1 WHERE id=$child_occu_existing[id]");
 					} else {
-						echo 'child occu'.$age[0].'-'.$age[1].' NOT exists<br>';
+						echo 'child occu'.$ages[0].'-'.$ages[1].' NOT exists<br>';
 						$connect->query("INSERT INTO `child_occupancy` SET `id`=0, `status`=1, `id_obj`=?i, `age_from`=?i, `age_to`=?i", $data['id_obj'], $ages[0], $ages[1]);
 						$child_id = $connect->insertId();
 					}		
@@ -1808,7 +1808,7 @@ function tl_webhook_work_modified($connect, $id) {
 					$occu['adult_on_main_place'] = $place['count'];
 					$export_id = get_place_export_id($room_id, $occu);
 
-					$place_existing = $connect->getRow("SELECT * FROM place WHERE `id_obj`=?i AND `id_room`=?i AND `export_id`=?i", $data['id_obj'], $room_id, $export_id);
+					$place_existing = $connect->getRow("SELECT * FROM place WHERE `id_obj`=?i AND `id_room`=?i AND `export_id`=?s", $data['id_obj'], $room_id, $export_id);
 					echo $connect->last_query().'<br>';
 					if ($place_existing && isset($place_existing['id'])) {
 						$connect->query("UPDATE `place` SET `status`=1 WHERE id=$place_existing[id]");
@@ -1825,7 +1825,7 @@ function tl_webhook_work_modified($connect, $id) {
 					$occu['adult_on_add_place'] = $place['count'];
 					$export_id = get_place_export_id($room_id, $occu);
 
-					$place_existing = $connect->getRow("SELECT * FROM place WHERE `id_obj`=?i AND `id_room`=?i AND `export_id`=?i", $data['id_obj'], $room_id, $export_id);
+					$place_existing = $connect->getRow("SELECT * FROM place WHERE `id_obj`=?i AND `id_room`=?i AND `export_id`=?s", $data['id_obj'], $room_id, $export_id);
 					if ($place_existing && isset($place_existing['id'])) {
 						$connect->query("UPDATE `place` SET `status`=1 WHERE id=$place_existing[id]");
 					} else {
@@ -1839,7 +1839,7 @@ function tl_webhook_work_modified($connect, $id) {
 					$occu['id_child_on_main_place'] = $childs_ids[$place['minAge'].'-'.$place['maxAge']];
 					$occu['child_on_main_place'] = $place['count'];
 					$export_id = get_place_export_id($room_id, $occu);
-					$place_existing = $connect->getRow("SELECT * FROM place WHERE `id_obj`=?i AND `id_room`=?i AND `export_id`=?i", $data['id_obj'], $room_id, $export_id);
+					$place_existing = $connect->getRow("SELECT * FROM place WHERE `id_obj`=?i AND `id_room`=?i AND `export_id`=?s", $data['id_obj'], $room_id, $export_id);
 					if ($place_existing && isset($place_existing['id'])) {
 						$connect->query("UPDATE `place` SET `status`=1 WHERE id=$place_existing[id]");
 					} else {
@@ -1853,7 +1853,7 @@ function tl_webhook_work_modified($connect, $id) {
 					$occu['id_child_on_add_place'] = $childs_ids[$place['minAge'].'-'.$place['maxAge']];
 					$occu['child_on_add_place'] = $place['count'];
 					$export_id = get_place_export_id($room_id, $occu);
-					$place_existing = $connect->getRow("SELECT * FROM place WHERE `id_obj`=?i AND `id_room`=?i AND `export_id`=?i", $data['id_obj'], $room_id, $export_id);
+					$place_existing = $connect->getRow("SELECT * FROM place WHERE `id_obj`=?i AND `id_room`=?i AND `export_id`=?s", $data['id_obj'], $room_id, $export_id);
 					if ($place_existing && isset($place_existing['id'])) {
 						$connect->query("UPDATE `place` SET `status`=1 WHERE id=$place_existing[id]");
 					} else {
@@ -1867,7 +1867,7 @@ function tl_webhook_work_modified($connect, $id) {
 					$occu['id_child_no_place'] = $childs_ids[$place['minAge'].'-'.$place['maxAge']];
 					$occu['child_no_place'] = $place['count'];
 					$export_id = get_place_export_id($room_id, $occu);
-					$place_existing = $connect->getRow("SELECT * FROM place WHERE `id_obj`=?i AND `id_room`=?i AND `export_id`=?i", $data['id_obj'], $room_id, $export_id);
+					$place_existing = $connect->getRow("SELECT * FROM place WHERE `id_obj`=?i AND `id_room`=?i AND `export_id`=?s", $data['id_obj'], $room_id, $export_id);
 					if ($place_existing && isset($place_existing['id'])) {
 						$connect->query("UPDATE `place` SET `status`=1 WHERE id=$place_existing[id]");
 					} else {
