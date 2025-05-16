@@ -2009,7 +2009,7 @@ function tl_webhook($connect) {
 	} else {
 		$html .= '<strong style="color:green">Данные из запроса были обработаны и добавлены в объект: </strong><br>';
 		$html .= $object['name'].' ('.$object['address'].')<br>';
-		$html .= '<a href="https://санатории-россии.рф'.$object['path'].'" target="_blank">https://санатории-россии.рф'.$object['path'].')</a><br><br>';
+		$html .= '<a href="https://санатории-россии.рф'.$object['path'].'" target="_blank">https://санатории-россии.рф'.$object['path'].'</a><br><br>';
 		$html .= '<strong>ID объекта внутренний (санатории-россии.рф)</strong>: '.$object['id'].'<br><br>';
 	}
 	
