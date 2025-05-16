@@ -1997,7 +1997,7 @@ function tl_webhook($connect) {
 			$html .= ' <button type="button" class="btn btn-success" onclick="tl_webhook_save_params('.$id.')">Сохранить параметры для создаваемого объекта</button><br><br>';
 
 			if ($id_type!=0 && $id_direction!=0 && $id_reg!=0) {
-				$html .= ' <button type="button" class="btn btn-success" onclick="tl_webhook_work('.$id.')">Cоздать новый объект на оснвое данных из запроса</button><br><br>';
+				$html .= ' <button type="button" class="btn btn-success" onclick="tl_webhook_work('.$id.')">Cоздать новый объект на основе данных из запроса</button><br><br>';
 			} 
 		} else {
 			$html .= '<strong>Присвоенный объект из имеющихся</strong>: '.$object['name'].' ('.$object['address'].')<br><br>';
@@ -2008,7 +2008,8 @@ function tl_webhook($connect) {
 		}
 	} else {
 		$html .= '<strong style="color:green">Данные из запроса были обработаны и добавлены в объект: </strong><br>';
-		$html .= $object['name'].' ('.$object['address'].')<br><br>';
+		$html .= $object['name'].' ('.$object['address'].')<br>';
+		$html .= '<a href="https://санатории-россии.рф'.$object['path'].'" target="_blank">https://санатории-россии.рф'.$object['path'].')</a><br><br>';
 		$html .= '<strong>ID объекта внутренний (санатории-россии.рф)</strong>: '.$object['id'].'<br><br>';
 	}
 	
