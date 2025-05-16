@@ -1231,18 +1231,15 @@ function tl_webhooks($connect) {
 					<div class="col-sm-2">
 						'.date('d.m.Y H:i:s', strtotime($item['datetime'])).'	
 					</div>					
-					<div class="col-sm-2">
+					<div class="col-sm-4">
 						<i class="fa fa-home"></i> '.$item['content_api_data']['name'].'
 					</div>
 					<div class="col-sm-1">
 						'.$item['entityId'].'
 					</div>
 					<div class="col-sm-2">
-						'.$item['eventType'].'
-					</div>
-					<div class="col-sm-2">
 						'.$item['worked'].'
-					</div>						
+					</div>
 					<div class="col-sm-2">
 						<button type="button" class="btn btn-success btn-xs" onclick="tl_webhook('.$item['id'].')">Смотреть</button>
 					</div>
