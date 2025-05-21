@@ -1714,7 +1714,7 @@ function filter_history_global($connect){
 		if ($user==42) {
 			if ($all['update_price_manager']==4410 && count($all['objects'])*20==1500) $all['update_price_manager'] = 4820;
 			if ($all['update_price_manager']==5474 && count($all['objects'])*20==1160) $all['update_price_manager'] = 6438;
-			if ($all['update_price_manager']==5665 && count($all['objects'])*20==1160) $all['update_price_manager'] = 6402;
+			if ($all['update_price_manager']==5665) $all['update_price_manager'] = 6402;
 			$stats .= '<br>';
 			$stats .= '<strong>отчет Марии:</strong><br>';
 			$stats .= 'Затронуто объектов для внесения цены (графа «баз»): '.(count($all['objects'])*20).' руб.<br>';
