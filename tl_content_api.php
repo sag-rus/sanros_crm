@@ -51,7 +51,7 @@ $account_id = 34311;
 
 
 //AUTH
-$url = 'https://partner.qatl.ru/auth/token';
+$url = 'https://partner.tlintegration.com/auth/token';
 $data = array(
     "grant_type"=> 'client_credentials', 
     "client_id" => 'chm_sr2',
@@ -75,7 +75,7 @@ $lines = $connect->getAll("SELECT * FROM `1_tl_webhook` WHERE `worked`=0 ORDER B
 
 foreach ($lines as $line) {
 
-    $ch = curl_init('https://partner.qatl.ru/api/content/v1/properties/'.$line['entityId']);
+    $ch = curl_init('https://partner.tlintegration.com/api/content/v1/properties/'.$line['entityId']);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , "Authorization: Bearer ".$token));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
