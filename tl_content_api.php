@@ -55,7 +55,7 @@ $url = 'https://partner.tlintegration.com/auth/token';
 $data = array(
     "grant_type"=> 'client_credentials', 
     "client_id" => 'chm_sr2',
-    "client_secret" => 'T5AipL1NMo61LdA3xwnKb7cGbldbaDpS'
+    "client_secret" => 'fosk0K4vv5ArfCPf2Jbsk22oFeZqOIrP'
 );
 $ch = curl_init($url); 
 curl_setopt($ch, CURLOPT_POST, 1);
