@@ -764,6 +764,8 @@ function sync_objects_api($connect){
 						}
 					}
 
+					echo 'run sync_bounds for room with id='.$room['id'].'<br>';
+
 					if(!sync_bounds($connect,[
 						'type' => 'room',
 						'id' => $room['id']
