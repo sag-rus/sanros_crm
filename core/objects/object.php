@@ -1504,11 +1504,11 @@ function tl_webhook_work($connect) {
 		//$connect->query("DELETE FROM `room` WHERE id_obj=$data[id_obj]");
 		//!! ДВЕ СТРОКИ ВЫШЕ ПОМЕНЯТЬ МЕСТАМИ!!!
 
-		//Удаляем детские размещения объекта!
-		$connect->query("DELETE FROM `child_occupancy` WHERE id_obj=$data[id_obj]");
+		//Деактивируем детские размещения объекта!
+		$connect->query("UPDATE `child_occupancy` SET `status`=0, `synchronized`=0 WHERE id_obj=$data[id_obj]");
 
-		//Удаляем обычные размещения объекта!
-		$connect->query("DELETE FROM `place` WHERE id_obj=$data[id_obj]");
+		//connect обычные размещения объекта!
+		$connect->query("DELETE `place` SET `status`=0, `synchronized`=0 WHERE id_obj=$data[id_obj]");
 	}
 	//Создаем тарифы из webhook
 	foreach ($webhook['ratePlans'] as $rate) {
