@@ -1489,6 +1489,7 @@ function tl_webhook_work($connect) {
 		$connect->query("UPDATE `1_tl_webhook` SET `id_obj`=$last_id WHERE id=$_POST[id]");
 	} else {
 		//Случай когда информация из webhook добавляется к новому объекту
+		$connect->query("UPDATE `object` SET `active`=0, `synchronized`=0, `id_tl`=$webhook[id], check_places=1 WHERE id=$data[id_obj]");
 
 		//Удаляем корпуса объекта! - не будем удалять, НО: в новых номерах не будет указывать housing!
 		//$connect->query("DELETE FROM `housing` WHERE id_obj=$data[id_obj]");
