@@ -2047,7 +2047,7 @@ function tl_webhook($connect) {
 		foreach ($room['images'] as $image) {
 			$html .= '<a href="'.$image['url'].'" target="_blank"><img src="'.$image['url'].'" style="width: 150px; display: inline-block; vertical-align: middle;"><a/> ';
 			$img_num++;
-			if ($img_num>=1) break;
+			if ($img_num>=15) break;
 		}
 		$html .= '<br><br>';
 		$html .= '<strong>Площадь:</strong> '.$room['size']['value'].'<br>';	
