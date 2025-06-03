@@ -1306,7 +1306,7 @@ function tl_work_room_images($connect, $images, $room_id) {
 		}
 
 		$img_num++;
-		if ($img_num >= 4) break;
+		if ($img_num >= 5) break;
 
 	}
 }
