@@ -23,7 +23,7 @@ function check_menu_count($connect){
 }
 
 function check_tl_webhooks($connect){
-	//return $connect->getOne("SELECT COUNT(*) FROM order_call_back WHERE (id_user='' OR id_user IS NULL) AND active!=3");
+	return $connect->getOne("SELECT COUNT(*) FROM 1_tl_webhook WHERE `worked`=1 and `eventType`='PropertyAdded'");
 	return 1;
 }
 
