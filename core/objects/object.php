@@ -1694,6 +1694,12 @@ function tl_webhook_work_modified($connect, $id) {
 
 	if (!is_array($webhook) || count($webhook)==0) return;
 
+	if ($webhook['id']==13409) {
+		//отключаем обработки properymodified апи для долины алтая
+		$connect->query("UPDATE `1_tl_webhook` SET `worked`=2 WHERE id=$id");
+		return;
+	}
+
 	$object = $connect->getRow("SELECT * FROM object WHERE `id_tl`=$webhook[id]");
 
 	if ($object && isset($object['id'])) {
