@@ -551,6 +551,12 @@ function edit_main_data_object($connect){
 <div class="form-horizontal panel panel-info edit-object">
 	<div class="panel-heading"><i class="fa fa-pencil"></i> Изменить основные данные объекта «<?php echo $type." ".$row["name"]; ?>»</div>
 	<div class="panel-body">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Объект активен</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control" id="active"<?php if($row['active'] == 0) echo ' checked';?>>
+            </div>
+        </div>		
 		<div class="form-group">
             <label class="col-sm-3 control-label">Внешняя интеграция</label>
             <div class="col-sm-9">
