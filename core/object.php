@@ -946,8 +946,9 @@ function edit_main_data_object($connect){
 function update_main_data_object($connect){
     global $array_type;
 	$id = $_POST["id"];
-	if ($_POST['active']===1) $active = 0;
-	if ($_POST['active']===0) $active = 1;
+	echo '$_POST[active]='.$_POST['active'];
+	if ($_POST['active']==='1') $active = 0;
+	if ($_POST['active']==='0') $active = 1;
 	echo '$active='.$active;
 	$type = $_POST["type"];
 	$latitude = (float)$_POST["latitude"];
