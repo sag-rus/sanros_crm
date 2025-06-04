@@ -946,10 +946,12 @@ function edit_main_data_object($connect){
 function update_main_data_object($connect){
     global $array_type;
 	$id = $_POST["id"];
-	echo '$_POST[active]='.$_POST['active'];
-	if ($_POST['active']==='1') $active = 0;
-	if ($_POST['active']==='0') $active = 1;
-	echo '$active='.$active;
+	if (isset($_POST['active'])) {
+		echo '$_POST[active]='.$_POST['active'];
+		if ($_POST['active']==='1') $active = 0;
+		if ($_POST['active']==='0') $active = 1;
+		echo '$active='.$active;
+	}
 	$type = $_POST["type"];
 	$latitude = (float)$_POST["latitude"];
 	$longitude = (float)$_POST["longitude"];
@@ -1045,6 +1047,9 @@ function update_main_data_object($connect){
         $default_price_type = 1;
 
     $connect->query("UPDATE object SET name=?s, full_name=?s, city=?s, city_genitive = ?s, direction=?s, type=?s, latitude=?s, longitude=?s, similar=?s, weather=?s, description=?s, source_booking=?i, description_check=?s, booking_uri=?s, fast_booking=?i, main_post_name = ?s, main_post_fio = ?s, default_price_type = ?i, id_reg = ?i, region_direction_id = ?i, `uri_schema` = ?i, `url_name` = ?s, `state_program` = ?i, `children_rest` = ?i, synchronized=0, `featured` = ?i, `selected` = ?i, `w_therapy`=?i, `wo_therapy`=?i, `mother_and_child`=?i, `for_invalid`=?i, `all_inc`=?i, `open_buffet`=?i, `near_sea`=?i, `near_black_sea`=?i, `in_forest`=?i, `in_hill`=?i, `near_water`=?i, `near_river`=?i, `near_volga_river`=?i, `near_lake`=?i, `beach`=?i, `on_coast`=?i, `w_pool`=?i, `cashback`=?i, `w_spa`=?i, `w_buvet`=?i, `w_radon`=?i, `only_summer`=?i, `checked_sonata`=?i, `stars`='$stars', `trust_full_name` = ?s, `trust_name_template` = ?s, `trust_number` = ?s, `check_places`=?i, `bnovo`=?i WHERE id=?i", $name, $full_name, $city, $city_genitive, $direction, $type, $latitude, $longitude, $similar, $weather, $description, $source_booking, $description, $booking_uri, $fast_booking, $main_post_name, $main_post_fio, $default_price_type, $id_reg, $region_direction_id,$uri_schema, $url_name, $state_program, $children_rest, $featured, $selected, $w_therapy, $wo_therapy, $mother_and_child, $for_invalid, $all_inc, $open_buffet, $near_sea, $near_black_sea, $in_forest, $in_hill, $near_water, $near_river, $near_volga_river, $near_lake, $beach, $on_coast, $w_pool, $cashback, $w_spa, $w_buvet, $w_radon, $only_summer, $checked_sonata, $trust_full_name, $trust_name_template, $trust_number, $check_places, $bnovo, $id);
+	if (isset($active)) {
+		echo ' setting active...';
+	}
 
     echo $connect->last_query();
 }
