@@ -18,7 +18,13 @@ function check_menu_count($connect){
 	$data["check-message"] = check_new_messages($connect);
 	$data["check-notification"] = check_new_notification($connect);
 	$data["check-news"] = check_news_post($connect);
+	$data["tl_webhooks"] = check_tl_webhooks($connect);
 	return json_encode($data);
+}
+
+function check_tl_webhooks($connect){
+	//return $connect->getOne("SELECT COUNT(*) FROM order_call_back WHERE (id_user='' OR id_user IS NULL) AND active!=3");
+	return 1;
 }
 
 function check_new_bid_count($connect){

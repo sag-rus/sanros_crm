@@ -273,6 +273,11 @@ function check_menu_count(){
 			}else
 				$('#call-back-menu .badge').remove();
 
+			if(data['tl_webhooks'] > 0){
+				if(!$('#tl_webhooks .badge').length)
+					$('#tl_webhooks a').append('<span class="badge count-red pull-right"></span>');
+				$('#tl_webhooks .badge').html(data['tl_webhooks']);				
+			}
 
 			if(data['no-price'] > 0){
 				if(!$('#obj_menu .badge').length){
