@@ -554,7 +554,7 @@ function edit_main_data_object($connect){
         <div class="form-group">
             <label class="col-sm-3 control-label">Объект активен</label>
             <div class="col-sm-9">
-                <input type="checkbox" class="form-control" id="active"<?php if($row['active'] == 0) echo ' checked';?>>
+                <input type="checkbox" class="form-control" value="1" id="active"<?php if($row['active'] == 0) echo ' checked';?>>
             </div>
         </div>		
 		<div class="form-group">
