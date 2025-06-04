@@ -1236,7 +1236,7 @@ function update_main_data_object(id){
 		"func": "update_main_data_object",
 		"id": id,
 		"similar": similar,
-		"active": $('#active').val(),
+		"active": parseInt($('#active').prop('checked')*1),
 		"external_booking": $('#external_booking').val(),
 		"type": $('#type_object').val(),
 		"name": $('#name_object').val(),
