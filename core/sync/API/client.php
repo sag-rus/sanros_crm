@@ -178,7 +178,7 @@ function authorization_account($connect, $data){
 					$array = array("status" => 2);
 				return $array;
 			} else {
-				$array = array("msg" => 'Incorrect password');
+				$array = array("msg" => 'Incorrect password pass='.$pass.' true_pass='.$true_pass);
 				return $array;
 			}
 		} else {
