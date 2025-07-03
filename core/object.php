@@ -509,7 +509,7 @@ function select_object_about($connect){
 		<img src="<?php echo $image; ?>" class="img-head-small pointer" onclick="add_photo_profile(<?php echo $id; ?>, 'object')" />
 		<?php if ($row['check_places'] == '1') {?>
 			<button type="button" class="btn btn-danger btn-sm" onclick="deleteTLdata(<?php echo $id; ?>)" style="float: left;"><i class="fa fa-close"></i>&nbsp; Удалить интеграцию с TravelLine</button>
-		<?php}?>
+		<?php } ?>
 		<button type="button" class="btn btn-success btn-sm" onclick="add_new_image_object(<?php echo $id; ?>)"><i class="fa fa-upload"></i> Загрузить фото</button>
 		<button type="button" class="btn btn-default btn-sm" onclick="edit_main_data_object(<?php echo $id; ?>)"><i class="fa fa-pencil"></i> Основные данные</button>
 		<button type="button" class="btn btn-default btn-sm" onclick="edit_desc_object(<?php echo $id; ?>)"><i class="fa fa-pencil"></i> Лечение и инфраструктура</button>
