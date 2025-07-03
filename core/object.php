@@ -1916,8 +1916,8 @@ function deletetldata($connect) {
 	echo '<pre>';
 	print_r($res->getBody()->getContents());
 	echo '</pre>';
-	echo "UPDATE object SET check_places=1 WHERE id=$id<br>";
-	echo "UPDATE room SET accessible_places='', accessible_places='' WHERE id_obj=$id";
+	echo "UPDATE object SET check_places=0 WHERE id=$id<br>";
+	echo "UPDATE room SET accessible_places='', price_places='' WHERE id_obj=$id";
 	//$connect->query("UPDATE object SET check_places=1 WHERE id=$id");
 	//$connect->query("UPDATE room SET accessible_places='', accessible_places='' WHERE id_obj=$id");
 }
