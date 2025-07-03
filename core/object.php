@@ -344,7 +344,7 @@ function select_menu_object($connect){
 
 function select_object_about($connect){
 	$id = $_POST["id"];
-	$row = $connect->getRow("SELECT id, type, active, image, name, city, similar, id_reg, id_profile, id_methods, id_infa, medical_factors, id_services, weather, latitude, longitude, image, url_name, website, state_program, children_rest, featured FROM object WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT * FROM object WHERE id=?i", $id);
 	if(!$row["id"])
 		return FALSE;
 	$address = $connect->getOne("SELECT name FROM region WHERE id=?i", $row["id_reg"]);
@@ -507,7 +507,9 @@ function select_object_about($connect){
 	</div>
 	<div class="panel-footer text-right">
 		<img src="<?php echo $image; ?>" class="img-head-small pointer" onclick="add_photo_profile(<?php echo $id; ?>, 'object')" />
+		<?if ($row['check_places']==1) {?>
 		<button type="button" class="btn btn-danger btn-sm" onclick="deleteTLdata(<?php echo $id; ?>)" style="float: left;"><i class="fa fa-close"></i>&nbsp; Удалить интеграцию с TravelLine</button>
+		<?}?>
 		<button type="button" class="btn btn-success btn-sm" onclick="add_new_image_object(<?php echo $id; ?>)"><i class="fa fa-upload"></i> Загрузить фото</button>
 		<button type="button" class="btn btn-default btn-sm" onclick="edit_main_data_object(<?php echo $id; ?>)"><i class="fa fa-pencil"></i> Основные данные</button>
 		<button type="button" class="btn btn-default btn-sm" onclick="edit_desc_object(<?php echo $id; ?>)"><i class="fa fa-pencil"></i> Лечение и инфраструктура</button>
