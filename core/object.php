@@ -1910,7 +1910,7 @@ function update_room($connect){
 function deletetldata($connect) {
 	$client = new \GuzzleHttp\Client(['verify' => false]);
 	$id = $_POST["id"];
-	$res = $client->request('POST',"https://xn----7sba6aaba8akdsdekah.xn--p1ai/api/travelline_clear?id=$id&hash=".md5($id.'TGhioysdByutsadkjzbxcmn13'),[]);
+	$res = $client->request('GET',"https://xn----7sba6aaba8akdsdekah.xn--p1ai/api/travelline_clear?id=$id&hash=".md5($id.'TGhioysdByutsadkjzbxcmn13'),[]);
 	echo '<pre>';
 	print_r($res);
 	echo '</pre>';

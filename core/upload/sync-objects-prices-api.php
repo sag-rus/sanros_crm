@@ -17,7 +17,7 @@ function sync_objects_prices_api($connect){
 				print_r($datesAr);
 				echo '</pre>';*/
 
-				$res = $client->request('GET',"https://sites.tonia.ru/api/resort/price/daterange/set/".$datesAr['id'],[
+				$res = $client->request('POST',"https://sites.tonia.ru/api/resort/price/daterange/set/".$datesAr['id'],[
 					'form_params' => $datesAr
 				]);			
 				$res = json_decode($res->getBody()->getContents(),true);
