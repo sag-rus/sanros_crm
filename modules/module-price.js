@@ -1598,15 +1598,17 @@ function add_new_similar_object(){
 }
 
 function deleteTLdata(id){
-	var str = 'func=deletetldata&id=';
-	$.ajax({
-		url: 'mysql.php',
-		type: 'POST',
-		data: str,
-		success: function(){
-			alert('Интеграция отключена');
-		}
-	});
+	if (confirm('Вы уверены?')) {
+		var str = 'func=deletetldata&id=';
+		$.ajax({
+			url: 'mysql.php',
+			type: 'POST',
+			data: str,
+			success: function(){
+				alert('Интеграция отключена');
+			}
+		});
+	}
 }
 
 function object_check_archive(id, status){
