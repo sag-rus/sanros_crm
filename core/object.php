@@ -1912,7 +1912,7 @@ function deletetldata($connect) {
 	$id = $_POST["id"];
 	$res = $client->request('GET',"https://xn----7sba6aaba8akdsdekah.xn--p1ai/api/travelline_clear?id=$id&hash=".md5($id.'TGhioysdByutsadkjzbxcmn13'),[]);
 	echo '<pre>';
-	print_r($res);
+	print_r($res->getBody()->getContents());
 	echo '</pre>';
 }
 
