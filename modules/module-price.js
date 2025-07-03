@@ -1599,7 +1599,7 @@ function add_new_similar_object(){
 
 function deleteTLdata(id){
 	if (confirm('Вы уверены?')) {
-		var str = 'func=deletetldata&id=';
+		var str = 'func=deletetldata&id='+id;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
