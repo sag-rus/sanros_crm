@@ -1597,6 +1597,18 @@ function add_new_similar_object(){
 	$('.similar-object').append(html);
 }
 
+function deleteTLdata(id){
+	var str = 'func=deletetldata&id=';
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function(){
+			alert('Интеграция отключена');
+		}
+	});
+}
+
 function object_check_archive(id, status){
 	var str = 'func=object_check_archive&id=' + id + '&status=' + status;
 	$.ajax({

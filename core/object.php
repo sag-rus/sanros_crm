@@ -1907,6 +1907,15 @@ function update_room($connect){
 	sync_objects_api($connect);
 }
 
+function deletetldata($connect) {
+	$client = new \GuzzleHttp\Client(['verify' => false]);
+	$id = $_POST["id"];
+	$res = $client->request('POST',"https://xn----7sba6aaba8akdsdekah.xn--p1ai/api/travelline_clear?id=$id&hash=".md5($id.'TGhioysdByutsadkjzbxcmn13'),[]);
+	echo '<pre>';
+	print_r($res);
+	echo '</pre>';
+}
+
 function object_check_archive($connect){
 	$id = $_POST["id"];
 	$status = $_POST["status"];
