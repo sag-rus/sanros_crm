@@ -51,7 +51,7 @@ $configNew->objectCabinet = $objectCabinet;
 
 /* ---------------------------- */
 
-$connect->query("INSERT 1_ya_form_log SET `id`=0, `datetime`=NOW(), `data`=?s", $_POST['data']);
+$connect->query("INSERT 1_ya_form_log SET `id`=0, `datetime`=NOW(), `data`=?s", json_encode($_POST['data']));
 
 $data = json_decode($_POST['data'], true);
 $cmnt = 'Регион: '.$data['answer']['data']['answer_short_text_59666938']['value'].'<br>';
