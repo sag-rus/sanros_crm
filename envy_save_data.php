@@ -59,7 +59,7 @@ $cmnt = 'ЗАЯВКА С ФОРМЫ ENVYBO<br>';
 $cmnt .= 'Имя отчество: '.$data['name'].'<br>';
 $cmnt .= 'Телефон: '.$data['phone'].'<br>';
 $cmnt .= 'E-mail: '.$data['email'].'<br>';
-$cmnt = 'Регион посетителя: '.$data['place'].'<br>';
+$cmnt .= 'Регион посетителя: '.$data['place'].'<br>';
 $cmnt .= 'IP: '.$data['ip'].'<br>';
 
 $create_client = new CreateClient;
