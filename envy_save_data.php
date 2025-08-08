@@ -62,8 +62,6 @@ $cmnt .= 'E-mail: '.$data['email'].'<br>';
 $cmnt = 'Регион посетителя: '.$data['place'].'<br>';
 $cmnt .= 'IP: '.$data['ip'].'<br>';
 
-$connect->query("INSERT 1_envy_log SET `id`=0, `datetime`=NOW(), `data`=?s", json_encode($data));
-
 $create_client = new CreateClient;
 
 $client_info = array(
