@@ -53,7 +53,8 @@ $configNew->objectCabinet = $objectCabinet;
 
 $connect->query("INSERT 1_envy_log SET `id`=0, `datetime`=NOW(), `data`=?s", $_POST['data']);
 
-$data = parse_str($_POST['data']);
+parse_str($_POST['data'], $data);
+
 $cmnt .= 'Имя отчество: '.$data['name'].'<br>';
 $cmnt .= 'Телефон: '.$data['phone'].'<br>';
 $cmnt .= 'E-mail: '.$data['email'].'<br>';
