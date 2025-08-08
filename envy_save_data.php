@@ -55,7 +55,7 @@ $connect->query("INSERT 1_envy_log SET `id`=0, `datetime`=NOW(), `data`=?s", $_P
 
 parse_str($_POST['data'], $data);
 
-$cmnt = 'ЗАЯВКА С ФОРМЫ ENVYBO<br>';
+$cmnt = 'ЗАЯВКА С ФОРМЫ ENVYBOX<br>';
 $cmnt .= 'Имя отчество: '.$data['name'].'<br>';
 $cmnt .= 'Телефон: '.$data['phone'].'<br>';
 $cmnt .= 'E-mail: '.$data['email'].'<br>';
