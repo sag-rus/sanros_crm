@@ -54,7 +54,7 @@ $configNew->objectCabinet = $objectCabinet;
 $connect->query("INSERT 1_ya_form_log SET `id`=0, `datetime`=NOW(), `data`=?s", $_POST['data']);
 
 $data = json_decode($_POST['data'], true);
-$cmnt = 'ЗАЯВКА С ЯНДЕКС ФОРМЫ';
+$cmnt = 'ЗАЯВКА С ЯНДЕКС ФОРМЫ<br>';
 $cmnt .= 'Регион: '.$data['answer']['data']['answer_short_text_59666938']['value'].'<br>';
 $cmnt .= 'Цель: '.$data['answer']['data']['answer_choices_59659035']['value'][0]['text'].'<br>';
 $cmnt .= 'Профиль: '.$data['answer']['data']['answer_choices_59659370']['value'][0]['text'].'<br>';
