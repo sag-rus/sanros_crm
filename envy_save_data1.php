@@ -54,7 +54,7 @@ $configNew->objectCabinet = $objectCabinet;
 $_POST['data'] = 'webhooktype=4&phone=79063274712&name=Рустем&email=tatmigstroy@yandex.ru&created_at=2025-08-08 15:39:02&referrer=&keyword=&ip=195.189.135.138&place=Казань, Татарстан&site=санатории-россии.рф&url=https://санатории-россии.рф/&utm_source=&utm_medium=&utm_campaign=&utm_content=&utm_term=&visitor_id=20921881608&google_client_id=&yclid=&rs=&roistat_promo=&adv_uid=&calltracking_id=&key=cbd9f323b5b1d4493f0f937ec320c8d3&lpgenerator_id=&leadvertex_id=&custom_data=[]&yandex_client_id=1754656558210363150';
 $connect->query("INSERT 1_envy_log SET `id`=0, `datetime`=NOW(), `data`=?s", $_POST['data']);
 
-$data = parse_str($_POST['data']);
+parse_str($_POST['data'], $data);
 
 print_r($data);
 
