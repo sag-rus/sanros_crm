@@ -59,6 +59,7 @@ $cmnt = 'ЗАЯВКА С ФОРМЫ ENVYBOX<br>';
 $cmnt .= 'Имя отчество: '.$data['name'].'<br>';
 $cmnt .= 'Телефон: '.$data['phone'].'<br>';
 $cmnt .= 'E-mail: '.$data['email'].'<br>';
+$cmnt .= 'URL отправки формы: '.$data['url'].'<br>';
 $cmnt .= 'Регион посетителя: '.$data['place'].'<br>';
 $cmnt .= 'IP: '.$data['ip'].'<br>';
 
