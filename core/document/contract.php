@@ -418,18 +418,18 @@ function review_contract($connect, $type, $id){
 		<td valign="top">
 			<?php
 				if($payers["type"] == 2){
-			?>
+				?>
 					<strong>КЛИЕНТ:</strong> <?php echo $payers["short"]; ?><br />
 					<strong>ИНН/КПП:</strong> <?php echo $payers["inn"]."/".$payers["kpp"]; ?><br />
 					<strong>Юридический адрес:</strong><br /><?php echo $payers["ur_address"]; ?><br />
 					<strong>Почтовый адрес:</strong><br /><?php echo $payers["address"]; ?><br />
-					<? if ($id==173658) {?>
+					<?php if ($id=='173658') {?>
 					<strong>к/с:</strong> <?php echo $payers["rs"]; ?><br />
 					<strong>б/с:</strong> <?php echo $payers["ks"]; ?><br />
-					<? } else {?>
+					<?php } else {?>
 					<strong>р/с:</strong> <?php echo $payers["rs"]; ?><br />
 					<strong>к/с:</strong> <?php echo $payers["ks"]; ?><br />
-					<? } ?>
+					<?php } ?>
 					<strong>БИК:</strong> <?php echo $payers["bik"]; ?><br />
 					<strong>Банк:</strong> <?php echo $payers["bank"]; ?><br />
 				<?php if($payers["bin"]){ ?>
