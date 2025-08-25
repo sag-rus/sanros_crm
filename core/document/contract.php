@@ -102,6 +102,8 @@ function review_contract($connect, $type, $id){
 	else
 		$date_doc = $date_create;
 	$today = month_transform($date_doc);
+	
+	if ($id==173658) $date_doc = '06.08.2025';
 
 	$services_default = "";
 	$services_string = "";
