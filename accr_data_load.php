@@ -45,8 +45,6 @@ $configNew->objectCabinet = $objectCabinet;
 
 $items = $connect->getAll("SELECT * FROM `accr_data` WHERE `data`='' OR `data_datetime` < NOW() - INTERVAL 3 MONTH ORDER BY id LIMIT 1");
 
-print_r($items);
-
 foreach ($items as $item) {
     $ch = curl_init('https://tourism.fsa.gov.ru/api/v1/export/resorts/'.$item['ext_id'].'/get');
 
@@ -60,17 +58,19 @@ foreach ($items as $item) {
     ];
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-    $response = curl_exec($ch);
+    $res = curl_exec($ch);
 
     // Проверка на ошибки
     if (curl_errno($ch)) {
         echo 'Ошибка cURL: ' . curl_error($ch);
     } else {
         // Получение HTTP-кода ответа
-        $response = json_decode($response, true);
+        $response = json_decode($res, true);
         echo '<pre>';
         print_r($response);
         echo '</pre>';
+
+        $connect->query("UPDATE `accr_data` SET `name`=?, `data`=?s, `data_dateime`=MOW() WHERE id=?i", $response['hotel']['main']['fullName'], $res, $item['id']);
     }
 
     // Закрытие cURL сессии
