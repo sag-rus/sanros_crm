@@ -43,9 +43,36 @@ $configNew->clientCabinet = $clientCabinet;
 $configNew->objectCabinet = $objectCabinet;
 
 
-$items = $connect->getAll("SELECT * FROM `accr_data` WHERE `data`='' OR `data_datetime` < NOW() - INTERVAL 3 MONTH ORDER BY id LIMIT 5");
+$items = $connect->getAll("SELECT * FROM `accr_data` WHERE `data`='' OR `data_datetime` < NOW() - INTERVAL 3 MONTH ORDER BY id LIMIT 1");
 
 print_r($items);
+
+foreach ($items as $item) {
+    $ch = curl_init('https://tourism.fsa.gov.ru/api/v1/export/resorts/'.$item['ext_id'].'/get');
+
+    curl_setopt($ch, CURLOPT_HTTPGET, true); 
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
+
+    $headers = [
+        'Api-Key: trsm-1_zDMWC8EfC7Qmvz9h7V3A.cq_Wd8vwCLLWymebNgfBuA'
+    ];
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+    $response = curl_exec($ch);
+
+    // Проверка на ошибки
+    if (curl_errno($ch)) {
+        echo 'Ошибка cURL: ' . curl_error($ch);
+    } else {
+        // Получение HTTP-кода ответа
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        echo "HTTP код ответа: " . $httpCode . "\n";
+        echo "Ответ сервера: " . $response;
+    }
+
+    // Закрытие cURL сессии
+    curl_close($ch);
+}
 
 //echo '<meta http-equiv="refresh" content="0,URL=/CRM/accr_data_load.php">';
 
