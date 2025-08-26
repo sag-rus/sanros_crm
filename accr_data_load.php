@@ -67,7 +67,10 @@ foreach ($items as $item) {
         echo 'Ошибка cURL: ' . curl_error($ch);
     } else {
         // Получение HTTP-кода ответа
-        echo $response;
+        $response = json_decode($response, true);
+        echo '<pre>';
+        print_r($response);
+        echo '</pre>';
     }
 
     // Закрытие cURL сессии
