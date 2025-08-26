@@ -67,9 +67,7 @@ foreach ($items as $item) {
         echo 'Ошибка cURL: ' . curl_error($ch);
     } else {
         // Получение HTTP-кода ответа
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        echo "HTTP код ответа: " . $httpCode . "\n";
-        echo "Ответ сервера: " . $response;
+        echo $response;
     }
 
     // Закрытие cURL сессии
