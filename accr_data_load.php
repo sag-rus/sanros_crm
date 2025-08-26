@@ -52,6 +52,8 @@ foreach ($items as $item) {
 
     curl_setopt($ch, CURLOPT_HTTPGET, true); 
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);    
 
     $headers = [
         'Api-Key: trsm-1_zDMWC8EfC7Qmvz9h7V3A.cq_Wd8vwCLLWymebNgfBuA'
