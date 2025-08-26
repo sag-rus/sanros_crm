@@ -43,7 +43,7 @@ $configNew->clientCabinet = $clientCabinet;
 $configNew->objectCabinet = $objectCabinet;
 
 
-$items = $connect->getAll("SELECT * FROM `accr_data` WHERE `data`='' OR `data_datetime` < NOW() - INTERVAL 3 MONTH ORDER BY id LIMIT 25");
+$items = $connect->getAll("SELECT * FROM `accr_data` WHERE `data`='' OR `data_datetime` < NOW() - INTERVAL 3 MONTH ORDER BY RAND() LIMIT 25");
 
 foreach ($items as $item) {
     $ch = curl_init('https://tourism.fsa.gov.ru/api/v1/export/resorts/'.$item['ext_id'].'/get');
