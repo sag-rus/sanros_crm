@@ -71,6 +71,8 @@ foreach ($items as $item) {
         echo '</pre>';
 
         $connect->query("UPDATE `accr_data` SET `name`=?, `data`=?s, `data_dateime`=MOW() WHERE id=?i", $response['hotel']['main']['fullName'], $res, $item['id']);
+
+        echo 'done';
     }
 
     // Закрытие cURL сессии
