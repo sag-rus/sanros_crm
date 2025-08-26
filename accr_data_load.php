@@ -70,7 +70,7 @@ foreach ($items as $item) {
         print_r($response);
         echo '</pre>';
 
-        $connect->query("UPDATE `accr_data` SET `name`=?ы, `data`=?s, `data_dateime`=NOW() WHERE id=?i", $response['hotel']['main']['fullName'], $res, $item['id']);
+        $connect->query("UPDATE `accr_data` SET `name`=?s, `data`=?s, `data_dateime`=NOW() WHERE id=?i", $response['hotel']['main']['fullName'], $res, $item['id']);
         echo $connect->last_query();
 
         echo 'done';
