@@ -337,6 +337,7 @@ function select_menu_object($connect){
 		<li class="menu-housing" onclick="select_object_housing()"><a><i class="fa fa-building-o"></i> Корпуса</a></li>
 		<li class="menu-upload" onclick="select_object_upload('<?php echo $id; ?>')"><a><i class="fa fa-cloud-upload"></i> Загрузка</a></li>
 		<li class="menu-check-object" onclick="check_completeness_object()"><a><i class="fa fa-battery-three-quarters"></i> Проверка объектов</a></li>
+		<li class="menu-object-cert" onclick="show_obj_cert()"><a><i class="fa fa-certificate"></i> Сертификация</a></li>
 	</ul>
 	<div class="object-infa"></div>
 <?php
@@ -2570,6 +2571,34 @@ function update_rate_plan($connect){
 	    $status = 1;
 
 	$connect->query("UPDATE rate_plan SET name=?s, description=?s, food=?s, min_days=?s, max_days=?s, start_date=?s, end_date=?s, status = ?i, synchronized = 0 WHERE id=?i", $name, $desc, $food, $min_days, $max_days, $start_date, $end_date, $status, $id);
+}
+
+
+
+
+function show_obj_cert($connect){
+	//Используется в СРМ и кабинете объекта!
+	$id = $_POST["id"];
+	$obj = $connect->getRow("SELECT * FROM object WHERE id=?i", $id);
+	if (trim($obj['accr_data'])!='') {
+		$obj['accr_data'] = json_decode($obj['accr_data']);
+		$accr_data = $connect->getRow("SELECT * FROM accr_data WHERE ext_id=?i", $obj['ext_id']);
+		$endDate = '';
+		if (trim($obj['accr_data']['endDate'])!='') $endDate = date('d.m.Y', strtotime($obj['accr_data']['endDate']));
+		ob_start();
+		?>
+		<strong>Выбранные данные сертификации:</strong><br>
+		Номер реестровой записи: <?=$obj['accr_data']['registerRecord']?><br>
+		Статус: <?=$obj['accr_data']['status']?><br>
+		до: <?=$endDate?><br><br>
+		<?php		
+		$html = ob_get_clean();
+	} else {
+		//
+	}
+
+	
+	return $html;
 }
 
 ?>

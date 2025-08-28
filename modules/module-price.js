@@ -299,6 +299,20 @@ function save_room_occupancy(id){
 }
 
 
+function show_obj_cert(){
+	$('.menu-object li').removeClass('active');
+	$('.menu-object-cert').addClass('active');
+	var object = $('.object-menu .menu-object').attr('object');
+	var str = 'func=show_obj_cert&id=' + object;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function(html){
+			$('.object-infa').html(html);
+		}
+	});
+}
 
 
 function select_object_child_occupancies(){
