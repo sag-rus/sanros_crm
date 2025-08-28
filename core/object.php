@@ -2583,6 +2583,8 @@ function show_obj_cert($connect){
 	if (trim($obj['accr_data'])!='') {
 		$obj['accr_data'] = json_decode($obj['accr_data'], true);
 		$accr_data = $connect->getRow("SELECT * FROM accr_data WHERE ext_id=?i", $obj['accr_id']);
+		echo $connect->last_query().'<br>';
+		print_r($accr_data);
 		$endDate = '';
 		if (trim($obj['accr_data']['endDate'])!='') $endDate = date('d.m.Y', strtotime($obj['accr_data']['endDate']));
 		ob_start();
@@ -2604,7 +2606,7 @@ function show_obj_cert($connect){
 			<div class="panel-footer" style="text-align: left">
 				<strong>Полнные данные из tourism.fsa.gov.ru:</strong>
 				<pre>
-					<?=print_r($accr_data)?>
+					<?php print_r($accr_data); ?>
 				</pre>
 			</div>
 		</div>		
