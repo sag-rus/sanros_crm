@@ -2596,7 +2596,7 @@ function show_obj_cert($connect){
 						Номер реестровой записи: <?=$obj['accr_data']['registerRecord']?><br>
 						Статус: <?=$obj['accr_data']['status']?><br>
 						до: <?=$endDate?><br><br>
-						<button type="button" class="btn btn-primary btn-sm" onclick="alert('0')"><i class="fa fa-plus-circle"></i> Удалить данные</button>
+						<button type="button" class="btn btn-danger btn-sm" onclick="alert('0')"><i class="fa fa-plus-circle"></i> Удалить данные</button>
 					</td>
 				</tr>
 				</tbody>
@@ -2604,7 +2604,7 @@ function show_obj_cert($connect){
 			<div class="panel-footer" style="text-align: left">
 				<strong>Полнные данные из tourism.fsa.gov.ru:</strong>
 				<pre>
-					<?=print_r($accr_data)?>
+					<?=print_r($accr_data, true)?>
 				</pre>
 			</div>
 		</div>		
