@@ -50,7 +50,7 @@ foreach ($data as $item) {
     echo '<pre>';
     print_r($item);
     echo '</pre>';
-    $connect->query("UPDATE `accr_data` SET `id_obj`=?i WHERE ext_id=?i", $item['id'], $item['ext_id']);
+    $connect->query("UPDATE `accr_data` SET `id_obj`=?i WHERE ext_id=?s", $item['id'], $item['ext_id']);
     echo $connect->last_query().'<br>';
 }
 
