@@ -58,8 +58,26 @@ foreach ($data as $item) {
     echo '<pre>';
     print_r($accr_data);
     echo '</pre>';
+
+    $obj_accr_data = [];
+    if (isset($accr_data['hotel']['main']['registerRecord']) && trim($accr_data['hotel']['main']['registerRecord'])!='') {
+        $obj_accr_data['registerRecord'] = $accr_data['hotel']['main']['registerRecord'];
+    }
+
+    if (isset($accr_data['hotel']['main']['status']['name']) && trim($accr_data['hotel']['main']['status']['name'])!='') {
+        $obj_accr_data['status'] = $accr_data['hotel']['main']['status']['name'];
+    }    
+
+    if (isset($accr_data['hotel']['main']['status']['endDate']) && trim($accr_data['hotel']['main']['status']['endDate'])!='') {
+        $obj_accr_data['endDate'] = $accr_data['hotel']['main']['status']['endDate'];
+    }        
+
+    echo '<pre>';
+    print_r($obj_accr_data);
+    echo '</pre><br><br>';
+
     $i++;
-    if ($i>5) break;
+    if ($i>50) break;
 }
 
 
