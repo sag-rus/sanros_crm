@@ -44,6 +44,7 @@ $configNew->objectCabinet = $objectCabinet;
 
 
 $data = file('compare_result_id_unique.json');
+print_r($data);
 $data = json_decode($data, true);
 
 foreach ($data as $item) {
