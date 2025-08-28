@@ -47,6 +47,9 @@ $data = file_get_contents('compare_result_id_unique.json');
 $data = json_decode($data, true);
 
 foreach ($data as $item) {
+    echo '<pre>';
+    print_r($item);
+    echo '</pre>';
     $connect->query("UPDATE `accr_data` SET `id_obj`=?i WHERE ext_id=?i", $item['id'], $item['ext_id']);
     echo $connect->last_query().'<br>';
 }
