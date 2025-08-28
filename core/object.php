@@ -2607,11 +2607,26 @@ function show_obj_cert($connect){
 				<pre><?php print_r($accr_data['data']); ?></pre>
 			</div>
 		</div>		
-
 		<?php		
 		$html = ob_get_clean();
 	} else {
-		//
+		if ($_POST['accr_search']=='') $_POST['accr_search'] = $obj['name'];
+		if ($_POST['accr_search']=='') $_POST['accr_search'] = $obj['full_name'];
+		ob_start();
+		?>
+		<div class="panel panel-default">
+			<div class="panel-heading">Сертификация - поиск данных</div>
+			<table class="table tbl-room">
+				<tbody><tr>
+					<td>
+						<input type="text" id="accr_search" placeholder="введите текст для поиска" value="<?=$_POST['accr_search']?>"> <button type="button" class="btn btn-primary btn-sm" onclick="alert('0')"><i class="fa fa-plus-circle"></i> поиск</button>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>		
+		<?php		
+		$html = ob_get_clean();
 	}
 
 	
