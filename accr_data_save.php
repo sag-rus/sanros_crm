@@ -48,6 +48,7 @@ $data = json_decode($data, true);
 
 foreach ($data as $item) {
     print_r($item);
+    break;
 }
 
 
