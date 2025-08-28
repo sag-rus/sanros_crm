@@ -2581,11 +2581,8 @@ function show_obj_cert($connect){
 	$id = $_POST["id"];
 	$obj = $connect->getRow("SELECT * FROM object WHERE id=?i", $id);
 	if (trim($obj['accr_data'])!='') {
-		print_r($obj);
 		$obj['accr_data'] = json_decode($obj['accr_data'], true);
-		$accr_data = $connect->getRow("SELECT * FROM accr_data WHERE ext_id=?i", $obj['accr_id']);
-		echo $connect->last_query().'<br>';
-		print_r($accr_data);
+		$accr_data = $connect->getRow("SELECT * FROM accr_data WHERE ext_id=?s", $obj['accr_id']);
 		$endDate = '';
 		if (trim($obj['accr_data']['endDate'])!='') $endDate = date('d.m.Y', strtotime($obj['accr_data']['endDate']));
 		ob_start();
