@@ -2604,7 +2604,7 @@ function show_obj_cert($connect){
 			<div class="panel-footer" style="text-align: left">
 				<strong>Полнные данные из tourism.fsa.gov.ru:</strong>
 				<pre>
-					<?=print_r($accr_data, true)?>
+					<?=print_r($accr_data)?>
 				</pre>
 			</div>
 		</div>		
