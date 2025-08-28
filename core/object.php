@@ -2597,7 +2597,7 @@ function show_obj_cert($connect){
 						Номер реестровой записи: <?=$obj['accr_data']['registerRecord']?><br>
 						Статус: <?=$obj['accr_data']['status']?><br>
 						до: <?=$endDate?><br><br>
-						<button type="button" class="btn btn-danger btn-sm" onclick="alert('0')"><i class="fa fa-plus-circle"></i> Удалить данные</button>
+						<button type="button" class="btn btn-danger btn-sm" onclick="alert('0')"><i class="fa fa-close"></i> Удалить данные</button>
 					</td>
 				</tr>
 				</tbody>
@@ -2619,7 +2619,7 @@ function show_obj_cert($connect){
 			<table class="table tbl-room">
 				<tbody><tr>
 					<td>
-						<input type="text" id="accr_search" placeholder="введите текст для поиска" value="<?=$_POST['accr_search']?>"> <button type="button" class="btn btn-primary btn-sm" onclick="alert('0')"><i class="fa fa-plus-circle"></i> поиск</button>
+						<input type="text" id="accr_search" class="form-control" style="width: 50%; display: inline-block; vertival-align: middle;"; placeholder="введите текст для поиска" value="<?=$_POST['accr_search']?>"> &nbsp; <button type="button" class="btn btn-primary btn-sm" onclick="alert('0')" style="display: inline-block; vertival-align: middle;"><i class="fa fa-search"></i> поиск</button>
 					</td>
 				</tr>
 				</tbody>
