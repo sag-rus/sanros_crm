@@ -47,14 +47,12 @@ $data = file_get_contents('compare_result_id_unique.json');
 $data = json_decode($data, true);
 
 foreach ($data as $item) {
-    print_r($item);
-    break;
+    $connect->query("UPDATE `accr_data` SET `id_obj`=?i WHERE ext_id=?i", $item['id'], $item['ext_id']);
 }
 
 
-//$connect->query("UPDATE `accr_data` SET `name`=?s, `address`=?s, `data`=?s, `data_datetime`=NOW() WHERE id=?i", $response['hotel']['main']['fullName'],$response['hotel']['main']['addressList'][0]['name'], $res, $item['id']);
 
 
-echo '<meta http-equiv="refresh" content="0,URL=/CRM/accr_data_load.php">';
+
 
 ?>
