@@ -2587,10 +2587,28 @@ function show_obj_cert($connect){
 		if (trim($obj['accr_data']['endDate'])!='') $endDate = date('d.m.Y', strtotime($obj['accr_data']['endDate']));
 		ob_start();
 		?>
-		<strong>Выбранные данные сертификации:</strong><br>
-		Номер реестровой записи: <?=$obj['accr_data']['registerRecord']?><br>
-		Статус: <?=$obj['accr_data']['status']?><br>
-		до: <?=$endDate?><br><br>
+		<div class="panel panel-default">
+			<div class="panel-heading">Сертификация</div>
+			<table class="table tbl-room">
+				<tbody><tr>
+					<td>
+						<strong>Выбранные данные сертификации:</strong><br>
+						Номер реестровой записи: <?=$obj['accr_data']['registerRecord']?><br>
+						Статус: <?=$obj['accr_data']['status']?><br>
+						до: <?=$endDate?><br><br>
+						<button type="button" class="btn btn-primary btn-sm" onclick="alert('0')"><i class="fa fa-plus-circle"></i> Удалить данные</button>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			<div class="panel-footer" style="text-align: left">
+				<strong>Полнные данные из tourism.fsa.gov.ru:</strong>
+				<pre>
+					<?=print_r($accr_data)?>
+				</pre>
+			</div>
+		</div>		
+
 		<?php		
 		$html = ob_get_clean();
 	} else {
