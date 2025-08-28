@@ -53,7 +53,7 @@ foreach ($data as $item) {
     echo '</pre>';
     $connect->query("UPDATE `accr_data` SET `id_obj`=?i WHERE ext_id=?s", $item['id'], $item['ext_id']);
     echo $connect->last_query().'<br>';
-    $accr_data = $connect->getRow("SELECT * FROM `accr_data` WHERE `ext_id`=?s", $item['exi_id']);
+    $accr_data = $connect->getRow("SELECT * FROM `accr_data` WHERE `ext_id`=?s", $item['ext_id']);
     print_r($accr_data);
     $i++;
     if ($i>5) break;
