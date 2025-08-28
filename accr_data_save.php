@@ -46,12 +46,17 @@ $configNew->objectCabinet = $objectCabinet;
 $data = file_get_contents('compare_result_id_unique.json');
 $data = json_decode($data, true);
 
+$i=1;
 foreach ($data as $item) {
     echo '<pre>';
     print_r($item);
     echo '</pre>';
     $connect->query("UPDATE `accr_data` SET `id_obj`=?i WHERE ext_id=?s", $item['id'], $item['ext_id']);
     echo $connect->last_query().'<br>';
+    $accr_data = $connect->getRow("SELECT * FROM `accr_data` WHERE `ext_id`=?s", $item['exi_id']);
+    print_r($accr_data);
+    $i++;
+    if ($i>5) break;
 }
 
 
