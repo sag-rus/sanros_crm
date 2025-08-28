@@ -48,6 +48,7 @@ $data = json_decode($data, true);
 
 foreach ($data as $item) {
     $connect->query("UPDATE `accr_data` SET `id_obj`=?i WHERE ext_id=?i", $item['id'], $item['ext_id']);
+    echo $connext->last_query().'<br>';
 }
 
 
