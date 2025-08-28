@@ -80,6 +80,8 @@ foreach ($data as $item) {
     print_r($obj_accr_data);
     echo '</pre><br><br>';
 
+    $connect->query("UPDATE `object` SET `accr_id`=?s, `accr_data`=?s WHERE id=?s", $item['ext_id'], json_encode($obj_accr_data), $item['id']);
+
     $i++;
     if ($i>50) break;
 }
