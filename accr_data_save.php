@@ -60,6 +60,10 @@ foreach ($data as $item) {
     echo '</pre>';
 
     $obj_accr_data = [];
+    echo $accr_data['hotel']['main']['registerRecord'].'<br>';
+    echo $accr_data['hotel']['main']['status']['name'].'<br>';
+    echo $accr_data['hotel']['main']['status']['endDate'].'<br>';
+    
     if (isset($accr_data['hotel']['main']['registerRecord']) && trim($accr_data['hotel']['main']['registerRecord'])!='') {
         $obj_accr_data['registerRecord'] = $accr_data['hotel']['main']['registerRecord'];
     }
