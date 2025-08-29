@@ -2588,7 +2588,7 @@ function show_obj_cert($connect){
 	$obj = $connect->getRow("SELECT * FROM object WHERE id=?i", $id);
 
 	if ($_POST['id_accr']!='') {
-		$accr_data = $connect->getRow("SELECT * FROM accr_data WHERE id=?ш", $_POST['id_accr']);
+		$accr_data = $connect->getRow("SELECT * FROM accr_data WHERE id=?i", $_POST['id_accr']);
 		$accr_data['data'] = json_decode($accr_data['data'], true);
 
 		$obj_accr_data = [];
@@ -2605,8 +2605,8 @@ function show_obj_cert($connect){
             $obj_accr_data['endDate'] = $accr_data['data']['hotel']['main']['status']['endDate'];
         }        
 		
-		$connect->query("UPDATE `accr_data` SET `id_obj`=?i WHERE id=?s", $id, $accr_data['id']);
-		$connect->query("UPDATE `object` SET `accr_id`=?s, `accr_data`=?s, `synchronized`=0 WHERE id=?s", $accr_data['ext_id'], json_encode($obj_accr_data), $id);
+		$connect->query("UPDATE `accr_data` SET `id_obj`=?i WHERE id=?i", $id, $accr_data['id']);
+		$connect->query("UPDATE `object` SET `accr_id`=?s, `accr_data`=?s, `synchronized`=0 WHERE id=?i", $accr_data['ext_id'], json_encode($obj_accr_data), $id);
 	}
 
 
