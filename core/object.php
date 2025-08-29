@@ -2642,7 +2642,7 @@ function show_obj_cert($connect){
 					$search_html .= '<td>'; 
 					$search_html .= $accr_data_item['address']; 
 					$search_html .= '</td>'; 					
-					$search_html .= '<td>';
+					$search_html .= '<td width="150">';
 					$search_html .= $cert; 
 					$search_html .= '</td>';										
 					$search_html .= '</tr>'; 
