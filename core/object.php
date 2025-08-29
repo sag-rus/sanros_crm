@@ -2627,11 +2627,14 @@ function show_obj_cert($connect){
 			$q = str_replace(' ', '%', $_POST['accr_search']);
 			$accr_data = $connect->getAll("SELECT * FROM accr_data WHERE `search` LIKE '%$q%'");
 
-			echo "SELECT * FROM accr_data WHERE `search` LIKE '%q%'";
 			
 			if (count($accr_data)>0) {
 				$search_html .= '<table class="table tbl-room">'; 
 				foreach ($accr_data as $accr_data_item) {
+					$accr_data_item['data'] = json_decode($accr_data_item['data']);
+					$cert = 'Реестровая запись: '.$accr_data['data']['hotel']['main']['registerRecord'].'<br>';
+					$cert = 'Статус: '.$accr_data['data']['hotel']['main']['status']['name'].'<br>';
+					$cert = 'действует до: '.$accr_data['data']['hotel']['main']['status']['endDate'].'<br>';
 					$search_html .= '<tr>'; 
 					$search_html .= '<td>'; 
 					$search_html .= $accr_data_item['name']; 
@@ -2639,6 +2642,12 @@ function show_obj_cert($connect){
 					$search_html .= '<td>'; 
 					$search_html .= $accr_data_item['address']; 
 					$search_html .= '</td>'; 					
+					$search_html .= '<td>';
+					$search_html .= $accr_data_item['address']; 
+					$search_html .= '</td>';					
+					$search_html .= '<td>';
+					$search_html .= $cert; 
+					$search_html .= '</td>';										
 					$search_html .= '</tr>'; 
 				}
 				$search_html .= '</table>'; 
