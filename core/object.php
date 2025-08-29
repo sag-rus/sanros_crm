@@ -2620,6 +2620,29 @@ function show_obj_cert($connect){
 		<?php		
 		$html = ob_get_clean();
 	} else {
+
+		$search_html = '';
+
+		if ($_POST['accr_search']!='') {
+			$q = str_replace(' ', '%', $_POST['accr_search']);
+			$accr_data = $connect->getAll("SELECT * FROM accr_data WHERE `search` LIKE '%q%'");
+			
+			if (count($accr_data)>0) {
+				$search_html .= '<table class="table tbl-room">'; 
+				foreach ($accr_data as $accr_data_item) {
+					$search_html .= '<tr>'; 
+					$search_html .= '<td>'; 
+					$search_html .= $accr_data_item['name']; 
+					$search_html .= '</td>'; 
+					$search_html .= '<td>'; 
+					$search_html .= $accr_data_item['address']; 
+					$search_html .= '</td>'; 					
+					$search_html .= '</tr>'; 
+				}
+				$search_html .= '</table>'; 
+			}
+		}
+
 		if ($_POST['accr_search']=='') $_POST['accr_search'] = $obj['name'];
 		if ($_POST['accr_search']=='') $_POST['accr_search'] = $obj['full_name'];
 		ob_start();
@@ -2634,6 +2657,7 @@ function show_obj_cert($connect){
 				</tr>
 				</tbody>
 			</table>
+			<?=$search_html?>
 		</div>		
 		<?php		
 		$html = ob_get_clean();
