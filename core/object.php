@@ -2631,7 +2631,7 @@ function show_obj_cert($connect){
 			if (count($accr_data)>0) {
 				$search_html .= '<table class="table tbl-room">'; 
 				foreach ($accr_data as $accr_data_item) {
-					$accr_data_item['data'] = json_decode($accr_data_item['data']);
+					$accr_data_item['data'] = json_decode($accr_data_item['data'], true);
 					$cert = 'Реестровая запись: '.$accr_data_item['data']['hotel']['main']['registerRecord'].'<br>';
 					$cert = 'Статус: '.$accr_data_item['data']['hotel']['main']['status']['name'].'<br>';
 					$cert = 'действует до: '.$accr_data_item['data']['hotel']['main']['status']['endDate'].'<br>';
