@@ -2599,9 +2599,11 @@ function show_obj_cert($connect){
 			<table class="table tbl-room">
 				<tbody><tr>
 					<td>
+						Название объекта в реесте: <?=$obj['name']?> (<?=$obj['full_name']?>)<br>
+						Адрес объекта в реесте: <?=$obj['address']?><br><br>
+						Название объекта в СРМ: <?=$accr_data['name']?><br>
+						Адрес объекта в СРМ: <?=$accr_data['address']?><br><br>						
 						<strong>Выбранные данные сертификации:</strong><br>
-						Название объекта в реесте: <?=$accr_data['name']?><br>
-						Адрес объекта в реесте: <?=$accr_data['address']?><br><br>
 						Номер реестровой записи: <?=$obj['accr_data']['registerRecord']?><br>
 						Статус: <?=$obj['accr_data']['status']?><br>
 						до: <?=$endDate?><br><br>
