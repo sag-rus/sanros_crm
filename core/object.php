@@ -2652,7 +2652,7 @@ function show_obj_cert($connect){
 			<table class="table tbl-room">
 				<tbody><tr>
 					<td>
-						<input type="text" id="accr_search" class="form-control" style="width: 50%; display: inline-block; vertical-align: middle;"; placeholder="введите текст для поиска" value="<?=$_POST['accr_search']?>"> &nbsp; <button type="button" class="btn btn-primary btn-sm" onclick="alert('0')" style="display: inline-block; vertical-align: middle; margin-bottom: 0px;"><i class="fa fa-search"></i> поиск</button>
+						<input type="text" id="accr_search" class="form-control" style="width: 50%; display: inline-block; vertical-align: middle;"; placeholder="введите текст для поиска" value="<?=$_POST['accr_search']?>"> &nbsp; <button type="button" class="btn btn-primary btn-sm" onclick="search_obj_cert()" style="display: inline-block; vertical-align: middle; margin-bottom: 0px;"><i class="fa fa-search"></i> поиск</button>
 					</td>
 				</tr>
 				</tbody>
