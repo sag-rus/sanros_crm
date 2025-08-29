@@ -375,18 +375,24 @@ function select_object_about($connect){
 		</div>
 		<div class="list-group-item list-hover-item">
 			<div class="form-group form-group-margin">
-				<label class="col-sm-3 control-label-element">Адрес</label>
+				<label class="col-sm-3 control-label-element">Регион</label>
 				<div class="col-sm-9"><?php echo $address; ?></div>
 			</div>
 		</div>
-			<?php if($row["website"]){ ?>
+		<div class="list-group-item list-hover-item">
+			<div class="form-group form-group-margin">
+				<label class="col-sm-3 control-label-element">Адрес</label>
+				<div class="col-sm-9"><?php echo $row['address']; ?></div>
+			</div>
+		</div>		
+		<?php if($row["website"]){ ?>
 		<div class="list-group-item list-hover-item">
 			<div class="form-group form-group-margin">
 				<label class="col-sm-3 control-label-element">Официальный сайт</label>
 				<div class="col-sm-9"><a href="<?php echo $row['website']; ?>" target="_blank"><?php echo $row["website"]; ?></a></div>
 			</div>
 		</div>
-			<?php } ?>
+		<?php } ?>
 			<?php if($row["id_profile"]){ ?>
 		<div class="list-group-item list-hover-item">
 			<div class="form-group form-group-margin">
