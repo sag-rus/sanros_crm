@@ -2614,6 +2614,7 @@ function show_obj_cert($connect){
 		$connect->query("UPDATE `object` SET `accr_id`=?s, `accr_data`=?s, `synchronized`=0 WHERE id=?i", $accr_data['ext_id'], json_encode($obj_accr_data), $id);
 
 		$obj['accr_data'] = json_encode($obj_accr_data);
+		$obj['accr_id'] = $accr_data['ext_id'];
 	}
 
 
