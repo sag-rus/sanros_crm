@@ -2625,7 +2625,7 @@ function show_obj_cert($connect){
 
 		if ($_POST['accr_search']!='') {
 			$q = str_replace(' ', '%', $_POST['accr_search']);
-			$accr_data = $connect->getAll("SELECT * FROM accr_data WHERE `search` LIKE '%q%'");
+			$accr_data = $connect->getAll("SELECT * FROM accr_data WHERE `search` LIKE '%$q%'");
 
 			echo "SELECT * FROM accr_data WHERE `search` LIKE '%q%'";
 			
