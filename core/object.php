@@ -2644,7 +2644,7 @@ function show_obj_cert($connect){
 					$search_html .= '<td width="250">';
 					$search_html .= $cert; 
 					$search_html .= '</td>';
-					$search_html .= '<td><button type="button" class="btn btn-primary btn-sm" onclick="select_obj_cert('+$accr_data_item['id']+')">Выбрать</button></td>'; 										
+					$search_html .= '<td><button type="button" class="btn btn-primary btn-sm" onclick="select_obj_cert('.$accr_data_item['id'].')">Выбрать</button></td>'; 										
 					$search_html .= '</tr>'; 
 				}
 				$search_html .= '</table>'; 
