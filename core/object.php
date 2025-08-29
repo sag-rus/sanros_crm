@@ -2632,7 +2632,7 @@ function show_obj_cert($connect){
 				$search_html .= '<table class="table tbl-room">'; 
 				foreach ($accr_data as $accr_data_item) {
 					$accr_data_item['data'] = json_decode($accr_data_item['data'], true);
-					$cert = 'Реестровая запись: '.$accr_data_item['data']['hotel']['main']['registerRecord'].'<br>';
+					$cert = 'Запись: '.$accr_data_item['data']['hotel']['main']['registerRecord'].'<br>';
 					$cert .= 'Статус: '.$accr_data_item['data']['hotel']['main']['status']['name'].'<br>';
 					$cert .= 'До: '.$accr_data_item['data']['hotel']['main']['status']['endDate'].'<br>';
 					$search_html .= '<tr>'; 
@@ -2642,7 +2642,7 @@ function show_obj_cert($connect){
 					$search_html .= '<td>'; 
 					$search_html .= $accr_data_item['address']; 
 					$search_html .= '</td>'; 					
-					$search_html .= '<td width="150">';
+					$search_html .= '<td width="250">';
 					$search_html .= $cert; 
 					$search_html .= '</td>';										
 					$search_html .= '</tr>'; 
