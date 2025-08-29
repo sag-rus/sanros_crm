@@ -2594,6 +2594,8 @@ function show_obj_cert($connect){
 				<tbody><tr>
 					<td>
 						<strong>Выбранные данные сертификации:</strong><br>
+						Название объекта в реесте: <?=$accr_data['name']?><br>
+						Адрес объекта в реесте: <?=$accr_data['address']?><br><br>
 						Номер реестровой записи: <?=$obj['accr_data']['registerRecord']?><br>
 						Статус: <?=$obj['accr_data']['status']?><br>
 						до: <?=$endDate?><br><br>
