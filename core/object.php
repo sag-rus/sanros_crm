@@ -2633,8 +2633,8 @@ function show_obj_cert($connect){
 				foreach ($accr_data as $accr_data_item) {
 					$accr_data_item['data'] = json_decode($accr_data_item['data'], true);
 					$cert = 'Реестровая запись: '.$accr_data_item['data']['hotel']['main']['registerRecord'].'<br>';
-					$cert = 'Статус: '.$accr_data_item['data']['hotel']['main']['status']['name'].'<br>';
-					$cert = 'действует до: '.$accr_data_item['data']['hotel']['main']['status']['endDate'].'<br>';
+					$cert .= 'Статус: '.$accr_data_item['data']['hotel']['main']['status']['name'].'<br>';
+					$cert .= 'действует до: '.$accr_data_item['data']['hotel']['main']['status']['endDate'].'<br>';
 					$search_html .= '<tr>'; 
 					$search_html .= '<td>'; 
 					$search_html .= $accr_data_item['name']; 
@@ -2642,9 +2642,6 @@ function show_obj_cert($connect){
 					$search_html .= '<td>'; 
 					$search_html .= $accr_data_item['address']; 
 					$search_html .= '</td>'; 					
-					$search_html .= '<td>';
-					$search_html .= $accr_data_item['address']; 
-					$search_html .= '</td>';					
 					$search_html .= '<td>';
 					$search_html .= $cert; 
 					$search_html .= '</td>';										
