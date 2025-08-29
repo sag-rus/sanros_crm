@@ -2638,7 +2638,7 @@ function show_obj_cert($connect){
 						Номер реестровой записи: <?=$obj['accr_data']['registerRecord']?><br>
 						Статус: <?=$obj['accr_data']['status']?><br>
 						до: <?=$endDate?><br><br>
-						<button type="button" class="btn btn-danger btn-sm" onclick="alert('0')"><i class="fa fa-close"></i> Удалить данные</button>
+						<button type="button" class="btn btn-danger btn-sm" onclick="del_obj_cert()"><i class="fa fa-close"></i> Удалить данные</button>
 					</td>
 				</tr>
 				</tbody>

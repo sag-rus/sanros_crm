@@ -298,7 +298,7 @@ function save_room_occupancy(id){
 
 }
 
-function del_obj_cert(id_accr){
+function del_obj_cert(){
 	$('.menu-object li').removeClass('active');
 	$('.menu-object-cert').addClass('active');
 	var object = $('.object-menu .menu-object').attr('object');
