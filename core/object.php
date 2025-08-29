@@ -2587,6 +2587,11 @@ function show_obj_cert($connect){
 	$id = $_POST["id"];
 	$obj = $connect->getRow("SELECT * FROM object WHERE id=?i", $id);
 
+	if ($_POST['clear_accr']=='1') {
+		$connect->query("UPDATE `accr_data` SET `id_obj`=?i WHERE id_obj=?i", 0, $id);
+		$connect->query("UPDATE `object` SET `accr_id`='', `accr_data`='', `synchronized`=0 WHERE id=?i", $id);
+	}
+
 	if ($_POST['id_accr']!='') {
 		$accr_data = $connect->getRow("SELECT * FROM accr_data WHERE id=?i", $_POST['id_accr']);
 		$accr_data['data'] = json_decode($accr_data['data'], true);
