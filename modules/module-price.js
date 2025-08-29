@@ -298,6 +298,22 @@ function save_room_occupancy(id){
 
 }
 
+function select_obj_cert(id_accr){
+	$('.menu-object li').removeClass('active');
+	$('.menu-object-cert').addClass('active');
+	var object = $('.object-menu .menu-object').attr('object');
+	var accr_search = $('#accr_search').val();
+	var str = 'func=show_obj_cert&id=' + object + '&id_accr='+id_accr;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function(html){
+			$('.object-infa').html(html);
+		}
+	});
+}
+
 function search_obj_cert(){
 	$('.menu-object li').removeClass('active');
 	$('.menu-object-cert').addClass('active');
