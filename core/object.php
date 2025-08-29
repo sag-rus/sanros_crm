@@ -2586,6 +2586,30 @@ function show_obj_cert($connect){
 	//Используется в СРМ и кабинете объекта!
 	$id = $_POST["id"];
 	$obj = $connect->getRow("SELECT * FROM object WHERE id=?i", $id);
+
+	if ($_POST['id_accr']!='') {
+		$accr_data = $connect->getRow("SELECT * FROM accr_data WHERE id=?ш", $_POST['id_accr']);
+		$accr_data['data'] = json_decode($accr_data['data'], true);
+
+		$obj_accr_data = [];
+
+        if (isset($accr_data['data']['hotel']['main']['registerRecord']) && trim($accr_data['data']['hotel']['main']['registerRecord'])!='') {
+            $obj_accr_data['registerRecord'] = $accr_data['data']['hotel']['main']['registerRecord'];
+        }
+
+        if (isset($accr_data['data']['hotel']['main']['status']['name']) && trim($accr_data['data']['hotel']['main']['status']['name'])!='') {
+            $obj_accr_data['status'] = $accr_data['data']['hotel']['main']['status']['name'];
+        }    
+
+        if (isset($accr_data['data']['hotel']['main']['status']['endDate']) && trim($accr_data['data']['hotel']['main']['status']['endDate'])!='') {
+            $obj_accr_data['endDate'] = $accr_data['data']['hotel']['main']['status']['endDate'];
+        }        
+		
+		$connect->query("UPDATE `accr_data` SET `id_obj`=?i WHERE id=?s", $id, $accr_data['id']);
+		$connect->query("UPDATE `object` SET `accr_id`=?s, `accr_data`=?s, `synchronized`=0 WHERE id=?s", $accr_data['ext_id'], json_encode($obj_accr_data), $id);
+	}
+
+
 	if (trim($obj['accr_data'])!='') {
 		$obj['accr_data'] = json_decode($obj['accr_data'], true);
 		$accr_data = $connect->getRow("SELECT * FROM accr_data WHERE ext_id=?s", $obj['accr_id']);
