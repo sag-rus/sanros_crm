@@ -43,46 +43,50 @@ $configNew->clientCabinet = $clientCabinet;
 $configNew->objectCabinet = $objectCabinet;
 
 
-$data = file_get_contents('compare_result_id_unique.json');
+//$data = file_get_contents('compare_result_id_unique.json');
+$data = file_get_contents('compare_result_unique.json');
 $data = json_decode($data, true);
 
 $i=1;
 foreach ($data as $item) {
-    echo '<pre>';
-    print_r($item);
-    echo '</pre>';
-    $connect->query("UPDATE `accr_data` SET `id_obj`=?i WHERE ext_id=?s", $item['id'], $item['ext_id']);
-    echo $connect->last_query().'<br>';
-    $accr_data = $connect->getRow("SELECT * FROM `accr_data` WHERE `ext_id`=?s", $item['ext_id']);
-    $accr_data['data'] = json_decode($accr_data['data'], true);
-    echo '<pre>';
-    print_r($accr_data);
-    echo '</pre>';
+    $check = $connect->getRow("SELECT * FROM `accr_data` WHERE `ext_id`=?s", $item['ext_id']);
+    if ($check['id_obj']==0) {
+        echo '<pre>';
+        print_r($item);
+        echo '</pre>';
+        $connect->query("UPDATE `accr_data` SET `id_obj`=?i WHERE ext_id=?s", $item['id'], $item['ext_id']);
+        echo $connect->last_query().'<br>';
+        $accr_data = $connect->getRow("SELECT * FROM `accr_data` WHERE `ext_id`=?s", $item['ext_id']);
+        $accr_data['data'] = json_decode($accr_data['data'], true);
+        echo '<pre>';
+        print_r($accr_data);
+        echo '</pre>';
 
-    $obj_accr_data = [];
-    echo $accr_data['data']['hotel']['main']['registerRecord'].'<br>';
-    echo $accr_data['data']['hotel']['main']['status']['name'].'<br>';
-    echo $accr_data['data']['hotel']['main']['status']['endDate'].'<br>';
-    
-    if (isset($accr_data['data']['hotel']['main']['registerRecord']) && trim($accr_data['data']['hotel']['main']['registerRecord'])!='') {
-        $obj_accr_data['registerRecord'] = $accr_data['data']['hotel']['main']['registerRecord'];
+        $obj_accr_data = [];
+        echo $accr_data['data']['hotel']['main']['registerRecord'].'<br>';
+        echo $accr_data['data']['hotel']['main']['status']['name'].'<br>';
+        echo $accr_data['data']['hotel']['main']['status']['endDate'].'<br>';
+        
+        if (isset($accr_data['data']['hotel']['main']['registerRecord']) && trim($accr_data['data']['hotel']['main']['registerRecord'])!='') {
+            $obj_accr_data['registerRecord'] = $accr_data['data']['hotel']['main']['registerRecord'];
+        }
+
+        if (isset($accr_data['data']['hotel']['main']['status']['name']) && trim($accr_data['data']['hotel']['main']['status']['name'])!='') {
+            $obj_accr_data['status'] = $accr_data['data']['hotel']['main']['status']['name'];
+        }    
+
+        if (isset($accr_data['data']['hotel']['main']['status']['endDate']) && trim($accr_data['data']['hotel']['main']['status']['endDate'])!='') {
+            $obj_accr_data['endDate'] = $accr_data['data']['hotel']['main']['status']['endDate'];
+        }        
+
+        echo '<pre>';
+        print_r($obj_accr_data);
+        echo '</pre><br><br>';
+
+        $connect->query("UPDATE `object` SET `accr_id`=?s, `accr_data`=?s, `synchronized`=0 WHERE id=?s", $item['ext_id'], json_encode($obj_accr_data), $item['id']);
+
+        $i++;
     }
-
-    if (isset($accr_data['data']['hotel']['main']['status']['name']) && trim($accr_data['data']['hotel']['main']['status']['name'])!='') {
-        $obj_accr_data['status'] = $accr_data['data']['hotel']['main']['status']['name'];
-    }    
-
-    if (isset($accr_data['data']['hotel']['main']['status']['endDate']) && trim($accr_data['data']['hotel']['main']['status']['endDate'])!='') {
-        $obj_accr_data['endDate'] = $accr_data['data']['hotel']['main']['status']['endDate'];
-    }        
-
-    echo '<pre>';
-    print_r($obj_accr_data);
-    echo '</pre><br><br>';
-
-    $connect->query("UPDATE `object` SET `accr_id`=?s, `accr_data`=?s, `synchronized`=0 WHERE id=?s", $item['ext_id'], json_encode($obj_accr_data), $item['id']);
-
-    $i++;
     //if ($i>50) break;
 }
 
