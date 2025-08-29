@@ -2613,10 +2613,9 @@ function show_obj_cert($connect){
 		$connect->query("UPDATE `accr_data` SET `id_obj`=?i WHERE id=?i", $id, $accr_data['id']);
 		$connect->query("UPDATE `object` SET `accr_id`=?s, `accr_data`=?s, `synchronized`=0 WHERE id=?i", $accr_data['ext_id'], json_encode($obj_accr_data), $id);
 
-		$obj['accr_data'] = json_encode($obj_accr_data);
-		$obj['accr_id'] = $accr_data['ext_id'];
 	}
 
+	$obj = $connect->getRow("SELECT * FROM object WHERE id=?i", $id);
 
 	if (trim($obj['accr_data'])!='') {
 		$obj['accr_data'] = json_decode($obj['accr_data'], true);
