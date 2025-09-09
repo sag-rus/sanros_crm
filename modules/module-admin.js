@@ -2179,7 +2179,7 @@ function show_sites_questions_list(site_id) {
 	var str = 'func=show_sites_questions_list&site_id='+site_id;
 
 	if($('#questions-link-filter').length > 0) {
-		str = str + '&link=='+$('#questions-link-filter').val().trim();
+		str = str + '&link='+$('#questions-link-filter').val().trim();
 	}
 	
 	$.ajax({

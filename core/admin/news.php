@@ -751,16 +751,18 @@ function show_sites_questions_list($connect) {
 
 
     $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
+    $link = isset($_POST['link'])?$_POST['link']:false;
+    if ($link) $link = " AND `link` LIKE '%$link%'";
     $site = NULL;
     if($site_id) {
         $site = $connect->getRow("SELECT `id`, `name`, `domain` FROM `sites` WHERE `id`=?i",$site_id);
         if($site)
-            $questions = $connect->getAll("SELECT * FROM `app_models_site_question` WHERE `site_id`=?i AND `status` <> 2 ORDER BY `sort` ASC", $site_id);
+            $questions = $connect->getAll("SELECT * FROM `app_models_site_question` WHERE `site_id`=?i AND `status` <> 2 $link ORDER BY `sort` ASC", $site_id);
         else
             $questions = [];
     }
     else
-        $questions = $connect->getAll("SELECT * FROM `app_models_site_question` WHERE `status` <> 2 ORDER BY `sort` ASC");
+        $questions = $connect->getAll("SELECT * FROM `app_models_site_question` WHERE `status` <> 2 $link ORDER BY `sort` ASC");
 
     ob_start();
     ?>
@@ -769,6 +771,7 @@ function show_sites_questions_list($connect) {
             <i class="fa fa-list"></i> Вопросы<?php if($site) { ?> сайта «<?=$site['name'];?>»<?php } ?> 
             <button class="btn btn-success btn-sm btn-sites-sync" onclick="sync_site(38)">Синхронизировать</button> 
             <button class="btn btn-default btn-sm" onclick="show_sites_list();">К списку сайтов</button>
+            <div class="std-bottom-margin"></div>
             <div class="row">
                 <div class="col-md-3">
                     Адрес:
