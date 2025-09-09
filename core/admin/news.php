@@ -765,7 +765,14 @@ function show_sites_questions_list($connect) {
     ob_start();
     ?>
     <div class="panel panel-default sites-questions-panel">
-        <div class="panel-heading"><i class="fa fa-list"></i> Вопросы<?php if($site) { ?> сайта «<?=$site['name'];?>»<?php } ?> <button class="btn btn-success btn-sm btn-sites-sync" onclick="sync_site(38)">Синхронизировать</button> <button class="btn btn-default btn-sm" onclick="show_sites_list();">К списку сайтов</button></div>
+        <div class="panel-heading">
+            <i class="fa fa-list"></i> Вопросы<?php if($site) { ?> сайта «<?=$site['name'];?>»<?php } ?> 
+            <button class="btn btn-success btn-sm btn-sites-sync" onclick="sync_site(38)">Синхронизировать</button> 
+            <button class="btn btn-default btn-sm" onclick="show_sites_list();">К списку сайтов</button>
+            <div class="row">
+                Адрес: <input class="form-control" value="" id="questions-link-filter" onchange="show_sites_questions_list(<?=$site_id?>);">
+            </div>
+        </div>
         <div class="panel-body table-body">
             <table class="table table-hover table-condensed">
                 <thead>

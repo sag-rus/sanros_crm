@@ -2176,7 +2176,8 @@ function show_sites_meta_templates_list(site_id) {
 }
 
 function show_sites_questions_list(site_id) {
-	var str = 'func=show_sites_questions_list&site_id='+site_id;
+	var str = 'func=show_sites_questions_list&site_id='+site_id+'&link=='+$('#questions-link-filter').val().trim();
+	
 	$.ajax({
 		type: 'POST',
 		data: str,
