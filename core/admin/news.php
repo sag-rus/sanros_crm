@@ -771,6 +771,9 @@ function show_sites_questions_list($connect) {
             <i class="fa fa-list"></i> Вопросы<?php if($site) { ?> сайта «<?=$site['name'];?>»<?php } ?> 
             <button class="btn btn-success btn-sm btn-sites-sync" onclick="sync_site(38)">Синхронизировать</button> 
             <button class="btn btn-default btn-sm" onclick="show_sites_list();">К списку сайтов</button>
+            <?php if($id_rights > 4) { ?>
+                <button type="button" class="btn btn-primary btn-sm" onclick="sites_question(null,<?=$site_id;?>);"><i class="fa fa-plus-circle"></i> Добавить вопрос</button>
+            <?php } ?>            
             <div class="std-bottom-margin"></div>
             <div class="row">
                 <div class="col-md-1">
@@ -829,9 +832,7 @@ function show_sites_questions_list($connect) {
             </table>
         </div>
         <div class="panel-footer text-right">
-            <?php if($id_rights > 4) { ?>
-                <button type="button" class="btn btn-primary btn-sm" onclick="sites_question(null,<?=$site_id;?>);"><i class="fa fa-plus-circle"></i> Добавить вопрос</button>
-            <?php } ?>
+
         </div>
     </div>
     <?php
