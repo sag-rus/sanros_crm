@@ -752,7 +752,7 @@ function show_sites_questions_list($connect) {
 
     $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
     $link = isset($_POST['link'])?$_POST['link']:false;
-    if ($link) $link = " AND `link` LIKE '%$link%'";
+    if ($link) $link = " AND `path` LIKE '%$link%'";
     $site = NULL;
     if($site_id) {
         $site = $connect->getRow("SELECT `id`, `name`, `domain` FROM `sites` WHERE `id`=?i",$site_id);
@@ -777,7 +777,7 @@ function show_sites_questions_list($connect) {
                     Адрес:
                 </div>
                 <div class="col-md-9">
-                    <input class="form-control" value="" id="questions-link-filter" onchange="show_sites_questions_list(<?=$site_id?>);">
+                    <input class="form-control" value="" id="questions-link-filter" value="<?=$_POST['link']?>" onchange="show_sites_questions_list(<?=$site_id?>);">
                 </div>
             </div>
         </div>
