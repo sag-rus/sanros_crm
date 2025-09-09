@@ -773,10 +773,10 @@ function show_sites_questions_list($connect) {
             <button class="btn btn-default btn-sm" onclick="show_sites_list();">К списку сайтов</button>
             <div class="std-bottom-margin"></div>
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-1">
                     Адрес:
                 </div>
-                <div class="col-md-9">
+                <div class="col-md-11">
                     <input class="form-control" id="questions-link-filter" value="<?=$_POST['link']?>" onchange="show_sites_questions_list(<?=$site_id?>);">
                 </div>
             </div>
