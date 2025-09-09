@@ -770,7 +770,12 @@ function show_sites_questions_list($connect) {
             <button class="btn btn-success btn-sm btn-sites-sync" onclick="sync_site(38)">Синхронизировать</button> 
             <button class="btn btn-default btn-sm" onclick="show_sites_list();">К списку сайтов</button>
             <div class="row">
-                Адрес: <input class="form-control" value="" id="questions-link-filter" onchange="show_sites_questions_list(<?=$site_id?>);">
+                <div class="col-md-3">
+                    Адрес:
+                </div>
+                <div class="col-md-9">
+                    <input class="form-control" value="" id="questions-link-filter" onchange="show_sites_questions_list(<?=$site_id?>);">
+                </div>
             </div>
         </div>
         <div class="panel-body table-body">
