@@ -774,10 +774,10 @@ function show_sites_questions_list($connect) {
                         ID
                     </th>
                     <th>
-                        Заголовок
-                    </th>
-                    <th>
                         Адрес страницы
+                    </th>                    
+                    <th>
+                        Вопрос
                     </th>
                     <th>
                         Вес
@@ -796,8 +796,8 @@ function show_sites_questions_list($connect) {
                     ?>
                     <tr <?php if(!$question['synchronized']){ ?>class="not-synchronized"<?php } ?>>
                         <td><?=$question['id'];?></td>
-                        <td><?=$question['title'];?></td>
                         <td><?=$question['path'];?></td>
+                        <td><?=$question['text'];?></td>
                         <td><?=$question['sort'];?></td>
                         <td><?=$question['status'] == 1?"Активен":"Не активен";?></td>
                         <td>
