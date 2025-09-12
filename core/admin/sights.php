@@ -111,15 +111,15 @@ function save_new_sight($connect){
 	];
 
 	$boundsArrayImage = [];
-	$boundsArraySlider = [];
+	//$boundsArraySlider = [];
 	$boundsArrayPhotoGallery = [];
 
 	$boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);
-	$boundsArraySlider = files_to_bounds($connect,$entity,'slider',isset($_POST['slider'])?$_POST['slider']:[]);
+	//$boundsArraySlider = files_to_bounds($connect,$entity,'slider',isset($_POST['slider'])?$_POST['slider']:[]);
 	$boundsArrayPhotoGallery = files_to_bounds($connect,$entity,'photogallery',isset($_POST['photogallery'])?$_POST['photogallery']:[]);
 
 	set_bounds($connect,$boundsArrayImage,'image');
-	set_bounds($connect,$boundsArraySlider,'slider');
+	//set_bounds($connect,$boundsArraySlider,'slider');
 	set_bounds($connect,$boundsArrayPhotoGallery,'photogallery');
 
 	$respAr = [
@@ -375,19 +375,19 @@ function update_sight($connect){
 	];
 
 	$boundsArrayImage = [];
-	$boundsArraySlider = [];
+	//$boundsArraySlider = [];
 	$boundsArrayPhotoGallery = [];
 
 	$boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);
-	$boundsArraySlider = files_to_bounds($connect,$entity,'slider',isset($_POST['slider'])?$_POST['slider']:[]);
+	//$boundsArraySlider = files_to_bounds($connect,$entity,'slider',isset($_POST['slider'])?$_POST['slider']:[]);
 	$boundsArrayPhotoGallery = files_to_bounds($connect,$entity,'photogallery',isset($_POST['photogallery'])?$_POST['photogallery']:[]);	
 
 	remove_bounds($connect,$entity,'image');
-	remove_bounds($connect,$entity,'slider');
+	//remove_bounds($connect,$entity,'slider');
 	remove_bounds($connect,$entity,'photogallery');
 
 	set_bounds($connect,$boundsArrayImage,'image');	
-	set_bounds($connect,$boundsArraySlider,'slider');	
+	//set_bounds($connect,$boundsArraySlider,'slider');	
 	set_bounds($connect,$boundsArrayPhotoGallery,'photogallery');	
 
 	$respAr = [
