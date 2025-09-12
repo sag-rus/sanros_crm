@@ -141,7 +141,7 @@ function view_sights($connect){
 						Новое фото
 					</th>
 					<th>
-						Расположение
+						URL
 					</th>
                     <th>
                         Действия
@@ -151,7 +151,7 @@ function view_sights($connect){
 				<tbody>
 					<?php
 					foreach($data as $row){
-						$region = $connect->getRow("SELECT id,name FROM direction_object WHERE id=?i", $row['place']);
+						//$region = $connect->getRow("SELECT id,name FROM direction_object WHERE id=?i", $row['place']);
 						$id = $row["id"];
 						$entity = $row;
 						$entity['type'] = 'sights';
@@ -182,7 +182,7 @@ function view_sights($connect){
 								}								
 								?>
 							</td>
-							<td><?php echo $region["name"]; ?></td>
+							<td><?php echo $row["path"]; ?></td>
 							<td>
 								<button type="button" class="btn btn-default btn-sm" onclick="edit_sight('<?php echo $id; ?>')"><i class="fa fa-pencil"></i></button>
 								&nbsp; 
