@@ -769,7 +769,7 @@ function add_new_sight(){
 		success: function(html){
 			$('.sights-content').html(html);
 
-		  $('.add-new-sight *[name="image"]]').multUploader({
+		  $('.add-new-sight *[name="image"]').multUploader({
 		    action:'mysql.php?func=multipart_upload',
 		    fragmentSize:1024*1024,
 				maxcount: 1,
