@@ -130,7 +130,7 @@ function save_new_sight($connect){
 }
 
 function view_sights($connect){
-	$data = $connect->getAll("SELECT * FROM sights WHERE status=1 ORDER by id DESC");
+	$data = $connect->getAll("SELECT * FROM sights WHERE status=1 ORDER by id ASC");
 	ob_start();
 ?>
 	<div class="panel panel-default">
