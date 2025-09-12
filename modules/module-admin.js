@@ -930,7 +930,7 @@ function update_sight(id){
 	else if(!longitude)
 		show_warning('.edit-sight', 'Укажите долготу');
 	else*/ if(!path)
-		show_warning('.add-new-sight', 'Укажите URL родительского направления на сайте');
+		show_warning('.edit-sight', 'Укажите URL родительского направления на сайте');
 	else{
 
 	  var $image = $('.edit-sight').find('*[name="image"]');
