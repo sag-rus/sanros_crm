@@ -35,13 +35,13 @@ function add_new_sight(){
 					<div class="input-message-block" data-for="image"></div>
 				</div>
 			</div>
-			<div class="form-group">
+			<!--<div class="form-group">
 				<label class="col-sm-3 control-label">Фотография для верха страницы</label>
 				<div class="col-sm-9">
 					<input type="file" class="form-control" name="slider" value="">
 					<div class="input-message-block" data-for="slider"></div>
 				</div>
-			</div>
+			</div>-->
 			<div class="form-group">
 				<label class="col-sm-3 control-label">Фотогалерея</label>
 				<div class="col-sm-9">
@@ -56,7 +56,7 @@ function add_new_sight(){
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">Адрес</label>
+				<label class="col-sm-3 control-label">Расположние / Адрес</label>
 				<div class="col-sm-9">
 					<input type="text" class="form-control address" />
 				</div>
@@ -74,18 +74,11 @@ function add_new_sight(){
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">Расположение</label>
+				<label class="col-sm-3 control-label">URL родительского направления на сайте</label>
 				<div class="col-sm-9">
-					<select class="form-control place">
-						<option value="0"></option>
-						<?php
-						foreach ($regions as $region) {
-							?><option value="<?=$region['id']?>"><?=$region['name']?></option><?php
-						}
-						?>
-					</select>
+					<input type="text" class="form-control path" value="<?php echo $row['path']; ?>" />
 				</div>
-			</div>			
+			</div>	
 		</div>
 		<div class="panel-footer" style="text-align: right">
 			<button type="button" class="btn btn-success btn-sm" onclick="save_sight()"><i class="fa fa-check-circle"></i> Сохранить</button>

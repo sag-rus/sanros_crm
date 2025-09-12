@@ -769,7 +769,7 @@ function add_new_sight(){
 		success: function(html){
 			$('.sights-content').html(html);
 
-		  $('.add-new-sight *[name="image"], .add-new-sight *[name="slider"]').multUploader({
+		  $('.add-new-sight *[name="image"]]').multUploader({
 		    action:'mysql.php?func=multipart_upload',
 		    fragmentSize:1024*1024,
 				maxcount: 1,
@@ -897,7 +897,7 @@ function edit_sight(id){
 		success: function(html){
 			$('.sights-content').html(html);
 
-		  $('.edit-sight *[name="image"], .edit-sight *[name="slider"]').multUploader({
+		  $('.edit-sight *[name="image"]').multUploader({
 		    action:'mysql.php?func=multipart_upload',
 		    fragmentSize:1024*1024,
 				maxcount: 1,
