@@ -97,7 +97,6 @@ function save_new_sight($connect){
 	$longitude = $_POST["longitude"];
 	$path = $_POST["path"];
 	$connect->query("INSERT INTO sights(name, description, address, latitude, longitude, path) VALUES (?s, ?s, ?s, ?s, ?s, ?s)", $name, $description, $address, $latitude, $longitude, $path);
-	echo $connect->last_query();
 
 	$entity = [
 		'id' => $connect->insertId(),
