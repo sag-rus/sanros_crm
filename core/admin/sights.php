@@ -164,7 +164,7 @@ function view_sights($connect){
 								if (file_exists($folder)) {
 									echo '<br><strong>Фото: </strong><br>';
 									if (is_array($new_image) && $new_image[0]['uri']!='') {
-										echo '<br><br><img src="'.$new_image[0]['uri'].'" class="img-thumbnail" style="height: 100px" />';
+										echo '<img src="'.$new_image[0]['uri'].'" class="img-thumbnail" style="height: 100px" />';
 									}
 									/*$folder_open = opendir($folder);
 									while($image = readdir($folder_open)){
