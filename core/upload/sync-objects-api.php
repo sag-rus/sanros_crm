@@ -269,6 +269,11 @@ function sync_objects_api($connect){
 
 			echo "Отправка запроса на https://sites.tonia.ru/api/sight/set/".$sight['id'].'<br>';
 
+			echo 'form_params=';
+			echo '<pre>';
+			print_r($sightAr);
+			echo '</pre>';			
+
 			$res = $client->request('POST',"https://sites.tonia.ru/api/sight/set/".$sight['id'],[
 				'form_params' => $sightAr
 			]);
