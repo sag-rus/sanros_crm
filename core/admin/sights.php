@@ -102,8 +102,8 @@ function save_new_sight($connect){
 	$address = $_POST["address"];
 	$latitude = $_POST["latitude"];
 	$longitude = $_POST["longitude"];
-	$place = $_POST["place"];
-	$connect->query("INSERT INTO sights(name, description, address, latitude, longitude, place) VALUES (?s, ?s, ?s, ?s, ?s, ?i)", $name, $description, $address, $latitude, $longitude, $place);
+	$path = $_POST["path"];
+	$connect->query("INSERT INTO sights(name, description, address, latitude, longitude, path) VALUES (?s, ?s, ?s, ?s, ?s, ?s)", $name, $description, $address, $latitude, $longitude, $path);
 
 	$entity = [
 		'id' => $connect->insertId(),
@@ -130,7 +130,7 @@ function save_new_sight($connect){
 }
 
 function view_sights($connect){
-	$data = $connect->getAll("SELECT * FROM sights");
+	$data = $connect->getAll("SELECT * FROM sights WHERE status=1 ORDER by id DESC");
 	ob_start();
 ?>
 	<div class="panel panel-default">
@@ -276,7 +276,7 @@ function view_sights($connect){
 
 function del_sight($connect){
 	$id = $_POST["id"];
-	$connect->query("DELETE FROM sights WHERE id=$id");
+	$connect->query("UPDATE sights SET `status`=0 WHERE id=$id");
 }
 
 function edit_sight($connect){
@@ -304,15 +304,15 @@ function edit_sight($connect){
 					<div class="input-message-block" data-for="image"></div>
 				</div>
 			</div>
-			<div class="form-group">
+			<!--<div class="form-group">
 				<label class="col-sm-3 control-label">Фотография для верха страницы</label>
 				<div class="col-sm-9">
 					<input type="file" class="form-control" name="slider" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'slider'))));?>">
 					<div class="input-message-block" data-for="slider"></div>
 				</div>
-			</div>
+			</div>-->
 			<div class="form-group">
-				<label class="col-sm-3 control-label">Фотогалерея</label>
+				<label class="col-sm-3 control-label">Фотографии места</label>
 				<div class="col-sm-9">
 					<input type="file" class="form-control" name="photogallery" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'photogallery'))));?>">
 					<div class="input-message-block" data-for="photogallery"></div>
@@ -321,11 +321,11 @@ function edit_sight($connect){
 			<div class="form-group">
 				<label class="col-sm-3 control-label">Описание</label>
 				<div class="col-sm-9">
-					<textarea class="form-control description"><?php echo $row["description"]; ?></textarea>
+					<textarea class="form-control description" rows="20"><?php echo $row["description"]; ?></textarea>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">Адрес</label>
+				<label class="col-sm-3 control-label">Расположение / Адрес</label>
 				<div class="col-sm-9">
 					<input type="text" class="form-control address" value="<?php echo $row['address']; ?>" />
 				</div>
@@ -343,18 +343,9 @@ function edit_sight($connect){
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">Расположение</label>
+				<label class="col-sm-3 control-label">URL родительского направления на сайте</label>
 				<div class="col-sm-9">
-					<select class="form-control place">
-						<option value="0"></option>
-						<?php
-						foreach ($regions as $region) {
-							$sel = '';
-							if ($row['place']==$region['id']) $sel = 'selected="selected"';
-							?><option value="<?=$region['id']?>" <?=$sel?>><?=$region['name']?></option><?php
-						}
-						?>
-					</select>
+					<input type="text" class="form-control longitude" value="<?php echo $row['path']; ?>" />
 				</div>
 			</div>			
 		</div>
@@ -375,8 +366,8 @@ function update_sight($connect){
 	$address = $_POST["address"];
 	$latitude = $_POST["latitude"];
 	$longitude = $_POST["longitude"];
-	$place = $_POST["place"];
-	$connect->query("UPDATE sights SET name=?s, description=?s, address=?s, latitude=?s, longitude=?s, place=?i, synchronized=0 WHERE id=?i", $name, $description, $address, $latitude, $longitude, $place, $id);
+	$path = $_POST["path"];
+	$connect->query("UPDATE sights SET name=?s, description=?s, address=?s, latitude=?s, longitude=?s, path=?s, synchronized=0 WHERE id=?i", $name, $description, $address, $latitude, $longitude, $path, $id);
 
 	$entity = [
 		'id' => $id,
