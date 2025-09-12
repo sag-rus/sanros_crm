@@ -792,17 +792,17 @@ function save_sight(){
 	var address = $('.add-new-sight .address').val();
 	var latitude = $('.add-new-sight .latitude').val();
 	var longitude = $('.add-new-sight .longitude').val();
-	var place = $('.add-new-sight .place option:selected').val();
+	var path = $('.add-new-sight .path').val();
 	if(!name)
 		show_warning('.add-new-sight', 'Введите название');
 	else if(!description)
 		show_warning('.add-new-sight', 'Введите описание');
-	else if(!latitude)
+	else /*if(!latitude)
 		show_warning('.add-new-sight', 'Укажите широту');
 	else if(!longitude)
 		show_warning('.add-new-sight', 'Укажите долготу');
-	else if(!place)
-		show_warning('.add-new-sight', 'Укажите расположение');
+	else */ if(!path)
+		show_warning('.add-new-sight', 'Укажите URL родительского направления на сайте');
 	else{
 
 	  var $image = $('.add-new-sight').find('*[name="image"]');
@@ -810,10 +810,10 @@ function save_sight(){
 	  var image = JSON.parse($image.val().trim());
 	  $imageMsg.html("").removeClass('with-bottom-margin');
 
-	  var $slider = $('.add-new-sight').find('*[name="slider"]');
+	  /*var $slider = $('.add-new-sight').find('*[name="slider"]');
 	  var $sliderMsg = $slider.parent().find('.input-message-block');
 	  var slider = JSON.parse($slider.val().trim());
-	  $sliderMsg.html("").removeClass('with-bottom-margin');	  
+	  $sliderMsg.html("").removeClass('with-bottom-margin');*/  
 
 	  var $photogallery = $('.add-new-sight').find('*[name="photogallery"]');
 	  var $photogalleryMsg = $photogallery.parent().find('.input-message-block');
@@ -827,13 +827,13 @@ function save_sight(){
       	func: 'save_new_sight',
       	name: name,
 				image: image,
-				slider: slider,
+				//slider: slider,
 				photogallery: photogallery,
 				description: description,
 				address: address,
 				latitude: latitude,
 				longitude: longitude,
-				place: place
+				path: path
 		  },
       dataType: 'JSON',
       url: 'mysql.php',
@@ -920,17 +920,17 @@ function update_sight(id){
 	var address = $('.edit-sight .address').val();
 	var latitude = $('.edit-sight .latitude').val();
 	var longitude = $('.edit-sight .longitude').val();
-	var place = $('.edit-sight .place option:selected').val();
+	var path = $('.edit-sight .path').val();
 	if(!name)
 		show_warning('.edit-sight', 'Введите название');
 	else if(!description)
 		show_warning('.edit-sight', 'Введите описание');
-	else if(!latitude)
+	else/* if(!latitude)
 		show_warning('.edit-sight', 'Укажите широту');
 	else if(!longitude)
 		show_warning('.edit-sight', 'Укажите долготу');
-	else if(!place)
-		show_warning('.add-new-sight', 'Укажите расположение');
+	else*/ if(!path)
+		show_warning('.add-new-sight', 'Укажите URL родительского направления на сайте');
 	else{
 
 	  var $image = $('.edit-sight').find('*[name="image"]');
@@ -938,10 +938,10 @@ function update_sight(id){
 	  var image = JSON.parse($image.val().trim());
 	  $imageMsg.html("").removeClass('with-bottom-margin');
 
-	  var $slider = $('.edit-sight').find('*[name="slider"]');
+	  /*var $slider = $('.edit-sight').find('*[name="slider"]');
 	  var $sliderMsg = $slider.parent().find('.input-message-block');
 	  var slider = JSON.parse($slider.val().trim());
-	  $sliderMsg.html("").removeClass('with-bottom-margin');	  
+	  $sliderMsg.html("").removeClass('with-bottom-margin');*/  
 
 	  var $photogallery = $('.edit-sight').find('*[name="photogallery"]');
 	  var $photogalleryMsg = $photogallery.parent().find('.input-message-block');
@@ -956,13 +956,13 @@ function update_sight(id){
       	id: id,
       	name: name,
 				image: image,
-				slider: slider,
+				//slider: slider,
 				photogallery: photogallery,
 				description: description,
 				address: address,
 				latitude: latitude,
 				longitude: longitude,
-				place: place
+				path: path
 		  },
       dataType: 'JSON',
       url: 'mysql.php',

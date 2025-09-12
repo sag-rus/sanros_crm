@@ -321,7 +321,7 @@ function edit_sight($connect){
 			<div class="form-group">
 				<label class="col-sm-3 control-label">Описание</label>
 				<div class="col-sm-9">
-					<textarea class="form-control description" rows="20"><?php echo $row["description"]; ?></textarea>
+					<textarea class="form-control description" style="height: 300px;"><?php echo $row["description"]; ?></textarea>
 				</div>
 			</div>
 			<div class="form-group">
@@ -345,7 +345,7 @@ function edit_sight($connect){
 			<div class="form-group">
 				<label class="col-sm-3 control-label">URL родительского направления на сайте</label>
 				<div class="col-sm-9">
-					<input type="text" class="form-control longitude" value="<?php echo $row['path']; ?>" />
+					<input type="text" class="form-control path" value="<?php echo $row['path']; ?>" />
 				</div>
 			</div>			
 		</div>
