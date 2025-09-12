@@ -138,9 +138,6 @@ function view_sights($connect){
 						Название
 					</th>
 					<th>
-						Новое фото
-					</th>
-					<th>
 						URL
 					</th>
                     <th>
@@ -165,21 +162,17 @@ function view_sights($connect){
 								<?php 
 								$folder = "temp/sights/".$id;
 								if (file_exists($folder)) {
-									echo '<br><strong>Старые фото: </strong><br>';
-									$folder_open = opendir($folder);
+									echo '<br><strong>Фото: </strong><br>';
+									if (is_array($new_image) && $new_image[0]['uri']!='') {
+										echo '<br><br><img src="'.$new_image[0]['uri'].'" class="img-thumbnail" style="height: 100px" />';
+									}
+									/*$folder_open = opendir($folder);
 									while($image = readdir($folder_open)){
 										if(($image != '.') AND ($image != '..') AND ($image)){ ?>
 											<img src="<?php echo $folder.'/'.$image; ?>" class="img-thumbnail" style="height: 100px" />
 										<?php }
-									} 
+									}*/ 
 								}
-								?>
-							</td>
-							<td>
-								<?php
-								if (is_array($new_image) && $new_image[0]['uri']!='') {
-									echo '<br><br><img src="'.$new_image[0]['uri'].'" class="img-thumbnail" style="height: 100px" />';
-								}								
 								?>
 							</td>
 							<td><?php echo $row["path"]; ?></td>
