@@ -251,7 +251,7 @@ function sync_objects_api($connect){
 			}
 		}
 
-		$sights = $connect->getAll("SELECT * FROM `sights` WHERE `synchronized` = 0");
+		$sights = $connect->getAll("SELECT * FROM `sights` WHERE `synchronized` = 0 and `path`<>''");
 
 		foreach ($sights as $sight) {
 			$sightAr = [];
