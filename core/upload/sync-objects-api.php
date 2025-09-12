@@ -267,7 +267,7 @@ function sync_objects_api($connect){
 			$sightAr['uri'] = $sight['path'];
 			$sightAr['status'] = 1;
 
-			//echo "Отправка запроса на https://sites.tonia.ru/api/sight/set/".$sight['id'].'<br>';
+			echo "Отправка запроса на https://sites.tonia.ru/api/sight/set/".$sight['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/sight/set/".$sight['id'],[
 				'form_params' => $sightAr
