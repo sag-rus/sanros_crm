@@ -162,7 +162,7 @@ function view_sights($connect){
 								<?php 
 								$folder = "temp/sights/".$id;
 								if (file_exists($folder)) {
-									echo '<br><strong>Фото: </strong><br>';
+									echo '<br>';
 									if (is_array($new_image) && $new_image[0]['uri']!='') {
 										echo '<img src="'.$new_image[0]['uri'].'" class="img-thumbnail" style="height: 100px" />';
 									}
