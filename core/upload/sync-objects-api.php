@@ -262,9 +262,9 @@ function sync_objects_api($connect){
 			$sightAr["address"] = $sight['address'];
 			$sightAr["latitude"] = $sight['latitude'];
 			$sightAr["longitude"] = $sight['longitude'];
-			$sightAr["location_source_id"] = $sight['place'];
+			$sightAr["location_source_id"] = 0;
 			$sightAr["source_id"] = $sight['id'];
-			$sightAr['uri'] = '/достопримечательности/'.change_text_url($sight['name']);
+			$sightAr['uri'] = $sight['path'];
 			$sightAr['status'] = 1;
 
 			//echo "Отправка запроса на https://sites.tonia.ru/api/sight/set/".$sight['id'].'<br>';
