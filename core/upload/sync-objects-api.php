@@ -275,10 +275,10 @@ function sync_objects_api($connect){
 
 			$res = json_decode($res->getBody(),true);
 
-			/*echo 'res=';
+			echo 'res=';
 			echo '<pre>';
 			print_r($res);
-			echo '</pre>';*/
+			echo '</pre>';
 
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
