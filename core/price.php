@@ -82,13 +82,14 @@ function show_months($connect){
 
 function edit_month(){
 	$id = (int)($_GET['id'] ?? (int)$_POST['id'] ?? 0);
+	$locations = $connect->getAll("SELECT * FROM `app_models_location_location` WHERE `status`=1 order by id ASC");
 	?>
 	<div class="modal fade">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
-					<h4 class="modal-title">Новая страница месяца</h4>
+					<h4 class="modal-title"><?if ($id==0) echo 'Новая страница месяца'; else echo 'Изменение заголовков месяца'?></h4>
 				</div>
 				<div class="modal-body">
 					<div class="form-horizontal new-month">
@@ -103,6 +104,11 @@ function edit_month(){
 							<div class="col-sm-8">
 								<select class="form-control id_location">
 									<option value="0">Главная страница</option>
+									<?
+									foreach ($locations as $location) {
+										?><option value="<?=$location['id']?>"><?=$location['name']?></option><?
+									}
+									?>
 								</select>
 							</div>
 						</div>

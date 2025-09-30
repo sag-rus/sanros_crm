@@ -671,6 +671,28 @@ function months(){
 	});
 }
 
+function save_month(id){
+	var active = $('.new-month .active').is(':checked') ? 1 : 0;
+	var id_location = $('.new-month .id_location option:selected').val();
+	var id_month = $('.new-month .id_month option:selected').val();
+	var title = $('.new-month .month_title').val();
+	var desc = $('.new-month .month_description').val();
+	var h1 = $('.new-month .month_h1').val();
+	if(!title || !desc || !h1)
+		show_warning('.new-month', 'Вы не ввели title, description и h1', false);
+	else{
+		var str = 'func=save_month&id='+id+'&active='+active+'&id_location='+id_location+'&id_month='+id_month+'&title='+title+'&desc='+desc+'&h1='+h1;
+		$.ajax({
+			url: 'mysql.php',
+			type: 'POST',
+			data: str,
+			success: function(){
+				months();
+			}
+		});
+	}
+}
+
 function add_new_month(){
 	var str = 'func=edit_month';
 	$.ajax({
