@@ -169,9 +169,9 @@ function edit_month($connect){
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-4 control-label" <?php if ($id>0) echo 'disabled'?>>Месяц</label>
+							<label class="col-sm-4 control-label">Месяц</label>
 							<div class="col-sm-8">
-								<select class="form-control id_month">
+								<select class="form-control id_month" <?php if ($id>0) echo 'disabled'?>>
 									<option value="1" <?php if ($month['id_month']==1) echo 'selected="selected"'?>>Январь</option>
 									<option value="2" <?php if ($month['id_month']==2) echo 'selected="selected"'?>>Февраль</option>
 									<option value="3" <?php if ($month['id_month']==3) echo 'selected="selected"'?>>Март</option>
