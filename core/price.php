@@ -80,6 +80,45 @@ function show_months($connect){
 <?php
 }
 
+function save_month($connect){
+	$id = $_POST["id"];
+	$active = $_POST["active"];
+	$id_location = $_POST["id_location"];
+	$id_month = $_POST["id_month"];
+	$title = $_POST["title"];
+	$desc = $_POST["desc"];
+	$h1 = $_POST["h1"];
+
+	$months = [
+		1 => 'январь',
+		2 => 'февраль',
+		3 => 'март',
+		4 => 'апрель',
+		5 => 'май',
+		6 => 'июнь',
+		7 => 'июль',
+		8 => 'август',
+		9 => 'сентябрь',
+		10 => 'октябрь',
+		11 => 'ноябрь',
+		12 => 'декабрь'
+	];
+
+	if ($id==0) {
+		//ADD
+		$location = $connect->getRow("SELECT * FROM `app_models_location_location` WHERE `id`=?i", $id_location);
+		$path = $location['uri'].'/'.$months[$id_month];
+		$month = $connect->getRow("SELECT * FROM `months` WHERE `id_location`=?i AND `id_month`=?i", $id_location, $id_month);	
+		if (!$month) {
+			$connect->query("INSERT INTO `months` (active,id_location,id_month,path,title,description,h1) VALUES(?i,?i,?i,?s,?s,?s,?s)", $active, $id_location, $id_month, $path, $title, $desc, $h1);
+		}
+	} else {
+		//EDIT
+	}
+	echo "INSERT INTO `procedure` (name) VALUES(?s)";
+	$connect->query("INSERT INTO `procedure` (name) VALUES(?s)", $name);
+}
+
 function edit_month($connect){
 	$id = (int)($_GET['id'] ?? (int)$_POST['id'] ?? 0);
 	$locations = $connect->getAll("SELECT * FROM `app_models_location_location` WHERE `status`=1 order by id ASC");
@@ -106,7 +145,7 @@ function edit_month($connect){
 									<option value="0">Главная страница</option>
 									<?php
 									foreach ($locations as $location) {
-										?><option value="<?=$location['name']?>"><?=$location['name']?></option><?php
+										?><option value="<?=$location['id']?>"><?=$location['name']?></option><?php
 									}
 									?>
 								</select>
