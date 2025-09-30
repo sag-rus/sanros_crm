@@ -107,7 +107,7 @@ function save_month($connect){
 	if ($id==0) {
 		//ADD
 		$location = $connect->getRow("SELECT * FROM `app_models_location_location` WHERE `id`=?i", $id_location);
-		orint_r($location);
+		print_r($location);
 		$path = $location['uri'].'/'.$months[$id_month];
 		$month = $connect->getRow("SELECT * FROM `months` WHERE `id_location`=?i AND `id_month`=?i", $id_location, $id_month);	
 		if (!$month) {
