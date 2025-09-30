@@ -4,7 +4,7 @@ function show_months($connect){
 ?>
 <div class="form-horizontal panel panel-default">
 	<div class="panel-heading">
-		<i class="fa fa-calendar"></i> Месяца
+		<i class="fa fa-calendar"></i> Месяцы
 		<button type="button" class="btn btn-info btn-sm" onclick="add_new_month()"><i class="fa fa-plus-circle"></i> Добавить</button>
 	</div>
 	<div class="list-group">
@@ -65,7 +65,7 @@ function show_months($connect){
 					<?=$row['path']?>
 				</div>
 				<div class="col-sm-1 text-center">
-					<button type="button" class="btn btn-default btn-xs" onclick="edit_month(<?=$id?>)"><i class="fa fa-pencil"></i></button>
+					<button type="button" class="btn btn-default btn-xs" onclick="edit_month(<?=$row['id']?>)"><i class="fa fa-pencil"></i></button>
 				</div>
 				<div class="clearfix"></div>
 			</div>
@@ -121,7 +121,18 @@ function save_month($connect){
 
 function edit_month($connect){
 	$id = (int)($_GET['id'] ?? (int)$_POST['id'] ?? 0);
-	$locations = $connect->getAll("SELECT * FROM `app_models_location_location` WHERE `status`=1 order by id ASC");
+	$active = true;
+	if ($id>0) {
+		$month = $connect->getRow("SELECT * FROM `months` WHERE `id`=?i", $id);
+		if ($month['active']==0) $active = false;
+	}
+	$locations = [];
+	$main = [
+		'id' => 0,
+		'name' => 'Главная страница'
+	];
+	$all_locations = $connect->getAll("SELECT id,name FROM `app_models_location_location` WHERE `status`=1 order by id ASC");
+	$locations[] = $main + $all_locations; 
 	?>
 	<div class="modal fade">
 		<div class="modal-dialog">
@@ -135,16 +146,17 @@ function edit_month($connect){
 						<div class="form-group">
 							<label class="col-sm-4 control-label">Активность</label>
 							<div class="col-sm-8">
-								<input type="checkbox" checked class="form-control active">
+								<input type="checkbox" <?php if ($active) echo 'checked';?> class="form-control active">
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="col-sm-4 control-label">Направление</label>
 							<div class="col-sm-8">
 								<select class="form-control id_location">
-									<option value="0">Главная страница</option>
 									<?php
 									foreach ($locations as $location) {
+										$sel = '';
+										if ($month['id_location']==$location['id']) $sel = 'selected="sslected"';
 										?><option value="<?=$location['id']?>"><?=$location['name']?></option><?php
 									}
 									?>

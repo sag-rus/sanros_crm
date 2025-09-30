@@ -693,6 +693,19 @@ function save_month(id){
 	}
 }
 
+function edit_month(id){
+	var str = 'func=edit_month&id=' + id;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function(html){
+			remove_all_windows();
+			show_modal(html);
+		}
+	});
+}
+
 function add_new_month(){
 	var str = 'func=edit_month';
 	$.ajax({
