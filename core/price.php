@@ -52,16 +52,16 @@ function show_months($connect){
 		?>
 		<div class="list-group-item month-<?php echo $id; ?>">
 			<div class="form-group">
-				<div class="col-sm-2">
+				<div class="col-2">
 					<?=$row['active']?>
 				</div>				
-				<div class="col-sm-3">
+				<div class="col-3">
 					<?=$row['id_location']?>
 				</div>
-				<div class="col-sm-3">
+				<div class="col-1">
 					<?=$row['id_month']?>
 				</div>				
-				<div class="col-sm-3">
+				<div class="col-4">
 					<?=$row['path']?>
 				</div>
 				<div class="col-sm-1 text-center">
