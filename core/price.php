@@ -104,7 +104,7 @@ function edit_month($connect){
 							<div class="col-sm-8">
 								<select class="form-control id_location">
 									<option value="0">Главная страница</option>
-									<?
+									<?php
 									foreach ($locations as $location) {
 										?><option value="<?=$location['id']?>"><?=$location['name']?></option><?
 									}
