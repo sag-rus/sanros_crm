@@ -92,13 +92,13 @@ function edit_month(){
 				</div>
 				<div class="modal-body">
 					<div class="form-horizontal new-month">
-						<div class="form-group form-group-margin">
+						<div class="form-group">
 							<label class="col-sm-4 control-label">Активность</label>
 							<div class="col-sm-8">
 								<input type="checkbox" checked class="form-control active">
 							</div>
 						</div>
-						<div class="form-group form-group-margin">
+						<div class="form-group">
 							<label class="col-sm-4 control-label">Направление</label>
 							<div class="col-sm-8">
 								<select class="form-control id_location">
@@ -106,7 +106,7 @@ function edit_month(){
 								</select>
 							</div>
 						</div>
-						<div class="form-group form-group-margin">
+						<div class="form-group">
 							<label class="col-sm-4 control-label">Месяц</label>
 							<div class="col-sm-8">
 								<select class="form-control id_month">
@@ -125,22 +125,22 @@ function edit_month(){
 								</select>
 							</div>
 						</div>						
-						<div class="form-group form-group-margin">
+						<div class="form-group">
 							<label class="col-sm-4 control-label">Title</label>
 							<div class="col-sm-8">
-								<input type="text" class="form-control title" value="<?=$title?>">
+								<input type="text" class="form-control month_title" value="<?=$title?>">
 							</div>
 						</div>
-						<div class="form-group form-group-margin">
+						<div class="form-group">
 							<label class="col-sm-4 control-label">Description</label>
 							<div class="col-sm-8">
-								<input type="text" class="form-control description" value="<?=$description?>">
+								<input type="text" class="form-control month_description" value="<?=$description?>">
 							</div>
 						</div>
-						<div class="form-group form-group-margin">
+						<div class="form-group">
 							<label class="col-sm-4 control-label">H1</label>
 							<div class="col-sm-8">
-								<input type="text" class="form-control h1" value="<?=$h1?>">
+								<input type="text" class="form-control month_h1" value="<?=$h1?>">
 							</div>
 						</div>
 					</div>
