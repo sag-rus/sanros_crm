@@ -80,6 +80,81 @@ function show_months($connect){
 <?php
 }
 
+function edit_month(){
+	$id = (int)($_GET['id'] ?? (int)$_POST['id'] ?? 0);
+	?>
+	<div class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+					<h4 class="modal-title">Новая страница месяца</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-horizontal new-month">
+						<div class="form-group form-group-margin">
+							<label class="col-sm-4 control-label">Активность</label>
+							<div class="col-sm-8">
+								<input type="checkbox" checked class="form-control active">
+							</div>
+						</div>
+						<div class="form-group form-group-margin">
+							<label class="col-sm-4 control-label">Направление</label>
+							<div class="col-sm-8">
+								<select class="form-control id_location">
+									<option value="0">Главная страница</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group form-group-margin">
+							<label class="col-sm-4 control-label">Месяц</label>
+							<div class="col-sm-8">
+								<select class="form-control id_month">
+									<option value="1">Январь</option>
+									<option value="2">Февраль</option>
+									<option value="3">Март</option>
+									<option value="4">Апрель</option>
+									<option value="5">Май</option>
+									<option value="6">Июнь</option>
+									<option value="7">Июль</option>
+									<option value="8">Август</option>
+									<option value="9">Сентябрь</option>
+									<option value="10">Октябрь</option>
+									<option value="11">Ноябрь</option>
+									<option value="12">Декабрь</option>
+								</select>
+							</div>
+						</div>						
+						<div class="form-group form-group-margin">
+							<label class="col-sm-4 control-label">Title</label>
+							<div class="col-sm-8">
+								<input type="text" class="form-control title" value="<?=$title?>">
+							</div>
+						</div>
+						<div class="form-group form-group-margin">
+							<label class="col-sm-4 control-label">Description</label>
+							<div class="col-sm-8">
+								<input type="text" class="form-control description" value="<?=$description?>">
+							</div>
+						</div>
+						<div class="form-group form-group-margin">
+							<label class="col-sm-4 control-label">H1</label>
+							<div class="col-sm-8">
+								<input type="text" class="form-control h1" value="<?=$h1?>">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-success" onclick="save_month(<?=$id?>)"><i class="fa fa-check-circle"></i> Сохранить</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<?php
+}
+
+
 function show_procedure($connect){
 	$index = 0;
 ?>

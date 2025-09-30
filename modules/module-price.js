@@ -671,6 +671,17 @@ function months(){
 	});
 }
 
+function add_new_month(){
+	var str = 'func=edit_month';
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function(html){
+			show_modal(html);
+		}
+	});
+}
 
 function procedure(){
 	old_i = 0;
