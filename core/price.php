@@ -116,6 +116,8 @@ function save_month($connect){
 		}
 	} else {
 		//EDIT
+		$connect->query("UPDATE `months` SET `active`=?i, `title`=?s, `description`=?s, `h1`=?s ", $active, $title, $desc, $h1);
+		echo $connect->last_query();		
 	}
 }
 
@@ -155,7 +157,7 @@ function edit_month($connect){
 						<div class="form-group">
 							<label class="col-sm-4 control-label">Направление</label>
 							<div class="col-sm-8">
-								<select class="form-control id_location">
+								<select class="form-control id_location" <?php if ($id>0) echo 'disabled'?>>
 									<?php
 									foreach ($locations as $location) {
 										$sel = '';
@@ -167,7 +169,7 @@ function edit_month($connect){
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-4 control-label">Месяц</label>
+							<label class="col-sm-4 control-label" <?php if ($id>0) echo 'disabled'?>>Месяц</label>
 							<div class="col-sm-8">
 								<select class="form-control id_month">
 									<option value="1" <?php if ($month['id_month']==1) echo 'selected="selected"'?>>Январь</option>
