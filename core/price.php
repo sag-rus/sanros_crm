@@ -132,7 +132,7 @@ function edit_month($connect){
 		'name' => 'Главная страница'
 	];
 	$all_locations = $connect->getAll("SELECT id,name FROM `app_models_location_location` WHERE `status`=1 order by id ASC");
-	$locations[] = $main + $all_locations; 
+	$locations = $main + $all_locations; 
 	?>
 	<div class="modal fade">
 		<div class="modal-dialog">
