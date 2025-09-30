@@ -1,5 +1,68 @@
 <?php
 
+function show_mothns($connect){
+?>
+<div class="form-horizontal panel panel-default">
+	<div class="panel-heading">
+		<i class="fa fa-calendar"></i> Месяца
+		<button type="button" class="btn btn-info btn-sm" onclick="add_new_month()"><i class="fa fa-plus-circle"></i> Добавить</button>
+	</div>
+	<div class="list-group">
+		<div class="list-group-item months">
+			<div class="form-group">
+				<div class="col-sm-2 text-bold">
+					Акт.
+				</div>				
+				<div class="col-sm-3">
+					Направление
+				</div>
+				<div class="col-sm-3">
+					Месяц
+				</div>				
+				<div class="col-sm-3">
+					Путь
+				</div>
+				<div class="col-sm-1 text-center">
+				</div>
+				<div class="clearfix"></div>
+			</div>
+		</div>	
+	</div>
+	<div class="list-group">
+<?php
+	$data = $connect->getAll("SELECT * FROM `months` ORDER by id DESC");
+	foreach($data as $row){
+		?>
+		<div class="list-group-item month-<?php echo $id; ?>">
+			<div class="form-group">
+				<div class="col-sm-2">
+					<?=$row['active']?>
+				</div>				
+				<div class="col-sm-3">
+					<?=$row['id_location']?>
+				</div>
+				<div class="col-sm-3">
+					<?=$row['id_month']?>
+				</div>				
+				<div class="col-sm-3">
+					<?=$row['path']?>
+				</div>
+				<div class="col-sm-1 text-center">
+					<button type="button" class="btn btn-default btn-xs" onclick="edit_month(<?=$id?>)"><i class="fa fa-pencil"></i></button>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+		<?php
+	}
+	?>
+	</div>
+	<div class="panel-footer" style="text-align: right">
+	</div>
+</div>
+<?php
+}
+
 function show_procedure($connect){
 	$index = 0;
 ?>

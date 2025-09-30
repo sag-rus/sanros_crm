@@ -658,6 +658,19 @@ function update_service(id){
 	}
 }
 
+function months(){
+	old_i = 0;
+	select_menu('months_open', '2');
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: 'func=show_months',
+		success: function(html){
+			$('#body').html(html);
+		}
+	});
+}
+
 
 function procedure(){
 	old_i = 0;
