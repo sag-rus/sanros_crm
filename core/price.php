@@ -106,7 +106,7 @@ function edit_month($connect){
 									<option value="0">Главная страница</option>
 									<?php
 									foreach ($locations as $location) {
-										?><option value="<?=$location['id']?>"><?=$location['name']?></option><?
+										?><option value="<?=$location['name']?>"><?=$location['name']?></option><?php
 									}
 									?>
 								</select>
