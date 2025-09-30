@@ -110,14 +110,12 @@ function save_month($connect){
 		$path = $location['uri'].'/'.$months[$id_month];
 		$month = $connect->getRow("SELECT * FROM `months` WHERE `id_location`=?i AND `id_month`=?i", $id_location, $id_month);	
 		if (!$month) {
-			echo $path;
 			$connect->query("INSERT INTO `months` (active,id_location,id_month,path,title,description,h1) VALUES(?i,?i,?i,?s,?s,?s,?s)", $active, $id_location, $id_month, $path, $title, $desc, $h1);
+			echo $connect->last_query();
 		}
 	} else {
 		//EDIT
 	}
-	echo "INSERT INTO `procedure` (name) VALUES(?s)";
-	$connect->query("INSERT INTO `procedure` (name) VALUES(?s)", $name);
 }
 
 function edit_month($connect){
