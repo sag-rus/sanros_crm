@@ -10,17 +10,17 @@ function show_months($connect){
 	<div class="list-group">
 		<div class="list-group-item months">
 			<div class="form-group">
-				<div class="col-sm-2 text-bold">
-					Акт.
+				<div class="col-sm-2">
+					<strong>Акт.</strong>
 				</div>				
 				<div class="col-sm-3">
-					Направление
+					<strong>Направление</strong>
 				</div>
 				<div class="col-sm-3">
-					Месяц
+					<strong>Месяц</strong>
 				</div>				
 				<div class="col-sm-3">
-					Путь
+					<strong>Путь</strong>
 				</div>
 				<div class="col-sm-1 text-center">
 				</div>
