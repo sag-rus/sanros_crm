@@ -160,7 +160,7 @@ function edit_month($connect){
 									foreach ($locations as $location) {
 										$sel = '';
 										if ($month['id_location']==$location['id']) $sel = 'selected="selected"';
-										?><option value="<?=$location['id']?>"><?=$location['name']?></option><?php
+										?><option value="<?=$location['id']?>" <?=$sel?>><?=$location['name']?></option><?php
 									}
 									?>
 								</select>
@@ -170,37 +170,37 @@ function edit_month($connect){
 							<label class="col-sm-4 control-label">Месяц</label>
 							<div class="col-sm-8">
 								<select class="form-control id_month">
-									<option value="1">Январь</option>
-									<option value="2">Февраль</option>
-									<option value="3">Март</option>
-									<option value="4">Апрель</option>
-									<option value="5">Май</option>
-									<option value="6">Июнь</option>
-									<option value="7">Июль</option>
-									<option value="8">Август</option>
-									<option value="9">Сентябрь</option>
-									<option value="10">Октябрь</option>
-									<option value="11">Ноябрь</option>
-									<option value="12">Декабрь</option>
+									<option value="1" <?php if ($month['id_month']==1) echo 'selected="selected"'?>>Январь</option>
+									<option value="2" <?php if ($month['id_month']==2) echo 'selected="selected"'?>>Февраль</option>
+									<option value="3" <?php if ($month['id_month']==3) echo 'selected="selected"'?>>Март</option>
+									<option value="4" <?php if ($month['id_month']==4) echo 'selected="selected"'?>>Апрель</option>
+									<option value="5" <?php if ($month['id_month']==5) echo 'selected="selected"'?>>Май</option>
+									<option value="6" <?php if ($month['id_month']==6) echo 'selected="selected"'?>>Июнь</option>
+									<option value="7" <?php if ($month['id_month']==7) echo 'selected="selected"'?>>Июль</option>
+									<option value="8" <?php if ($month['id_month']==8) echo 'selected="selected"'?>>Август</option>
+									<option value="9" <?php if ($month['id_month']==9) echo 'selected="selected"'?>>Сентябрь</option>
+									<option value="10" <?php if ($month['id_month']==10) echo 'selected="selected"'?>>Октябрь</option>
+									<option value="11" <?php if ($month['id_month']==11) echo 'selected="selected"'?>>Ноябрь</option>
+									<option value="12" <?php if ($month['id_month']==12) echo 'selected="selected"'?>>Декабрь</option>
 								</select>
 							</div>
 						</div>						
 						<div class="form-group">
 							<label class="col-sm-4 control-label">Title</label>
 							<div class="col-sm-8">
-								<input type="text" class="form-control month_title" value="<?=$title?>">
+								<input type="text" class="form-control month_title" value="<?=$month['title']?>">
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="col-sm-4 control-label">Description</label>
 							<div class="col-sm-8">
-								<input type="text" class="form-control month_description" value="<?=$description?>">
+								<input type="text" class="form-control month_description" value="<?=$month['description']?>">
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="col-sm-4 control-label">H1</label>
 							<div class="col-sm-8">
-								<input type="text" class="form-control month_h1" value="<?=$h1?>">
+								<input type="text" class="form-control month_h1" value="<?=$month['h1']?>">
 							</div>
 						</div>
 					</div>
