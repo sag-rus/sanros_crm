@@ -794,6 +794,7 @@ function write_body($connect){
 							<li id="comfort_open" onclick="comfort()"><a><i class="fa fa-bed"></i> Удобства</a></li>
 							<li id="service_open" onclick="service()"><a><i class="fa fa-cutlery"></i> Услуги</a></li>
 							<li id="sights-open" onclick="sights()"><a><i class="fa fa-university"></i> Места</a></li>
+							<li id="months_open" onclick="months()"><a><i class="fa fa-calendar"></i> Месяцы</a></li>
 							<li><hr /></li>
 							<li id="news-menu1" onclick="show_news()"><a><i class="fa fa-newspaper-o"></i> Новости</a></li>
 							<li id="image_menu" onclick="save_image_to_server()"><a><i class="fa fa-cloud-upload"></i> Обновить фото</a></li>
