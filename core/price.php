@@ -61,7 +61,7 @@ function show_months($connect){
 				<div class="col-sm-1">
 					<?=$row['id_month']?>
 				</div>				
-				<div class="col-sm-4">
+				<div class="col-sm-5">
 					<?=$row['path']?>
 				</div>
 				<div class="col-sm-1 text-center">
