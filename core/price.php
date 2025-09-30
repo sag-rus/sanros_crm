@@ -133,6 +133,7 @@ function edit_month($connect){
 	];
 	$all_locations = $connect->getAll("SELECT id,name FROM `app_models_location_location` WHERE `status`=1 order by id ASC");
 	$locations = $main + $all_locations; 
+print_r($locations);
 	?>
 	<div class="modal fade">
 		<div class="modal-dialog">
@@ -156,7 +157,7 @@ function edit_month($connect){
 									<?php
 									foreach ($locations as $location) {
 										$sel = '';
-										if ($month['id_location']==$location['id']) $sel = 'selected="sslected"';
+										if ($month['id_location']==$location['id']) $sel = 'selected="selected"';
 										?><option value="<?=$location['id']?>"><?=$location['name']?></option><?php
 									}
 									?>
