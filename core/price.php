@@ -32,6 +32,23 @@ function show_months($connect){
 <?php
 	$data = $connect->getAll("SELECT * FROM `months` ORDER by id DESC");
 	foreach($data as $row){
+		if ($row['active']==1) $row['active'] = 'Да'; else  $row['active'] = 'Нет';
+		if ($row['id_month']==1) $row['id_month'] = 'январь';
+		if ($row['id_month']==2) $row['id_month'] = 'февраль';
+		if ($row['id_month']==3) $row['id_month'] = 'март';
+		if ($row['id_month']==4) $row['id_month'] = 'апрель';
+		if ($row['id_month']==5) $row['id_month'] = 'май';
+		if ($row['id_month']==6) $row['id_month'] = 'июнь';
+		if ($row['id_month']==7) $row['id_month'] = 'июль';
+		if ($row['id_month']==8) $row['id_month'] = 'август';
+		if ($row['id_month']==9) $row['id_month'] = 'сентябрь';
+		if ($row['id_month']==10) $row['id_month'] = 'октябрь';
+		if ($row['id_month']==11) $row['id_month'] = 'ноябрь';
+		if ($row['id_month']==12) $row['id_month'] = 'декабрь';
+		if ($row['id_location']>0) {
+			$location = $connect->getRow("SELECT * FROM `app_models_location_location` WHERE `id`=?i", $row['id_location']);	
+			$row['id_location'] = $location['name'];
+		} else $row['id_location'] = 'Главная страница';
 		?>
 		<div class="list-group-item month-<?php echo $id; ?>">
 			<div class="form-group">
