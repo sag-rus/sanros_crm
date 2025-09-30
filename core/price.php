@@ -1,6 +1,6 @@
 <?php
 
-function show_mothns($connect){
+function show_months($connect){
 ?>
 <div class="form-horizontal panel panel-default">
 	<div class="panel-heading">
