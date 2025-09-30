@@ -80,7 +80,7 @@ function show_months($connect){
 <?php
 }
 
-function edit_month(){
+function edit_month($connect){
 	$id = (int)($_GET['id'] ?? (int)$_POST['id'] ?? 0);
 	$locations = $connect->getAll("SELECT * FROM `app_models_location_location` WHERE `status`=1 order by id ASC");
 	?>
