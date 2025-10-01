@@ -1,10 +1,33 @@
 <?php
 
 function show_months($connect){
+	$locations = [];
+	$main = [
+		'id' => -1,
+		'name' => 'Все направления'
+	];
+	$locations[] = $main;
+	$main = [
+		'id' => 0,
+		'name' => 'Главная страница'
+	];	
+	$all_locations = $connect->getAll("SELECT id,name FROM `app_models_location_location` WHERE `status`=1 order by id ASC");
+	foreach ($all_locations as $location) {
+		$locations[] = $location;
+	}	
 ?>
 <div class="form-horizontal panel panel-default">
 	<div class="panel-heading">
 		<i class="fa fa-calendar"></i> Месяцы
+		<select class="form-control filter_location" style="width: 300px; display: inline-block; margin-right: 10px;">
+			<?php
+			foreach ($locations as $location) {
+				$sel = '';
+				if ($month['id_location']==$location['id']) $sel = 'selected="selected"';
+				?><option value="<?=$location['id']?>" <?=$sel?>><?=$location['name']?></option><?php
+			}
+			?>
+		</select>		
 		<button type="button" class="btn btn-info btn-sm" onclick="add_new_month()"><i class="fa fa-plus-circle"></i> Добавить</button>
 	</div>
 	<div class="list-group">
