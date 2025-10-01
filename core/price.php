@@ -6,7 +6,6 @@ function show_months($connect){
 	if ($id_location>-1) {
 		$filter_location = "WHERE `id_location`=$id_location";
 	}
-	echo "SELECT * FROM `months` $filter_location ORDER by id DESC";
 	$locations = [];
 	$main = [
 		'id' => -1,
@@ -30,7 +29,7 @@ function show_months($connect){
 			<?php
 			foreach ($locations as $location) {
 				$sel = '';
-				if ($month['id_location']==$location['id']) $sel = 'selected="selected"';
+				if ($id_location==$location['id']) $sel = 'selected="selected"';
 				?><option value="<?=$location['id']?>" <?=$sel?>><?=$location['name']?></option><?php
 			}
 			?>
