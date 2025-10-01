@@ -658,13 +658,12 @@ function update_service(id){
 	}
 }
 
-function months(){
-	old_i = 0;
+function months(id_location = -1){
 	select_menu('months_open', '2');
 	$.ajax({
 		url: 'mysql.php',
 		type: 'POST',
-		data: 'func=show_months',
+		data: 'func=show_months&id_location='+id_location,
 		success: function(html){
 			$('#body').html(html);
 		}

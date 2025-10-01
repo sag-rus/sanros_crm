@@ -1,6 +1,11 @@
 <?php
 
 function show_months($connect){
+	$id_location = (int)($_GET['id_location'] ?? $_POST['id_location'] ?? -1);
+	$filter_location = '';
+	if ($id_location>-1) {
+		$filter_location = "WHERE `id_location`=$id_location";
+	}
 	$locations = [];
 	$main = [
 		'id' => -1,
@@ -20,7 +25,7 @@ function show_months($connect){
 <div class="form-horizontal panel panel-default">
 	<div class="panel-heading">
 		<i class="fa fa-calendar"></i> Месяцы
-		<select class="form-control filter_location" style="width: 300px; display: inline-block; margin-right: 10px;">
+		<select class="form-control filter_location" onChange="months()" style="width: 300px; display: inline-block; margin-right: 10px;">
 			<?php
 			foreach ($locations as $location) {
 				$sel = '';
@@ -54,7 +59,8 @@ function show_months($connect){
 	</div>
 	<div class="list-group">
 <?php
-	$data = $connect->getAll("SELECT * FROM `months` ORDER by id DESC");
+
+	$data = $connect->getAll("SELECT * FROM `months` $filter_location ORDER by id DESC");
 	foreach($data as $row){
 		if ($row['active']==1) $row['active'] = 'Да'; else  $row['active'] = 'Нет';
 		if ($row['id_month']==1) $row['id_month'] = 'январь';
@@ -146,7 +152,7 @@ function save_month($connect){
 }
 
 function edit_month($connect){
-	$id = (int)($_GET['id'] ?? (int)$_POST['id'] ?? 0);
+	$id = (int)($_GET['id'] ?? $_POST['id'] ?? 0);
 	$active = true;
 	if ($id>0) {
 		$month = $connect->getRow("SELECT * FROM `months` WHERE `id`=?i", $id);
