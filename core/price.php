@@ -6,6 +6,7 @@ function show_months($connect){
 	if ($id_location>-1) {
 		$filter_location = "WHERE `id_location`=$id_location";
 	}
+	echo "SELECT * FROM `months` $filter_location ORDER by id DESC";
 	$locations = [];
 	$main = [
 		'id' => -1,
