@@ -17,7 +17,7 @@ function show_months($connect){
 		'name' => 'Главная страница'
 	];	
 	$locations[] = $main;
-	$all_locations = $connect->getAll("SELECT id,name FROM `app_models_location_location` WHERE `status`=1 order by id ASC");
+	$all_locations = $connect->getAll("SELECT id,name FROM `app_models_location_location` WHERE `status`=1 order by name ASC");
 	foreach ($all_locations as $location) {
 		$locations[] = $location;
 	}	
@@ -164,7 +164,7 @@ function edit_month($connect){
 		'name' => 'Главная страница'
 	];
 	$locations[] = $main;
-	$all_locations = $connect->getAll("SELECT id,name FROM `app_models_location_location` WHERE `status`=1 order by id ASC");
+	$all_locations = $connect->getAll("SELECT id,name FROM `app_models_location_location` WHERE `status`=1 order by name ASC");
 	foreach ($all_locations as $location) {
 		$locations[] = $location;
 	}
