@@ -25,7 +25,7 @@ function show_months($connect){
 <div class="form-horizontal panel panel-default">
 	<div class="panel-heading">
 		<i class="fa fa-calendar"></i> Месяцы
-		<select class="form-control filter_location" onChange="months()" style="width: 300px; display: inline-block; margin-right: 10px;">
+		<select class="form-control filter_location" onChange="months(this.value)" style="width: 300px; display: inline-block; margin-right: 10px;">
 			<?php
 			foreach ($locations as $location) {
 				$sel = '';
