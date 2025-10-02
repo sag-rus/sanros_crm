@@ -330,10 +330,9 @@ function sync_objects_api($connect){
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
 				if($success) {
-						$connect->query("UPDATE `months` SET `synchronized` = '1' WHERE `id` = ?i",$month['id']);
-					} else {
-						$connect->query("UPDATE `months` SET `synchronized` = '1' WHERE `id` = ?i",$month['id']);
-					}
+					$connect->query("UPDATE `months` SET `synchronized` = '1' WHERE `id` = ?i",$month['id']);
+				} else {
+					$connect->query("UPDATE `months` SET `synchronized` = '1' WHERE `id` = ?i",$month['id']);
 				}
 			}
 		}		
