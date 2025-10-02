@@ -311,7 +311,7 @@ function sync_objects_api($connect){
 			$monthAr["path"] = $month['path'];
 			$monthAr["title"] = $month['title'];
 			$monthAr["description"] = $month['description'];
-			$monthAr["h1"] = $month['h1`'];
+			$monthAr["h1"] = $month['h1'];
 			$monthAr['text'] = $month['text'];
 
 			echo "Отправка запроса на https://sites.tonia.ru/api/month/set/".$month['id'].'<br>';
