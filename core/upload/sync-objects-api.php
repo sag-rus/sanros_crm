@@ -296,7 +296,47 @@ function sync_objects_api($connect){
 					}
 				}
 			}
-		}	
+		}
+		
+		
+		$months = $connect->getAll("SELECT * FROM `months` WHERE `synchronized` = 0 and `path`<>''");
+
+		foreach ($months as $month) {
+			$monthAr = [];
+			$monthAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+			$monthAr["id"] = $month['id'];
+			$monthAr['status'] = 1;
+			$monthAr["id_location"] = $month['id_location'];
+			$monthAr["id_month"] = $month['id_month'];
+			$monthAr["path"] = $month['path'];
+			$monthAr["title"] = $month['title'];
+			$monthAr["description"] = $month['description'];
+			$monthAr["h1"] = $month['h1`'];
+			$monthAr['text'] = $month['text'];
+
+			echo "Отправка запроса на https://sites.tonia.ru/api/month/set/".$month['id'].'<br>';
+
+			$res = $client->request('POST',"https://sites.tonia.ru/api/month/set/".$month['id'],[
+				'form_params' => $monthAr
+			]);
+
+			$res = json_decode($res->getBody(),true);
+
+			echo 'res=';
+			echo '<pre>';
+			print_r($res);
+			echo '</pre>';
+
+			if(array_key_exists('success',$res)) {
+				$success = (bool)(int)$res['success'];
+				if($success) {
+						$connect->query("UPDATE `months` SET `synchronized` = '1' WHERE `id` = ?i",$month['id']);
+					} else {
+						$connect->query("UPDATE `months` SET `synchronized` = '1' WHERE `id` = ?i",$month['id']);
+					}
+				}
+			}
+		}		
 
 
 		$procedures = $connect->getAll("SELECT * FROM `procedure` WHERE `synchronized` = 0");
