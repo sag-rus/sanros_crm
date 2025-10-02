@@ -314,7 +314,7 @@ function sync_objects_api($connect){
 			$monthAr["h1"] = $month['h1'];
 			$monthAr['text'] = $month['text'];
 
-			echo "Отправка запроса на https://sites.tonia.ru/api/month/set/".$month['id'].'<br>';
+			//echo "Отправка запроса на https://sites.tonia.ru/api/month/set/".$month['id'].'<br>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/month/set/".$month['id'],[
 				'form_params' => $monthAr
@@ -322,10 +322,10 @@ function sync_objects_api($connect){
 
 			$res = json_decode($res->getBody(),true);
 
+			/*echo '<pre>';
 			echo 'res=';
-			echo '<pre>';
 			print_r($res);
-			echo '</pre>';
+			echo '</pre>';*/
 
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
