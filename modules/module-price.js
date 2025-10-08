@@ -663,6 +663,7 @@ function months(id_location = -1){
 	alert(id_location);
 	if (id_location==-1) {
 		alert('000');
+		alert($('.filter_location:visible').length);
 		if ($('.filter_location:visible').length>0) {
 			alert('123');
 			id_location = $('.filter_location:visible option:selected').val();
