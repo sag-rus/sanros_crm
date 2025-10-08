@@ -660,16 +660,6 @@ function update_service(id){
 
 function months(id_location = -1){
 	select_menu('months_open', '2');
-	alert(id_location);
-	if (id_location==-1) {
-		alert('000');
-		alert($('.filter_location:visible').length);
-		if ($('.filter_location:visible').length>0) {
-			alert('123');
-			id_location = $('.filter_location:visible option:selected').val();
-			alert(id_location);
-		}
-	}
 	$.ajax({
 		url: 'mysql.php',
 		type: 'POST',
@@ -687,6 +677,12 @@ function save_month(id){
 	var title = $('.new-month .month_title').val();
 	var desc = $('.new-month .month_description').val();
 	var h1 = $('.new-month .month_h1').val();
+	alert($('.filter_location:visible').length);
+	if ($('.filter_location:visible').length>0) {
+		alert('123');
+		id_location = $('.filter_location:visible option:selected').val();
+		alert(id_location);
+	}	
 	if(!title || !desc || !h1)
 		show_warning('.new-month', 'Вы не ввели title, description и h1', false);
 	else{
