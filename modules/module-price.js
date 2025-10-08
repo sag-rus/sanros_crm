@@ -677,11 +677,9 @@ function save_month(id){
 	var title = $('.new-month .month_title').val();
 	var desc = $('.new-month .month_description').val();
 	var h1 = $('.new-month .month_h1').val();
-	alert($('.filter_location:visible').length);
+	var id_filter_location = -1;
 	if ($('.filter_location:visible').length>0) {
-		alert('123');
-		id_location = $('.filter_location:visible option:selected').val();
-		alert(id_location);
+		id_filter_location = $('.filter_location:visible option:selected').val();
 	}	
 	if(!title || !desc || !h1)
 		show_warning('.new-month', 'Вы не ввели title, description и h1', false);
@@ -692,7 +690,7 @@ function save_month(id){
 			type: 'POST',
 			data: str,
 			success: function(){
-				months();
+				months(id_filter_location);
 			}
 		});
 	}
