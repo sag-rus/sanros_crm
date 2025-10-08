@@ -662,7 +662,9 @@ function months(id_location = -1){
 	select_menu('months_open', '2');
 	if (id_location==-1) {
 		if ($('.filter_location:visible').length>0) {
+			alert('123');
 			id_location = $('.filter_location:visible option:selected').val();
+			alert(id_location);
 		}
 	}
 	$.ajax({
