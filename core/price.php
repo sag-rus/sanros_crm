@@ -146,7 +146,7 @@ function save_month($connect){
 		}
 	} else {
 		//EDIT
-		$connect->query("UPDATE `months` SET `active`=?i, `title`=?s, `description`=?s, `h1`=?s ", $active, $title, $desc, $h1);
+		$connect->query("UPDATE `months` SET `active`=?i, `title`=?s, `description`=?s, `h1`=?s WHERE id=?i", $active, $title, $desc, $h1, $id);
 		echo $connect->last_query();		
 	}
 }
