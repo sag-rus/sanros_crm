@@ -409,7 +409,7 @@ if ($dates_unavailable) {
 	}*/
 
 	$resp = array();
-	//$resp['success'] = 1;
+	$resp['success'] = 1;
 	echo json_encode($resp, JSON_UNESCAPED_UNICODE);
 
 	//$log = 'DATA='.json_encode($resp, JSON_UNESCAPED_UNICODE).PHP_EOL;
