@@ -1244,7 +1244,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
   }
 
   $bank_com = 0;
-  if ($exclude_bank_commission==1) {
+  //if ($exclude_bank_commission==1) {
 	$payment_status_string = " AND `payment`.`status` != 0";
 	if($only_payment_state) {
 		$data = $connect->getAll("SELECT sum, bank_com, type FROM payment WHERE ".$add_cond."pay_method=5 AND schet=?i".$payment_status_string, $id);
@@ -1271,7 +1271,7 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
 			$array["bank_com"] = add_null($bank_com);
 		}
 	}
-  }
+  //}
 
   /*if($fact) {
     if($only_payment_state)
