@@ -236,9 +236,9 @@ function edit_month($connect){
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-4 control-label">H1</label>
+							<label class="col-sm-4 control-label">Текст</label>
 							<div class="col-sm-8">
-								<textarea type="text" class="form-control month_text"><?=$month['h1']?></textarea>
+								<textarea type="text" class="form-control month_text"><?=$month['text']?></textarea>
 							</div>
 						</div>						
 					</div>
