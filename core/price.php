@@ -235,6 +235,12 @@ function edit_month($connect){
 								<input type="text" class="form-control month_h1" value="<?=$month['h1']?>">
 							</div>
 						</div>
+						<div class="form-group">
+							<label class="col-sm-4 control-label">H1</label>
+							<div class="col-sm-8">
+								<textarea type="text" class="form-control month_text"><?=$month['h1']?></textarea>
+							</div>
+						</div>						
 					</div>
 				</div>
 				<div class="modal-footer">
