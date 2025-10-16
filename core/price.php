@@ -118,6 +118,7 @@ function save_month($connect){
 	$title = $_POST["title"];
 	$desc = $_POST["desc"];
 	$h1 = $_POST["h1"];
+	$text = $_POST["text"];
 
 	$months = [
 		1 => 'январь',
@@ -137,16 +138,15 @@ function save_month($connect){
 	if ($id==0) {
 		//ADD
 		$location = $connect->getRow("SELECT * FROM `app_models_location_location` WHERE `id`=?i", $id_location);
-		print_r($location);
 		$path = $location['uri'].'/'.$months[$id_month];
 		$month = $connect->getRow("SELECT * FROM `months` WHERE `id_location`=?i AND `id_month`=?i", $id_location, $id_month);	
 		if (!$month) {
-			$connect->query("INSERT INTO `months` (active,id_location,id_month,path,title,description,h1) VALUES(?i,?i,?i,?s,?s,?s,?s)", $active, $id_location, $id_month, $path, $title, $desc, $h1);
+			$connect->query("INSERT INTO `months` (active,id_location,id_month,path,title,description,h1,text) VALUES(?i,?i,?i,?s,?s,?s,?s,?s)", $active, $id_location, $id_month, $path, $title, $desc, $h1, $text);
 			echo $connect->last_query();
 		}
 	} else {
 		//EDIT
-		$connect->query("UPDATE `months` SET `active`=?i, `title`=?s, `description`=?s, `h1`=?s, `synchronized`=0  WHERE id=?i", $active, $title, $desc, $h1, $id);
+		$connect->query("UPDATE `months` SET `active`=?i, `title`=?s, `description`=?s, `h1`=?s, `text`=?s, `synchronized`=0  WHERE id=?i", $active, $title, $desc, $h1, $text, $id);
 		echo $connect->last_query();		
 	}
 }
