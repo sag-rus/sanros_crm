@@ -2473,6 +2473,12 @@ function add_new_sites_content(site_id) {
 												'</div>' +
 											'</div>' +
 			 								'<div class="form-group">' +
+												'<label class="col-sm-2 control-label">Быстрые ссылки под формой поиска</label>' +
+												'<div class="col-sm-10">' +
+													'<textarea class="form-control" name="search_links"></textarea>'+
+												'</div>' +
+											'</div>' +											
+			 								'<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Анонс</label>' +
 												'<div class="col-sm-10">' +
 													'<textarea class="form-control" name="summary"></textarea>'+
@@ -3070,6 +3076,7 @@ function set_sites_content() {
 	var type = $modalBody.find('*[name="type"]').val();
 	var rss = parseInt($modalBody.find('*[name="rss"]').val(),10);
 	var keywords = $modalBody.find('*[name="keywords"]').val();
+	var search_links = $modalBody.find('*[name="search_links"]').val();
 	var published = $modalBody.find('*[name="published"]').val();
 
 	var $reviews_objects = $modalBody.find('input[name="reviews_objects"]');
@@ -3333,6 +3340,7 @@ function set_sites_content() {
 		second_bg: second_bg,
 		type: type,
 		keywords: keywords,
+		search_links: search_links,
         published: published,
 		path: path,
 		redirect_path: redirect_path,
