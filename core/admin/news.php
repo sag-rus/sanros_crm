@@ -3886,7 +3886,7 @@ function set_sites_content($connect) {
 }
 
 function sync_site_content($connect, $id):bool {
-    $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h1`, `title_h2`, `summary`, `snippet_summary`, `body`, `body2`, `head_code`, `pre_body_code`, `post_body_code`, `path`, `redirect_path`, `description`, `keywords`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation`, `direction_id`, `region_id`, `regional_direction_id`, `rss`, `rss_aggregator_link`, `rss_addition`, `rss_aggregation`, `main_page_fix`, `aggregation_by_dates`, `aggregation_date_start`, `aggregation_date_end`, `phone`, `slider_mode` FROM `sites_contents` WHERE `id` =?i",$id);
+    $content = $connect->getRow("SELECT `id`, `status`, `published`, `type`, `site_id`, `title`, `title_h1`, `title_h2`, `summary`, `snippet_summary`, `body`, `body2`, `head_code`, `pre_body_code`, `post_body_code`, `path`, `redirect_path`, `description`, `keywords`, `search_links`, `weight`, `sort`, `module_object_id`, `module_block`, `second_bg`, `form_action`, `landing_info`, `map_code`, `breadcrumb_title`, `photogallery_title`, `photogallery_orientation`, `direction_id`, `region_id`, `regional_direction_id`, `rss`, `rss_aggregator_link`, `rss_addition`, `rss_aggregation`, `main_page_fix`, `aggregation_by_dates`, `aggregation_date_start`, `aggregation_date_end`, `phone`, `slider_mode` FROM `sites_contents` WHERE `id` =?i",$id);
     if($content) {
         try {
           $client = new \GuzzleHttp\Client(['verify' => false]);
