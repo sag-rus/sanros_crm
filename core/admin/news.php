@@ -2523,7 +2523,7 @@ function edit_sites_content($connect) {
                       <div class="form-group<?php if(in_array($content['type'],['redirect'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Быстрые ссылки под формой поиска</label>
                           <div class="col-sm-10">
-                              <textarea class="form-control" name="search_links"><?=htmlspecialchars($content['search_links']);?></textarea>
+                              <textarea class="form-control" style="height: 200px;" name="search_links"><?=htmlspecialchars($content['search_links']);?></textarea>
                           </div>
                       </div>                      
                       <div class="form-group<?php if(in_array($content['type'],['redirect'])) { ?> hidden<?php } ?>">
