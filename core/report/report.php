@@ -1186,33 +1186,73 @@ function block_reckoning_month($connect){
 	}
 }
 
-function calendar_report($connect){
-	global $array_month;
-	$rest = $connect->getOne("SELECT COUNT(*) FROM reckoning WHERE date_z<=?s AND date_v>?s AND status=5", date("Y-m-d"), date("Y-m-d"));
-	$month = 1;
-	$year = 2013;
-	$current_month = date("m");
-	$current_year = date("Y");
-	$html = "<div style='float: left;'>".$year." год<br />";
-	while($current_year >= $year){
-		$max_day = cal_days_in_month(CAL_GREGORIAN, $month, $year);
-		$first = $year."-".$month."-1";
-		$end = $year."-".$month."-".$max_day;
-		$count = $connect->getOne("SELECT COUNT(*) FROM reckoning WHERE (status=5 OR status=4) AND date_z>=?s AND date_z<=?s", $first, $end);
-		$data = $connect->getAll("SELECT count FROM arrivals WHERE date>=?s AND date<=?s", $first, $end);
-		foreach($data as $row)
-			$count+= $row["count"];
-		$html.= $array_month[$month]." : <strong>".$count."</strong><br />";
-		$month++;
-		if($month > 12){
-			$month = 1;
-			$year++;
-			if($current_year >= $year)
-				$html.= "</div><div style='float: left; margin-left: 10px;'>".$year." год<br />";
-		}
-	}
-	$html.= "</div>";
-	ob_start();
+function calendar_report($connect) {
+    global $array_month;
+    
+    // Общее количество бронирований на текущую дату (не используется в итогах по месяцам, но оставим как есть)
+    $rest = $connect->getOne(
+        "SELECT COUNT(*) FROM reckoning WHERE date_z <= ?s AND date_v > ?s AND status = 5", 
+        date("Y-m-d"), 
+        date("Y-m-d")
+    );
+
+    $month = 1;
+    $year = 2013;
+    $current_month = date("m");
+    $current_year = date("Y");
+
+    $html = '';
+    $column_count = 0; // Считаем, сколько колонок (лет) уже вывели
+
+    while ($current_year >= $year) {
+        // Начинаем новую колонку для года
+        if ($column_count > 0) {
+            $html .= "</div><div style='float: left; margin-left: 10px;'>";
+        }
+        $html .= "<div style='float: left;'>" . $year . " год<br />";
+
+        $year_total = 0; // Счётчик итого по текущему году
+        $max_month = ($year == $current_year) ? $current_month : 12; // Не показываем будущие месяцы
+
+        for ($m = $month; $m <= $max_month; $m++) {
+            $max_day = cal_days_in_month(CAL_GREGORIAN, $m, $year);
+            $first = $year . "-" . str_pad($m, 2, "0", STR_PAD_LEFT) . "-01";
+            $end = $year . "-" . str_pad($m, 2, "0", STR_PAD_LEFT) . "-" . str_pad($max_day, 2, "0", STR_PAD_LEFT);
+
+            // Подсчёт из таблицы reckoning
+            $count = $connect->getOne(
+                "SELECT COUNT(*) FROM reckoning WHERE (status = 5 OR status = 4) AND date_z >= ?s AND date_z <= ?s", 
+                $first, 
+                $end
+            );
+
+            // Подсчёт из таблицы arrivals
+            $data = $connect->getAll(
+                "SELECT count FROM arrivals WHERE date >= ?s AND date <= ?s", 
+                $first, 
+                $end
+            );
+
+            foreach ($data as $row) {
+                $count += (int)$row["count"];
+            }
+
+            $year_total += $count; // Добавляем в итого по году
+
+            $html .= $array_month[$m] . " : <strong>" . $count . "</strong><br />";
+        }
+
+        // Добавляем итого по году
+        $html .= "<strong>Итого: " . $year_total . "</strong><br />";
+        $html .= "</div>";
+
+        $year++;
+        $column_count++;
+        $month = 1; // Сбрасываем месяц при переходе на следующий год
+    }
+
+    echo $html;
+    ob_start(); // Сохраняем, как в оригинале
 ?>
 <div class="form-horizontal panel panel-default">
 	<div class="panel-body">
