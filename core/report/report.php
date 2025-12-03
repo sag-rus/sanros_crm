@@ -1210,7 +1210,7 @@ function calendar_report($connect){
 			$month = 1;
 			$year_total = 0;
 			$year++;
-			$html.= "Итого: <strong>".$count."</strong><br />";
+			$html.= "<strong>Итого: ".$count."</strong><br />";
 			if($current_year >= $year)
 				$html.= "</div><div style='float: left; margin-left: 10px;'>".$year." год<br />";
 		}
