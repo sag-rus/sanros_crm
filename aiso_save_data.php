@@ -69,7 +69,7 @@ $create_client = new CreateClient;
 
 $client_info = array(
 	"surname" => "",
-	"name" => isset($data['name'])?$data['name']:"",
+	"name" => isset($data['fio'])?$data['fio']:"",
 	"otch" => "",
 	"telephone" => isset($data['phone'])?$data['phone']:"",
 	"email" => isset($data['email'])?$data['email']:"",
