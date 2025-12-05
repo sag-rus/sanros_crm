@@ -57,7 +57,7 @@ parse_str($_POST['data'], $data);
 
 echo print_r($data);
 exit();
-
+ 
 $cmnt = 'ЗАЯВКА ОТ AISO<br>';
 $cmnt .= 'Имя отчество: '.$data['fio'].'<br>';
 $cmnt .= 'Телефон: '.$data['phone'].'<br>';
