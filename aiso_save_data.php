@@ -55,7 +55,7 @@ $connect->query("INSERT 1_aiso_log SET `id`=0, `datetime`=NOW(), `data`=?s", $_P
 
 parse_str($_POST['data'], $data);
 
-echo json_encode($data);
+echo print_r($data);
 exit();
 
 $cmnt = 'ЗАЯВКА ОТ AISO<br>';
