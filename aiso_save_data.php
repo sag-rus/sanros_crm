@@ -56,7 +56,7 @@ $connect->query("INSERT 1_aiso_log SET `id`=0, `datetime`=NOW(), `data`=?s", $_P
 parse_str($_POST['data'], $data);
 
 $cmnt = 'ЗАЯВКА ОТ AISO<br>';
-$cmnt .= 'Имя отчество: '.$data['name'].'<br>';
+$cmnt .= 'Имя отчество: '.$data['fio'].'<br>';
 $cmnt .= 'Телефон: '.$data['phone'].'<br>';
 $cmnt .= 'Сообщение: '.$data['message'].'<br>';
 $cmnt .= 'URL отправки формы: '.$data['url'].'<br>';
