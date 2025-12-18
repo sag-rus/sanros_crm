@@ -71,7 +71,7 @@ $token = $result['access_token'];
 echo 'token='.$result['access_token'].'<br><br><br>';
 //AUTH
 
-$lines = $connect->getAll("SELECT * FROM `1_tl_webhook` WHERE `worked`=0 ORDER BY id ASC LIMIT 3");
+$lines = $connect->getAll("SELECT * FROM `1_tl_webhook` WHERE `worked`=0 and id=79783 ORDER BY id ASC LIMIT 3");
 
 foreach ($lines as $line) {
 
