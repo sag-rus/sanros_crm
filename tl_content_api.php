@@ -90,7 +90,7 @@ foreach ($lines as $line) {
 
     echo '<pre>';
     echo 'worked='.$line['id'];
-    echo '</pre>'
+    echo '</pre>';
 
 }
 
