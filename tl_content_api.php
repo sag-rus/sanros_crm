@@ -71,7 +71,7 @@ $token = $result['access_token'];
 echo 'token='.$result['access_token'].'<br><br><br>';
 //AUTH
 
-$lines = $connect->getAll("SELECT * FROM `1_tl_webhook` WHERE `worked`=0 and id=79783 ORDER BY id ASC LIMIT 3");
+$lines = $connect->getAll("SELECT * FROM `1_tl_webhook` WHERE `worked`=0 ORDER BY id ASC LIMIT 3");
 
 foreach ($lines as $line) {
 
@@ -82,11 +82,15 @@ foreach ($lines as $line) {
     $result = curl_exec($ch);
     curl_close($ch);
 
-    echo '<pre>';
+    /*echo '<pre>';
     print_r(json_decode($result, true));
-    echo '</pre>';
+    echo '</pre>';*/
 
     $connect->getAll("UPDATE `1_tl_webhook` SET `worked`=1, `content_api_data`=?s WHERE `id`=?i", $result, $line['id']);
+
+    echo '<pre>';
+    echo 'worked='.$line['id'];
+    echo '</pre>'
 
 }
 
