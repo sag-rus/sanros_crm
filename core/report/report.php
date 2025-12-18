@@ -1207,10 +1207,10 @@ function calendar_report($connect){
 		$year_total += $count;
 		$month++;
 		if($month > 12){
+			$html.= "<strong>Итого: ".$year_total."</strong><br />";
 			$month = 1;
 			$year_total = 0;
 			$year++;
-			$html.= "<strong>Итого: ".$year_total."</strong><br />";
 			if($current_year >= $year)
 				$html.= "</div><div style='float: left; margin-left: 10px;'>".$year." год<br />";
 		}
