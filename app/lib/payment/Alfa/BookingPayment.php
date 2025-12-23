@@ -356,16 +356,16 @@ class BookingPayment {
 
       curl_close($ch);  
       $answer = json_decode($answer, true);
+      $answer['renderedQr'] = '';
 
-      if ($sum_to_pay==102000) {
+      /*if ($sum_to_pay==102000) {
         echo ' qr='.$qr;
         echo ' url=';
         echo $url;
         echo ' answer=';
         print_r($answer);
         exit();
-      }      
-      $answer['renderedQr'] = '';
+      } */      
 
 
       $log = "action=register.do RESULT".PHP_EOL;
