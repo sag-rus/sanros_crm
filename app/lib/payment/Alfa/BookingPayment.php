@@ -345,6 +345,8 @@ class BookingPayment {
 
       $ch = curl_init($url);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);      
       $answer = curl_exec($ch);
       if ($answer === false) {
           $error = curl_error($ch);
@@ -379,6 +381,8 @@ class BookingPayment {
 
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);        
         $response = curl_exec($ch);
         curl_close($ch);    
         $response = json_decode($response, true); 
