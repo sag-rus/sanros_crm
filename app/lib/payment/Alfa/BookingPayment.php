@@ -349,6 +349,13 @@ class BookingPayment {
       curl_close($ch);  
       $answer = json_decode($answer, true);
       if ($sum_to_pay==102000) {
+
+      if ($answer === false) {
+          $error = curl_error($ch);
+          $errno = curl_errno($ch);
+          echo "Curl error (#$errno): $error";
+      }
+
         echo ' qr='.$qr;
         echo ' url=';
         echo $url;
