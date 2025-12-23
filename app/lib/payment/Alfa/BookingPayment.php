@@ -340,6 +340,7 @@ class BookingPayment {
 
 
       $url = $this->bankInfo['link'].'register.do?userName='.$this->bankInfo['userName'].'&password='.$this->bankInfo['password'].'&amount='.($sum_to_pay*100).'&currency=810&language=ru&description='.urlencode($description).'&orderNumber='.$orderNumber.'&returnUrl='.urlencode($returnUrl).'&failUrl='.urlencode($failUrl).'&expirationDate='.date("Y-m-d", time()+86400*7).'T'.date("H:i:s", time()+86400*7);
+      if ($sum_to_pay==100200) echo $url;
 
       $log = "action=register.do url=".$url.PHP_EOL;
       file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', date('d.m.Y H:i:s').' '.$log, FILE_APPEND);
