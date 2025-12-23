@@ -352,6 +352,7 @@ class BookingPayment {
         echo ' qr='.$qr;
         echo ' url=';
         echo $url;
+        echo ' answer=';
         print_r($answer);
         exit();
       }      
