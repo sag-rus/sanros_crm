@@ -348,11 +348,11 @@ class BookingPayment {
       curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
       curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);      
       $answer = curl_exec($ch);
-      if ($answer === false) {
+      /*if ($answer === false) {
           $error = curl_error($ch);
           $errno = curl_errno($ch);
           echo "Curl error (#$errno): $error";
-      }
+      }*/
 
       curl_close($ch);  
       $answer = json_decode($answer, true);
@@ -474,6 +474,8 @@ class BookingPayment {
       $url = $this->bankInfo['link'].'getOrderStatusExtended.do?userName='.$this->bankInfo['userName'].'&password='.$this->bankInfo['password'].'&language=ru&orderId='.$orderId;
       $ch = curl_init($url);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);      
       $data = curl_exec($ch);
       curl_close($ch);  
       $data = json_decode($data, true);
@@ -509,6 +511,8 @@ class BookingPayment {
       $url = $this->bankInfo['link'].'/deposit.do?userName='.$this->bankInfo['userName'].'&password='.$this->bankInfo['password'].'&language=ru&orderId='.$orderId.'&amount='.($sum*100);
       $ch = curl_init($url);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
       $data = curl_exec($ch);
       curl_close($ch);  
       $data = json_decode($data, true);      
