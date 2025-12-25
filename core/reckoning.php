@@ -1756,8 +1756,8 @@ function show_schet_klient($connect){
 		  if($payments['status'] != 1) {
 		    $buttons .= '<button type="button" class="btn btn-default btn-xs" onclick="edit_payment('. $payments['id'] . ')">&nbsp;<i class="fa fa-pencil"></i>&nbsp;</button>';
 
-		    //if($payments['status'] != 0 && $id_rights > 4)
-			$buttons .= ' &nbsp; <button type="button" class="btn btn-danger btn-xs" onclick="delete_payment_prepare(' . $payments['id'] . ')">&nbsp;<i class="fa fa-trash-o"></i>&nbsp;</button>';
+		    if($payments['status'] != 0 && $id_rights > 4)
+		        $buttons .= ' &nbsp; <button type="button" class="btn btn-danger btn-xs" onclick="delete_payment_prepare(' . $payments['id'] . ')">&nbsp;<i class="fa fa-trash-o"></i>&nbsp;</button>';
           }
           $buttons .= '</span>';
           $payment_div .= $buttons;
@@ -1799,7 +1799,7 @@ function show_schet_klient($connect){
         $payment_div .= '<div class="payment-element">';
 		$payment_div.= "<strong>Оплата".$add.":</strong> ".$payments['sum'];
 		$payment_div.= '<span style="float: right;">';
-          if($id_rights > 4 && $active == 0 && in_array($payments['pay_method_int'],[1,2,3,5])) {
+          if($id_rights > 4 && $active == 0 /*&& in_array($payments['pay_method_int'],[1,2,3,5])*/) {
             $payment_div.= "<button type='button' class='btn btn-danger btn-xs' style='float: right;' onclick='delete_payment_prepare(\"".$payments['id']."\")'>&nbsp;<i class='fa fa-trash-o'></i>&nbsp;</button>";
           }
 
