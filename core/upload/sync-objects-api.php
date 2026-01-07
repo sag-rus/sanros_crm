@@ -674,10 +674,10 @@ function sync_objects_api($connect){
             	$objectAr['uri_type'] = 0;
           	}
 
-          	/*echo "Отправка запроса на https://sites.tonia.ru/api/object/set/".$object['id'].'<br>';
+          	echo "Отправка запроса на https://sites.tonia.ru/api/object/set/".$object['id'].'<br>';
           	echo '<pre>';
 		  	print_r($objectAr);   
-          	echo '</pre>';*/
+          	echo '</pre>';
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/object/set/".$object['id'],[
 				'form_params' => $objectAr
