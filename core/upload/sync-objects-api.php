@@ -571,6 +571,7 @@ function sync_objects_api($connect){
 			$objectAr['accr_data'] = $object['accr_data'];
 			$objectAr['latitude'] = $object['latitude'];
 			$objectAr['featured'] = $object['featured'];
+			$objectAr['similar'] = $object['similar'];
 			$objectAr['selected'] = $object['selected'];
 			$objectAr['bookings_count'] = $object['bookings_count'];
 			$objectAr['state_program'] = $object['state_program'];
