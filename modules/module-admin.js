@@ -3518,6 +3518,13 @@ function save_sites_menu_item() {
   else
     status = 0;
 
+  var $no_index = $modalBody.find('*[name="no_index"]');
+  var no_index;
+  if($no_index.prop('checked'))
+    no_index = 1;
+  else
+    no_index = 0;  
+
 
   var $main = $modalBody.find('*[name="main"]');
   var main;
@@ -3577,6 +3584,7 @@ function save_sites_menu_item() {
         id:id,
         sort: sort,
         status: status,
+		no_index: no_index,
         site_id: site_id,
         menu_id: menu_id,
 				parent_id: parent_id
