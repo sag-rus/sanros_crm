@@ -271,6 +271,7 @@ function review_contract($connect, $type, $id){
 				}
 				if(!$passport)
 					$passport = $row["birth_certificate"];
+				if ($id == 182819) $passport = 'паспорт '.$passport;
 				echo "<tr>";
 				echo "<td>".$turist."</td>";
 				echo "<td align='center'>".date_change($row["date"])."</td>";
