@@ -77,7 +77,7 @@ $client_info = array(
 
 $user_id = $create_client->create_client($client_info);
 
-$exist_reckoning = $connect->getOne("SELECT * FROM reckoning WHERE turist=?i AND status=1 `date`>NOW() - INTERVAL 1 ORDER BY id DESC", $user_id);
+$exist_reckoning = $connect->getOne("SELECT * FROM reckoning WHERE turist=?i AND status=1 AND `date`>NOW() - INTERVAL 1 DAY ORDER BY id DESC", $user_id);
 if ($exist_reckoning) {
 	$connect->query("UPDATE `reckoning` SET `cmnt`=?s WHERE id=?i", $exist_reckoning['cmnt'].'<br><br>'.$cmnt, $exist_reckoning['id']);
 } else {

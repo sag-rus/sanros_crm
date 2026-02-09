@@ -81,7 +81,7 @@ $client_info = array(
 
 $user_id = $create_client->create_client($client_info);
 
-$exist_reckoning = $connect->getOne("SELECT * FROM reckoning WHERE turist=?i AND status=1 `date`>NOW() - INTERVAL 1 ORDER BY id DESC", $user_id);
+$exist_reckoning = $connect->getOne("SELECT * FROM reckoning WHERE turist=?i AND status=1 and `date`>NOW() - INTERVAL 1 DAY ORDER BY id DESC", $user_id);
 $check_query = $connect->last_query();
 $cmnt .= $check_query;
 if ($exist_reckoning) {
