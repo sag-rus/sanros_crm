@@ -85,6 +85,7 @@ $exist_reckoning = $connect->getOne("SELECT * FROM reckoning WHERE turist=?i AND
 $check_query = $connect->last_query();
 $cmnt .= $check_query;
 if ($exist_reckoning) {
+	$connect->query("INSERT 1_ya_form_log SET `id`=0, `datetime`=NOW(), `data`=?s", 'exist_id='.$exist_reckoning['id']);
 	$connect->query(
 		"UPDATE `reckoning` SET `cmnt`=?s WHERE id=?i",
 		($exist_reckoning['cmnt'] . '<br><br>' . $cmnt),
