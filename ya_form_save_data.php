@@ -83,11 +83,11 @@ $user_id = $create_client->create_client($client_info);
 
 $exist_reckoning = $connect->getOne("SELECT * FROM reckoning WHERE turist=?i AND status=1 and `date`>NOW() - INTERVAL 1 DAY ORDER BY id DESC", $user_id);
 $check_query = $connect->last_query();
-$cmnt .= $check_query;
+$connect->query("INSERT 1_ya_form_log SET `id`=0, `datetime`=NOW(), `data`=?s",$check_query);
 if ($exist_reckoning) {
-	$connect->query("INSERT 1_ya_form_log SET `id`=0, `datetime`=NOW(), `data`=?s", 'exist_id='.$exist_reckoning['id']);
+	$connect->query("INSERT 1_ya_form_log SET `id`=0, `datetime`=NOW(), `data`=?s", print_r($exist_reckoning));
 	$connect->query(
-		"UPDATE `reckoning` SET `cmnt`=?s WHERE id=?i",
+		"UPDATE `reckoning` SET `note`=?s WHERE id=?i",
 		($exist_reckoning['cmnt'] . '<br><br>' . $cmnt),
 		$exist_reckoning['id']
 	);
