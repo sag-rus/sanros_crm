@@ -348,6 +348,7 @@ if ($dates_unavailable) {
 		}
 	}else{
 		$connect->query("INSERT INTO position_reck(schet, id_room, days, date_z, number, type, reward, add_one_day) VALUES (?i, 0, ?i, ?s, 1, 1, ?s, ?i)", $id, $days, $date_z, $reward, (int)$add_one_day);
+		if (isset($exist_reckoning['id'])) $note_booking = $exist_reckoning['note'].'<br><br>'.$note_booking;
 		$connect->query("UPDATE reckoning SET note=?s, form_booking='default-form' WHERE id=?i", $note_booking, $id);
 	}
 
