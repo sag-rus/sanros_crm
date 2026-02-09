@@ -188,7 +188,7 @@ if ($exist_reckoning) {
 			`bnovo` = ?i,
 			`afl` = ?s
 		WHERE `id` = ?i",
-		$today, $last_id, $id_obj, $last_id, $hash, $website, $source, $note_booking, $bnovo_in_sql, $afl_in_sql, $exist_reckoning['id']
+		$today, $last_id, $id_obj, $last_id, $hash, $website, $source, $exist_reckoning['note'].'<br><br>'.$note_booking, $bnovo_in_sql, $afl_in_sql, $exist_reckoning['id']
 	);
 	$id = $exist_reckoning['id'];
 } else {
