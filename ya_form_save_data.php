@@ -81,18 +81,15 @@ $client_info = array(
 
 $user_id = $create_client->create_client($client_info);
 
-$exist_reckoning = $connect->getRow("SELECT id FROM reckoning WHERE turist=?i AND status=1 and `date`>NOW() - INTERVAL 1 DAY ORDER BY id DESC LIMIT 1", $user_id);
-$check_query = $connect->last_query();
-$connect->query("INSERT 1_ya_form_log SET `id`=0, `datetime`=NOW(), `data`=?s",$check_query);
+$exist_reckoning = $connect->getRow("SELECT * FROM reckoning WHERE turist=?i AND status=1 and `date`>NOW() - INTERVAL 1 DAY ORDER BY id DESC LIMIT 1", $user_id);
+//$check_query = $connect->last_query();
 if ($exist_reckoning) {
-	$connect->query("INSERT 1_ya_form_log SET `id`=0, `datetime`=NOW(), `data`=?s", print_r($exist_reckoning, true));
 	$connect->query(
 		"UPDATE `reckoning` SET `note`=?s WHERE id=?i",
 		($exist_reckoning['cmnt'] . '<br><br>' . $cmnt),
 		$exist_reckoning['id']
 	);
-	$update_query = $connect->last_query();
-	$connect->query("INSERT 1_ya_form_log SET `id`=0, `datetime`=NOW(), `data`=?s",$update_query);	
+	//$update_query = $connect->last_query();
 } else {
 	$connect->query("INSERT INTO `reckoning` (`id`, `type`, `date`, `sum`, `count_payment`, `count_holding`, `manager`, `turist`, `id_user`, `active`, `status`, `holding`, `holding_sum`, `holding_cancelled_sum`, `holding_confirmed_sum`, `rest`, `prepay`, `id_obj`, `date_z`, `status_san`, `number_turist`, `payer`, `agency`, `id_com`, `note`, `id_dis`, `id_services`, `id_tour`, `status_agent`, `schet_san`, `date_schet_san`, `date_v`, `hash`, `website`, `website_from`, `reason_delete`, `changes`, `guaranteed`, `doc_schet_san`, `reward`, `note_bid`, `correction`, `commission_value`, `source`, `promo_code`, `form_booking`, `exclude_bank_commission`, `bank_com_auto_excluded`, `state_program`, `is_test`, `children_rest`, `far_east`, `bnovo`, `bnovo_json`, `afl`, `afl_worked`) 
                                   VALUES ('0', '0', '".date('Y-m-d')."', NULL, '0', '0', NULL, '$user_id', NULL, '0', '1', '0', '0.00', '0.00', '0.00', '$user_id', '0.00', '0', NULL, '0', '1', NULL, NULL, NULL, ?s, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '20', NULL, NULL, '0', '0', '0', '0', '0', '0', '0', '\'\'', '', '0');", $cmnt);
