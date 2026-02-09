@@ -11,9 +11,9 @@ class CreateClient{
 
   public function create_client($data){
     $connect = $this->connect;
-    $surname = first_symbol_to_title($data["surname"]);
-    $name = first_symbol_to_title($data["name"]);
-    $otch = first_symbol_to_title($data["otch"]);
+    $surname = first_symbol_to_title(clean_user_name_data($data["surname"]));
+    $name = first_symbol_to_title(clean_user_name_data($data["name"]));
+    $otch = first_symbol_to_title(clean_user_name_data($data["otch"]));
     $email = "";
     $telephone = "";
     $address = "";
@@ -36,14 +36,14 @@ class CreateClient{
     if(isset($data["ip"]))
       $address = get_address_by_ip($data["ip"]);
     if($telephone){
-      if($email == ""){
-        $client = $connect->getOne("SELECT id FROM klient WHERE surname=?s AND name=?s AND telephone=?s", $surname, $name, $telephone);
-      }elseif($otch == ""){
-        $client = $connect->getOne("SELECT id FROM klient WHERE surname=?s AND name=?s AND (email='' OR email=?s) AND telephone=?s", $surname, $name, $email, $telephone);
-      }elseif($date == NULL){
-        $client = $connect->getOne("SELECT id FROM klient WHERE surname=?s AND name=?s AND (otch='' OR otch IS NULL OR otch=?s) AND (email='' OR email IS NULL OR email=?s) AND telephone=?s", $surname, $name, $otch, $email, $telephone);
-      }else{
-        $client = $connect->getOne("SELECT id FROM klient WHERE surname=?s AND name=?s AND (otch='' OR otch IS NULL OR otch=?s) AND (email='' OR email IS NULL OR email=?s) AND telephone=?s AND `date`=?s", $surname, $name, $otch, $email, $telephone, $date);
+      if ($email == "") {
+        $client = $connect->getOne("SELECT id FROM klient WHERE surname=?s AND name=?s AND telephone=?s ORDER BY id DESC", $surname, $name, $telephone);
+      } elseif ($otch == "") {
+        $client = $connect->getOne("SELECT id FROM klient WHERE surname=?s AND name=?s AND (email='' OR email=?s) AND telephone=?s ORDER BY id DESC", $surname, $name, $email, $telephone);
+      } elseif ($date == NULL) {
+        $client = $connect->getOne("SELECT id FROM klient WHERE surname=?s AND name=?s AND (otch='' OR otch IS NULL OR otch=?s) AND (email='' OR email IS NULL OR email=?s) AND telephone=?s ORDER BY id DESC", $surname, $name, $otch, $email, $telephone);
+      } else {
+        $client = $connect->getOne("SELECT id FROM klient WHERE surname=?s AND name=?s AND (otch='' OR otch IS NULL OR otch=?s) AND (email='' OR email IS NULL OR email=?s) AND telephone=?s AND `date`=?s ORDER BY id DESC", $surname, $name, $otch, $email, $telephone, $date);
       }
       if($client){
         $row = $connect->getRow("SELECT email, otch FROM klient WHERE id=?i", $client);

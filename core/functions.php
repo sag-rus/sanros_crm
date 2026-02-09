@@ -1896,6 +1896,31 @@ function convert_name($name){
 	return first_symbol_to_title(trim($name));
 }
 
+function clean_user_name_data($input) {
+    // 1. Триммируем строку (убираем пробелы в начале и конце)
+    $result = trim($input);
+    
+    // 2. Оставляем только русские и английские буквы, а также пробелы
+    // Используем регулярное выражение:
+    // - [а-яё] — русские строчные буквы
+    // - [a-z] — английские строчные буквы
+    // - \s — пробельные символы (пробел, табуляция и т. п.)
+    $result = preg_replace('/[^а-яёa-z\s]/iu', '', $result);
+    
+    // 3. Приводим к строчному регистру
+    // Для корректной работы с кириллицей используем mb_strtolower
+    $result = mb_strtolower($result, 'UTF-8');
+    
+    // 4. Удаляем задвоенные и затроенные пробелы
+    // Заменяем несколько пробелов подряд на один пробел
+    $result = preg_replace('/\s+/', ' ', $result);
+    
+    // Дополнительно убираем пробелы в начале и конце (после замены пробелов)
+    $result = trim($result);
+    
+    return $result;
+}
+
 function first_symbol_to_title($string = ""){
 	if($string == "")
 		return "";
