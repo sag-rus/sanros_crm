@@ -81,7 +81,7 @@ $client_info = array(
 
 $user_id = $create_client->create_client($client_info);
 
-$exist_reckoning = $connect->getOne("SELECT * FROM reckoning WHERE turist=?i AND status=1 and `date`>NOW() - INTERVAL 1 DAY ORDER BY id DESC", $user_id);
+$exist_reckoning = $connect->getRow("SELECT id FROM reckoning WHERE turist=?i AND status=1 and `date`>NOW() - INTERVAL 1 DAY ORDER BY id DESC LIMIT 1", $user_id);
 $check_query = $connect->last_query();
 $connect->query("INSERT 1_ya_form_log SET `id`=0, `datetime`=NOW(), `data`=?s",$check_query);
 if ($exist_reckoning) {

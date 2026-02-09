@@ -171,7 +171,7 @@ $note_booking .= "\r\n".$data_booking->position;
 if ($data_booking->bnovo==1) $bnovo_in_sql = 1; else $bnovo_in_sql = 0;
 if ($data_booking->afl!='') $afl_in_sql = $data_booking->afl; else $afl_in_sql = '';
 
-$exist_reckoning = $connect->getOne("SELECT * FROM reckoning WHERE turist=?i AND status=1 AND id_obj=0 and `note`<>'' and `date`>NOW() - INTERVAL 1 DAY  ORDER BY id DESC", $last_id);
+$exist_reckoning = $connect->getOne("SELECT * FROM reckoning WHERE turist=?i AND status=1 AND id_obj=0 and `note`<>'' and `date`>NOW() - INTERVAL 1 DAY  ORDER BY id DESC LIMIT 1", $last_id);
 if ($exist_reckoning) {
 	$connect->query(
 		"UPDATE reckoning 
