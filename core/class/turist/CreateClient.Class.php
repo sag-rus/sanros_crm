@@ -38,7 +38,7 @@ class CreateClient{
     if($telephone){
       if ($email == "") {
         $client = $connect->getOne("SELECT id FROM klient WHERE telephone=?s ORDER BY id DESC", $telephone);
-      } elseif ($otch == "") {
+      } elseif ($email != "") {
         $client = $connect->getOne("SELECT id FROM klient WHERE (email='' OR email=?s) AND telephone=?s ORDER BY id DESC", $email, $telephone);
       } elseif ($date == NULL) {
         $client = $connect->getOne("SELECT id FROM klient WHERE surname=?s AND name=?s AND (otch='' OR otch IS NULL OR otch=?s) AND (email='' OR email IS NULL OR email=?s) AND telephone=?s ORDER BY id DESC", $surname, $name, $otch, $email, $telephone);
