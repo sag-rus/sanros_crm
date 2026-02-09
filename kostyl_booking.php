@@ -171,8 +171,31 @@ $note_booking .= "\r\n".$data_booking->position;
 if ($data_booking->bnovo==1) $bnovo_in_sql = 1; else $bnovo_in_sql = 0;
 if ($data_booking->afl!='') $afl_in_sql = $data_booking->afl; else $afl_in_sql = '';
 
-$connect->query("INSERT INTO reckoning(date, turist, id_obj, rest, hash, website, source, form_booking, note, bnovo, afl) VALUES (?s, ?i, ?i, ?i, ?s, ?s, ?i, 'module',?s, ?i, ?s)", $today, $last_id, $id_obj, $last_id, $hash, $website, $source, $note_booking, $bnovo_in_sql, $afl_in_sql);
-$id = $connect->insertId();
+$exist_reckoning = $connect->getOne("SELECT * FROM reckoning WHERE turist=?i AND status=1 AND id_obj=0 and `note`<>'' and `date`>NOW() - INTERVAL 1 DAY  ORDER BY id DESC", $last_id);
+if ($exist_reckoning) {
+	$connect->query(
+		"UPDATE reckoning 
+		SET 
+			`date` = ?s,
+			`turist` = ?i,
+			`id_obj` = ?i,
+			`rest` = ?i,
+			`hash` = ?s,
+			`website` = ?s,
+			`source` = ?i,
+			`form_booking` = 'module',
+			`note` = ?s,
+			`bnovo` = ?i,
+			`afl` = ?s
+		WHERE `id` = ?i",
+		$today, $last_id, $id_obj, $last_id, $hash, $website, $source, $note_booking, $bnovo_in_sql, $afl_in_sql, $exist_reckoning['id']
+	);
+	$id = $exist_reckoning['id'];
+} else {
+	$connect->query("INSERT INTO reckoning(date, turist, id_obj, rest, hash, website, source, form_booking, note, bnovo, afl) VALUES (?s, ?i, ?i, ?i, ?s, ?s, ?i, 'module',?s, ?i, ?s)", $today, $last_id, $id_obj, $last_id, $hash, $website, $source, $note_booking, $bnovo_in_sql, $afl_in_sql);
+	$id = $connect->insertId();
+}
+
 
 
 $log = 'ID='.$id.' bnovo_in_sql='.$bnovo_in_sql;
