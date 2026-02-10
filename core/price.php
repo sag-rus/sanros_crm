@@ -179,14 +179,14 @@ function edit_month($connect){
 				<div class="modal-body">
 					<div class="form-horizontal new-month">
 						<div class="form-group">
-							<label class="col-sm-4 control-label">Активность</label>
-							<div class="col-sm-8">
+							<label class="col-sm-2 control-label">Активность</label>
+							<div class="col-sm-10">
 								<input type="checkbox" <?php if ($active) echo 'checked';?> class="form-control active">
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-4 control-label">Направление</label>
-							<div class="col-sm-8">
+							<label class="col-sm-2 control-label">Направление</label>
+							<div class="col-sm-10">
 								<select class="form-control id_location" <?php if ($id>0) echo 'disabled'?>>
 									<?php
 									foreach ($locations as $location) {
@@ -199,8 +199,8 @@ function edit_month($connect){
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-4 control-label">Месяц</label>
-							<div class="col-sm-8">
+							<label class="col-sm-2 control-label">Месяц</label>
+							<div class="col-sm-10">
 								<select class="form-control id_month" <?php if ($id>0) echo 'disabled'?>>
 									<option value="1" <?php if ($month['id_month']==1) echo 'selected="selected"'?>>Январь</option>
 									<option value="2" <?php if ($month['id_month']==2) echo 'selected="selected"'?>>Февраль</option>
@@ -218,27 +218,27 @@ function edit_month($connect){
 							</div>
 						</div>						
 						<div class="form-group">
-							<label class="col-sm-4 control-label">Title</label>
-							<div class="col-sm-8">
+							<label class="col-sm-2 control-label">Title</label>
+							<div class="col-sm-10">
 								<input type="text" class="form-control month_title" value="<?=$month['title']?>">
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-4 control-label">Description</label>
-							<div class="col-sm-8">
+							<label class="col-sm-2 control-label">Description</label>
+							<div class="col-sm-10">
 								<input type="text" class="form-control month_description" value="<?=$month['description']?>">
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-4 control-label">H1</label>
-							<div class="col-sm-8">
+							<label class="col-sm-2 control-label">H1</label>
+							<div class="col-sm-10">
 								<input type="text" class="form-control month_h1" value="<?=$month['h1']?>">
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-4 control-label">Текст</label>
-							<div class="col-sm-8">
-								<textarea type="text" class="form-control month_text"><?=$month['text']?></textarea>
+							<label class="col-sm-2 control-label">Текст</label>
+							<div class="col-sm-10">
+								<textarea type="text" style="height: 300px;" class="form-control month_text"><?=$month['text']?></textarea>
 							</div>
 						</div>						
 					</div>
