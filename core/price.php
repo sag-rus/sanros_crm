@@ -119,6 +119,7 @@ function save_month($connect){
 	$desc = $_POST["desc"];
 	$h1 = $_POST["h1"];
 	$text = $_POST["text"];
+	$additional_text = $_POST["additional_text"];
 
 	$months = [
 		1 => 'январь',
@@ -141,12 +142,12 @@ function save_month($connect){
 		$path = $location['uri'].'/'.$months[$id_month];
 		$month = $connect->getRow("SELECT * FROM `months` WHERE `id_location`=?i AND `id_month`=?i", $id_location, $id_month);	
 		if (!$month) {
-			$connect->query("INSERT INTO `months` (active,id_location,id_month,path,title,description,h1,text) VALUES(?i,?i,?i,?s,?s,?s,?s,?s)", $active, $id_location, $id_month, $path, $title, $desc, $h1, $text);
+			$connect->query("INSERT INTO `months` (active,id_location,id_month,path,title,description,h1,text,additional_text) VALUES(?i,?i,?i,?s,?s,?s,?s,?s,?s)", $active, $id_location, $id_month, $path, $title, $desc, $h1, $text, $additional_text);
 			echo $connect->last_query();
 		}
 	} else {
 		//EDIT
-		$connect->query("UPDATE `months` SET `active`=?i, `title`=?s, `description`=?s, `h1`=?s, `text`=?s, `synchronized`=0  WHERE id=?i", $active, $title, $desc, $h1, $text, $id);
+		$connect->query("UPDATE `months` SET `active`=?i, `title`=?s, `description`=?s, `h1`=?s, `text`=?s, `additional_text`=?s, `synchronized`=0  WHERE id=?i", $active, $title, $desc, $h1, $text, $additional_text, $id);
 		echo $connect->last_query();		
 	}
 }
@@ -239,6 +240,12 @@ function edit_month($connect){
 							<label class="col-sm-2 control-label">Текст</label>
 							<div class="col-sm-10">
 								<textarea type="text" style="height: 300px;" class="form-control month_text"><?=$month['text']?></textarea>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Текст перелинковки</label>
+							<div class="col-sm-10">
+								<textarea type="text" style="height: 300px;" class="form-control month_additional_text"><?=$month['additional_text']?></textarea>
 							</div>
 						</div>						
 					</div>

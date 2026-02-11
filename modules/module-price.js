@@ -678,6 +678,7 @@ function save_month(id){
 	var desc = $('.new-month .month_description').val();
 	var h1 = $('.new-month .month_h1').val();
 	var text = $('.new-month .month_text').val();
+	var additional_text = $('.new-month .month_additional_text').val();
 	var id_filter_location = -1;
 	if ($('.filter_location:visible').length>0) {
 		id_filter_location = $('.filter_location:visible option:selected').val();
@@ -685,7 +686,7 @@ function save_month(id){
 	if(!title || !desc || !h1)
 		show_warning('.new-month', 'Вы не ввели title, description и h1', false);
 	else{
-		var str = 'func=save_month&id='+id+'&active='+active+'&id_location='+id_location+'&id_month='+id_month+'&title='+title+'&desc='+desc+'&h1='+h1+'&text='+text;
+		var str = 'func=save_month&id='+id+'&active='+active+'&id_location='+id_location+'&id_month='+id_month+'&title='+title+'&desc='+desc+'&h1='+h1+'&text='+text+'&additional_text='+additional_text;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
