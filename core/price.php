@@ -245,7 +245,7 @@ function edit_month($connect){
 						<div class="form-group">
 							<label class="col-sm-2 control-label">Текст перелинковки</label>
 							<div class="col-sm-10">
-								<textarea type="text" style="height: 100px;" class="form-control month_additional_text"><?=$month['additional_text']?></textarea>
+								<textarea type="text" style="height: 100px;" class="form-control month_additional_text" id="month_additional_text"><?=$month['additional_text']?></textarea>
 							</div>
 						</div>						
 					</div>
