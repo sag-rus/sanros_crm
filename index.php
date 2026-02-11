@@ -16,7 +16,8 @@
 
 	<script type="text/javascript" src="js/jquery-1.9.1.js"></script>
     <script type="text/javascript" src="js/ckeditor-4/ckeditor.js?v=<?=$version;?>"></script>
-    <!--<script type="text/javascript" src="js/ckeditor/ru.js?v=<?=$version;?>"></script>-->
+	<script type="text/javascript" src="js/ckeditor/ckeditor.js?v=<?=$version;?>"></script>
+    <script type="text/javascript" src="js/ckeditor/ru.js?v=<?=$version;?>"></script>
     <script type="text/javascript" src="js/highcharts.js"></script>
 	<script type="text/javascript" src="js/ajaxupload.js"></script>
 	<script type="text/javascript" src="js/jquery-ui.js"></script>
