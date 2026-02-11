@@ -707,14 +707,14 @@ function edit_month(id){
 		success: function(html){
 			remove_all_windows();
 			show_modal(html);
-			CKEDITOR.replace('month_additional_text', {
+			/*CKEDITOR.replace('month_additional_text', {
 				width: '100%',
 				height: '300'
 			});
 			CKEDITOR.replace('month_text', {
 				width: '100%',
 				height: '300'
-			});
+			});*/
 		}
 	});
 }
