@@ -239,7 +239,7 @@ function edit_month($connect){
 						<div class="form-group">
 							<label class="col-sm-2 control-label">Текст</label>
 							<div class="col-sm-10">
-								<textarea type="text" style="height: 300px;" class="form-control month_text"><?=$month['text']?></textarea>
+								<textarea type="text" style="height: 300px;" class="form-control month_text" id="month_text"><?=$month['text']?></textarea>
 							</div>
 						</div>
 						<div class="form-group">
