@@ -677,8 +677,10 @@ function save_month(id){
 	var title = $('.new-month .month_title').val();
 	var desc = $('.new-month .month_description').val();
 	var h1 = $('.new-month .month_h1').val();
-	var text = $('.new-month .month_text').val();
-	var additional_text = $('.new-month .month_additional_text').val();
+	//var text = $('.new-month .month_text').val();
+	var text = CKEDITOR.instances.month_text.getData();
+	//var additional_text = $('.new-month .month_additional_text').val();
+	var additional_text = CKEDITOR.instances.month_additional_text.getData();
 	var id_filter_location = -1;
 	if ($('.filter_location:visible').length>0) {
 		id_filter_location = $('.filter_location:visible option:selected').val();
@@ -707,14 +709,14 @@ function edit_month(id){
 		success: function(html){
 			remove_all_windows();
 			show_modal(html);
-			/*CKEDITOR.replace('month_additional_text', {
+			CKEDITOR.replace('month_additional_text', {
 				width: '100%',
 				height: '300'
 			});
 			CKEDITOR.replace('month_text', {
 				width: '100%',
 				height: '300'
-			});*/
+			});
 		}
 	});
 }
