@@ -691,6 +691,7 @@ function save_month(id){
 		//var str = 'func=save_month&id='+id+'&active='+active+'&id_location='+id_location+'&id_month='+id_month+'&title='+title+'&desc='+desc+'&h1='+h1+'&text='+text+'&additional_text='+additional_text;
 		var str = {
 			func: 'save_month',
+			active: active,
 			id: id,
 			id_location: id_location,
 			id_month: id_month,
