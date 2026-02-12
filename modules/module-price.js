@@ -688,7 +688,18 @@ function save_month(id){
 	if(!title || !desc || !h1)
 		show_warning('.new-month', 'Вы не ввели title, description и h1', false);
 	else{
-		var str = 'func=save_month&id='+id+'&active='+active+'&id_location='+id_location+'&id_month='+id_month+'&title='+title+'&desc='+desc+'&h1='+h1+'&text='+text+'&additional_text='+additional_text;
+		//var str = 'func=save_month&id='+id+'&active='+active+'&id_location='+id_location+'&id_month='+id_month+'&title='+title+'&desc='+desc+'&h1='+h1+'&text='+text+'&additional_text='+additional_text;
+		var str = {
+			func: 'save_month',
+			id: id,
+			id_location: id_location,
+			id_month: id_month,
+			title: title,
+			desc: desc,
+			h1: h1,
+			text: text,
+			additional_text: additional_text
+		};
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
