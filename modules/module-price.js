@@ -678,9 +678,9 @@ function save_month(id){
 	var desc = $('.new-month .month_description').val();
 	var h1 = $('.new-month .month_h1').val();
 	//var text = $('.new-month .month_text').val();
-	var text = CKEDITOR.instances.month_text.getData();
+	var text = CKEDITOR.instances.month_text.getData().replace(/[\r\n]+/g, '');
 	//var additional_text = $('.new-month .month_additional_text').val();
-	var additional_text = CKEDITOR.instances.month_additional_text.getData();
+	var additional_text = CKEDITOR.instances.month_additional_text.getData().replace(/[\r\n]+/g, '');
 	var id_filter_location = -1;
 	if ($('.filter_location:visible').length>0) {
 		id_filter_location = $('.filter_location:visible option:selected').val();
