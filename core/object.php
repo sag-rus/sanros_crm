@@ -766,6 +766,12 @@ function edit_main_data_object($connect){
                 <input type="checkbox" class="form-control"<?php if($row['selected']) { ?> checked<?php } ?> id="selected">
             </div>
         </div> 
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Объект входит в перечень "Мы рекомендуем"</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-control"<?php if($row['recommended']) { ?> checked<?php } ?> id="recommended">
+            </div>
+        </div> 		
 
         <div class="form-group">
             <label class="col-sm-3 control-label">Есть отдых c лечением</label>
@@ -980,6 +986,7 @@ function update_main_data_object($connect){
     $children_rest = isset($_POST["children_rest"])?(int)$_POST["children_rest"]:0;
     $featured = isset($_POST["featured"])?(int)$_POST["featured"]:0;
     $selected = isset($_POST["selected"])?(int)$_POST["selected"]:0;
+	$recommended = isset($_POST["recommended"])?(int)$_POST["recommended"]:0;
     $url_name = trim($_POST['url_name']);
     $trust_full_name = isset($_POST['trust_full_name']) ? $_POST['trust_full_name'] : '';
     $trust_name_template = isset($_POST['trust_name_template']) ? $_POST['trust_name_template'] : '';
