@@ -1244,6 +1244,7 @@ function tl_webhooks($connect) {
 					</div>
 					<div class="col-sm-2">
 						<button type="button" class="btn btn-success btn-xs" onclick="tl_webhook('.$item['id'].')">Смотреть</button>						
+						'.$del_btn.'
 					</div>
 				</div>		
 		';
