@@ -1223,6 +1223,8 @@ function tl_webhooks($connect) {
 		} else {
 			$item['worked'] = 'не обработано';
 		}
+		$del_btn = '';
+		if ($item['worked']==1) $del_btn = '<button type="button" class="btn btn-danger btn-xs" onclick="tl_webhook_del('.$item['id'].')">Удалить</button>';
 		$html .= '
 				<div class="list-group-item form-group '.$worked.'" style="margin: 0">
 					<div class="col-sm-1">
@@ -1241,8 +1243,7 @@ function tl_webhooks($connect) {
 						'.$item['worked'].'
 					</div>
 					<div class="col-sm-2">
-						<button type="button" class="btn btn-success btn-xs" onclick="tl_webhook('.$item['id'].')">Смотреть</button>
-						<button type="button" class="btn btn-danger btn-xs" onclick="tl_webhook_del('.$item['id'].')">Удалить</button>
+						<button type="button" class="btn btn-success btn-xs" onclick="tl_webhook('.$item['id'].')">Смотреть</button>						
 					</div>
 				</div>		
 		';
