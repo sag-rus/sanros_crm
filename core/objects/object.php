@@ -1242,6 +1242,7 @@ function tl_webhooks($connect) {
 					</div>
 					<div class="col-sm-2">
 						<button type="button" class="btn btn-success btn-xs" onclick="tl_webhook('.$item['id'].')">Смотреть</button>
+						<button type="button" class="btn btn-danger btn-xs" onclick="tl_webhook_del('.$item['id'].')">Смотреть</button>
 					</div>
 				</div>		
 		';
@@ -1922,6 +1923,10 @@ function tl_webhook_del_obj($connect) {
 
 function set_object_for_webhook($connect) {
 	$connect->query("UPDATE `1_tl_webhook` SET `id_obj`=$_POST[id_obj] WHERE id=$_POST[id_webhook]");
+}
+
+function tl_webhook_del($connect) {
+	//
 }
 
 function tl_webhook($connect) {

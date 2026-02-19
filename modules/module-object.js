@@ -15,6 +15,23 @@ function tl_webhooks(){
 	search_object();
 }
 
+function tl_webhook_del(id){
+	if (!confirm('Вы уверены?')) return;
+
+	var str = 'func=tl_webhook_del&id=' + id;
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: str,
+		success: function(html){
+			tl_webhooks();
+		}
+	});
+
+	
+	search_object();
+}
+
 function tl_webhook(id){
 	select_menu('tl_webhooks');
 
