@@ -1218,13 +1218,13 @@ function tl_webhooks($connect) {
 	foreach ($items as $item) {
 		if (!$item['worked']) $worked = 'warning'; else $warning = '';
 		$item['content_api_data'] = json_decode($item['content_api_data'], true);
+		$del_btn = '';
+		if ($item['worked']==1) $del_btn = '<button type="button" class="btn btn-danger btn-xs" onclick="tl_webhook_del('.$item['id'].')">Удалить</button>';		
 		if ($item['worked']==2) {
 			$item['worked'] = '<strong style="color: green;">обработано</strong>';
 		} else {
 			$item['worked'] = 'не обработано';
 		}
-		$del_btn = '';
-		if ($item['worked']==1) $del_btn = '<button type="button" class="btn btn-danger btn-xs" onclick="tl_webhook_del('.$item['id'].')">Удалить</button>';
 		$html .= '
 				<div class="list-group-item form-group '.$worked.'" style="margin: 0">
 					<div class="col-sm-1">
