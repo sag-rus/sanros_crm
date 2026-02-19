@@ -1242,7 +1242,7 @@ function tl_webhooks($connect) {
 					</div>
 					<div class="col-sm-2">
 						<button type="button" class="btn btn-success btn-xs" onclick="tl_webhook('.$item['id'].')">Смотреть</button>
-						<button type="button" class="btn btn-danger btn-xs" onclick="tl_webhook_del('.$item['id'].')">Смотреть</button>
+						<button type="button" class="btn btn-danger btn-xs" onclick="tl_webhook_del('.$item['id'].')">Удалить</button>
 					</div>
 				</div>		
 		';
@@ -1926,7 +1926,7 @@ function set_object_for_webhook($connect) {
 }
 
 function tl_webhook_del($connect) {
-	//
+	$connect->query("DELETE FROM `1_tl_webhook` WHERE `id`=0 WHERE id=$_POST[id]");
 }
 
 function tl_webhook($connect) {
