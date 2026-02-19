@@ -1928,7 +1928,7 @@ function set_object_for_webhook($connect) {
 }
 
 function tl_webhook_del($connect) {
-	$connect->query("DELETE FROM `1_tl_webhook` WHERE `id`=0 WHERE id=$_POST[id]");
+	$connect->query("DELETE FROM `1_tl_webhook` WHERE id=$_POST[id]");
 }
 
 function tl_webhook($connect) {
