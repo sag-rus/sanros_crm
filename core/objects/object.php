@@ -1120,7 +1120,8 @@ function update_commission_object($connect){
 
 function select_object_contract($connect, $object){
 	$today = date("Y-m-d");
-	$data = $connect->getAll("SELECT id, DATE_FORMAT(date, '%d.%m.%Y') as date_cont, number, type, active, status FROM object_contract WHERE object=?i AND date>=?s ORDER BY date DESC", $object, $today);
+	//$data = $connect->getAll("SELECT id, DATE_FORMAT(date, '%d.%m.%Y') as date_cont, number, type, active, status FROM object_contract WHERE object=?i AND date>=?s ORDER BY date DESC", $object, $today);
+	$data = $connect->getAll("SELECT id, DATE_FORMAT(date, '%d.%m.%Y') as date_cont, number, type, active, status FROM object_contract WHERE object=?i ORDER BY date DESC", $object, $today);
 	return $data;
 }
 
