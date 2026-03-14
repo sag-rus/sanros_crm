@@ -1414,6 +1414,7 @@ function update_main_data_object(id){
 		'featured': $('#featured').prop('checked') ? 1 : 0,
 		'selected': $('#selected').prop('checked') ? 1 : 0,
 		'recommended': $('#recommended').prop('checked') ? 1 : 0,
+		'popular_in_kurort': $('#popular_in_kurort').prop('checked') ? 1 : 0,
 
 		'w_therapy': $('#w_therapy').prop('checked') ? 1 : 0,
 		'wo_therapy': $('#wo_therapy').prop('checked') ? 1 : 0,
