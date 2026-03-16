@@ -592,10 +592,14 @@ function filter_payment($connect){
 					$dis_row_procent = $dis_row_procent['value'];
 				} else $dis_row_procent = 0;
 
-				$discount_initial = round($row['sum_reck']*(($dis_row_procent)/100),2); //сумма скидка по стоимости путевки
+				$discount_initial = round($row['sum_reck']*(($dis_row_procent)/100),2); //сумма скидки по стоимости путевки
 				$all_payments = round(($row['sum_reck']*((100-$dis_row_procent)/100)),2); //сумма путевки за вычетом скидки (она же сумма к оплате)
 
-				$payment_percent_from_all_discount = round( $row['sum'] / ( $all_payments/100 ) , 2); //какой процент занимает текущий платеж от общего
+				if ($all_payments > 0) {
+					$payment_percent_from_all_discount = round($row['sum'] / ($all_payments/100), 2); //какой процент занимает текущий платеж от общего
+				} else {
+					$payment_percent_from_all_discount = 0;
+				}
 
 				$discount_for_all_payments = round($discount_initial*((100-$dis_row_procent)/100),2); //сумма скидка по заявке с учетом скидки
 				$discount_for_payment = round($discount_for_all_payments*($payment_percent_from_all_discount/100),2); //сумма скидка по заявке с учетом скидки
