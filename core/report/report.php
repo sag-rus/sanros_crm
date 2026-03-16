@@ -347,6 +347,8 @@ function filter_payment($connect){
 	$pay_groups = [];
 	$all_reward = 0;
 	foreach($data as $row){
+		echo '<pre style="display: none;">'.$row['schet'].'</pre>';
+
 		$all_fio = "";
 		$id = $row["schet"];
 		$payment_id = $row['id'];
