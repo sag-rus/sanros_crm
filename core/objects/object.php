@@ -1697,7 +1697,10 @@ function tl_webhook_work_modified($connect, $id) {
 	$data = $connect->getRow("SELECT * FROM 1_tl_webhook WHERE `id`=$id");
 	$webhook = json_decode($data['content_api_data'], true);
 
-	if (!is_array($webhook) || count($webhook)==0) return;
+	if (!is_array($webhook) || count($webhook)==0) {
+		$connect->query("UPDATE `1_tl_webhook` SET `worked`=3, `id_obj`=?i WHERE id=$id", $data['id_obj']);
+		return;
+	}
 
 	if ($webhook['id']==13409) {
 		//отключаем обработки properymodified апи для долины алтая
@@ -1905,9 +1908,7 @@ function tl_webhook_work_modified($connect, $id) {
 		$connect->query("UPDATE `place` SET `synchronized`=0 WHERE `id_obj`=$data[id_obj]");		
 		//запускаем синхрон!
 		sync_objects_api($connect);
-
 	}
-
 
 	$connect->query("UPDATE `1_tl_webhook` SET `worked`=2, `id_obj`=?i WHERE id=$id", $data['id_obj']);
 }
