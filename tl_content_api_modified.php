@@ -53,7 +53,10 @@ foreach ($lines as $line) {
 
     if (!empty($line['content_api_data'])) {
         tl_webhook_work_modified($connect, $line['id']);
-    } else echo 'empty!';
+    } else {
+        $connect->query("UPDATE `1_tl_webhook` SET `worked`=3 WHERE id=$id", $line['id']);
+        echo 'empty!';
+    }
 }
 
 ?>

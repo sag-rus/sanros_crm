@@ -1698,7 +1698,6 @@ function tl_webhook_work_modified($connect, $id) {
 	$webhook = json_decode($data['content_api_data'], true);
 
 	if (!is_array($webhook) || count($webhook)==0) {
-		$connect->query("UPDATE `1_tl_webhook` SET `worked`=3, `id_obj`=?i WHERE id=$id", $data['id_obj']);
 		return;
 	}
 
