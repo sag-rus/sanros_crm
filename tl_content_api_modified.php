@@ -55,6 +55,7 @@ foreach ($lines as $line) {
         tl_webhook_work_modified($connect, $line['id']);
     } else {
         $connect->query("UPDATE `1_tl_webhook` SET `worked`=3 WHERE id=$id", $line['id']);
+        echo $connect->last_query().'<br>';
         echo 'empty!';
     }
 }
