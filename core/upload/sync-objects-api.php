@@ -688,9 +688,9 @@ function sync_objects_api($connect){
 
 
 			$res = json_decode($res->getBody(),true);
-          	/*echo '<pre>Результат отправки на https://sites.tonia.ru/api/object/set/'.$object['id'].'<br>';
+          	echo '<pre>Результат отправки на https://sites.tonia.ru/api/object/set/'.$object['id'].'<br>';
 		  	print_r($res);   
-          	echo '</pre>';*/
+          	echo '</pre>';
 			if(array_key_exists('success',$res)) {
 				$success = (bool)(int)$res['success'];
 				if($success) {
