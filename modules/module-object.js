@@ -254,6 +254,9 @@ function tl_webhook_work(id) {
 			type: 'POST',
 			data: str,
 			success: function(html){
+				if (typeof html === 'string' && html.indexOf('TL_WEBHOOK_ERROR:') === 0) {
+					alert(html.replace('TL_WEBHOOK_ERROR:', ''));
+				}
 				tl_webhook(id);
 			}
 		});	
@@ -2109,4 +2112,3 @@ $(document).on('change','.edit-object #object_region',function (e) {
 		});
 	}
 });
-

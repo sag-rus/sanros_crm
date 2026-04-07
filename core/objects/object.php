@@ -1494,6 +1494,16 @@ function tl_webhook_work($connect) {
 		$connect->query("UPDATE `1_tl_webhook` SET `id_obj`=$last_id WHERE id=$_POST[id]");
 	} else {
 		//Случай когда информация из webhook добавляется к новому объекту
+		$object = $connect->getRow("SELECT * FROM `object` WHERE `id`=?i", $data['id_obj']);
+		if (!$object || !isset($object['id'])) {
+			echo 'TL_WEBHOOK_ERROR:Не найден объект, к которому привязан webhook. Обратитесь к администратору.';
+			return;
+		}
+		if (trim($object['path'])=='') {
+			echo 'TL_WEBHOOK_ERROR:У привязанного объекта не заполнен path. Обратитесь к администратору.';
+			return;
+		}
+
 		$connect->query("UPDATE `object` SET `active`=0, `synchronized`=0, `id_tl`=$webhook[id], check_places=1 WHERE id=$data[id_obj]");
 
 		//Удаляем корпуса объекта! - не будем удалять, НО: в новых номерах не будет указывать housing!
@@ -2024,7 +2034,11 @@ function tl_webhook($connect) {
 		} else {
 			$html .= '<strong>Присвоенный объект из имеющихся</strong>: '.$object['name'].' ('.$object['address'].')<br><br>';
 			$html .= ' <button type="button" class="btn btn-danger" onclick="tl_webhook_del_obj('.$id.')">удалить связку с присвоенным объектом</button>';;
-			$html .= ' <button style="margin-left: 30px;" type="button" class="btn btn-success" onclick="tl_webhook_work('.$id.')">перенести данные из запроса в объект</button>';
+			if (trim($object['path'])=='') {
+				$html .= '<div class="alert alert-danger" style="margin-top: 15px; margin-bottom: 15px;">У присвоенного объекта не заполнен path. Нужно обратиться к администратору.</div>';
+			} else {
+				$html .= ' <button style="margin-left: 30px;" type="button" class="btn btn-success" onclick="tl_webhook_work('.$id.')">перенести данные из запроса в объект</button>';
+			}
 			$html .= '<br>';
 			$html .= '<br>';
 		}
