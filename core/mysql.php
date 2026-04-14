@@ -365,7 +365,7 @@ function add_new_client($connect){
 					<div class="form-group">
 						<label class="col-sm-3 control-label">Объект</label>
 						<div class="col-sm-7" id="object_name" name="new-reck">
-							<input type="text" class="form-control" id="object" onkeyup="find_klient(event, 'object', 'object', 'use_object', 1)" onBlur="verification_input_data('object', '1');" name="">
+							<input type="text" class="form-control" id="object" onkeyup="find_klient(event, 'object', 'object', 'use_object', '', 1)" onBlur="verification_input_data('object', '1');" name="">
 						</div>
 						<div class="col-sm-2 mark-object"></div>
 					</div>
