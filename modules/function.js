@@ -525,7 +525,7 @@ function text_focus(id, text, action){
 	}
 }
 
-function find_klient(event, id, table, func, reck){
+function find_klient(event, id, table, func, reck, no_tl = ''){
 	if(!func)
 		func = '';
 	if(!reck)
@@ -554,7 +554,7 @@ function find_klient(event, id, table, func, reck){
 			$.ajax({
 				url: 'mysql.php',
 				type: 'POST',
-				data: str,
+				data: str+'&no_tl='+no_tl,
 				success: function(html){
 					if(html){
 						if(document.getElementById(id)){
