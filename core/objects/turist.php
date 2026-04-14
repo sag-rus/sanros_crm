@@ -141,7 +141,7 @@ function show_menu_client($connect){
 	$id = $_POST["id"];
 ?>
 	<span onclick="edit_klient(<?php echo $id; ?>)">Редактировать</span>
-	<!--<span onclick="new_reck()">Новая заявка</span>-->
+	<span onclick="new_reck()">Новая заявка</span>
 	<?php if(all_klient_bonus($connect, $id)){ ?>
 		<span onclick="transfer_bonuses(<?php echo $id; ?>)">Передать бонусы</span>
 	<?php } ?>
