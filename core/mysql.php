@@ -112,8 +112,10 @@ function help_search_by_name($connect){
 	//echo $poisk_quotes;
 	$table = $_POST["table"];
 	$func = $_POST["function"];
+	$no_tl = '';
+	if (isset($_POST['no_tl']) && $_POST['no_tl']==1) $no_tl = " AND `check_places`=0 ";
 	if($table == "object") {
-		$data = $connect->getAll("SELECT `id`, `name`, `id_account` FROM object WHERE name LIKE ?s AND (id != 61 AND id != 62 AND id != 63 AND id != 64 AND id != 71)", "%".$poisk."%");
+		$data = $connect->getAll("SELECT `id`, `name`, `id_account` FROM object WHERE name LIKE ?s $no_tl AND (id != 61 AND id != 62 AND id != 63 AND id != 64 AND id != 71)", "%".$poisk."%");
 	} elseif($table == "agency")
 		$data = $connect->getAll("SELECT id, short_name, name, active FROM agency WHERE name LIKE ?s OR name LIKE ?s OR short_name LIKE ?s OR short_name LIKE ?s OR name LIKE ?s OR name LIKE ?s OR short_name LIKE ?s OR short_name LIKE ?s", "%".$poisk."%", "%".$poisk."%", "%".$poisk."%", "%".$poisk."%", "%".$poisk_quotes."%", "%".$poisk_quotes."%", $poisk_quotes."%", "%".$poisk_quotes."%");
 	elseif($table == "tour_operator")
@@ -363,7 +365,7 @@ function add_new_client($connect){
 					<div class="form-group">
 						<label class="col-sm-3 control-label">Объект</label>
 						<div class="col-sm-7" id="object_name" name="new-reck">
-							<input type="text" class="form-control" id="object" onkeyup="find_klient(event, 'object', 'object', 'use_object')" onBlur="verification_input_data('object', '1');" name="">
+							<input type="text" class="form-control" id="object" onkeyup="find_klient(event, 'object', 'object', 'use_object', 1)" onBlur="verification_input_data('object', '1');" name="">
 						</div>
 						<div class="col-sm-2 mark-object"></div>
 					</div>
