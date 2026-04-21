@@ -558,6 +558,7 @@ function sync_objects_api($connect){
 			$objectAr['city'] = $object['city'];
 			$objectAr['city_genitive'] = $object['city_genitive'];
 			$objectAr['type'] = $object['type'];
+			//if ($object['type']==)
 			$objectAr['status'] = (int)(!$object['active']);
 			$objectAr['region_id'] = $object['region_id'];
 			$objectAr['prices_api'] = $object['check_places'];
