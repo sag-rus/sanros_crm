@@ -558,7 +558,7 @@ function sync_objects_api($connect){
 			$objectAr['city'] = $object['city'];
 			$objectAr['city_genitive'] = $object['city_genitive'];
 			$objectAr['type'] = $object['type'];
-			if ($object['type']==1 || $object['type']==9 || $object['type']==13) {
+			if ($object['type']==1 || $object['type']==4 || $object['type']==9 || $object['type']==13) {
 				$objectAr['hotel'] = 0;
 			} else {
 				$objectAr['hotel'] = 1;
