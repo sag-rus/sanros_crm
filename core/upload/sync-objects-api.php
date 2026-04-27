@@ -584,7 +584,7 @@ function sync_objects_api($connect){
 			$objectAr['bookings_count'] = $object['bookings_count'];
 			$objectAr['state_program'] = $object['state_program'];
 			$objectAr['children_rest'] = $object['children_rest'];
-			if ($objectAr['url_name_origin']=='') {
+			if ($object['url_name_origin']=='') {
 				$url_name = mb_strtolower($object['name'], 'UTF-8');
 				$url_name = preg_replace('/\s+/', '-', $url_name);
 				$url_name = preg_replace('/[^а-яё\-]/u', '', $url_name);
