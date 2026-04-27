@@ -1554,8 +1554,13 @@ function confirm_request_object($connect){
 		$id_account = $connect->insertId();
 
 		
-		$url_name = mb_strtolower($row['name']);
-		$url_name = str_replace(' ', '-', $url_name);
+		//$url_name = mb_strtolower($row['name']);
+		//$url_name = str_replace(' ', '-', $url_name);
+		$url_name = mb_strtolower($row['name'], 'UTF-8');
+		$url_name = preg_replace('/\s+/', '-', $url_name);
+		$url_name = preg_replace('/[^а-яё\-]/u', '', $url_name);
+		$url_name = preg_replace('/-+/', '-', $url_name);
+		$url_name = trim($url_name, '-');		
 		if ($row['id_object']==0) {
 			//Создаем объект (если не выбран существующий объект)
 			$connect->query("INSERT INTO `object` 

@@ -1399,8 +1399,13 @@ function tl_webhook_work($connect) {
 		//Случай когда создается новый объект по webhook'у
 
 		//Создаем новый объект
-		$url_name = mb_strtolower($webhook['name']);
-		$url_name = str_replace(' ', '-', $url_name);
+		//$url_name = mb_strtolower($webhook['name']);
+		//$url_name = str_replace(' ', '-', $url_name);		
+		$url_name = mb_strtolower($webhook['name'], 'UTF-8');
+		$url_name = preg_replace('/\s+/', '-', $url_name);
+		$url_name = preg_replace('/[^а-яё\-]/u', '', $url_name);
+		$url_name = preg_replace('/-+/', '-', $url_name);
+		$url_name = trim($url_name, '-');
 		$connect->query("INSERT INTO `object` SET 
 			`id`=0, 
 			`id_tl`=$webhook[id], 

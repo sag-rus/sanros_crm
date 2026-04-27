@@ -584,6 +584,14 @@ function sync_objects_api($connect){
 			$objectAr['bookings_count'] = $object['bookings_count'];
 			$objectAr['state_program'] = $object['state_program'];
 			$objectAr['children_rest'] = $object['children_rest'];
+			if ($objectAr['url_name_origin']=='') {
+				$url_name = mb_strtolower($object['name'], 'UTF-8');
+				$url_name = preg_replace('/\s+/', '-', $url_name);
+				$url_name = preg_replace('/[^а-яё\-]/u', '', $url_name);
+				$url_name = preg_replace('/-+/', '-', $url_name);
+				$url_name = trim($url_name, '-');		
+				$objectAr['url_name_origin'] = $url_name;
+			}
 
 			$phonesAr = json_decode($object['telephone'],true);
 			$emailsAr = json_decode($object['email'],true);
@@ -651,9 +659,9 @@ function sync_objects_api($connect){
 						
 						$objectArFullUri_old = str_replace('/отели/', '/', $objectArFullUri);
 
-						echo "UPDATE `object` SET `path`='$objectArFullUri' WHERE `id`=$object[id]<br><br>";
+						echo "UPDATE `object` SET `path`='$objectArFullUri', `url_name_origin`='$object[url_name_origin]' WHERE `id`=$object[id]<br><br>";
 
-						$connect->query("UPDATE `object` SET `path`='$objectArFullUri' WHERE `id`=$object[id]");
+						$connect->query("UPDATE `object` SET `path`='$objectArFullUri', `url_name_origin`='$object[url_name_origin]' WHERE `id`=$object[id]");
 
 						if ($objectAr['hotel'] == 1) {
 
