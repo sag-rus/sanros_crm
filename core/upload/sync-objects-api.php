@@ -646,13 +646,17 @@ function sync_objects_api($connect){
 							$objectArFullUri = '/отели'.$objectArFullUri;
 						}	
 						
-						$objectArFullUri_old = str_replace('/отели/', '', $objectArFullUri);
+						$objectArFullUri_old = str_replace('/отели/', '/', $objectArFullUri);
 
 						//echo "UPDATE `object` SET `path`='$objectArFullUri' WHERE `id`=$object[id]<br><br>";
 
 						$connect->query("UPDATE `object` SET `path`='$objectArFullUri' WHERE `id`=$object[id]");
 
 						if ($objectAr['hotel'] == 1) {
+
+							echo 'updating hotel...<br>';
+							echo $objectArFullUri_old.'<br>';
+							echo $objectArFullUri.'<br>';
 
 							$content = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `status` <> 2 AND `path` = ?s AND `type` != 'redirect' AND `site_id` = '38'", $objectArFullUri_old);
 
