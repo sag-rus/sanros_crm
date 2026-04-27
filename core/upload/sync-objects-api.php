@@ -669,6 +669,7 @@ function sync_objects_api($connect){
 									echo 'crearing redirect content...<br>';
 									$timestamp = gmdate("U");
 									$connect->query("INSERT INTO `sites_contents` (`type`, `status`, `created`, `published`, `changed`, `site_id`, `title`, `path`, `redirect_path`) VALUES ('redirect', 1, '".$timestamp."', '".$timestamp."', '".$timestamp."', '38', 'Редирект', ?s, ?s)", $objectArFullUri_old, $objectArFullUri);
+									echo $connect->last_query().'<br>';
 								}
 
 							}
