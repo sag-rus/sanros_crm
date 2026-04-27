@@ -637,6 +637,10 @@ function sync_objects_api($connect){
 				$objectAr['uri'] = change_text_url($object['type_name']) . '-' . $object['url_name'];
 				$objectAr['uri_type'] = 1;
 
+				echo '<pre>';
+				print_r($objectAr);
+				echo '</pre>';
+
 				if(!is_null($object['direction'])) {
 					echo 'make new object uri step 1...<br>';
                     $directionUrl = $connect->getOne("SELECT `name` FROM `direction_object` WHERE `id_country` = 1 AND `id` = ?i", $object['direction']);
