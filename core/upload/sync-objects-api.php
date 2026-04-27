@@ -648,7 +648,7 @@ function sync_objects_api($connect){
 						
 						$objectArFullUri_old = str_replace('/отели/', '/', $objectArFullUri);
 
-						//echo "UPDATE `object` SET `path`='$objectArFullUri' WHERE `id`=$object[id]<br><br>";
+						echo "UPDATE `object` SET `path`='$objectArFullUri' WHERE `id`=$object[id]<br><br>";
 
 						$connect->query("UPDATE `object` SET `path`='$objectArFullUri' WHERE `id`=$object[id]");
 
