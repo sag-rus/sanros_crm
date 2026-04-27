@@ -587,7 +587,7 @@ function sync_objects_api($connect){
 			if ($object['url_name_origin']=='') {
 				$url_name = mb_strtolower($object['name'], 'UTF-8');
 				$url_name = preg_replace('/\s+/', '-', $url_name);
-				$url_name = preg_replace('/[^а-яё\-]/u', '', $url_name);
+				$url_name = preg_replace('/[^a-zа-яё\-]/u', '', $url_name);
 				$url_name = preg_replace('/-+/', '-', $url_name);
 				$url_name = trim($url_name, '-');		
 				$objectAr['url_name_origin'] = $url_name;
