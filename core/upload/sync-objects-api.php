@@ -591,6 +591,7 @@ function sync_objects_api($connect){
 				$url_name = preg_replace('/-+/', '-', $url_name);
 				$url_name = trim($url_name, '-');		
 				$objectAr['url_name_origin'] = $url_name;
+				$object['url_name_origin'] = $url_name;
 			}
 
 			$phonesAr = json_decode($object['telephone'],true);
