@@ -630,10 +630,12 @@ function sync_objects_api($connect){
 				$objectAr['uri_type'] = 1;
 
 				if(!is_null($object['direction'])) {
+					echo 'make new object uri step 1...<br>';
                     $directionUrl = $connect->getOne("SELECT `name` FROM `direction_object` WHERE `id_country` = 1 AND `id` = ?i", $object['direction']);
                     //$objectArFullUri = '/направления/'.change_text_url($directionUrl);
                     $objectArFullUri = '/'.change_text_url($directionUrl);
                     if($objectAr['region_id'] && mb_strlen($object['url_name_origin']) > 0) {
+						echo 'make new object uri step 2...<br>';
                         $regionUrl = $connect->getOne("SELECT `name` FROM `region` WHERE `region`.`id_country` = 1 AND `region`.`id` = ?i", $objectAr['region_id']);
                         $objectArFullUri .= '/' . change_text_url($regionUrl);
                         if(!is_null($object['region_direction_id']) && $object['region_direction_id']) {
