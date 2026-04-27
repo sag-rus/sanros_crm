@@ -642,7 +642,7 @@ function sync_objects_api($connect){
 
                         $objectArFullUri .= '/'.$objectAr['uri'];
 
-						if ($objectAr['hotel'] == 1) {
+						if ($objectAr['hotel'] == 1 && mb_strpos($objectArFullUri, '/отели/')===FALSE) {
 							$objectArFullUri_old = $objectArFullUri;
 							$objectArFullUri = '/отели'.$objectArFullUri;
 						}						
@@ -656,7 +656,6 @@ function sync_objects_api($connect){
 							$content = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `status` <> 2 AND `path` = ?s AND `type` != 'redirect' AND `site_id` = '38'", $objectArFullUri_old);
 
 							if ($content) {
-
 								$connect->query("UPDATE `sites_contents` SET `synchronized` = 0, `path` = ?s WHERE id = ?i AND `site_id`", $objectArFullUri, $content['id']);
 
 								$redirectMain = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `status` <> 2 AND `path` = ?s AND `redirect_path` = ?s AND `type` = 'redirect' AND `site_id` = '38'", $objectArFullUri_old, $objectArFullUri);
