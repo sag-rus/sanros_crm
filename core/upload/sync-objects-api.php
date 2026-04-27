@@ -625,6 +625,7 @@ function sync_objects_api($connect){
 			$objectAr['note'] = $object['note'];
 			$objectAr['address'] = $object['address'];
 			if($object['uri_schema'] == 2) {
+				echo 'make new object uri...<br>';
 				$objectAr['uri'] = change_text_url($object['type_name']) . '-' . $object['url_name'];
 				$objectAr['uri_type'] = 1;
 
