@@ -642,12 +642,33 @@ function sync_objects_api($connect){
 
                         $objectArFullUri .= '/'.$objectAr['uri'];
 
+						if ($objectAr['hotel'] == 1) {
+							$objectArFullUri_old = $objectArFullUri;
+							$objectArFullUri = '/отель'.$objectArFullUri;
+						}						
+
 						//echo "UPDATE `object` SET `path`='$objectArFullUri' WHERE `id`=$object[id]<br><br>";
 
 						$connect->query("UPDATE `object` SET `path`='$objectArFullUri' WHERE `id`=$object[id]");
 
-                        $content = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `status` <> 2 AND `path` = ?s AND `type` != 'redirect' AND `site_id` = '38'", '/объект/'.$object['url_name_origin']);
+						if ($objectAr['hotel'] == 1) {
 
+							$content = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `status` <> 2 AND `path` = ?s AND `type` != 'redirect' AND `site_id` = '38'", $objectArFullUri_old);
+
+							if ($content) {
+
+								$connect->query("UPDATE `sites_contents` SET `synchronized` = 0, `path` = ?s WHERE id = ?i AND `site_id`", $objectArFullUri, $content['id']);
+
+								$redirectMain = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `status` <> 2 AND `path` = ?s AND `redirect_path` = ?s AND `type` = 'redirect' AND `site_id` = '38'", $objectArFullUri_old, $objectArFullUri);
+								if(!$redirectMain) {
+									$timestamp = gmdate("U");
+									$connect->query("INSERT INTO `sites_contents` (`type`, `status`, `created`, `published`, `changed`, `site_id`, `title`, `path`, `redirect_path`) VALUES ('redirect', 1, '".$timestamp."', '".$timestamp."', '".$timestamp."', '38', 'Редирект', ?s, ?s)", $objectArFullUri_old, $objectArFullUri);
+								}
+
+							}
+						}
+
+                        /*$content = $connect->getRow("SELECT `id` FROM `sites_contents` WHERE `status` <> 2 AND `path` = ?s AND `type` != 'redirect' AND `site_id` = '38'", '/объект/'.$object['url_name_origin']);
 						if($content) {
 
 							$connect->query("UPDATE `sites_contents` SET `synchronized` = 0, `path` = ?s WHERE id = ?i AND `site_id`", $objectArFullUri, $content['id']);
@@ -674,7 +695,7 @@ function sync_objects_api($connect){
 								$timestamp = gmdate("U");
 								$connect->query("INSERT INTO `sites_contents` (`type`, `status`, `created`, `published`, `changed`, `site_id`, `title`, `path`, `redirect_path`) VALUES ('redirect', 1, '".$timestamp."', '".$timestamp."', '".$timestamp."', '38', 'Редирект', ?s, ?s)", '/объект/'.$object['url_name_origin'].'/отзывы', $objectArFullUri.'/отзывы');
 							}
-						}
+						}*/
                     }
                 }
 			} else {
