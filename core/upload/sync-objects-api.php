@@ -644,7 +644,7 @@ function sync_objects_api($connect){
 
 						if ($objectAr['hotel'] == 1) {
 							$objectArFullUri_old = $objectArFullUri;
-							$objectArFullUri = '/отель'.$objectArFullUri;
+							$objectArFullUri = '/отели'.$objectArFullUri;
 						}						
 
 						//echo "UPDATE `object` SET `path`='$objectArFullUri' WHERE `id`=$object[id]<br><br>";
