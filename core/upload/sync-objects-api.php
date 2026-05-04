@@ -657,6 +657,7 @@ function sync_objects_api($connect){
                         }
 
                         $objectArFullUri .= '/'.$objectAr['uri'];
+						if (mb_strpos($objectArFullUri, '/крым/')!==FALSE) $objectArFullUri = '/крым/'.$objectAr['uri'];
 
 						if ($objectAr['hotel'] == 1 && mb_strpos($objectArFullUri, '/отели/')===FALSE) {
 							$objectArFullUri = '/отели'.$objectArFullUri;
