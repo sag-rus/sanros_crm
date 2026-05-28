@@ -62,7 +62,8 @@ function register_new_account($connect, $data){
 	$surname = $data["surname"];
 	$name = $data["name"];
 	$otch = $data["otch"];
-	$date = $data["date"];
+	$date = trim($data["date"] ?? "");
+	$date = $date !== "" ? $date : null;
 	$telephone = $data["telephone"];
 	$email = trim($data["email"]);
 	$password = $data["password"];
@@ -103,6 +104,9 @@ function register_new_account($connect, $data){
 
       $account = $connect->insertId();
 		}
+		$account = (int)$account;
+		if($account <= 0)
+			return FALSE;
 		save_client_to_history($connect, $account, "Регистрация нового аккаутна");
 		if($invited == "birthday") {
 			$bonus = 300;
@@ -124,7 +128,7 @@ function register_new_account($connect, $data){
 
 		$hash = uniqid();
 		$connect->query("UPDATE klient SET hash=?s WHERE id=?i", $hash, $account);
-		$message = select_template_letter("turist/cabinet/new-account", "client", $id);
+		$message = select_template_letter("turist/cabinet/new-account", "client", $account);
 		$link = CABINET."?func=activation&email=".$email."&hash=".$hash;
 		$message["content"] = str_replace("<hash>", $link, $message["content"]);
 		send_mail_sanata($email, $message["title"], $message["content"]);
