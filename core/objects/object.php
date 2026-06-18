@@ -1928,12 +1928,13 @@ function tl_webhook_work_modified($connect, $id) {
 }
 
 function tl_webhook_save_params($connect) {
+	$name = (string)$_POST['name'];
 	$id_type = (int)$_POST['id_type'];
 	$id_direction = (int)$_POST['id_direction'];
 	$id_reg = (int)$_POST['id_reg'];
 	$region_direction_id = (int)$_POST['region_direction_id'];
 
-	$connect->query("UPDATE `1_tl_webhook` SET `id_type`=$id_type, `id_direction`=$id_direction, `id_reg`=$id_reg, `region_direction_id`=$region_direction_id  WHERE id=$_POST[id]");
+	$connect->query("UPDATE `1_tl_webhook` SET `name`=$name, `id_type`=$id_type, `id_direction`=$id_direction, `id_reg`=$id_reg, `region_direction_id`=$region_direction_id  WHERE id=$_POST[id]");
 }
 
 function tl_webhook_del_obj($connect) {
@@ -1989,6 +1990,13 @@ function tl_webhook($connect) {
 		if ($id_obj==0) {
 			$html .= '<input type="text" id="find_object_for_webhook" class="form-control" placeholder="выберите объекта из имеющихся для занесения информации из запроса" onkeyup="find_klient(event, \'find_object_for_webhook\', \'object\', \'set_object_for_webhook\')"><br><br>';
 			$html .= '<div class="edit-object">';
+			$html .= '
+				<div class="form-group">
+					<label class="col-sm-3 control-label">Имя объекта</label>
+					<div class="col-sm-9">
+						<input type="text" class="form-control" id="name_object">
+					</div>
+				</div>';			
 			$html .= '
 				<div class="form-group">
 					<label class="col-sm-3 control-label">Тип объекта</label>

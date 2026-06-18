@@ -224,6 +224,7 @@ function select_object_on_request(id, name){
 }
 
 function tl_webhook_save_params(id) {
+	let name = $('#name_object').val();
 	let id_type = $('#type_object option:selected').val();
 	let id_direction = $('#direction-object option:selected').val();
 	let id_reg = $('#object_region option:selected').val();
@@ -231,7 +232,7 @@ function tl_webhook_save_params(id) {
 
 	if (id_type>0 && id_direction>0 && id_reg>0) {
 		$('#body').html('<br><center><img src="/CRM/images/ajax-loader.gif"></center>');
-		var str = 'func=tl_webhook_save_params&id='+id+'&id_type='+id_type+'&id_direction='+id_direction+'&id_reg='+id_reg+'&region_direction_id='+region_direction_id;
+		var str = 'func=tl_webhook_save_params&id='+id+'&name='+name+'&id_type='+id_type+'&id_direction='+id_direction+'&id_reg='+id_reg+'&region_direction_id='+region_direction_id;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
