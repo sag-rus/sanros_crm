@@ -464,6 +464,7 @@ function show_sites_addresses_list($connect) {
 
 function show_sites_menu_items_list($connect) {
   global $id_rights;
+  ensure_sites_menu_item_no_link_column($connect);
   $menuArray = [
     1 => 'Верхнее основное',
     2 => 'Верхнее второе',
@@ -1133,6 +1134,7 @@ function save_sites_address($connect) {
 }
 
 function save_sites_menu_item($connect) {
+  ensure_sites_menu_item_no_link_column($connect);
   $menuArray = [1,2,3];
   $respAr = [
     'success' => 0,
@@ -1815,6 +1817,7 @@ function sites_address($connect)
 
 function sites_menu_item($connect)
 {
+    ensure_sites_menu_item_no_link_column($connect);
     $menuArray = [
       1 => 'Верхнее основное',
       2 => 'Верхнее второе',
@@ -1934,6 +1937,19 @@ function sites_menu_item($connect)
     </div>
   <?php
   return ob_get_clean();
+}
+
+function ensure_sites_menu_item_no_link_column($connect) {
+  static $checked = false;
+
+  if($checked)
+    return;
+
+  $checked = true;
+  $column = $connect->getRow("SHOW COLUMNS FROM `app_models_site_menu_item` LIKE 'no_link'");
+
+  if(!$column)
+    $connect->query("ALTER TABLE `app_models_site_menu_item` ADD `no_link` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 AFTER `no_index`");
 }
 
 function sites_phone($connect)
