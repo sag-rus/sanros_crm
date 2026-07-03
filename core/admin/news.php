@@ -1146,6 +1146,7 @@ function save_sites_menu_item($connect) {
   $href = isset($_POST['href'])?trim($_POST['href']):"";
   $status = isset($_POST['status'])?(int)$_POST['status']:0;
   $no_index = isset($_POST['no_index'])?(int)$_POST['no_index']:0;
+  $no_link = isset($_POST['no_link'])?(int)$_POST['no_link']:0;
   $main = isset($_POST['main'])?(int)$_POST['main']:0;
   $sort = isset($_POST['sort'])?(int)$_POST['sort']:0;
   $menu_id = isset($_POST['menu_id'])?(int)$_POST['menu_id']:0;
@@ -1167,7 +1168,7 @@ function save_sites_menu_item($connect) {
 
 
 
-  if((!$id || $menu_item) && (!$parent_id || $parent) && $site && $name && in_array($status,[0,1]) && in_array($main,[0,1]) && in_array($menu_id,$menuArray) && $href) {
+  if((!$id || $menu_item) && (!$parent_id || $parent) && $site && $name && in_array($status,[0,1]) && in_array($main,[0,1]) && in_array($no_link,[0,1]) && in_array($menu_id,$menuArray) && ($href || $no_link)) {
     if($main) {
       if ($menu_item) {
         $oldMenuItem = $connect->getRow("SELECT `id` FROM `app_models_site_menu_item` WHERE `main`= '1' AND `id` <> ?i AND `site_id` = ?i AND `menu_id` = ?i", $menu_item['id'], $site['id'], $menu_id);
@@ -1186,9 +1187,9 @@ function save_sites_menu_item($connect) {
     else {
       $timestamp = gmdate("U");
       if($menu_item)
-        $connect->query("UPDATE `app_models_site_menu_item` SET `changed`=?i, `name`=?s, `href`=?s, `main` = ?i, `menu_id` =?i, `status` =?i, `no_index` =?i, `sort` =?i, `parent_id` = ?i WHERE `id` =?i",$timestamp, $name, $href, $main, $menu_id, $status, $no_index,$sort,$parent_id,$menu_item['id']);
+        $connect->query("UPDATE `app_models_site_menu_item` SET `changed`=?i, `name`=?s, `href`=?s, `main` = ?i, `menu_id` =?i, `status` =?i, `no_index` =?i, `no_link` =?i, `sort` =?i, `parent_id` = ?i WHERE `id` =?i",$timestamp, $name, $href, $main, $menu_id, $status, $no_index, $no_link,$sort,$parent_id,$menu_item['id']);
       else
-        $connect->query("INSERT INTO `app_models_site_menu_item` (`created`, `changed`, `status`, `uid`, `sort`, `name`, `href`, `main`, `menu_id`, `site_id`, `parent_id`, `no_index`) VALUES (?i, ?i, ?i, ?i, ?i, ?s, ?s, ?i, ?i, ?i, ?i, ?i)",$timestamp, $timestamp, $status, 1, $sort, $name, $href, $main, $menu_id, $site['id'], $parent_id, $no_index);
+        $connect->query("INSERT INTO `app_models_site_menu_item` (`created`, `changed`, `status`, `uid`, `sort`, `name`, `href`, `main`, `menu_id`, `site_id`, `parent_id`, `no_index`, `no_link`) VALUES (?i, ?i, ?i, ?i, ?i, ?s, ?s, ?i, ?i, ?i, ?i, ?i, ?i)",$timestamp, $timestamp, $status, 1, $sort, $name, $href, $main, $menu_id, $site['id'], $parent_id, $no_index, $no_link);
 
       $respAr['success'] = 1;
       $respAr['site_id'] = (int)$site_id;
@@ -1911,7 +1912,13 @@ function sites_menu_item($connect)
                           <div class="col-sm-10">
                               <input type="checkbox" name="no_index" class="form-control"<?php if($menu_item && $menu_item['no_index'] == 1) {?> checked<?php } ?>>
                           </div>
-                      </div>                      
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-2 control-label">Без ссылки</label>
+                          <div class="col-sm-10">
+                              <input type="checkbox" name="no_link" class="form-control"<?php if($menu_item && $menu_item['no_link'] == 1) {?> checked<?php } ?>>
+                          </div>
+                      </div>
                   <?php } else { ?>
                     Родительский элемент не найден. Возможно он был недавно удалён...
                   <?php } ?>

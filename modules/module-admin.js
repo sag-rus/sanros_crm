@@ -3525,6 +3525,13 @@ function save_sites_menu_item() {
   else
     no_index = 0;  
 
+  var $no_link = $modalBody.find('*[name="no_link"]');
+  var no_link;
+  if($no_link.prop('checked'))
+    no_link = 1;
+  else
+    no_link = 0;
+
 
   var $main = $modalBody.find('*[name="main"]');
   var main;
@@ -3543,7 +3550,7 @@ function save_sites_menu_item() {
     }
   }
 
-  if(href.length === 0) {
+  if(no_link !== 1 && href.length === 0) {
     $hrefMsg.html("Это обязательное поле");
     if(!error) {
       $href.focus();
@@ -3585,6 +3592,7 @@ function save_sites_menu_item() {
         sort: sort,
         status: status,
 		no_index: no_index,
+        no_link: no_link,
         site_id: site_id,
         menu_id: menu_id,
 				parent_id: parent_id
