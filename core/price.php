@@ -441,20 +441,20 @@ function new_author(){
 				<div class="modal-body">
 					<div class="form-horizontal new-author">
 						<div class="form-group form-group-margin">
-							<label class="col-sm-4 control-label">ФИО</label>
-							<div class="col-sm-8">
+							<label class="col-sm-1 control-label">ФИО</label>
+							<div class="col-sm-10">
 								<input type="text" class="form-control full-name">
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-4 control-label">Фото</label>
-							<div class="col-sm-8">
+							<label class="col-sm-2 control-label">Фото</label>
+							<div class="col-sm-10">
 								<input type="file" name="image" value="[]">
 							</div>
 						</div>
 						<div class="form-group form-group-margin">
-							<label class="col-sm-4 control-label">Описание</label>
-							<div class="col-sm-8">
+							<label class="col-sm-2 control-label">Описание</label>
+							<div class="col-sm-10">
 								<textarea class="form-control description" id="new_author_description"></textarea>
 							</div>
 						</div>
@@ -505,20 +505,20 @@ function edit_author($connect){
 			<div class="modal-body">
 				<div class="form-horizontal edit-author">
 					<div class="form-group">
-						<label class="col-sm-4 control-label">ФИО</label>
-						<div class="col-sm-8">
+						<label class="col-sm-2 control-label">ФИО</label>
+						<div class="col-sm-10">
 							<input type="text" class="form-control full-name" value="<?php echo htmlspecialchars($row['full_name']); ?>">
 						</div>
 					</div>
                     <div class="form-group">
-                        <label class="col-sm-4 control-label">Фото</label>
-                        <div class="col-sm-8">
+                        <label class="col-sm-2 control-label">Фото</label>
+                        <div class="col-sm-10">
                             <input type="file" name="image" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'image'))));?>">
                         </div>
                     </div>
 					<div class="form-group form-group-margin">
-						<label class="col-sm-4 control-label">Описание</label>
-						<div class="col-sm-8">
+						<label class="col-sm-2 control-label">Описание</label>
+						<div class="col-sm-10">
 							<textarea class="form-control description" id="author_description"><?php echo htmlspecialchars($row['description']); ?></textarea>
 						</div>
 					</div>
