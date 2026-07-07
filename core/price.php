@@ -441,7 +441,7 @@ function new_author(){
 				<div class="modal-body">
 					<div class="form-horizontal new-author">
 						<div class="form-group form-group-margin">
-							<label class="col-sm-1 control-label">ФИО</label>
+							<label class="col-sm-2 control-label">ФИО</label>
 							<div class="col-sm-10">
 								<input type="text" class="form-control full-name">
 							</div>
