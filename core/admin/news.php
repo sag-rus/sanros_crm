@@ -2744,7 +2744,8 @@ function set_bounds($connect,$boundsArray,String $boundsName)
       'room',
       'treatment_profile',
       'treatment_procedure',
-      'treatment_method'
+      'treatment_method',
+      'author'
     ];
 
     $entity2_types = [
