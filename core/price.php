@@ -446,6 +446,18 @@ function new_author(){
 								<input type="text" class="form-control full-name">
 							</div>
 						</div>
+						<div class="form-group">
+							<label class="col-sm-4 control-label">Фото</label>
+							<div class="col-sm-8">
+								<input type="file" name="image" value="[]">
+							</div>
+						</div>
+						<div class="form-group form-group-margin">
+							<label class="col-sm-4 control-label">Описание</label>
+							<div class="col-sm-8">
+								<textarea class="form-control description" id="new_author_description"></textarea>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
@@ -459,8 +471,20 @@ function new_author(){
 
 function save_new_author($connect){
 	$full_name = $_POST["full_name"];
+	$description = $_POST["description"];
 	$timestamp = gmdate("U");
-	$connect->query("INSERT INTO `authors` (`full_name`, `status`, `synchronized`, `created`, `changed`) VALUES(?s, 1, 0, ?i, ?i)", $full_name, $timestamp, $timestamp);
+	$connect->query("INSERT INTO `authors` (`full_name`, `description`, `status`, `synchronized`, `created`, `changed`) VALUES(?s, ?s, 1, 0, ?i, ?i)", $full_name, $description, $timestamp, $timestamp);
+	$id = $connect->insertId();
+
+	if($id > 0) {
+		$entity = [
+		  'id' => $id,
+		  'type' => 'author'
+		];
+		$boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);
+		remove_bounds($connect,$entity,'image');
+		set_bounds($connect,$boundsArrayImage,'image');
+	}
 }
 
 function edit_author($connect){

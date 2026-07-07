@@ -860,12 +860,38 @@ function add_new_author(){
 		data: str,
 		success: function(html){
 			show_modal(html);
+			$('.new-author *[name="image"]').multUploader({
+				action:'mysql.php?func=multipart_upload',
+				fragmentSize:1024*1024,
+				maxcount: 1,
+				contentType:['image/jpeg', 'image/png', 'image/webp']
+			});
+			CKEDITOR.replace('new_author_description', {
+				width: '100%',
+				height: '300'
+			});
 		}
 	});
 }
 
 function save_new_author(){
+	var $button = $('.new-author').closest('.modal-dialog').find('.btn-success');
 	var full_name = $('.new-author .full-name').val();
+
+	if(CKEDITOR.instances.new_author_description)
+		CKEDITOR.instances.new_author_description.updateElement();
+
+	var description = $('.new-author .description').val();
+	var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
+	var $image = $modalBody.find('*[name="image"]');
+	var $imageMsg = $image.parent().find('.input-message-block');
+	var image = [];
+
+	if($image.val().trim())
+		image = JSON.parse($image.val().trim());
+
+	$imageMsg.html("").removeClass('with-bottom-margin');
+
 	if(!full_name)
 		show_warning('.new-author', 'Укажите ФИО', false);
 	else{
@@ -874,7 +900,9 @@ function save_new_author(){
 			type: 'POST',
 			data: {
 				func: 'save_new_author',
-				full_name: full_name
+				full_name: full_name,
+				description: description,
+				image: image
 			},
 			success: function(){
 				authors();
