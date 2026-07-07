@@ -393,6 +393,144 @@ function update_procedure($connect){
     $connect->query("UPDATE `procedure` SET name=?s, description=?s, synchronized = 0 WHERE id=?i", $name, $description, $id);
 }
 
+function show_authors($connect){
+?>
+<div class="form-horizontal panel panel-default">
+	<div class="panel-heading">
+		<i class="fa fa-user"></i> Авторы
+		<button type="button" class="btn btn-info btn-sm" onclick="add_new_author()"><i class="fa fa-plus-circle"></i> Добавить</button>
+	</div>
+	<div class="list-group">
+<?php
+	$data = $connect->getAll("SELECT id, full_name FROM `authors` WHERE `status` = 1 ORDER BY `full_name` ASC");
+	foreach($data as $row){
+		$id = $row["id"];
+		$full_name = $row["full_name"];
+		?>
+		<div class="list-group-item author-<?php echo $id; ?>">
+			<div class="form-group">
+				<div class="col-sm-9">
+					<?php echo htmlspecialchars($full_name); ?>
+				</div>
+				<div class="col-sm-3 text-center">
+					<button type="button" class="btn btn-default btn-xs" onclick="edit_author(<?php echo $id; ?>)"><i class="fa fa-pencil"></i></button>
+					<button type="button" class="btn btn-danger btn-xs" onclick="delete_author(<?php echo $id; ?>)"><i class="fa fa-trash"></i></button>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+		<?php
+	}
+	?>
+	</div>
+	<div class="panel-footer" style="text-align: right">
+	</div>
+</div>
+<?php
+}
+
+function new_author(){
+	?>
+	<div class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+					<h4 class="modal-title">Новый автор</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-horizontal new-author">
+						<div class="form-group form-group-margin">
+							<label class="col-sm-4 control-label">ФИО</label>
+							<div class="col-sm-8">
+								<input type="text" class="form-control full-name">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-success" onclick="save_new_author()"><i class="fa fa-check-circle"></i> Сохранить</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<?php
+}
+
+function save_new_author($connect){
+	$full_name = $_POST["full_name"];
+	$timestamp = gmdate("U");
+	$connect->query("INSERT INTO `authors` (`full_name`, `status`, `synchronized`, `created`, `changed`) VALUES(?s, 1, 0, ?i, ?i)", $full_name, $timestamp, $timestamp);
+}
+
+function edit_author($connect){
+	$id = $_POST["id"];
+	$row = $connect->getRow("SELECT * FROM `authors` WHERE id=?i", $id);
+	$entity = [
+	  'id' => $id,
+      'type' => 'author'
+    ];
+?>
+<div class="modal fade edit-author-modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+				<h4 class="modal-title">Изменить автора</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-horizontal edit-author">
+					<div class="form-group">
+						<label class="col-sm-4 control-label">ФИО</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control full-name" value="<?php echo htmlspecialchars($row['full_name']); ?>">
+						</div>
+					</div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Фото</label>
+                        <div class="col-sm-8">
+                            <input type="file" name="image" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'image'))));?>">
+                        </div>
+                    </div>
+					<div class="form-group form-group-margin">
+						<label class="col-sm-4 control-label">Описание</label>
+						<div class="col-sm-8">
+							<textarea class="form-control description" id="author_description"><?php echo htmlspecialchars($row['description']); ?></textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success btn-update-author" onclick="update_author('<?php echo $id; ?>')"><i class="fa fa-check-circle"></i> Сохранить</button>
+			</div>
+		</div>
+	</div>
+</div>
+<?php
+}
+
+function update_author($connect){
+	$id = $_POST["id"];
+	$full_name = $_POST["full_name"];
+	$description = $_POST["description"];
+	$timestamp = gmdate("U");
+
+	$entity = [
+	  'id' => $id,
+      'type' => 'author'
+    ];
+
+    $boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);
+    remove_bounds($connect,$entity,'image');
+    set_bounds($connect,$boundsArrayImage,'image');
+    $connect->query("UPDATE `authors` SET `full_name`=?s, `description`=?s, `changed`=?i, `synchronized`=0 WHERE id=?i", $full_name, $description, $timestamp, $id);
+}
+
+function delete_author($connect){
+	$id = $_POST["id"];
+	$timestamp = gmdate("U");
+	$connect->query("UPDATE `authors` SET `status`=0, `changed`=?i, `synchronized`=0 WHERE id=?i", $timestamp, $id);
+}
 
 
 

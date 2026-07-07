@@ -380,6 +380,38 @@ function sync_objects_api($connect){
 			}
 		}		
 
+		$authors = $connect->getAll("SELECT * FROM `authors` WHERE `synchronized` = 0");
+
+		foreach ($authors as $author) {
+			$authorAr = [];
+			$authorAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
+			$authorAr["id"] = $author['id'];
+			$authorAr["full_name"] = $author['full_name'];
+			$authorAr["description"] = $author['description'];
+			$authorAr['status'] = $author['status'];
+
+			$res = $client->request('POST',"https://sites.tonia.ru/api/author/set/".$author['id'],[
+				'form_params' => $authorAr
+			]);
+
+			$res = json_decode($res->getBody(),true);
+
+			if(array_key_exists('success',$res)) {
+				$success = (bool)(int)$res['success'];
+				if($success) {
+					if(!sync_bounds($connect,[
+						'type' => 'author',
+						'id' => $author['id']
+					])) {
+						$connect->query("UPDATE `authors` SET `synchronized` = '1' WHERE `id` = ?i",$author['id']);
+					}
+					else {
+						$connect->query("UPDATE `authors` SET `synchronized` = '1' WHERE `id` = ?i",$author['id']);
+					}
+				}
+			}
+		}		
+
 		$promotions = $connect->getAll("SELECT `id`, `title`, `text`, `id_obj`, `id_room`, `active`, `date`, `date_end` FROM `promotions` WHERE `synchronized` = 0");
 
 		foreach ($promotions as $promotion) {

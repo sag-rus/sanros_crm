@@ -790,6 +790,7 @@ function write_body($connect){
 							<li id="afl-send"><a href="/CRM/afl.php" target="_blank"><i class="fa fa-plane"></i> Отчет в Аэрофлот</a></li>
 							<li><hr /></li>
 							<li id="procedure_open" onclick="procedure()"><a><i class="fa fa-book"></i> Процедуры</a></li>
+							<li id="authors_open" onclick="authors()"><a><i class="fa fa-user"></i> Авторы</a></li>
 							<li id="profile_open" onclick="profile()"><a><i class="fa fa-heartbeat"></i> Профиль лечения</a></li>
 							<li id="methods_open" onclick="methods()"><a><i class="fa fa-user-md"></i> Метод лечения</a></li>
 							<li id="infa_open" onclick="infrastructure()"><a><i class="fa fa-building-o"></i> Инфраструктура</a></li>
