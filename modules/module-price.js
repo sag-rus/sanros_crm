@@ -859,29 +859,34 @@ function add_new_author(){
 		type: 'POST',
 		data: str,
 		success: function(html){
+			remove_all_windows();
 			show_modal(html);
-			$('.new-author *[name="image"]').multUploader({
-				action:'mysql.php?func=multipart_upload',
-				fragmentSize:1024*1024,
-				maxcount: 1,
-				contentType:['image/jpeg', 'image/png', 'image/webp']
-			});
-			CKEDITOR.replace('new_author_description', {
-				width: '100%',
-				height: '300'
-			});
+			init_author_form();
 		}
 	});
 }
 
-function save_new_author(){
-	var $button = $('.new-author').closest('.modal-dialog').find('.btn-success');
-	var full_name = $('.new-author .full-name').val();
+function init_author_form(){
+	$('.edit-author-modal *[name="image"]').multUploader({
+		action:'mysql.php?func=multipart_upload',
+		fragmentSize:1024*1024,
+		maxcount: 1,
+		contentType:['image/jpeg', 'image/png', 'image/webp']
+	});
 
-	if(CKEDITOR.instances.new_author_description)
-		CKEDITOR.instances.new_author_description.updateElement();
+	if(CKEDITOR.instances.author_description)
+		CKEDITOR.instances.author_description.destroy(true);
 
-	var description = $('.new-author .description').val();
+	CKEDITOR.replace('author_description', {
+		width: '100%',
+		height: '300'
+	});
+}
+
+function get_author_form_data($button){
+	if(CKEDITOR.instances.author_description)
+		CKEDITOR.instances.author_description.updateElement();
+
 	var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
 	var $image = $modalBody.find('*[name="image"]');
 	var $imageMsg = $image.parent().find('.input-message-block');
@@ -892,17 +897,38 @@ function save_new_author(){
 
 	$imageMsg.html("").removeClass('with-bottom-margin');
 
-	if(!full_name)
-		show_warning('.new-author', 'Укажите ФИО', false);
+	return {
+		full_name: $modalBody.find('.full-name').val(),
+		position: $modalBody.find('.position').val(),
+		title: $modalBody.find('.title').val(),
+		keywords: $modalBody.find('.keywords').val(),
+		h1: $modalBody.find('.h1').val(),
+		meta_description: $modalBody.find('.meta-description').val(),
+		description: $modalBody.find('.description').val(),
+		image: image
+	};
+}
+
+function save_new_author(){
+	var $button = $('.btn-save-author');
+	var authorData = get_author_form_data($button);
+
+	if(!authorData.full_name)
+		show_warning('.edit-author', 'Укажите ФИО', false);
 	else{
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
 			data: {
 				func: 'save_new_author',
-				full_name: full_name,
-				description: description,
-				image: image
+				full_name: authorData.full_name,
+				position: authorData.position,
+				title: authorData.title,
+				keywords: authorData.keywords,
+				h1: authorData.h1,
+				meta_description: authorData.meta_description,
+				description: authorData.description,
+				image: authorData.image
 			},
 			success: function(){
 				authors();
@@ -920,39 +946,16 @@ function edit_author(id){
 		success: function(html){
 			remove_all_windows();
 			show_modal(html);
-			$('.edit-author-modal *[name="image"]').multUploader({
-				action:'mysql.php?func=multipart_upload',
-				fragmentSize:1024*1024,
-				maxcount: 1,
-				contentType:['image/jpeg', 'image/png', 'image/webp']
-			});
-			CKEDITOR.replace('author_description', {
-				width: '100%',
-				height: '300'
-			});
+			init_author_form();
 		}
 	});
 }
 
 function update_author(id){
 	var $button = $('.btn-update-author');
-	var full_name = $('.edit-author .full-name').val();
+	var authorData = get_author_form_data($button);
 
-	if(CKEDITOR.instances.author_description)
-		CKEDITOR.instances.author_description.updateElement();
-
-	var description = $('.edit-author .description').val();
-	var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
-	var $image = $modalBody.find('*[name="image"]');
-	var $imageMsg = $image.parent().find('.input-message-block');
-	var image = [];
-
-	if($image.val().trim())
-		image = JSON.parse($image.val().trim());
-
-	$imageMsg.html("").removeClass('with-bottom-margin');
-
-	if(!full_name)
+	if(!authorData.full_name)
 		show_warning('.edit-author', 'Укажите ФИО', false);
 	else{
 		$.ajax({
@@ -960,10 +963,15 @@ function update_author(id){
 			type: 'POST',
 			data: {
 				func: 'update_author',
-				full_name: full_name,
+				full_name: authorData.full_name,
+				position: authorData.position,
+				title: authorData.title,
+				keywords: authorData.keywords,
+				h1: authorData.h1,
+				meta_description: authorData.meta_description,
 				id: id,
-				description: description,
-				image: image
+				description: authorData.description,
+				image: authorData.image
 			},
 			success: function(){
 				authors();

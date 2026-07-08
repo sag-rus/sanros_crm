@@ -387,6 +387,11 @@ function sync_objects_api($connect){
 			$authorAr["token"] = '7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4';
 			$authorAr["id"] = $author['id'];
 			$authorAr["full_name"] = $author['full_name'];
+			$authorAr["position"] = $author['position'];
+			$authorAr["title"] = $author['title'];
+			$authorAr["keywords"] = $author['keywords'];
+			$authorAr["h1"] = $author['h1'];
+			$authorAr["meta_description"] = $author['meta_description'];
 			$authorAr["description"] = $author['description'];
 			$authorAr['status'] = $author['status'];
 

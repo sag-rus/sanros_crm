@@ -429,51 +429,113 @@ function show_authors($connect){
 <?php
 }
 
-function new_author(){
-	?>
-	<div class="modal fade">
+function author_form($connect, $id = 0){
+	$row = [
+		'full_name' => '',
+		'position' => '',
+		'title' => '',
+		'keywords' => '',
+		'h1' => '',
+		'meta_description' => '',
+		'description' => ''
+	];
+	$imageValue = '[]';
+
+	if($id > 0) {
+		$row = $connect->getRow("SELECT * FROM `authors` WHERE id=?i", $id);
+		$entity = [
+		  'id' => $id,
+	      'type' => 'author'
+	    ];
+		$imageValue = htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'image'))));
+	}
+?>
+	<div class="modal fade edit-author-modal">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
-					<h4 class="modal-title">Новый автор</h4>
+					<h4 class="modal-title"><?php echo $id > 0 ? 'Изменить автора' : 'Новый автор'; ?></h4>
 				</div>
 				<div class="modal-body">
-					<div class="form-horizontal new-author">
+					<div class="form-horizontal edit-author">
 						<div class="form-group form-group-margin">
 							<label class="col-sm-2 control-label">ФИО</label>
 							<div class="col-sm-10">
-								<input type="text" class="form-control full-name">
+								<input type="text" class="form-control full-name" value="<?php echo htmlspecialchars($row['full_name']); ?>">
+							</div>
+						</div>
+						<div class="form-group form-group-margin">
+							<label class="col-sm-2 control-label">Должность</label>
+							<div class="col-sm-10">
+								<input type="text" class="form-control position" value="<?php echo htmlspecialchars($row['position']); ?>">
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="col-sm-2 control-label">Фото</label>
 							<div class="col-sm-10">
-								<input type="file" name="image" value="[]">
+								<input type="file" name="image" value="<?=$imageValue;?>">
 							</div>
 						</div>
 						<div class="form-group form-group-margin">
-							<label class="col-sm-2 control-label">Описание</label>
+							<label class="col-sm-2 control-label">Title</label>
 							<div class="col-sm-10">
-								<textarea class="form-control description" id="new_author_description"></textarea>
+								<input type="text" class="form-control title" value="<?php echo htmlspecialchars($row['title']); ?>">
+							</div>
+						</div>
+						<div class="form-group form-group-margin">
+							<label class="col-sm-2 control-label">Keywords</label>
+							<div class="col-sm-10">
+								<input type="text" class="form-control keywords" value="<?php echo htmlspecialchars($row['keywords']); ?>">
+							</div>
+						</div>
+						<div class="form-group form-group-margin">
+							<label class="col-sm-2 control-label">H1</label>
+							<div class="col-sm-10">
+								<input type="text" class="form-control h1" value="<?php echo htmlspecialchars($row['h1']); ?>">
+							</div>
+						</div>
+						<div class="form-group form-group-margin">
+							<label class="col-sm-2 control-label">Description</label>
+							<div class="col-sm-10">
+								<textarea class="form-control meta-description" style="height: 80px;"><?php echo htmlspecialchars($row['meta_description']); ?></textarea>
+							</div>
+						</div>
+						<div class="form-group form-group-margin">
+							<label class="col-sm-2 control-label">Описание автора</label>
+							<div class="col-sm-10">
+								<textarea class="form-control description" id="author_description"><?php echo htmlspecialchars($row['description']); ?></textarea>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-success" onclick="save_new_author()"><i class="fa fa-check-circle"></i> Сохранить</button>
+					<?php if($id > 0) { ?>
+						<button type="button" class="btn btn-success btn-update-author" onclick="update_author('<?php echo $id; ?>')"><i class="fa fa-check-circle"></i> Сохранить</button>
+					<?php } else { ?>
+						<button type="button" class="btn btn-success btn-save-author" onclick="save_new_author()"><i class="fa fa-check-circle"></i> Сохранить</button>
+					<?php } ?>
 				</div>
 			</div>
 		</div>
 	</div>
-	<?php
+<?php
+}
+
+function new_author($connect){
+	author_form($connect);
 }
 
 function save_new_author($connect){
 	$full_name = $_POST["full_name"];
+	$position = $_POST["position"];
+	$title = $_POST["title"];
+	$keywords = $_POST["keywords"];
+	$h1 = $_POST["h1"];
+	$meta_description = $_POST["meta_description"];
 	$description = $_POST["description"];
 	$timestamp = gmdate("U");
-	$connect->query("INSERT INTO `authors` (`full_name`, `description`, `status`, `synchronized`, `created`, `changed`) VALUES(?s, ?s, 1, 0, ?i, ?i)", $full_name, $description, $timestamp, $timestamp);
+	$connect->query("INSERT INTO `authors` (`full_name`, `position`, `title`, `keywords`, `h1`, `meta_description`, `description`, `status`, `synchronized`, `created`, `changed`) VALUES(?s, ?s, ?s, ?s, ?s, ?s, ?s, 1, 0, ?i, ?i)", $full_name, $position, $title, $keywords, $h1, $meta_description, $description, $timestamp, $timestamp);
 	$id = $connect->insertId();
 
 	if($id > 0) {
@@ -489,53 +551,17 @@ function save_new_author($connect){
 
 function edit_author($connect){
 	$id = $_POST["id"];
-	$row = $connect->getRow("SELECT * FROM `authors` WHERE id=?i", $id);
-	$entity = [
-	  'id' => $id,
-      'type' => 'author'
-    ];
-?>
-<div class="modal fade edit-author-modal">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
-				<h4 class="modal-title">Изменить автора</h4>
-			</div>
-			<div class="modal-body">
-				<div class="form-horizontal edit-author">
-					<div class="form-group">
-						<label class="col-sm-2 control-label">ФИО</label>
-						<div class="col-sm-10">
-							<input type="text" class="form-control full-name" value="<?php echo htmlspecialchars($row['full_name']); ?>">
-						</div>
-					</div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Фото</label>
-                        <div class="col-sm-10">
-                            <input type="file" name="image" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'image'))));?>">
-                        </div>
-                    </div>
-					<div class="form-group form-group-margin">
-						<label class="col-sm-2 control-label">Описание</label>
-						<div class="col-sm-10">
-							<textarea class="form-control description" id="author_description"><?php echo htmlspecialchars($row['description']); ?></textarea>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-success btn-update-author" onclick="update_author('<?php echo $id; ?>')"><i class="fa fa-check-circle"></i> Сохранить</button>
-			</div>
-		</div>
-	</div>
-</div>
-<?php
+	author_form($connect, $id);
 }
 
 function update_author($connect){
 	$id = $_POST["id"];
 	$full_name = $_POST["full_name"];
+	$position = $_POST["position"];
+	$title = $_POST["title"];
+	$keywords = $_POST["keywords"];
+	$h1 = $_POST["h1"];
+	$meta_description = $_POST["meta_description"];
 	$description = $_POST["description"];
 	$timestamp = gmdate("U");
 
@@ -547,7 +573,7 @@ function update_author($connect){
     $boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);
     remove_bounds($connect,$entity,'image');
     set_bounds($connect,$boundsArrayImage,'image');
-    $connect->query("UPDATE `authors` SET `full_name`=?s, `description`=?s, `changed`=?i, `synchronized`=0 WHERE id=?i", $full_name, $description, $timestamp, $id);
+    $connect->query("UPDATE `authors` SET `full_name`=?s, `position`=?s, `title`=?s, `keywords`=?s, `h1`=?s, `meta_description`=?s, `description`=?s, `changed`=?i, `synchronized`=0 WHERE id=?i", $full_name, $position, $title, $keywords, $h1, $meta_description, $description, $timestamp, $id);
 }
 
 function delete_author($connect){
