@@ -459,13 +459,13 @@ function author_form($connect, $id = 0){
 				</div>
 				<div class="modal-body">
 					<div class="form-horizontal edit-author">
-						<div class="form-group form-group-margin">
+						<div class="form-group">
 							<label class="col-sm-2 control-label">ФИО</label>
 							<div class="col-sm-10">
 								<input type="text" class="form-control full-name" value="<?php echo htmlspecialchars($row['full_name']); ?>">
 							</div>
 						</div>
-						<div class="form-group form-group-margin">
+						<div class="form-group">
 							<label class="col-sm-2 control-label">Должность</label>
 							<div class="col-sm-10">
 								<input type="text" class="form-control position" value="<?php echo htmlspecialchars($row['position']); ?>">
@@ -477,31 +477,31 @@ function author_form($connect, $id = 0){
 								<input type="file" name="image" value="<?=$imageValue;?>">
 							</div>
 						</div>
-						<div class="form-group form-group-margin">
+						<div class="form-group">
 							<label class="col-sm-2 control-label">Title</label>
 							<div class="col-sm-10">
 								<input type="text" class="form-control title" value="<?php echo htmlspecialchars($row['title']); ?>">
 							</div>
 						</div>
-						<div class="form-group form-group-margin">
+						<div class="form-group">
 							<label class="col-sm-2 control-label">Keywords</label>
 							<div class="col-sm-10">
 								<input type="text" class="form-control keywords" value="<?php echo htmlspecialchars($row['keywords']); ?>">
 							</div>
 						</div>
-						<div class="form-group form-group-margin">
+						<div class="form-group">
 							<label class="col-sm-2 control-label">H1</label>
 							<div class="col-sm-10">
 								<input type="text" class="form-control h1" value="<?php echo htmlspecialchars($row['h1']); ?>">
 							</div>
 						</div>
-						<div class="form-group form-group-margin">
+						<div class="form-group">
 							<label class="col-sm-2 control-label">Description</label>
 							<div class="col-sm-10">
 								<textarea class="form-control meta-description" style="height: 80px;"><?php echo htmlspecialchars($row['meta_description']); ?></textarea>
 							</div>
 						</div>
-						<div class="form-group form-group-margin">
+						<div class="form-group">
 							<label class="col-sm-2 control-label">Описание автора</label>
 							<div class="col-sm-10">
 								<textarea class="form-control description" id="author_description"><?php echo htmlspecialchars($row['description']); ?></textarea>
