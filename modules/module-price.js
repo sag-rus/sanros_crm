@@ -904,6 +904,7 @@ function get_author_form_data($button){
 		keywords: $modalBody.find('.keywords').val(),
 		h1: $modalBody.find('.h1').val(),
 		meta_description: $modalBody.find('.meta-description').val(),
+		socials: $modalBody.find('.socials').val(),
 		description: $modalBody.find('.description').val(),
 		image: image
 	};
@@ -927,6 +928,7 @@ function save_new_author(){
 				keywords: authorData.keywords,
 				h1: authorData.h1,
 				meta_description: authorData.meta_description,
+				socials: authorData.socials,
 				description: authorData.description,
 				image: authorData.image
 			},
@@ -969,6 +971,7 @@ function update_author(id){
 				keywords: authorData.keywords,
 				h1: authorData.h1,
 				meta_description: authorData.meta_description,
+				socials: authorData.socials,
 				id: id,
 				description: authorData.description,
 				image: authorData.image

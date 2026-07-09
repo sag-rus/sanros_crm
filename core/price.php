@@ -437,6 +437,7 @@ function author_form($connect, $id = 0){
 		'keywords' => '',
 		'h1' => '',
 		'meta_description' => '',
+		'socials' => '',
 		'description' => ''
 	];
 	$imageValue = '[]';
@@ -502,6 +503,12 @@ function author_form($connect, $id = 0){
 							</div>
 						</div>
 						<div class="form-group">
+							<label class="col-sm-2 control-label">Соцсети</label>
+							<div class="col-sm-10">
+								<textarea class="form-control socials" style="height: 100px;"><?php echo htmlspecialchars($row['socials']); ?></textarea>
+							</div>
+						</div>
+						<div class="form-group">
 							<label class="col-sm-2 control-label">Описание автора</label>
 							<div class="col-sm-10">
 								<textarea class="form-control description" id="author_description"><?php echo htmlspecialchars($row['description']); ?></textarea>
@@ -533,9 +540,10 @@ function save_new_author($connect){
 	$keywords = $_POST["keywords"];
 	$h1 = $_POST["h1"];
 	$meta_description = $_POST["meta_description"];
+	$socials = $_POST["socials"];
 	$description = $_POST["description"];
 	$timestamp = gmdate("U");
-	$connect->query("INSERT INTO `authors` (`full_name`, `position`, `title`, `keywords`, `h1`, `meta_description`, `description`, `status`, `synchronized`, `created`, `changed`) VALUES(?s, ?s, ?s, ?s, ?s, ?s, ?s, 1, 0, ?i, ?i)", $full_name, $position, $title, $keywords, $h1, $meta_description, $description, $timestamp, $timestamp);
+	$connect->query("INSERT INTO `authors` (`full_name`, `position`, `title`, `keywords`, `h1`, `meta_description`, `socials`, `description`, `status`, `synchronized`, `created`, `changed`) VALUES(?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, 1, 0, ?i, ?i)", $full_name, $position, $title, $keywords, $h1, $meta_description, $socials, $description, $timestamp, $timestamp);
 	$id = $connect->insertId();
 
 	if($id > 0) {
@@ -562,6 +570,7 @@ function update_author($connect){
 	$keywords = $_POST["keywords"];
 	$h1 = $_POST["h1"];
 	$meta_description = $_POST["meta_description"];
+	$socials = $_POST["socials"];
 	$description = $_POST["description"];
 	$timestamp = gmdate("U");
 
@@ -573,7 +582,7 @@ function update_author($connect){
     $boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);
     remove_bounds($connect,$entity,'image');
     set_bounds($connect,$boundsArrayImage,'image');
-    $connect->query("UPDATE `authors` SET `full_name`=?s, `position`=?s, `title`=?s, `keywords`=?s, `h1`=?s, `meta_description`=?s, `description`=?s, `changed`=?i, `synchronized`=0 WHERE id=?i", $full_name, $position, $title, $keywords, $h1, $meta_description, $description, $timestamp, $id);
+    $connect->query("UPDATE `authors` SET `full_name`=?s, `position`=?s, `title`=?s, `keywords`=?s, `h1`=?s, `meta_description`=?s, `socials`=?s, `description`=?s, `changed`=?i, `synchronized`=0 WHERE id=?i", $full_name, $position, $title, $keywords, $h1, $meta_description, $socials, $description, $timestamp, $id);
 }
 
 function delete_author($connect){

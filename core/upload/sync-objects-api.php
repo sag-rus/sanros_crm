@@ -392,6 +392,7 @@ function sync_objects_api($connect){
 			$authorAr["keywords"] = $author['keywords'];
 			$authorAr["h1"] = $author['h1'];
 			$authorAr["meta_description"] = $author['meta_description'];
+			$authorAr["socials"] = $author['socials'];
 			$authorAr["description"] = $author['description'];
 			$authorAr['status'] = $author['status'];
 
