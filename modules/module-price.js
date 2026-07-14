@@ -874,6 +874,12 @@ function init_author_form(){
 		contentType:['image/jpeg', 'image/png', 'image/webp']
 	});
 
+	$('.edit-author-modal *[name="photogallery"]').multUploader({
+		action:'mysql.php?func=multipart_upload',
+		fragmentSize:1024*1024,
+		contentType:['image/jpeg', 'image/png', 'image/webp']
+	});
+
 	if(typeof CKEDITOR === 'undefined')
 		return;
 
@@ -898,11 +904,17 @@ function get_author_form_data($button){
 	var $image = $modalBody.find('*[name="image"]');
 	var $imageMsg = $image.parent().find('.input-message-block');
 	var image = [];
+	var $photogallery = $modalBody.find('*[name="photogallery"]');
+	var $photogalleryMsg = $photogallery.parent().find('.input-message-block');
+	var photogallery = [];
 
 	if($image.val().trim())
 		image = JSON.parse($image.val().trim());
+	if($photogallery.val().trim())
+		photogallery = JSON.parse($photogallery.val().trim());
 
 	$imageMsg.html("").removeClass('with-bottom-margin');
+	$photogalleryMsg.html("").removeClass('with-bottom-margin');
 
 	return {
 		full_name: $modalBody.find('.full-name').val(),
@@ -913,7 +925,8 @@ function get_author_form_data($button){
 		meta_description: $modalBody.find('.meta-description').val(),
 		socials: $modalBody.find('.socials').val(),
 		description: description,
-		image: image
+		image: image,
+		photogallery: photogallery
 	};
 }
 
@@ -937,7 +950,8 @@ function save_new_author(){
 				meta_description: authorData.meta_description,
 				socials: authorData.socials,
 				description: authorData.description,
-				image: authorData.image
+				image: authorData.image,
+				photogallery: authorData.photogallery
 			},
 			success: function(){
 				authors();
@@ -981,7 +995,8 @@ function update_author(id){
 				socials: authorData.socials,
 				id: id,
 				description: authorData.description,
-				image: authorData.image
+				image: authorData.image,
+				photogallery: authorData.photogallery
 			},
 			success: function(){
 				authors();

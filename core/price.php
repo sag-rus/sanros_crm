@@ -444,6 +444,7 @@ function author_form($connect, $id = 0){
 		'description' => ''
 	];
 	$imageValue = '[]';
+	$photogalleryValue = '[]';
 
 	if($id > 0) {
 		$row = $connect->getRow("SELECT * FROM `authors` WHERE id=?i", $id);
@@ -452,6 +453,7 @@ function author_form($connect, $id = 0){
 	      'type' => 'author'
 	    ];
 		$imageValue = htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'image'))));
+		$photogalleryValue = htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'photogallery'))));
 	}
 ?>
 	<div class="modal fade edit-author-modal">
@@ -479,6 +481,12 @@ function author_form($connect, $id = 0){
 							<label class="col-sm-2 control-label">Фото</label>
 							<div class="col-sm-10">
 								<input type="file" name="image" value="<?=$imageValue;?>">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Фотографии</label>
+							<div class="col-sm-10">
+								<input type="file" name="photogallery" value="<?=$photogalleryValue;?>">
 							</div>
 						</div>
 						<div class="form-group">
@@ -576,8 +584,11 @@ function save_new_author($connect){
 		  'type' => 'author'
 		];
 		$boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);
+		$boundsArrayPhotoGallery = files_to_bounds($connect,$entity,'photogallery',isset($_POST['photogallery'])?$_POST['photogallery']:[]);
 		remove_bounds($connect,$entity,'image');
+		remove_bounds($connect,$entity,'photogallery');
 		set_bounds($connect,$boundsArrayImage,'image');
+		set_bounds($connect,$boundsArrayPhotoGallery,'photogallery');
 	}
 }
 
@@ -604,8 +615,11 @@ function update_author($connect){
     ];
 
     $boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);
+    $boundsArrayPhotoGallery = files_to_bounds($connect,$entity,'photogallery',isset($_POST['photogallery'])?$_POST['photogallery']:[]);
     remove_bounds($connect,$entity,'image');
+    remove_bounds($connect,$entity,'photogallery');
     set_bounds($connect,$boundsArrayImage,'image');
+    set_bounds($connect,$boundsArrayPhotoGallery,'photogallery');
     $result = $connect->query("UPDATE `authors` SET `full_name`=?s, `position`=?s, `title`=?s, `keywords`=?s, `h1`=?s, `meta_description`=?s, `socials`=?s, `description`=?s, `changed`=?i, `synchronized`=0 WHERE id=?i", $full_name, $position, $title, $keywords, $h1, $meta_description, $socials, $description, $timestamp, $id);
     if($result === false){
     	http_response_code(500);
