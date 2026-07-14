@@ -402,17 +402,20 @@ function show_authors($connect){
 	</div>
 	<div class="list-group">
 <?php
-	$data = $connect->getAll("SELECT id, full_name FROM `authors` WHERE `status` = 1 ORDER BY `full_name` ASC");
-	foreach($data as $row){
+	$data = $connect->getAll("SELECT id, full_name, `sort` FROM `authors` WHERE `status` = 1 ORDER BY `sort` ASC, `full_name` ASC, `id` ASC");
+	$authorCount = count($data);
+	foreach($data as $index => $row){
 		$id = $row["id"];
 		$full_name = $row["full_name"];
 		?>
 		<div class="list-group-item author-<?php echo $id; ?>">
 			<div class="form-group">
-				<div class="col-sm-9">
+				<div class="col-sm-8">
 					<?php echo htmlspecialchars($full_name); ?>
 				</div>
-				<div class="col-sm-3 text-center">
+				<div class="col-sm-4 text-center">
+					<button type="button" class="btn btn-default btn-xs" onclick="move_author(<?php echo $id; ?>, 'up')"<?php if($index === 0) { ?> disabled<?php } ?>><i class="fa fa-arrow-up"></i></button>
+					<button type="button" class="btn btn-default btn-xs" onclick="move_author(<?php echo $id; ?>, 'down')"<?php if($index === $authorCount - 1) { ?> disabled<?php } ?>><i class="fa fa-arrow-down"></i></button>
 					<button type="button" class="btn btn-default btn-xs" onclick="edit_author(<?php echo $id; ?>)"><i class="fa fa-pencil"></i></button>
 					<button type="button" class="btn btn-danger btn-xs" onclick="delete_author(<?php echo $id; ?>)"><i class="fa fa-trash"></i></button>
 				</div>
@@ -537,6 +540,15 @@ function author_post_value($key){
 	return isset($_POST[$key]) ? $_POST[$key] : '';
 }
 
+function normalize_authors_sort($connect){
+	$authors = $connect->getAll("SELECT `id` FROM `authors` WHERE `status` = 1 ORDER BY `sort` ASC, `full_name` ASC, `id` ASC");
+	$sort = 10;
+	foreach($authors as $author) {
+		$connect->query("UPDATE `authors` SET `sort`=?i WHERE `id`=?i", $sort, $author['id']);
+		$sort += 10;
+	}
+}
+
 function save_new_author($connect){
 	$full_name = author_post_value('full_name');
 	$position = author_post_value('position');
@@ -547,7 +559,8 @@ function save_new_author($connect){
 	$socials = author_post_value('socials');
 	$description = author_post_value('description');
 	$timestamp = gmdate("U");
-	$result = $connect->query("INSERT INTO `authors` (`full_name`, `position`, `title`, `keywords`, `h1`, `meta_description`, `socials`, `description`, `status`, `synchronized`, `created`, `changed`) VALUES(?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, 1, 0, ?i, ?i)", $full_name, $position, $title, $keywords, $h1, $meta_description, $socials, $description, $timestamp, $timestamp);
+	$sort = (int)$connect->getOne("SELECT COALESCE(MAX(`sort`), 0) + 10 FROM `authors` WHERE `status` = 1");
+	$result = $connect->query("INSERT INTO `authors` (`full_name`, `position`, `title`, `keywords`, `h1`, `meta_description`, `socials`, `description`, `sort`, `status`, `synchronized`, `created`, `changed`) VALUES(?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, ?i, 1, 0, ?i, ?i)", $full_name, $position, $title, $keywords, $h1, $meta_description, $socials, $description, $sort, $timestamp, $timestamp);
 	if($result === false){
 		http_response_code(500);
 		echo "MYSQL_ERROR: ".$connect->last_error()."\n";
@@ -601,6 +614,37 @@ function update_author($connect){
     	echo "QUERY: ".$connect->last_query();
     	return;
     }
+}
+
+function move_author($connect){
+	$id = (int)author_post_value('id');
+	$direction = author_post_value('direction');
+	$timestamp = gmdate("U");
+
+	if($id <= 0 || !in_array($direction, ['up', 'down'])) {
+		return;
+	}
+
+	normalize_authors_sort($connect);
+
+	$author = $connect->getRow("SELECT `id`, `sort` FROM `authors` WHERE `id`=?i AND `status`=1", $id);
+	if(!$author) {
+		return;
+	}
+
+	if($direction === 'up') {
+		$neighbor = $connect->getRow("SELECT `id`, `sort` FROM `authors` WHERE `status`=1 AND `sort` < ?i ORDER BY `sort` DESC, `id` DESC LIMIT 1", $author['sort']);
+	}
+	else {
+		$neighbor = $connect->getRow("SELECT `id`, `sort` FROM `authors` WHERE `status`=1 AND `sort` > ?i ORDER BY `sort` ASC, `id` ASC LIMIT 1", $author['sort']);
+	}
+
+	if(!$neighbor) {
+		return;
+	}
+
+	$connect->query("UPDATE `authors` SET `sort`=?i, `changed`=?i, `synchronized`=0 WHERE `id`=?i", $neighbor['sort'], $timestamp, $author['id']);
+	$connect->query("UPDATE `authors` SET `sort`=?i, `changed`=?i, `synchronized`=0 WHERE `id`=?i", $author['sort'], $timestamp, $neighbor['id']);
 }
 
 function delete_author($connect){

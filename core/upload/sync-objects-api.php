@@ -394,6 +394,7 @@ function sync_objects_api($connect){
 			$authorAr["meta_description"] = $author['meta_description'];
 			$authorAr["socials"] = $author['socials'];
 			$authorAr["description"] = $author['description'];
+			$authorAr["sort"] = $author['sort'];
 			$authorAr['status'] = $author['status'];
 
 			$res = $client->request('POST',"https://sites.tonia.ru/api/author/set/".$author['id'],[

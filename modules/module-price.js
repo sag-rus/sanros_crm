@@ -1007,6 +1007,21 @@ function delete_author(id){
 	});
 }
 
+function move_author(id, direction){
+	$.ajax({
+		url: 'mysql.php',
+		type: 'POST',
+		data: {
+			func: 'move_author',
+			id: id,
+			direction: direction
+		},
+		success: function(){
+			authors();
+		}
+	});
+}
+
 
 
 
