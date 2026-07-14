@@ -547,7 +547,14 @@ function save_new_author($connect){
 	$socials = author_post_value('socials');
 	$description = author_post_value('description');
 	$timestamp = gmdate("U");
-	$connect->query("INSERT INTO `authors` (`full_name`, `position`, `title`, `keywords`, `h1`, `meta_description`, `socials`, `description`, `status`, `synchronized`, `created`, `changed`) VALUES(?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, 1, 0, ?i, ?i)", $full_name, $position, $title, $keywords, $h1, $meta_description, $socials, $description, $timestamp, $timestamp);
+	$result = $connect->query("INSERT INTO `authors` (`full_name`, `position`, `title`, `keywords`, `h1`, `meta_description`, `socials`, `description`, `status`, `synchronized`, `created`, `changed`) VALUES(?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, 1, 0, ?i, ?i)", $full_name, $position, $title, $keywords, $h1, $meta_description, $socials, $description, $timestamp, $timestamp);
+	if($result === false){
+		http_response_code(500);
+		echo "MYSQL_ERROR: ".$connect->last_error()."\n";
+		echo "MYSQL_ERRNO: ".$connect->last_errno()."\n";
+		echo "QUERY: ".$connect->last_query();
+		return;
+	}
 	$id = $connect->insertId();
 
 	if($id > 0) {
@@ -586,7 +593,14 @@ function update_author($connect){
     $boundsArrayImage = files_to_bounds($connect,$entity,'image',isset($_POST['image'])?$_POST['image']:[]);
     remove_bounds($connect,$entity,'image');
     set_bounds($connect,$boundsArrayImage,'image');
-    $connect->query("UPDATE `authors` SET `full_name`=?s, `position`=?s, `title`=?s, `keywords`=?s, `h1`=?s, `meta_description`=?s, `socials`=?s, `description`=?s, `changed`=?i, `synchronized`=0 WHERE id=?i", $full_name, $position, $title, $keywords, $h1, $meta_description, $socials, $description, $timestamp, $id);
+    $result = $connect->query("UPDATE `authors` SET `full_name`=?s, `position`=?s, `title`=?s, `keywords`=?s, `h1`=?s, `meta_description`=?s, `socials`=?s, `description`=?s, `changed`=?i, `synchronized`=0 WHERE id=?i", $full_name, $position, $title, $keywords, $h1, $meta_description, $socials, $description, $timestamp, $id);
+    if($result === false){
+    	http_response_code(500);
+    	echo "MYSQL_ERROR: ".$connect->last_error()."\n";
+    	echo "MYSQL_ERRNO: ".$connect->last_errno()."\n";
+    	echo "QUERY: ".$connect->last_query();
+    	return;
+    }
 }
 
 function delete_author($connect){

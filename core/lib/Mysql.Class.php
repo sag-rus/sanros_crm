@@ -65,6 +65,8 @@ class SafeMySQL{
 	private $emode;
 	private $exname;
 	private $last_query;
+	private $last_error = '';
+	private $last_errno = 0;
 
 	private $defaults = array(
 		'host'      => 'localhost',
@@ -94,6 +96,14 @@ class SafeMySQL{
 	public function last_query(){
 		return $this->last_query;
 	}	
+
+	public function last_error(){
+		return $this->last_error;
+	}
+
+	public function last_errno(){
+		return $this->last_errno;
+	}
 
 	public function fetch($result, $mode = MYSQLI_ASSOC){
 		return mysqli_fetch_array($result, $mode);
@@ -366,6 +376,13 @@ class SafeMySQL{
 	private function rawQuery($query){
 		if($query){
 			$result = mysqli_query($this->connect, $query);
+			if($result === false){
+				$this->last_error = mysqli_error($this->connect);
+				$this->last_errno = mysqli_errno($this->connect);
+			}else{
+				$this->last_error = '';
+				$this->last_errno = 0;
+			}
 			return $result;
 		}
 	}
