@@ -874,6 +874,9 @@ function init_author_form(){
 		contentType:['image/jpeg', 'image/png', 'image/webp']
 	});
 
+	if(typeof CKEDITOR === 'undefined')
+		return;
+
 	if(CKEDITOR.instances.author_description)
 		CKEDITOR.instances.author_description.destroy(true);
 
@@ -884,10 +887,14 @@ function init_author_form(){
 }
 
 function get_author_form_data($button){
-	if(CKEDITOR.instances.author_description)
-		CKEDITOR.instances.author_description.updateElement();
-
 	var $modalBody = $button.closest('.modal-dialog').find('.modal-body');
+	var description = $modalBody.find('.description').val();
+
+	if(typeof CKEDITOR !== 'undefined' && CKEDITOR.instances.author_description) {
+		description = CKEDITOR.instances.author_description.getData();
+		CKEDITOR.instances.author_description.updateElement();
+	}
+
 	var $image = $modalBody.find('*[name="image"]');
 	var $imageMsg = $image.parent().find('.input-message-block');
 	var image = [];
@@ -905,7 +912,7 @@ function get_author_form_data($button){
 		h1: $modalBody.find('.h1').val(),
 		meta_description: $modalBody.find('.meta-description').val(),
 		socials: $modalBody.find('.socials').val(),
-		description: $modalBody.find('.description').val(),
+		description: description,
 		image: image
 	};
 }

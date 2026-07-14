@@ -533,15 +533,19 @@ function new_author($connect){
 	author_form($connect);
 }
 
+function author_post_value($key){
+	return isset($_POST[$key]) ? $_POST[$key] : '';
+}
+
 function save_new_author($connect){
-	$full_name = $_POST["full_name"];
-	$position = $_POST["position"];
-	$title = $_POST["title"];
-	$keywords = $_POST["keywords"];
-	$h1 = $_POST["h1"];
-	$meta_description = $_POST["meta_description"];
-	$socials = $_POST["socials"];
-	$description = $_POST["description"];
+	$full_name = author_post_value('full_name');
+	$position = author_post_value('position');
+	$title = author_post_value('title');
+	$keywords = author_post_value('keywords');
+	$h1 = author_post_value('h1');
+	$meta_description = author_post_value('meta_description');
+	$socials = author_post_value('socials');
+	$description = author_post_value('description');
 	$timestamp = gmdate("U");
 	$connect->query("INSERT INTO `authors` (`full_name`, `position`, `title`, `keywords`, `h1`, `meta_description`, `socials`, `description`, `status`, `synchronized`, `created`, `changed`) VALUES(?s, ?s, ?s, ?s, ?s, ?s, ?s, ?s, 1, 0, ?i, ?i)", $full_name, $position, $title, $keywords, $h1, $meta_description, $socials, $description, $timestamp, $timestamp);
 	$id = $connect->insertId();
@@ -558,20 +562,20 @@ function save_new_author($connect){
 }
 
 function edit_author($connect){
-	$id = $_POST["id"];
+	$id = author_post_value('id');
 	author_form($connect, $id);
 }
 
 function update_author($connect){
-	$id = $_POST["id"];
-	$full_name = $_POST["full_name"];
-	$position = $_POST["position"];
-	$title = $_POST["title"];
-	$keywords = $_POST["keywords"];
-	$h1 = $_POST["h1"];
-	$meta_description = $_POST["meta_description"];
-	$socials = $_POST["socials"];
-	$description = $_POST["description"];
+	$id = author_post_value('id');
+	$full_name = author_post_value('full_name');
+	$position = author_post_value('position');
+	$title = author_post_value('title');
+	$keywords = author_post_value('keywords');
+	$h1 = author_post_value('h1');
+	$meta_description = author_post_value('meta_description');
+	$socials = author_post_value('socials');
+	$description = author_post_value('description');
 	$timestamp = gmdate("U");
 
 	$entity = [
