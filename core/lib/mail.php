@@ -166,7 +166,14 @@ function send_mail_sanata($email, $title, $mess){
 	$mail->Subject = htmlspecialchars($title);
 	$mail->Body = $mess;
 	$mail->isHTML(TRUE);
-	$mail->Send();
+	if(!$mail->Send()){
+		file_put_contents(
+			$directory."/core/sync/file/send-mail-error.log",
+			date('Y-m-d H:i:s')." :: ".$email." :: ".$mail->ErrorInfo.PHP_EOL,
+			FILE_APPEND
+		);
+		return FALSE;
+	}
 	return TRUE;
 }
 

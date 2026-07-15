@@ -218,7 +218,7 @@ function send_aznakaevo_email($connect, $data){
 
 function send_recovery_email($connect, $data){
 	global $directory;
-	$email = $data["email"];
+	$email = trim($data["email"]);
 	$id = $connect->getOne("SELECT id FROM klient WHERE login=?s", $email);
 	if($id){
 		$hash = md5(uniqid("", TRUE));
@@ -226,11 +226,13 @@ function send_recovery_email($connect, $data){
 		$message = select_template_letter("turist/cabinet/recovery-account", "client");
 		$link = CABINET."восстановить-пароль/email=".$email."&hash=".$hash;
 		$message["content"] = str_replace("<hash>", $link, $message["content"]);
-		save_client_to_history($connect, $id, "Отправка письма с восстановлением пароля");
-		send_mail_sanata($email, $message["title"], $message["content"]);
-		return 1;
+		if(send_mail_sanata($email, $message["title"], $message["content"])){
+			save_client_to_history($connect, $id, "Отправлено письмо с восстановлением пароля");
+			return 1;
+		}
+		return -1;
 	}
-	return FALSE;
+	return -2;
 }
 
 function recovery_password_account($connect, $data){
