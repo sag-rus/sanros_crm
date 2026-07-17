@@ -2204,8 +2204,9 @@ function show_sites_phones_list(site_id) {
   });
 }
 
-function load_sites_content_author_options(selectedAuthorId) {
-  var $author = $('.sites-content-modal select[name="author_id"]');
+function load_sites_content_author_options(selectedAuthorId, fieldName) {
+  fieldName = fieldName || 'author_id';
+  var $author = $('.sites-content-modal select[name="' + fieldName + '"]');
   if($author.length === 0) {
     return;
   }
@@ -2282,13 +2283,22 @@ function add_new_sites_content(site_id) {
 											'</div>' +
                       '<div class="form-group">' +
                         '<label class="col-sm-2 control-label">Автор</label>' +
-                        '<div class="col-sm-10">' +
-                          '<select class="form-control" name="author_id">' +
-                            '<option value="0">Не выбран</option>' +
-                          '</select>' +
-                          '<div class="input-message-block" data-for="author_id"></div>' +
-                        '</div>' +
-                      '</div>' +
+	                        '<div class="col-sm-10">' +
+	                          '<select class="form-control" name="author_id">' +
+	                            '<option value="0">Не выбран</option>' +
+	                          '</select>' +
+	                          '<div class="input-message-block" data-for="author_id"></div>' +
+	                        '</div>' +
+	                      '</div>' +
+	                      '<div class="form-group">' +
+	                        '<label class="col-sm-2 control-label">Редактор</label>' +
+	                        '<div class="col-sm-10">' +
+	                          '<select class="form-control" name="editor_id">' +
+	                            '<option value="0">Не выбран</option>' +
+	                          '</select>' +
+	                          '<div class="input-message-block" data-for="editor_id"></div>' +
+	                        '</div>' +
+	                      '</div>' +
                       '<div class="form-group hidden">' +
                         '<label class="col-sm-2 control-label">Тип агрегатора</label>' +
                         '<div class="col-sm-10">'+
@@ -2653,6 +2663,7 @@ function add_new_sites_content(site_id) {
 
 	show_modal(html);
 	load_sites_content_author_options(0);
+	load_sites_content_author_options(0, 'editor_id');
 
 	$('#sites_content_body').replaceWith('<div id="sites_content_body"></div>');
 	$('#sites_content_body2').replaceWith('<div id="sites_content_body2"></div>');
@@ -3105,6 +3116,10 @@ function set_sites_content() {
 	if(isNaN(author_id) || author_id < 0) {
 		author_id = 0;
 	}
+	var editor_id = parseInt($modalBody.find('*[name="editor_id"]').val(), 10);
+	if(isNaN(editor_id) || editor_id < 0) {
+		editor_id = 0;
+	}
 	var rss = parseInt($modalBody.find('*[name="rss"]').val(),10);
 	var keywords = $modalBody.find('*[name="keywords"]').val();
 	var search_links = $modalBody.find('*[name="search_links"]').val();
@@ -3369,9 +3384,10 @@ function set_sites_content() {
 		image: image,
 		page_bg: page_bg,
 		second_bg: second_bg,
-		type: type,
-		author_id: author_id,
-		keywords: keywords,
+			type: type,
+			author_id: author_id,
+			editor_id: editor_id,
+			keywords: keywords,
 		search_links: search_links,
         published: published,
 		path: path,
