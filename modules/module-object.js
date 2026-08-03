@@ -230,19 +230,36 @@ function tl_webhook_save_params(id) {
 	let id_reg = $('#object_region option:selected').val();
 	let region_direction_id = $('#region_direction_id option:selected').val();
 
-	if (id_type>0 && id_direction>0 && id_reg>0) {
+	if (name.trim() !== '' && id_type>0 && id_direction>0 && id_reg>0) {
 		$('#body').html('<br><center><img src="/CRM/images/ajax-loader.gif"></center>');
-		var str = 'func=tl_webhook_save_params&id='+id+'&name='+name+'&id_type='+id_type+'&id_direction='+id_direction+'&id_reg='+id_reg+'&region_direction_id='+region_direction_id;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
-			data: str,
-			success: function(html){
+			dataType: 'json',
+			data: {
+				func: 'tl_webhook_save_params',
+				id: id,
+				name: name,
+				id_type: id_type,
+				id_direction: id_direction,
+				id_reg: id_reg,
+				region_direction_id: region_direction_id
+			},
+			success: function(response){
+				if (response && response.success) {
+					tl_webhook(id);
+				} else {
+					alert(response && response.message ? response.message : 'Не удалось сохранить параметры объекта');
+					tl_webhook(id);
+				}
+			},
+			error: function(){
+				alert('Ошибка соединения при сохранении параметров объекта');
 				tl_webhook(id);
 			}
 		});	
 	} else {
-		alert('Выберите Тип, Направление и Регион для нового объекта')
+		alert('Заполните Имя объекта и выберите Тип, Направление и Регион для нового объекта')
 	}
 }
 
