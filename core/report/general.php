@@ -1473,7 +1473,7 @@ function menu_mass_action(){
 	<span onclick="show_mass_action('block')">Заблокировать</span>
 	<span onclick="calc_payment_to_san()">Подсчет суммы оплаты в сан</span>
 	<span onclick="open_schet_san()">Открыть счета санатория</span>
-	<span onclick="show_mass_action()">Реестр заявок</span>
+	<span onclick="show_reckoning_registry()">Реестр заявок</span>
 <?php
 }
 

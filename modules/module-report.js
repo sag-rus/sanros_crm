@@ -538,6 +538,37 @@ function show_mass_action(type){
 		alert('Выберите хотя бы одну заявку');
 }
 
+function show_reckoning_registry(){
+	var rows = '';
+	var selected = $('input:checkbox:checked.check_mass');
+
+	if(!selected.length){
+		alert('Выберите хотя бы одну заявку');
+		return;
+	}
+
+	selected.each(function(){
+		var id = String(this.value).replace(/[^0-9]/g, '');
+		var row = $('#tr_' + id).clone();
+
+		if(!row.length)
+			return;
+
+		row.removeAttr('id onclick');
+		row.find('td:first').remove();
+		row.find('[id]').removeAttr('id');
+		rows += $('<div>').append(row).html();
+	});
+
+	if(!rows){
+		alert('Не удалось сформировать реестр выбранных заявок');
+		return;
+	}
+
+	var html = '<div class="modal fade"><div class="modal-dialog modal-giant"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button><h4 class="modal-title">Реестр заявок</h4></div><div class="modal-body modal-body-content"><div class="table-responsive"><table class="table table-condensed table-hover"><tbody>' + rows + '</tbody></table></div></div></div></div></div>';
+	show_modal(html);
+}
+
 function update_mass_reckoning(all_id, type){
 	var str = 'func=update_mass_reckoning&id=' + all_id + '&type=' + type;
 	$.ajax({
