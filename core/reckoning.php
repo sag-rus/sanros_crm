@@ -2371,6 +2371,9 @@ function update_payment($connect){
 	$bank_com = NULL;
 	if(empty($pay_method))
 	    $pay_method = 0;
+	elseif($pay_method === '2') {
+	    $bank_com = 1.0;
+    }
 	elseif($pay_method === '5-1' || $pay_method === '5') {
 	    $pay_method = 5;
 	    $bank_com = $config->BANK_COM_SBERBANK;
