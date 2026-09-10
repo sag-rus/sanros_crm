@@ -939,7 +939,10 @@ function save_payment($connect, $schet, $sum, $type, $pay_number, $date, $pay_me
 	$bank_com = NULL;
 	$terminal = 0;
 	$pay_method = (string)$pay_method;
-	if($pay_method === '5' || $pay_method === '5-1') {
+	if($pay_method === '2') {
+	  $bank_com = 1.0;
+    }
+	elseif($pay_method === '5' || $pay_method === '5-1') {
       $bank_com = $conf->BANK_COM_SBERBANK;
 	    $pay_method = 5;
     }
@@ -1247,9 +1250,9 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
   //if ($exclude_bank_commission==1) {
 	$payment_status_string = " AND `payment`.`status` != 0";
 	if($only_payment_state) {
-		$data = $connect->getAll("SELECT sum, bank_com, type FROM payment WHERE ".$add_cond."pay_method=5 AND schet=?i".$payment_status_string, $id);
+		$data = $connect->getAll("SELECT sum, bank_com, type, pay_method FROM payment WHERE ".$add_cond."pay_method IN (2,5) AND schet=?i".$payment_status_string, $id);
 	} else {
-		$data = $connect->getAll("SELECT sum, bank_com, type FROM payment WHERE pay_method in (5,6,7) AND schet=?i".$payment_status_string, $id);
+		$data = $connect->getAll("SELECT sum, bank_com, type, pay_method FROM payment WHERE pay_method IN (2,5,6,7) AND schet=?i".$payment_status_string, $id);
 	}
 
 
@@ -1261,7 +1264,9 @@ function get_reward_schet($connect, $id, $type = "", $fact = false, $consider_bo
 				$row["sum"]-= $connect->getOne("SELECT sum FROM payment WHERE type=5 AND schet=?i".$payment_status_string, $id);
 		}
 
-		if($row["sum"] <= 100) {
+		if((int)$row["pay_method"] === 2) {
+			$bank_com += $row["sum"] * ($row["bank_com"] / 100);
+		} elseif($row["sum"] <= 100) {
 			$bank_com+= "3.5";
 		} else {
 			$bank_com+= $row["sum"] * ($row["bank_com"] / 100);
