@@ -2543,6 +2543,15 @@ function edit_sites_content($connect) {
                               <input type="file" name="slider_photos_mobile" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,'slider_photos_mobile'))));?>">
                           </div>
                       </div>
+                      <?php foreach (['hotels_image' => 'Фото направления для списка отелей', 'hotels_slider_photos' => 'Баннер направления для отелей', 'hotels_slider_photos_mobile' => 'Баннер отелей (моб. версия)'] as $hotelPhotoName => $hotelPhotoLabel) { ?>
+                      <div class="form-group">
+                          <label class="col-sm-2 control-label"><?=$hotelPhotoLabel;?></label>
+                          <div class="col-sm-10">
+                              <div class="input-message-block" data-for="<?=$hotelPhotoName;?>"></div>
+                              <input type="file" name="<?=$hotelPhotoName;?>" value="<?=htmlspecialchars(json_encode(bounds_to_files($connect,load_bounds($connect,$entity,$hotelPhotoName))));?>">
+                          </div>
+                      </div>
+                      <?php } ?>
                       <div class="form-group<?php if(!in_array($content['type'],['landing','settings'])) { ?> hidden<?php } ?>">
                           <label class="col-sm-2 control-label">Тип слайдера</label>
                           <div class="col-sm-10">
@@ -3835,6 +3844,7 @@ function set_sites_content($connect) {
               remove_bounds($connect,$entity,'aggregate_types');
               remove_bounds($connect,$entity, 'resorts_ids');
               set_bounds($connect,$boundsArrayImage,'image');
+              save_hotel_direction_photos($connect, $entity);
               set_bounds($connect,$boundsArrayPageBg,'page_bg');
               set_bounds($connect,$boundsArrayPhotogallery,'photogallery');
               set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
@@ -3919,6 +3929,7 @@ function set_sites_content($connect) {
               }
 
               set_bounds($connect,$boundsArrayImage,'image');
+              save_hotel_direction_photos($connect, $entity);
               set_bounds($connect,$boundsArrayPageBg,'page_bg');
               set_bounds($connect,$boundsArrayPhotogallery,'photogallery');
               set_bounds($connect,$boundsArraySliderPhotos,'slider_photos');
@@ -3951,6 +3962,19 @@ function set_sites_content($connect) {
   }
 
   return json_encode($respAr);
+}
+
+function save_hotel_direction_photos($connect, $entity) {
+    foreach (['hotels_image', 'hotels_slider_photos', 'hotels_slider_photos_mobile'] as $name) {
+        // Older callers do not send these fields: preserve their assignments.
+        if (array_key_exists($name, $_POST)) {
+            $files = is_array($_POST[$name]) ? $_POST[$name] : json_decode($_POST[$name], true);
+            if (!is_array($files)) continue;
+            $bounds = files_to_bounds($connect, $entity, $name, $files);
+            remove_bounds($connect, $entity, $name);
+            set_bounds($connect, $bounds, $name);
+        }
+    }
 }
 
 function sync_site_content($connect, $id):bool {

@@ -2705,13 +2705,13 @@ function add_new_sites_content(site_id) {
 		});
 
 
-  $('.sites-content-modal *[name="slider_photos"], .sites-content-modal *[name="slider_photos_mobile"], .sites-content-modal *[name="photogallery"]').multUploader({
+  $('.sites-content-modal *[name="slider_photos"], .sites-content-modal *[name="slider_photos_mobile"], .sites-content-modal *[name="hotels_slider_photos"], .sites-content-modal *[name="hotels_slider_photos_mobile"], .sites-content-modal *[name="photogallery"]').multUploader({
     action:'mysql.php?func=multipart_upload',
     fragmentSize:1024*1024,
     contentType:['image/jpeg','image/png']
   });
 
-  $('.sites-content-modal *[name="image"], .sites-content-modal *[name="page_bg"]').multUploader({
+  $('.sites-content-modal *[name="image"], .sites-content-modal *[name="hotels_image"], .sites-content-modal *[name="page_bg"]').multUploader({
     action:'mysql.php?func=multipart_upload',
     fragmentSize:1024*1024,
 		maxcount: 1,
@@ -3359,6 +3359,9 @@ function set_sites_content() {
         description: description,
 		slider_photos: slider_photos,
 		slider_photos_mobile: slider_photos_mobile,
+        hotels_image: $modalBody.find('*[name="hotels_image"]').val() || '[]',
+        hotels_slider_photos: $modalBody.find('*[name="hotels_slider_photos"]').val() || '[]',
+        hotels_slider_photos_mobile: $modalBody.find('*[name="hotels_slider_photos_mobile"]').val() || '[]',
 		direction_id: direction_id,
 		sort: sort,
 		region_id: region_id,
@@ -4082,13 +4085,13 @@ function edit_sites_content(id,copyMode) {
 				console.error( error );
 			});			
 
-      $('.sites-content-modal *[name="slider_photos"], .sites-content-modal *[name="slider_photos_mobile"], .sites-content-modal *[name="photogallery"]').multUploader({
+      $('.sites-content-modal *[name="slider_photos"], .sites-content-modal *[name="slider_photos_mobile"], .sites-content-modal *[name="hotels_slider_photos"], .sites-content-modal *[name="hotels_slider_photos_mobile"], .sites-content-modal *[name="photogallery"]').multUploader({
         action:'mysql.php?func=multipart_upload',
         fragmentSize:1024*1024,
         contentType:['image/jpeg','image/png']
       });
 
-      $('.sites-content-modal *[name="image"], .sites-content-modal *[name="page_bg"]').multUploader({
+      $('.sites-content-modal *[name="image"], .sites-content-modal *[name="hotels_image"], .sites-content-modal *[name="page_bg"]').multUploader({
         action:'mysql.php?func=multipart_upload',
         fragmentSize:1024*1024,
         maxcount: 1,

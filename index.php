@@ -1,5 +1,5 @@
 <?php
-	$version = "17-08-2026";
+	$version = "16-09-2026-direction-photos";
     $loader = require( __DIR__ . '/vendor/autoload.php');
     /*$payment = new \App\lib\payment\Sberbank\BookingPayment([
 
