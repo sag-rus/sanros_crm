@@ -2116,7 +2116,7 @@ function show_schet_klient($connect){
 				<strong>Гос. субсидии:</strong> <?=($state_program) ? 'Да' : 'Нет';?><br>
 				<strong>Номер участника мили Аэрофлот:</strong> <?=$afl?><br>
                 <?php if($payment_div){ ?>
-					<div><button class="btn btn-default btn-xs" onclick="$('.payment-schet').show(); $('.desc-schet').hide();"><i class="fa fa-credit-card"></i> Платежи</button></div>
+					<div><button class="btn btn-default btn-xs" onclick="$('.payment-schet').show(); $('.desc-schet').hide();"><i class="fa fa-credit-card"></i> <strong>Платежи</strong></button></div>
 				<?php } ?>
 			</div>
 			<div class="col-sm-5 payment-schet" style="display: none">
