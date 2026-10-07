@@ -137,6 +137,10 @@ foreach([['1096','14'],['1658','15']] as $scope){
     $keys=array_keys($pdo->tables);sort($keys);$expected=['external_price_snapshot','external_sync_inbox','external_price_catalog','external_price_observation','external_daily_price','external_stay_restriction','external_stay_offer'];sort($expected);
     wireAssert($keys===$expected);$checks++;
     wireAssert($pdo->writes===9);$checks++;
+    $storedSnapshot=array_values($pdo->tables['external_price_snapshot'])[0];
+    $ready=App\Support\LucianoWireReadback::verifyReady($a[0],hash('sha256',$json),[$pdo->state],
+        [$storedSnapshot],array_values($pdo->tables['external_sync_inbox']),tPayload($pdo,$storedSnapshot),$a[6]);
+    wireAssert($ready['ready_import_verified'] && !isset($ready['receipt']) && !$ready['ack_sent'] && !$ready['delivery_ready']);$checks++;
     // A retry cannot create a second initial or update existing rows.
     $writes=$pdo->writes;wireReject(function()use($pdo,$a,$json){Consumer::apply($pdo,$a[0],$json,hash('sha256',$json));});
     wireAssert($pdo->writes===$writes && count($pdo->tables['external_price_snapshot'])===1);$checks++;
