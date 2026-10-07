@@ -57,7 +57,9 @@ foreach ([['kazan','1096','14'],['sochi','1658','15']] as $scope) {
 }
 $e=planEnvelope();$wire=Wire::pack($e);$fields=planFields($e);
 foreach ([0,1,1.0,true,null,'0','01','-1','1.0','1e3',' 1','1 ','18446744073709551616',str_repeat('9',21)] as $id) {
-    wireReject(function()use($wire,$fields,$id){new Cursor('kazan',$wire,$fields,$id);});$checks++;
+    if ($id!==null) {wireReject(function()use($wire,$fields,$id){new Cursor('kazan',$wire,$fields,$id);});$checks++;}
+    $unbound=new Cursor('kazan',$wire,$fields);
+    wireReject(function()use($unbound,$id){$unbound->bindSnapshotId($id);});$checks++;
     $c=new Cursor('kazan',$wire,$fields,'9');$c->next();
     wireReject(function()use($c,$id){$c->acceptId($id);});$checks++;
 }
@@ -86,4 +88,11 @@ $empty=$e;$empty['payload']['data']['restrictions']=[];$empty=rehash($empty);
 $c=new Cursor('kazan',Wire::pack($empty),$fields,'9');$n=0;
 while ($c->next()!==null) {$c->acceptId((string)++$n);}
 wireAssert($c->complete()['section_counts']['restrictions']===0);$checks++;
+$c=new Cursor('kazan',$wire,$fields);
+wireReject(function()use($c){$c->next();});$checks++;
+wireReject(function()use($c){$c->complete();});$checks++;
+wireAssert(Wire::encode($c->originalPayload())===Wire::encode($e['payload']));$checks++;
+$c->bindSnapshotId('42');
+wireReject(function()use($c){$c->bindSnapshotId('43');});$checks++;
+wireAssert($c->next()['values']['snapshot_id']==='42');$checks++;
 echo "PASS $checks Luciano CRM insertion cursor isolation/lossless FK/SQL fixtures; no SQL executed\n";

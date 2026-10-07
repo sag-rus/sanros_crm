@@ -13,19 +13,21 @@ final class LucianoWireRowCursor
     private $observationIds=[];
     private $usedIds=[];
     private $counts=[];
+    private $payload;
     private const TABLES=['catalog'=>'external_price_catalog','observations'=>'external_price_observation',
         'daily'=>'external_daily_price','restrictions'=>'external_stay_restriction','offers'=>'external_stay_offer'];
 
-    public function __construct($hotel, array $wire, array $sectionFields, $snapshotId)
+    public function __construct($hotel, array $wire, array $sectionFields, $snapshotId=null)
     {
         $scopes=['kazan'=>['1096','14'],'sochi'=>['1658','15']];
         if (!is_string($hotel) || !isset($scopes[$hotel])
             || [$wire['crm_object_id']??null,$wire['external_property_key']??null]!==$scopes[$hotel]) {
             throw new \RuntimeException('Foreign CRM insertion cursor scope');
         }
-        self::id($snapshotId);
+        if ($snapshotId!==null) self::id($snapshotId);
         $validated=LucianoWireImportPlan::validate($wire,'crm',$sectionFields);
-        $this->data=$validated['envelope']['payload']['data'];$this->snapshotId=$snapshotId;
+        $this->payload=$validated['envelope']['payload'];
+        $this->data=$this->payload['data'];$this->snapshotId=$snapshotId;
         foreach ($this->data as $section=>$records) {
             foreach ($records as $row) foreach (['id','snapshot_id','catalog_id','observation_id','crm_room_id','crm_rate_id'] as $reserved) {
                 if (array_key_exists($reserved,$row)) throw new \RuntimeException('Database identity supplied by source');
@@ -37,6 +39,7 @@ final class LucianoWireRowCursor
     /** Same descriptor is returned until its actual generated row ID has been accepted. No SQL is executed here. */
     public function next()
     {
+        if ($this->snapshotId===null) throw new \RuntimeException('Actual snapshot ID has not been bound');
         if ($this->pending!==null) return $this->pending;
         $sections=array_keys(self::TABLES);
         while ($this->position<count($sections) && $this->index>=count($this->data[$sections[$this->position]])) {
@@ -67,6 +70,18 @@ final class LucianoWireRowCursor
             'sql'=>'INSERT INTO `'.$table.'` (`'.implode('`,`',array_keys($row)).'`) VALUES ('.implode(',',array_fill(0,count($row),'?')).')',
             'parameters'=>array_values($row)];
         return $this->pending;
+    }
+
+    public function bindSnapshotId($id): void
+    {
+        self::id($id);
+        if ($this->snapshotId!==null) throw new \RuntimeException('Snapshot ID cannot be rebound');
+        $this->snapshotId=$id;
+    }
+
+    public function originalPayload(): array
+    {
+        return $this->payload;
     }
 
     /** Call only with the generated ID returned by the future consumer's successful INSERT. */
