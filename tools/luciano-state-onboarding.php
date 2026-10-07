@@ -14,8 +14,8 @@ try {
         || count($argv)!==($mode==='preflight'?3:6)) throw new RuntimeException('Usage: preflight kazan|sochi OR apply kazan|sochi EVIDENCE_SHA BACKUP_PATH INSTALLED_GIT_SHA');
     $object=$hotel==='kazan'?'1096':'1658';$backup=null;
     if ($mode==='apply') {
-        $expected=$argv[3];$backup=$argv[4];$head=$argv[5];
-        if (!preg_match('/^[a-f0-9]{64}$/D',$expected) || !preg_match('/^[a-f0-9]{40}$/D',$head)
+        $lucianoEvidenceSha=$argv[3];$backup=$argv[4];$head=$argv[5];
+        if (!preg_match('/^[a-f0-9]{64}$/D',$lucianoEvidenceSha) || !preg_match('/^[a-f0-9]{40}$/D',$head)
             || !preg_match('#^/var/tmp/luciano-crm-'.$object.'-before-state-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\.json$#D',$backup)) {
             throw new RuntimeException('Invalid onboarding digest, backup path or installed commit');
         }
@@ -48,7 +48,9 @@ try {
     if ($mode==='preflight') {
         $pdo->rollBack();echo Wire::encode(['preflight_only'=>true,'utc'=>gmdate('c'),'plan'=>$plan]),PHP_EOL;
     } else {
-        if (!hash_equals($expected,$plan['evidence_sha256'])) throw new RuntimeException('Scoped onboarding evidence changed; run a fresh preflight');
+        // The deployed bootstrap/common contracts use $expected in their own include scope.
+        // Keep this immutable CLI digest under a dedicated name across bootstrap.
+        if (!hash_equals($lucianoEvidenceSha,$plan['evidence_sha256'])) throw new RuntimeException('Scoped onboarding evidence changed; run a fresh preflight');
         if ($plan['action']==='already_dormant') {
             $pdo->rollBack();echo Wire::encode(['already_dormant'=>true,'database_written'=>false,'snapshot_created'=>false,'activated'=>false]),PHP_EOL;
         } else {
