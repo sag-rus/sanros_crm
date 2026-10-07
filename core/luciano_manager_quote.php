@@ -27,8 +27,11 @@ final class LucianoManagerQuote
 
     private static function money($value)
     {
+        // PDO decimal strings and whole-ruble integers are exact. Floating-point
+        // or coercible values cannot establish an exact occupancy-package quote.
+        if (!is_string($value) && !is_int($value)) throw new RuntimeException('Invalid exact RUB amount');
         $value=(string)$value;
-        if (!preg_match('/^([0-9]{1,10})(?:\.([0-9]{1,2}))?$/D',$value,$m)) throw new RuntimeException('Invalid exact RUB amount');
+        if (!preg_match('/^(0|[1-9][0-9]{0,9})(?:\.([0-9]{1,2}))?$/D',$value,$m)) throw new RuntimeException('Invalid exact RUB amount');
         $amount=(int)$m[1]*100+(isset($m[2])?(int)str_pad($m[2],2,'0'):0);
         if ($amount<1) throw new RuntimeException('Nonpositive amount');
         return $amount;
