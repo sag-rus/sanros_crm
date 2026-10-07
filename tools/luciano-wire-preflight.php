@@ -3,8 +3,10 @@
 if (PHP_SAPI!=='cli') exit(1);
 require_once __DIR__.'/../app/Support/LucianoWireEnvelope.php';
 require_once __DIR__.'/../app/Support/LucianoWireImportPlan.php';
+require_once __DIR__.'/../app/Support/LucianoWireDestination.php';
 use App\Support\LucianoWireEnvelope as Wire;
 use App\Support\LucianoWireImportPlan as Plan;
+use App\Support\LucianoWireDestination as Destination;
 
 try {
     if (count($argv)!==4 || !in_array($argv[1],['kazan','sochi'],true)
@@ -39,10 +41,11 @@ try {
     try {
         $fields=[];
         foreach (tSections() as $section=>$table) $fields[$section]=tFieldNames($pdo,$table,$section);
-        $validated=Plan::validate($wire,'crm',$fields);$e=$validated['envelope'];$data=$e['payload']['data'];$header=$e['payload']['snapshot'];
         $packet=(int)rows($pdo,'SELECT @@max_allowed_packet AS packet')[0]['packet'];
-        $state=rows($pdo,"SELECT crm_object_id,external_property_key,import_enabled,publish_enabled,active_snapshot_id,stale_after_seconds,timezone FROM external_price_state WHERE source='price_tonia_ru' AND crm_object_id=?",[$object]);
+        $state=rows($pdo,"SELECT source,crm_object_id,external_property_key,import_enabled,publish_enabled,active_snapshot_id,stale_after_seconds,timezone FROM external_price_state WHERE source='price_tonia_ru' AND crm_object_id=?",[$object]);
         $snapshots=(int)rows($pdo,"SELECT COUNT(*) AS n FROM external_price_snapshot WHERE source='price_tonia_ru' AND crm_object_id=?",[$object])[0]['n'];
+        $destination=Destination::initial($hotel,$state,$snapshots);
+        $validated=Plan::validate($wire,'crm',$fields);$e=$validated['envelope'];$data=$e['payload']['data'];$header=$e['payload']['snapshot'];
         // Conservative quoted-SQL bounds, not an executed INSERT or native-protocol proof.
         // Future generated IDs are bounded at 20 digits; observations/price data remain intact.
         $bound=function($table,$values) use($pdo) {
@@ -75,6 +78,7 @@ try {
             'quoted_sql_upper_bounds_with_16k_margin'=>$max,'sql_bounds_within_limit'=>max($max)<$packet,
             'exact_python_framing_tested'=>false,
             'scoped_destination_state'=>$state,'scoped_snapshot_count'=>$snapshots,'pdo_emulate_prepares'=>$pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
+            'destination_preflight'=>$destination,
             'native_sql_executed'=>false,'gateway_called'=>false,'file_written'=>false,'database_written'=>false,
             'consumer_integrated'=>false,'delivery_ready'=>false];
         $pdo->rollBack();
