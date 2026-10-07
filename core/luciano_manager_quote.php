@@ -5,13 +5,15 @@ final class LucianoManagerQuote
     public static function scope($object)
     {
         $scopes = [1096 => ['property_id'=>14,'provider_id'=>3026], 1658 => ['property_id'=>15,'provider_id'=>434]];
-        if (!isset($scopes[(int)$object])) throw new RuntimeException('Only the two Luciano objects are supported');
-        return $scopes[(int)$object];
+        $object=self::integer($object);
+        if (!isset($scopes[$object])) throw new RuntimeException('Only the two Luciano objects are supported');
+        return $scopes[$object];
     }
 
     private static function integer($value)
     {
-        if (filter_var($value,FILTER_VALIDATE_INT)===false || (int)$value<1) throw new RuntimeException('Invalid positive integer');
+        if ((!is_int($value) && !is_string($value)) || !preg_match('/^[1-9][0-9]*$/D',(string)$value)
+            || filter_var($value,FILTER_VALIDATE_INT)===false || (int)$value<1) throw new RuntimeException('Invalid positive integer');
         return (int)$value;
     }
 
@@ -38,7 +40,7 @@ final class LucianoManagerQuote
         $scope=self::scope($object);
         $id=self::integer(isset($booking['id'])?$booking['id']:0);
         $adults=self::integer(isset($booking['number_turist'])?$booking['number_turist']:0);
-        if ($adults>3 || !array_key_exists('children_rest',$booking) || filter_var($booking['children_rest'],FILTER_VALIDATE_INT)!==0) throw new RuntimeException('Only 1–3 adults without children are supported');
+        if ($adults>3 || !array_key_exists('children_rest',$booking) || !in_array($booking['children_rest'],[0,'0'],true)) throw new RuntimeException('Only 1–3 adults without children are supported');
         $arrival=self::date(isset($booking['date_z'])?$booking['date_z']:null);
         $departure=self::date(isset($booking['date_v'])?$booking['date_v']:null);
         self::date($today);
@@ -52,7 +54,7 @@ final class LucianoManagerQuote
                 if (!array_key_exists($field,$p)) throw new RuntimeException('Incomplete position');
             }
             $r=self::integer($p['id_room']);$t=self::integer($p['ratePlan']);$days=self::integer($p['days']);$type=self::integer($p['type']);
-            if (self::integer($p['number'])!==1 || filter_var($p['add_one_day'],FILTER_VALIDATE_INT)!==1 || !in_array($type,[2,3],true)
+            if (self::integer($p['number'])!==1 || !in_array($p['add_one_day'],[1,'1'],true) || !in_array($type,[2,3],true)
                 || $p['date_z']!==$next->format('Y-m-d') || $days>$nights
                 || ($room!==null && ($room!==$r || $rate!==$t || $basis!==$type))) throw new RuntimeException('Mixed, duplicate or non-night position');
             if ($type===3 && (count($positions)!==1 || $days!==$nights || $nights<2)) throw new RuntimeException('Exact stay must be one complete 2–7-night position');
