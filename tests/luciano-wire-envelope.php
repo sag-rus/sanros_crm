@@ -87,6 +87,6 @@ echo "PASS reject compressed expansion beyond declared bound\n";
 $f=tempnam(sys_get_temp_dir(),'luciano-wire-');
 try {
     file_put_contents($f,Wire::encode($wire));
-    $code='import sys,json,base64,gzip,hashlib;w=json.load(open(sys.argv[1]));b=gzip.decompress(base64.b64decode(w["encoded_envelope"],validate=True));assert len(b)==w["decoded_bytes"] and hashlib.sha256(b).hexdigest()==w["decoded_sha256"];e=json.loads(b);assert e["payload"]["data"]["offers"][0]["total_amount"]=="47650.00";assert e["payload_sha256"]==w["payload_sha256"];print("PASS independent Python gzip/UTF8/decimal/checksum decoding")';
+    $code='import sys,json,base64,gzip,hashlib;w=json.load(open(sys.argv[1]));b=gzip.decompress(base64.b64decode(w["encoded_envelope"],validate=True));assert len(b)==w["decoded_bytes"] and hashlib.sha256(b).hexdigest()==w["decoded_sha256"];e=json.loads(b.decode("utf-8"));assert e["payload"]["data"]["offers"][0]["total_amount"]=="47650.00";assert e["payload_sha256"]==w["payload_sha256"];print("PASS independent Python gzip/UTF8/decimal/checksum decoding")';
     passthru('python3 -c '.escapeshellarg($code).' '.escapeshellarg($f),$exit);wireAssert($exit===0);
 } finally { unlink($f); }
