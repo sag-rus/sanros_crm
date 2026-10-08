@@ -15,6 +15,11 @@ function ptl_payload($id){
     if($r['children_rest'] || $r['number_turist']<1 || $r['number_turist']>3)throw new RuntimeException('Автоматическая проверка поддерживает 1–3 взрослых без детей.');
     $rows=ptl_query('SELECT id_room,ratePlan,date_z,days,number,type,add_one_day,sum FROM position_reck WHERE schet=? AND id_room>0 ORDER BY date_z,id',[$id])->fetchAll();
     if(!$rows)throw new RuntimeException('В заявке не выбран номер.');
+    if(in_array((int)$r['id_obj'],[1096,1658],true)){
+        require_once __DIR__.'/luciano_manager_quote.php';
+        $quote=LucianoManagerQuote::build($r,$rows,(new DateTimeImmutable('today',new DateTimeZone('Europe/Moscow')))->format('Y-m-d'));
+        $first=$rows[0];$parts=explode('.',$quote['quoted_total']);$amount=(int)$parts[0]*100+(int)$parts[1];
+    }else{
     $inclusive=ptl_query("SELECT billing_basis FROM external_price_state WHERE source='price_tonia_ru' AND crm_object_id=?",[$r['id_obj']])->fetchColumn()==='day_inclusive';
     $chargeEnd=$inclusive?date('Y-m-d',strtotime($r['date_v'].' +1 day')):$r['date_v'];
     $first=$rows[0];$next=$r['date_z'];$amount=0;
@@ -23,9 +28,10 @@ function ptl_payload($id){
         $next=date('Y-m-d',strtotime($next.' +'.(int)$row['days'].' days'));$amount+=(int)round((float)$row['sum']*100)*(int)$row['days'];
     }
     if($next!==$chargeEnd || $r['date_z']<date('Y-m-d') || strtotime($r['date_v'])-strtotime($r['date_z'])>60*86400)throw new RuntimeException('Проверьте даты заявки: доступен будущий заезд до 60 ночей.');
+    }
     $map=ptl_query("SELECT rm.external_property_key,rm.external_room_key,rt.external_rate_key FROM external_price_mapping rm JOIN external_price_mapping rt ON rt.source=rm.source AND rt.crm_object_id=rm.crm_object_id AND rt.external_room_key=rm.external_room_key AND rt.external_property_key=rm.external_property_key AND rt.entity_type='rate' AND rt.mapping_status='verified' AND rt.crm_id=? WHERE rm.source='price_tonia_ru' AND rm.crm_object_id=? AND rm.entity_type='room' AND rm.mapping_status='verified' AND rm.crm_id=?",[$first['ratePlan'],$r['id_obj'],$first['id_room']])->fetchAll();
     if(count($map)!==1)throw new RuntimeException('Не найдено однозначное соответствие номера и тарифа в price.tonia.ru.');
-    $m=$map[0];return ['booking_id'=>(int)$id,'property_id'=>(int)$m['external_property_key'],'crm_object_id'=>(int)$r['id_obj'],'room_key'=>$m['external_room_key'],'rate_key'=>$m['external_rate_key'],'arrival'=>$r['date_z'],'departure'=>$r['date_v'],'adults'=>(int)$r['number_turist'],'quoted_total'=>number_format($amount/100,2,'.',''),'room_name'=>(string)ptl_query('SELECT name FROM room WHERE id=?',[$first['id_room']])->fetchColumn(),'rate_name'=>(string)ptl_query('SELECT name FROM rate_plan WHERE id=?',[$first['ratePlan']])->fetchColumn()];
+    $m=$map[0];if(isset($quote)&&(int)$m['external_property_key']!==$quote['property_id'])throw new RuntimeException('Источник номера Luciano не совпадает.');return ['booking_id'=>(int)$id,'property_id'=>(int)$m['external_property_key'],'crm_object_id'=>(int)$r['id_obj'],'room_key'=>$m['external_room_key'],'rate_key'=>$m['external_rate_key'],'arrival'=>$r['date_z'],'departure'=>$r['date_v'],'adults'=>(int)$r['number_turist'],'quoted_total'=>number_format($amount/100,2,'.',''),'room_name'=>(string)ptl_query('SELECT name FROM room WHERE id=?',[$first['id_room']])->fetchColumn(),'rate_name'=>(string)ptl_query('SELECT name FROM rate_plan WHERE id=?',[$first['ratePlan']])->fetchColumn()];
 }
 function ptl_latest($id){return ptl_query('SELECT * FROM price_tonia_live_checks WHERE booking_id=? ORDER BY id DESC LIMIT 1',[$id])->fetch();}
 function ptl_active($row){return $row && in_array($row['status'],['queued','running'],true);}
