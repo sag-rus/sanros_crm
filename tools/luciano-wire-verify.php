@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__.'/luciano-payload-readback.php';
 // Read-only CRM CLI. Emits evidence only; it never calls import, activation or an ACK endpoint.
 if (PHP_SAPI!=='cli') exit(1);
 require_once __DIR__.'/../app/Support/LucianoWireEnvelope.php';
@@ -27,7 +28,7 @@ try {
         $snapshot=$snapshots[0];
         $inboxes=rows($pdo,"SELECT * FROM external_sync_inbox WHERE snapshot_id=? AND sender='price' AND chunk_key='luciano-wire-v1' LIMIT 2",[$snapshot['id']]);
         $fields=[];foreach (tSections() as $section=>$table) $fields[$section]=tFieldNames($pdo,$table,$section);
-        $payload=tPayload($pdo,$snapshot);
+        $payload=lucianoPayload($pdo,$snapshot);
         $verified=Readback::verify($hotel,$sha,$states,$snapshots,$inboxes,$payload,$fields);
         $pdo->rollBack();
     } catch (Throwable $error) { if ($pdo->inTransaction()) $pdo->rollBack();throw $error; }

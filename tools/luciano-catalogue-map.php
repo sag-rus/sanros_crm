@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__.'/luciano-payload-readback.php';
 // Scoped, source-code based catalogue creation. Existing legacy rows are never rewritten.
 if(PHP_SAPI!=='cli')exit(1);
 function lrows($p,$sql,$args=[]){$s=$p->prepare($sql);$s->execute($args);return $s->fetchAll(PDO::FETCH_ASSOC);}
@@ -19,7 +20,7 @@ try{
     $sn=lrows($pdo,"SELECT * FROM external_price_snapshot WHERE source='price_tonia_ru' AND crm_object_id=?",[$object]);
     if(count($states)!==1||count($sn)!==1||$sn[0]['status']!=='ready'||$states[0]['active_snapshot_id']!==null||(int)$states[0]['import_enabled']!==0||(int)$states[0]['publish_enabled']!==0)throw new RuntimeException('Expected one dormant ready initial');
     $snapshot=$sn[0];$sid=$snapshot['id'];
-    if(!hash_equals($snapshot['checksum'],hash('sha256',tEncode(tPayload($pdo,$snapshot)))))throw new RuntimeException('Source readback differs');
+    if(!hash_equals($snapshot['checksum'],hash('sha256',tEncode(lucianoPayload($pdo,$snapshot)))))throw new RuntimeException('Source readback differs');
     $cat=lrows($pdo,'SELECT * FROM external_price_catalog WHERE snapshot_id=? ORDER BY entity_type DESC,id',[$sid]);$plan=[];$entities=[];
     foreach($cat as $r){
         $type=$r['entity_type'];$code=$type==='room'?$r['external_room_key']:$r['external_rate_key'];$key=$type.':'.$code;
@@ -50,7 +51,7 @@ try{
             $s=$pdo->prepare('UPDATE external_price_catalog SET crm_room_id=?,crm_rate_id=? WHERE id=? AND snapshot_id=?');$s->execute([$room,$rate,$r['id'],$sid]);
         }
         foreach(['external_daily_price','external_stay_offer'] as $table){$s=$pdo->prepare('UPDATE '.$table.' p JOIN external_price_catalog c ON c.id=p.catalog_id AND c.snapshot_id=p.snapshot_id SET p.crm_room_id=c.crm_room_id,p.crm_rate_id=c.crm_rate_id WHERE p.snapshot_id=?');$s->execute([$sid]);}
-        if(!hash_equals($snapshot['checksum'],hash('sha256',tEncode(tPayload($pdo,$snapshot)))))throw new RuntimeException('Mapping modified source');
+        if(!hash_equals($snapshot['checksum'],hash('sha256',tEncode(lucianoPayload($pdo,$snapshot)))))throw new RuntimeException('Mapping modified source');
         $pdo->commit();
     }
     echo json_encode(['object'=>$object,'applied'=>$apply,'plan'=>$plan,'ids'=>array_map(function($e){return $e['id'];},$entities),'backup'=>$backup??null],JSON_UNESCAPED_UNICODE),"\n";
