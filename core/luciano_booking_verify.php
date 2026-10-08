@@ -4,7 +4,7 @@ require_once __DIR__.'/luciano_booking_quote.php';
 /** Revalidate a Luciano submission against the active, source-backed CRM quote. No writes. */
 function luciano_booking_verify($data, $db) {
     $q=LucianoBookingQuote::parse($data,(new DateTimeImmutable('today',new DateTimeZone('Europe/Moscow')))->format('Y-m-d'));
-    $states=$db->getAll("SELECT st.*,sn.snapshot_key,sn.status AS snapshot_status,sn.checksum,sn.manifest_json FROM external_price_state st JOIN external_price_snapshot sn ON sn.id=st.active_snapshot_id AND sn.source=st.source AND sn.crm_object_id=st.crm_object_id JOIN external_price_source src ON src.source=st.source AND src.enabled=1 WHERE st.source='price_tonia_ru' AND st.crm_object_id=?i",$q['crm_object_id']);
+    $states=$db->getAll("SELECT st.*,sn.snapshot_key,sn.status AS snapshot_status,sn.checksum,sn.manifest_json FROM external_price_state st JOIN external_price_snapshot sn ON sn.id=st.active_snapshot_id AND sn.source=st.source AND sn.crm_object_id=st.crm_object_id JOIN external_price_source src ON src.source=st.source WHERE st.source='price_tonia_ru' AND st.crm_object_id=?i",$q['crm_object_id']);
     if(count($states)!==1)throw new RuntimeException('Luciano prices are not published');
     $st=$states[0];
     if((string)$st['external_property_key']!==(string)$q['property_id'] || (string)$st['upstream_property_key']!==(string)$q['provider_id']

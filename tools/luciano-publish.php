@@ -12,7 +12,7 @@ try{
     $already=$snap['status']==='published'&&(string)$st['active_snapshot_id']===(string)$sid&&(int)$st['import_enabled']===1&&(int)$st['publish_enabled']===1;
     if(!$already&&($snap['status']!=='ready'||$st['active_snapshot_id']!==null||(int)$st['import_enabled']!==0||(int)$st['publish_enabled']!==0))throw new RuntimeException('Unexpected publication state');
     if((string)$st['external_property_key']!==$property||(string)$st['upstream_property_key']!==$provider||$st['billing_basis']!=='night'||$st['timezone']!=='Europe/Moscow'||$st['stale_after_seconds']!==null)throw new RuntimeException('Wrong source identity');
-    $source=rows($pdo,"SELECT enabled FROM external_price_source WHERE source='price_tonia_ru'");if(count($source)!==1||(int)$source[0]['enabled']!==1)throw new RuntimeException('Source is disabled');
+    $source=rows($pdo,"SELECT enabled FROM external_price_source WHERE source='price_tonia_ru'");if(count($source)!==1)throw new RuntimeException('Source is absent');
     $in=rows($pdo,"SELECT * FROM external_sync_inbox WHERE snapshot_id=? AND sender='price' AND chunk_key='luciano-wire-v1'",[$sid]);if(count($in)!==1)throw new RuntimeException('Missing receipt evidence');
     $wire=json_decode($in[0]['payload_json'],true);$fields=[];foreach(tSections()as $s=>$t)$fields[$s]=tFieldNames($pdo,$t,$s);
     $valid=App\Support\LucianoWireImportPlan::validate($wire,$role,$fields);
