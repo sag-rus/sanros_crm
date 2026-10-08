@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__.'/luciano-payload-readback.php';
 if(PHP_SAPI!=='cli')exit(1);
 foreach(['Envelope','ImportPlan','Readback','SiteExport'] as $p)require_once __DIR__.'/../app/Support/LucianoWire'.$p.'.php';
 try{
@@ -10,7 +11,7 @@ try{
     $in=rows($pdo,"SELECT * FROM external_sync_inbox WHERE snapshot_id=? AND sender='price' AND chunk_key='luciano-wire-v1'",[$sid]);if(count($in)!==1)throw new RuntimeException('Missing source inbox');
     $fields=[];foreach(tSections()as $s=>$t)$fields[$s]=tFieldNames($pdo,$t,$s);
     $maps=array_map('tScalars',rows($pdo,"SELECT entity_type,external_property_key,external_room_key,external_rate_key,crm_id,mapping_status FROM external_price_mapping WHERE source='price_tonia_ru' AND crm_object_id=?",[$object]));
-    $result=App\Support\LucianoWireSiteExport::build($hotel,hash('sha256',$in[0]['payload_json']),$st,$sn,$in,tPayload($pdo,$sn[0]),$fields,$maps);
+    $result=App\Support\LucianoWireSiteExport::build($hotel,hash('sha256',$in[0]['payload_json']),$st,$sn,$in,lucianoPayload($pdo,$sn[0]),$fields,$maps);
     $wire=$result['wire'];$json=tEncode($wire);$event='luciano-wire-v1-'.$wire['snapshot_key'];
     $old=rows($pdo,"SELECT * FROM external_sync_outbox WHERE snapshot_id=? AND destination='site'",[$sid]);
     if($old){if(count($old)!==1||$old[0]['payload_json']!==$json||$old[0]['event_key']!==$event)throw new RuntimeException('Existing outbox differs');}

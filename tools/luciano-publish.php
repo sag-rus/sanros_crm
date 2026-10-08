@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__.'/luciano-payload-readback.php';
 if(PHP_SAPI!=='cli')exit(1);
 require_once __DIR__.'/../app/Support/LucianoWireEnvelope.php';
 require_once __DIR__.'/../app/Support/LucianoWireImportPlan.php';
@@ -16,7 +17,7 @@ try{
     $in=rows($pdo,"SELECT * FROM external_sync_inbox WHERE snapshot_id=? AND sender='price' AND chunk_key='luciano-wire-v1'",[$sid]);if(count($in)!==1)throw new RuntimeException('Missing receipt evidence');
     $wire=json_decode($in[0]['payload_json'],true);$fields=[];foreach(tSections()as $s=>$t)$fields[$s]=tFieldNames($pdo,$t,$s);
     $valid=App\Support\LucianoWireImportPlan::validate($wire,$role,$fields);
-    if(tHash(tPayload($pdo,$snap))!==$wire['payload_sha256']||$snap['checksum']!==$wire['payload_sha256'])throw new RuntimeException('Full source readback differs');
+    if(tHash(lucianoPayload($pdo,$snap))!==$wire['payload_sha256']||$snap['checksum']!==$wire['payload_sha256'])throw new RuntimeException('Full source readback differs');
     $cat=rows($pdo,'SELECT * FROM external_price_catalog WHERE snapshot_id=?',[$sid]);
     foreach($cat as $c){
         if($c['status']!=='active'||!$c['crm_room_id'])throw new RuntimeException('Unmapped room');
