@@ -7,7 +7,7 @@ final class LucianoWireInitialConsumer
     private const TABLES=['catalog'=>'external_price_catalog','observations'=>'external_price_observation',
         'daily'=>'external_daily_price','restrictions'=>'external_stay_restriction','offers'=>'external_stay_offer'];
 
-    public static function apply(\PDO $pdo, $hotel, $json, $expectedSha): array
+    public static function apply(\PDO $pdo, $hotel, $json, $expectedSha, bool $dryRun=false): array
     {
         $scopes=['kazan'=>'1096','sochi'=>'1658'];
         if (!is_string($hotel) || !isset($scopes[$hotel]) || !is_string($json)
@@ -97,10 +97,12 @@ final class LucianoWireInitialConsumer
             $after=self::rows($pdo,"SELECT * FROM external_price_state WHERE source='price_tonia_ru' AND crm_object_id=?",[$object]);
             $countAfter=(int)self::rows($pdo,"SELECT COUNT(*) AS n FROM external_price_snapshot WHERE source='price_tonia_ru' AND crm_object_id=?",[$object])[0]['n'];
             if ($countAfter!==1 || LucianoWireEnvelope::encode($after)!==LucianoWireEnvelope::encode($states)) throw new \RuntimeException('Destination state or initial count changed');
-            if (!$pdo->commit()) throw new \RuntimeException('Initial transaction commit failed');
+            if ($dryRun) {
+                if (!$pdo->rollBack()) throw new \RuntimeException('Initial rehearsal rollback failed');
+            } elseif (!$pdo->commit()) throw new \RuntimeException('Initial transaction commit failed');
             return ['snapshot_id'=>$sid,'snapshot_key'=>$header['snapshot_key'],'status'=>'ready',
                 'section_counts'=>$completed['section_counts'],'payload_sha256'=>$wire['payload_sha256'],'wire_sha256'=>$expectedSha,
-                'database_written'=>true,'activated'=>false,'published'=>false,'outbox_created'=>false,'ack_sent'=>false,
+                'database_written'=>!$dryRun,'dry_run'=>$dryRun,'activated'=>false,'published'=>false,'outbox_created'=>false,'ack_sent'=>false,
                 'catalogue_mapping_verified'=>false,'consumer_integrated'=>false,'delivery_ready'=>false];
         } catch (\Throwable $error) {
             if ($pdo->inTransaction()) $pdo->rollBack();throw $error;
