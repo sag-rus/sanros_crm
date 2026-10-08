@@ -29,4 +29,45 @@ rejects(function()use($build,$b,$p){$build($b,[array_replace($p,['sum'=>'0.00'])
 rejects(function()use($build,$b,$p){$build(array_replace($b,['date_v'=>'2026-10-20']),[array_replace($p,['days'=>8])]);});
 rejects(function()use($b,$p){LucianoManagerQuote::build($b,[$p],'2026-10-13');});
 verify($build(array_replace($b,['date_z'=>'2027-04-30','date_v'=>'2027-05-07']),[array_replace($p,['date_z'=>'2027-04-30','days'=>7])])['quoted_total']==='37650.00');
+// Canonical native DB integer/string identifiers are accepted; coercible scalar lookalikes are rejected.
+verify(LucianoManagerQuote::scope('1096')===LucianoManagerQuote::scope(1096));
+verify(LucianoManagerQuote::scope('1658')===LucianoManagerQuote::scope(1658));
+foreach ([1096.0,1096.9,true,false,null,'01096','+1096','1096.0','1096e0',' 1096','1096 ',str_repeat('9',30)] as $object) {
+    rejects(function()use($object){LucianoManagerQuote::scope($object);});
+    rejects(function()use($build,$b,$p,$object){$build(array_replace($b,['id_obj'=>$object]),[$p]);});
+}
+foreach (['id','number_turist'] as $field) foreach ([true,1.0,'+1','01','1.0'] as $value) {
+    rejects(function()use($build,$b,$p,$field,$value){$build(array_replace($b,[$field=>$value]),[$p]);});
+}
+foreach (['id_room','ratePlan','days','number','type'] as $field) foreach ([true,1.0,'+1','01','1.0'] as $value) {
+    rejects(function()use($build,$b,$p,$field,$value){$build($b,[array_replace($p,[$field=>$value])]);});
+}
+foreach ([0.0,false,'00','+0','0.0',' 0'] as $value) {
+    rejects(function()use($build,$b,$p,$value){$build(array_replace($b,['children_rest'=>$value]),[$p]);});
+}
+foreach ([1.0,true,'01','+1','1.0',' 1'] as $value) {
+    rejects(function()use($build,$b,$p,$value){$build($b,[array_replace($p,['add_one_day'=>$value])]);});
+}
+$strings=array_map(function($v){return is_int($v)?(string)$v:$v;},$b);
+$stringPositions=array_map(function($v){return is_int($v)?(string)$v:$v;},$p);
+verify($build($strings,[$stringPositions])===$q);
+// Monetary inputs must be exact before conversion to integer kopecks. In
+// particular, float/string coercion must never produce an apparently valid sum.
+foreach ([1096,1658] as $object) {
+    $booking=array_replace($b,['id_obj'=>$object]);
+    foreach ([37650,'37650','37650.0','37650.00'] as $sum) {
+        verify($build($booking,[array_replace($p,['sum'=>$sum])])['quoted_total']==='37650.00');
+    }
+    verify($build($booking,[array_replace($p,['sum'=>'37650.01'])])['quoted_total']==='37650.01');
+    verify($build($booking,[array_replace($p,['sum'=>'37650.1'])])['quoted_total']==='37650.10');
+    verify($build($booking,[array_replace($p,['sum'=>'0.01'])])['quoted_total']==='0.01');
+    verify($build($booking,[array_replace($p,['sum'=>'9999999999.99'])])['quoted_total']==='9999999999.99');
+    verify($build($booking,[array_replace($p,['type'=>2,'sum'=>'14450.01'])])['quoted_total']==='28900.02');
+    foreach ([37650.0,37650.01,true,false,null,[],['37650.00'],
+        '037650.00','00.01','+37650.00',' 37650.00','37650.00 ','3.765e4',
+        '37650,00','37650.001','10000000000.00','-0.01',0,'0','0.00',
+        INF,NAN,new class { public function __toString() { throw new LogicException('Money coercion must not run'); } }] as $sum) {
+        rejects(function()use($build,$booking,$p,$sum){$build($booking,[array_replace($p,['sum'=>$sum])]);});
+    }
+}
 echo "PASS $count Luciano CRM manager quote fixtures\n";
