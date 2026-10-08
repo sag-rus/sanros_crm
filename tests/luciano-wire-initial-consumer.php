@@ -170,6 +170,9 @@ foreach(['busy','engine','packet','existing initial','active','provider','timezo
     wireReject(function()use($pdo,$hotel,$input,$sha){Consumer::apply($pdo,$hotel,$input,$sha);});
     wireAssert($pdo->writes===0 && $pdo->commits===0 && !$pdo->inTransaction());$checks++;
 }
+$pdo=new LucianoMemoryConnection($e);
+$report=Consumer::apply($pdo,'kazan',$json,hash('sha256',$json),true);
+wireAssert($report['dry_run'] && !$report['database_written'] && $pdo->commits===0 && $pdo->rollbacks===1 && $pdo->tables===[]);$checks++;
 $pdo=new LucianoMemoryConnection($e);$pdo->beginTransaction();
 wireReject(function()use($pdo,$json){Consumer::apply($pdo,'kazan',$json,hash('sha256',$json));});
 wireAssert($pdo->inTransaction() && $pdo->writes===0 && $pdo->rollbacks===0 && $pdo->released===0);$checks++;
