@@ -55,7 +55,8 @@ function ptl_refresh($row){
     $v['request_id']=$row['request_id'];$v['expires_at']=strtotime($row['expires_at'].' UTC');
     $path='/var/lib/price-tonia-live/token';
     if(!is_readable($path))throw new RuntimeException('Сервис проверки временно недоступен.');
-    $curl=curl_init('https://price.tonia.ru/api/live-check');
+    $endpoint=in_array((int)($v['crm_object_id']??0),[1096,1658],true)?'luciano-live-check':'live-check';
+    $curl=curl_init('https://price.tonia.ru/api/'.$endpoint);
     curl_setopt_array($curl,[CURLOPT_POST=>true,CURLOPT_POSTFIELDS=>json_encode($v),CURLOPT_HTTPHEADER=>['Content-Type: application/json','Accept: application/json','Authorization: Bearer '.trim(file_get_contents($path))],CURLOPT_RETURNTRANSFER=>true,CURLOPT_CONNECTTIMEOUT=>3,CURLOPT_TIMEOUT=>8]);
     $raw=curl_exec($curl);$code=curl_getinfo($curl,CURLINFO_HTTP_CODE);curl_close($curl);$data=json_decode((string)$raw,true);
     if($code!==200 || !is_array($data) || ($data['request_id']??'')!==$row['request_id'] || !in_array($data['status']??'',['queued','running','available','unavailable','error'],true))throw new RuntimeException('Нет связи с сервисом проверки. Статус будет запрошен повторно.');
