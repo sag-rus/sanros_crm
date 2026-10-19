@@ -31,8 +31,22 @@ function ptl_payload($id){
     if($next!==$chargeEnd || $r['date_z']<date('Y-m-d') || strtotime($r['date_v'])-strtotime($r['date_z'])>60*86400)throw new RuntimeException('Проверьте даты заявки: доступен будущий заезд до 60 ночей.');
     }
     $map=ptl_query("SELECT rm.external_property_key,rm.external_room_key,rt.external_rate_key FROM external_price_mapping rm JOIN external_price_mapping rt ON rt.source=rm.source AND rt.crm_object_id=rm.crm_object_id AND rt.external_room_key=rm.external_room_key AND rt.external_property_key=rm.external_property_key AND rt.entity_type='rate' AND rt.mapping_status='verified' AND rt.crm_id=? WHERE rm.source='price_tonia_ru' AND rm.crm_object_id=? AND rm.entity_type='room' AND rm.mapping_status='verified' AND rm.crm_id=?",[$first['ratePlan'],$r['id_obj'],$first['id_room']])->fetchAll();
-    if(count($map)!==1)throw new RuntimeException('Не найдено однозначное соответствие номера и тарифа в price.tonia.ru.');
+    if(count($map)!==1){
+        $roomCount=(int)ptl_query("SELECT COUNT(*) FROM external_price_mapping WHERE source='price_tonia_ru' AND crm_object_id=? AND entity_type='room' AND mapping_status='verified' AND crm_id=?",[$r['id_obj'],$first['id_room']])->fetchColumn();
+        throw new RuntimeException(ptl_mapping_error($roomCount,$first['ratePlan'],count($map)));
+    }
     $m=$map[0];if(isset($quote)&&(int)$m['external_property_key']!==$quote['property_id'])throw new RuntimeException('Источник номера Luciano не совпадает.');return ['booking_id'=>(int)$id,'property_id'=>(int)$m['external_property_key'],'crm_object_id'=>(int)$r['id_obj'],'room_key'=>$m['external_room_key'],'rate_key'=>$m['external_rate_key'],'arrival'=>$r['date_z'],'departure'=>$r['date_v'],'adults'=>(int)$r['number_turist'],'quoted_total'=>number_format($amount/100,2,'.',''),'room_name'=>(string)ptl_query('SELECT name FROM room WHERE id=?',[$first['id_room']])->fetchColumn(),'rate_name'=>(string)ptl_query('SELECT name FROM rate_plan WHERE id=?',[$first['ratePlan']])->fetchColumn()];
+}
+// Explain missing selections separately from missing or ambiguous Price mappings.
+function ptl_mapping_error($roomCount,$rateId,$matchCount){
+    $reasons=[];
+    if($roomCount===0)$reasons[]='номер не сопоставлен с Price';
+    elseif($roomCount>1)$reasons[]='для номера найдено несколько соответствий в Price';
+    if((int)$rateId<=0)$reasons[]='тариф не выбран';
+    elseif($roomCount===1){
+        $reasons[]=$matchCount===0?'выбранный тариф не сопоставлен с Price для этого номера':'для выбранного тарифа найдено несколько соответствий в Price';
+    }
+    return 'Автоматическая проверка недоступна: '.implode('; ',$reasons).'.';
 }
 function ptl_latest($id){return ptl_query('SELECT * FROM price_tonia_live_checks WHERE booking_id=? ORDER BY id DESC LIMIT 1',[$id])->fetch();}
 function ptl_active($row){return $row && in_array($row['status'],['queued','running'],true);}
