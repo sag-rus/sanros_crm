@@ -88,6 +88,7 @@ function filter_do_update(){
 				},
 				widgets: ['zebra']
 			});
+			show_tooltip('#filter_res');
 		}
 	});
 	show_loader_element('#filter_res');

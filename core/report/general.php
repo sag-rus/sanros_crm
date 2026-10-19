@@ -648,6 +648,14 @@ function filter_do($connect){
 		$zapros_for_mysql.= ")";
 	}
 	$data = $connect->getAll($zapros_for_mysql);
+	$priceToniaObjects = array();
+	if($data){
+		$reportObjectIds = array_unique(array_column($data, 'id_obj'));
+		$priceToniaObjects = array_fill_keys($connect->getCol(
+			"SELECT crm_object_id FROM external_price_state WHERE source=?s AND crm_object_id IN (?a) AND (import_enabled=1 OR publish_enabled=1)",
+			'price_tonia_ru', $reportObjectIds
+		), true);
+	}
 	$num = 0;
 	$all_id = "";
 	$statistics = array("office" => array(), "all_sum" => 0, "num_prepay" => 0, "sum_prepay" => 0, "all_reward" => 0, "all_reward_fact" => 0);
@@ -844,7 +852,12 @@ function filter_do($connect){
 			<td width="80" valign="top"><?php echo $date.$time; ?></td>
 			<td width="80" valign="top"><?php echo $date_z; ?></td>
 			<td width="80" valign="top"><?php echo $date_v; ?></td>
-			<td width="170" valign="top" data-toggle="tooltip" title="<?php echo $full_object; ?>"><?php echo $object; ?></td>
+			<td width="170" valign="top">
+				<span data-toggle="tooltip" title="<?php echo $full_object; ?>"><?php echo $object; ?></span>
+				<?php if(isset($priceToniaObjects[$row['id_obj']])){ ?>
+					<i class="fa fa-check text-success" data-toggle="tooltip" title="объект работает через price.tonia.ru" aria-label="объект работает через price.tonia.ru"></i>
+				<?php } ?>
+			</td>
 			<?php if($id_rights > 1) { ?>
                 <td width="70" valign="top"><?php echo $summa; ?></td>
             <?php } else { ?>
