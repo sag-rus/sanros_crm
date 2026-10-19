@@ -12,7 +12,7 @@ try {
     if($mode==='export'){$r=slRows($pdo,'SELECT payload_json FROM price_live_catalogue WHERE object_id=47');if(count($r)!==1)throw new RuntimeException('Catalogue missing');echo $r[0]['payload_json'],"\n";exit;}
     $curl=curl_init('https://price.tonia.ru/api/live-search/47/catalogue');curl_setopt_array($curl,[CURLOPT_RETURNTRANSFER=>true,CURLOPT_CONNECTTIMEOUT=>5,CURLOPT_TIMEOUT=>20]);$raw=curl_exec($curl);$status=curl_getinfo($curl,CURLINFO_RESPONSE_CODE);curl_close($curl);
     if($status!==200||!is_string($raw)||strlen($raw)>2000000)throw new RuntimeException('Catalogue download failed');
-    $cat=json_decode($raw,true,512,JSON_THROW_ON_ERROR);
+    $cat=json_decode($raw,true);
     if(($cat['object_id']??null)!==47||($cat['provider_id']??'')!=='4345'||($cat['source']??'')!=='price_tonia_live'||!preg_match('/^[a-f0-9]{64}$/D',$cat['revision']??'')||empty($cat['rooms'])||empty($cat['rates']))throw new RuntimeException('Unexpected catalogue identity');
     if((int)slRows($pdo,'SELECT GET_LOCK(?,0) held',['sbor_live_catalogue_47'])[0]['held']!==1)throw new RuntimeException('Import busy');
     if(slRows($pdo,"SELECT 1 FROM external_price_state WHERE crm_object_id=47"))throw new RuntimeException('Existing PRICE integration must not be overwritten');
@@ -40,6 +40,6 @@ try {
         $photos++;
     }
     $s=$pdo->prepare('INSERT INTO price_live_catalogue (object_id,provider_id,revision,payload_json,updated_at) VALUES (47,?,?,?,UTC_TIMESTAMP()) ON DUPLICATE KEY UPDATE provider_id=VALUES(provider_id),revision=VALUES(revision),payload_json=VALUES(payload_json),updated_at=VALUES(updated_at)');
-    $s->execute(['4345',$cat['revision'],json_encode($cat,JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR)]);$pdo->commit();
+    $s->execute(['4345',$cat['revision'],json_encode($cat,JSON_UNESCAPED_UNICODE)]);$pdo->commit();
     echo json_encode(['object_id'=>47,'rooms'=>count($cat['rooms']),'rates'=>count($cat['rates']),'photos'=>$photos,'backup'=>$backup,'revision'=>$cat['revision']],JSON_UNESCAPED_UNICODE),"\n";
 }catch(Throwable $e){if(isset($pdo)&&$pdo->inTransaction())$pdo->rollBack();fwrite(STDERR,$e->getMessage()."\n");exit(1);}
