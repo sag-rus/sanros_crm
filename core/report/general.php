@@ -732,7 +732,6 @@ function filter_do($connect){
 			$source = $row["source"];
 			$promo_code = $row["promo_code"];
 			$form_booking = $row["form_booking"];
-			$state_program_status = $row['state_program'];
 			if($website)
 				$object.= "<br />(<span style='text-decoration: underline;'>".$website."</span>)";
 			if($row["status_san"] == 0)
@@ -863,13 +862,6 @@ function filter_do($connect){
             <?php } else { ?>
                 <td width="70" valign="top">Скрыто</td>
             <?php } ?>
-            <td width="30">
-                <?php if($state_program_status) { ?>
-                    Да
-                <?php } else { ?>
-                    Нет
-                <?php } ?>
-            </td>
 			<?php if($type_filter != "manager"){ ?>
                 <?php if($id_rights > 1) { ?>
 				    <td width="70" valign="top"><?php echo $reward; ?></td>
@@ -1002,7 +994,6 @@ function filter_do($connect){
 			<th class="{dateFormat: 'ddmmyyyy'}" width="80">Выезд</th>
 			<th width="170">Объект</th>
 			<th width="70">Сумма</th>
-            <th width="70">Субсидия</th>
             <?php echo $tbl_reward; ?>
 			<th width="80">Менеджер</th>
 			<th width="120">Статус</th>
