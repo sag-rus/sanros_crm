@@ -1167,6 +1167,15 @@ function view_dates_price_object($connect){
 	global $id_rights, $session_login;
 	$reestablish = 0;
 	$id = $_POST["id"];
+	$priceToniaState = $connect->getRow("SELECT external_property_key FROM external_price_state WHERE source='price_tonia_ru' AND crm_object_id=?i AND (import_enabled=1 OR publish_enabled=1)", $id);
+	if ($priceToniaState) {
+		$priceToniaUrl = 'https://price.tonia.ru/';
+		if (ctype_digit((string)$priceToniaState['external_property_key']) && (int)$priceToniaState['external_property_key'] > 0) {
+			$priceToniaUrl .= 'properties/'.(int)$priceToniaState['external_property_key'];
+		}
+		echo '<div class="alert alert-info">Объект подключен через микросервис <a href="'.$priceToniaUrl.'" target="_blank" rel="noopener noreferrer">price.tonia.ru</a></div>';
+		return;
+	}
 	$html = "";
 	$quota = $connect->getOne("SELECT check_places FROM object WHERE id=?i", $id);
 

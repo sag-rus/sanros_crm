@@ -87,6 +87,18 @@ foreach($data_booking_JSON as $index => $value){
 }
 
 
+$price_tonia_booking = isset($data_booking->price_source) && $data_booking->price_source === 'price_tonia_ru';
+if ($price_tonia_booking) {
+    try {
+        if (!isset($_POST['token']) || !is_string($_POST['token']) || !hash_equals($token, $_POST['token'])) throw new RuntimeException('Unauthorized');
+        require_once __DIR__.'/price_tonia_booking.php';
+        price_tonia_booking_validate($data_booking, $connect);
+    } catch (Throwable $e) {
+        echo json_encode(['success'=>0, 'msg'=>'Некорректные данные бронирования']);
+        exit;
+    }
+}
+
 $booking_source = "";
 $website = isset($data_booking->site)?$data_booking->site:"";
 $id_obj = isset($data_booking->id_obj)?$data_booking->id_obj:0;
@@ -205,6 +217,8 @@ $id_tour = $connect->getOne("SELECT id_tour FROM object WHERE id=?i", $id_obj);
 if($id_tour)
 	$connect->query("UPDATE reckoning SET id_tour=?i WHERE id=?i", $id_tour, $id);
 $add_one_day = $connect->getOne("SELECT add_one_day FROM object WHERE id=?i", $id_obj);
+// CRM add_one_day=1 means checkout after the last paid night.
+if ($price_tonia_booking) $add_one_day = $connect->getOne("SELECT billing_basis FROM external_price_state WHERE source='price_tonia_ru' AND crm_object_id=?i", $id_obj) === 'day_inclusive' ? 0 : 1;
 
 if ($aznak) $connect->query("UPDATE reckoning SET status=14, id_user=13 WHERE id=?i", $id);
 
@@ -328,12 +342,16 @@ if ($dates_unavailable) {
 			$price = isset($position["price"])?(float)$position["price"]:0;
 			$number = isset($position["number"])?(int)$position["number"]:1;
 
-			$connect->query("INSERT INTO position_reck(id_room, schet, days, date_z, number, sum, type, note, reward, add_one_day) VALUES (?i, ?i, ?i, ?s, ?s, ?s, ?i, ?s, ?s, ?i)", $id_room, $id, $days, $date_z, $number, $price, $type_index, $note, $reward, (int)$add_one_day);
+            $position_days = $price_tonia_booking ? (int)$position['days'] : $days;
+            $position_date = $price_tonia_booking ? $position['date'] : $date_z;
+			$connect->query("INSERT INTO position_reck(id_room, schet, days, date_z, number, sum, type, note, reward, add_one_day) VALUES (?i, ?i, ?i, ?s, ?s, ?s, ?i, ?s, ?s, ?i)", $id_room, $id, $position_days, $position_date, $number, $price, $type_index, $note, $reward, (int)$add_one_day);
 			$insert_position_reck = $connect->insertId();
 			//if(isset($position["ratePlan"]) AND $position["ratePlan"] > 0){
 			if(isset($position["rate"]) AND $position["rate"] > 0){
 
-				if($connect->getOne("SELECT id FROM object WHERE id=?i AND (check_places=1 OR check_places=2)", $id_obj)){
+				if ($price_tonia_booking) {
+                    $connect->query("UPDATE position_reck SET ratePlan=?i WHERE id=?i", $position["rate"], $insert_position_reck);
+                } elseif($connect->getOne("SELECT id FROM object WHERE id=?i AND (check_places=1 OR check_places=2)", $id_obj)){
 
 					$check_quota = 1;
 
@@ -355,7 +373,9 @@ if ($dates_unavailable) {
 	$number_turist = $connect->getOne("SELECT COUNT(*) FROM position_reck WHERE schet=?i", $id);
 	$connect->query("UPDATE reckoning SET number_turist=?i WHERE id=?i", $number_turist, $id);
 
+	if ($price_tonia_booking) $connect->query("UPDATE reckoning SET number_turist=?i WHERE id=?i", (int)$data_booking->adults, $id);
 	$rest = $last_id;
+	if ($price_tonia_booking) $rest = price_tonia_booking_attach_guests($data_booking, $connect, $create_client, $id, $last_id);
 	if ($data_booking->adults > 0 && $data_booking->tl=='1' && $data_booking->adults > $number_turist) {
 		//Здесь добавляем одного и того же туриста на количество проживающих для корректной выгрузки данных TL
 		

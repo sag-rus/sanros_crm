@@ -1928,13 +1928,34 @@ function tl_webhook_work_modified($connect, $id) {
 }
 
 function tl_webhook_save_params($connect) {
+	$id = (int)$_POST['id'];
 	$name = (string)$_POST['name'];
 	$id_type = (int)$_POST['id_type'];
 	$id_direction = (int)$_POST['id_direction'];
 	$id_reg = (int)$_POST['id_reg'];
 	$region_direction_id = (int)$_POST['region_direction_id'];
 
-	$connect->query("UPDATE `1_tl_webhook` SET `name`=$name, `id_type`=$id_type, `id_direction`=$id_direction, `id_reg`=$id_reg, `region_direction_id`=$region_direction_id  WHERE id=$_POST[id]");
+	if ($id <= 0 || trim($name) === '' || $id_type <= 0 || $id_direction <= 0 || $id_reg <= 0) {
+		echo json_encode([
+			'success' => 0,
+			'message' => 'Заполните Имя объекта и выберите Тип, Направление и Регион'
+		]);
+		return;
+	}
+
+	$connect->query(
+		"UPDATE `1_tl_webhook`
+		 SET `name`=?s, `id_type`=?i, `id_direction`=?i, `id_reg`=?i, `region_direction_id`=?i
+		 WHERE `id`=?i",
+		$name,
+		$id_type,
+		$id_direction,
+		$id_reg,
+		$region_direction_id,
+		$id
+	);
+
+	echo json_encode(['success' => 1]);
 }
 
 function tl_webhook_del_obj($connect) {
@@ -1955,6 +1976,7 @@ function tl_webhook($connect) {
 
 	$item = $connect->getRow("SELECT * FROM 1_tl_webhook WHERE `id`=$id");
 	$worked = $item['worked'];
+	$name = $item['name'];
 	$id_type = $item['id_type'];
 	$id_direction = $item['id_direction'];
 	$id_reg = $item['id_reg'];
@@ -1994,7 +2016,7 @@ function tl_webhook($connect) {
 				<div class="form-group">
 					<label class="col-sm-3 control-label">Имя объекта</label>
 					<div class="col-sm-9">
-						<input type="text" class="form-control" id="name_object">
+						<input type="text" class="form-control" id="name_object" value="'.htmlspecialchars($name, ENT_QUOTES, 'UTF-8').'">
 					</div>
 				</div>';			
 			$html .= '
