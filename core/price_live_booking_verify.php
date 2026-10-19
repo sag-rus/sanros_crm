@@ -33,6 +33,6 @@ function price_live_booking_fetch($id,array $criteria) {
     $requestId=bin2hex(random_bytes(16));$curl=curl_init('https://price.tonia.ru/api/live-search/'.$id.'/search');
     curl_setopt_array($curl,[CURLOPT_POST=>true,CURLOPT_POSTFIELDS=>json_encode($criteria),CURLOPT_HTTPHEADER=>['Content-Type: application/json','Authorization: Bearer '.trim($token),'X-Request-ID: '.$requestId],CURLOPT_RETURNTRANSFER=>true,CURLOPT_CONNECTTIMEOUT=>5,CURLOPT_TIMEOUT=>65]);
     $raw=curl_exec($curl);$status=curl_getinfo($curl,CURLINFO_RESPONSE_CODE);curl_close($curl);
-    if($status!==200||!is_string($raw)||strlen($raw)>2000000)throw new RuntimeException('Live verification failed');
+    if(!in_array($status,[200,202,503],true)||!is_string($raw)||strlen($raw)>2000000)throw new RuntimeException('Live verification failed');
     return json_decode($raw,true);
 }

@@ -3,6 +3,9 @@
 // Add the booking page here when connecting a new object to Price.
 function ptl_booking_pages(){
     return [
+        47 => 'https://s-bor.com/booking/',
+        207 => 'https://mednehama.ru/booking/',
+        13 => 'https://www.san-delfin.ru/booking/',
         30 => 'https://krutushka-kazan.ru/booking/',
         3 => 'https://www.bakirovo.com/booking/',
         57 => 'https://yumatovo.ru/booking/',

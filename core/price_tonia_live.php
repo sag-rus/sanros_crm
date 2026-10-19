@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__.'/price-tonia-booking-link.php';
+require_once __DIR__.'/price_live_manager.php';
 // PHP 7.1 compatible. Shared by the CRM panel, authenticated endpoint and CLI checks.
 function ptl_db(){
     static $p;if($p)return $p;
@@ -7,7 +8,13 @@ function ptl_db(){
     $p=new PDO('mysql:host='.$c->host.';dbname='.$c->db.';charset=utf8',$c->user,$c->password,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);return $p;
 }
 function ptl_query($sql,$args=[]){$q=ptl_db()->prepare($sql);$q->execute($args);return $q;}
+function ptl_live_catalogue($id){
+    if(!isset(ptl_live_providers()[(int)$id]))return null;
+    $raw=ptl_query('SELECT payload_json FROM price_live_catalogue WHERE object_id=?',[(int)$id])->fetchColumn();
+    return $raw?json_decode($raw,true):null;
+}
 function ptl_connected_object($id){
+    if(ptl_live_catalogue($id))return true;
     return (bool)ptl_query("SELECT 1 FROM external_price_state WHERE source='price_tonia_ru' AND crm_object_id=? AND import_enabled=1 LIMIT 1",[(int)$id])->fetchColumn();
 }
 function ptl_payload($id){
@@ -16,6 +23,8 @@ function ptl_payload($id){
     if($r['children_rest'] || $r['number_turist']<1 || $r['number_turist']>3)throw new RuntimeException('Автоматическая проверка поддерживает 1–3 взрослых без детей.');
     $rows=ptl_query('SELECT id_room,ratePlan,date_z,days,number,type,add_one_day,sum FROM position_reck WHERE schet=? AND id_room>0 ORDER BY date_z,id',[$id])->fetchAll();
     if(!$rows)throw new RuntimeException('В заявке не выбран номер.');
+    $liveCatalogue=ptl_live_catalogue((int)$r['id_obj']);
+    if($liveCatalogue)return ptl_live_payload($r,$rows,$liveCatalogue);
     if(in_array((int)$r['id_obj'],[1096,1658],true)){
         require_once __DIR__.'/luciano_manager_quote.php';
         $quote=LucianoManagerQuote::build($r,$rows,(new DateTimeImmutable('today',new DateTimeZone('Europe/Moscow')))->format('Y-m-d'));
@@ -66,7 +75,22 @@ function ptl_start($id,$user){
 }
 function ptl_refresh($row){
     if(!ptl_active($row))return $row;
-    $v=json_decode($row['payload_json'],true);unset($v['quoted_total'],$v['room_name'],$v['rate_name']);
+    $v=json_decode($row['payload_json'],true);
+    if(($v['source']??'')==='price_tonia_live'){
+        // The existing minute worker continues checks even after the manager closes the card.
+        if(PHP_SAPI!=='cli')return $row;
+        $lock='ptl_live_check_'.(int)$row['id'];if(!ptl_query('SELECT GET_LOCK(?,0)',[$lock])->fetchColumn())return $row;
+        try{
+            $fresh=ptl_latest($row['booking_id']);if(!$fresh||$fresh['request_id']!==$row['request_id']||!ptl_active($fresh))return $fresh;
+            ptl_query("UPDATE price_tonia_live_checks SET status='running',updated_at=UTC_TIMESTAMP() WHERE id=?",[$row['id']]);
+            require_once __DIR__.'/price_live_booking_verify.php';
+            try{$response=price_live_booking_fetch($v['crm_object_id'],['arrival'=>$v['arrival'],'departure'=>$v['departure'],'adults'=>$v['adults'],'children'=>[]]);$data=ptl_live_result($v,$response);}
+            catch(Throwable $e){error_log('PRICE live manager check '.$row['request_id'].': '.get_class($e));$data=['status'=>'error','result'=>['message'=>'Не удалось проверить наличие и цену. Повторите проверку позже.']];}
+            ptl_query("UPDATE price_tonia_live_checks SET status=?,result_json=?,updated_at=UTC_TIMESTAMP() WHERE request_id=? AND status IN ('queued','running')",[$data['status'],json_encode($data['result'],JSON_UNESCAPED_UNICODE),$row['request_id']]);
+            return ptl_latest($row['booking_id']);
+        }finally{ptl_query('SELECT RELEASE_LOCK(?)',[$lock]);}
+    }
+    unset($v['quoted_total'],$v['room_name'],$v['rate_name']);
     $v['request_id']=$row['request_id'];$v['expires_at']=strtotime($row['expires_at'].' UTC');
     $path='/var/lib/price-tonia-live/token';
     if(!is_readable($path))throw new RuntimeException('Сервис проверки временно недоступен.');
@@ -86,8 +110,9 @@ function ptl_state($id,$refresh=false){
 }
 function ptl_panel($id){
     try{
-        $r=ptl_query('SELECT r.id_obj,r.date_z,r.date_v,r.number_turist,s.billing_basis FROM reckoning r JOIN external_price_state s ON s.crm_object_id=r.id_obj AND s.source=\'price_tonia_ru\' AND s.import_enabled=1 WHERE r.id=?',[$id])->fetch();
+        $r=ptl_query('SELECT r.id_obj,r.date_z,r.date_v,r.number_turist,s.billing_basis FROM reckoning r LEFT JOIN external_price_state s ON s.crm_object_id=r.id_obj AND s.source=\'price_tonia_ru\' AND s.import_enabled=1 WHERE r.id=?',[$id])->fetch();
         if(!$r || !ptl_connected_object((int)$r['id_obj']))return;
+        if(ptl_live_catalogue((int)$r['id_obj']))$r['billing_basis']='night';
         if(empty($_SESSION['ptl_csrf']))$_SESSION['ptl_csrf']=bin2hex(random_bytes(32));
         try{$state=ptl_state($id);}catch(Throwable $e){error_log('Price live state: '.$e->getMessage());$state=['eligible'=>false,'active'=>false,'status'=>'idle','reason'=>'Сервис проверки временно недоступен.'];}$dom='price-live-'.(int)$id;
         echo '<div id="'.$dom.'" style="margin:12px 0; padding:10px; border:1px solid #ccc; border-radius:4px"><strong>Проверка на сайте объекта</strong><br><button type="button" class="btn btn-primary btn-sm ptl-start" style="margin:8px 0" disabled>Загрузка статуса…</button><div class="ptl-result" aria-live="polite"></div>'.ptl_booking_link_html($r).'</div>';
