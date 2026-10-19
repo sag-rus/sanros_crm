@@ -94,7 +94,7 @@ if ($price_tonia_booking) {
         require_once __DIR__.'/price_tonia_booking.php';
         price_tonia_booking_validate($data_booking, $connect);
     } catch (Throwable $e) {
-        echo json_encode(['success'=>0, 'msg'=>'Некорректные данные бронирования']);
+        echo json_encode(['success'=>0, 'dispatch_state'=>'rejected_before_write', 'msg'=>'Не удалось подтвердить выбранное предложение. Повторите поиск и отправьте заявку ещё раз.']);
         exit;
     }
 }
@@ -334,7 +334,7 @@ if ($dates_unavailable) {
 			$type_index = 1;
 			if(isset($position["type_index"]) AND $position["type_index"] > 1){
 				$type_index = (int)$position["type_index"];
-				if($type_index == 3)
+				if($type_index == 3 && !$price_tonia_booking)
 					$type_index = 2;
 			}
 			$id_room = isset($position["id_room"])?(int)$position["id_room"]:0;

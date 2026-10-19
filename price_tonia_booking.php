@@ -5,6 +5,10 @@ function price_tonia_booking_validate($data, $connect) {
         require_once __DIR__.'/core/luciano_booking_verify.php';
         return luciano_booking_verify($data, $connect);
     }
+    if (isset($data->id_obj) && in_array((string)$data->id_obj, ['47','207'], true)) {
+        require_once __DIR__.'/core/price_live_booking_verify.php';
+        return price_live_booking_verify($data, $connect);
+    }
     price_tonia_booking_guests($data);
     $arrival = DateTimeImmutable::createFromFormat('!d.m.Y', (string)$data->date);
     $departure = DateTimeImmutable::createFromFormat('!Y-m-d', (string)$data->departure);
