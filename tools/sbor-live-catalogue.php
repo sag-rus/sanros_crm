@@ -30,9 +30,13 @@ try {
         $cat[$section][$i]['crm_id']=$old?(int)$old[0]['id']:null;
         $plan[]=['kind'=>$section,'code'=>$code,'action'=>$old?'reuse':'create','id'=>$old?(int)$old[0]['id']:null];
     }
-    if($mode==='plan'){echo json_encode(['object_id'=>$objectId,'rooms'=>count($cat['rooms']),'rates'=>count($cat['rates']),'plan'=>$plan],JSON_UNESCAPED_UNICODE),"\n";exit;}
+    $deactivate=[];foreach(['rooms'=>['room','id_obj','active',0],'rates'=>['rate_plan','object','status',1]]as $section=>$meta){
+        $ids=array_values(array_filter(array_column($cat[$section],'crm_id')));$sql='SELECT id FROM '.$meta[0].' WHERE '.$meta[1].'=? AND '.$meta[2].'=?';$args=[$objectId,$meta[3]];
+        if($ids){$sql.=' AND id NOT IN ('.implode(',',array_fill(0,count($ids),'?')).')';$args=array_merge($args,$ids);}$deactivate[$section]=array_map('intval',array_column(slRows($pdo,$sql,$args),'id'));
+    }
+    if($mode==='plan'){echo json_encode(['deactivate'=>$deactivate,'object_id'=>$objectId,'rooms'=>count($cat['rooms']),'rates'=>count($cat['rates']),'plan'=>$plan],JSON_UNESCAPED_UNICODE),"\n";exit;}
     $pdo->exec("CREATE TABLE IF NOT EXISTS price_live_catalogue (object_id INT UNSIGNED NOT NULL PRIMARY KEY, provider_id VARCHAR(32) NOT NULL, revision CHAR(64) NOT NULL, payload_json LONGTEXT NOT NULL, updated_at DATETIME NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
-    $backup='/var/tmp/price-live-crm-'.$objectId.'-before-'.gmdate('YmdHis').'-'.bin2hex(random_bytes(3)).'.json';$f=fopen($backup,'x');if(!$f)throw new RuntimeException('Backup unavailable');chmod($backup,0600);fwrite($f,json_encode(['rooms'=>slRows($pdo,'SELECT * FROM room WHERE id_obj=?',[$objectId]),'rates'=>slRows($pdo,'SELECT * FROM rate_plan WHERE object=?',[$objectId]),'catalogue'=>slRows($pdo,'SELECT * FROM price_live_catalogue WHERE object_id=?',[$objectId])],JSON_UNESCAPED_UNICODE));fclose($f);
+    $backup='/var/tmp/price-live-crm-'.$objectId.'-before-'.gmdate('YmdHis').'-'.bin2hex(random_bytes(3)).'.json';$f=fopen($backup,'x');if(!$f)throw new RuntimeException('Backup unavailable');chmod($backup,0600);$backupData=json_encode(['rooms'=>slRows($pdo,'SELECT * FROM room WHERE id_obj=?',[$objectId]),'rates'=>slRows($pdo,'SELECT * FROM rate_plan WHERE object=?',[$objectId]),'catalogue'=>slRows($pdo,'SELECT * FROM price_live_catalogue WHERE object_id=?',[$objectId])],JSON_UNESCAPED_UNICODE);if(!is_string($backupData)||fwrite($f,$backupData)!==strlen($backupData))throw new RuntimeException('Backup incomplete');fclose($f);
     // MyISAM room rows are recoverable by the unique object/provider code on a retry.
     foreach($cat['rooms']as &$r)if(!$r['crm_id'])$r['crm_id']=slInsert($pdo,'room',['id_obj'=>$objectId,'id_tl'=>$r['code'],'name'=>$r['name'],'description'=>$r['description'],'active'=>0,'main_place'=>$r['main_places'],'add_place'=>$r['extra_places'],'wo_bed_place'=>0,'square'=>$r['area']??0,'note'=>'Каталог PRICE / TravelLine '.$providerId.'. Актуальная цена рассчитывается на выбранные даты.']);unset($r);
     $pdo->beginTransaction();$now=time();$photos=0;
@@ -44,6 +48,12 @@ try {
         $photos++;
     }
     $s=$pdo->prepare('INSERT INTO price_live_catalogue (object_id,provider_id,revision,payload_json,updated_at) VALUES (?,?,?,?,UTC_TIMESTAMP()) ON DUPLICATE KEY UPDATE provider_id=VALUES(provider_id),revision=VALUES(revision),payload_json=VALUES(payload_json),updated_at=VALUES(updated_at)');
-    $s->execute([$objectId,$providerId,$cat['revision'],json_encode($cat,JSON_UNESCAPED_UNICODE)]);$pdo->commit();
-    echo json_encode(['object_id'=>$objectId,'rooms'=>count($cat['rooms']),'rates'=>count($cat['rates']),'photos'=>$photos,'backup'=>$backup,'revision'=>$cat['revision']],JSON_UNESCAPED_UNICODE),"\n";
+    $s->execute([$objectId,$providerId,$cat['revision'],json_encode($cat,JSON_UNESCAPED_UNICODE)]);
+    // The validated PRICE catalogue is the only active inventory for this live object.
+    foreach(['rooms'=>['room','id_obj','active',0,1],'rates'=>['rate_plan','object','status',1,0]]as $section=>$meta){
+        $ids=array_column($cat[$section],'crm_id');$marks=implode(',',array_fill(0,count($ids),'?'));
+        foreach([[false,$meta[4]],[true,$meta[3]]]as $change){$sql='UPDATE '.$meta[0].' SET '.$meta[2].'=?, synchronized=0 WHERE '.$meta[1].'=? AND id '.($change[0]?'IN':'NOT IN').' ('.$marks.') AND '.$meta[2].'<>?';$stmt=$pdo->prepare($sql);$stmt->execute(array_merge([$change[1],$objectId],$ids,[$change[1]]));}
+    }
+    $pdo->commit();
+    echo json_encode(['deactivated'=>$deactivate,'object_id'=>$objectId,'rooms'=>count($cat['rooms']),'rates'=>count($cat['rates']),'photos'=>$photos,'backup'=>$backup,'revision'=>$cat['revision']],JSON_UNESCAPED_UNICODE),"\n";
 }catch(Throwable $e){if(isset($pdo)&&$pdo->inTransaction())$pdo->rollBack();fwrite(STDERR,$e->getMessage()."\n");exit(1);}
