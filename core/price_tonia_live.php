@@ -112,7 +112,7 @@ function ptl_panel($id){
     try{
         $r=ptl_query('SELECT r.id_obj,r.date_z,r.date_v,r.number_turist,s.billing_basis FROM reckoning r LEFT JOIN external_price_state s ON s.crm_object_id=r.id_obj AND s.source=\'price_tonia_ru\' AND s.import_enabled=1 WHERE r.id=?',[$id])->fetch();
         if(!$r || !ptl_connected_object((int)$r['id_obj']))return;
-        if(ptl_live_catalogue((int)$r['id_obj']))$r['billing_basis']='night';
+        if($cat=ptl_live_catalogue((int)$r['id_obj']))$r['billing_basis']=$cat['billing_basis']??'night';
         if(empty($_SESSION['ptl_csrf']))$_SESSION['ptl_csrf']=bin2hex(random_bytes(32));
         try{$state=ptl_state($id);}catch(Throwable $e){error_log('Price live state: '.$e->getMessage());$state=['eligible'=>false,'active'=>false,'status'=>'idle','reason'=>'Сервис проверки временно недоступен.'];}$dom='price-live-'.(int)$id;
         echo '<div id="'.$dom.'" style="margin:12px 0; padding:10px; border:1px solid #ccc; border-radius:4px"><strong>Проверка на сайте объекта</strong><br><button type="button" class="btn btn-primary btn-sm ptl-start" style="margin:8px 0" disabled>Загрузка статуса…</button><div class="ptl-result" aria-live="polite"></div>'.ptl_booking_link_html($r).'</div>';
