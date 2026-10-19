@@ -23,7 +23,6 @@ function present(data){
         }else if(data.status==='unavailable')line(r.message||'Выбранное предложение недоступно.','text-warning');
         else if(data.status==='error')line(r.message||'Не удалось выполнить проверку.','text-danger');
         if(r.checked_at)line('Проверено: '+new Date(r.checked_at).toLocaleString('ru-RU'));
-        if(r.url&&/^https:\/\//i.test(r.url))$('<a>').attr({href:r.url,target:'_blank',rel:'noopener noreferrer'}).text('Посмотреть наличие и цены по этой заявке на сайте объекта').appendTo(result);
     }
     if(data.warning)line(data.warning,'text-warning');
 }

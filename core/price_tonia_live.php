@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__.'/price-tonia-booking-link.php';
 // PHP 7.1 compatible. Shared by the CRM panel, authenticated endpoint and CLI checks.
 function ptl_db(){
     static $p;if($p)return $p;
@@ -71,11 +72,11 @@ function ptl_state($id,$refresh=false){
 }
 function ptl_panel($id){
     try{
-        $r=ptl_query('SELECT r.id_obj FROM reckoning r WHERE r.id=?',[$id])->fetch();
+        $r=ptl_query('SELECT r.id_obj,r.date_z,r.date_v,r.number_turist,s.billing_basis FROM reckoning r JOIN external_price_state s ON s.crm_object_id=r.id_obj AND s.source=\'price_tonia_ru\' AND s.import_enabled=1 WHERE r.id=?',[$id])->fetch();
         if(!$r || !ptl_connected_object((int)$r['id_obj']))return;
         if(empty($_SESSION['ptl_csrf']))$_SESSION['ptl_csrf']=bin2hex(random_bytes(32));
-        $state=ptl_state($id);$dom='price-live-'.(int)$id;
-        echo '<div id="'.$dom.'" style="margin:12px 0; padding:10px; border:1px solid #ccc; border-radius:4px"><strong>Проверка на сайте объекта</strong><br><button type="button" class="btn btn-primary btn-sm ptl-start" style="margin:8px 0" disabled>Загрузка статуса…</button><div class="ptl-result" aria-live="polite"></div></div>';
+        try{$state=ptl_state($id);}catch(Throwable $e){error_log('Price live state: '.$e->getMessage());$state=['eligible'=>false,'active'=>false,'status'=>'idle','reason'=>'Сервис проверки временно недоступен.'];}$dom='price-live-'.(int)$id;
+        echo '<div id="'.$dom.'" style="margin:12px 0; padding:10px; border:1px solid #ccc; border-radius:4px"><strong>Проверка на сайте объекта</strong><br><button type="button" class="btn btn-primary btn-sm ptl-start" style="margin:8px 0" disabled>Загрузка статуса…</button><div class="ptl-result" aria-live="polite"></div>'.ptl_booking_link_html($r).'</div>';
         echo '<script>(function(){var initial='.json_encode($state,JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT).';var csrf='.json_encode($_SESSION['ptl_csrf']).';var booking='.(int)$id.';var dom='.json_encode($dom).';';
         readfile(__DIR__.'/price-tonia-live-panel.js');echo '})();</script>';
     }catch(Throwable $e){error_log('Price live panel: '.$e->getMessage());echo '<div class="text-muted">Сервис проверки временно недоступен.</div>';}
