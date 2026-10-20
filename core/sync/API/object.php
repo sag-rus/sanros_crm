@@ -1,4 +1,5 @@
 <?php
+require_once dirname(__DIR__, 2).'/price_tonia_readonly.php';
 
 function save_uploaded_file_to_db($connect) {
 	$connect->query("INSERT INTO `core_models_file_file` (`created`, `changed`, `status`, `uid`, `title`, `description`, `uri`, `mime`, `ext`, `usages`) VALUES (?i,?i,?i,?i,?s,?s,?s,?s,?s,?i)",$_POST['created'],$_POST['changed'],1,(int)$_POST['uid'],'','',$_POST['uri'],$_POST['mime'],$_POST['extension'],0);
@@ -251,6 +252,13 @@ function save_price_object_account($connect, $data){
 	if(CheckAuthObjectCabinet::check_authorization()){
 		$object = $data["object"];
 		$parse_price = json_decode($data["data"], TRUE);
+        // Validate the entire batch before the first write, including referenced owners.
+        $references = ['object'=>$object, 'room'=>[], 'range'=>[]];
+        foreach ((array)$parse_price as $ratePlan) foreach ((array)$ratePlan as $roomId=>$ranges) {
+            $references['room'][] = $roomId;
+            foreach ((array)$ranges as $rangeId=>$value) $references['range'][] = $rangeId;
+        }
+        if (price_tonia_block_price_write($connect, $references)) return false;
     	$date_last_save = date('d.m.Y H:m:s');
 		foreach($parse_price as $rate_plan){
 			foreach($rate_plan as $id_room => $room){
@@ -273,6 +281,7 @@ function save_price_object_account($connect, $data){
 
 function save_new_date_price_account($connect, $data){
 	if(CheckAuthObjectCabinet::check_authorization()){
+		if (price_tonia_block_price_write($connect, ['object'=>$data['object']??0])) return false;
 		$object = $data["object"];
 		$start = $data["start"];
 		$end = $data["end"];
@@ -289,6 +298,7 @@ function save_new_date_price_account($connect, $data){
 
 function update_date_price_account($connect, $data){
 	if(CheckAuthObjectCabinet::check_authorization()){
+		if (price_tonia_block_price_write($connect, ['object'=>$data['object']??0,'date'=>$data['id']??0])) return false;
 		$id_date = $data["id"];
 		$object = $data["object"];
 		$start = $data["start"];
@@ -302,6 +312,7 @@ function update_date_price_account($connect, $data){
 
 function save_new_range_account($connect, $data){
 	if(CheckAuthObjectCabinet::check_authorization()){
+		if (price_tonia_block_price_write($connect, ['object'=>$data['object']??0,'date'=>$data['id']??0])) return false;
 		$id_date = $data["id"];
 		$object = $data["object"];
 		$name = $data["name"];
@@ -318,6 +329,7 @@ function save_new_range_account($connect, $data){
 
 function del_range_account($connect, $data){
 	if(CheckAuthObjectCabinet::check_authorization()){
+		if (price_tonia_block_price_write($connect, ['object'=>$data['object']??0,'range'=>$data['id']??0])) return false;
 		$id = $data["id"];
 		$object = $data["object"];
 		
@@ -334,6 +346,7 @@ function del_range_account($connect, $data){
 
 function update_range_account($connect, $data){
 	if(CheckAuthObjectCabinet::check_authorization()){
+		if (price_tonia_block_price_write($connect, ['object'=>$data['object']??0,'range'=>$data['id']??0])) return false;
 		$id_range = $data["id"];
 		$object = $data["object"];
 		$name = $data["name"];

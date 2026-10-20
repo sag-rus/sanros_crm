@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__.'/price_tonia_readonly.php';
 
 function show_months($connect){
 	$id_location = (int)($_GET['id_location'] ?? $_POST['id_location'] ?? -1);
@@ -1167,13 +1168,9 @@ function view_dates_price_object($connect){
 	global $id_rights, $session_login;
 	$reestablish = 0;
 	$id = $_POST["id"];
-	$priceToniaState = $connect->getRow("SELECT external_property_key FROM external_price_state WHERE source='price_tonia_ru' AND crm_object_id=?i AND (import_enabled=1 OR publish_enabled=1)", $id);
-	if ($priceToniaState) {
-		$priceToniaUrl = 'https://price.tonia.ru/';
-		if (ctype_digit((string)$priceToniaState['external_property_key']) && (int)$priceToniaState['external_property_key'] > 0) {
-			$priceToniaUrl .= 'properties/'.(int)$priceToniaState['external_property_key'];
-		}
-		echo '<div class="alert alert-info">Объект подключен через микросервис <a href="'.$priceToniaUrl.'" target="_blank" rel="noopener noreferrer">price.tonia.ru</a></div>';
+	$priceToniaUrl = price_tonia_readonly_url($connect, $id);
+	if ($priceToniaUrl) {
+		echo price_tonia_readonly_notice($priceToniaUrl);
 		return;
 	}
 	$html = "";
@@ -1242,6 +1239,7 @@ function view_dates_price_object($connect){
 }
 
 function edit_date_price_manager($connect){
+	if (price_tonia_block_price_write($connect, ['date'=>$_POST['id']??0,'object'=>$_POST['object']??0])) return false;
 	if(isset($_POST["id"])){
 		$id = $_POST["id"];
 		$data = $connect->getRow("SELECT start, end FROM date_price WHERE id=?i", $id);
@@ -1292,16 +1290,19 @@ function edit_date_price_manager($connect){
 }
 
 function save_date_price_manager($connect){
+	if (price_tonia_block_price_write($connect, ['object'=>$_POST['id']??0])) return false;
 	$connect->query("INSERT INTO date_price(id_obj, start, end) VALUES (?i, ?s, ?s)", $_POST["id"], $_POST["start"], $_POST["end"]);
 }
 
 function update_date_price_manager($connect){
+	if (price_tonia_block_price_write($connect, ['date'=>$_POST['id']??0])) return false;
 	$id = $_POST["id"];
 	$connect->query("UPDATE date_price SET start=?s, end=?s, synchronized = 0 WHERE id=?i", $_POST["start"], $_POST["end"], $id);
 	return $connect->getOne("SELECT id_obj FROM date_price WHERE id=?i", $id);
 }
 
 function delete_date_price_manager($connect){
+	if (price_tonia_block_price_write($connect, ['date'=>$_POST['id']??0])) return false;
 	$id = $_POST["id"];
 	$object = $connect->getOne("SELECT id_obj FROM date_price WHERE id=?i", $id);
 	$data = $connect->getAll("SELECT id FROM ranges WHERE id_date=?i AND active = 0", $id);
@@ -1323,6 +1324,8 @@ function view_prices_object($connect){
 	$TC = "";
 	$TH = "";
 	$object = $connect->getOne("SELECT id_obj FROM date_price WHERE id=?i", $id_date);
+	$priceToniaUrl = price_tonia_readonly_url($connect, $object);
+	if ($priceToniaUrl) return price_tonia_readonly_notice($priceToniaUrl);
 	$data = $connect->getAll("SELECT ranges.counter, ranges.id, ranges.name, ranges.type, place.name as place, ranges.treatment, place.type as place_type FROM ranges, place WHERE ranges.id_obj=?i AND (ranges.place=place.id) AND ranges.id_date=?i AND ranges.active = 0 AND ranges.rate_plan = ?i ORDER BY ranges.counter, place.type", $object, $id_date, $rate_plan_id);
 	foreach($data as $row){
 		$id = $row["id"];
@@ -1422,6 +1425,7 @@ function view_prices_object($connect){
 }
 
 function update_price_manager($connect){
+	if (price_tonia_block_price_write($connect, ['price'=>$_POST['id']??0,'room'=>$_POST['room']??0,'range'=>$_POST['range']??0])) return false;
 	global $name_user;
 	$id = $_POST["id"];
 	$room = $_POST["room"];
@@ -1448,6 +1452,7 @@ function update_price_manager($connect){
 }
 
 function edit_range_manager($connect){
+	if (price_tonia_block_price_write($connect, ['range'=>$_POST['id']??0,'object'=>$_POST['object']??0,'date'=>$_POST['date']??0])) return false;
     $rate_plan_id = 0;
     if(isset($_POST["id"])){
 		$id = $_POST["id"];
@@ -1540,6 +1545,7 @@ function edit_range_manager($connect){
 }
 
 function update_range_manager($connect){
+	if (price_tonia_block_price_write($connect, ['range'=>$_POST['id']??0,'date'=>$_POST['date']??0])) return false;
 	$id = $_POST["id"];
 	$date = $_POST["date"];
 	$name = $_POST["name"];
@@ -1583,6 +1589,7 @@ function update_range_manager($connect){
 }
 
 function save_range_manager($connect){
+	if (price_tonia_block_price_write($connect, ['object'=>$_POST['object']??0,'date'=>$_POST['date']??0])) return false;
 	$date = $_POST["date"];
 	$name = $_POST["name"];
 	$type = $_POST["type"];
@@ -1594,12 +1601,14 @@ function save_range_manager($connect){
 }
 
 function delete_range_manager($connect){
+	if (price_tonia_block_price_write($connect, ['range'=>$_POST['id']??0])) return false;
 	$id = $_POST["id"];
 	$connect->query("UPDATE price SET active = 1, synchronized = 0 WHERE id_range=?i", $id);
 	$connect->query("UPDATE ranges SET active = 1, synchronized = 0 WHERE id=?i", $id);
 }
 
 function show_dates_copy_prices($connect){
+	if (price_tonia_block_price_write($connect, ['date'=>$_POST['date']??0])) return false;
 	$id_date = $_POST["date"];
 	$object = $connect->getOne("SELECT id_obj FROM date_price WHERE id=?i", $id_date);
 	$dates = $connect->getAll("SELECT id, DATE_FORMAT(start, '%e.%m.%Y') as date_start, DATE_FORMAT(end, '%e.%m.%Y') as end FROM date_price WHERE id_obj=?i AND id!=?i AND active=0 ORDER BY start", $object, $id_date);
@@ -1642,6 +1651,7 @@ function show_dates_copy_prices($connect){
 }
 
 function copy_date_price($connect){
+	if (price_tonia_block_price_write($connect, ['date'=>[$_POST['date']??0,$_POST['new_date']??0]])) return false;
 	$id_date = $_POST["date"];
 	$new_date = $_POST["new_date"];
 	$object = $connect->getOne("SELECT id_obj FROM date_price WHERE id=?i", $id_date);
@@ -1782,6 +1792,7 @@ function save_new_room_manager($connect){
 }
 
 function reestablish_price_date($connect){
+	if (price_tonia_block_price_write($connect, ['date'=>$_POST['date']??0])) return false;
 	$date = $_POST["date"];
 	$connect->query("UPDATE date_price SET active=0, synchronized = 0 WHERE id=?i", $date);
 	$data = $connect->getAll("SELECT id FROM ranges WHERE id_date=?i AND active = 0", $date);
@@ -1792,6 +1803,7 @@ function reestablish_price_date($connect){
 }
 
 function update_range_counter($connect){
+	if (price_tonia_block_price_write($connect, ['range'=>$_POST['id']??0])) return false;
 	$id = $_POST["id"];
 	$counter = $_POST["counter"];
 	if($counter > 999)
