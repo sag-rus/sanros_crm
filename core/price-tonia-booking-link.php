@@ -14,7 +14,7 @@ function ptl_booking_pages(){
         10 => 'https://voljanka.com/booking/',
         37 => 'https://www.nadejda63.ru/booking/',
         50 => 'https://uvasan.com/booking/',
-        24 => 'https://www.itilsanatorium.ru/booking.html',
+        482 => 'https://sp-mechta.ru/booking/',
         1005 => 'https://sobodim.ru/booking',
         30 => 'https://krutushka-kazan.ru/booking/',
         3 => 'https://www.bakirovo.com/booking/',
