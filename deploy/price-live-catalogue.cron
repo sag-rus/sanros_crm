@@ -1,0 +1,4 @@
+SHELL=/bin/sh
+PATH=/usr/bin:/bin
+# Delivery only: source catalogue is refreshed daily by PRICE at/after 04:00 Moscow.
+*/10 * * * * root /usr/bin/timeout 480 /usr/bin/php /var/www/html/CRM/tools/live-catalogue-sync.php >> /var/log/price-live-catalogue-crm.log 2>&1
