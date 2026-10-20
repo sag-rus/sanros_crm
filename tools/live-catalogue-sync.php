@@ -22,7 +22,7 @@ try {
         $id=$item['object_id'];if(!is_int($id)||$id<1||!preg_match('/^[a-f0-9]{64}$/D',$item['revision']))throw new RuntimeException('Invalid manifest');
         $key=$item['revision'].'@'.$item['checked_at'];$current=$state[$id]??[];
         if(($current['key']??'')===$key&&($current['status']??'')==='success')continue;
-        if(($current['status']??'')==='error'&&($current['attempt_at']??0)>time()-1800)continue;
+        if(!in_array('--retry',$argv,true)&&($current['status']??'')==='error'&&($current['attempt_at']??0)>time()-1800)continue;
         try {
             if(($current['applied_key']??'')!==$key){
                 $url=$role==='crm'?'https://price.tonia.ru/api/live-search/'.$id.'/catalogue':'http://10.10.10.10/CRM/core/price-live-catalogue-export.php?object_id='.$id;
