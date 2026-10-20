@@ -3,13 +3,13 @@ require __DIR__.'/../price_tonia_booking.php';
 require __DIR__.'/../core/price_live_booking_verify.php';
 class LiveBookingFixture {
     public $id,$provider,$inactive=false;
-    function __construct($id){$this->id=$id;$this->provider=[47=>'4345',207=>'7733',13=>'23294',4=>'6811',25=>'18786',19=>'6263',29=>'6482',662=>'7822',10=>'17784',37=>'8830',50=>'7826',482=>'43592',1005=>'22525',16=>'6894',58=>'6538',23=>'6893',471=>'651',82=>'9712',56=>'1084',70=>'65227',24=>'23664',6=>'18577',39=>'6906',53=>'6281',410=>'47801',507=>'15955',55=>'15957',83=>'17814',141=>'13121',558=>'15955'][$id];}
+    function __construct($id){$this->id=$id;$this->provider=[47=>'4345',207=>'7733',13=>'23294',4=>'6811',25=>'18786',19=>'6263',29=>'6482',662=>'7822',10=>'17784',37=>'8830',50=>'7826',482=>'43592',1005=>'22525',16=>'6894',58=>'6538',23=>'6893',471=>'651',82=>'9712',56=>'1084',70=>'65227',24=>'23664',6=>'18577',39=>'6906',53=>'6281',410=>'47801',507=>'15955',55=>'15957',83=>'17814',141=>'13121',558=>'15955',84=>'8016',534=>'18602',859=>'1222',492=>'22850',470=>'20191'][$id];}
     function getAll($sql,...$args){if($args!==[$this->id])throw new LogicException('Unscoped catalogue');return [['provider_id'=>$this->provider,'revision'=>str_repeat('a',64),'payload_json'=>json_encode(['object_id'=>$this->id,'provider_id'=>$this->provider,'revision'=>str_repeat('a',64),'rooms'=>[['code'=>'123','crm_id'=>10]],'rates'=>[['code'=>'456','crm_id'=>20]]])]];}
     function getOne($sql,...$args){if($args[1]!==$this->id)throw new LogicException('Unscoped inventory');return !$this->inactive;}
 }
 function liveAssert($v){if(!$v)throw new LogicException('Assertion failed');}
 function liveReject($f){try{$f();}catch(RuntimeException $e){return;}throw new LogicException('Accepted invalid live booking');}
-foreach([47,207,13,4,25,19,29,662,10,37,50,482,1005,16,58,23,471,82,56,70,24,6,39,53,410,507,55,83,141,558]as $id){
+foreach([47,207,13,4,25,19,29,662,10,37,50,482,1005,16,58,23,471,82,56,70,24,6,39,53,410,507,55,83,141,558,84,534,859,492,470]as $id){
  $db=new LiveBookingFixture($id);$arrival=(new DateTimeImmutable('today'))->modify('+10 days');$departure=$arrival->modify('+6 days')->format('Y-m-d');
  $p=['id_room'=>10,'rate'=>20,'date'=>$arrival->format('Y-m-d'),'departure'=>$departure,'days'=>6,'number'=>1,'type_index'=>3,'price_basis'=>'stay_total','price'=>'75600.00'];
  $d=(object)['id_obj'=>$id,'date'=>$arrival->format('d.m.Y'),'departure'=>$departure,'days'=>6,'adults'=>2,'childs'=>0,'tl'=>0,'bnovo'=>0,'position'=>json_encode([$p]),'sum'=>'75600.00','price_snapshot'=>'price-live:'.str_repeat('a',64),'guests'=>[['fio'=>'Первый Тест'],['fio'=>'Второй Тест']]];
