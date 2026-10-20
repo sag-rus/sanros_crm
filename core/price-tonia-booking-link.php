@@ -10,7 +10,7 @@ function ptl_booking_pages(){
         25 => 'https://sankaragai.ru/booking/',
         19 => 'https://green-kurort.ru/?tl-booking-open=true',
         29 => 'https://krasnousolsk.ru/booking/',
-        662 => 'https://gorkihotel.ru/',
+        662 => 'https://gorkihotel.ru/?tl-booking-open=true',
         30 => 'https://krutushka-kazan.ru/booking/',
         3 => 'https://www.bakirovo.com/booking/',
         57 => 'https://yumatovo.ru/booking/',
