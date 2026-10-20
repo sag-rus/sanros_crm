@@ -4,7 +4,7 @@ if(PHP_SAPI!=='cli')exit(1);
 $role='crm';$root=dirname(__DIR__);$dir='/var/lib/price-tonia-live';
 function lcHttp($url,$token,$data=null){
     $c=curl_init($url);$headers=['Authorization: Bearer '.$token,'Accept: application/json'];
-    $options=[CURLOPT_RETURNTRANSFER=>true,CURLOPT_CONNECTTIMEOUT=>5,CURLOPT_TIMEOUT=>60,CURLOPT_HTTPHEADER=>$headers];
+    $options=[CURLOPT_RETURNTRANSFER=>true,CURLOPT_CONNECTTIMEOUT=>15,CURLOPT_TIMEOUT=>60,CURLOPT_HTTPHEADER=>$headers];
     if($data!==null){$options[CURLOPT_POST]=true;$options[CURLOPT_POSTFIELDS]=json_encode($data);$options[CURLOPT_HTTPHEADER][]='Content-Type: application/json';}
     curl_setopt_array($c,$options);$raw=curl_exec($c);$code=curl_getinfo($c,CURLINFO_HTTP_CODE);curl_close($c);
     if($code!==200||!is_string($raw)||strlen($raw)>2000000)throw new RuntimeException('download_failed');

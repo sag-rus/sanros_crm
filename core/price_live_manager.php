@@ -1,5 +1,5 @@
 <?php
-function ptl_live_providers(){return [47=>'4345',207=>'7733',13=>'23294'];}
+function ptl_live_providers(){return [47=>'4345',207=>'7733',13=>'23294',4=>'6811',25=>'18786',19=>'6263',29=>'6482',662=>'7822'];}
 function ptl_live_payload(array $r,array $rows,array $cat){
     $id=(int)$r['id_obj'];$providers=ptl_live_providers();
     if(!isset($providers[$id])||($cat['object_id']??null)!==$id||($cat['provider_id']??null)!==$providers[$id]||count($rows)!==1)throw new RuntimeException('Для проверки нужен один номер из каталога PRICE.');
