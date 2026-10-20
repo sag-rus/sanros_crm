@@ -5,6 +5,7 @@ header('Content-Type: application/json; charset=utf-8');header('Cache-Control: n
 try {
     $file='/var/lib/price-tonia-live/token';$expected=is_file($file)?trim(file_get_contents($file)):'';
     $header=$_SERVER['HTTP_AUTHORIZATION']??($_SERVER['REDIRECT_HTTP_AUTHORIZATION']??'');
+    if($header==='' && isset($_SERVER['HTTP_X_PRICE_LIVE_TOKEN']))$header='Bearer '.$_SERVER['HTTP_X_PRICE_LIVE_TOKEN'];
     if($expected===''||!hash_equals('Bearer '.$expected,$header)){http_response_code(403);echo '{"error":"forbidden"}';exit;}
     $id=filter_input(INPUT_GET,'object_id',FILTER_VALIDATE_INT);if(!$id)throw new RuntimeException('Invalid ID');
     $pdo=(function(){$argv=[__FILE__,'crm',dirname(__DIR__)];require '/home/rustem/price-tonia-auto-sync-v1/bootstrap.php';return $pdo;})();
