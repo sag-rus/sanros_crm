@@ -1,7 +1,7 @@
 <?php
 /** Authenticated live PRICE booking validation. Reads only; never creates a booking. */
 function price_live_booking_verify($data, $db, callable $fetch = null) {
-    $providers=[47=>'4345',207=>'7733',13=>'23294',4=>'6811',25=>'18786',19=>'6263',29=>'6482',662=>'7822',10=>'17784',37=>'8830',50=>'7826',482=>'43592',1005=>'22525',16=>'6894',58=>'6538',23=>'6893',471=>'651',82=>'9712',56=>'1084',70=>'65227'];$id=(int)($data->id_obj??0);
+    $providers=[47=>'4345',207=>'7733',13=>'23294',4=>'6811',25=>'18786',19=>'6263',29=>'6482',662=>'7822',10=>'17784',37=>'8830',50=>'7826',482=>'43592',1005=>'22525',16=>'6894',58=>'6538',23=>'6893',471=>'651',82=>'9712',56=>'1084',70=>'65227',24=>'23664',6=>'18577',39=>'6906',53=>'6281',410=>'47801'];$id=(int)($data->id_obj??0);
     if(!isset($providers[$id]))throw new RuntimeException('Unknown live property');
     price_tonia_booking_guests($data);
     $arrival=DateTimeImmutable::createFromFormat('!d.m.Y',(string)($data->date??''));

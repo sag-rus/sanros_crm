@@ -8,7 +8,7 @@ function slInsert($p,$table,$v){
 }
 try {
     $mode=$argv[1]??'';if(!in_array($mode,['plan','apply','export'],true)||!in_array(count($argv),[2,3,4],true))throw new RuntimeException('Usage: sbor-live-catalogue.php plan|apply|export [object_id]');
-    $objectId=(int)($argv[2]??47);$providers=[47=>'4345',207=>'7733',13=>'23294',4=>'6811',25=>'18786',19=>'6263',29=>'6482',662=>'7822',10=>'17784',37=>'8830',50=>'7826',482=>'43592',1005=>'22525',16=>'6894',58=>'6538',23=>'6893',471=>'651',82=>'9712',56=>'1084',70=>'65227'];
+    $objectId=(int)($argv[2]??47);$providers=[47=>'4345',207=>'7733',13=>'23294',4=>'6811',25=>'18786',19=>'6263',29=>'6482',662=>'7822',10=>'17784',37=>'8830',50=>'7826',482=>'43592',1005=>'22525',16=>'6894',58=>'6538',23=>'6893',471=>'651',82=>'9712',56=>'1084',70=>'65227',24=>'23664',6=>'18577',39=>'6906',53=>'6281',410=>'47801'];
     if(!isset($providers[$objectId]))throw new RuntimeException('Unknown live object');$providerId=$providers[$objectId];
     $pdo=(function(){$argv=[__FILE__,'crm',dirname(__DIR__)];require '/home/rustem/price-tonia-auto-sync-v1/bootstrap.php';return $pdo;})();
     if($mode==='export'){$r=slRows($pdo,'SELECT payload_json FROM price_live_catalogue WHERE object_id=?',[$objectId]);if(count($r)!==1)throw new RuntimeException('Catalogue missing');echo $r[0]['payload_json'],"\n";exit;}
