@@ -16,6 +16,8 @@ function ptl_booking_pages(){
         50 => 'https://uvasan.com/booking/',
         482 => 'https://sp-mechta.ru/booking/',
         1005 => 'https://sobodim.ru/booking',
+        16 => 'https://ulkurort.ru/booking?hotel_id=6894',
+        58 => 'https://xn----7sba6afhaillwhqgq0kua1c.xn--p1ai/booking/',
         30 => 'https://krutushka-kazan.ru/booking/',
         3 => 'https://www.bakirovo.com/booking/',
         57 => 'https://yumatovo.ru/booking/',
