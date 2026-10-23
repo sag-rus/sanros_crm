@@ -61,6 +61,26 @@ function ptl_booking_pages(){
         275 => 'https://ruskmv.ru/booking/',
         281 => 'https://rusor.ru/booking',
         295 => 'https://etelmana.ru/booking/',
+        121 => 'https://www.kirova.ru/bronirovanie/',
+        208 => 'https://www.sochi-belarus.ru/#bronirovanie',
+        211 => 'https://zheleznovodsk.plaza.spa/booking/',
+        212 => 'https://san-lerm.ru/booking',
+        246 => 'https://dimitrowa.ru/booking',
+        247 => 'https://sannarzan.ru/bronirovanie/',
+        252 => 'https://kmvrodnik.ru/bronirovanie/',
+        254 => 'https://diluch.ru/',
+        264 => 'https://xn----7sbaabacmoc6ajgqf1ch7bi8j.xn--p1ai/?tl-booking-open=true',
+        268 => 'https://www.marinushotel.ru/',
+        277 => 'https://kazakhstan-kmv.ru/rooms/book/',
+        291 => 'https://sanzdorovie.ru/booking',
+        293 => 'https://elbruskmv.ru/bronirovanie/',
+        298 => 'https://dubravasan.ru/booking/',
+        300 => 'https://www.sanatory-mashuk.ru/bronirovanie/',
+        311 => 'https://uvzmorie.ru/booking',
+        315 => 'https://grenada-sochi.ru/booking/',
+        318 => 'https://victoriaspahotel.ru/booking',
+        329 => 'https://www.zapolarye.ru/booking/',
+        1021 => 'https://www.xn----7sbgclctih8amwgud1dj.xn--p1ai/',
         558 => 'https://abzakovo.com/booking/?hotel_id=7',
         58 => 'https://xn----7sba6afhaillwhqgq0kua1c.xn--p1ai/booking/',
         30 => 'https://krutushka-kazan.ru/booking/',
@@ -97,7 +117,8 @@ function ptl_booking_link(array $booking){
         $params=['date'=>$arrival->format('Y-m-d'),'nights'=>$days];
     }
     if((int)$booking['number_turist']>0)$params['adults']=(int)$booking['number_turist'];
-    return $url.(strpos($url,'?')===false?'?':'&').http_build_query($params,'','&',PHP_QUERY_RFC3986);
+    $parts=explode('#',$url,2);
+    return $parts[0].(strpos($parts[0],'?')===false?'?':'&').http_build_query($params,'','&',PHP_QUERY_RFC3986).(isset($parts[1])?'#'.$parts[1]:'');
 }
 function ptl_booking_link_html(array $booking){
     $url=ptl_booking_link($booking);

@@ -4,7 +4,8 @@ function verify($condition,$message){if(!$condition)throw new RuntimeException($
 $b=['id_obj'=>30,'date_z'=>'2026-10-26','date_v'=>'2026-10-31','number_turist'=>2,'billing_basis'=>'night'];
 foreach(ptl_booking_pages() as $id=>$page){
     $b['id_obj']=$id;$url=ptl_booking_link($b);parse_str(parse_url($url,PHP_URL_QUERY),$q);
-    verify(strpos($url,$page)===0,'Wrong property '.$id);
+    verify(strpos($url,explode('#',$page,2)[0])===0,'Wrong property '.$id);
+    verify(parse_url($url,PHP_URL_FRAGMENT)===parse_url($page,PHP_URL_FRAGMENT),'Preserve booking anchor');
     if(isset($q['hotel']))verify($q['datefrom']==='26.10.2026' && $q['dateto']==='31.10.2026','Alean dates');
     else verify($q['date']==='2026-10-26' && $q['nights']==='5','TravelLine dates');
     verify($q['adults']==='2','Adults');
