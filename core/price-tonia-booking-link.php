@@ -95,7 +95,7 @@ function ptl_booking_pages(){
         1195 => 'https://anapavbereg.ru/booking',
         1196 => 'https://anatolhotel.ru/bron/',
         1210 => 'https://aquavita-hotel.ru/booking',
-        1259 => 'https://rosasprings.ru/booking/',
+        1226 => 'https://hotellongbeach.ru/booking/',
         1267 => 'https://nadezhda.ru/booking',
         1271 => 'https://krashotel.com/booking/',
         1304 => 'https://grandhotel-kmv.ru/bron.html',
