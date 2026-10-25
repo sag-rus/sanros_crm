@@ -150,6 +150,7 @@ function ptl_booking_pages(){
         1236 => 'https://odisseya.com/booking',
         1312 => 'https://www.vertebra.clinic/',
         903 => 'https://romantik-hotel.ru/?tl-booking-open=true',
+        1028 => 'https://ekodom-hotels.ru/booking',
         558 => 'https://abzakovo.com/booking/?hotel_id=7',
         58 => 'https://xn----7sba6afhaillwhqgq0kua1c.xn--p1ai/booking/',
         30 => 'https://krutushka-kazan.ru/booking/',
