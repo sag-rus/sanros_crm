@@ -55,9 +55,17 @@ $connect->query("INSERT 1_aiso_log SET `id`=0, `datetime`=NOW(), `data`=?s", $_P
 
 parse_str($_POST['data'], $data);
 
+// Email is optional; use the same validated value for the client and request.
+$email = isset($data['email']) && is_string($data['email'])
+    ? (clear_email(trim($data['email'])) ?: '')
+    : '';
+
 $cmnt = 'ЗАЯВКА ОТ AISO<br>';
 $cmnt .= 'Имя отчество: '.$data['fio'].'<br>';
 $cmnt .= 'Телефон: '.$data['phone'].'<br>';
+if ($email !== '') {
+    $cmnt .= 'E-mail: '.htmlspecialchars($email, ENT_QUOTES, 'UTF-8').'<br>';
+}
 $cmnt .= 'Сообщение: '.$data['message'].'<br>';
 $cmnt .= 'URL отправки формы: '.$data['url'].'<br>';
 $cmnt .= 'IP: '.$data['ip'].'<br>';
@@ -69,7 +77,7 @@ $client_info = array(
 	"name" => isset($data['fio'])?$data['fio']:"",
 	"otch" => "",
 	"telephone" => isset($data['phone'])?$data['phone']:"",
-	"email" => isset($data['email'])?$data['email']:"",
+	"email" => $email,
 	"ip" => ""
 );
 
