@@ -33,7 +33,7 @@ try {
  $old=pllRows($pdo,'SELECT * FROM price_live_legacy_migration WHERE object_id=?',[$id]);
  if($old){pllGuard($pdo,$id,$role);echo json_encode($summary+['already_prepared'=>true,'backup'=>$old[0]['backup_path']])."\n";exit;}
  $backup='/var/tmp/price-legacy-'.$role.'-'.$id.'-'.gmdate('YmdHis').'-'.bin2hex(random_bytes(4)).'.json';$f=fopen($backup,'x');if(!$f)throw new RuntimeException('Backup unavailable');chmod($backup,0600);
- $data=json_encode(['state'=>$s,'mappings'=>$m,'extra'=>$extra],JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR);if(fwrite($f,$data)!==strlen($data))throw new RuntimeException('Backup incomplete');fclose($f);
+ $data=json_encode(['state'=>$s,'mappings'=>$m,'extra'=>$extra],JSON_UNESCAPED_UNICODE);if(!is_string($data))throw new RuntimeException('Backup encoding failed');if(fwrite($f,$data)!==strlen($data))throw new RuntimeException('Backup incomplete');fclose($f);
  $pdo->beginTransaction();
  $pdo->prepare("UPDATE external_price_state SET import_enabled=0".($role==='site'?'':',publish_enabled=0').",updated_at=UTC_TIMESTAMP() WHERE source='price_tonia_ru' AND crm_object_id=?")->execute([$id]);
  
