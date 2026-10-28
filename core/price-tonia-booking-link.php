@@ -154,6 +154,8 @@ function ptl_booking_pages(){
         1181 => 'https://snega-hotel.ru/booking',
         1496 => 'https://crystal-apart.pro/booking',
         1259 => 'https://rosasprings.ru/booking/',
+        611 => 'https://www.kolos-kmv.ru/bronirovat/',
+        853 => 'https://pansionat-october.ru/booking/',
         558 => 'https://abzakovo.com/booking/?hotel_id=7',
         58 => 'https://xn----7sba6afhaillwhqgq0kua1c.xn--p1ai/booking/',
         30 => 'https://krutushka-kazan.ru/booking/',
