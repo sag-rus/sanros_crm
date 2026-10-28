@@ -1,6 +1,15 @@
 <?php
 // Only called by the authenticated price_tonia_ru branch of kostyl_booking.php.
-function price_tonia_booking_validate($data, $connect) {
+function price_tonia_booking_validate($data, $connect, callable $liveFetch = null) {
+    // The active catalogue, not a historic three-object list, selects the validator.
+    // A stale legacy submission must not bypass live verification after migration.
+    if (isset($data->id_obj) && (
+        (is_string($data->price_snapshot??null) && strpos($data->price_snapshot,'price-live:')===0) ||
+        $connect->getOne('SELECT object_id FROM price_live_catalogue WHERE object_id=?i',(int)$data->id_obj)
+    )) {
+        require_once __DIR__.'/core/price_live_booking_verify.php';
+        return price_live_booking_verify($data, $connect, $liveFetch);
+    }
     if (isset($data->id_obj) && in_array((string)$data->id_obj, ['1096','1658'], true)) {
         require_once __DIR__.'/core/luciano_booking_verify.php';
         return luciano_booking_verify($data, $connect);
