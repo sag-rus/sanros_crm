@@ -24,7 +24,7 @@ function ptl_payload($id){
     $rows=ptl_query('SELECT id_room,ratePlan,date_z,days,number,type,add_one_day,sum FROM position_reck WHERE schet=? AND id_room>0 ORDER BY date_z,id',[$id])->fetchAll();
     if(!$rows)throw new RuntimeException('В заявке не выбран номер.');
     $liveCatalogue=ptl_live_catalogue((int)$r['id_obj']);
-    if($liveCatalogue)return ptl_live_payload($r,$rows,$liveCatalogue);
+    if($liveCatalogue&&count($rows)===1&&(int)$rows[0]['type']===3)return ptl_live_payload($r,$rows,$liveCatalogue);
     if(in_array((int)$r['id_obj'],[1096,1658],true)){
         require_once __DIR__.'/luciano_manager_quote.php';
         $quote=LucianoManagerQuote::build($r,$rows,(new DateTimeImmutable('today',new DateTimeZone('Europe/Moscow')))->format('Y-m-d'));
@@ -38,6 +38,11 @@ function ptl_payload($id){
         $next=date('Y-m-d',strtotime($next.' +'.(int)$row['days'].' days'));$amount+=(int)round((float)$row['sum']*100)*(int)$row['days'];
     }
     if($next!==$chargeEnd || $r['date_z']<date('Y-m-d') || strtotime($r['date_v'])-strtotime($r['date_z'])>60*86400)throw new RuntimeException('Проверьте даты заявки: доступен будущий заезд до 60 ночей.');
+    }
+    if($liveCatalogue){
+        $position=$first;$position['days']=(int)(new DateTimeImmutable($r['date_z']))->diff(new DateTimeImmutable($r['date_v']))->format('%r%a');
+        $position['date_z']=$r['date_z'];$position['type']=3;$position['add_one_day']=1;$position['number']=1;$position['sum']=number_format($amount/100,2,'.','');
+        return ptl_live_payload($r,[$position],$liveCatalogue);
     }
     $map=ptl_query("SELECT rm.external_property_key,rm.external_room_key,rt.external_rate_key FROM external_price_mapping rm JOIN external_price_mapping rt ON rt.source=rm.source AND rt.crm_object_id=rm.crm_object_id AND rt.external_room_key=rm.external_room_key AND rt.external_property_key=rm.external_property_key AND rt.entity_type='rate' AND rt.mapping_status='verified' AND rt.crm_id=? WHERE rm.source='price_tonia_ru' AND rm.crm_object_id=? AND rm.entity_type='room' AND rm.mapping_status='verified' AND rm.crm_id=?",[$first['ratePlan'],$r['id_obj'],$first['id_room']])->fetchAll();
     if(count($map)!==1){
