@@ -247,6 +247,16 @@ function ptl_booking_pages(){
         1540 => 'https://breitowo.ru/booking.html',
         1646 => 'https://prometey62.ru/?tl-booking-open=true',
         715 => 'https://hotelvolna.ru/',
+        380 => 'https://newworld-crimea.ru/booking/',
+        418 => 'https://gvozdika72.ru/booking',
+        498 => 'https://kurortsamocvet.ru/booking/',
+        503 => 'https://www.sibircentr.ru/bronirovanie/',
+        564 => 'https://russian-forest.org/booking/',
+        649 => 'https://zenit-hotel.ru/booking/',
+        678 => 'https://aurora-altai.ru/',
+        710 => 'https://marcwater.com/',
+        714 => 'https://stankovolga.ru/booking/',
+        1342 => 'https://palace-crimea.ru/booking/',
     ];
 }
 function ptl_booking_link(array $booking){
