@@ -187,6 +187,8 @@ function ptl_booking_pages(){
         1084 => 'https://booking.aleancollection.ru/?hotel=58bf0f10-4541-11eb-9457-005056b233c6',
         1096 => 'https://www.luciano.ru/bronirovanie/',
         1658 => 'https://luciano-sochi.ru/bronirovanie/',
+        717 => 'https://istra.amaks-kurort.ru/booking/',
+        1262 => 'https://www.rulok.ru/booking',
     ];
 }
 function ptl_booking_link(array $booking){
