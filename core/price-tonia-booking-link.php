@@ -189,6 +189,13 @@ function ptl_booking_pages(){
         1658 => 'https://luciano-sochi.ru/bronirovanie/',
         717 => 'https://istra.amaks-kurort.ru/booking/',
         1262 => 'https://www.rulok.ru/booking',
+        576 => 'https://www.uteshotel.com/booking/',
+        86 => 'https://lastochka.com/booking/',
+        531 => 'https://www.uralsan.ru/booking/',
+        568 => 'https://www.obuhovski.com/booking/',
+        672 => 'https://altzamok.ru/booking/',
+        671 => 'https://www.centrosouz.ru/booking',
+        709 => 'https://chayka-nalchik.ru/booking.html',
     ];
 }
 function ptl_booking_link(array $booking){
