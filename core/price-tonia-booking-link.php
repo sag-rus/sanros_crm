@@ -246,7 +246,7 @@ function ptl_booking_pages(){
         1491 => 'https://hotel-gornoe-ozero.ru/?tl-booking-open=true',
         1540 => 'https://breitowo.ru/booking.html',
         1646 => 'https://prometey62.ru/?tl-booking-open=true',
-        1662 => 'https://www.grandedelmare.ru/?tl-booking-open=true',
+        715 => 'https://hotelvolna.ru/',
     ];
 }
 function ptl_booking_link(array $booking){
