@@ -105,6 +105,19 @@ function fsaSaveCache($db, $row) {
         $main['fullName'].' '.$address.' '.$main['registerRecord'], $row['id'], $row['ext_id']);
 }
 function fsaPublish($db, $object, $row, $projection, $backupDir) {
+    $lockName = 'sanata-fsa:'.($row ? $row['ext_id'] : 'object-'.$object['id']);
+    if ((int)$db->getOne('SELECT GET_LOCK(?s, 0)', $lockName) !== 1) throw new RuntimeException('Classification is being updated; retry');
+    try {
+        if ($row) {
+            $claim = $db->getRow('SELECT id_obj FROM accr_data WHERE id=?i AND ext_id=?s', $row['id'], $row['ext_id']);
+            if (!$claim || ((int)$claim['id_obj'] !== 0 && (int)$claim['id_obj'] !== (int)$object['id'])) {
+                throw new RuntimeException('Registry record claimed by another object; review required');
+            }
+        }
+        return fsaPublishLocked($db, $object, $row, $projection, $backupDir);
+    } finally { $db->getOne('SELECT RELEASE_LOCK(?s)', $lockName); }
+}
+function fsaPublishLocked($db, $object, $row, $projection, $backupDir) {
     $id = $row ? $row['ext_id'] : $object['accr_id'];
     $json = json_encode($projection, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     if ($json === false) throw new RuntimeException('Invalid projection');
