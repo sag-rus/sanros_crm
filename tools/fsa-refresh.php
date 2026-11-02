@@ -46,7 +46,12 @@ try {
                             } else {
                                 $memo[$ext] = fsaFetch($ext); $failures = 0;
                             }
-                        } catch (Throwable $e) { $memo[$ext] = ['error'=>$e->getMessage()]; $failures++; }
+                        } catch (Throwable $e) {
+                            $memo[$ext] = ['error'=>$e->getMessage()];
+                            // Per-record denials/deletions must not starve all later properties on retries.
+                            if (in_array($e->getMessage(), ['Registry HTTP failure 403','Registry HTTP failure 404'], true)) $failures = 0;
+                            else $failures++;
+                        }
                     }
                     if (isset($memo[$ext]['error'])) { $unavailable[$ext] = $memo[$ext]['error']; continue; }
                     $row = array_merge($row,$memo[$ext]);
@@ -69,13 +74,14 @@ try {
         } catch (Throwable $e) {
             $summary['errors']++; $entry = ['object_id'=>(int)$object['id'],'name'=>$object['name'],'error'=>$e->getMessage()];
             $report[] = $entry; echo json_encode($entry,JSON_UNESCAPED_UNICODE)."\n";
-            if ($failures >= 5) throw new RuntimeException('Registry unavailable; stopped after five failures');
+            if ($failures >= 5) { $summary['aborted'] = 'Registry unavailable after five consecutive failures'; $summary['remaining'] = count($objects)-$summary['objects']; break; }
         }
     }
     if ($apply) {
         $json = json_encode(['at'=>gmdate('c'),'summary'=>$summary,'objects'=>$report],JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT);
-        $tmp = $state.'/report.json.tmp';
-        if (file_put_contents($tmp,$json,LOCK_EX) !== strlen($json) || !rename($tmp,$state.'/report.json')) throw new RuntimeException('Report write failed');
+        $reportPath = $state.($only ? '/report-object-'.$only.'.json' : '/report.json');
+        $tmp = $reportPath.'.tmp';
+        if (file_put_contents($tmp,$json,LOCK_EX) !== strlen($json) || !rename($tmp,$reportPath)) throw new RuntimeException('Report write failed');
     }
     echo json_encode(['summary'=>$summary])."\n";
     exit($summary['errors'] ? 1 : 0);
