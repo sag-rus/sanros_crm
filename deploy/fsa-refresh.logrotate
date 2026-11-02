@@ -1,0 +1,8 @@
+/var/log/sanata-fsa.log {
+    weekly
+    rotate 12
+    compress
+    missingok
+    notifempty
+    copytruncate
+}
