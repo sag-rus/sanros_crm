@@ -2,7 +2,9 @@
 // PHP 7.1 compatible. Only whole-property registry records may be published.
 function fsaText($value) {
     $value = mb_strtolower((string)$value, 'UTF-8');
-    return trim(preg_replace('/[^\p{L}\p{N}]+/u', ' ', str_replace('ё', 'е', $value)));
+    $value = trim(preg_replace('/[^\p{L}\p{N}]+/u', ' ', str_replace('ё', 'е', $value)));
+    return str_replace(['публичное акционерное общество','открытое акционерное общество','закрытое акционерное общество',
+        'акционерное общество','общество с ограниченной ответственностью'], ['пао','оао','зао','ао','ооо'], $value);
 }
 function fsaIsBuilding($main) {
     return (bool)preg_match('/\b(корпус[\p{L}]*|корп\.|литер[\p{L}]*|коттедж(?:и|ей)?\b|апартамент[\p{L}]*|виллы\b|спальн[\p{L}]*\s+здани[\p{L}]*)/ui',
