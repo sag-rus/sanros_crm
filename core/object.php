@@ -2644,7 +2644,7 @@ function show_obj_cert($connect){
 						Название объекта в СРМ: <?=$obj['name']?> (<?=$obj['full_name']?>)<br>
 						Адрес объекта в СРМ: <?=$obj['address']?><br><br>
 						Название объекта в реестре: <?=$accr_data['name']?><br>
-						Адрес объекта в реестре: <?=$accr_data['address']?><br><br>						
+						Адрес объекта в реестре: <?=$accr_data['address']?><br><br>
 						<strong>Выбранные данные сертификации:</strong><br>
 						Номер реестровой записи: <?=$obj['accr_data']['registerRecord']?><br>
 						Статус: <?=$obj['accr_data']['status']?><br>
