@@ -23,6 +23,8 @@ $bad=$property;$bad['main']['region']['id']=3;check(fsaSelect($o,[$bad],$main)==
 $bad=$property;$bad['id_obj']=99;check(fsaSelect($o,[$bad],$main)===null,'other CRM object');
 $bel=['name'=>'Белокуриха'];$siberia=['fullName'=>'Санаторий Сибирь АО Курорт Белокуриха','ownerName'=>'АО Курорт Белокуриха'];
 check(!fsaNameMatches($bel,$siberia),'owner name is not resort name');
+$kurgazak=$main;$kurgazak['fullName']='Гостинично-сервисный комплекс «Кургазак» АО Санаторий «Янган-Тау»';$kurgazak['shortName']=$kurgazak['fullName'];
+check(!fsaNameMatches($o,$kurgazak),'legal owner abbreviations do not match another property');
 check(!fsaNameMatches(['name'=>'Янга'],$main),'partial word not matched');
 $projection=fsaProjection($property,'2026-11-02T12:00:00+00:00');check($projection['scope']==='object','verified scope');
 $property['main']['status']=['name'=>'Прекращен'];$p=fsaProjection($property,'now');check(!isset($p['endDate']) && $p['status']==='Прекращен','missing date clears old expiration');
