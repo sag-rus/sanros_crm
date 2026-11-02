@@ -30,7 +30,7 @@ try {
                 $extra = $db->getAll('SELECT * FROM accr_data WHERE name LIKE ?s LIMIT 61', '%'.$term.'%');
                 if (count($extra) <= 60) $rows = array_merge($rows, $extra);
             }
-            $candidates = []; $seen = []; $unavailable = false;
+            $candidates = []; $seen = []; $unavailable = [];
             foreach ($rows as $row) {
                 $ext = $row['ext_id']; if (isset($seen[$ext])) continue; $seen[$ext] = true;
                 $row['main'] = json_decode($row['data'],true)['hotel']['main'] ?? [];
@@ -48,15 +48,15 @@ try {
                             }
                         } catch (Throwable $e) { $memo[$ext] = ['error'=>$e->getMessage()]; $failures++; }
                     }
-                    if (isset($memo[$ext]['error'])) { $unavailable = true; continue; }
+                    if (isset($memo[$ext]['error'])) { $unavailable[$ext] = $memo[$ext]['error']; continue; }
                     $row = array_merge($row,$memo[$ext]);
                     // The identity must still match after fetching, including owner and region.
-                    if (!fsaSameOwnerRegion($anchor,$row['main'])) { $unavailable = true; continue; }
+                    if (!fsaSameOwnerRegion($anchor,$row['main'])) { $unavailable[$ext] = 'Owner or region changed; review required'; continue; }
                     if ($apply) fsaSaveCache($db,$row);
                 } else $row['checkedAt'] = $row['data_datetime'];
                 $candidates[] = $row;
             }
-            if ($unavailable) throw new RuntimeException('Candidate unavailable or changed identity; previous data retained');
+            if ($unavailable) throw new RuntimeException('Previous data retained: '.json_encode($unavailable, JSON_UNESCAPED_UNICODE));
             $selected = fsaSelect($object,$candidates,$anchor);
             $entry = ['object_id'=>(int)$object['id'],'name'=>$object['name'],'previous'=>$object['accr_id'],
                 'selected'=>$selected ? $selected['ext_id'] : null,'record'=>$selected ? $selected['main']['registerRecord'] : null,

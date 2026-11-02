@@ -35,7 +35,9 @@ foreach(['identity','status','date','json','name','record'] as $case){
  try{fsaValidate($b,$id);throw new LogicException('accepted '.$case);}catch(RuntimeException $e){check(true,$case);}
 }
 class FsaTestDb {
- public $writes=[];public $affected=1;
+ public $writes=[];public $affected=1;public $owner=60;
+ function getOne(...$args){return 1;}
+ function getRow(...$args){return ['id_obj'=>$this->owner];}
  function query(...$args){$this->writes[]=$args;return true;}
  function getAll(...$args){return [];}
  function affectedRows(){return $this->affected;}
@@ -48,6 +50,11 @@ try{
  check(strpos($db->writes[0][0],'synchronized=0')!==false,'publication enqueued');
  check(strpos($db->writes[0][0],'AND accr_id=?s AND accr_data=?s')!==false,'compare and swap');
  check(count(glob($dir.'/*.json'))===1,'backup before write');
+ $unchanged=$o;$unchanged['accr_id']=$property['ext_id'];$unchanged['accr_data']=json_encode($p,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
+ $db=new FsaTestDb();check(fsaPublish($db,$unchanged,$property,$p,$dir)===false && count($db->writes)===0,'unchanged response does not republish');
+ $db=new FsaTestDb();$db->owner=99;
+ try{fsaPublish($db,$o,$property,$p,$dir);throw new LogicException('stole another claim');}catch(RuntimeException $e){check(count($db->writes)===0,'recheck source claim under lock');}
+
  $db=new FsaTestDb();$db->affected=0;
  try{fsaPublish($db,$o,$property,$p,$dir);throw new LogicException('overwrote concurrent change');}catch(RuntimeException $e){check(count($db->writes)===1,'no link changes after concurrent modification');}
 }finally{foreach(glob($dir.'/*.json') as $f)unlink($f);rmdir($dir);}
