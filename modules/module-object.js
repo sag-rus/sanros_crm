@@ -2161,7 +2161,13 @@ function comfort_booking_panel(){
         rows.forEach(function(row){
             var tr=$('<tr>').appendTo(body);
             $('<td>').append($('<div>').text(row.id),$('<br>'),$('<div>').text(row.property_id)).appendTo(tr);
-            [labels[row.state]||row.state,row.direction||'—',row.object_type||'—'].forEach(function(v){$('<td>').text(v).appendTo(tr);});
+            $('<td>').text(labels[row.state]||row.state).appendTo(tr);
+            var direction=$('<td>').appendTo(tr);
+            (row.direction||'—').split(' / ').forEach(function(part,i){
+                if(i)direction.append($('<br>'));
+                direction.append($('<span>').text((i?'/ ':'')+part));
+            });
+            $('<td>').text(row.object_type||'—').appendTo(tr);
             var name=$('<td style="min-width:280px">').appendTo(tr);
             if(/^https:\/\/санатории-россии\.рф\//.test(row.url)) $('<a target="_blank" rel="noopener noreferrer">').attr('href',row.url).text(row.name).appendTo(name);
             else name.text(row.name);
