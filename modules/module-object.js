@@ -2170,7 +2170,7 @@ function comfort_booking_panel(){
             var name=$('<td style="min-width:280px">').appendTo(tr);
             if(/^https:\/\/санатории-россии\.рф\//.test(row.url)) $('<a target="_blank" rel="noopener noreferrer">').attr('href',row.url).text(row.name).appendTo(name);
             else name.text(row.name);
-            $('<div class="text-muted">').text(row.object_type||'—').appendTo(name);
+            $('<div class="text-muted">').text('Тип объекта: '+(row.object_type||'—')).appendTo(name);
             var rules=$('<div class="small text-muted" style="margin-top:8px">').appendTo(name);
             $('<strong>').text('Условия отмены:').appendTo(rules);
             if(!row.cancellation||!row.cancellation.length)$('<div>').text('Условия по тарифам пока не получены.').appendTo(rules);
