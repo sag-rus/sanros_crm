@@ -7,7 +7,7 @@ function cbm_request(array $payload) {
     $time=(string)time();$nonce=bin2hex(random_bytes(32));
     $signature=hash_hmac('sha256',"POST\n".$time."\n".$nonce."\n".hash('sha256',$body),$secret);
     $host='xn----7sba6aaba8akdsdekah.xn--p1ai';
-    $ch=curl_init('https://'.$host.'/comfort-booking-moderation.php');
+    $ch=curl_init('https://'.$host.'/api/comfort_booking_moderation');
     curl_setopt_array($ch,[CURLOPT_POST=>true,CURLOPT_POSTFIELDS=>$body,CURLOPT_RETURNTRANSFER=>true,
         CURLOPT_CONNECTTIMEOUT=>8,CURLOPT_TIMEOUT=>40,CURLOPT_SSL_VERIFYPEER=>true,CURLOPT_SSL_VERIFYHOST=>2,
         CURLOPT_RESOLVE=>[$host.':443:10.8.0.150'],
