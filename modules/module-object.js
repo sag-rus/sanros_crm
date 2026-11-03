@@ -2148,7 +2148,7 @@ function comfort_booking_panel(){
     var info=$('<p class="text-muted">').appendTo(root),message=$('<div role="alert">').appendTo(root);
     var wrap=$('<div class="table-responsive">').appendTo(root),table=$('<table class="table table-striped table-bordered">').appendTo(wrap);
     var head=$('<tr>').appendTo($('<thead>').appendTo(table));
-    ['ID на сайте san-ros.rf','ID Comfort Booking','Статус','Направление','Тип объекта','Название объекта','Действия'].forEach(function(t){$('<th>').text(t).appendTo(head);});
+    ['ID внутр','ID внешн','Статус','Направление','Тип объекта','Название объекта','Действия'].forEach(function(t){$('<th>').text(t).appendTo(head);});
     var body=$('<tbody>').appendTo(table),pager=$('<div class="btn-group" role="navigation" aria-label="Страницы списка">').appendTo(root);
     var rows=[],page=1,pages=1,total=0,csrf='',canModerate=false,busy=false,xhr=null,sequence=0,timer=null;
     function showError(response){message.attr('class','alert alert-danger').text(response.responseJSON&&response.responseJSON.error||'Не удалось связаться с сайтом. Обновите список и проверьте статус.');}
