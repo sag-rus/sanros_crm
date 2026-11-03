@@ -2130,3 +2130,54 @@ $(document).on('change','.edit-object #object_region',function (e) {
 		});
 	}
 });
+
+
+function comfort_booking_panel(){
+    select_menu('comfort_booking_menu');
+    var root=$('<div class="comfort-booking-panel">').appendTo($('#body').empty());
+    $('<h3>').text('Comfort Booking').appendTo(root);
+    var form=$('<form class="form-inline" style="margin-bottom:15px">').appendTo(root);
+    var search=$('<input type="search" class="form-control" style="width:70%;max-width:700px" placeholder="Название, направление, ID на сайте или ID Comfort Booking" aria-label="Поиск объектов Comfort Booking">').appendTo(form);
+    $('<button type="submit" class="btn btn-primary" style="margin-left:8px">').text('Найти').appendTo(form);
+    var info=$('<p class="text-muted">').appendTo(root), message=$('<div role="alert">').appendTo(root);
+    var wrap=$('<div class="table-responsive">').appendTo(root), table=$('<table class="table table-striped table-bordered">').appendTo(wrap);
+    var head=$('<tr>').appendTo($('<thead>').appendTo(table));
+    ['ID на сайте san-ros.rf','ID Comfort Booking','Статус','Направление','Тип объекта','Название объекта','Действия'].forEach(function(t){$('<th>').text(t).appendTo(head);});
+    var body=$('<tbody>').appendTo(table), rows=[], csrf='', canModerate=false, busy=false;
+    var labels={pending:'Ожидает модерации',approved:'Прошел модерацию',disabled:'Отключен'};
+    function showError(xhr){message.attr('class','alert alert-danger').text(xhr.responseJSON&&xhr.responseJSON.error||'Не удалось связаться с сайтом. Обновите список и проверьте статус.');}
+    function render(){
+        body.empty();var term=$.trim(search.val()).toLocaleLowerCase();var found=0;
+        rows.forEach(function(row){
+            var fields=[row.name,row.direction,row.id,row.property_id].join(' ').toLocaleLowerCase();
+            if(term && fields.indexOf(term)===-1)return;found++;
+            var tr=$('<tr>').appendTo(body);
+            [row.id,row.property_id,labels[row.state]||row.state,row.direction||'—',row.object_type||'—'].forEach(function(v){$('<td>').text(v).appendTo(tr);});
+            var name=$('<td>').appendTo(tr);
+            if(/^https:\/\/санатории-россии\.рф\//.test(row.url)) $('<a target="_blank" rel="noopener noreferrer">').attr('href',row.url).text(row.name).appendTo(name);
+            else name.text(row.name);
+            var actions=$('<td style="white-space:nowrap">').appendTo(tr);
+            if(canModerate && row.state!=='disabled'){
+                if(row.state==='pending') $('<button type="button" class="btn btn-success btn-sm" style="margin-right:5px">').text('Одобрить').prop('disabled',busy).on('click',function(){change(row,'approve');}).appendTo(actions);
+                $('<button type="button" class="btn btn-danger btn-sm">').text('Отключить').prop('disabled',busy).on('click',function(){change(row,'disable');}).appendTo(actions);
+            }
+        });
+        if(!found)$('<tr>').append($('<td colspan="7">').text('Объекты не найдены.')).appendTo(body);
+        info.text('Показано '+found+' из '+rows.length+'. Сначала ожидающие модерации, затем одобренные и отключённые; новые объекты — выше.');
+    }
+    function load(){
+        info.text('Загрузка объектов с сайта…');
+        return $.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:'list'}}).done(function(result){
+            if(!$.contains(document,root[0]))return;
+            rows=result.data.rows;csrf=result.csrf;canModerate=result.canModerate;render();
+        }).fail(showError);
+    }
+    function change(row,action){
+        if(busy)return;
+        if(action==='disable'&&!confirm('Отключить «'+row.name+'»? Объект исчезнет с сайта, входящие обновления не будут применяться.'))return;
+        busy=true;render();message.empty().removeClass('alert alert-danger');
+        $.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:action,id:row.id,expected:row.state,csrf:csrf}})
+            .done(function(){load();}).fail(function(xhr){showError(xhr);load();}).always(function(){busy=false;render();});
+    }
+    form.on('submit',function(e){e.preventDefault();render();});search.on('input',render);load();
+}
