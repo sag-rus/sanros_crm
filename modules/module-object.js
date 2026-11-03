@@ -2143,7 +2143,7 @@ function comfort_booking_panel(){
     $('<option value="">').text('Все статусы').appendTo(status);
     $.each(labels,function(key,text){$('<option>').val(key).text(text).appendTo(status);});
     $('<button type="submit" class="btn btn-primary" style="margin-left:8px">').text('Найти').appendTo(form);
-    var size=$('<select class="form-control" aria-label="Объектов на странице" style="margin-left:8px">').appendTo(form);
+    var size=$('<select class="form-control" aria-label="Объектов на странице" style="width:auto;margin-left:auto">');
     [20,50,100,200].forEach(function(n){$('<option>').val(n).text(n+' на странице').appendTo(size);});
     var toolbar=$('<div style="margin-bottom:10px">').appendTo(root);
     var refresh=$('<button type="button" class="btn btn-default">').text('Обновить').appendTo(toolbar);
@@ -2152,7 +2152,8 @@ function comfort_booking_panel(){
     var wrap=$('<div class="table-responsive">').appendTo(root),table=$('<table class="table table-striped table-bordered">').appendTo(wrap);
     var head=$('<tr>').appendTo($('<thead>').appendTo(table));
     ['ID внутр','ID внешн','Статус','Направление','Тип объекта','Название объекта','Действия'].forEach(function(t){$('<th>').text(t).appendTo(head);});
-    var body=$('<tbody>').appendTo(table),pagerWrap=$('<div style="padding:15px 0">').appendTo(root),pager=$('<div class="btn-group" role="navigation" aria-label="Страницы списка">').appendTo(pagerWrap);
+    var body=$('<tbody>').appendTo(table),pagerWrap=$('<div style="padding:15px 0;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap">').appendTo(root),pager=$('<div class="btn-group" role="navigation" aria-label="Страницы списка">').appendTo(pagerWrap);
+    size.appendTo(pagerWrap);
     var rows=[],page=1,pages=1,total=0,csrf='',canModerate=false,busy=false,xhr=null,sequence=0,timer=null;
     function showError(response){message.attr('class','alert alert-danger').text(response.responseJSON&&response.responseJSON.error||'Не удалось связаться с сайтом. Обновите список и проверьте статус.');}
     function render(){
