@@ -2151,7 +2151,7 @@ function comfort_booking_panel(){
     var info=$('<p class="text-muted">').appendTo(root),message=$('<div role="alert">').appendTo(root);
     var wrap=$('<div class="table-responsive">').appendTo(root),table=$('<table class="table table-striped table-bordered">').appendTo(wrap);
     var head=$('<tr>').appendTo($('<thead>').appendTo(table));
-    ['ID внутр','ID внешн','Статус','Направление','Тип объекта','Название объекта','Действия'].forEach(function(t){$('<th>').text(t).appendTo(head);});
+    ['ID внутр / внешн.','Статус','Направление','Тип объекта','Название объекта','Действия'].forEach(function(t){$('<th>').text(t).appendTo(head);});
     var body=$('<tbody>').appendTo(table),pagerWrap=$('<div style="padding:15px 0;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap">').appendTo(root),pager=$('<div class="btn-group" role="navigation" aria-label="Страницы списка">').appendTo(pagerWrap);
     size.appendTo(pagerWrap);
     var rows=[],page=1,pages=1,total=0,csrf='',canModerate=false,busy=false,xhr=null,sequence=0,timer=null;
@@ -2160,7 +2160,8 @@ function comfort_booking_panel(){
         body.empty();pager.empty();
         rows.forEach(function(row){
             var tr=$('<tr>').appendTo(body);
-            [row.id,row.property_id,labels[row.state]||row.state,row.direction||'—',row.object_type||'—'].forEach(function(v){$('<td>').text(v).appendTo(tr);});
+            $('<td>').append($('<div>').text(row.id),$('<br>'),$('<div>').text(row.property_id)).appendTo(tr);
+            [labels[row.state]||row.state,row.direction||'—',row.object_type||'—'].forEach(function(v){$('<td>').text(v).appendTo(tr);});
             var name=$('<td style="min-width:280px">').appendTo(tr);
             if(/^https:\/\/санатории-россии\.рф\//.test(row.url)) $('<a target="_blank" rel="noopener noreferrer">').attr('href',row.url).text(row.name).appendTo(name);
             else name.text(row.name);
@@ -2177,7 +2178,7 @@ function comfort_booking_panel(){
                 $('<button type="button" class="btn btn-danger btn-sm">').text('Отключить').prop('disabled',busy).on('click',function(){change(row,'disable');}).appendTo(actions);
             }
         });
-        if(!rows.length)$('<tr>').append($('<td colspan="7">').text('Объекты не найдены.')).appendTo(body);
+        if(!rows.length)$('<tr>').append($('<td colspan="6">').text('Объекты не найдены.')).appendTo(body);
         info.text('Найдено: '+total+'. Страница '+page+' из '+pages+'. Сначала ожидающие модерации, затем одобренные и отключённые; новые — выше.');
         function button(label,target,disabled,active){$('<button type="button" class="btn">').addClass(active?'btn-primary':'btn-default').text(label).prop('disabled',disabled||busy).on('click',function(){page=target;load();}).appendTo(pager);}
         button('«',1,page===1);button('‹',page-1,page===1);
