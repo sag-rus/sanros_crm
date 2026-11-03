@@ -2136,7 +2136,7 @@ function comfort_booking_panel(){
     select_menu('comfort_booking_menu');
     var root=$('<div class="comfort-booking-panel">').appendTo($('#body').empty());
     $('<h3>').text('Comfort Booking').appendTo(root);
-    var form=$('<form class="form-inline" style="margin-bottom:15px">').appendTo(root);
+    var form=$('<form class="form-inline" style="margin-bottom:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">').appendTo(root);
     var search=$('<input type="search" class="form-control" style="width:42%;min-width:260px" placeholder="Название, направление, ID сайта или Comfort Booking" aria-label="Поиск объектов Comfort Booking">').appendTo(form);
     var status=$('<select class="form-control" aria-label="Статус" style="margin-left:8px">').appendTo(form);
     var labels={pending:'Ожидает модерации',approved:'Прошел модерацию',disabled:'Отключен'};
@@ -2145,9 +2145,8 @@ function comfort_booking_panel(){
     $('<button type="submit" class="btn btn-primary" style="margin-left:8px">').text('Найти').appendTo(form);
     var size=$('<select class="form-control" aria-label="Объектов на странице" style="width:auto;margin-left:auto">');
     [20,50,100,200].forEach(function(n){$('<option>').val(n).text(n+' на странице').appendTo(size);});
-    var toolbar=$('<div style="margin-bottom:10px">').appendTo(root);
-    var refresh=$('<button type="button" class="btn btn-default">').text('Обновить').appendTo(toolbar);
-    var loading=$('<span class="text-muted" role="status" style="margin-left:10px">').appendTo(toolbar);
+    var refresh=$('<button type="button" class="btn btn-default" style="margin-left:auto">').text('Обновить').appendTo(form);
+    var loading=$('<div class="text-muted" role="status">').appendTo(root);
     var info=$('<p class="text-muted">').appendTo(root),message=$('<div role="alert">').appendTo(root);
     var wrap=$('<div class="table-responsive">').appendTo(root),table=$('<table class="table table-striped table-bordered">').appendTo(wrap);
     var head=$('<tr>').appendTo($('<thead>').appendTo(table));
