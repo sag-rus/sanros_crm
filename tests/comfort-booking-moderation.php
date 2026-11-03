@@ -13,4 +13,6 @@ ok(!cbm_allowed($user,'disable','GET',$token,$token),'GET mutation denied');
 ok(!cbm_allowed($user,'disable','POST','wrong',$token),'CSRF denied');
 ok(!cbm_allowed($user,'disable','POST','',''),'empty CSRF denied');
 ok(!cbm_allowed($user,'enable','POST',$token,$token),'unsupported reactivation denied');
+ok(cbm_allowed($user,'count','POST','',''),'authenticated pending counter');
+ok(!cbm_allowed(false,'count','POST','',''),'anonymous counter denied');
 echo "$n checks passed\n";
