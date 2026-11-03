@@ -2211,7 +2211,7 @@ function comfort_booking_panel(){
     function change(row,action){
         if(busy)return;
         var question=action==='approve'
-            ?'Одобрить «'+row.name+'»? Объект пройдёт модерацию, запрет индексации Comfort Booking будет снят.'
+            ?'Одобрить «'+row.name+'»? Объект пройдёт модерацию, запрет индексации будет снят.'
             :'Отключить «'+row.name+'»? Объект исчезнет с сайта, входящие обновления не будут применяться.';
         if(!confirm(question))return;
         busy=true;render();message.empty().removeClass('alert alert-danger');
