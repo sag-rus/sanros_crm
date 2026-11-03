@@ -2145,6 +2145,9 @@ function comfort_booking_panel(){
     $('<button type="submit" class="btn btn-primary" style="margin-left:8px">').text('Найти').appendTo(form);
     var size=$('<select class="form-control" aria-label="Объектов на странице" style="margin-left:8px">').appendTo(form);
     [20,50,100,200].forEach(function(n){$('<option>').val(n).text(n+' на странице').appendTo(size);});
+    var toolbar=$('<div style="margin-bottom:10px">').appendTo(root);
+    var refresh=$('<button type="button" class="btn btn-default">').text('Обновить').appendTo(toolbar);
+    var loading=$('<span class="text-muted" role="status" style="margin-left:10px">').appendTo(toolbar);
     var info=$('<p class="text-muted">').appendTo(root),message=$('<div role="alert">').appendTo(root);
     var wrap=$('<div class="table-responsive">').appendTo(root),table=$('<table class="table table-striped table-bordered">').appendTo(wrap);
     var head=$('<tr>').appendTo($('<thead>').appendTo(table));
@@ -2181,12 +2184,13 @@ function comfort_booking_panel(){
         button('›',page+1,page===pages);button('»',pages,page===pages);
     }
     function load(){
-        clearTimeout(timer);var seq=++sequence;if(xhr)xhr.abort();info.text('Загрузка объектов с сайта…');
+        clearTimeout(timer);var seq=++sequence;if(xhr)xhr.abort();loading.text('Загрузка объектов с сайта…');refresh.prop('disabled',true);message.empty().removeClass('alert alert-danger');
         xhr=$.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:'list',page:page,perPage:size.val(),search:search.val(),status:status.val()}})
             .done(function(result){
                 if(seq!==sequence||!$.contains(document,root[0]))return;
                 rows=result.data.rows;page=result.data.page;pages=result.data.pages;total=result.data.total;csrf=result.csrf;canModerate=result.canModerate;render();
-            }).fail(function(response,why){if(why!=='abort'&&seq===sequence)showError(response);});
+            }).fail(function(response,why){if(why!=='abort'&&seq===sequence)showError(response);})
+            .always(function(){if(seq===sequence){loading.empty();refresh.prop('disabled',busy);}});
     }
     function change(row,action){
         if(busy)return;
@@ -2195,6 +2199,7 @@ function comfort_booking_panel(){
         $.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:action,id:row.id,expected:row.state,csrf:csrf}})
             .fail(showError).always(function(){busy=false;load();});
     }
+    refresh.on('click',function(){if(!busy)load();});
     form.on('submit',function(e){e.preventDefault();page=1;load();});
     search.on('input',function(){clearTimeout(timer);page=1;timer=setTimeout(load,350);});
     status.add(size).on('change',function(){page=1;load();});load();
