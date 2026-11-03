@@ -2143,6 +2143,7 @@ function comfort_booking_panel(){
     $('<option value="">').text('Все статусы').appendTo(status);
     $.each(labels,function(key,text){$('<option>').val(key).text(text).appendTo(status);});
     $('<button type="submit" class="btn btn-primary" style="margin-left:8px">').text('Найти').appendTo(form);
+    var reset=$('<button type="button" class="btn btn-default">').text('Сброс').appendTo(form);
     var size=$('<select class="form-control" aria-label="Объектов на странице" style="width:auto;margin-left:auto">');
     [20,50,100,200].forEach(function(n){$('<option>').val(n).text(n+' на странице').appendTo(size);});
     var refresh=$('<button type="button" class="btn btn-default" style="margin-left:auto">').text('Обновить').appendTo(form);
@@ -2209,6 +2210,7 @@ function comfort_booking_panel(){
         $.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:action,id:row.id,expected:row.state,csrf:csrf}})
             .fail(showError).always(function(){busy=false;load();});
     }
+    reset.on('click',function(){search.val('');status.val('');page=1;load();});
     refresh.on('click',function(){if(!busy)load();});
     form.on('submit',function(e){e.preventDefault();page=1;load();});
     search.on('input',function(){clearTimeout(timer);page=1;timer=setTimeout(load,350);});
