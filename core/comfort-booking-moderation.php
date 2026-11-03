@@ -28,7 +28,7 @@ function cbm_user() {
 }
 function cbm_allowed($user, $action, $method, $csrf, $expectedCsrf) {
     if(!$user || (int)$user['rights']<2 || $method!=='POST') return false;
-    if($action==='list') return true;
+    if(in_array($action,['list','count'],true)) return true;
     return (int)$user['rights']>=3 && in_array($action,['approve','disable'],true)
         && is_string($expectedCsrf) && strlen($expectedCsrf)===64 && hash_equals($expectedCsrf,(string)$csrf);
 }

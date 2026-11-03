@@ -2150,7 +2150,7 @@ function comfort_booking_panel(){
     var info=$('<p class="text-muted">').appendTo(root),message=$('<div role="alert">').appendTo(root);
     var wrap=$('<div class="table-responsive">').appendTo(root),table=$('<table class="table table-striped table-bordered">').appendTo(wrap);
     var head=$('<tr>').appendTo($('<thead>').appendTo(table));
-    ['ID внутр / внешн.','Статус','Направление','Тип объекта','Название объекта','Действия'].forEach(function(t){$('<th>').text(t).appendTo(head);});
+    ['ID внутр / внешн.','Статус','Направление','Объект','Действия'].forEach(function(t){$('<th>').text(t).appendTo(head);});
     var body=$('<tbody>').appendTo(table),pagerWrap=$('<div style="padding:15px 0;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap">').appendTo(root),pager=$('<div class="btn-group" role="navigation" aria-label="Страницы списка">').appendTo(pagerWrap);
     size.appendTo(pagerWrap);
     var rows=[],page=1,pages=1,total=0,csrf='',canModerate=false,busy=false,xhr=null,sequence=0,timer=null;
@@ -2166,10 +2166,10 @@ function comfort_booking_panel(){
                 if(i)direction.append($('<br>'));
                 direction.append($('<span>').text((i?'/ ':'')+part));
             });
-            $('<td>').text(row.object_type||'—').appendTo(tr);
             var name=$('<td style="min-width:280px">').appendTo(tr);
             if(/^https:\/\/санатории-россии\.рф\//.test(row.url)) $('<a target="_blank" rel="noopener noreferrer">').attr('href',row.url).text(row.name).appendTo(name);
             else name.text(row.name);
+            $('<div class="text-muted">').text(row.object_type||'—').appendTo(name);
             var rules=$('<div class="small text-muted" style="margin-top:8px">').appendTo(name);
             $('<strong>').text('Условия отмены:').appendTo(rules);
             if(!row.cancellation||!row.cancellation.length)$('<div>').text('Условия по тарифам пока не получены.').appendTo(rules);
@@ -2183,7 +2183,7 @@ function comfort_booking_panel(){
                 $('<button type="button" class="btn btn-danger btn-sm">').text('Отключить').prop('disabled',busy).on('click',function(){change(row,'disable');}).appendTo(actions);
             }
         });
-        if(!rows.length)$('<tr>').append($('<td colspan="6">').text('Объекты не найдены.')).appendTo(body);
+        if(!rows.length)$('<tr>').append($('<td colspan="5">').text('Объекты не найдены.')).appendTo(body);
         info.text('Найдено: '+total+'. Страница '+page+' из '+pages+'. Сначала ожидающие модерации, затем одобренные и отключённые; новые — выше.');
         function button(label,target,disabled,active){$('<button type="button" class="btn">').addClass(active?'btn-primary':'btn-default').text(label).prop('disabled',disabled||busy).on('click',function(){page=target;load();}).appendTo(pager);}
         button('«',1,page===1);button('‹',page-1,page===1);
@@ -2195,13 +2195,16 @@ function comfort_booking_panel(){
         xhr=$.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:'list',page:page,perPage:size.val(),search:search.val(),status:status.val()}})
             .done(function(result){
                 if(seq!==sequence||!$.contains(document,root[0]))return;
-                rows=result.data.rows;page=result.data.page;pages=result.data.pages;total=result.data.total;csrf=result.csrf;canModerate=result.canModerate;render();
+                comfort_booking_count(result.data.pendingCount);rows=result.data.rows;page=result.data.page;pages=result.data.pages;total=result.data.total;csrf=result.csrf;canModerate=result.canModerate;render();
             }).fail(function(response,why){if(why!=='abort'&&seq===sequence)showError(response);})
             .always(function(){if(seq===sequence){loading.empty();refresh.prop('disabled',busy);}});
     }
     function change(row,action){
         if(busy)return;
-        if(action==='disable'&&!confirm('Отключить «'+row.name+'»? Объект исчезнет с сайта, входящие обновления не будут применяться.'))return;
+        var question=action==='approve'
+            ?'Одобрить «'+row.name+'»? Объект пройдёт модерацию, запрет индексации Comfort Booking будет снят.'
+            :'Отключить «'+row.name+'»? Объект исчезнет с сайта, входящие обновления не будут применяться.';
+        if(!confirm(question))return;
         busy=true;render();message.empty().removeClass('alert alert-danger');
         $.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:action,id:row.id,expected:row.state,csrf:csrf}})
             .fail(showError).always(function(){busy=false;load();});
@@ -2210,4 +2213,22 @@ function comfort_booking_panel(){
     form.on('submit',function(e){e.preventDefault();page=1;load();});
     search.on('input',function(){clearTimeout(timer);page=1;timer=setTimeout(load,350);});
     status.add(size).on('change',function(){page=1;load();});load();
+}
+
+// Counts are read from the website, never stored in CRM.
+var comfortBookingCountRequest=null,comfortBookingCountSequence=0;
+function comfort_booking_count(value){
+    var menu=$('#comfort_booking_menu');if(!menu.length)return;
+    var seq=++comfortBookingCountSequence;
+    if(comfortBookingCountRequest)comfortBookingCountRequest.abort();
+    function show(count){
+        var badge=menu.find('.badge');
+        if(Number(count)>0){
+            if(!badge.length)badge=$('<span class="badge count-red pull-right">').appendTo(menu.find('a'));
+            badge.text(count).attr('title','Ожидают модерации');
+        }else badge.remove();
+    }
+    if(typeof value==='number'){show(value);return;}
+    comfortBookingCountRequest=$.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:'count'}})
+        .done(function(result){if(seq===comfortBookingCountSequence)show(result.data.pendingCount);});
 }

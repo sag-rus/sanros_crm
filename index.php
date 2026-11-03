@@ -32,11 +32,11 @@
 	<script type="text/javascript" src="js/jquery.scrollTo-min.js"></script>
 	<script type="text/javascript" src="js/strophe/strophe.js"></script>
 	<script type="text/javascript" src="js/strophe/plugin.roster.js"></script>
-	<script type="text/javascript" src="modules/function.js?ver=<?php echo $version; ?>"></script>
+	<script type="text/javascript" src="modules/function.js?ver=<?php echo $version; ?>&cb=20261103-10"></script>
 	<script type="text/javascript" src="modules/module-image.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-schet.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-users.js?ver=<?php echo $version; ?>"></script>
-	<script type="text/javascript" src="modules/module-object.js?ver=<?php echo $version; ?>&cb=20261103-9"></script>
+	<script type="text/javascript" src="modules/module-object.js?ver=<?php echo $version; ?>&cb=20261103-10"></script>
 	<script type="text/javascript" src="modules/module-price.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-admin.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-chat.js?ver=<?php echo $version; ?>"></script>
