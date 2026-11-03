@@ -36,7 +36,7 @@
 	<script type="text/javascript" src="modules/module-image.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-schet.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-users.js?ver=<?php echo $version; ?>"></script>
-	<script type="text/javascript" src="modules/module-object.js?ver=<?php echo $version; ?>&cb=20261103-3"></script>
+	<script type="text/javascript" src="modules/module-object.js?ver=<?php echo $version; ?>&cb=20261103-4"></script>
 	<script type="text/javascript" src="modules/module-price.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-admin.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-chat.js?ver=<?php echo $version; ?>"></script>
