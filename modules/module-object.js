@@ -2137,47 +2137,65 @@ function comfort_booking_panel(){
     var root=$('<div class="comfort-booking-panel">').appendTo($('#body').empty());
     $('<h3>').text('Comfort Booking').appendTo(root);
     var form=$('<form class="form-inline" style="margin-bottom:15px">').appendTo(root);
-    var search=$('<input type="search" class="form-control" style="width:70%;max-width:700px" placeholder="Название, направление, ID на сайте или ID Comfort Booking" aria-label="Поиск объектов Comfort Booking">').appendTo(form);
+    var search=$('<input type="search" class="form-control" style="width:42%;min-width:260px" placeholder="Название, направление, ID сайта или Comfort Booking" aria-label="Поиск объектов Comfort Booking">').appendTo(form);
+    var status=$('<select class="form-control" aria-label="Статус" style="margin-left:8px">').appendTo(form);
+    var labels={pending:'Ожидает модерации',approved:'Прошел модерацию',disabled:'Отключен'};
+    $('<option value="">').text('Все статусы').appendTo(status);
+    $.each(labels,function(key,text){$('<option>').val(key).text(text).appendTo(status);});
     $('<button type="submit" class="btn btn-primary" style="margin-left:8px">').text('Найти').appendTo(form);
-    var info=$('<p class="text-muted">').appendTo(root), message=$('<div role="alert">').appendTo(root);
-    var wrap=$('<div class="table-responsive">').appendTo(root), table=$('<table class="table table-striped table-bordered">').appendTo(wrap);
+    var size=$('<select class="form-control" aria-label="Объектов на странице" style="margin-left:8px">').appendTo(form);
+    [20,50,100,200].forEach(function(n){$('<option>').val(n).text(n+' на странице').appendTo(size);});
+    var info=$('<p class="text-muted">').appendTo(root),message=$('<div role="alert">').appendTo(root);
+    var wrap=$('<div class="table-responsive">').appendTo(root),table=$('<table class="table table-striped table-bordered">').appendTo(wrap);
     var head=$('<tr>').appendTo($('<thead>').appendTo(table));
     ['ID на сайте san-ros.rf','ID Comfort Booking','Статус','Направление','Тип объекта','Название объекта','Действия'].forEach(function(t){$('<th>').text(t).appendTo(head);});
-    var body=$('<tbody>').appendTo(table), rows=[], csrf='', canModerate=false, busy=false;
-    var labels={pending:'Ожидает модерации',approved:'Прошел модерацию',disabled:'Отключен'};
-    function showError(xhr){message.attr('class','alert alert-danger').text(xhr.responseJSON&&xhr.responseJSON.error||'Не удалось связаться с сайтом. Обновите список и проверьте статус.');}
+    var body=$('<tbody>').appendTo(table),pager=$('<div class="btn-group" role="navigation" aria-label="Страницы списка">').appendTo(root);
+    var rows=[],page=1,pages=1,total=0,csrf='',canModerate=false,busy=false,xhr=null,sequence=0,timer=null;
+    function showError(response){message.attr('class','alert alert-danger').text(response.responseJSON&&response.responseJSON.error||'Не удалось связаться с сайтом. Обновите список и проверьте статус.');}
     function render(){
-        body.empty();var term=$.trim(search.val()).toLocaleLowerCase();var found=0;
+        body.empty();pager.empty();
         rows.forEach(function(row){
-            var fields=[row.name,row.direction,row.id,row.property_id].join(' ').toLocaleLowerCase();
-            if(term && fields.indexOf(term)===-1)return;found++;
             var tr=$('<tr>').appendTo(body);
             [row.id,row.property_id,labels[row.state]||row.state,row.direction||'—',row.object_type||'—'].forEach(function(v){$('<td>').text(v).appendTo(tr);});
-            var name=$('<td>').appendTo(tr);
+            var name=$('<td style="min-width:280px">').appendTo(tr);
             if(/^https:\/\/санатории-россии\.рф\//.test(row.url)) $('<a target="_blank" rel="noopener noreferrer">').attr('href',row.url).text(row.name).appendTo(name);
             else name.text(row.name);
+            var rules=$('<div class="small text-muted" style="margin-top:8px">').appendTo(name);
+            $('<strong>').text('Условия отмены:').appendTo(rules);
+            if(!row.cancellation||!row.cancellation.length)$('<div>').text('Условия по тарифам пока не получены.').appendTo(rules);
+            (row.cancellation||[]).forEach(function(rule){
+                $('<div style="margin-top:6px">').append($('<strong>').text('Тарифы: '+rule.rates.join(', '))).appendTo(rules);
+                rule.lines.forEach(function(line){$('<div>').text(line).appendTo(rules);});
+            });
             var actions=$('<td style="white-space:nowrap">').appendTo(tr);
-            if(canModerate && row.state!=='disabled'){
-                if(row.state==='pending') $('<button type="button" class="btn btn-success btn-sm" style="margin-right:5px">').text('Одобрить').prop('disabled',busy).on('click',function(){change(row,'approve');}).appendTo(actions);
+            if(canModerate&&row.state!=='disabled'){
+                if(row.state==='pending')$('<button type="button" class="btn btn-success btn-sm" style="margin-right:5px">').text('Одобрить').prop('disabled',busy).on('click',function(){change(row,'approve');}).appendTo(actions);
                 $('<button type="button" class="btn btn-danger btn-sm">').text('Отключить').prop('disabled',busy).on('click',function(){change(row,'disable');}).appendTo(actions);
             }
         });
-        if(!found)$('<tr>').append($('<td colspan="7">').text('Объекты не найдены.')).appendTo(body);
-        info.text('Показано '+found+' из '+rows.length+'. Сначала ожидающие модерации, затем одобренные и отключённые; новые объекты — выше.');
+        if(!rows.length)$('<tr>').append($('<td colspan="7">').text('Объекты не найдены.')).appendTo(body);
+        info.text('Найдено: '+total+'. Страница '+page+' из '+pages+'. Сначала ожидающие модерации, затем одобренные и отключённые; новые — выше.');
+        function button(label,target,disabled,active){$('<button type="button" class="btn">').addClass(active?'btn-primary':'btn-default').text(label).prop('disabled',disabled||busy).on('click',function(){page=target;load();}).appendTo(pager);}
+        button('«',1,page===1);button('‹',page-1,page===1);
+        for(var n=Math.max(1,page-2);n<=Math.min(pages,page+2);n++)button(String(n),n,n===page,n===page);
+        button('›',page+1,page===pages);button('»',pages,page===pages);
     }
     function load(){
-        info.text('Загрузка объектов с сайта…');
-        return $.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:'list'}}).done(function(result){
-            if(!$.contains(document,root[0]))return;
-            rows=result.data.rows;csrf=result.csrf;canModerate=result.canModerate;render();
-        }).fail(showError);
+        clearTimeout(timer);var seq=++sequence;if(xhr)xhr.abort();info.text('Загрузка объектов с сайта…');
+        xhr=$.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:'list',page:page,perPage:size.val(),search:search.val(),status:status.val()}})
+            .done(function(result){
+                if(seq!==sequence||!$.contains(document,root[0]))return;
+                rows=result.data.rows;page=result.data.page;pages=result.data.pages;total=result.data.total;csrf=result.csrf;canModerate=result.canModerate;render();
+            }).fail(function(response,why){if(why!=='abort'&&seq===sequence)showError(response);});
     }
     function change(row,action){
         if(busy)return;
         if(action==='disable'&&!confirm('Отключить «'+row.name+'»? Объект исчезнет с сайта, входящие обновления не будут применяться.'))return;
         busy=true;render();message.empty().removeClass('alert alert-danger');
         $.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:action,id:row.id,expected:row.state,csrf:csrf}})
-            .done(function(){load();}).fail(function(xhr){showError(xhr);load();}).always(function(){busy=false;render();});
+            .fail(showError).always(function(){busy=false;load();});
     }
-    form.on('submit',function(e){e.preventDefault();render();});search.on('input',render);load();
+    form.on('submit',function(e){e.preventDefault();page=1;load();});
+    search.on('input',function(){clearTimeout(timer);page=1;timer=setTimeout(load,350);});
+    status.add(size).on('change',function(){page=1;load();});load();
 }
