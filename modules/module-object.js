@@ -230,19 +230,36 @@ function tl_webhook_save_params(id) {
 	let id_reg = $('#object_region option:selected').val();
 	let region_direction_id = $('#region_direction_id option:selected').val();
 
-	if (id_type>0 && id_direction>0 && id_reg>0) {
+	if (name.trim() !== '' && id_type>0 && id_direction>0 && id_reg>0) {
 		$('#body').html('<br><center><img src="/CRM/images/ajax-loader.gif"></center>');
-		var str = 'func=tl_webhook_save_params&id='+id+'&name='+name+'&id_type='+id_type+'&id_direction='+id_direction+'&id_reg='+id_reg+'&region_direction_id='+region_direction_id;
 		$.ajax({
 			url: 'mysql.php',
 			type: 'POST',
-			data: str,
-			success: function(html){
+			dataType: 'json',
+			data: {
+				func: 'tl_webhook_save_params',
+				id: id,
+				name: name,
+				id_type: id_type,
+				id_direction: id_direction,
+				id_reg: id_reg,
+				region_direction_id: region_direction_id
+			},
+			success: function(response){
+				if (response && response.success) {
+					tl_webhook(id);
+				} else {
+					alert(response && response.message ? response.message : 'Не удалось сохранить параметры объекта');
+					tl_webhook(id);
+				}
+			},
+			error: function(){
+				alert('Ошибка соединения при сохранении параметров объекта');
 				tl_webhook(id);
 			}
 		});	
 	} else {
-		alert('Выберите Тип, Направление и Регион для нового объекта')
+		alert('Заполните Имя объекта и выберите Тип, Направление и Регион для нового объекта')
 	}
 }
 
@@ -2113,3 +2130,121 @@ $(document).on('change','.edit-object #object_region',function (e) {
 		});
 	}
 });
+
+
+function comfort_booking_panel(){
+    select_menu('comfort_booking_menu');
+    var root=$('<div class="comfort-booking-panel">').appendTo($('#body').empty());
+    $('<h3>').text('Comfort Booking').appendTo(root);
+    var form=$('<form class="form-inline" style="margin-bottom:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">').appendTo(root);
+    var search=$('<input type="search" class="form-control" style="width:32%;min-width:260px" placeholder="Название, ID сайта или Comfort Booking" aria-label="Поиск объектов Comfort Booking">').appendTo(form);
+    var status=$('<select class="form-control" aria-label="Статус" style="margin-left:8px">').appendTo(form);
+    var labels={pending:'Ожидает модерации',approved:'Прошел модерацию',disabled:'Отключен'};
+    $('<option value="">').text('Все статусы').appendTo(status);
+    $.each(labels,function(key,text){$('<option>').val(key).text(text).appendTo(status);});
+    var typeFilter=$('<select class="form-control" aria-label="Тип объекта" style="width:auto;max-width:220px">').prop('disabled',true).appendTo(form);
+    $('<option value="0">').text('Все типы объектов').appendTo(typeFilter);
+    var directionFilter=$('<select class="form-control" aria-label="Направление" style="width:auto;max-width:300px">').prop('disabled',true).appendTo(form);
+    $('<option value="0">').text('Все направления').appendTo(directionFilter);
+    $('<button type="submit" class="btn btn-primary" style="margin-left:8px">').text('Найти').appendTo(form);
+    var reset=$('<button type="button" class="btn btn-default">').text('Сброс').appendTo(form);
+    var size=$('<select class="form-control" aria-label="Объектов на странице" style="width:auto;margin-left:auto">');
+    [20,50,100,200].forEach(function(n){$('<option>').val(n).text(n+' на странице').appendTo(size);});
+    var refresh=$('<button type="button" class="btn btn-default" style="margin-left:auto">').text('Обновить').appendTo(form);
+    var loading=$('<div class="text-muted" role="status">').appendTo(root);
+    var info=$('<p class="text-muted">').appendTo(root),message=$('<div role="alert">').appendTo(root);
+    var wrap=$('<div class="table-responsive">').appendTo(root),table=$('<table class="table table-striped table-bordered">').appendTo(wrap);
+    var head=$('<tr>').appendTo($('<thead>').appendTo(table));
+    ['ID внутр / внешн.','Статус','Направление','Объект','Действия'].forEach(function(t){$('<th>').text(t).appendTo(head);});
+    var body=$('<tbody>').appendTo(table),pagerWrap=$('<div style="padding:15px 0;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap">').appendTo(root),pager=$('<div class="btn-group" role="navigation" aria-label="Страницы списка">').appendTo(pagerWrap);
+    size.appendTo(pagerWrap);
+    var rows=[],page=1,pages=1,total=0,csrf='',canModerate=false,busy=false,xhr=null,sequence=0,timer=null;
+    function showError(response){message.attr('class','alert alert-danger').text(response.responseJSON&&response.responseJSON.error||'Не удалось связаться с сайтом. Обновите список и проверьте статус.');}
+    function render(){
+        body.empty();pager.empty();
+        rows.forEach(function(row){
+            var tr=$('<tr>').appendTo(body);
+            $('<td>').append($('<div>').text(row.id),$('<br>'),$('<div>').text(row.property_id)).appendTo(tr);
+            $('<td>').text(labels[row.state]||row.state).appendTo(tr);
+            var direction=$('<td>').appendTo(tr);
+            (row.direction||'—').split(' / ').forEach(function(part,i){
+                if(i)direction.append($('<br>'));
+                direction.append($('<span>').text((i?'/ ':'')+part));
+            });
+            var name=$('<td style="min-width:280px">').appendTo(tr);
+            if(/^https:\/\/санатории-россии\.рф\//.test(row.url)) $('<a target="_blank" rel="noopener noreferrer">').attr('href',row.url).text(row.name).appendTo(name);
+            else name.text(row.name);
+            $('<div class="text-muted">').text('Тип объекта: '+(row.object_type||'—')).appendTo(name);
+            var rules=$('<div class="small text-muted" style="margin-top:8px">').appendTo(name);
+            $('<strong>').text('Условия отмены:').appendTo(rules);
+            if(!row.cancellation||!row.cancellation.length)$('<div>').text('Условия по тарифам пока не получены.').appendTo(rules);
+            (row.cancellation||[]).forEach(function(rule){
+                $('<div style="margin-top:6px">').append($('<strong>').text('Тарифы: '+rule.rates.join(', '))).appendTo(rules);
+                rule.lines.forEach(function(line){$('<div>').text(line).appendTo(rules);});
+            });
+            var actions=$('<td style="white-space:nowrap">').appendTo(tr);
+            if(canModerate&&row.state!=='disabled'){
+                if(row.state==='pending')$('<button type="button" class="btn btn-success btn-sm" style="margin-right:5px">').text('Одобрить').prop('disabled',busy).on('click',function(){change(row,'approve');}).appendTo(actions);
+                $('<button type="button" class="btn btn-danger btn-sm">').text('Отключить').prop('disabled',busy).on('click',function(){change(row,'disable');}).appendTo(actions);
+            }
+        });
+        if(!rows.length)$('<tr>').append($('<td colspan="5">').text('Объекты не найдены.')).appendTo(body);
+        info.text('Найдено: '+total+'. Страница '+page+' из '+pages+'. Сначала ожидающие модерации, затем одобренные и отключённые; новые — выше.');
+        function button(label,target,disabled,active){$('<button type="button" class="btn">').addClass(active?'btn-primary':'btn-default').text(label).prop('disabled',disabled||busy).on('click',function(){page=target;load();}).appendTo(pager);}
+        button('«',1,page===1);button('‹',page-1,page===1);
+        for(var n=Math.max(1,page-2);n<=Math.min(pages,page+2);n++)button(String(n),n,n===page,n===page);
+        button('›',page+1,page===pages);button('»',pages,page===pages);
+    }
+    function load(){
+        clearTimeout(timer);var seq=++sequence;if(xhr)xhr.abort();loading.text('Загрузка объектов с сайта…');refresh.prop('disabled',true);message.empty().removeClass('alert alert-danger');
+        xhr=$.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:'list',page:page,perPage:size.val(),search:search.val(),status:status.val(),typeId:typeFilter.val(),directionId:directionFilter.val()}})
+            .done(function(result){
+                if(seq!==sequence||!$.contains(document,root[0]))return;
+                var selectedType=typeFilter.val();typeFilter.empty();
+                $('<option value="0">').text('Все типы объектов').appendTo(typeFilter);
+                (result.data.types||[]).forEach(function(item){$('<option>').val(item.id).text(item.name).appendTo(typeFilter);});
+                typeFilter.val(selectedType).prop('disabled',false);
+                var selectedDirection=directionFilter.val();directionFilter.empty();
+                $('<option value="0">').text('Все направления').appendTo(directionFilter);
+                (result.data.directions||[]).forEach(function(item){
+                    $('<option>').val(item.id).text(new Array(item.depth+1).join('  ')+(item.depth?'↳ ':'')+item.name).attr('title',item.path).appendTo(directionFilter);
+                });
+                directionFilter.val(selectedDirection).prop('disabled',false);
+                comfort_booking_count(result.data.pendingCount);rows=result.data.rows;page=result.data.page;pages=result.data.pages;total=result.data.total;csrf=result.csrf;canModerate=result.canModerate;render();
+            }).fail(function(response,why){if(why!=='abort'&&seq===sequence)showError(response);})
+            .always(function(){if(seq===sequence){loading.empty();refresh.prop('disabled',busy);}});
+    }
+    function change(row,action){
+        if(busy)return;
+        var question=action==='approve'
+            ?'Одобрить «'+row.name+'»? Объект пройдёт модерацию, запрет индексации будет снят.'
+            :'Отключить «'+row.name+'»? Объект исчезнет с сайта, входящие обновления не будут применяться.';
+        if(!confirm(question))return;
+        busy=true;render();message.empty().removeClass('alert alert-danger');
+        $.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:action,id:row.id,expected:row.state,csrf:csrf}})
+            .fail(showError).always(function(){busy=false;load();});
+    }
+    reset.on('click',function(){search.val('');status.val('');typeFilter.val('0');directionFilter.val('0');page=1;load();});
+    refresh.on('click',function(){if(!busy)load();});
+    form.on('submit',function(e){e.preventDefault();page=1;load();});
+    search.on('input',function(){clearTimeout(timer);page=1;timer=setTimeout(load,350);});
+    status.add(size).add(typeFilter).add(directionFilter).on('change',function(){page=1;load();});load();
+}
+
+// Counts are read from the website, never stored in CRM.
+var comfortBookingCountRequest=null,comfortBookingCountSequence=0;
+function comfort_booking_count(value){
+    var menu=$('#comfort_booking_menu');if(!menu.length)return;
+    var seq=++comfortBookingCountSequence;
+    if(comfortBookingCountRequest)comfortBookingCountRequest.abort();
+    function show(count){
+        var badge=menu.find('.badge');
+        if(Number(count)>0){
+            if(!badge.length)badge=$('<span class="badge count-red pull-right">').appendTo(menu.find('a'));
+            badge.text(count).attr('title','Ожидают модерации');
+        }else badge.remove();
+    }
+    if(typeof value==='number'){show(value);return;}
+    comfortBookingCountRequest=$.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:'count'}})
+        .done(function(result){if(seq===comfortBookingCountSequence)show(result.data.pendingCount);});
+}

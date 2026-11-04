@@ -2597,6 +2597,7 @@ function update_rate_plan($connect){
 
 
 function show_obj_cert($connect){
+    require_once __DIR__.'/fsa-classification.php';
 	//Используется в СРМ и кабинете объекта!
 	$id = $_POST["id"];
 	$obj = $connect->getRow("SELECT * FROM object WHERE id=?i", $id);
@@ -2607,36 +2608,32 @@ function show_obj_cert($connect){
 	}
 
 	if ($_POST['id_accr']!='') {
-		$accr_data = $connect->getRow("SELECT * FROM accr_data WHERE id=?i", $_POST['id_accr']);
-		$accr_data['data'] = json_decode($accr_data['data'], true);
-
-		$obj_accr_data = [];
-
-        if (isset($accr_data['data']['hotel']['main']['registerRecord']) && trim($accr_data['data']['hotel']['main']['registerRecord'])!='') {
-            $obj_accr_data['registerRecord'] = $accr_data['data']['hotel']['main']['registerRecord'];
+        require_once __DIR__.'/fsa-classification.php';
+        try {
+            $record = $connect->getRow('SELECT * FROM accr_data WHERE id=?i', $_POST['id_accr']);
+            if (!$record || ((int)$record['id_obj'] !== 0 && (int)$record['id_obj'] !== (int)$id)) {
+                throw new RuntimeException('Запись уже связана с другим объектом либо не найдена.');
+            }
+            $record = array_merge($record, fsaFetch($record['ext_id']));
+            if (fsaIsBuilding($record['main']) || !fsaNameMatches($obj, $record['main'])) {
+                throw new RuntimeException('Нужна запись всего объекта с соответствующим названием, а не отдельного корпуса.');
+            }
+            fsaSaveCache($connect, $record);
+            fsaPublish($connect, $obj, $record, fsaProjection($record, $record['checkedAt']),
+                (getenv('FSA_STATE_DIR') ?: '/var/lib/sanata-fsa').'/backups');
+        } catch (Throwable $e) {
+            return '<div class="alert alert-warning">Данные классификации не сохранены: '.htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8').'</div>';
         }
-
-        if (isset($accr_data['data']['hotel']['main']['status']['name']) && trim($accr_data['data']['hotel']['main']['status']['name'])!='') {
-            $obj_accr_data['status'] = $accr_data['data']['hotel']['main']['status']['name'];
-        }    
-
-        if (isset($accr_data['data']['hotel']['main']['status']['endDate']) && trim($accr_data['data']['hotel']['main']['status']['endDate'])!='') {
-            $obj_accr_data['endDate'] = $accr_data['data']['hotel']['main']['status']['endDate'];
-        }        
-		
-		$connect->query("UPDATE `accr_data` SET `id_obj`=?i WHERE id=?i", $id, $accr_data['id']);
-		$connect->query("UPDATE `object` SET `accr_id`=?s, `accr_data`=?s, `synchronized`=0 WHERE id=?i", $accr_data['ext_id'], json_encode($obj_accr_data), $id);
-
 	}
 
 	$obj = $connect->getRow("SELECT * FROM object WHERE id=?i", $id);
 
-	if (trim($obj['accr_data'])!='') {
+	if (trim($obj['accr_data'])!='' && (json_decode($obj['accr_data'], true)['scope'] ?? '') !== 'unresolved') {
 		$obj['accr_data'] = json_decode($obj['accr_data'], true);
 		$accr_data = $connect->getRow("SELECT * FROM accr_data WHERE ext_id=?s", $obj['accr_id']);
 		$accr_data['data'] = json_decode($accr_data['data'], true);
 		$endDate = '';
-		if (trim($obj['accr_data']['endDate'])!='') $endDate = date('d.m.Y', strtotime($obj['accr_data']['endDate']));
+		if (!empty($obj['accr_data']['endDate'])) $endDate = date('d.m.Y', strtotime($obj['accr_data']['endDate']));
 		ob_start();
 		?>
 		<div class="panel panel-default">
@@ -2644,10 +2641,10 @@ function show_obj_cert($connect){
 			<table class="table tbl-room">
 				<tbody><tr>
 					<td>
-						Название объекта в реесте: <?=$obj['name']?> (<?=$obj['full_name']?>)<br>
-						Адрес объекта в реесте: <?=$obj['address']?><br><br>
-						Название объекта в СРМ: <?=$accr_data['name']?><br>
-						Адрес объекта в СРМ: <?=$accr_data['address']?><br><br>						
+						Название объекта в СРМ: <?=$obj['name']?> (<?=$obj['full_name']?>)<br>
+						Адрес объекта в СРМ: <?=$obj['address']?><br><br>
+						Название объекта в реестре: <?=$accr_data['name']?><br>
+						Адрес объекта в реестре: <?=$accr_data['address']?><br><br>
 						<strong>Выбранные данные сертификации:</strong><br>
 						Номер реестровой записи: <?=$obj['accr_data']['registerRecord']?><br>
 						Статус: <?=$obj['accr_data']['status']?><br>
@@ -2670,7 +2667,7 @@ function show_obj_cert($connect){
 
 		if ($_POST['accr_search']!='') {
 			$q = str_replace(' ', '%', $_POST['accr_search']);
-			$accr_data = $connect->getAll("SELECT * FROM accr_data WHERE `search` LIKE '%$q%'");
+			$accr_data = $connect->getAll('SELECT * FROM accr_data WHERE `search` LIKE ?s', '%'.$q.'%');
 			
 			if (count($accr_data)>0) {
 				$search_html .= '<table class="table tbl-room">'; 

@@ -253,6 +253,7 @@ function write_body(){
 }
 
 function check_menu_count(){
+    comfort_booking_count();
 	var str = 'func=check_menu_count&cache='+Math.random();
 	$.ajax({
 		url: 'mysql.php',

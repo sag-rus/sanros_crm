@@ -182,7 +182,9 @@ require_once __DIR__."/../../vendor/autoload.php";
 					$type_index = 1;
 					if(isset($position["type_index"]) AND $position["type_index"] > 1){
 						$type_index = (int)$position["type_index"];
-						if($type_index == 3)
+						// These Alean objects provide one exact price for the whole stay.
+						// Other objects keep the legacy normalization to per-day type 2.
+						if($type_index == 3 && (!in_array((int)$id_obj, [94, 848, 1085], true) || !isset($data_booking->price_source) || $data_booking->price_source !== 'price_tonia_ru'))
 							$type_index = 2;
 					}
 					$id_room = isset($position["id_room"])?(int)$position["id_room"]:0;

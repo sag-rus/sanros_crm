@@ -2118,6 +2118,7 @@ function show_schet_klient($connect){
                 <?php if($payment_div){ ?>
 					<div><button class="btn btn-default btn-xs" onclick="$('.payment-schet').show(); $('.desc-schet').hide();"><i class="fa fa-credit-card"></i> <strong>Платежи</strong></button></div>
 				<?php } ?>
+                <?php require_once __DIR__.'/price_tonia_live.php'; ptl_panel($id); ?>
 			</div>
 			<div class="col-sm-5 payment-schet" style="display: none">
 				<?php echo $payment_div; ?>

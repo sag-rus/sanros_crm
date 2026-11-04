@@ -330,6 +330,15 @@ function review_contract($connect, $type, $id){
 		<?php if ($id==125409) {echo ' Комиссия банка составляет 541.90 рублей РФ (пятьсот сорок один рубль 90 копеек). '; }?>
 		<?php if ($id==125409) {echo ' Итого сумма к оплате '.$sum_pay.' рублей РФ ('.$itog_sum_pay.') '; } 
 		  else echo 'Итого стоимость санаторно-курортной путёвки составляет '.$sum_pay.' рублей РФ ('.$itog_sum_pay.')'; ?>
+        <?php if((int)$id === 192012){
+            require_once __DIR__.'/contract_tourist_prices.php';
+            $contract_tourists=[];
+            foreach($rest as $tourist_id){
+                if($tourist_id)$contract_tourists[]=$connect->getRow('SELECT surname,name,otch FROM klient WHERE id=?i',$tourist_id);
+            }
+            $contract_notes=$connect->getCol('SELECT note FROM position_reck WHERE schet=?i',$id);
+            echo contract_tourist_prices($contract_tourists,$contract_notes,$sum_pay);
+        } ?>
 		<?php if($id == 183565) {?>
 			Отказ от поездки без фининсовых потерь до 03.06.2026  12:00 (мск). Аннуляция, начиная с указанной даты, повлечет за собой возмещение фактических затрат в размере 100% стоимости тура.
 		<?php } ?> 
