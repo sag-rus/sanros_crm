@@ -2142,6 +2142,8 @@ function comfort_booking_panel(){
     var labels={pending:'Ожидает модерации',approved:'Прошел модерацию',disabled:'Отключен'};
     $('<option value="">').text('Все статусы').appendTo(status);
     $.each(labels,function(key,text){$('<option>').val(key).text(text).appendTo(status);});
+    var typeFilter=$('<select class="form-control" aria-label="Тип объекта" style="width:auto;max-width:220px">').prop('disabled',true).appendTo(form);
+    $('<option value="0">').text('Все типы объектов').appendTo(typeFilter);
     var directionFilter=$('<select class="form-control" aria-label="Направление" style="width:auto;max-width:300px">').prop('disabled',true).appendTo(form);
     $('<option value="0">').text('Все направления').appendTo(directionFilter);
     $('<button type="submit" class="btn btn-primary" style="margin-left:8px">').text('Найти').appendTo(form);
@@ -2195,9 +2197,13 @@ function comfort_booking_panel(){
     }
     function load(){
         clearTimeout(timer);var seq=++sequence;if(xhr)xhr.abort();loading.text('Загрузка объектов с сайта…');refresh.prop('disabled',true);message.empty().removeClass('alert alert-danger');
-        xhr=$.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:'list',page:page,perPage:size.val(),search:search.val(),status:status.val(),directionId:directionFilter.val()}})
+        xhr=$.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:'list',page:page,perPage:size.val(),search:search.val(),status:status.val(),typeId:typeFilter.val(),directionId:directionFilter.val()}})
             .done(function(result){
                 if(seq!==sequence||!$.contains(document,root[0]))return;
+                var selectedType=typeFilter.val();typeFilter.empty();
+                $('<option value="0">').text('Все типы объектов').appendTo(typeFilter);
+                (result.data.types||[]).forEach(function(item){$('<option>').val(item.id).text(item.name).appendTo(typeFilter);});
+                typeFilter.val(selectedType).prop('disabled',false);
                 var selectedDirection=directionFilter.val();directionFilter.empty();
                 $('<option value="0">').text('Все направления').appendTo(directionFilter);
                 (result.data.directions||[]).forEach(function(item){
@@ -2218,11 +2224,11 @@ function comfort_booking_panel(){
         $.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:action,id:row.id,expected:row.state,csrf:csrf}})
             .fail(showError).always(function(){busy=false;load();});
     }
-    reset.on('click',function(){search.val('');status.val('');directionFilter.val('0');page=1;load();});
+    reset.on('click',function(){search.val('');status.val('');typeFilter.val('0');directionFilter.val('0');page=1;load();});
     refresh.on('click',function(){if(!busy)load();});
     form.on('submit',function(e){e.preventDefault();page=1;load();});
     search.on('input',function(){clearTimeout(timer);page=1;timer=setTimeout(load,350);});
-    status.add(size).add(directionFilter).on('change',function(){page=1;load();});load();
+    status.add(size).add(typeFilter).add(directionFilter).on('change',function(){page=1;load();});load();
 }
 
 // Counts are read from the website, never stored in CRM.
