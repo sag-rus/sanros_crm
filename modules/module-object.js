@@ -2176,6 +2176,7 @@ function comfort_booking_panel(){
             else name.text(row.name);
             $('<div>').append($('<a href="#" target="_blank" rel="noopener">').text('шахматка').on('click',function(e){e.preventDefault();openCalendar(row);})).appendTo(name);
             $('<div class="text-muted">').text('Тип объекта: '+(row.object_type||'—')).appendTo(name);
+            $('<div class="text-muted">').text('Адрес: '+(row.address||'—')).appendTo(name);
             $('<div class="text-muted">').text('Телефон: '+((row.phones||[]).join(', ')||'—')).appendTo(name);
             $('<div class="text-muted">').text('E-mail: '+((row.emails||[]).join(', ')||'—')).appendTo(name);
             var rules=$('<div class="small text-muted" style="margin-top:8px">').appendTo(name);
