@@ -656,6 +656,23 @@ function filter_do($connect){
 			'price_tonia_ru', $reportObjectIds
 		), true);
 	}
+	$comfortBookingObjects = array();
+	$comfortBookingLookupFailed = false;
+	if($data){
+		require_once dirname(__DIR__).'/comfort-booking-moderation.php';
+		try {
+			foreach(array_chunk($data, 500) as $batch){
+				$requests = array();
+				foreach($batch as $entry) $requests[] = array('requestId'=>(int)$entry['id'], 'hotelId'=>max(0,(int)$entry['id_obj']));
+				$answer = cbm_request(array('action'=>'report-objects', 'requests'=>$requests));
+				if(!isset($answer['objects']) || !is_array($answer['objects'])) throw new RuntimeException('Invalid object lookup response');
+				foreach($answer['objects'] as $entry) $comfortBookingObjects[(int)$entry['requestId']] = $entry;
+			}
+		} catch(Throwable $e) {
+			$comfortBookingLookupFailed = true;
+			error_log('Comfort Booking report: object lookup unavailable');
+		}
+	}
 	$num = 0;
 	$all_id = "";
 	$statistics = array("office" => array(), "all_sum" => 0, "num_prepay" => 0, "sum_prepay" => 0, "all_reward" => 0, "all_reward_fact" => 0);
@@ -726,6 +743,11 @@ function filter_do($connect){
 			$date = date_change($row["date"]);
 			$object = get_object($connect, $row["id_obj"]);
 			$full_object = get_object($connect, $row["id_obj"], "place");
+			if(isset($comfortBookingObjects[(int)$row['id']])){
+				$cbObject = $comfortBookingObjects[(int)$row['id']];
+				$full_object = htmlspecialchars($cbObject['name'], ENT_QUOTES, 'UTF-8');
+				$object = $full_object.' <span class="label label-danger" style="margin-left:5px;font-size:100%" title="Comfort Booking" aria-label="Объект Comfort Booking">CB</span>';
+			}
 			$active = $row["active"];
 			$website = $row["website"];
 			$guaranteed = $row["guaranteed"];
@@ -980,6 +1002,9 @@ function filter_do($connect){
 		<div class="well well-sm">Всего результатов поиска: <strong><?php echo $index; ?></strong></div>
 	<?php } ?>
 		<?php echo $all_id; ?>
+		<?php if($comfortBookingLookupFailed){ ?>
+		<div class="alert alert-warning">Не удалось проверить метки CB на сайте. Часть меток может отсутствовать. Обновите отчёт.</div>
+		<?php } ?>
 		<table id="tbl_filter" class="table table-condensed table-hover">
 		<thead>
 		<tr id="filter_tr">
