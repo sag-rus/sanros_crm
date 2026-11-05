@@ -18,12 +18,13 @@ try {
     $input=json_decode((string)($_POST['input']??'{}'),true);if(!is_array($input))throw new RuntimeException('Некорректные данные.');
     $data=cbr_request(['action'=>$action,'requestId'=>$id,'actor'=>(int)$user['id'],'actorRights'=>(int)$user['rights'],'paid'=>$paid,
         'operation'=>$operation,'revision'=>(string)($_POST['revision']??''),'token'=>(string)($_POST['token']??''),'search'=>(string)($_POST['search']??''),'input'=>$input]);
+    $crmStatus=in_array($action,['detail','commit'],true)?cbr_sync_cancelled($p,$id,$data):null;
     $defaults=['hotelId'=>(int)$request['id_obj'],'arrivalDate'=>$request['date_z'],'departureDate'=>$request['date_v']];
     if($action==='detail'){
         $q=$p->prepare('SELECT name,surname,otch,telephone,email FROM klient WHERE id=?');$q->execute([$request['turist']]);$c=$q->fetch(PDO::FETCH_ASSOC)?:[];
         $defaults['customer']=['firstName'=>$c['name']??'','lastName'=>$c['surname']??'','middleName'=>$c['otch']??'','phone'=>$c['telephone']??'','email'=>$c['email']??''];
     }
-    echo json_encode(['success'=>true,'data'=>$data,'csrf'=>$csrf,'defaults'=>$defaults,'paid'=>$paid,
+    echo json_encode(['success'=>true,'data'=>$data,'crmStatus'=>$crmStatus,'csrf'=>$csrf,'defaults'=>$defaults,'paid'=>$paid,
         'canEdit'=>cbr_scope($user,$request,true)&&(int)$request['type']===0,'canWaive'=>in_array((int)$user['rights'],[5,6],true)],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
 } catch(Throwable $e) {
     if(http_response_code()===200)http_response_code($e instanceof DomainException?409:400);

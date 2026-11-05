@@ -33,3 +33,26 @@ function cbr_request(array $payload) {
     }
     return $data['data'];
 }
+
+/** Only pass the authenticated website response, never browser-supplied booking data. */
+function cbr_sync_cancelled(PDO $p, $requestId, array $data) {
+    $booking=$data['booking']??[];
+    if(($booking['status']??'')!=='cancelled')return null;
+    if(empty($booking['number'])||empty($booking['hotelId']))throw new RuntimeException('Не удалось проверить отменённую бронь.');
+    $mysql=$p->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql';$lock='cbr-cancel-'.(int)$requestId;
+    if($mysql){$q=$p->prepare('SELECT GET_LOCK(?,5)');$q->execute([$lock]);if((int)$q->fetchColumn()!==1)throw new RuntimeException('Статус заявки обновляется. Повторите обновление.');}
+    try {
+        $q=$p->prepare('SELECT id,id_obj,status,status_san,active FROM reckoning WHERE id=?');$q->execute([$requestId]);$r=$q->fetch(PDO::FETCH_ASSOC);
+        if(!$r||(string)$r['id_obj']!==(string)$booking['hotelId'])throw new RuntimeException('Объект заявки не совпадает с отменённой бронью.');
+        if((int)$r['active']===3)return null;
+        if((int)$r['status']===6)return ['status'=>6,'changed'=>false];
+        $actor=0;foreach($data['history']??[] as $h){if(in_array($h['action']??'',['cancel','waive'],true)){$actor=(int)$h['actor_id'];break;}}
+        $q=$p->prepare('UPDATE reckoning SET status=6 WHERE id=? AND status=? AND active<>3');$q->execute([$requestId,$r['status']]);
+        if($q->rowCount()!==1)throw new RuntimeException('Статус заявки изменился. Повторите обновление.');
+        $note='Автоматическая аннуляция заявки: бронь Comfort Booking №'.$booking['number'].' отменена на сайте. Доставка отмены в TravelLine: '.($data['delivery']??'unknown').'. Денежный возврат не выполнялся.';
+        $now=new DateTimeImmutable('now',new DateTimeZone('Europe/Moscow'));
+        $q=$p->prepare('INSERT INTO history_schet (date,time,id_schet,id_user,new_status,new_status_san,note) VALUES (?,?,?,?,6,?,?)');
+        $q->execute([$now->format('Y-m-d'),$now->format('H:i:s'),$requestId,$actor,$r['status_san'],$note]);
+        return ['status'=>6,'changed'=>true];
+    } finally {if($mysql){$q=$p->prepare('SELECT RELEASE_LOCK(?)');$q->execute([$lock]);}}
+}

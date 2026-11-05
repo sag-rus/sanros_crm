@@ -23,7 +23,11 @@
             }).done(function (r) {
                 if (!alive()) return;
                 if (!r.success) { error(r.error); if (fail) fail(); return; }
-                csrf = r.csrf; caps = r; defaults = r.defaults || {}; done(r.data);
+                csrf = r.csrf; caps = r; defaults = r.defaults || {};
+                if (r.crmStatus && r.crmStatus.status === 6) {
+                    $('#info_turist [data-reckoning-status]').attr('data-reckoning-status','6').removeClass('label-default label-success label-warning label-info label-primary').addClass('label-danger').text('Аннулированная');
+                }
+                done(r.data);
             }).fail(function (xhr) {
                 if (!alive()) return;
                 var r = xhr.responseJSON; error(r && r.error ? r.error : 'Ответ не получен. Обновите состояние брони перед новым действием.'); if (fail) fail();
@@ -43,7 +47,7 @@
         }
         function render() {
             content.empty(); if (poll) clearTimeout(poll);
-            content.append(el('p', 'Изменение или закрытие заявки в СРМ не меняет бронь. Отмена здесь не выполняет денежный возврат.', 'text-muted'));
+            content.append(el('p', 'Отмена брони здесь также аннулирует заявку в СРМ. Денежный возврат выполняется отдельно.', 'text-muted'));
             if (!state.booking) {
                 content.append(el('p', 'По этой заявке нет связанной брони Comfort Booking. Новые брони создаются при отправке формы сайта. Старая заявка сама по себе не является бронью.'));
 

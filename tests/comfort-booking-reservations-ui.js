@@ -3,12 +3,12 @@ const fs=require('fs'),assert=require('assert'),{JSDOM}=require('jsdom');
 const root=require('path').resolve(__dirname,'..');
 const dom=new JSDOM('<div id="info_turist"></div>',{url:'https://crm.example/CRM/',runScripts:'outside-only'});
 const w=dom.window;w.eval(fs.readFileSync(root+'/js/jquery-1.9.1.js','utf8'));const $=w.jQuery;
-let calls=[],failCommit=true,confirmed=false,canWaive=false,checks=0;
+let calls=[],failCommit=true,confirmed=false,canWaive=false,cancelled=false,checks=0;
 const person={firstName:'Test',lastName:'Guest',phone:'+70000000000'};
 const offer={roomId:10,rateId:20,room:'Room',rate:'Rate',total:'2000.00',rules:['First night penalty']};
 const summary={hotel:'Fixture',arrival:'2026-11-10',departure:'2026-11-12',room:'Room',rate:'Rate',adults:1,children:0,total:'2000.00',prepayment:'0.00',payment:'Cash',customer:person,guests:[person]};
 const booking={number:'fixture',hotelId:'101',status:'new',arrivalDate:summary.arrival,departureDate:summary.departure,paymentInfo:{prepayment:{value:'0.00'}},paymentMethodComment:'Cash',customer:person,roomStays:[{adults:1,children:0,total:{amountAfterTaxes:'2000.00'},guests:[person]}]};
-function response(data){return {success:true,data,csrf:'x'.repeat(64),canEdit:true,canWaive,defaults:{hotelId:101,arrivalDate:summary.arrival,departureDate:summary.departure,customer:person}};}
+function response(data){return {success:true,data,crmStatus:cancelled?{status:6,changed:true}:null,csrf:'x'.repeat(64),canEdit:true,canWaive,defaults:{hotelId:101,arrivalDate:summary.arrival,departureDate:summary.departure,customer:person}};}
 $.ajax=function(options){calls.push(options.data);const d=$.Deferred();setTimeout(()=>{
  const a=options.data.action;
  if(a==='detail')d.resolve(response(confirmed?{booking,selection:{room:'Room',rate:'Rate',adults:1},hotel:{name:'<img src=x onerror=alert(1)>',url:'https://санатории-россии.рф/fixture'},delivery:'confirmed',canChange:true,revision:'v',rules:[],history:[]}:{booking:null,revision:'empty'}));
@@ -58,6 +58,9 @@ function ok(v,m){assert(v,m);checks++;}
  ok($('img').length===0&&$('#info_turist').text().includes('<img'),'catalog text escaped');
  ok($('#info_turist').text().split('<img src=x onerror=alert(1)>').length===2,'hotel displayed once');
  canWaive=true;click('Открыть / обновить');await wait();ok($('button').filter(function(){return $(this).text()==='Отменить без штрафа';}).length===1,'admin waiver button');
+ $('#info_turist').append('<span data-reckoning-status="1" class="label label-default">Новая заявка</span>');
+ cancelled=true;click('Открыть / обновить');await wait();
+ ok($('[data-reckoning-status]').attr('data-reckoning-status')==='6'&&$('[data-reckoning-status]').text()==='Аннулированная'&&$('[data-reckoning-status]').hasClass('label-danger'),'CRM cancellation status displayed immediately');
  $('#info_turist').empty();var before=calls.length;w.cbBookingMount(100,true);await wait();ok(calls.length===before+1&&calls[calls.length-1].action==='detail','CB panel opens automatically with read only request');
  dom.window.close();console.log(checks+' UI checks passed');
 })().catch(e=>{dom.window.close();console.error(e);process.exitCode=1;});
