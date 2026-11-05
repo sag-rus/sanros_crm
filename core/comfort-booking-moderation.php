@@ -29,6 +29,17 @@ function cbm_user() {
 function cbm_allowed($user, $action, $method, $csrf, $expectedCsrf) {
     if(!$user || (int)$user['rights']<2 || $method!=='POST') return false;
     if(in_array($action,['list','count'],true)) return true;
+    if($action==='calendar-ticket')return is_string($expectedCsrf) && strlen($expectedCsrf)===64 && hash_equals($expectedCsrf,(string)$csrf);
     return (int)$user['rights']>=3 && in_array($action,['approve','disable'],true)
         && is_string($expectedCsrf) && strlen($expectedCsrf)===64 && hash_equals($expectedCsrf,(string)$csrf);
+}
+
+function cbm_calendar_ticket($id,$actor,$ua,$secret=null,$now=null) {
+    $id=(int)$id;$actor=(int)$actor;if($id<=0||$actor<=0)throw new InvalidArgumentException('Некорректный объект.');
+    if($secret===null)$secret=trim((string)@file_get_contents('/etc/sanata/comfort-booking-moderation-token'));
+    if(strlen($secret)!==64)throw new RuntimeException('Связь с сайтом не настроена.');
+    if($now===null)$now=time();
+    $claims=['aud'=>'cb-calendar','object'=>$id,'actor'=>$actor,'iat'=>$now,'exp'=>$now+60,'jti'=>bin2hex(random_bytes(32)),'ua'=>hash('sha256',$ua)];
+    $body=rtrim(strtr(base64_encode(json_encode($claims,JSON_UNESCAPED_SLASHES)),'+/','-_'),'=');
+    return ['object'=>$id,'ticket'=>$body.'.'.hash_hmac('sha256',$body,hash_hmac('sha256','comfort-booking-calendar-v1',$secret,true)),'entryUrl'=>'https://xn----7sba6aaba8akdsdekah.xn--p1ai/api/comfort_booking_calendar'];
 }

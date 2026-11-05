@@ -2174,6 +2174,7 @@ function comfort_booking_panel(){
             var name=$('<td style="min-width:280px">').appendTo(tr);
             if(/^https:\/\/санатории-россии\.рф\//.test(row.url)) $('<a target="_blank" rel="noopener noreferrer">').attr('href',row.url).text(row.name).appendTo(name);
             else name.text(row.name);
+            $('<div>').append($('<a href="#" target="_blank" rel="noopener">').text('шахматка').on('click',function(e){e.preventDefault();openCalendar(row);})).appendTo(name);
             $('<div class="text-muted">').text('Тип объекта: '+(row.object_type||'—')).appendTo(name);
             $('<div class="text-muted">').text('Телефон: '+((row.phones||[]).join(', ')||'—')).appendTo(name);
             $('<div class="text-muted">').text('E-mail: '+((row.emails||[]).join(', ')||'—')).appendTo(name);
@@ -2215,6 +2216,21 @@ function comfort_booking_panel(){
                 comfort_booking_count(result.data.pendingCount);rows=result.data.rows;page=result.data.page;pages=result.data.pages;total=result.data.total;csrf=result.csrf;canModerate=result.canModerate;render();
             }).fail(function(response,why){if(why!=='abort'&&seq===sequence)showError(response);})
             .always(function(){if(seq===sequence){loading.empty();refresh.prop('disabled',busy);}});
+    }
+    function openCalendar(row){
+        if(!csrf)return;
+        var target='cb_calendar_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+        var popup=window.open('about:blank',target);
+        if(!popup){message.attr('class','alert alert-danger').text('Разрешите открытие новой вкладки для СРМ.');return;}
+        popup.opener=null;
+        $.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:15000,data:{action:'calendar-ticket',id:row.id,csrf:csrf}})
+            .done(function(result){
+                if(popup.closed)return;
+                if(!result.success||result.data.entryUrl!=='https://xn----7sba6aaba8akdsdekah.xn--p1ai/api/comfort_booking_calendar'){popup.close();showError({});return;}
+                var transfer=$('<form method="POST">').attr({action:result.data.entryUrl,target:target}).hide().appendTo(document.body);
+                $.each({mode:'entry',object:result.data.object,ticket:result.data.ticket},function(key,value){$('<input type="hidden">').attr('name',key).val(value).appendTo(transfer);});
+                transfer[0].submit();transfer.remove();result.data.ticket='';
+            }).fail(function(response){popup.close();showError(response);});
     }
     function change(row,action){
         if(busy)return;
