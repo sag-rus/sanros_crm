@@ -37,7 +37,8 @@
 	<script type="text/javascript" src="modules/module-schet.js?ver=<?php echo $version; ?>&cb=20261105-booking-cancel-sync"></script>
     <script type="text/javascript" src="modules/module-comfort-booking-reservations.js?cb=20261105-booking-cancel-sync"></script>
 	<script type="text/javascript" src="modules/module-users.js?ver=<?php echo $version; ?>"></script>
-	<script type="text/javascript" src="modules/module-object.js?ver=<?php echo $version; ?>&cb=20261105-address"></script>
+	<script type="text/javascript" src="modules/module-comfort-booking-editorial.js?cb=20261105-1"></script>
+	<script type="text/javascript" src="modules/module-object.js?ver=<?php echo $version; ?>&cb=20261105-editorial"></script>
 	<script type="text/javascript" src="modules/module-price.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-admin.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-chat.js?ver=<?php echo $version; ?>"></script>

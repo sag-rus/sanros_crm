@@ -26,3 +26,11 @@ ok($claims['ua']===hash('sha256','Test UA') && strlen($claims['jti'])===64,'brow
 ok(hash_equals(hash_hmac('sha256',$payload,hash_hmac('sha256','comfort-booking-calendar-v1',$secret,true)),$signature),'domain separated signature');
 ok(cbm_calendar_ticket(123,7,'Test UA',$secret,1000)['ticket']!==$ticket['ticket'],'each click gets unique ticket');
 echo "$n checks passed\n";
+
+foreach(['editorial-read','editorial-save'] as $action){
+ ok(cbm_allowed($user,$action,'POST',$token,$token),'editor can access texts');
+ ok(!cbm_allowed(['rights'=>2],$action,'POST',$token,$token),'reader cannot edit texts');
+ ok(!cbm_allowed($user,$action,'POST','wrong',$token),'text editor requires CSRF');
+ ok(!cbm_allowed(false,$action,'POST',$token,$token),'anonymous text access denied');
+}
+echo "$n checks including editorial access passed\n";

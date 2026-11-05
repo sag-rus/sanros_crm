@@ -15,7 +15,7 @@ function cbm_request(array $payload) {
     $response=curl_exec($ch);$status=curl_getinfo($ch,CURLINFO_HTTP_CODE);curl_close($ch);
     $data=is_string($response)?json_decode($response,true):null;
     if($status<200 || $status>=300 || !is_array($data) || empty($data['success'])) {
-        if($status===409) throw new DomainException('Статус объекта уже изменён. Обновите список.');
+        if(in_array($status,[400,409],true) && !empty($data['error'])) throw new DomainException($data['error']);
         throw new RuntimeException('Не удалось получить ответ сайта. Обновите список и проверьте статус перед повторным действием.');
     }
     return $data['data'];
@@ -30,7 +30,7 @@ function cbm_allowed($user, $action, $method, $csrf, $expectedCsrf) {
     if(!$user || (int)$user['rights']<2 || $method!=='POST') return false;
     if(in_array($action,['list','count'],true)) return true;
     if($action==='calendar-ticket')return is_string($expectedCsrf) && strlen($expectedCsrf)===64 && hash_equals($expectedCsrf,(string)$csrf);
-    return (int)$user['rights']>=3 && in_array($action,['approve','disable'],true)
+    return (int)$user['rights']>=3 && in_array($action,['approve','disable','editorial-read','editorial-save'],true)
         && is_string($expectedCsrf) && strlen($expectedCsrf)===64 && hash_equals($expectedCsrf,(string)$csrf);
 }
 
