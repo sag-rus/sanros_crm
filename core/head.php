@@ -152,6 +152,8 @@ function get_my_reckoning($connect){
 	//if ($page=="search") $html .= $query;
 
 	$data = $connect->getAll($query);
+	require_once __DIR__.'/comfort-booking-objects.php';
+	$cbObjects=cb_objects($data);
 	foreach($data as $row){
 		$row["manager"] = $connect->getOne("SELECT name FROM users WHERE id=?i", $row["id_user"]);
 		$row["date_z"] = $row["date_z"];
@@ -161,6 +163,7 @@ function get_my_reckoning($connect){
 			$date = $row["date"];
 		$row["date"] = $row["date"];
 		$row["object"] = get_object($connect, $row["id_obj"]);
+		if(isset($cbObjects[(int)$row['id']])) $row['object']=cb_object_html($cbObjects[(int)$row['id']]);
 		if($row["agency"])
 			$row["fio"] = $connect->getOne("SELECT name FROM agency WHERE id=?i", $row["agency"]);
 		else

@@ -1645,6 +1645,11 @@ function show_schet_klient($connect){
 	$schet_san = $row["schet_san"];
 	$date_schet_san = $row["date_schet_san"];
 	$object = get_object($connect, $id_obj, "full_and_place");
+	require_once __DIR__.'/comfort-booking-objects.php';
+	$cbObjects=cb_objects([['id'=>$id,'id_obj'=>$id_obj]]);
+	$cbObject=$cbObjects[(int)$id]??null;
+	if($cbObject)$object=cb_object_html($cbObject);
+	$cbRooms=[];if($cbObject){try{$cbRooms=cbm_request(['action'=>'object-rooms','hotelId'=>(int)$cbObject['hotelId']])['rooms'];}catch(Throwable $e){}}
 	$reason_delete = $row["reason_delete"];
 	$doc_schet_san = $row["doc_schet_san"];
 	$note_bid = $row["note_bid"];
@@ -1950,6 +1955,7 @@ function show_schet_klient($connect){
 			$room = $connect->getOne("SELECT name FROM service_schet WHERE id=?i", $row["id_service"]);
 		else
 			$room = get_room($connect, $id_room, "full", "view_schet");
+		if(isset($cbRooms[$id_room]))$room=htmlspecialchars($cbRooms[$id_room],ENT_QUOTES,'UTF-8');
 		$sum = $row["sum"];
 		$days = $row["days"];
 		$reward = $row["reward"];
@@ -2095,7 +2101,7 @@ function show_schet_klient($connect){
                     <?php if($website){ ?>
                         <strong>Сайт:</strong> <a href="#"><?php echo $website; ?></a><br />
                     <?php } ?>
-                    <strong>Объект:</strong> <?php echo $object; ?> <span class="label label-success pointer object-info"><i class="fa fa-info"></i> Информация</span><br />
+                    <strong>Объект:</strong> <?php echo $object; ?> <?php if(!$cbObject){ ?><span class="label label-success pointer object-info"><i class="fa fa-info"></i> Информация</span><?php } ?><br />
                     <?php if($id_tour){ ?>
                         <strong>Туроператор: </strong><?php echo $connect->getOne("SELECT name FROM tour_operator WHERE id=?i", $id_tour); ?><br />
                     <?php } ?>

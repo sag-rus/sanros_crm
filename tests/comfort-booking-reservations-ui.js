@@ -21,7 +21,9 @@ const wait=()=>new Promise(r=>setTimeout(r,20));
 const click=t=>{$('button').filter(function(){return $(this).text()===t;}).trigger('click');};
 function ok(v,m){assert(v,m);checks++;}
 (async()=>{
- w.cbBookingMount(100);click('Открыть / обновить');await wait();click('Подобрать номер и создать бронь');
+ w.cbBookingMount(100);click('Открыть / обновить');await wait();
+ ok(!$('button').filter(function(){return $(this).text()==='Подобрать номер и создать бронь';}).length,'creation disabled in CRM');
+ confirmed=true;click('Открыть / обновить');await wait();click('Изменить бронь');
  ok($('input[type=date]').length===2,'trip date controls');click('Проверить цены и наличие');await wait();
  $('select').last().val('0').trigger('change');click('Проверить перед отправкой');await wait();
  ok(calls.find(x=>x.action==='prepare').requestId===100,'request bound to panel');

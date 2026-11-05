@@ -45,8 +45,8 @@
             content.empty(); if (poll) clearTimeout(poll);
             content.append(el('p', 'Изменение или закрытие заявки в СРМ не меняет бронь. Отмена здесь не выполняет денежный возврат.', 'text-muted'));
             if (!state.booking) {
-                content.append(el('p', 'Бронь по этой заявке ещё не создана. Один номер — одна заявка.'));
-                if (caps.canEdit) content.append(button('Подобрать номер и создать бронь', 'btn-primary', function () { editor(false); }));
+                content.append(el('p', 'По этой заявке нет связанной брони Comfort Booking. Новые брони создаются при отправке формы сайта. Старая заявка сама по себе не является бронью.'));
+
                 return;
             }
             var b = state.booking, stay = b.roomStays[0], h = state.hotel || {};

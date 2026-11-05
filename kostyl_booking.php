@@ -5,8 +5,10 @@ header('Content-Type: application/json;charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 
 
+if(!defined('CB_SITE_INTAKE')){
 $log = print_r($_POST, true).PHP_EOL;
 file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);
+}
 
 
 require_once __DIR__."/vendor/autoload.php";
@@ -62,7 +64,7 @@ $token = "7db0d2680968f87e33dd3db9a4b5db38d373ba8a9f42ca7dc97d6f14711efaa4";
 $data_booking = json_decode(json_encode($_POST["data"]));
 $data_booking_JSON = $_POST["data"];
 
-if (count($data_booking)==0) exit();
+if (!$data_booking) exit();
 
 //$log = print_r($data_booking, true).PHP_EOL;
 //file_put_contents('kostyl_booking.txt', $log, FILE_APPEND);
@@ -184,6 +186,7 @@ if ($data_booking->bnovo==1) $bnovo_in_sql = 1; else $bnovo_in_sql = 0;
 if ($data_booking->afl!='') $afl_in_sql = $data_booking->afl; else $afl_in_sql = '';
 
 $exist_reckoning = $connect->getRow("SELECT * FROM reckoning WHERE turist=?i AND status=1 AND id_obj=0 and `note`<>'' and `date`>NOW() - INTERVAL 1 DAY  ORDER BY id DESC LIMIT 1", $last_id);
+if(defined('CB_SITE_INTAKE')) $exist_reckoning=false;
 if ($exist_reckoning) {
 	$connect->query(
 		"UPDATE reckoning 
@@ -204,6 +207,9 @@ if ($exist_reckoning) {
 	);
 	$id = $exist_reckoning['id'];
 } else {
+    if(defined('CB_SITE_INTAKE')) {
+        $connect->query("INSERT INTO reckoning(date,turist,id_obj,rest,hash,website,source,form_booking,note,bnovo,afl,cb_submission_key,cb_site_complete) VALUES (?s,?i,?i,?i,?s,?s,?i,'module',?s,0,'',?s,0)", $today,$last_id,$id_obj,$last_id,$hash,$website,$source,$note_booking,$data_booking->cb_submission_key);
+    } else
 	$connect->query("INSERT INTO reckoning(date, turist, id_obj, rest, hash, website, source, form_booking, note, bnovo, afl) VALUES (?s, ?i, ?i, ?i, ?s, ?s, ?i, 'module',?s, ?i, ?s)", $today, $last_id, $id_obj, $last_id, $hash, $website, $source, $note_booking, $bnovo_in_sql, $afl_in_sql);
 	$id = $connect->insertId();
 }
@@ -217,6 +223,7 @@ $id_tour = $connect->getOne("SELECT id_tour FROM object WHERE id=?i", $id_obj);
 if($id_tour)
 	$connect->query("UPDATE reckoning SET id_tour=?i WHERE id=?i", $id_tour, $id);
 $add_one_day = $connect->getOne("SELECT add_one_day FROM object WHERE id=?i", $id_obj);
+if(defined('CB_SITE_INTAKE')) $add_one_day=1;
 // CRM add_one_day=1 means checkout after the last paid night.
 if ($price_tonia_booking) $add_one_day = $connect->getOne("SELECT billing_basis FROM external_price_state WHERE source='price_tonia_ru' AND crm_object_id=?i", $id_obj) === 'day_inclusive' ? 0 : 1;
 
@@ -334,7 +341,7 @@ if ($dates_unavailable) {
 			$type_index = 1;
 			if(isset($position["type_index"]) AND $position["type_index"] > 1){
 				$type_index = (int)$position["type_index"];
-				if($type_index == 3 && !$price_tonia_booking)
+				if($type_index == 3 && !$price_tonia_booking && !defined('CB_SITE_INTAKE'))
 					$type_index = 2;
 			}
 			$id_room = isset($position["id_room"])?(int)$position["id_room"]:0;
@@ -349,7 +356,7 @@ if ($dates_unavailable) {
 			//if(isset($position["ratePlan"]) AND $position["ratePlan"] > 0){
 			if(isset($position["rate"]) AND $position["rate"] > 0){
 
-				if ($price_tonia_booking) {
+				if ($price_tonia_booking || defined('CB_SITE_INTAKE')) {
                     $connect->query("UPDATE position_reck SET ratePlan=?i WHERE id=?i", $position["rate"], $insert_position_reck);
                 } elseif($connect->getOne("SELECT id FROM object WHERE id=?i AND (check_places=1 OR check_places=2)", $id_obj)){
 
@@ -441,6 +448,12 @@ if ($dates_unavailable) {
 	$configNew->clientCabinet = $clientCabinet;
 	$configNew->objectCabinet = $objectCabinet;
 
+    if(defined('CB_SITE_INTAKE')) {
+        $connect->query("UPDATE reckoning SET number_turist=?i WHERE id=?i",(int)$data_booking->adults+(int)$data_booking->childs,$id);
+        $connect->query("UPDATE reckoning SET cb_site_complete=1 WHERE id=?i AND cb_submission_key=?s",$id,$data_booking->cb_submission_key);
+        echo json_encode(['success'=>1,'requestId'=>(int)$id]);
+        return;
+    }
 	$send = new SendMailTurist;
 	$send->send_login();
 
