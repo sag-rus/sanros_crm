@@ -34,7 +34,8 @@
 	<script type="text/javascript" src="js/strophe/plugin.roster.js"></script>
 	<script type="text/javascript" src="modules/function.js?ver=<?php echo $version; ?>&cb=20261103-11"></script>
 	<script type="text/javascript" src="modules/module-image.js?ver=<?php echo $version; ?>"></script>
-	<script type="text/javascript" src="modules/module-schet.js?ver=<?php echo $version; ?>"></script>
+	<script type="text/javascript" src="modules/module-schet.js?ver=<?php echo $version; ?>&cb=20261105-bookings"></script>
+    <script type="text/javascript" src="modules/module-comfort-booking-reservations.js?cb=20261105-bookings"></script>
 	<script type="text/javascript" src="modules/module-users.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-object.js?ver=<?php echo $version; ?>&cb=20261105-address"></script>
 	<script type="text/javascript" src="modules/module-price.js?ver=<?php echo $version; ?>"></script>
