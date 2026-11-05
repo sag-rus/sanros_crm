@@ -5,7 +5,7 @@
     function el(tag, text, cls) { return $('<' + tag + '>').addClass(cls || '').text(text || ''); }
     function button(text, cls, fn) { return el('button', text, 'btn ' + cls).attr('type', 'button').on('click', fn); }
     function date(v) { return /^\d{4}-\d{2}-\d{2}$/.test(v || '') ? v : ''; }
-    w.cbBookingMount = function (requestId) {
+    w.cbBookingMount = function (requestId, autoOpen) {
         if (poll) { clearTimeout(poll); poll = null; }
         var box = $('<section class="panel panel-default" style="margin-top:15px"></section>');
         var body = $('<div class="panel-body"></div>').hide(), state = null, csrf = '', caps = {}, defaults = {}, busy = false;
@@ -27,14 +27,14 @@
             }).fail(function (xhr) {
                 if (!alive()) return;
                 var r = xhr.responseJSON; error(r && r.error ? r.error : 'Ответ не получен. Обновите состояние брони перед новым действием.'); if (fail) fail();
-            }).always(function () { busy = false; if (alive()) box.find('button').prop('disabled', false); });
+            }).always(function () { busy = false; if (alive()) box.find('button').not('[data-cb-disabled]').prop('disabled', false); });
         }
         function load() { api('detail', {}, function (d) { state = d; render(); }); }
         function line(target, label, value) { target.append(el('p', label + ': ' + (value === null || value === undefined || value === '' ? '—' : value))); }
         function list(target, values) { $.each(values || [], function (_, t) { target.append(el('p', t, 'text-muted')); }); }
         function personName(p) { return [p.lastName, p.firstName, p.middleName].filter(Boolean).join(' '); }
-        function summary(target, s) {
-            line(target, 'Объект', s.hotel); line(target, 'Проживание', s.arrival + ' — ' + s.departure);
+        function summary(target, s, hideHotel) {
+            if(!hideHotel)line(target, 'Объект', s.hotel); line(target, 'Проживание', s.arrival + ' — ' + s.departure);
             line(target, 'Номер / тариф', s.room + ' / ' + s.rate); line(target, 'Гости', s.adults + ' взрослых, ' + s.children + ' детей');
             line(target, 'Стоимость', s.total + ' RUB'); line(target, 'Предоплата в СРМ', s.prepayment + ' RUB'); line(target, 'Оплата', s.payment);
             line(target, 'Заказчик', personName(s.customer || {}));
@@ -54,16 +54,23 @@
             line(content, 'Операция', {new:'Создание', modified:'Изменение', cancelled:'Отмена'}[b.status] || b.status);
             line(content, 'Доставка в TravelLine', {waiting:'Ожидается подтверждение TravelLine', confirmed:'TravelLine подтвердил доставку', error:'TravelLine вернул ошибку'}[state.delivery]);
             if (state.confirmation && state.confirmation.error) line(content, 'Ошибка TravelLine', JSON.stringify(state.confirmation.error));
-            if (h.url && /^https:\/\/(санатории-россии\.рф|xn----7sba6aaba8akdsdekah\.xn--p1ai)\//.test(h.url)) content.append(el('a', h.name).attr({href:h.url,target:'_blank',rel:'noopener noreferrer'}));
+            var hasHotelLink = h.url && /^https:\/\/(санатории-россии\.рф|xn----7sba6aaba8akdsdekah\.xn--p1ai)\//.test(h.url);
+            if(hasHotelLink)content.append(el('a', h.name).attr({href:h.url,target:'_blank',rel:'noopener noreferrer'}));
             summary(content, {hotel:h.name,arrival:b.arrivalDate,departure:b.departureDate,room:state.selection.room,rate:state.selection.rate,
                 adults:stay.adults,children:stay.children,total:stay.total.amountAfterTaxes,prepayment:b.paymentInfo.prepayment.value,
-                payment:b.paymentMethodComment,customer:b.customer,guests:stay.guests,comment:b.guestComment});
+                payment:b.paymentMethodComment,customer:b.customer,guests:stay.guests,comment:b.guestComment},hasHotelLink);
             if (b.paymentInfo.cancellation) line(content, 'Штраф при отмене', b.paymentInfo.cancellation.penaltyAmount + ' ' + b.paymentInfo.cancellation.currency);
             content.append(el('strong', 'Сохранённые условия отмены')); list(content, state.rules);
             if (caps.canEdit && state.canChange) {
                 content.append(button('Изменить бронь', 'btn-primary', function () { editor(true); }).css('margin-right','8px'));
                 content.append(button('Отменить бронь', 'btn-danger', function () { cancel(false); }).css('margin-right','8px'));
                 if (caps.canWaive) content.append(button('Отменить без штрафа', 'btn-danger', function () { cancel(true); }));
+            }
+            if(caps.canEdit && !state.canChange && b.status!=='cancelled') {
+                content.append(button('Изменить бронь','btn-primary',function(){}).attr('data-cb-disabled','1').prop('disabled',true));
+                var reason=state.delivery==='waiting'?'Редактирование и отмена станут доступны после подтверждения предыдущей операции TravelLine. Статус обновляется автоматически.':
+                    (state.delivery==='error'?'TravelLine вернул ошибку. Перед изменением брони требуется проверить её передачу.':'Изменение этой брони сейчас недоступно.');
+                content.append(el('p',reason,'text-muted'));
             }
             var log = $('<details style="margin-top:15px"></details>').append(el('summary', 'История брони'));
             var labels = {create:'Создание',modify:'Изменение',cancel:'Отмена',waive:'Отмена без штрафа','travelline-confirmed':'Ответ TravelLine','travelline-error':'Ошибка TravelLine'};
@@ -139,5 +146,6 @@
                 content.append(submit,button('Вернуться к состоянию брони','btn-default',load).css('margin-left','10px'));
             });
         }
+        if(autoOpen){body.show();load();}
     };
 })(window, jQuery);

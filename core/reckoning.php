@@ -1598,7 +1598,7 @@ function show_schet_klient($connect){
 	$type = $_POST["type"];
 	if(isset($_COOKIE["reck"]))
 		SetCookie("reck","");
-	$row = $connect->getRow("SELECT type, agency, turist, holding_sum, DATE_FORMAT(date, '%d.%m.%Y') as date, sum, status, DATE_FORMAT(date_z, '%d.%m.%Y') as date_z, DATE_FORMAT(date_v, '%d.%m.%Y') as date_v, id_obj, id_tour, rest, status_san, number_turist, id_com, id_dis, note, active, status_agent, schet_san, DATE_FORMAT(date_schet_san, '%d.%m.%Y') as date_schet_san, id_user, website, guaranteed, reason_delete, changes, doc_schet_san, note_bid, correction, commission_value, state_program, bnovo, afl FROM reckoning WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT type, agency, turist, holding_sum, DATE_FORMAT(date, '%d.%m.%Y') as date, sum, status, DATE_FORMAT(date_z, '%d.%m.%Y') as date_z, DATE_FORMAT(date_v, '%d.%m.%Y') as date_v, id_obj, id_tour, rest, status_san, number_turist, id_com, id_dis, note, active, status_agent, schet_san, DATE_FORMAT(date_schet_san, '%d.%m.%Y') as date_schet_san, id_user, website, guaranteed, reason_delete, changes, doc_schet_san, note_bid, correction, commission_value, state_program, bnovo, afl, cb_submission_key FROM reckoning WHERE id=?i", $id);
 	$active = $row["active"];
 	$reck_type = $row["type"];
 	if($type == "agency")
@@ -1648,6 +1648,7 @@ function show_schet_klient($connect){
 	require_once __DIR__.'/comfort-booking-objects.php';
 	$cbObjects=cb_objects([['id'=>$id,'id_obj'=>$id_obj]]);
 	$cbObject=$cbObjects[(int)$id]??null;
+	$isCbBooking=(bool)$cbObject || !empty($row['cb_submission_key']);
 	if($cbObject)$object=cb_object_html($cbObject);
 	$cbRooms=[];if($cbObject){try{$cbRooms=cbm_request(['action'=>'object-rooms','hotelId'=>(int)$cbObject['hotelId']])['rooms'];}catch(Throwable $e){}}
 	$reason_delete = $row["reason_delete"];
@@ -1942,7 +1943,9 @@ function show_schet_klient($connect){
 	$data = $connect->getAll("SELECT id, id_room, id_service, number, sum, note, type, days, DATE_FORMAT(date_z, '%d.%m.%Y') as date_z, add_one_day, reward, ratePlan FROM position_reck WHERE schet=?i", $id);
 	foreach($data as $row){
 		$id_pos = $row["id"];
-		if($check_quota == 1 AND $row["ratePlan"] > 0)
+		if($isCbBooking)
+			$button = "";
+		elseif($check_quota == 1 AND $row["ratePlan"] > 0)
 			$button = "<button type='button' class='btn btn-default btn-xs' onclick='edit_position_reck(\"".$id_pos."\", \"".$id."\")'>&nbsp;<i class='fa fa-pencil'></i>&nbsp;</button>";
 		elseif($active == 0 OR $active == 1)
 			$button = "<button type='button' class='btn btn-default btn-xs' onclick='edit_position_reck(\"".$id_pos."\", \"".$id."\")'>&nbsp;<i class='fa fa-pencil'></i>&nbsp;</button>&nbsp;<button type='button' class='btn btn-danger btn-xs' onclick='remove_position_reck(\"".$id_pos."\", \"".$id."\")'>&nbsp;<i class='fa fa-trash-o'></i>&nbsp;</button>";
@@ -2022,7 +2025,7 @@ function show_schet_klient($connect){
 		if($tur){
 			$row = $connect->getRow("SELECT surname, name, otch, passport, DATE_FORMAT(date, '%d.%m.%Y') as date, birth_certificate FROM klient WHERE id=?i", $tur);
 			$button = "";
-			if($active == 0 OR $active == 1)
+			if(!$isCbBooking && ($active == 0 OR $active == 1))
 				$button = "<button type='button' class='btn btn-default btn-xs' onclick='edit_klient_reck(\"".$tur."\", \"".$id."\")'>&nbsp;<i class='fa fa-pencil'></i>&nbsp;</button>&nbsp;<button type='button' class='btn btn-danger btn-xs' onclick='remove_klient_reck(\"".$tur."\", \"".$id."\")'>&nbsp;<i class='fa fa-trash-o'></i>&nbsp;</button>";
 			if($reck_type == 0)
 			    $button.= "&nbsp;<button type='button' class='btn btn-info btn-xs' onclick='show_dover(\"".$id."\", \"".$tur."\")'>Доверенность</button>";
@@ -2149,7 +2152,7 @@ function show_schet_klient($connect){
 		</tr>
 		</table>
 	<?php } ?>
-	<?php if($active == 0){ ?>
+	<?php if($active == 0 && !$isCbBooking){ ?>
 	<div class="panel-footer">
 		<button type="button" onclick="add_new_position('<?php echo $id; ?>')" class="btn btn-default btn-sm"><i class="fa fa-plus-circle"></i> Добавить позицию</button>&nbsp;&nbsp;
 		<?php if($reck_type == 0) { ?>
@@ -2164,6 +2167,7 @@ function show_schet_klient($connect){
 	$data = array();
 	$data["html"] = ob_get_clean();
 	$data["object-info"] = $data_object;
+	$data["comfort-booking"] = $isCbBooking;
 	return json_encode($data);
 }
 

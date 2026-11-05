@@ -11,7 +11,7 @@ const booking={number:'fixture',hotelId:'101',status:'new',arrivalDate:summary.a
 function response(data){return {success:true,data,csrf:'x'.repeat(64),canEdit:true,canWaive,defaults:{hotelId:101,arrivalDate:summary.arrival,departureDate:summary.departure,customer:person}};}
 $.ajax=function(options){calls.push(options.data);const d=$.Deferred();setTimeout(()=>{
  const a=options.data.action;
- if(a==='detail')d.resolve(response(confirmed?{booking,selection:{room:'Room',rate:'Rate',adults:1},hotel:{name:'<img src=x onerror=alert(1)>'},delivery:'confirmed',canChange:true,revision:'v',rules:[],history:[]}:{booking:null,revision:'empty'}));
+ if(a==='detail')d.resolve(response(confirmed?{booking,selection:{room:'Room',rate:'Rate',adults:1},hotel:{name:'<img src=x onerror=alert(1)>',url:'https://санатории-россии.рф/fixture'},delivery:'confirmed',canChange:true,revision:'v',rules:[],history:[]}:{booking:null,revision:'empty'}));
  if(a==='offers')d.resolve(response({offers:[offer]}));
  if(a==='prepare')d.resolve(response({token:'same-token',summary:{after:summary,rules:[]}}));
  if(a==='commit'){if(failCommit){failCommit=false;d.reject({});}else d.resolve(response({booking,selection:{room:'Room',rate:'Rate'},hotel:{name:'Fixture'},delivery:'waiting',canChange:false,rules:[],history:[]}));}
@@ -30,8 +30,12 @@ function ok(v,m){assert(v,m);checks++;}
  click('Подтвердить и отправить');await wait();ok($('button').filter(function(){return $(this).text()==='Повторить тот же запрос';}).length===1,'uncertain request retry');
  click('Повторить тот же запрос');await wait();ok(calls.filter(x=>x.action==='commit').length===2&&calls.filter(x=>x.action==='commit').every(x=>x.token==='same-token'),'retry same idempotent token');
  ok($('#info_turist').text().includes('Ожидается подтверждение TravelLine'),'no fake confirmation');
+ ok($('button').filter(function(){return $(this).text()==='Изменить бронь';}).prop('disabled')===true,'pending edit stays disabled after AJAX completion');
+ ok($('#info_turist').text().includes('станут доступны после подтверждения'),'pending explains missing permission');
  confirmed=true;click('Открыть / обновить');await wait();ok(!$('button').filter(function(){return $(this).text()==='Отменить без штрафа';}).length,'manager cannot see waiver');
  ok($('img').length===0&&$('#info_turist').text().includes('<img'),'catalog text escaped');
+ ok($('#info_turist').text().split('<img src=x onerror=alert(1)>').length===2,'hotel displayed once');
  canWaive=true;click('Открыть / обновить');await wait();ok($('button').filter(function(){return $(this).text()==='Отменить без штрафа';}).length===1,'admin waiver button');
+ $('#info_turist').empty();var before=calls.length;w.cbBookingMount(100,true);await wait();ok(calls.length===before+1&&calls[calls.length-1].action==='detail','CB panel opens automatically with read only request');
  dom.window.close();console.log(checks+' UI checks passed');
 })().catch(e=>{dom.window.close();console.error(e);process.exitCode=1;});

@@ -43,7 +43,7 @@ function view_schet(id, view){
 			var html = data['html'];
 			if(html){
 				$('#info_turist').html(html);
-                if (window.cbBookingMount) window.cbBookingMount(id);
+                if (window.cbBookingMount) window.cbBookingMount(id, data['comfort-booking'] === true);
 				if(view == 'payment')
 					$('.desc-schet button').trigger('click');
 				var info = data['object-info'];
