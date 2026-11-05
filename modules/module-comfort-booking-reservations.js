@@ -120,11 +120,12 @@
             var customer=modify?b.customer:def, buyer=$('<div></div>');content.append(el('strong','Заказчик'),buyer);
             var surname=field(buyer,'Фамилия','text',customer.lastName),name=field(buyer,'Имя','text',customer.firstName),middle=field(buyer,'Отчество','text',customer.middleName);
             var phone=field(buyer,'Телефон','text',customer.phone),email=field(buyer,'E-mail','email',customer.email);
-            var comment=field(content,'Комментарий для объекта','text',modify?b.guestComment:'');
+            var offerActions=$('<div style="display:flex;align-items:flex-end;flex-wrap:wrap;gap:12px;margin-bottom:12px"></div>');content.append(offerActions);
+            var comment=field(offerActions,'Комментарий для объекта','text',modify?b.guestComment:'');comment.parent().css('margin',0);
             var offerSelect=$('<select class="form-control" style="max-width:900px;margin:12px 0"></select>'),offerRules=$('<div></div>'),offers=[];
             function clearOffers(){offers=[];offerSelect.empty();offerRules.empty();}
             function input(){var o=offers[+offerSelect.val()]||{};return {hotelId:hotelId,arrivalDate:arrival.val(),departureDate:departure.val(),adults:+adults.val(),childrenAges:ages(),roomId:o.roomId,rateId:o.rateId,guests:guests(),customer:{lastName:surname.val(),firstName:name.val(),middleName:middle.val(),phone:phone.val(),email:email.val()},comment:comment.val()};}
-            content.append(button('Проверить цены и наличие','btn-primary',function(){api('offers',{input:JSON.stringify(input())},function(d){clearOffers();offers=d.offers;offerSelect.append($('<option value="">Выберите номер и тариф</option>'));$.each(offers,function(i,o){offerSelect.append(el('option',o.room+' / '+o.rate+' — '+o.total+' RUB за весь период').val(i));});if(!offers.length)error('На выбранные даты и состав гостей нет подходящих предложений.');});}),offerSelect,offerRules);
+            offerActions.append(button('Проверить цены и наличие','btn-primary',function(){api('offers',{input:JSON.stringify(input())},function(d){clearOffers();offers=d.offers;offerSelect.append($('<option value="">Выберите номер и тариф</option>'));$.each(offers,function(i,o){offerSelect.append(el('option',o.room+' / '+o.rate+' — '+o.total+' RUB за весь период').val(i));});if(!offers.length)error('На выбранные даты и состав гостей нет подходящих предложений.');});}).css('height','34px'));content.append(offerSelect,offerRules);
             offerSelect.on('change',function(){offerRules.empty();if(offerSelect.val()!=='')list(offerRules,(offers[+offerSelect.val()]||{}).rules);});
             content.append(button('Проверить перед отправкой','btn-success',function(){if(offerSelect.val()===null||offerSelect.val()===''||!offers.length){error('Сначала выберите доступный номер и тариф.');return;}prepare(modify?'modify':'create',input());}).css('margin-right','10px'),button('Назад','btn-default',render));
         }
