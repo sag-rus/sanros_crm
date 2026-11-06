@@ -2,16 +2,16 @@ const fs=require('fs'),assert=require('assert'),{JSDOM}=require('jsdom'),path=re
 const root=path.resolve(__dirname,'..'),dom=new JSDOM('<body></body>',{url:'https://crm.example/',runScripts:'outside-only'}),w=dom.window;
 w.eval(fs.readFileSync(root+'/js/jquery-1.9.1.js','utf8'));const $=w.jQuery;
 $.fn.modal=function(action){if(action==='hide')this.trigger('hidden.bs.modal');return this;};
-let calls=[],failure=false,n=0;
+let calls=[],failure=false,n=0,siteName='Hotel',reloads=0;
 const fields={h1:'',title:'',description:'',keywords:'',summary:'First\nSecond'};
 const defaults={h1:'Hotel',title:'Auto title',description:'Auto description',keywords:'',summary:''};
-$.ajax=function(o){calls.push(o.data);const d=$.Deferred();setTimeout(()=>{if(failure)d.reject({responseJSON:{error:'Конфликт правок'}});else {const raw=o.data.fields?JSON.parse(o.data.fields):fields,displayFields={};Object.keys(defaults).forEach(k=>displayFields[k]=raw[k]||defaults[k]);d.resolve({success:true,csrf:'csrf',data:{fields:raw,displayFields,revision:'new'}});}},0);return d.promise();};
+$.ajax=function(o){calls.push(o.data);const d=$.Deferred();setTimeout(()=>{if(failure)d.reject({responseJSON:{error:'Конфликт правок'}});else {const raw=o.data.fields?JSON.parse(o.data.fields):fields,displayFields={};Object.keys(defaults).forEach(k=>displayFields[k]=raw[k]||defaults[k]);if(raw.name)siteName=raw.name;d.resolve({success:true,csrf:'csrf',data:{name:siteName,fields:raw,displayFields,revision:'new'}});}},0);return d.promise();};
 w.eval(fs.readFileSync(root+'/modules/module-comfort-booking-editorial.js','utf8'));
 const wait=()=>new Promise(r=>setTimeout(r,20));function ok(x,m){assert(x,m);n++;}
 (async()=>{
- w.cbEditorialOpen({id:123,name:'<img src=x>'},'token');await wait();
+ w.cbEditorialOpen({id:123,name:'Hotel'},'token',()=>reloads++);await wait();
  ok($('img').length===0,'name escaped');ok(calls[0].action==='editorial-read'&&calls[0].id===123,'reads selected property through API');
- ok($('input,textarea').length===5&&!$('#cb-editorial-body').length,'only five permitted fields');
+ ok($('input,textarea').length===6&&!$('#cb-editorial-body').length,'six permitted fields');
  ok($('#cb-editorial-h1').val()==='Hotel'&&$('#cb-editorial-title').val()==='Auto title','first open shows effective automatic page values');
  ok($('#cb-editorial-summary').val()==='First\nSecond','multiline value preserved');
  $('#cb-editorial-h1').val('New H1');$('form').trigger('submit');await wait();
@@ -21,6 +21,9 @@ const wait=()=>new Promise(r=>setTimeout(r,20));function ok(x,m){assert(x,m);n++
  $('#cb-editorial-h1').val('');$('form').trigger('submit');await wait();
  ok(JSON.parse(calls[2].fields).h1===''&&$('#cb-editorial-h1').val()==='Hotel','clearing override restores automatic value');
  ok($('.alert-success').length===1,'success shown only after API receipt');
+ ok($('#cb-editorial-name').val()==='Hotel'&&!('name' in JSON.parse(calls[1].fields)),'prefills catalog name and omits unchanged name');
+ $('#cb-editorial-name').val('Новое название');$('form').trigger('submit');await wait();
+ ok(JSON.parse(calls[3].fields).name==='Новое название'&&reloads===1&&$('.modal-title').text().includes('Новое название'),'rename saves and refreshes list and heading');
  failure=true;$('#cb-editorial-h1').val('Unsaved');$('form').trigger('submit');await wait();
  ok($('.alert-danger').text()==='Конфликт правок'&&$('#cb-editorial-h1').val()==='Unsaved','failed save keeps entered text');
  $('button').filter(function(){return $(this).text()==='Закрыть';}).click();ok(!$('#cb-editorial-modal').length,'closing removes fields from DOM');
