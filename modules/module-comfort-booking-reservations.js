@@ -4,6 +4,17 @@
     var poll = null;
     function el(tag, text, cls) { return $('<' + tag + '>').addClass(cls || '').text(text || ''); }
     function boldLine(text) { return el('p').append(el('strong', text)); }
+    function historyTitle(action, details) {
+        var event = {new:'новой брони', modified:'изменений брони', cancelled:'отмены брони'}[details.status];
+        if (action === 'travelline-confirmed') {
+            if (!details.externalNumber) return 'Получен ответ TravelLine';
+            return 'TravelLine подтвердил получение ' + (event || 'данных брони');
+        }
+        if (action === 'travelline-error') {
+            return 'TravelLine сообщил об ошибке при обработке ' + (event || 'данных брони');
+        }
+        return {create:'Создание', modify:'Изменение', cancel:'Отмена', waive:'Отмена без штрафа'}[action] || action;
+    }
     function button(text, cls, fn) { return el('button', text, 'btn ' + cls).attr('type', 'button').on('click', fn); }
     function date(v) { return /^\d{4}-\d{2}-\d{2}$/.test(v || '') ? v : ''; }
     function displayDate(value) {
@@ -96,15 +107,15 @@
                 content.append(el('p',reason,'text-muted'));
             }
             var log = $('<details style="margin-top:15px"></details>').append(el('summary', 'История брони'));
-            var labels = {create:'Создание',modify:'Изменение',cancel:'Отмена',waive:'Отмена без штрафа','travelline-confirmed':'Ответ TravelLine','travelline-error':'Ошибка TravelLine'};
             $.each(state.history || [], function (_, item) {
+                var d = item.details || {};
                 var row = $('<div style="padding:10px 0;border-bottom:1px solid #ddd"></div>');
-                row.append(boldLine(new Date(item.created * 1000).toLocaleString('ru-RU', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit'}) + ' — ' + (labels[item.action] || item.action)));
+                row.append(boldLine(new Date(item.created * 1000).toLocaleString('ru-RU', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit'}) + ' — ' + historyTitle(item.action, d)));
                 if (+item.actor_id) line(row, 'Сотрудник', item.actorName || 'Не найден в СРМ');
-                var d=item.details || {}; if(d.reason)line(row,'Причина',d.reason);
+                if(d.reason)line(row,'Причина',d.reason);
                 if(d.chargedPenalty !== undefined)line(row,'Штраф',d.chargedPenalty+' RUB (по правилу: '+d.standardPenalty+')');
                 if(d.externalNumber)line(row,'Номер TravelLine',d.externalNumber);
-                if(d.error)line(row,'Ошибка',JSON.stringify(d.error));
+                if(item.action === 'travelline-error' && d.error)line(row,'Ошибка',JSON.stringify(d.error));
                 if (d.before) {
                     row.append(boldLine('До изменения'));
                     summary(row, d.before);
