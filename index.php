@@ -1,5 +1,5 @@
 <?php
-	$version = "04-11-2026";
+	$version = "06-11-2026";
     $loader = require( __DIR__ . '/vendor/autoload.php');
     /*$payment = new \App\lib\payment\Sberbank\BookingPayment([
 
@@ -14,31 +14,31 @@
 
 	<title>CRM БОНУСЫ</title>
 
-	<script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="js/jquery-1.9.1.js?ver=<?php echo $version; ?>"></script>
     <script type="text/javascript" src="js/ckeditor-4/ckeditor.js?v=<?=$version;?>"></script>
 	<script type="text/javascript" src="js/ckeditor/ckeditor.js?v=<?=$version;?>"></script>
     <script type="text/javascript" src="js/ckeditor/ru.js?v=<?=$version;?>"></script>
-    <script type="text/javascript" src="js/highcharts.js"></script>
-	<script type="text/javascript" src="js/ajaxupload.js"></script>
-	<script type="text/javascript" src="js/jquery-ui.js"></script>
-	<script type="text/javascript" src="js/jquery.tablesorter.js"></script>
-	<script type="text/javascript" src="js/jquery.metadata.js"></script>
-	<script type="text/javascript" src="js/fullcalendar.js"></script>
-	<script type="text/javascript" src="js/bootstrap.js"></script>
-	<script type="text/javascript" src="js/jquery.inputmask.js"></script>
-	<script type="text/javascript" src="js/jquery.inputmask.date.extensions.js"></script>
-	<script type="text/javascript" src="js/jquery.ba-throttle-debounce.min.js"></script>
-	<script type="text/javascript" src="js/jquery.mousewheel.js"></script>
-	<script type="text/javascript" src="js/jquery.scrollTo-min.js"></script>
-	<script type="text/javascript" src="js/strophe/strophe.js"></script>
-	<script type="text/javascript" src="js/strophe/plugin.roster.js"></script>
-	<script type="text/javascript" src="modules/function.js?ver=<?php echo $version; ?>&cb=20261103-11"></script>
+    <script type="text/javascript" src="js/highcharts.js?ver=<?php echo $version; ?>"></script>
+	<script type="text/javascript" src="js/ajaxupload.js?ver=<?php echo $version; ?>"></script>
+	<script type="text/javascript" src="js/jquery-ui.js?ver=<?php echo $version; ?>"></script>
+	<script type="text/javascript" src="js/jquery.tablesorter.js?ver=<?php echo $version; ?>"></script>
+	<script type="text/javascript" src="js/jquery.metadata.js?ver=<?php echo $version; ?>"></script>
+	<script type="text/javascript" src="js/fullcalendar.js?ver=<?php echo $version; ?>"></script>
+	<script type="text/javascript" src="js/bootstrap.js?ver=<?php echo $version; ?>"></script>
+	<script type="text/javascript" src="js/jquery.inputmask.js?ver=<?php echo $version; ?>"></script>
+	<script type="text/javascript" src="js/jquery.inputmask.date.extensions.js?ver=<?php echo $version; ?>"></script>
+	<script type="text/javascript" src="js/jquery.ba-throttle-debounce.min.js?ver=<?php echo $version; ?>"></script>
+	<script type="text/javascript" src="js/jquery.mousewheel.js?ver=<?php echo $version; ?>"></script>
+	<script type="text/javascript" src="js/jquery.scrollTo-min.js?ver=<?php echo $version; ?>"></script>
+	<script type="text/javascript" src="js/strophe/strophe.js?ver=<?php echo $version; ?>"></script>
+	<script type="text/javascript" src="js/strophe/plugin.roster.js?ver=<?php echo $version; ?>"></script>
+	<script type="text/javascript" src="modules/function.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-image.js?ver=<?php echo $version; ?>"></script>
-	<script type="text/javascript" src="modules/module-schet.js?ver=<?php echo $version; ?>&cb=20261105-booking-cancel-sync"></script>
-    <script type="text/javascript" src="modules/module-comfort-booking-reservations.js?cb=20261106-booking-receipts"></script>
+	<script type="text/javascript" src="modules/module-schet.js?ver=<?php echo $version; ?>"></script>
+    <script type="text/javascript" src="modules/module-comfort-booking-reservations.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-users.js?ver=<?php echo $version; ?>"></script>
-	<script type="text/javascript" src="modules/module-comfort-booking-editorial.js?cb=20261106-name"></script>
-	<script type="text/javascript" src="modules/module-object.js?ver=<?php echo $version; ?>&cb=20261106-calendar-button"></script>
+	<script type="text/javascript" src="modules/module-comfort-booking-editorial.js?ver=<?php echo $version; ?>"></script>
+	<script type="text/javascript" src="modules/module-object.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-price.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-admin.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-chat.js?ver=<?php echo $version; ?>"></script>
