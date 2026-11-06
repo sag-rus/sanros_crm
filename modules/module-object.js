@@ -2185,7 +2185,8 @@ function comfort_booking_panel(){
     var size=$('<select class="form-control" aria-label="Объектов на странице" style="width:auto;margin-left:auto">');
     [20,50,100,200].forEach(function(n){$('<option>').val(n).text(n+' на странице').appendTo(size);});
     var refresh=$('<button type="button" class="btn btn-default" style="margin-left:auto">').text('Обновить').appendTo(form);
-    var loading=$('<div class="text-muted" role="status">').appendTo(root);
+    var loading=$('<div class="text-muted" role="status" style="margin-bottom:15px">')
+        .append('<i class="fa fa-spinner fa-spin" aria-hidden="true"></i> Загрузка объектов с сайта…').hide().appendTo(root);
     var info=$('<p class="text-muted">').appendTo(root),message=$('<div role="alert">').appendTo(root);
     var wrap=$('<div class="table-responsive">').appendTo(root),table=$('<table class="table table-striped table-bordered">').appendTo(wrap);
     var head=$('<tr>').appendTo($('<thead>').appendTo(table));
@@ -2235,7 +2236,7 @@ function comfort_booking_panel(){
         button('›',page+1,page===pages);button('»',pages,page===pages);
     }
     function load(){
-        clearTimeout(timer);var seq=++sequence;if(xhr)xhr.abort();loading.text('Загрузка объектов с сайта…');refresh.prop('disabled',true);message.empty().removeClass('alert alert-danger');
+        clearTimeout(timer);var seq=++sequence;if(xhr)xhr.abort();loading.show();refresh.prop('disabled',true);message.empty().removeClass('alert alert-danger');
         xhr=$.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:'list',page:page,perPage:size.val(),search:search.val(),status:status.val(),typeId:typeFilter.val(),directionId:directionFilter.val()}})
             .done(function(result){
                 if(seq!==sequence||!$.contains(document,root[0]))return;
@@ -2251,7 +2252,7 @@ function comfort_booking_panel(){
                 directionFilter.val(selectedDirection).prop('disabled',false);
                 comfort_booking_count(result.data.pendingCount);rows=result.data.rows;page=result.data.page;pages=result.data.pages;total=result.data.total;csrf=result.csrf;canModerate=result.canModerate;render();
             }).fail(function(response,why){if(why!=='abort'&&seq===sequence)showError(response);})
-            .always(function(){if(seq===sequence){loading.empty();refresh.prop('disabled',busy);}});
+            .always(function(){if(seq===sequence){loading.hide();refresh.prop('disabled',busy);}});
     }
     function change(row,action){
         if(busy)return;
