@@ -11,7 +11,7 @@ const booking={number:'fixture',hotelId:'101',status:'new',arrivalDate:summary.a
 function response(data){return {success:true,data,crmStatus:cancelled?{status:6,changed:true}:null,csrf:'x'.repeat(64),canEdit:true,canWaive,defaults:{hotelId:101,arrivalDate:summary.arrival,departureDate:summary.departure,customer:person}};}
 $.ajax=function(options){calls.push(options.data);const d=$.Deferred();setTimeout(()=>{
  const a=options.data.action;
- if(a==='detail')d.resolve(response(confirmed?{booking,selection:{room:'Room',rate:'Rate',adults:1},hotel:{name:'<img src=x onerror=alert(1)>',url:'https://санатории-россии.рф/fixture'},delivery:'confirmed',canChange:true,revision:'v',rules:[],history:[]}:{booking:null,revision:'empty'}));
+ if(a==='detail')d.resolve(response(confirmed?{booking,selection:{room:'Room',rate:'Rate',adults:1},hotel:{name:'<img src=x onerror=alert(1)>',url:'https://санатории-россии.рф/fixture'},delivery:'confirmed',canChange:true,revision:'v',rules:[],history:[{action:'create',created:1793913993,actor_id:75,actorName:'tester — Иван Петров',details:{after:summary}}]}:{booking:null,revision:'empty'}));
  if(a==='offers')d.resolve(response({offers:[offer]}));
  if(a==='prepare')d.resolve(response({token:'same-token',summary:{after:summary,rules:[]}}));
  if(a==='commit'){if(failCommit){failCommit=false;d.reject({});}else d.resolve(response({booking,selection:{room:'Room',rate:'Rate'},hotel:{name:'Fixture'},delivery:'waiting',canChange:false,rules:[],history:[]}));}
@@ -23,7 +23,12 @@ function ok(v,m){assert(v,m);checks++;}
 (async()=>{
  w.cbBookingMount(100);click('Открыть / обновить');await wait();
  ok(!$('button').filter(function(){return $(this).text()==='Подобрать номер и создать бронь';}).length,'creation disabled in CRM');
- confirmed=true;click('Открыть / обновить');await wait();click('Изменить бронь');
+ confirmed=true;click('Открыть / обновить');await wait();
+ const history=$('#info_turist details');
+ ok(history.find('p').filter(function(){return $(this).text()==='Проживание: 10.11.2026 — 12.11.2026';}).length===1,'stay dates formatted in history');
+ ok(history.find('p').filter(function(){return $(this).text()==='Номер: Room';}).length===1&&history.find('p').filter(function(){return $(this).text()==='Тариф: Rate';}).length===1,'room and rate on their own lines');
+ ok(history.text().includes('Сотрудник: tester — Иван Петров')&&!history.text().includes('После операции'),'staff identity and creation entry');
+ click('Изменить бронь');
  ok($('input[type=date]').length===2,'trip date controls');
  ok($('.cb-adult-count').val()==='1'&&$('.cb-child-count').val()==='0','explicit adult and child count selectors');
  $('.cb-child-count').val('1').trigger('change');

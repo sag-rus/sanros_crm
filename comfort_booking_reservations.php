@@ -19,6 +19,7 @@ try {
     $data=cbr_request(['action'=>$action,'requestId'=>$id,'actor'=>(int)$user['id'],'actorRights'=>(int)$user['rights'],'paid'=>$paid,
         'operation'=>$operation,'revision'=>(string)($_POST['revision']??''),'token'=>(string)($_POST['token']??''),'search'=>(string)($_POST['search']??''),'input'=>$input]);
     $crmStatus=in_array($action,['detail','commit'],true)?cbr_sync_cancelled($p,$id,$data):null;
+    if (!empty($data['history'])) $data['history'] = cbr_history_staff($p, $data['history']);
     $defaults=['hotelId'=>(int)$request['id_obj'],'arrivalDate'=>$request['date_z'],'departureDate'=>$request['date_v']];
     if($action==='detail'){
         $q=$p->prepare('SELECT name,surname,otch,telephone,email FROM klient WHERE id=?');$q->execute([$request['turist']]);$c=$q->fetch(PDO::FETCH_ASSOC)?:[];

@@ -5,6 +5,9 @@
     function el(tag, text, cls) { return $('<' + tag + '>').addClass(cls || '').text(text || ''); }
     function button(text, cls, fn) { return el('button', text, 'btn ' + cls).attr('type', 'button').on('click', fn); }
     function date(v) { return /^\d{4}-\d{2}-\d{2}$/.test(v || '') ? v : ''; }
+    function displayDate(value) {
+        return date(value) ? value.split('-').reverse().join('.') : '—';
+    }
     w.cbBookingMount = function (requestId, autoOpen) {
         if (poll) { clearTimeout(poll); poll = null; }
         var box = $('<section class="panel panel-default" style="margin-top:15px"></section>');
@@ -38,8 +41,11 @@
         function list(target, values) { $.each(values || [], function (_, t) { target.append(el('p', t, 'text-muted')); }); }
         function personName(p) { return [p.lastName, p.firstName, p.middleName].filter(Boolean).join(' '); }
         function summary(target, s, hideHotel) {
-            if(!hideHotel)line(target, 'Объект', s.hotel); line(target, 'Проживание', s.arrival + ' — ' + s.departure);
-            line(target, 'Номер / тариф', s.room + ' / ' + s.rate); line(target, 'Гости', s.adults + ' взрослых, ' + s.children + ' детей');
+            if (!hideHotel) line(target, 'Объект', s.hotel);
+            line(target, 'Проживание', displayDate(s.arrival) + ' — ' + displayDate(s.departure));
+            line(target, 'Номер', s.room);
+            line(target, 'Тариф', s.rate);
+            line(target, 'Гости', s.adults + ' взрослых, ' + s.children + ' детей');
             line(target, 'Стоимость', s.total + ' RUB'); line(target, 'Предоплата в СРМ', s.prepayment + ' RUB'); line(target, 'Оплата', s.payment);
             line(target, 'Заказчик', personName(s.customer || {}));
             $.each(s.guests || [], function (_, g) { line(target, 'Гость', personName(g) + (g.isChild ? ' (' + g.age + ' лет)' : '')); });
@@ -80,14 +86,20 @@
             var labels = {create:'Создание',modify:'Изменение',cancel:'Отмена',waive:'Отмена без штрафа','travelline-confirmed':'Ответ TravelLine','travelline-error':'Ошибка TravelLine'};
             $.each(state.history || [], function (_, item) {
                 var row = $('<div style="padding:10px 0;border-bottom:1px solid #ddd"></div>');
-                row.append(el('strong', new Date(item.created * 1000).toLocaleString() + ' — ' + (labels[item.action] || item.action)));
-                if (+item.actor_id) line(row,'Сотрудник',item.actor_id);
+                row.append(el('strong', new Date(item.created * 1000).toLocaleString('ru-RU', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit'}) + ' — ' + (labels[item.action] || item.action)));
+                if (+item.actor_id) line(row, 'Сотрудник', item.actorName || 'Не найден в СРМ');
                 var d=item.details || {}; if(d.reason)line(row,'Причина',d.reason);
                 if(d.chargedPenalty !== undefined)line(row,'Штраф',d.chargedPenalty+' RUB (по правилу: '+d.standardPenalty+')');
                 if(d.externalNumber)line(row,'Номер TravelLine',d.externalNumber);
                 if(d.error)line(row,'Ошибка',JSON.stringify(d.error));
-                if(d.before){row.append(el('b','До изменения'));summary(row,d.before);}
-                if(d.after){row.append(el('b','После операции'));summary(row,d.after);}
+                if (d.before) {
+                    row.append(el('p').append(el('b', 'До изменения')));
+                    summary(row, d.before);
+                }
+                if (d.after) {
+                    if (d.before) row.append(el('p').append(el('b', 'После изменения')));
+                    summary(row, d.after);
+                }
                 log.append(row);
             }); content.append(log);
             if (state.delivery === 'waiting') poll = setTimeout(function () { if (alive() && body.is(':visible')) load(); }, 30000);

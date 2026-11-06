@@ -34,6 +34,26 @@ function cbr_request(array $payload) {
     return $data['data'];
 }
 
+function cbr_history_staff(PDO $db, array $history) {
+    $ids = array_unique(array_filter(array_map('intval', array_column($history, 'actor_id'))));
+    if (!$ids) return $history;
+
+    $placeholders = implode(',', array_fill(0, count($ids), '?'));
+    $query = $db->prepare("SELECT id, login, name, surname FROM users WHERE id IN ($placeholders)");
+    $query->execute(array_values($ids));
+    $labels = [];
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $user) {
+        $fullName = trim(trim($user['name']).' '.trim($user['surname']));
+        $labels[$user['id']] = implode(' — ', array_filter([trim($user['login']), $fullName], 'strlen'));
+    }
+    foreach ($history as $i => $event) {
+        if (isset($labels[$event['actor_id'] ?? 0])) {
+            $history[$i]['actorName'] = $labels[$event['actor_id']];
+        }
+    }
+    return $history;
+}
+
 /** Only pass the authenticated website response, never browser-supplied booking data. */
 function cbr_sync_cancelled(PDO $p, $requestId, array $data) {
     $booking=$data['booking']??[];
