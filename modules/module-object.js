@@ -2209,8 +2209,17 @@ function comfort_booking_panel(){
             var name=$('<td style="min-width:280px">').appendTo(tr);
             if(/^https:\/\/санатории-россии\.рф\//.test(row.url)) $('<a target="_blank" rel="noopener noreferrer">').attr('href',row.url).text(row.name).appendTo(name);
             else name.text(row.name);
-            $('<div>').append($('<a href="#" target="_blank" rel="noopener">').text('шахматка').on('click',function(e){e.preventDefault();openComfortBookingCalendar(row.id, csrf, function(text){message.attr('class','alert alert-danger').text(text);});})).appendTo(name);
-            if(canModerate)$('<button type="button" class="btn btn-default btn-sm" style="margin:6px 0">').text('Изменить данные на сайте').on('click',function(){window.cbEditorialOpen(row,csrf,load);}).appendTo(name);
+            var objectButtons = $('<div style="display:flex;align-items:center;gap:6px;margin:6px 0">').appendTo(name);
+            $('<button type="button" class="btn btn-default btn-sm">').text('Шахматка').on('click', function () {
+                openComfortBookingCalendar(row.id, csrf, function (text) {
+                    message.attr('class', 'alert alert-danger').text(text);
+                });
+            }).appendTo(objectButtons);
+            if (canModerate) {
+                $('<button type="button" class="btn btn-default btn-sm">').text('Изменить данные на сайте').on('click', function () {
+                    window.cbEditorialOpen(row, csrf, load);
+                }).appendTo(objectButtons);
+            }
             $('<div class="text-muted">').text('Тип объекта: '+(row.object_type||'—')).appendTo(name);
             $('<div class="text-muted">').text('Адрес: '+(row.address||'—')).appendTo(name);
             $('<div class="text-muted">').text('Телефон: '+((row.phones||[]).join(', ')||'—')).appendTo(name);
