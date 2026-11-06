@@ -26,6 +26,10 @@ function cbm_user() {
     $q=$p->prepare('SELECT u.id,u.rights FROM session s JOIN users u ON u.login=s.login AND u.password=s.password WHERE s.id_session=? AND u.dostup=1 AND u.rights>1');
     $q->execute([(string)($_COOKIE['session']??'')]);return $q->fetch(PDO::FETCH_ASSOC);
 }
+function cbm_session_csrf() {
+    if (empty($_SESSION['cbm_csrf'])) $_SESSION['cbm_csrf'] = bin2hex(random_bytes(32));
+    return $_SESSION['cbm_csrf'];
+}
 function cbm_allowed($user, $action, $method, $csrf, $expectedCsrf) {
     if(!$user || (int)$user['rights']<2 || $method!=='POST') return false;
     if(in_array($action,['list','count'],true)) return true;

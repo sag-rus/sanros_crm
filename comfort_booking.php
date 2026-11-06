@@ -7,13 +7,13 @@ try {
     if(!cbm_allowed($user,$action,$_SERVER['REQUEST_METHOD']??'',$_POST['csrf']??'',$_SESSION['cbm_csrf']??'')) {
         http_response_code(403);throw new RuntimeException('Нет доступа или истекла сессия. Обновите страницу.');
     }
-    if(empty($_SESSION['cbm_csrf'])) $_SESSION['cbm_csrf']=bin2hex(random_bytes(32));
+    $csrf=cbm_session_csrf();
     if($action==='calendar-ticket'){
         $issued=array_values(array_filter($_SESSION['cb_calendar_issued']??[],function($v){return $v>time()-60;}));
         if(count($issued)>=20)throw new RuntimeException('Слишком много переходов. Повторите через минуту.');
         $issued[]=time();$_SESSION['cb_calendar_issued']=$issued;
     }
-    $csrf=$_SESSION['cbm_csrf'];session_write_close();
+    session_write_close();
     if($action==='list') $data=cbm_request(['action'=>'list','page'=>(int)($_POST['page']??1),'perPage'=>(int)($_POST['perPage']??20),'search'=>(string)($_POST['search']??''),'status'=>(string)($_POST['status']??''),'typeId'=>(string)($_POST['typeId']??'0'),'directionId'=>(string)($_POST['directionId']??'0')]);
     elseif($action==='calendar-ticket') $data=cbm_calendar_ticket($_POST['id']??0,$user['id'],(string)($_SERVER['HTTP_USER_AGENT']??''));
     elseif(in_array($action,['editorial-read','editorial-save'],true)) {

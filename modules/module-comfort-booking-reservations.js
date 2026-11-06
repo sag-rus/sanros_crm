@@ -69,10 +69,19 @@
             if (hasHotelLink) {
                 var link = el('a', h.name).attr({href:h.url, target:'_blank', rel:'noopener noreferrer'});
                 content.append(el('p').append(link));
+            } else {
+                line(content, 'Объект', h.name);
+            }
+            if (b.hotelId && caps.calendarCsrf) {
+                var calendar = el('a', 'Шахматка').attr({href:'#', target:'_blank', rel:'noopener'}).on('click', function(event) {
+                    event.preventDefault();
+                    w.openComfortBookingCalendar(b.hotelId, caps.calendarCsrf, error);
+                });
+                content.append(el('p').append(calendar));
             }
             summary(content, {hotel:h.name,arrival:b.arrivalDate,departure:b.departureDate,room:state.selection.room,rate:state.selection.rate,
                 adults:stay.adults,children:stay.children,total:stay.total.amountAfterTaxes,prepayment:b.paymentInfo.prepayment.value,
-                payment:b.paymentMethodComment,customer:b.customer,guests:stay.guests,comment:b.guestComment},hasHotelLink);
+                payment:b.paymentMethodComment,customer:b.customer,guests:stay.guests,comment:b.guestComment},true);
             if (b.paymentInfo.cancellation) line(content, 'Штраф при отмене', b.paymentInfo.cancellation.penaltyAmount + ' ' + b.paymentInfo.cancellation.currency);
             content.append(boldLine('Сохранённые условия отмены')); list(content, state.rules);
             if (caps.canEdit && state.canChange) {

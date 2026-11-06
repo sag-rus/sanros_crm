@@ -9,6 +9,7 @@ try {
     if(empty($_SESSION['cbr_csrf']))$_SESSION['cbr_csrf']=bin2hex(random_bytes(32));$csrf=$_SESSION['cbr_csrf'];
     $calls=array_values(array_filter($_SESSION['cbr_calls']??[],function($t){return $t>time()-60;}));
     if(count($calls)>=60)throw new RuntimeException('Слишком много запросов. Повторите через минуту.');$calls[]=time();$_SESSION['cbr_calls']=$calls;
+    $calendarCsrf=cbm_session_csrf();
     session_write_close();
     $operation=(string)($_POST['operation']??'');
     if($operation==='waive'&&!in_array((int)$user['rights'],[5,6],true)){http_response_code(403);throw new RuntimeException('Отмена без штрафа доступна только администратору.');}
@@ -25,7 +26,7 @@ try {
         $q=$p->prepare('SELECT name,surname,otch,telephone,email FROM klient WHERE id=?');$q->execute([$request['turist']]);$c=$q->fetch(PDO::FETCH_ASSOC)?:[];
         $defaults['customer']=['firstName'=>$c['name']??'','lastName'=>$c['surname']??'','middleName'=>$c['otch']??'','phone'=>$c['telephone']??'','email'=>$c['email']??''];
     }
-    echo json_encode(['success'=>true,'data'=>$data,'crmStatus'=>$crmStatus,'csrf'=>$csrf,'defaults'=>$defaults,'paid'=>$paid,
+    echo json_encode(['success'=>true,'data'=>$data,'crmStatus'=>$crmStatus,'csrf'=>$csrf,'calendarCsrf'=>$calendarCsrf,'defaults'=>$defaults,'paid'=>$paid,
         'canEdit'=>cbr_scope($user,$request,true)&&(int)$request['type']===0,'canWaive'=>in_array((int)$user['rights'],[5,6],true)],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
 } catch(Throwable $e) {
     if(http_response_code()===200)http_response_code($e instanceof DomainException?409:400);
