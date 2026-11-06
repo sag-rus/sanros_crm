@@ -2297,3 +2297,63 @@ function comfort_booking_count(value){
     comfortBookingCountRequest=$.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:'count'}})
         .done(function(result){if(seq===comfortBookingCountSequence)show(result.data.pendingCount);});
 }
+
+function comfort_booking_analytics() {
+    select_menu('comfort_booking_analytics_menu');
+    var root = $('<div>').appendTo($('#body').empty());
+    $('<h3>').text('Comfort Booking Analytics').appendTo(root);
+    var refresh = $('<button type="button" class="btn btn-default">Обновить</button>').appendTo(root);
+    var status = $('<p role="status" class="text-muted">').appendTo(root);
+    var body = $('<div>').appendTo(root);
+    function table(title, headers, rows) {
+        $('<h4>').text(title).appendTo(body);
+        if (!rows.length) {
+            $('<p>').text('Нет записей').appendTo(body);
+            return;
+        }
+        var t = $('<table class="table table-bordered table-striped">').appendTo(body);
+        var head = $('<tr>').appendTo($('<thead>').appendTo(t));
+        headers.forEach(function(label) { $('<th>').text(label).appendTo(head); });
+        var target = $('<tbody>').appendTo(t);
+        rows.forEach(function(values) {
+            var row = $('<tr>').appendTo(target);
+            values.forEach(function(value) { $('<td>').text(value).appendTo(row); });
+        });
+    }
+    function date(ts) {
+        return new Date(Number(ts)*1000).toLocaleString('ru-RU', {timeZone:'Europe/Moscow'});
+    }
+    function load() {
+        refresh.prop('disabled',true);
+        status.text('Загрузка данных с сайта…');
+        $.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:'analytics'}})
+            .done(function(result) {
+                if (!result.success) { status.text('Не удалось загрузить аналитику.'); return; }
+                var d=result.data;
+                body.empty();
+                status.text('Данные на '+date(d.now)+' МСК');
+                table('Очередь сейчас',['Состояние','Заданий','Возраст старейшего, с'],d.queue.map(function(r) {
+                    return [Number(r.state)===0?'В очереди':'В работе',r.jobs,r.oldest];
+                }));
+                table('Завершённые задания за 24 часа',['Событие','Заданий','От приёма до завершения, среднее (с)','Максимум (с)'],d.completed.map(function(r) {
+                    return [r.event,r.jobs,r.avg_sec,r.max_sec];
+                }));
+                table('Ошибки и задержки от 5 минут · последние 60 записей за сутки и текущие задержки',
+                    ['Время, МСК','ID задания','ID объекта CB','Событие','Причина','Попыток','От приёма, с'],d.incidents.map(function(r) {
+                        return [date(r.occurred),r.id,r.property_id,r.event,r.reason,r.attempts,r.seconds];
+                    }));
+                table('Ожидание идентификаторов от TravelLine · объектов: '+d.waiting+' (до 10 примеров)',
+                    ['ID объекта CB','Попыток','Пар без идентификаторов','Категория / тариф (до 5 пар)'],d.samples.map(function(r) {
+                        return [r.property,r.attempts,r.count,r.pairs];
+                    }));
+                table('Цены и наличие · текущий и предыдущие 23 часа',
+                    ['Начало часа, МСК','Результат','Запросов','Ожидание блокировки, ср. / макс. (мс)','Запись, ср. / макс. (мс)','Обработка, ср. / макс. (мс)'],d.updates.map(function(r) {
+                        return [date(r.hour_start),Number(r.error_code)===0?'Успешно':'Ошибка '+r.error_code,r.requests,
+                            r.avg_wait+' / '+r.max_wait_ms,r.avg_write+' / '+r.max_write_ms,r.avg_total+' / '+r.max_total_ms];
+                    }));
+            }).fail(function() { status.text('Не удалось получить данные сайта. Попробуйте обновить.'); })
+            .always(function() { refresh.prop('disabled',false); });
+    }
+    refresh.on('click',load);
+    load();
+}

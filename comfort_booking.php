@@ -20,7 +20,7 @@ try {
         $fields=json_decode((string)($_POST['fields']??'{}'),true);if(!is_array($fields))throw new RuntimeException('Некорректные поля.');
         $data=cbm_request(['action'=>$action,'id'=>(int)($_POST['id']??0),'actor'=>(int)$user['id'],'actorRights'=>(int)$user['rights'],'revision'=>(string)($_POST['revision']??''),'fields'=>$fields]);
     }
-    elseif($action==='count') $data=cbm_request(['action'=>'count']);
+    elseif(in_array($action,['count','analytics'],true)) $data=cbm_request(['action'=>$action]);
     else $data=cbm_request(['action'=>$action,'id'=>(int)($_POST['id']??0),'expected'=>(string)($_POST['expected']??''),'actor'=>(int)$user['id']]);
     echo json_encode(['success'=>true,'data'=>$data,'csrf'=>$csrf,'canModerate'=>(int)$user['rights']>=3],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
 } catch(Throwable $e) {
