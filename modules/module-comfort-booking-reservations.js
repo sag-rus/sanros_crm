@@ -55,7 +55,7 @@
             }
             var b = state.booking, stay = b.roomStays[0], h = state.hotel || {};
             line(content, 'Номер на сайте', b.number); line(content, 'Номер TravelLine', state.externalNumber);
-            line(content, 'Операция', {new:'Создание', modified:'Изменение', cancelled:'Отмена'}[b.status] || b.status);
+            line(content, 'Статус брони', {new:'Создана', modified:'Изменена', cancelled:'Отменена'}[b.status] || b.status);
             line(content, 'Доставка в TravelLine', {waiting:'Ожидается подтверждение TravelLine', confirmed:'TravelLine подтвердил доставку', error:'TravelLine вернул ошибку'}[state.delivery]);
             if (state.confirmation && state.confirmation.error) line(content, 'Ошибка TravelLine', JSON.stringify(state.confirmation.error));
             var hasHotelLink = h.url && /^https:\/\/(санатории-россии\.рф|xn----7sba6aaba8akdsdekah\.xn--p1ai)\//.test(h.url);
