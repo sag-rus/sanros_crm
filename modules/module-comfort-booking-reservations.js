@@ -3,6 +3,7 @@
     'use strict';
     var poll = null;
     function el(tag, text, cls) { return $('<' + tag + '>').addClass(cls || '').text(text || ''); }
+    function boldLine(text) { return el('p').append(el('strong', text)); }
     function button(text, cls, fn) { return el('button', text, 'btn ' + cls).attr('type', 'button').on('click', fn); }
     function date(v) { return /^\d{4}-\d{2}-\d{2}$/.test(v || '') ? v : ''; }
     function displayDate(value) {
@@ -65,12 +66,15 @@
             line(content, 'Доставка в TravelLine', {waiting:'Ожидается подтверждение TravelLine', confirmed:'TravelLine подтвердил доставку', error:'TravelLine вернул ошибку'}[state.delivery]);
             if (state.confirmation && state.confirmation.error) line(content, 'Ошибка TravelLine', JSON.stringify(state.confirmation.error));
             var hasHotelLink = h.url && /^https:\/\/(санатории-россии\.рф|xn----7sba6aaba8akdsdekah\.xn--p1ai)\//.test(h.url);
-            if(hasHotelLink)content.append(el('a', h.name).attr({href:h.url,target:'_blank',rel:'noopener noreferrer'}));
+            if (hasHotelLink) {
+                var link = el('a', h.name).attr({href:h.url, target:'_blank', rel:'noopener noreferrer'});
+                content.append(el('p').append(link));
+            }
             summary(content, {hotel:h.name,arrival:b.arrivalDate,departure:b.departureDate,room:state.selection.room,rate:state.selection.rate,
                 adults:stay.adults,children:stay.children,total:stay.total.amountAfterTaxes,prepayment:b.paymentInfo.prepayment.value,
                 payment:b.paymentMethodComment,customer:b.customer,guests:stay.guests,comment:b.guestComment},hasHotelLink);
             if (b.paymentInfo.cancellation) line(content, 'Штраф при отмене', b.paymentInfo.cancellation.penaltyAmount + ' ' + b.paymentInfo.cancellation.currency);
-            content.append(el('strong', 'Сохранённые условия отмены')); list(content, state.rules);
+            content.append(boldLine('Сохранённые условия отмены')); list(content, state.rules);
             if (caps.canEdit && state.canChange) {
                 content.append(button('Изменить бронь', 'btn-primary', function () { editor(true); }).css('margin-right','8px'));
                 content.append(button('Отменить бронь', 'btn-danger', function () { cancel(false); }).css('margin-right','8px'));
@@ -86,18 +90,18 @@
             var labels = {create:'Создание',modify:'Изменение',cancel:'Отмена',waive:'Отмена без штрафа','travelline-confirmed':'Ответ TravelLine','travelline-error':'Ошибка TravelLine'};
             $.each(state.history || [], function (_, item) {
                 var row = $('<div style="padding:10px 0;border-bottom:1px solid #ddd"></div>');
-                row.append(el('strong', new Date(item.created * 1000).toLocaleString('ru-RU', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit'}) + ' — ' + (labels[item.action] || item.action)));
+                row.append(boldLine(new Date(item.created * 1000).toLocaleString('ru-RU', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit'}) + ' — ' + (labels[item.action] || item.action)));
                 if (+item.actor_id) line(row, 'Сотрудник', item.actorName || 'Не найден в СРМ');
                 var d=item.details || {}; if(d.reason)line(row,'Причина',d.reason);
                 if(d.chargedPenalty !== undefined)line(row,'Штраф',d.chargedPenalty+' RUB (по правилу: '+d.standardPenalty+')');
                 if(d.externalNumber)line(row,'Номер TravelLine',d.externalNumber);
                 if(d.error)line(row,'Ошибка',JSON.stringify(d.error));
                 if (d.before) {
-                    row.append(el('p').append(el('b', 'До изменения')));
+                    row.append(boldLine('До изменения'));
                     summary(row, d.before);
                 }
                 if (d.after) {
-                    if (d.before) row.append(el('p').append(el('b', 'После изменения')));
+                    if (d.before) row.append(boldLine('После изменения'));
                     summary(row, d.after);
                 }
                 log.append(row);
@@ -135,7 +139,7 @@
             var adults=selectField(trip,'Взрослые',adultOptions,modify?selected.adults:1,'cb-adult-count');
             var children=selectField(trip,'Дети',childOptions,modify?(selected.childrenAges||[]).length:0,'cb-child-count');
             var guestBox=$('<div></div>'),guestInputs=[],ageInputs=[],adultDraft=[],childDraft=[];
-            content.append(el('strong','Данные гостей'),el('p','Для каждого ребёнка укажите возраст на дату заезда.','text-muted'),guestBox);
+            content.append(boldLine('Данные гостей'),el('p','Для каждого ребёнка укажите возраст на дату заезда.','text-muted'),guestBox);
             var initial=modify?b.roomStays[0].guests:[def],initialAdults=+adults.val();
             initial.forEach(function(g,i){if(i<initialAdults)adultDraft[i]=$.extend({},g);else childDraft[i-initialAdults]=$.extend({},g,{age:(selected.childrenAges||[])[i-initialAdults]});});
             function ages(){return ageInputs.map(function(s){return s.val()===''?null:Number(s.val());});}
@@ -145,7 +149,7 @@
                 guestBox.empty();guestInputs=[];ageInputs=[];
                 function row(child,i){
                     var g=(child?childDraft:adultDraft)[i]||{},r=$('<div class="well well-sm"></div>').attr('data-cb-guest',(child?'child-':'adult-')+i);
-                    r.append(el('strong',(child?'Ребёнок ':'Взрослый ')+(i+1)).css({display:'block',marginBottom:'8px'}));guestBox.append(r);
+                    r.append(boldLine((child?'Ребёнок ':'Взрослый ')+(i+1)));guestBox.append(r);
                     var record={child:child,index:i,fields:[]};
                     if(child){var opts=[{value:'',text:'Выберите возраст'}];for(var age=0;age<=17;age++)opts.push({value:age,text:age===0?'До 1 года':age+' '+(age===1?'год':(age<5?'года':'лет'))});
                         record.age=selectField(r,'Возраст на дату заезда',opts,g.age===undefined?'':g.age,'cb-child-age');ageInputs.push(record.age);record.age.on('change',clearOffers);}
@@ -157,7 +161,7 @@
             guestFields();
             function validAges(){var missing=ageInputs.filter(function(s){return s.val()==='';});if(missing.length){error('Выберите возраст каждого ребёнка на дату заезда.');missing[0].trigger('focus');return false;}return true;}
             adults.add(children).on('change',function(){saveGuests();guestFields();clearOffers();});arrival.add(departure).on('change',clearOffers);
-            var customer=modify?b.customer:def, buyer=$('<div></div>');content.append(el('strong','Заказчик'),buyer);
+            var customer=modify?b.customer:def, buyer=$('<div></div>');content.append(boldLine('Заказчик'),buyer);
             var surname=field(buyer,'Фамилия','text',customer.lastName),name=field(buyer,'Имя','text',customer.firstName),middle=field(buyer,'Отчество','text',customer.middleName);
             var phone=field(buyer,'Телефон','text',customer.phone),email=field(buyer,'E-mail','email',customer.email);
             var offerActions=$('<div style="display:flex;align-items:flex-end;flex-wrap:wrap;gap:12px;margin-bottom:12px"></div>');content.append(offerActions);
@@ -177,8 +181,8 @@
         function prepare(operation,input) {
             api('prepare',{operation:operation,revision:state.revision,input:JSON.stringify(input)},function(d){
                 content.empty();content.append(el('h4','Проверьте перед отправкой'));var s=d.summary;
-                if(s.before){content.append(el('b','Сейчас'));summary(content,s.before);}
-                if(s.after){content.append(el('b','Будет передано'));summary(content,s.after);}
+                if(s.before){content.append(boldLine('Сейчас'));summary(content,s.before);}
+                if(s.after){content.append(boldLine('Будет передано'));summary(content,s.after);}
                 if(s.penaltyAmount!==undefined){line(content,'Бронь',s.number);line(content,'Штраф к передаче',s.penaltyAmount+' '+s.currency);line(content,'Штраф по сохранённому правилу',s.standardPenalty+' '+s.currency);line(content,'Причина',s.reason);}
                 list(content,s.rules);content.append(el('p','Расчёт действует 2 минуты. После отправки нужно дождаться подтверждения TravelLine.','text-muted'));
                 var confirmText=s.after?'Передать '+(operation==='create'?'новую бронь':'изменение брони')+' на '+s.after.total+' RUB?':'Отменить бронь '+s.number+' со штрафом '+s.penaltyAmount+' '+s.currency+'?';
