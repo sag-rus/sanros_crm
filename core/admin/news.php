@@ -2841,7 +2841,8 @@ function set_bounds($connect,$boundsArray,String $boundsName)
     $entity2_types = [
       'file',
       'resort',
-      'content_type'
+      'content_type',
+      'content'
     ];
 
     $timestamp = gmdate("U");
