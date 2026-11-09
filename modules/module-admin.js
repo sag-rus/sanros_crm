@@ -2395,7 +2395,7 @@ function add_new_sites_content(site_id) {
 												'</div>' +
 			                 '</div>' +
 										 '<div class="form-group aggregate-items-form-group hidden">' +
-											'<label class="col-sm-2 control-label">Конкретные материалы</label>' +
+											'<label class="col-sm-2 control-label">Материалы для публикации на странице агрегатора</label>' +
 											'<div class="col-sm-10 aggregate-items-picker">' +
 												'<div class="aggregate-items-selected"></div>' +
 												'<input type="text" class="form-control aggregate-items-search" placeholder="Введите ID, заголовок или адрес статьи">' +

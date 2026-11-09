@@ -2482,7 +2482,7 @@ function edit_sites_content($connect) {
                           </div>
                       </div>
                       <div class="form-group aggregate-items-form-group<?php if(!in_array($content['type'],['aggregator'])) { ?> hidden<?php } ?>">
-                          <label class="col-sm-2 control-label">Конкретные материалы</label>
+                          <label class="col-sm-2 control-label">Материалы для публикации на странице агрегатора</label>
                           <div class="col-sm-10 aggregate-items-picker">
                               <div class="aggregate-items-selected">
                                   <?php
