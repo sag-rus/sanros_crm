@@ -2286,6 +2286,34 @@ function sites_content_author_options($connect, $selected_author_id = 0) {
   <?php }
   return ob_get_clean();
 }
+
+function search_sites_content_aggregate_items($connect) {
+  $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
+  $content_id = isset($_POST['content_id'])?(int)$_POST['content_id']:0;
+  $query = isset($_POST['query'])?trim($_POST['query']):'';
+
+  if($site_id <= 0 || mb_strlen($query) < 2) {
+    return json_encode([]);
+  }
+
+  $query_like = '%'.$query.'%';
+  $content_id_search = ctype_digit($query)?(int)$query:0;
+  $items = $connect->getAll(
+    "SELECT `id`, `title`, `path`, `type` FROM `sites_contents`
+     WHERE `site_id` = ?i AND `status` = 1 AND `id` <> ?i
+       AND `type` IN ('news','article','info','advice','blog_post')
+       AND (`id` = ?i OR `title` LIKE ?s OR `path` LIKE ?s)
+     ORDER BY `changed` DESC LIMIT 30",
+    $site_id,
+    $content_id,
+    $content_id_search,
+    $query_like,
+    $query_like
+  );
+
+  return json_encode($items, JSON_UNESCAPED_UNICODE);
+}
+
 function edit_sites_content($connect) {
   $content_id = isset($_POST['id'])?(int)$_POST['id']:0;
   $copy_mode = isset($_POST['copy_mode'])?(int)$_POST['copy_mode']:0;
@@ -2451,6 +2479,30 @@ function edit_sites_content($connect) {
                               <?php } ?>
                               <div class="with-bottom-margin"></div>
                               <div class="input-message-block" data-for="aggregate_types"></div>
+                          </div>
+                      </div>
+                      <div class="form-group aggregate-items-form-group<?php if(!in_array($content['type'],['aggregator'])) { ?> hidden<?php } ?>">
+                          <label class="col-sm-2 control-label">Конкретные материалы</label>
+                          <div class="col-sm-10 aggregate-items-picker">
+                              <div class="aggregate-items-selected">
+                                  <?php
+                                  $aggregateItemIds = bounds_to_ids($connect,load_bounds($connect,$entity,'aggregate_items'));
+                                  foreach ($aggregateItemIds as $aggregateItemId) {
+                                      $aggregateItem = $connect->getRow("SELECT `id`, `title`, `path` FROM `sites_contents` WHERE `id` = ?i",$aggregateItemId);
+                                      $aggregateItemTitle = $aggregateItem?$aggregateItem['title']:'Материал не найден';
+                                      $aggregateItemPath = $aggregateItem?$aggregateItem['path']:'';
+                                  ?>
+                                  <div class="alert alert-info aggregate-item-selected" style="padding:6px 10px;margin-bottom:6px;">
+                                      <input type="checkbox" name="aggregate_items" value="<?=$aggregateItemId;?>" checked class="hidden">
+                                      <button type="button" class="close remove-aggregate-item" aria-label="Удалить"><span aria-hidden="true">&times;</span></button>
+                                      <strong>#<?=$aggregateItemId;?> <?=htmlspecialchars($aggregateItemTitle);?></strong>
+                                      <?php if($aggregateItemPath) { ?><br><small><?=htmlspecialchars($aggregateItemPath);?></small><?php } ?>
+                                  </div>
+                                  <?php } ?>
+                              </div>
+                              <input type="text" class="form-control aggregate-items-search" placeholder="Введите ID, заголовок или адрес статьи">
+                              <div class="aggregate-items-results list-group" style="margin-top:8px;"></div>
+                              <p class="help-block">Если выбраны конкретные материалы, на странице агрегатора выводятся только они. Порядок соответствует порядку добавления.</p>
                           </div>
                       </div>
                       <div class="form-group<?php if(!in_array($content['type'],['landing','settings', 'news', 'article', 'info', 'advice', 'blog_post'])) { ?> hidden<?php } ?>">
@@ -3590,9 +3642,11 @@ function set_sites_content($connect) {
     $region_id = isset($_POST['region_id'])?(int)$_POST['region_id']:0;
     $regional_direction_id = isset($_POST['regional_direction_id'])?(int)$_POST['regional_direction_id']:0;
     $aggregate_types_start = isset($_POST['aggregate_types'])?(array)$_POST['aggregate_types']:[];
+    $aggregate_items_start = isset($_POST['aggregate_items'])?(array)$_POST['aggregate_items']:[];
     $main_page_fix = isset($_POST['main_page_fix'])?(int)$_POST['main_page_fix']:0;
 
   $aggregate_types = [];
+  $aggregate_items = [];
 
   if($direction_id < 0) {
       $direction_id = 0;
@@ -3627,6 +3681,7 @@ function set_sites_content($connect) {
   $keywords = isset($_POST['keywords'])?trim($_POST['keywords']):"";
   $search_links = isset($_POST['search_links'])?trim($_POST['search_links']):"";
   $site_id = isset($_POST['site_id'])?(int)$_POST['site_id']:0;
+	  $content_id = isset($_POST['content_id'])?(int)$_POST['content_id']:0;
 	  $type = isset($_POST['type'])?trim($_POST['type']):"page";
 	  $author_id = isset($_POST['author_id'])?(int)$_POST['author_id']:0;
 	  $editor_id = isset($_POST['editor_id'])?(int)$_POST['editor_id']:0;
@@ -3707,6 +3762,19 @@ function set_sites_content($connect) {
           $aggregate_types[] = $aggregate_types_start_item;
       }
     }
+    foreach ($aggregate_items_start as $aggregate_item_id) {
+      $aggregate_item_id = (int)$aggregate_item_id;
+      if($aggregate_item_id > 0 && $aggregate_item_id !== $content_id && !in_array($aggregate_item_id,$aggregate_items)) {
+        $aggregate_item_exists = $connect->getOne(
+          "SELECT `id` FROM `sites_contents` WHERE `id` = ?i AND `site_id` = ?i AND `status` = 1 AND `type` IN ('news','article','info','advice','blog_post')",
+          $aggregate_item_id,
+          $site_id
+        );
+        if($aggregate_item_exists) {
+          $aggregate_items[] = $aggregate_item_id;
+        }
+      }
+    }
     if(!$aggregation_by_dates) {
         $aggregation_date_end = 0;
         $aggregation_date_start = 0;
@@ -3732,7 +3800,6 @@ function set_sites_content($connect) {
   $moduleBlocks = ["rooms","desc","promo","rating"];
   $timestamp = gmdate("U");
   $published = (isset($_POST['published']) && mb_strlen($_POST['published']) > 0)?(strtotime($_POST['published'])):$timestamp;
-  $content_id = isset($_POST['content_id'])?(int)$_POST['content_id']:0;
   $status = isset($_POST['status'])?(int)$_POST['status']:0;
   $imgs_no_index = isset($_POST['imgs_no_index'])?(int)$_POST['imgs_no_index']:0;
   $path_autogenerate = isset($_POST['path_autogenerate'])?(int)$_POST['path_autogenerate']:0;
@@ -3818,6 +3885,7 @@ function set_sites_content($connect) {
               $boundsArrayPageBg = [];
               $boundsArrayReviewsObjects = [];
               $boundsArrayAggregateTypes = [];
+              $boundsArrayAggregateItems = [];
               $boundsArrayResortsIds = [];
 
               if(in_array($type,['landing','settings'])) {
@@ -3829,6 +3897,7 @@ function set_sites_content($connect) {
               
               if(in_array($type,['aggregator'])) {
                   $boundsArrayAggregateTypes = ids_to_bounds($connect,$entity,'aggregate_types',$aggregate_types,'content_type');
+                  $boundsArrayAggregateItems = ids_to_bounds($connect,$entity,'aggregate_items',$aggregate_items,'content');
               }
 
               if(in_array($type, ['news','article','info', 'advice', 'blog_post'])) {
@@ -3842,6 +3911,7 @@ function set_sites_content($connect) {
                 remove_bounds($connect,$entity,'slider_photos_mobile');
               remove_bounds($connect,$entity,'reviews_objects');
               remove_bounds($connect,$entity,'aggregate_types');
+              remove_bounds($connect,$entity,'aggregate_items');
               remove_bounds($connect,$entity, 'resorts_ids');
               set_bounds($connect,$boundsArrayImage,'image');
               save_hotel_direction_photos($connect, $entity);
@@ -3851,6 +3921,7 @@ function set_sites_content($connect) {
                 set_bounds($connect,$boundsArraySliderPhotosMobile,'slider_photos_mobile');
               set_bounds($connect,$boundsArrayReviewsObjects,'reviews_objects');
               set_bounds($connect,$boundsArrayAggregateTypes,'aggregate_types');
+              set_bounds($connect,$boundsArrayAggregateItems,'aggregate_items');
               set_bounds($connect,$boundsArrayResortsIds, 'resorts_ids');
 
 
@@ -3902,10 +3973,12 @@ function set_sites_content($connect) {
               $boundsArrayPageBg = [];
               $boundsArrayReviewsObjects = [];
               $boundsArrayAggregateTypes = [];
+              $boundsArrayAggregateItems = [];
               $boundsArrayResortsIds = [];
 
               if(in_array($type,['aggregator'])) {
                 $boundsArrayAggregateTypes = ids_to_bounds($connect,$entity,'aggregate_types',$aggregate_types,'content_type');
+                $boundsArrayAggregateItems = ids_to_bounds($connect,$entity,'aggregate_items',$aggregate_items,'content');
               }
 
 
@@ -3937,6 +4010,7 @@ function set_sites_content($connect) {
 
                 set_bounds($connect,$boundsArrayReviewsObjects,'reviews_objects');
               set_bounds($connect,$boundsArrayAggregateTypes,'aggregate_types');
+              set_bounds($connect,$boundsArrayAggregateItems,'aggregate_items');
               set_bounds($connect,$boundsArrayResortsIds, 'resorts_ids');
             }
           }

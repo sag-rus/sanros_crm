@@ -2394,6 +2394,15 @@ function add_new_sites_content(site_id) {
 													'<div class="input-message-block" data-for="aggregate_types"></div>' +
 												'</div>' +
 			                 '</div>' +
+										 '<div class="form-group aggregate-items-form-group hidden">' +
+											'<label class="col-sm-2 control-label">Конкретные материалы</label>' +
+											'<div class="col-sm-10 aggregate-items-picker">' +
+												'<div class="aggregate-items-selected"></div>' +
+												'<input type="text" class="form-control aggregate-items-search" placeholder="Введите ID, заголовок или адрес статьи">' +
+												'<div class="aggregate-items-results list-group" style="margin-top:8px;"></div>' +
+												'<p class="help-block">Если выбраны конкретные материалы, на странице агрегатора выводятся только они. Порядок соответствует порядку добавления.</p>' +
+											'</div>' +
+										 '</div>' +
                       '<div class="form-group">' +
 												'<label class="col-sm-2 control-label">Второй заголовок (h2)</label>' +
 												'<div class="col-sm-10">' +
@@ -2664,6 +2673,7 @@ function add_new_sites_content(site_id) {
 	show_modal(html);
 	load_sites_content_author_options(0);
 	load_sites_content_author_options(0, 'editor_id');
+	initAggregateItemsPicker($('.sites-content-modal'));
 
 	$('#sites_content_body').replaceWith('<div id="sites_content_body"></div>');
 	$('#sites_content_body2').replaceWith('<div id="sites_content_body2"></div>');
@@ -2885,6 +2895,83 @@ function escapeHtml(text) {
   };
 
   return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+function initAggregateItemsPicker($modal) {
+  var $picker = $modal.find('.aggregate-items-picker');
+  if($picker.length === 0) return;
+
+  var $search = $picker.find('.aggregate-items-search');
+  var $results = $picker.find('.aggregate-items-results');
+  var $selected = $picker.find('.aggregate-items-selected');
+  var timer = null;
+
+  function selectedIds() {
+    var ids = {};
+    $selected.find('input[name="aggregate_items"]:checked').each(function(){
+      ids[parseInt($(this).val(),10)] = true;
+    });
+    return ids;
+  }
+
+  $selected.on('click', '.remove-aggregate-item', function(){
+    $(this).closest('.aggregate-item-selected').remove();
+    $search.trigger('input');
+  });
+
+  $results.on('click', '.add-aggregate-item', function(){
+    var $button = $(this);
+    var id = parseInt($button.attr('data-id'),10);
+    if(selectedIds()[id]) return;
+
+    var title = $button.attr('data-title') || '';
+    var path = $button.attr('data-path') || '';
+    $selected.append(
+      '<div class="alert alert-info aggregate-item-selected" style="padding:6px 10px;margin-bottom:6px;">' +
+        '<input type="checkbox" name="aggregate_items" value="' + id + '" checked class="hidden">' +
+        '<button type="button" class="close remove-aggregate-item" aria-label="Удалить"><span aria-hidden="true">&times;</span></button>' +
+        '<strong>#' + id + ' ' + escapeHtml(title) + '</strong>' +
+        (path ? '<br><small>' + escapeHtml(path) + '</small>' : '') +
+      '</div>'
+    );
+    $button.closest('.list-group-item').remove();
+  });
+
+  $search.on('input', function(){
+    clearTimeout(timer);
+    var query = $.trim($search.val());
+    if(query.length < 2) {
+      $results.empty();
+      return;
+    }
+    timer = setTimeout(function(){
+      $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        url: 'mysql.php',
+        data: {
+          func: 'search_sites_content_aggregate_items',
+          site_id: parseInt($modal.find('[name="site_id"]').val(),10) || 0,
+          content_id: parseInt($modal.find('[name="content_id"]').val(),10) || 0,
+          query: query
+        },
+        success: function(items){
+          var ids = selectedIds();
+          var html = '';
+          $.each(items, function(_, item){
+            var id = parseInt(item.id,10);
+            if(ids[id]) return;
+            html += '<div class="list-group-item" style="padding:8px 10px;">' +
+              '<button type="button" class="btn btn-xs btn-success pull-right add-aggregate-item" data-id="' + id + '" data-title="' + escapeHtml(item.title || '') + '" data-path="' + escapeHtml(item.path || '') + '"><i class="fa fa-plus"></i> Добавить</button>' +
+              '<strong>#' + id + ' ' + escapeHtml(item.title || '') + '</strong><br>' +
+              '<small>' + escapeHtml(item.path || '') + '</small>' +
+            '</div>';
+          });
+          $results.html(html || '<div class="text-muted">Ничего не найдено</div>');
+        }
+      });
+    },300);
+  });
 }
 
 function set_sites_content() {
@@ -3155,6 +3242,7 @@ function set_sites_content() {
 	var $aggregate_typesMsg = $modalBody.find('*[name="aggregate_types"]').parent().parent().find('.input-message-block');
 	$aggregate_typesMsg.html("");
 	var aggregate_types = [], aggrI;
+	var aggregate_items = [];
 
 	var $aggregation_by_dates = $('.sites-content-modal *[name="aggregation_by_dates"]');
 	var $aggregation_by_datesFormG = $aggregation_by_dates.closest('.form-group');
@@ -3177,6 +3265,9 @@ function set_sites_content() {
 	for(aggrI = 0; aggrI < $aggregate_types.length; aggrI++) {
 		aggregate_types.push(parseInt($($aggregate_types.get(aggrI)).val(),10));
 	}
+	$modalBody.find('input[name="aggregate_items"]:checked').each(function(){
+		aggregate_items.push(parseInt($(this).val(),10));
+	});
 
   var error = false;
 
@@ -3356,6 +3447,7 @@ function set_sites_content() {
 		title_h1: title_h1,
         title_h2: title_h2,
 		aggregate_types: aggregate_types,
+		aggregate_items: aggregate_items,
         description: description,
 		slider_photos: slider_photos,
 		slider_photos_mobile: slider_photos_mobile,
@@ -3998,6 +4090,7 @@ function edit_sites_content(id,copyMode) {
     url: 'mysql.php',
     success: function(html){
       show_modal(html);
+      initAggregateItemsPicker($('.sites-content-modal'));
       var sites_content_body_orig = $('#sites_content_body').val();
 	  var sites_content_body_orig_cabinet = $('#sites_content_body_cabinet').val();
       var sites_content_body_orig2 = $('#sites_content_body2').val();
@@ -4665,6 +4758,7 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 
 	var $aggregate_types = $('.sites-content-modal *[name="aggregate_types"]');
 	var $aggregate_typesFormG = $aggregate_types.closest('.form-group');
+	var $aggregate_itemsFormG = $('.sites-content-modal .aggregate-items-form-group');
 
   var $resorts_ids = $('.sites-content-modal *[name="resorts_ids"]');
   var $resorts_idsFormG = $resorts_ids.closest('.form-group');
@@ -4779,10 +4873,12 @@ $(document).on('change','.sites-content-modal select[name="type"]',function (e) 
 
 	if(type === 'aggregator')  {
 		$aggregate_typesFormG.removeClass('hidden');
+		$aggregate_itemsFormG.removeClass('hidden');
     $rssFormG.removeClass('hidden');
 	}
 	else {
 		$aggregate_typesFormG.addClass('hidden');
+		$aggregate_itemsFormG.addClass('hidden');
     $rssFormG.addClass('hidden');
     $rss.val(0);
     rss = 0;
