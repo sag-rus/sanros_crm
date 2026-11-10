@@ -2220,6 +2220,18 @@ function comfort_booking_panel(){
                     window.cbEditorialOpen(row, csrf, load);
                 }).appendTo(objectButtons);
             }
+            var analogs=$('<div class="cb-analogs" style="margin:8px 0">').appendTo(name);
+            if(!row.analogSearch)$('<div class="text-warning">').text('Поиск похожих объектов ещё не выполнен.').appendTo(analogs);
+            else if(!row.analogSearch.matches.length)$('<div class="text-muted">').text('Поиск похожих объектов не дал результатов.').appendTo(analogs);
+            else {
+                $('<strong>').text('Похожие объекты на сайте:').appendTo(analogs);
+                row.analogSearch.matches.forEach(function(item){
+                    var line=$('<div>').appendTo(analogs);
+                    if(/^https:\/\/санатории-россии\.рф\//.test(item.url))$('<a target="_blank" rel="noopener noreferrer">').attr('href',item.url).text(item.name).appendTo(line);
+                    else line.text(item.name);
+                    line.append(document.createTextNode(' — ID '+item.id));
+                });
+            }
             $('<div class="text-muted">').text('Тип объекта: '+(row.object_type||'—')).appendTo(name);
             $('<div class="text-muted">').text('Адрес: '+(row.address||'—')).appendTo(name);
             $('<div class="text-muted">').text('Телефон: '+((row.phones||[]).join(', ')||'—')).appendTo(name);
@@ -2233,7 +2245,7 @@ function comfort_booking_panel(){
             });
             var actions=$('<td style="white-space:nowrap">').appendTo(tr);
             if(canModerate&&row.state!=='disabled'){
-                if(row.state==='pending')$('<button type="button" class="btn btn-success btn-sm" style="margin-right:5px">').text('Одобрить').prop('disabled',busy).on('click',function(){change(row,'approve');}).appendTo(actions);
+                if(row.state==='pending')$('<button type="button" class="btn btn-success btn-sm" style="margin-right:5px">').text('Одобрить').prop('disabled',busy||!row.analogSearch).on('click',function(){change(row,'approve');}).appendTo(actions);
                 $('<button type="button" class="btn btn-danger btn-sm">').text('Отключить').prop('disabled',busy).on('click',function(){change(row,'disable');}).appendTo(actions);
             }
         });
