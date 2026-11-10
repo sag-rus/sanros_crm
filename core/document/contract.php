@@ -2,6 +2,8 @@
 
 function review_contract($connect, $type, $id){
 	global $directory, $session_login;
+    require_once dirname(__DIR__).'/comfort-booking-request-state.php';
+    if(!cbr_document_guard($connect,$id,$cbDocument))return;
 
 	include_once($directory."/config.php");
 
@@ -63,6 +65,10 @@ function review_contract($connect, $type, $id){
 	$payers = $connect->getRow("SELECT * FROM payer WHERE id=?i", $payer);
 	$object = get_object($connect, $id_obj, "full_and_address");
 	$room = get_room($connect, $id_room, "full");
+        if($cbDocument){
+            $object=htmlspecialchars($cbDocument['hotel']['name'],ENT_QUOTES,'UTF-8');
+            $room=htmlspecialchars($cbDocument['selection']['room'],ENT_QUOTES,'UTF-8');
+        }
 	$bonus_str = "";
 	$prepay_str = "";
 	$raz_str = "";
@@ -147,6 +153,10 @@ function review_contract($connect, $type, $id){
 			$room = get_room($connect, $row["id_room"], "full", "view_schet");
 		else
 			$room = $connect->getOne("SELECT name FROM service_schet WHERE id=?i", $row["id_service"]);
+        if($cbDocument){
+            $object=htmlspecialchars($cbDocument['hotel']['name'],ENT_QUOTES,'UTF-8');
+            $room=htmlspecialchars($cbDocument['selection']['room'],ENT_QUOTES,'UTF-8');
+        }
 		if($days > $max_days){
 			$max_days = $days;
 			$max_date_v = $date_v;

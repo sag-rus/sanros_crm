@@ -90,5 +90,8 @@ function ok(v,m){assert(v,m);checks++;}
  cancelled=true;click('Открыть / обновить');await wait();
  ok($('[data-reckoning-status]').attr('data-reckoning-status')==='6'&&$('[data-reckoning-status]').text()==='Аннулированная'&&$('[data-reckoning-status]').hasClass('label-danger'),'CRM cancellation status displayed immediately');
  $('#info_turist').empty();var before=calls.length;w.cbBookingMount(100,true);await wait();ok(calls.length===before+1&&calls[calls.length-1].action==='detail','CB panel opens automatically with read only request');
+ let reloaded=null;w.view_schet=id=>{reloaded=id;};
+ click('Открыть / обновить');await wait();
+ ok(reloaded===100,'synchronized booking reloads request fields and document menus');
  dom.window.close();console.log(checks+' UI checks passed');
 })().catch(e=>{dom.window.close();console.error(e);process.exitCode=1;});

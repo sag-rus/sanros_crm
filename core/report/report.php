@@ -2033,6 +2033,7 @@ function get_schet_san($connect){
 }
 
 function update_mass_reckoning($connect){
+    $html = "";
 	$arr_id = explode("_", $_POST["id"]);
 	$arr_id = array_diff($arr_id, array(""));
 	$type = $_POST["type"];
@@ -2042,6 +2043,12 @@ function update_mass_reckoning($connect){
 		$status_san = $row["status_san"];
 		$active = $row["active"];
 		if($type == "cancel"){
+            require_once dirname(__DIR__).'/comfort-booking-request-state.php';
+            try {$cbBlocked=cbr_is_request($connect,$id);} catch(Throwable $e){$cbBlocked=true;}
+            if($cbBlocked){
+                $html.= '<div class="alert alert-danger">Заявка №'.(int)$id.': обычная аннуляция недоступна. Используйте блок бронирования Comfort Booking.</div>';
+                continue;
+            }
 			if($status == 8){
 				$connect->query("UPDATE reckoning SET status=6 WHERE id=?i", $id);
 				$connect->query("DELETE from bonus WHERE schet=?i", $id);

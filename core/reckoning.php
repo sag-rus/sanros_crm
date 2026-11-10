@@ -2966,6 +2966,19 @@ function show_talk_reckoning($connect){
 }
 
 function show_menu_document($connect){
+    $id=(int)$_POST['id'];
+    require_once __DIR__.'/comfort-booking-request-state.php';
+    try {$isCb=cbr_is_request($connect,$id);} catch(Throwable $e){echo '<p>Не удалось проверить канал объекта. Обновите меню.</p>';return;}
+    if($isCb){
+        echo '<span class="hr_label">Документы<hr /></span>';
+        try{cbr_document_data($connect,$id);}catch(Throwable $e){
+            echo '<p class="text-muted">Счет и договоры доступны после подтверждения текущей брони TravelLine и синхронизации заявки. Обновите данные брони.</p>';return;
+        }
+        echo '<span onclick="show_bill('.$id.')">Счет</span>';
+        echo '<span onclick="show_contract('.$id.', 1)">Договор</span>';
+        echo '<span onclick="show_contract('.$id.', 2)">Договор туристский</span>';
+        return;
+    }
 	global $id_rights;
 	$id = $_POST["id"];
 	$row = $connect->getRow("SELECT id_obj, status, status_san FROM reckoning WHERE id=?i", $id);
@@ -2999,6 +3012,8 @@ function show_menu_document($connect){
 function show_menu_bid($connect){
 	global $id_rights, $session_login;
 	$id = $_POST["id"];
+    require_once __DIR__.'/comfort-booking-request-state.php';
+    try {$isCb=cbr_is_request($connect,$id);} catch(Throwable $e){$isCb=true;}
 	$row = $connect->getRow("SELECT status, holding_sum, status_san, date_z, agency, turist, status_agent, id_user, active, changes, id_user FROM reckoning WHERE id=?i", $id);
 	$status = $row["status"];
 	$status_san = $row["status_san"];
@@ -3020,7 +3035,9 @@ function show_menu_bid($connect){
 			<span onclick="show_bill(<?php echo $id; ?>)">Выставить счет</span>
 		<?php } ?>
 		<?php if(($status == 1 || $id_rights > 5) && $row['holding_sum'] == 0){ ?>
-			<span onclick="reckoning_to_upsorted(<?php echo $id; ?>)">Удалить</span>
+			<?php if(!$isCb){ ?>
+				<span onclick="reckoning_to_upsorted(<?php echo $id; ?>)">Удалить</span>
+			<?php } ?>
 		<?php } ?>
 		<?php if($status < 4){ ?>
 			<span onclick="reckoning_put_aside(<?php echo $id; ?>)">Отложить</span>
@@ -3028,7 +3045,9 @@ function show_menu_bid($connect){
 		<?php if(($status == 9) && $row['holding_sum'] == 0){ ?>
 			<span onclick="reckoning_from_aside(<?php echo $id; ?>)">Вернуть в работу</span>
             <span onclick="reckoning_to_deposit(<?=$id;?>)">Перевести в депозит</span>
-			<span onclick="reckoning_to_upsorted(<?php echo $id; ?>)">Удалить</span>
+			<?php if(!$isCb){ ?>
+				<span onclick="reckoning_to_upsorted(<?php echo $id; ?>)">Удалить</span>
+			<?php } ?>
 		<?php } ?>
 		<?php if(($status == 4 OR $status == 3 OR $status == 7) AND $id_rights > 5){ ?>
 			<span onclick="pay_schet(<?php echo $id; ?>)">Оплачено</span>
@@ -3074,7 +3093,9 @@ function show_menu_bid($connect){
 			<?php } ?>
 		<?php } ?>
 		<?php if(($id_rights > 3) AND ($status != 6) AND ($status != 9)){ ?>
-			<span onclick="review_cancel(<?php echo $id; ?>, 6)">Аннулировать</span>
+			<?php if(!$isCb){ ?>
+				<span onclick="review_cancel(<?php echo $id; ?>, 6)">Аннулировать</span>
+			<?php } ?>
             <span onclick="reckoning_to_deposit(<?php echo $id; ?>, 6)">Перевести в депозит</span>
         <?php } ?>
 		<?php if(($id_rights > 3) AND ($status != 13)){ ?>
@@ -3100,7 +3121,9 @@ function show_menu_bid($connect){
 			<span onclick="show_form_commission_reckoning(<?php echo $id; ?>)">Установить комиссию</span>
 		<?php } ?>
 		<?php if($id_rights <= 3 AND $status != 6){ ?>
-			<span onclick="review_cancel(<?php echo $id; ?>, 8)">Запрос аннуляции</span>
+			<?php if(!$isCb){ ?>
+				<span onclick="review_cancel(<?php echo $id; ?>, 8)">Запрос аннуляции</span>
+			<?php } ?>
 		<?php } ?>
 		<span class="hr_label"><hr /></span>
 	<?php }else{ ?>
@@ -3159,10 +3182,14 @@ function show_menu_bid($connect){
 	<?php if(!$user OR $active == 3){ ?>
 		<hr /><span class="hr_label">Новая заявка<hr /></span>
 		<?php if($active != 3 && $row['holding_sum'] == 0){ ?>
-			<span onclick="reckoning_to_upsorted(<?php echo $id; ?>)">Удалить</span>
+			<?php if(!$isCb){ ?>
+				<span onclick="reckoning_to_upsorted(<?php echo $id; ?>)">Удалить</span>
+			<?php } ?>
 		<?php } ?>
 		<?php if($id_rights >= 5 AND $active == 3 && $row['holding_sum'] == 0){ ?>
-			<span onclick="delete_reckoning(<?php echo $id; ?>)">Удалить навсегда</span>
+			<?php if(!$isCb){ ?>
+				<span onclick="delete_reckoning(<?php echo $id; ?>)">Удалить навсегда</span>
+			<?php } ?>
 		<?php } ?>
 		<?php if($active == 3){ ?>
 			<span onclick="reestablish_reckoning(<?php echo $id; ?>)">Восстановить</span>

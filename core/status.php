@@ -79,6 +79,8 @@ function show_bron($connect){
 
 function show_bill($connect){
 	$id = $_POST["id"];
+    require_once __DIR__.'/comfort-booking-request-state.php';
+    if(!cbr_document_guard($connect,$id))return;
 	$payers = get_payer_bill($connect, $id);
 	$html_payers = "";
 	foreach($payers as $id_payer => $payer){
@@ -173,6 +175,8 @@ function show_bill($connect){
 
 function save_bill($connect){
 	$id = $_POST["id"];
+    require_once __DIR__.'/comfort-booking-request-state.php';
+    if(!cbr_document_guard($connect,$id))return;
 	$payer = $_POST["payer"];
 	$pay_on_place = $_POST["status_san"];
 	$row = $connect->getRow("SELECT id_obj, id_com, status, status_san, agency, payer, website, turist FROM reckoning WHERE id=?i", $id);
@@ -245,6 +249,8 @@ function get_payer_bill($connect, $id, $table = ""){
 
 function show_contract($connect){
 	$id = $_POST["id"];
+    require_once __DIR__.'/comfort-booking-request-state.php';
+    if(!cbr_document_guard($connect,$id))return;
 	$version = $_POST["ver"];
 	$payers = get_payer_bill($connect, $id);
 	$html_payers = "";
@@ -333,6 +339,8 @@ function show_contract($connect){
 
 function save_contract($connect){
 	$id = $_POST["id"];
+    require_once __DIR__.'/comfort-booking-request-state.php';
+    if(!cbr_document_guard($connect,$id))return;
 	$check = $_POST["check"];
 	$payer = $_POST["payer"];
 	$connect->query("UPDATE reckoning SET payer=?i, id_services=?s WHERE id=?i", $payer, $check, $id);
@@ -1167,6 +1175,8 @@ function confirm_agency_document($connect){
 
 function show_form_review_cancel($connect){
 	$id = $_POST["id"];
+    require_once __DIR__.'/comfort-booking-request-state.php';
+    if(!cbr_ordinary_action_allowed($connect,$id))return;
 	$status = $_POST["status"];
 	$row = $connect->getRow("SELECT cause, note FROM cancellation WHERE schet=?i", $id);
 ?>
@@ -1208,6 +1218,8 @@ function show_form_review_cancel($connect){
 
 function save_cancelation($connect){
 	$id = $_POST["id"];
+    require_once __DIR__.'/comfort-booking-request-state.php';
+    if(!cbr_ordinary_action_allowed($connect,$id))return;
 	$status = $_POST["status"];
 	$cause = $_POST["cause"];
 	$note = $_POST["note"];
@@ -1238,6 +1250,8 @@ function save_cancelation($connect){
 
 function save_cancelation_not_writing($connect){
 	$id = $_POST["id"];
+    require_once __DIR__.'/comfort-booking-request-state.php';
+    if(!cbr_ordinary_action_allowed($connect,$id))return;
 	$status = $_POST["status"];
 	$row = $connect->getRow("SELECT status, promo_code, turist FROM reckoning WHERE id=?i", $id);
 	$old = $row["status"];
@@ -1256,6 +1270,8 @@ function save_cancelation_not_writing($connect){
 
 function form_reckoning_to_upsorted($connect){
 	$id = $_POST["id"];
+    require_once __DIR__.'/comfort-booking-request-state.php';
+    if(!cbr_ordinary_action_allowed($connect,$id))return;
 ?>
 <div class="modal fade">
 	<div class="modal-dialog">
@@ -1284,6 +1300,8 @@ function form_reckoning_to_upsorted($connect){
 function reckoning_to_upsorted($connect){
 	global $session_login;
 	$id = $_POST["id"];
+    require_once __DIR__.'/comfort-booking-request-state.php';
+    if(!cbr_ordinary_action_allowed($connect,$id))return;
 	$reason = $_POST["reason"];
 	$connect->query("UPDATE reckoning SET active=3, reason_delete=?i WHERE id=?i", $reason, $id);
 	$connect->query("DELETE from bonus WHERE schet=?i", $id);
@@ -1304,6 +1322,8 @@ function reckoning_to_upsorted($connect){
 function delete_reckoning($connect){
     global $id_rights;
 	$id = $_POST["id"];
+    require_once __DIR__.'/comfort-booking-request-state.php';
+    if(!cbr_ordinary_action_allowed($connect,$id))return;
 	$status = $connect->getOne("SELECT status FROM reckoning WHERE id=?i", $id);
 	if(($status == 1 || $id_rights > 5) OR $status == 9){
 		$connect->query("DELETE FROM reckoning WHERE id=?i LIMIT 1", $id);

@@ -42,6 +42,7 @@
                 if (r.crmStatus && r.crmStatus.status === 6) {
                     $('#info_turist [data-reckoning-status]').attr('data-reckoning-status','6').removeClass('label-default label-success label-warning label-info label-primary').addClass('label-danger').text('Аннулированная');
                 }
+                if (r.crmStatus && r.crmStatus.changed && window.view_schet) { view_schet(requestId); return; }
                 done(r.data);
             }).fail(function (xhr) {
                 if (!alive()) return;

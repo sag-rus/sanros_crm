@@ -4,6 +4,8 @@ define("_FOLDERSITE_", $directory);
 
 function review_schet($connect, $type = "PDF", $id, $for = ""){
 	global $directory, $session_login;
+    require_once dirname(__DIR__).'/comfort-booking-request-state.php';
+    if(!cbr_document_guard($connect,$id,$cbDocument))return;
 
 	include_once($directory."/config.php");
 	include_once($directory."/core/sync/API/payment.php");
@@ -141,6 +143,10 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 		else
 			$object = get_object($connect, $connect->getOne("SELECT id_obj FROM room WHERE id=?i", $id_room), "type");
 		$room = get_room($connect, $id_room, "full");
+        if($cbDocument){
+            $object=htmlspecialchars($cbDocument['hotel']['name'],ENT_QUOTES,'UTF-8');
+            $room=htmlspecialchars($cbDocument['selection']['room'],ENT_QUOTES,'UTF-8');
+        }
 		$index++;
 		$sum2 = calculate_position($sum, $number, $type_price, $days);
 		$sum2 = add_null($sum2);
