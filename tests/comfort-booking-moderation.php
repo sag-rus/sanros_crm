@@ -34,3 +34,11 @@ foreach(['editorial-read','editorial-save'] as $action){
  ok(!cbm_allowed(false,$action,'POST',$token,$token),'anonymous text access denied');
 }
 echo "$n checks including editorial access passed\n";
+
+foreach(['bulk-approve','bulk-disable'] as $action){
+ ok(cbm_allowed($user,$action,'POST',$token,$token),'bulk action allowed for moderator');
+ ok(!cbm_allowed(['rights'=>2],$action,'POST',$token,$token),'reader cannot bulk moderate');
+ ok(!cbm_allowed($user,$action,'POST','wrong',$token),'bulk action needs CSRF');
+ ok(!cbm_allowed($user,$action,'GET',$token,$token),'bulk action requires POST');
+}
+echo "$n checks including bulk permissions passed\n";

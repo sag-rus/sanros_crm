@@ -34,7 +34,7 @@ function cbm_allowed($user, $action, $method, $csrf, $expectedCsrf) {
     if(!$user || (int)$user['rights']<2 || $method!=='POST') return false;
     if(in_array($action,['list','count','analytics'],true)) return true;
     if($action==='calendar-ticket')return is_string($expectedCsrf) && strlen($expectedCsrf)===64 && hash_equals($expectedCsrf,(string)$csrf);
-    return (int)$user['rights']>=3 && in_array($action,['approve','disable','editorial-read','editorial-save'],true)
+    return (int)$user['rights']>=3 && in_array($action,['approve','disable','bulk-approve','bulk-disable','editorial-read','editorial-save'],true)
         && is_string($expectedCsrf) && strlen($expectedCsrf)===64 && hash_equals($expectedCsrf,(string)$csrf);
 }
 

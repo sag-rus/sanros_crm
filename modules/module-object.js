@@ -2190,15 +2190,34 @@ function comfort_booking_panel(){
     var info=$('<p class="text-muted">').appendTo(root),message=$('<div role="alert">').appendTo(root);
     var wrap=$('<div class="table-responsive">').appendTo(root),table=$('<table class="table table-striped table-bordered">').appendTo(wrap);
     var head=$('<tr>').appendTo($('<thead>').appendTo(table));
+    var selectAll=$('<input type="checkbox" aria-label="Выбрать все доступные объекты на странице">').appendTo($('<th>').appendTo(head));
     ['ID внутр / внешн.','Статус','Направление','Объект','Действия'].forEach(function(t){$('<th>').text(t).appendTo(head);});
     var body=$('<tbody>').appendTo(table),pagerWrap=$('<div style="padding:15px 0;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap">').appendTo(root),pager=$('<div class="btn-group" role="navigation" aria-label="Страницы списка">').appendTo(pagerWrap);
     size.appendTo(pagerWrap);
-    var rows=[],page=1,pages=1,total=0,csrf='',canModerate=false,busy=false,xhr=null,sequence=0,timer=null;
+    var bulkBar=$('<div class="cb-bulk-actions" style="margin:15px 0">').appendTo(root);
+    var bulkCount=$('<span style="margin-right:15px">').appendTo(bulkBar);
+    var bulkApprove=$('<button type="button" class="btn btn-success" style="margin-right:8px">Одобрить</button>').appendTo(bulkBar);
+    var bulkDisable=$('<button type="button" class="btn btn-danger">Отклонить</button>').appendTo(bulkBar);
+    $('<p class="text-muted" style="margin-top:8px">').text('Выбор действует только на текущей странице. Объекты с аналогами недоступны для групповых действий. Для одобрения выберите только ожидающие модерации объекты с завершённым поиском. «Отклонить» отключает выбранные объекты.').appendTo(bulkBar);
+    var rows=[],page=1,pages=1,total=0,csrf='',canModerate=false,busy=false,xhr=null,sequence=0,timer=null,selected={},fetching=false;
+    function eligible(row){return canModerate && row.state!=='disabled' && !(row.analogSearch && row.analogSearch.matches.length);}
+    function chosen(){return rows.filter(function(row){return selected[row.id] && eligible(row);});}
+    function updateSelection(){
+        var available=rows.filter(eligible),picked=chosen();
+        selectAll.prop('disabled',busy||fetching||!available.length).prop('checked',available.length>0&&picked.length===available.length).prop('indeterminate',picked.length>0&&picked.length<available.length);
+        bulkBar.toggle(canModerate);bulkCount.text('Выбрано: '+picked.length);
+        bulkApprove.prop('disabled',busy||fetching||!picked.length||picked.some(function(row){return row.state!=='pending'||!row.analogSearch;}));
+        bulkDisable.prop('disabled',busy||fetching||!picked.length);
+    }
+    selectAll.on('change',function(){var checked=this.checked;selected={};if(checked)rows.filter(eligible).forEach(function(row){selected[row.id]=true;});render();});
+    bulkApprove.on('click',function(){bulkChange('approve');});
+    bulkDisable.on('click',function(){bulkChange('disable');});
     function showError(response){message.attr('class','alert alert-danger').text(response.responseJSON&&response.responseJSON.error||'Не удалось связаться с сайтом. Обновите список и проверьте статус.');}
     function render(){
         body.empty();pager.empty();
         rows.forEach(function(row){
             var tr=$('<tr>').appendTo(body);
+            $('<input type="checkbox" class="cb-row-select">').attr('aria-label','Выбрать '+row.name).prop('disabled',busy||fetching||!eligible(row)).prop('checked',!!selected[row.id]&&eligible(row)).on('change',function(){if(this.checked)selected[row.id]=true;else delete selected[row.id];updateSelection();}).appendTo($('<td>').appendTo(tr));
             $('<td>').append($('<div>').text(row.id),$('<br>'),$('<div>').text(row.property_id)).appendTo(tr);
             $('<td>').text(labels[row.state]||row.state).appendTo(tr);
             var direction=$('<td>').appendTo(tr);
@@ -2249,14 +2268,16 @@ function comfort_booking_panel(){
                 $('<button type="button" class="btn btn-danger btn-sm">').text('Отключить').prop('disabled',busy).on('click',function(){change(row,'disable');}).appendTo(actions);
             }
         });
-        if(!rows.length)$('<tr>').append($('<td colspan="5">').text('Объекты не найдены.')).appendTo(body);
+        if(!rows.length)$('<tr>').append($('<td colspan="6">').text('Объекты не найдены.')).appendTo(body);
         info.text('Найдено: '+total+'. Страница '+page+' из '+pages+'. Сначала ожидающие модерации, затем одобренные и отключённые; новые — выше.');
         function button(label,target,disabled,active){$('<button type="button" class="btn">').addClass(active?'btn-primary':'btn-default').text(label).prop('disabled',disabled||busy).on('click',function(){page=target;load();}).appendTo(pager);}
         button('«',1,page===1);button('‹',page-1,page===1);
         for(var n=Math.max(1,page-2);n<=Math.min(pages,page+2);n++)button(String(n),n,n===page,n===page);
         button('›',page+1,page===pages);button('»',pages,page===pages);
+        updateSelection();
     }
-    function load(){
+    function load(notice){
+        if(busy)return;selected={};fetching=true;render();
         clearTimeout(timer);var seq=++sequence;if(xhr)xhr.abort();loading.show();refresh.prop('disabled',true);message.empty().removeClass('alert alert-danger');
         xhr=$.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:'list',page:page,perPage:size.val(),search:search.val(),status:status.val(),typeId:typeFilter.val(),directionId:directionFilter.val()}})
             .done(function(result){
@@ -2273,7 +2294,31 @@ function comfort_booking_panel(){
                 directionFilter.val(selectedDirection).prop('disabled',false);
                 comfort_booking_count(result.data.pendingCount);rows=result.data.rows;page=result.data.page;pages=result.data.pages;total=result.data.total;csrf=result.csrf;canModerate=result.canModerate;render();
             }).fail(function(response,why){if(why!=='abort'&&seq===sequence)showError(response);})
-            .always(function(){if(seq===sequence){loading.hide();refresh.prop('disabled',busy);}});
+            .always(function(){if(seq===sequence){fetching=false;loading.hide();refresh.prop('disabled',busy);render();if(typeof notice==='string')message.attr('class','alert alert-info').text(notice);}});
+    }
+    function bulkChange(action){
+        var picked=chosen();
+        if(busy||fetching||!picked.length||(action==='approve'&&picked.some(function(row){return row.state!=='pending'||!row.analogSearch;})))return;
+        if(!confirm((action==='approve'?'Одобрить':'Отклонить и отключить')+' выбранные объекты ('+picked.length+')?'))return;
+        clearTimeout(timer);busy=true;render();
+        form.find('input,select,button').prop('disabled',true);size.prop('disabled',true);
+        var index=0,done=0,errors=[];
+        function finish(uncertain){
+            busy=false;selected={};form.find('input,select,button').prop('disabled',false);size.prop('disabled',false);
+            var note='Успешно '+(action==='approve'?'одобрено':'отключено')+': '+done+' из '+picked.length+'.';
+            if(errors.length)note+=' Ошибки: '+errors.join('; ')+'.';
+            if(uncertain)note+=' Обработка остановлена из-за ошибки связи. Проверьте обновлённые статусы перед повтором.';
+            load(note);
+        }
+        function next(){
+            if(index===picked.length){finish(false);return;}
+            var row=picked[index++];
+            message.attr('class','alert alert-info').text('Обработка '+index+' из '+picked.length+'…');
+            $.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:'bulk-'+action,id:row.id,expected:row.state,csrf:csrf}})
+                .done(function(){done++;next();})
+                .fail(function(response){errors.push('ID '+row.id+': '+(response.responseJSON&&response.responseJSON.error||'нет подтверждения'));if(response.status===409)next();else finish(true);});
+        }
+        next();
     }
     function change(row,action){
         if(busy)return;
