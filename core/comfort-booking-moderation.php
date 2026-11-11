@@ -47,3 +47,30 @@ function cbm_calendar_ticket($id,$actor,$ua,$secret=null,$now=null) {
     $body=rtrim(strtr(base64_encode(json_encode($claims,JSON_UNESCAPED_SLASHES)),'+/','-_'),'=');
     return ['object'=>$id,'ticket'=>$body.'.'.hash_hmac('sha256',$body,hash_hmac('sha256','comfort-booking-calendar-v1',$secret,true)),'entryUrl'=>'https://xn----7sba6aaba8akdsdekah.xn--p1ai/api/comfort_booking_calendar'];
 }
+
+// CRM sync sends object.id as the site resort ID (core/upload/sync-objects-api.php).
+// active=1 is archived, active=0 is enabled. Check the name as a second identity key.
+function cbm_reconcile_replacements() {
+    $data=cbm_request(['action'=>'replacements']);
+    if(!isset($data['ids']) || !is_array($data['ids']))throw new RuntimeException('Не удалось проверить замены объектов.');
+    if(!$data['ids'])return;
+    require_once dirname(__DIR__).'/config.php';$c=new JConfig;
+    $p=new PDO('mysql:host='.$c->host.';dbname='.$c->db.';charset=utf8',$c->user,$c->password,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]);
+    $q=$p->prepare('UPDATE object SET active=1,synchronized=0 WHERE id=? AND name=? AND active=0');
+    foreach($data['ids'] as $row) {
+        if(!isset($row['id'],$row['name'])||(int)$row['id']<=0)throw new RuntimeException('Некорректный журнал замен.');
+        $q->execute([(int)$row['id'],$row['name']]);
+        $check=$p->prepare('SELECT active FROM object WHERE id=? AND name=?');$check->execute([(int)$row['id'],$row['name']]);
+        $active=$check->fetchColumn();
+        if($active===false || (int)$active===0)throw new RuntimeException('Замена на сайте сохранена, но отключение аналога в СРМ требует проверки: ID '.(int)$row['id']);
+    }
+}
+
+function cbm_replacement_name($id) {
+    if((int)$id<=0)return '';
+    require_once dirname(__DIR__).'/config.php';$c=new JConfig;
+    $p=new PDO('mysql:host='.$c->host.';dbname='.$c->db.';charset=utf8',$c->user,$c->password,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]);
+    $q=$p->prepare('SELECT name FROM object WHERE id=? AND active=0');$q->execute([(int)$id]);$name=$q->fetchColumn();
+    if($name===false)throw new DomainException('Аналог не найден среди активных объектов СРМ. Обновите список.');
+    return (string)$name;
+}

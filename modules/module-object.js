@@ -2277,13 +2277,40 @@ function comfort_booking_panel(){
     }
     function change(row,action){
         if(busy)return;
+        if(action==='approve' && row.analogSearch && row.analogSearch.matches.length){approvalDialog(row);return;}
         var question=action==='approve'
             ?'Одобрить «'+row.name+'»? Объект пройдёт модерацию, запрет индексации будет снят.'
             :'Отключить «'+row.name+'»? Объект исчезнет с сайта, входящие обновления не будут применяться.';
         if(!confirm(question))return;
+        submitChange(row,action,0);
+    }
+    function submitChange(row,action,replaceId,dialog){
+        if(busy)return;
         busy=true;render();message.empty().removeClass('alert alert-danger');
-        $.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:action,id:row.id,expected:row.state,csrf:csrf}})
-            .fail(showError).always(function(){busy=false;load();});
+        if(dialog)dialog.find('button,select').prop('disabled',true);
+        $.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:action,id:row.id,expected:row.state,csrf:csrf,replaceId:replaceId}})
+            .done(function(){if(dialog)dialog.modal('hide');busy=false;load();})
+            .fail(function(response){
+                if(dialog)dialog.find('[role=alert]').text(response.responseJSON&&response.responseJSON.error||'Связь прервана. Закройте окно и обновите список перед повтором.');
+                else showError(response);
+            }).always(function(){busy=false;render();if(dialog)dialog.find('button,select').prop('disabled',false);});
+    }
+    function approvalDialog(row){
+        if($('#cb-approval-modal').length)return;
+        var modal=$('<div id="cb-approval-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="cb-approval-title">').appendTo('body');
+        var content=$('<div class="modal-content">').appendTo($('<div class="modal-dialog">').appendTo(modal));
+        $('<div class="modal-header">').append($('<h4 id="cb-approval-title" class="modal-title">').text('Одобрить «'+row.name+'»')).appendTo(content);
+        var body=$('<div class="modal-body">').appendTo(content);
+        $('<label for="cb-replacement">').text('Объект для замены').appendTo(body);
+        var choice=$('<select id="cb-replacement" class="form-control">').appendTo(body);
+        $('<option value="0">').text('не заменять никакой объект').appendTo(choice);
+        row.analogSearch.matches.forEach(function(item){$('<option>').val(item.id).text(item.name+' — ID '+item.id).appendTo(choice);});
+        $('<p style="margin-top:15px">').text('При замене аналог будет отключён на сайте и в СРМ. Его URL, материал, SEO и вопросы сохранятся; цены, номера и инфраструктура будут от Comfort Booking. Запрет индексации Comfort Booking будет снят.').appendTo(body);
+        $('<div class="text-danger" role="alert">').appendTo(body);
+        var footer=$('<div class="modal-footer">').appendTo(content);
+        $('<button type="button" class="btn btn-default">').text('Отмена').on('click',function(){if(!busy)modal.modal('hide');}).appendTo(footer);
+        $('<button type="button" class="btn btn-success">').text('Одобрить').on('click',function(){submitChange(row,'approve',Number(choice.val()),modal);}).appendTo(footer);
+        modal.on('hidden.bs.modal',function(){modal.remove();}).modal({backdrop:'static',keyboard:false});
     }
     reset.on('click',function(){search.val('');status.val('');typeFilter.val('0');directionFilter.val('0');page=1;load();});
     refresh.on('click',function(){if(!busy)load();});
