@@ -2423,6 +2423,21 @@ function comfort_booking_analytics() {
                 var d=result.data;
                 body.empty();
                 status.text('Данные на '+date(d.now)+' МСК');
+                if(d.incoming) {
+                    var inbox=d.incoming, summary=inbox.summary;
+                    table('Принятые обновления цен, наличия и ограничений',
+                        ['Ожидают применения','Объектов','Возраст старейшего, с','С ошибкой; повторяются автоматически'],
+                        [[summary.jobs,summary.hotels,summary.oldest_seconds,summary.errors||0]]);
+                    $('<p class="text-muted">').text('Успешный приём означает сохранение в очереди. Применение показано отдельно. Пока у объекта есть ожидающие обновления, создание и изменение брони по нему временно недоступны.').appendTo(body);
+                    table('Применение обновлений за 24 часа',
+                        ['Результат','Запросов','От сохранения до завершения, среднее (с)','Максимум (с)'],inbox.completed.map(function(r) {
+                            return [r.state==='done'?'Применено':'Заменено отключением объекта',r.jobs,Math.round(Number(r.avg_seconds)),r.max_seconds];
+                        }));
+                    table('Ожидающие обновления · первые 60 записей',
+                        ['ID задания','ID объекта на сайте','Принято, МСК','Неудачных попыток','Последняя ошибка','Следующая попытка, МСК'],inbox.rows.map(function(r) {
+                            return [r.id,r.resort_id,date(r.created),r.attempts,Number(r.error_code)?r.error_code:'—',date(r.available_at)];
+                        }));
+                }
                 table('Очередь сейчас',['Состояние','Заданий','Возраст старейшего, с'],d.queue.map(function(r) {
                     return [Number(r.state)===0?'В очереди':'В работе',r.jobs,r.oldest];
                 }));
@@ -2437,9 +2452,9 @@ function comfort_booking_analytics() {
                     ['ID объекта CB','Попыток','Пар без идентификаторов','Категория / тариф (до 5 пар)'],d.samples.map(function(r) {
                         return [r.property,r.attempts,r.count,r.pairs];
                     }));
-                table('Цены и наличие · текущий и предыдущие 23 часа',
+                table('Приём запросов цен и наличия · текущий и предыдущие 23 часа',
                     ['Начало часа, МСК','Результат','Запросов','Ожидание блокировки, ср. / макс. (мс)','Запись, ср. / макс. (мс)','Обработка, ср. / макс. (мс)'],d.updates.map(function(r) {
-                        return [date(r.hour_start),Number(r.error_code)===0?'Успешно':'Ошибка '+r.error_code,r.requests,
+                        return [date(r.hour_start),Number(r.error_code)===0?'Принято':'Ошибка '+r.error_code,r.requests,
                             r.avg_wait+' / '+r.max_wait_ms,r.avg_write+' / '+r.max_write_ms,r.avg_total+' / '+r.max_total_ms];
                     }));
             }).fail(function() { status.text('Не удалось получить данные сайта. Попробуйте обновить.'); })
