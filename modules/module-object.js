@@ -2251,6 +2251,13 @@ function comfort_booking_panel(){
                     line.append(document.createTextNode(' — ID '+item.id));
                 });
             }
+            var cleanup=row.nameCleanup, cleanupText='Очистка названия: ещё не выполнена.';
+            if(cleanup){
+                if(cleanup.outcome==='changed')cleanupText='Очистка названия: «'+cleanup.original_name+'» → «'+cleanup.cleaned_name+'».';
+                else if(cleanup.outcome==='needs_review')cleanupText='Очистка названия: нужна ручная проверка — после удаления типа не остаётся названия.';
+                else cleanupText='Очистка названия: проверено, изменений не требуется.';
+            }
+            $('<div class="cb-name-cleanup text-muted" style="margin:8px 0">').text(cleanupText).appendTo(name);
             $('<div class="text-muted">').text('Тип объекта: '+(row.object_type||'—')).appendTo(name);
             $('<div class="text-muted">').text('Адрес: '+(row.address||'—')).appendTo(name);
             $('<div class="text-muted">').text('Телефон: '+((row.phones||[]).join(', ')||'—')).appendTo(name);

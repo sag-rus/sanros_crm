@@ -8,7 +8,16 @@ let rows=[row(1,'pending',{matches:[]}),row(2,'pending',{matches:[{id:20,name:'A
 $.ajax=o=>{calls.push(o.data);const d=$.Deferred();if(o.data.action==='list')d.resolve({data:{rows,page:1,pages:2,total:10,pendingCount:2},csrf:'token',canModerate:role});else pending.push(d);return d.promise({abort:()=>{}});};
 const source=fs.readFileSync(__dirname+'/../modules/module-object.js','utf8');w.eval(source.slice(source.indexOf('function comfort_booking_panel(){'),source.indexOf('// Counts are read from the website')));w.comfort_booking_count=()=>{};
 const all=()=>$('thead input');const check=i=>$('.cb-row-select').eq(i).prop('checked',true).trigger('change');const bulk=()=>calls.filter(c=>c.action.startsWith('bulk-'));
+rows[0].nameCleanup={outcome:'changed',original_name:'Отель <Ривьера>',cleaned_name:'<Ривьера>'};
+rows[1].nameCleanup={outcome:'unchanged'};rows[2].nameCleanup={outcome:'needs_review'};
 w.comfort_booking_panel();
+assert($('.cb-name-cleanup').eq(0).text().includes('Отель <Ривьера>'));
+assert.strictEqual($('.cb-name-cleanup').eq(0).children().length,0);
+assert($('.cb-name-cleanup').eq(0).prev().hasClass('cb-analogs'));
+assert($('.cb-name-cleanup').eq(1).text().includes('изменений не требуется'));
+assert($('.cb-name-cleanup').eq(2).text().includes('ручная проверка'));
+assert($('.cb-name-cleanup').eq(3).text().includes('ещё не выполнена'));
+
 assert($('.cb-row-select').eq(1).prop('disabled'));assert($('.cb-row-select').eq(2).prop('disabled'));
 all().prop('checked',true).trigger('change');assert.strictEqual($('.cb-row-select:checked').length,3);
 assert($('.cb-bulk-actions .btn-success').prop('disabled'));assert(!$('.cb-bulk-actions .btn-danger').prop('disabled'));
