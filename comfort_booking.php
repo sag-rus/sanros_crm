@@ -21,6 +21,7 @@ try {
         $fields=json_decode((string)($_POST['fields']??'{}'),true);if(!is_array($fields))throw new RuntimeException('Некорректные поля.');
         $data=cbm_request(['action'=>$action,'id'=>(int)($_POST['id']??0),'actor'=>(int)$user['id'],'actorRights'=>(int)$user['rights'],'revision'=>(string)($_POST['revision']??''),'fields'=>$fields]);
     }
+    elseif($action==='server-metrics') $data=cbm_request(['action'=>$action,'hours'=>(int)($_POST['hours']??6)]);
     elseif(in_array($action,['count','analytics'],true)) $data=cbm_request(['action'=>$action]);
     else $data=cbm_request(['action'=>$action,'id'=>(int)($_POST['id']??0),'expected'=>(string)($_POST['expected']??''),'actor'=>(int)$user['id'],'replaceId'=>(int)($_POST['replaceId']??0),'replaceName'=>cbm_replacement_name($_POST['replaceId']??0)]);
     if($action==='approve' && !empty($_POST['replaceId']))cbm_reconcile_replacements();

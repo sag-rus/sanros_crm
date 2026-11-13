@@ -1,5 +1,5 @@
 <?php
-	$version = "13-11-2026-2";
+	$version = "13-11-2026-3";
     $loader = require( __DIR__ . '/vendor/autoload.php');
     /*$payment = new \App\lib\payment\Sberbank\BookingPayment([
 
@@ -38,6 +38,7 @@
     <script type="text/javascript" src="modules/module-comfort-booking-reservations.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-users.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-comfort-booking-editorial.js?ver=<?php echo $version; ?>"></script>
+	<script type="text/javascript" src="modules/module-comfort-booking-metrics.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-object.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-price.js?ver=<?php echo $version; ?>"></script>
 	<script type="text/javascript" src="modules/module-admin.js?ver=<?php echo $version; ?>"></script>

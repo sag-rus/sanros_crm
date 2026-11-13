@@ -2393,6 +2393,7 @@ function comfort_booking_analytics() {
     select_menu('comfort_booking_analytics_menu');
     var root = $('<div>').appendTo($('#body').empty());
     $('<h3>').text('Comfort Booking Analytics').appendTo(root);
+    comfort_booking_metrics(root);
     var refresh = $('<button type="button" class="btn btn-default">Обновить</button>').appendTo(root);
     var status = $('<p role="status" class="text-muted">').appendTo(root);
     var body = $('<div>').appendTo(root);
@@ -2428,7 +2429,7 @@ function comfort_booking_analytics() {
                     table('Принятые обновления цен, наличия и ограничений',
                         ['Ожидают применения','Объектов','Возраст старейшего, с','С ошибкой; повторяются автоматически'],
                         [[summary.jobs,summary.hotels,summary.oldest_seconds,summary.errors||0]]);
-                    $('<p class="text-muted">').text('Успешный приём означает сохранение в очереди. Применение показано отдельно. Пока у объекта есть ожидающие обновления, создание и изменение брони по нему временно недоступны.').appendTo(body);
+                    $('<p class="text-muted">').text('Успешный приём означает сохранение в очереди. Применение показано отдельно. Ожидающие обновления не блокируют создание и изменение брони: используются последние применённые данные.').appendTo(body);
                     table('Применение обновлений за 24 часа',
                         ['Результат','Запросов','От сохранения до завершения, среднее (с)','Максимум (с)'],inbox.completed.map(function(r) {
                             return [r.state==='done'?'Применено':'Заменено отключением объекта',r.jobs,Math.round(Number(r.avg_seconds)),r.max_seconds];
