@@ -2212,7 +2212,14 @@ function comfort_booking_panel(){
     selectAll.on('change',function(){var checked=this.checked;selected={};if(checked)rows.filter(eligible).forEach(function(row){selected[row.id]=true;});render();});
     bulkApprove.on('click',function(){bulkChange('approve');});
     bulkDisable.on('click',function(){bulkChange('disable');});
-    function showError(response){message.attr('class','alert alert-danger').text(response.responseJSON&&response.responseJSON.error||'Не удалось связаться с сайтом. Обновите список и проверьте статус.');}
+    function responseError(response,fallback){
+        var result=response.responseJSON;
+        if(!result && response.responseText){
+            try { result=JSON.parse(response.responseText); } catch(e) { return fallback; }
+        }
+        return result && typeof result.error==='string' && result.error ? result.error : fallback;
+    }
+    function showError(response){message.attr('class','alert alert-danger').text(responseError(response,'Не удалось связаться с сайтом. Обновите список и проверьте статус.'));}
     function render(){
         body.empty();pager.empty();
         rows.forEach(function(row){
@@ -2249,6 +2256,7 @@ function comfort_booking_panel(){
                     if(/^https:\/\/санатории-россии\.рф\//.test(item.url))$('<a target="_blank" rel="noopener noreferrer">').attr('href',item.url).text(item.name).appendTo(line);
                     else line.text(item.name);
                     line.append(document.createTextNode(' — ID '+item.id));
+                    if(item.unavailableReason)line.append(document.createTextNode('. '+item.unavailableReason));
                 });
             }
             var cleanup=row.nameCleanup, cleanupText='Очистка названия: ещё не выполнена.';
@@ -2323,7 +2331,7 @@ function comfort_booking_panel(){
             message.attr('class','alert alert-info').text('Обработка '+index+' из '+picked.length+'…');
             $.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:'bulk-'+action,id:row.id,expected:row.state,csrf:csrf}})
                 .done(function(){done++;next();})
-                .fail(function(response){errors.push('ID '+row.id+': '+(response.responseJSON&&response.responseJSON.error||'нет подтверждения'));if(response.status===409)next();else finish(true);});
+                .fail(function(response){errors.push('ID '+row.id+': '+(responseError(response,'нет подтверждения')));if(response.status===409)next();else finish(true);});
         }
         next();
     }
@@ -2343,7 +2351,7 @@ function comfort_booking_panel(){
         $.ajax({url:'comfort_booking.php',type:'POST',dataType:'json',timeout:45000,data:{action:action,id:row.id,expected:row.state,csrf:csrf,replaceId:replaceId}})
             .done(function(){if(dialog)dialog.modal('hide');busy=false;load();})
             .fail(function(response){
-                if(dialog)dialog.find('[role=alert]').text(response.responseJSON&&response.responseJSON.error||'Связь прервана. Закройте окно и обновите список перед повтором.');
+                if(dialog)dialog.find('[role=alert]').text(responseError(response,'Связь прервана. Закройте окно и обновите список перед повтором.'));
                 else showError(response);
             }).always(function(){busy=false;render();if(dialog)dialog.find('button,select').prop('disabled',false);});
     }
@@ -2356,12 +2364,24 @@ function comfort_booking_panel(){
         $('<label for="cb-replacement">').text('Объект для замены').appendTo(body);
         var choice=$('<select id="cb-replacement" class="form-control">').appendTo(body);
         $('<option value="0">').text('не заменять никакой объект').appendTo(choice);
-        row.analogSearch.matches.forEach(function(item){$('<option>').val(item.id).text(item.name+' — ID '+item.id).appendTo(choice);});
-        $('<p style="margin-top:15px">').text('При замене аналог будет отключён на сайте и в СРМ. Его URL, материал, SEO и вопросы сохранятся; цены, номера и инфраструктура будут от Comfort Booking. Запрет индексации Comfort Booking будет снят.').appendTo(body);
+        row.analogSearch.matches.forEach(function(item){
+            var label=item.name+' — ID '+item.id;
+            var option=$('<option>').val(item.id).text(label).appendTo(choice);
+            if(item.unavailableReason){
+                option.prop('disabled',true);
+                $('<p class="text-muted">').text(label+'. '+item.unavailableReason).appendTo(body);
+            }
+        });
+        var help=$('<p style="margin-top:15px">').appendTo(body);
+        choice.on('change',function(){
+            help.text(choice.val()==='0'
+                ? 'Объект будет одобрен как самостоятельный, со своей страницей на сайте.'
+                : 'При замене аналог будет отключён на сайте и в СРМ. Его URL, материал, SEO и вопросы сохранятся. Цены, номера и инфраструктура будут от Comfort Booking.');
+        }).trigger('change');
         $('<div class="text-danger" role="alert">').appendTo(body);
         var footer=$('<div class="modal-footer">').appendTo(content);
-        $('<button type="button" class="btn btn-default">').text('Отмена').on('click',function(){if(!busy)modal.modal('hide');}).appendTo(footer);
         $('<button type="button" class="btn btn-success">').text('Одобрить').on('click',function(){submitChange(row,'approve',Number(choice.val()),modal);}).appendTo(footer);
+        $('<button type="button" class="btn btn-default">').text('Отмена').on('click',function(){if(!busy)modal.modal('hide');}).appendTo(footer);
         modal.on('hidden.bs.modal',function(){modal.remove();}).modal({backdrop:'static',keyboard:false});
     }
     reset.on('click',function(){search.val('');status.val('');typeFilter.val('0');directionFilter.val('0');page=1;load();});

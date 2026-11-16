@@ -5,11 +5,12 @@ $.fn.modal=function(action){if(action==='hide')this.trigger('hidden.bs.modal');r
 w.select_menu=()=>{};w.confirm=()=>true;
 let calls=[],fail=false;
 const row={id:10,name:'Знание',state:'pending',analogSearch:{matches:[{id:20,name:'<img src=x> Знание'}]}};
-$.ajax=o=>{calls.push(o.data);const d=$.Deferred();if(o.data.action==='list')d.resolve({data:{rows:[row],page:1,pages:1,total:1,pendingCount:1},csrf:'token',canModerate:true});else if(fail)d.reject({responseJSON:{error:'Конфликт замены'}});else d.resolve({success:true});return d.promise({abort:()=>{}});};
+$.ajax=o=>{calls.push(o.data);const d=$.Deferred();if(o.data.action==='list')d.resolve({data:{rows:[row],page:1,pages:1,total:1,pendingCount:1},csrf:'token',canModerate:true});else if(fail)d.reject({status:409,responseText:JSON.stringify({error:'Конфликт замены'})});else d.resolve({success:true});return d.promise({abort:()=>{}});};
 const source=fs.readFileSync(__dirname+'/../modules/module-object.js','utf8');
 w.eval(source.slice(source.indexOf('function comfort_booking_panel(){'),source.indexOf('// Counts are read from the website')));w.comfort_booking_count=()=>{};
 const approve=()=>$('tbody button').filter((i,e)=>$(e).text()==='Одобрить').click();
 w.comfort_booking_panel();approve();
+assert.deepStrictEqual($('#cb-approval-modal .modal-footer button').map((i,e)=>$(e).text()).get().join(','),'Одобрить,Отмена');
 assert.strictEqual($('#cb-replacement option').first().text(),'не заменять никакой объект');
 assert.strictEqual($('#cb-replacement').val(),'0');assert.strictEqual($('#cb-approval-modal img').length,0);
 $('#cb-approval-modal .btn-success').click();assert.strictEqual(calls.at(-2).replaceId,0);assert.strictEqual($('#cb-approval-modal').length,0);
@@ -17,6 +18,13 @@ approve();$('#cb-replacement').val('20');fail=true;$('#cb-approval-modal .btn-su
 assert.strictEqual(calls.at(-1).replaceId,20);assert.strictEqual(calls.at(-1).csrf,'token');
 assert.strictEqual($('#cb-replacement').val(),'20');assert.strictEqual($('#cb-approval-modal [role=alert]').text(),'Конфликт замены');
 $('#cb-approval-modal .btn-default').click();assert.strictEqual($('#cb-approval-modal').length,0);
+row.analogSearch.matches[0].unavailableReason='Уже заменён объектом № 30.';
+approve();
+assert($('#cb-replacement option[value=20]').prop('disabled'));
+assert($('#cb-approval-modal p').text().includes('Уже заменён объектом № 30.'));
+assert.strictEqual($('#cb-replacement').val(),'0');
+const beforeCancel=calls.length;
+$('#cb-approval-modal .btn-default').click();assert.strictEqual(calls.length,beforeCancel);
 row.analogSearch=null;w.comfort_booking_panel();assert($('tbody .btn-success').prop('disabled'));
 row.analogSearch={matches:[]};w.comfort_booking_panel();fail=false;approve();assert.strictEqual($('#cb-approval-modal').length,0);assert.strictEqual(calls.at(-2).replaceId,0);
 dom.window.close();console.log('Approval popup checks passed');
