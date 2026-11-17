@@ -4,7 +4,7 @@ function comfort_booking_metrics(parent) {
     var controls = $('<div class="panel-heading">').appendTo(root);
     $('<strong>').text('Нагрузка san-ros.rf и активность Comfort Booking').appendTo(controls);
     var period = $('<select class="form-control" aria-label="Период графиков">').css({display:'inline-block',width:'auto',margin:'0 15px'}).appendTo(controls);
-    [[1,'1 час'],[6,'6 часов'],[24,'24 часа'],[168,'7 дней'],[720,'30 дней']].forEach(function(v) {
+    [[1,'1 час'],[3,'3 часа'],[6,'6 часов'],[24,'24 часа'],[168,'7 дней'],[720,'30 дней']].forEach(function(v) {
         $('<option>').val(v[0]).text(v[1]).appendTo(period);
     });
     period.val('6');
