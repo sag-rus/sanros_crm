@@ -1,0 +1,14 @@
+--- a/core/price_tonia_live.php.orig
++++ b/core/price_tonia_live.php.orig
+@@ -9,3 +8,0 @@
+-function ptl_connected_object($id){
+-    return (bool)ptl_query("SELECT 1 FROM external_price_state WHERE source='price_tonia_ru' AND crm_object_id=? AND import_enabled=1 LIMIT 1",[(int)$id])->fetchColumn();
+-}
+@@ -14 +11 @@
+-    if(!$r || !ptl_connected_object((int)$r['id_obj']))throw new RuntimeException('Для этой заявки источник price.tonia.ru не подключён.');
++    if(!$r || ((int)$r['default_price_type']!==3 && strpos($r['note'],'Источник цен: price_tonia_ru.')===false))throw new RuntimeException('Для этой заявки источник price.tonia.ru не подключён.');
+@@ -67,2 +64,2 @@
+-        $r=ptl_query('SELECT r.id_obj FROM reckoning r WHERE r.id=?',[$id])->fetch();
+-        if(!$r || !ptl_connected_object((int)$r['id_obj']))return;
++        $r=ptl_query('SELECT o.default_price_type,r.note FROM reckoning r JOIN object o ON o.id=r.id_obj WHERE r.id=?',[$id])->fetch();
++        if(!$r || ((int)$r['default_price_type']!==3 && strpos($r['note'],'Источник цен: price_tonia_ru.')===false))return;

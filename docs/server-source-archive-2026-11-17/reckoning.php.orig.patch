@@ -1,0 +1,4 @@
+--- a/core/reckoning.php.orig
++++ b/core/reckoning.php.orig
+@@ -2117,0 +2118 @@
++                <?php require_once __DIR__.'/price_tonia_live.php'; ptl_panel($id); ?>

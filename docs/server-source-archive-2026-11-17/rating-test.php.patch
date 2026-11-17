@@ -1,0 +1,17 @@
+--- a/core/cron/rating-test.php
++++ b/core/cron/rating-test.php
+@@ -16 +16 @@
+-	$data = $connect->getAll("SELECT id, id_obj, turist FROM reckoning WHERE status=5 AND date_v=?s AND turist!=''", $date_v);
++	$data = $connect->getAll("SELECT id, id_obj, turist FROM reckoning WHERE id=0");
+@@ -25 +25 @@
+-		if($email AND !$connect->getOne("SELECT id FROM rating WHERE schet=?i", $id)){
++		if($email){
+@@ -29 +29 @@
+-			$connect->query("INSERT INTO rating(schet, date, hash, id_obj) VALUES (?i, ?s, ?s, ?i)", $id, $today, $hash, $id_obj);
++			//$connect->query("INSERT INTO rating(schet, date, hash, id_obj) VALUES (?i, ?s, ?s, ?i)", $id, $today, $hash, $id_obj);
+@@ -48 +48 @@
+-	$date_v = strtotime("-14 days", time());
++	/*$date_v = strtotime("-14 days", time());
+@@ -78 +78 @@
+-	}
++	}*/

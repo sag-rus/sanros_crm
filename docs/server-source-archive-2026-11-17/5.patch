@@ -1,0 +1,6 @@
+--- a/core/admin/5
++++ b/core/admin/5
+@@ -570,0 +571 @@
++	save_crm_user_history($connect, 'Отзыв принят');
+@@ -576,0 +578 @@
++	save_crm_user_history($connect, 'Отзыв удален');

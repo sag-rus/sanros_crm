@@ -1,0 +1,20 @@
+--- a/bnovo_save_matches_test.php
++++ b/bnovo_save_matches_test.php
+@@ -55,0 +56,2 @@
++$_POST['data'] = '{"occupancies":{"1":["1_a.1"]},"roomtypes":{"1":["1"]},"rates":{"1":["1"]},"account_id":0,"hotel_id":"0"}';
++
+@@ -56,0 +59,4 @@
++
++echo '<pre>';
++print_r($data);
++echo '</pre>';
+@@ -80 +85,0 @@
+-
+@@ -88,2 +93,5 @@
+-			}
+-		//}
++                echo $connect->last_query()."\r\n";
++			} else {
++                echo 'NO PLACE'."\r\n";
++            }
++		//} else echo 'NO roomtypes key='.$key."\r\n";
