@@ -18,10 +18,20 @@ assert($('.cb-name-cleanup').eq(1).text().includes('изменений не тр
 assert($('.cb-name-cleanup').eq(2).text().includes('ручная проверка'));
 assert($('.cb-name-cleanup').eq(3).text().includes('ещё не выполнена'));
 
-assert($('.cb-row-select').eq(1).prop('disabled'));assert($('.cb-row-select').eq(2).prop('disabled'));
-all().prop('checked',true).trigger('change');assert.strictEqual($('.cb-row-select:checked').length,3);
-assert($('.cb-bulk-actions .btn-success').prop('disabled'));assert(!$('.cb-bulk-actions .btn-danger').prop('disabled'));
-// Select-all excludes analogs and disabled entries, submits sequentially and stops on uncertainty.
+assert(!$('.cb-row-select').eq(1).prop('disabled'));assert(!$('.cb-row-select').eq(2).prop('disabled'));
+const exportButton=()=>$('button').filter((i,e)=>$(e).text()==='Выгрузить метатеги');
+const importButton=()=>$('button').filter((i,e)=>$(e).text()==='Загрузить метатеги');
+assert(exportButton().prop('disabled'));assert(!importButton().prop('disabled'));
+let imported=false,exportIds=[];
+w.cbMetadataImport=token=>{assert.strictEqual(token,'token');imported=true;};
+w.cbMetadataExport=(ids,token)=>{assert.strictEqual(token,'token');exportIds=Array.from(ids);};
+importButton().click();assert(imported,'import works with no selection');
+all().prop('checked',true).trigger('change');assert.strictEqual($('.cb-row-select:checked').length,5);
+assert($('.cb-bulk-actions .btn-success').prop('disabled'));assert($('.cb-bulk-actions .btn-danger').prop('disabled'));
+exportButton().click();assert.deepStrictEqual(exportIds,[1,2,3,4,5]);
+all().prop('checked',false).trigger('change');check(0);check(3);check(4);
+assert(!$('.cb-bulk-actions .btn-danger').prop('disabled'));
+// Moderation still requires eligible rows, submits sequentially and stops on uncertainty.
 $('.cb-bulk-actions .btn-danger').click();assert.strictEqual(bulk().length,1);assert.strictEqual(bulk()[0].id,1);
 assert(all().prop('disabled'));assert($('form input').prop('disabled'));
 pending.shift().resolve({success:true});assert.strictEqual(bulk()[1].id,4);

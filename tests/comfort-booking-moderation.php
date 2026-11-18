@@ -27,7 +27,7 @@ ok(hash_equals(hash_hmac('sha256',$payload,hash_hmac('sha256','comfort-booking-c
 ok(cbm_calendar_ticket(123,7,'Test UA',$secret,1000)['ticket']!==$ticket['ticket'],'each click gets unique ticket');
 echo "$n checks passed\n";
 
-foreach(['editorial-read','editorial-save'] as $action){
+foreach(['editorial-read','editorial-save','metadata-export','metadata-upload','metadata-save'] as $action){
  ok(cbm_allowed($user,$action,'POST',$token,$token),'editor can access texts');
  ok(!cbm_allowed(['rights'=>2],$action,'POST',$token,$token),'reader cannot edit texts');
  ok(!cbm_allowed($user,$action,'POST','wrong',$token),'text editor requires CSRF');

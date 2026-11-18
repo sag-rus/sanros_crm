@@ -2,7 +2,10 @@
 require_once __DIR__.'/core/comfort-booking-moderation.php';
 session_start();header('Content-Type: application/json; charset=utf-8');header('Cache-Control: no-store');
 try {
-    if((int)($_SERVER['CONTENT_LENGTH']??0)>524288)throw new RuntimeException('Слишком большой запрос.');
+    $upload = (string)($_POST['action'] ?? '') === 'metadata-upload';
+    if ((int)($_SERVER['CONTENT_LENGTH'] ?? 0) > ($upload ? 5308416 : 524288)) {
+        throw new RuntimeException('Слишком большой запрос. Файл Excel должен быть не больше 5 МБ.');
+    }
     $user=cbm_user();$action=(string)($_POST['action']??'');
     if(!cbm_allowed($user,$action,$_SERVER['REQUEST_METHOD']??'',$_POST['csrf']??'',$_SESSION['cbm_csrf']??'')) {
         http_response_code(403);throw new RuntimeException('Нет доступа или истекла сессия. Обновите страницу.');
@@ -20,6 +23,35 @@ try {
     elseif(in_array($action,['editorial-read','editorial-save'],true)) {
         $fields=json_decode((string)($_POST['fields']??'{}'),true);if(!is_array($fields))throw new RuntimeException('Некорректные поля.');
         $data=cbm_request(['action'=>$action,'id'=>(int)($_POST['id']??0),'actor'=>(int)$user['id'],'actorRights'=>(int)$user['rights'],'revision'=>(string)($_POST['revision']??''),'fields'=>$fields]);
+    }
+    elseif($action==='metadata-export') {
+        require_once __DIR__.'/core/comfort-booking-metadata-excel.php';
+        $ids = json_decode((string)($_POST['ids'] ?? '[]'), true);
+        if (!is_array($ids)) throw new InvalidArgumentException('Выберите объекты для выгрузки.');
+        $data = cbm_request(['action'=>$action, 'ids'=>$ids, 'actor'=>(int)$user['id'], 'actorRights'=>(int)$user['rights']]);
+        $file = ComfortBookingMetadataExcel::export($data['rows']);
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="comfort-booking-metatags-'.date('Y-m-d').'.xlsx"');
+        header('Content-Length: '.strlen($file));
+        echo $file;
+        exit;
+    }
+    elseif($action==='metadata-upload') {
+        require_once __DIR__.'/core/comfort-booking-metadata-excel.php';
+        $file = $_FILES['file'] ?? [];
+        if (($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK || !is_uploaded_file($file['tmp_name'] ?? '')) {
+            throw new InvalidArgumentException('Не удалось загрузить файл. Проверьте размер файла и повторите.');
+        }
+        if (strtolower(pathinfo($file['name'], PATHINFO_EXTENSION)) !== 'xlsx') {
+            throw new InvalidArgumentException('Выберите файл .xlsx в формате выгрузки.');
+        }
+        $data = ['rows'=>ComfortBookingMetadataExcel::read($file['tmp_name'])];
+    }
+    elseif($action==='metadata-save') {
+        $fields = json_decode((string)($_POST['fields'] ?? '{}'), true);
+        if (!is_array($fields)) throw new InvalidArgumentException('Некорректные метатеги.');
+        $data = cbm_request(['action'=>$action, 'id'=>(int)($_POST['id'] ?? 0), 'fields'=>$fields,
+            'actor'=>(int)$user['id'], 'actorRights'=>(int)$user['rights']]);
     }
     elseif($action==='server-metrics') $data=cbm_request(['action'=>$action,'hours'=>(int)($_POST['hours']??6)]);
     elseif(in_array($action,['count','analytics'],true)) $data=cbm_request(['action'=>$action]);

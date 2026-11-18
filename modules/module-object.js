@@ -2198,20 +2198,26 @@ function comfort_booking_panel(){
     var bulkCount=$('<span style="margin-right:15px">').appendTo(bulkBar);
     var bulkApprove=$('<button type="button" class="btn btn-success" style="margin-right:8px">Одобрить</button>').appendTo(bulkBar);
     var bulkDisable=$('<button type="button" class="btn btn-danger">Отклонить</button>').appendTo(bulkBar);
-    $('<p class="text-muted" style="margin-top:8px">').text('Выбор действует только на текущей странице. Объекты с аналогами недоступны для групповых действий. Для одобрения выберите только ожидающие модерации объекты с завершённым поиском. «Отклонить» отключает выбранные объекты.').appendTo(bulkBar);
+    var metadataExport=$('<button type="button" class="btn btn-default" style="margin-left:8px">Выгрузить метатеги</button>').appendTo(bulkBar);
+    var metadataImport=$('<button type="button" class="btn btn-default" style="margin-left:8px">Загрузить метатеги</button>').appendTo(bulkBar);
+    $('<p class="text-muted" style="margin-top:8px">').text('Выбор действует только на текущей странице. Объекты с аналогами доступны для выгрузки метатегов. Для группового одобрения и отклонения выберите объекты без аналогов. Загрузка метатегов работает без выбора объектов. Для одобрения выберите только ожидающие модерации объекты с завершённым поиском. «Отклонить» отключает выбранные объекты.').appendTo(bulkBar);
     var rows=[],page=1,pages=1,total=0,csrf='',canModerate=false,busy=false,xhr=null,sequence=0,timer=null,selected={},fetching=false;
     function eligible(row){return canModerate && row.state!=='disabled' && !(row.analogSearch && row.analogSearch.matches.length);}
-    function chosen(){return rows.filter(function(row){return selected[row.id] && eligible(row);});}
+    function chosen(){return rows.filter(function(row){return selected[row.id] && canModerate;});}
     function updateSelection(){
-        var available=rows.filter(eligible),picked=chosen();
+        var available=canModerate?rows:[],picked=chosen();
         selectAll.prop('disabled',busy||fetching||!available.length).prop('checked',available.length>0&&picked.length===available.length).prop('indeterminate',picked.length>0&&picked.length<available.length);
         bulkBar.toggle(canModerate);bulkCount.text('Выбрано: '+picked.length);
-        bulkApprove.prop('disabled',busy||fetching||!picked.length||picked.some(function(row){return row.state!=='pending'||!row.analogSearch;}));
-        bulkDisable.prop('disabled',busy||fetching||!picked.length);
+        bulkApprove.prop('disabled',busy||fetching||!picked.length||picked.some(function(row){return !eligible(row)||row.state!=='pending'||!row.analogSearch;}));
+        bulkDisable.prop('disabled',busy||fetching||!picked.length||picked.some(function(row){return !eligible(row);}));
+        metadataExport.prop('disabled',busy||fetching||!picked.length);
+        metadataImport.prop('disabled',busy||fetching||!csrf);
     }
-    selectAll.on('change',function(){var checked=this.checked;selected={};if(checked)rows.filter(eligible).forEach(function(row){selected[row.id]=true;});render();});
+    selectAll.on('change',function(){var checked=this.checked;selected={};if(checked && canModerate)rows.forEach(function(row){selected[row.id]=true;});render();});
     bulkApprove.on('click',function(){bulkChange('approve');});
     bulkDisable.on('click',function(){bulkChange('disable');});
+    metadataExport.on('click',function(){if(!busy&&!fetching&&canModerate)cbMetadataExport(chosen().map(function(row){return row.id;}),csrf);});
+    metadataImport.on('click',function(){if(!busy&&!fetching&&canModerate)cbMetadataImport(csrf);});
     function responseError(response,fallback){
         var result=response.responseJSON;
         if(!result && response.responseText){
@@ -2224,7 +2230,7 @@ function comfort_booking_panel(){
         body.empty();pager.empty();
         rows.forEach(function(row){
             var tr=$('<tr>').appendTo(body);
-            $('<input type="checkbox" class="cb-row-select">').attr('aria-label','Выбрать '+row.name).prop('disabled',busy||fetching||!eligible(row)).prop('checked',!!selected[row.id]&&eligible(row)).on('change',function(){if(this.checked)selected[row.id]=true;else delete selected[row.id];updateSelection();}).appendTo($('<td>').appendTo(tr));
+            $('<input type="checkbox" class="cb-row-select">').attr('aria-label','Выбрать '+row.name).prop('disabled',busy||fetching||!canModerate).prop('checked',!!selected[row.id]&&canModerate).on('change',function(){if(this.checked)selected[row.id]=true;else delete selected[row.id];updateSelection();}).appendTo($('<td>').appendTo(tr));
             $('<td>').append($('<div>').text(row.id),$('<br>'),$('<div>').text(row.property_id)).appendTo(tr);
             $('<td>').text(labels[row.state]||row.state).appendTo(tr);
             var direction=$('<td>').appendTo(tr);
@@ -2313,7 +2319,7 @@ function comfort_booking_panel(){
     }
     function bulkChange(action){
         var picked=chosen();
-        if(busy||fetching||!picked.length||(action==='approve'&&picked.some(function(row){return row.state!=='pending'||!row.analogSearch;})))return;
+        if(busy||fetching||!picked.length||picked.some(function(row){return !eligible(row);})||(action==='approve'&&picked.some(function(row){return row.state!=='pending'||!row.analogSearch;})))return;
         if(!confirm((action==='approve'?'Одобрить':'Отклонить и отключить')+' выбранные объекты ('+picked.length+')?'))return;
         clearTimeout(timer);busy=true;render();
         form.find('input,select,button').prop('disabled',true);size.prop('disabled',true);
