@@ -40,5 +40,8 @@ pending.shift().reject({status:0});assert.strictEqual(bulk().length,2);assert($(
 calls=[];check(0);assert(all().prop('indeterminate'));$('.cb-bulk-actions .btn-success').click();assert.strictEqual(bulk()[0].action,'bulk-approve');assert.strictEqual(bulk()[0].csrf,'token');
 pending.shift().resolve({success:true});assert($('.alert-info').text().includes('одобрено: 1 из 1'));
 check(0);$('form button').filter((i,e)=>$(e).text()==='Обновить').click();assert.strictEqual($('.cb-row-select:checked').length,0);
+rows=[row('1100003758','pending',{matches:[]}),row('1100003757','pending',{matches:[]})];
+w.comfort_booking_panel();all().prop('checked',true).trigger('change');exportButton().click();
+assert.deepStrictEqual(exportIds,[1100003758,1100003757],'list string IDs become numeric export IDs');
 role=false;w.comfort_booking_panel();assert.strictEqual($('.cb-row-select:not(:disabled)').length,0);assert.strictEqual($('.cb-bulk-actions').css('display'),'none');
 dom.window.close();console.log('Bulk selection and progress checks passed');

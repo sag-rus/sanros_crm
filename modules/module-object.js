@@ -2216,7 +2216,7 @@ function comfort_booking_panel(){
     selectAll.on('change',function(){var checked=this.checked;selected={};if(checked && canModerate)rows.forEach(function(row){selected[row.id]=true;});render();});
     bulkApprove.on('click',function(){bulkChange('approve');});
     bulkDisable.on('click',function(){bulkChange('disable');});
-    metadataExport.on('click',function(){if(!busy&&!fetching&&canModerate)cbMetadataExport(chosen().map(function(row){return row.id;}),csrf);});
+    metadataExport.on('click',function(){if(!busy&&!fetching&&canModerate)cbMetadataExport(chosen().map(function(row){return Number(row.id);}),csrf);});
     metadataImport.on('click',function(){if(!busy&&!fetching&&canModerate)cbMetadataImport(csrf);});
     function responseError(response,fallback){
         var result=response.responseJSON;
