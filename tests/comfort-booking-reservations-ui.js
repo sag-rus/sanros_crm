@@ -3,7 +3,7 @@ const fs=require('fs'),assert=require('assert'),{JSDOM}=require('jsdom');
 const root=require('path').resolve(__dirname,'..');
 const dom=new JSDOM('<div id="info_turist"></div>',{url:'https://crm.example/CRM/',runScripts:'outside-only'});
 const w=dom.window;w.eval(fs.readFileSync(root+'/js/jquery-1.9.1.js','utf8'));const $=w.jQuery;
-let calls=[],failCommit=true,confirmed=false,canWaive=false,cancelled=false,checks=0;
+let prepareFailure=null,calls=[],failCommit=true,confirmed=false,canWaive=false,cancelled=false,checks=0;
 const person={firstName:'Test',lastName:'Guest',phone:'+70000000000'};
 const offer={roomId:10,rateId:20,room:'Room',rate:'Rate',total:'2000.00',rules:['First night penalty']};
 const summary={hotel:'Fixture',arrival:'2026-11-10',departure:'2026-11-12',room:'Room',rate:'Rate',adults:1,children:0,total:'2000.00',prepayment:'0.00',payment:'Cash',customer:person,guests:[person]};
@@ -20,7 +20,7 @@ $.ajax=function(options){calls.push(options.data);const d=$.Deferred();setTimeou
  if(a==='detail')d.resolve(response(confirmed?{booking,selection:{room:'Room',rate:'Rate',adults:1},hotel:{name:'<img src=x onerror=alert(1)>',url:'https://санатории-россии.рф/fixture'},delivery:'confirmed',canChange:true,revision:'v',rules:[],history:historyEvents}:{booking:null,revision:'empty'}));
  if(a==='calendar-ticket')d.resolve({success:true,data:{entryUrl:'https://xn----7sba6aaba8akdsdekah.xn--p1ai/api/comfort_booking_calendar',object:101,ticket:'fixture-ticket'}});
  if(a==='offers')d.resolve(response({offers:[offer]}));
- if(a==='prepare')d.resolve(response({token:'same-token',summary:{after:summary,rules:[]}}));
+ if(a==='prepare'){if(prepareFailure)d.reject(prepareFailure);else d.resolve(response({token:'same-token',summary:{after:summary,rules:[]}}));}
  if(a==='commit'){if(failCommit){failCommit=false;d.reject({});}else d.resolve(response({booking,selection:{room:'Room',rate:'Rate'},hotel:{name:'Fixture'},delivery:'waiting',canChange:false,rules:[],history:[]}));}
 },0);return d.promise();};
 w.eval(fs.readFileSync(root+'/modules/module-object.js','utf8'));
@@ -85,6 +85,17 @@ function ok(v,m){assert(v,m);checks++;}
  confirmed=true;click('Открыть / обновить');await wait();ok(!$('button').filter(function(){return $(this).text()==='Отменить без штрафа';}).length,'manager cannot see waiver');
  ok($('img').length===0&&$('#info_turist').text().includes('<img'),'catalog text escaped');
  ok($('#info_turist').text().split('<img src=x onerror=alert(1)>').length===2,'hotel displayed once');
+ click('Отменить бронь');$('textarea').val('Guest request');
+ const failureMessage='Нет однозначно применимого сохранённого условия отмены.';
+ for(const failure of [{status:409,responseText:JSON.stringify({success:false,error:failureMessage})},{status:409,responseJSON:{error:failureMessage}}]){
+   prepareFailure=failure;click('Рассчитать и проверить');await wait();
+   ok($('.alert-danger:visible').text()===failureMessage||$('.alert-danger').text()===failureMessage,'cancellation displays server error for legacy and current jQuery');
+ }
+ for(const raw of ['<html>Bad Gateway</html>','null','{"error":{"unexpected":true}}']){
+   prepareFailure={status:502,responseText:raw};click('Рассчитать и проверить');await wait();
+   ok($('.alert-danger').text().includes('Ответ не получен.'),'invalid response retains recovery guidance');
+ }
+ prepareFailure=null;click('Открыть / обновить');await wait();
  canWaive=true;click('Открыть / обновить');await wait();ok($('button').filter(function(){return $(this).text()==='Отменить без штрафа';}).length===1,'admin waiver button');
  $('#info_turist').append('<span data-reckoning-status="1" class="label label-default">Новая заявка</span>');
  cancelled=true;click('Открыть / обновить');await wait();

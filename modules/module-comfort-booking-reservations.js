@@ -46,7 +46,13 @@
                 done(r.data);
             }).fail(function (xhr) {
                 if (!alive()) return;
-                var r = xhr.responseJSON; error(r && r.error ? r.error : 'Ответ не получен. Обновите состояние брони перед новым действием.'); if (fail) fail();
+                // jQuery 1.9.1 exposes failed JSON responses only as responseText.
+                var r = xhr.responseJSON;
+                if (!r && typeof xhr.responseText === 'string') {
+                    try { r = JSON.parse(xhr.responseText); } catch (ignored) {}
+                }
+                error(r && typeof r.error === 'string' && r.error ? r.error : 'Ответ не получен. Обновите состояние брони перед новым действием.');
+                if (fail) fail();
             }).always(function () { busy = false; if (alive()) box.find('button').not('[data-cb-disabled]').prop('disabled', false); });
         }
         function load() { api('detail', {}, function (d) { state = d; render(); }); }
