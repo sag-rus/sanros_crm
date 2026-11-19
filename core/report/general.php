@@ -271,6 +271,7 @@ function show_filter_report($connect){
 					<?php foreach($source_array as $index_source => $source){ ?>
 						<label><input type="checkbox" class="source" value="<?php echo $index_source; ?>" /> <?php echo $source["name"]; ?></label>
 					<?php } ?>
+						<label><input type="checkbox" class="source" value="comfortbooking" /> Comfort Booking</label>
 					</div>
 				</div>
 			</div>
@@ -541,12 +542,16 @@ function filter_do($connect){
 		if($type_filter == "manager")
 			$zapros_for_mysql.= " AND status = 5 ";
 	}
-	if($source_filter != ""){
+	$source_parts = array_values(array_diff(explode("_", (string)$source_filter), array("")));
+	$comfort_booking_filter = in_array('comfortbooking', $source_parts, true);
+	$source_ids = array();
+	foreach($source_parts as $source_part){
+		if(ctype_digit((string)$source_part)) $source_ids[] = (int)$source_part;
+	}
+	if($source_ids && !$comfort_booking_filter){
 		$and_st = 0;
 		if($zapros_for_mysql) $zapros_for_mysql .= " AND ";
-		$a = explode("_", $source_filter);
-		$a = array_diff($a, array(""));
-		foreach($a as $stat){
+		foreach($source_ids as $stat){
 			if($and_st == 1)
 				$zapros_for_mysql .= " OR ";
 			else
@@ -671,6 +676,15 @@ function filter_do($connect){
 		} catch(Throwable $e) {
 			$comfortBookingLookupFailed = true;
 			error_log('Comfort Booking report: object lookup unavailable');
+		}
+	}
+	if($comfort_booking_filter){
+		if($comfortBookingLookupFailed){
+			$data = array();
+		}else{
+			$data = array_values(array_filter($data, function($entry) use ($comfortBookingObjects, $source_ids){
+				return isset($comfortBookingObjects[(int)$entry['id']]) || in_array((int)$entry['source'], $source_ids, true);
+			}));
 		}
 	}
 	$num = 0;
@@ -1003,7 +1017,7 @@ function filter_do($connect){
 	<?php } ?>
 		<?php echo $all_id; ?>
 		<?php if($comfortBookingLookupFailed){ ?>
-		<div class="alert alert-warning">Не удалось проверить метки CB на сайте. Часть меток может отсутствовать. Обновите отчёт.</div>
+		<div class="alert alert-warning"><?php echo $comfort_booking_filter ? 'Не удалось применить фильтр Comfort Booking. Обновите отчёт.' : 'Не удалось проверить метки CB на сайте. Часть меток может отсутствовать. Обновите отчёт.'; ?></div>
 		<?php } ?>
 		<table id="tbl_filter" class="table table-condensed table-hover">
 		<thead>
