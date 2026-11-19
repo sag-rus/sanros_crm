@@ -2475,10 +2475,34 @@ function comfort_booking_analytics() {
                     ['Время, МСК','ID задания','ID объекта CB','Событие','Причина','Попыток','От приёма, с'],d.incidents.map(function(r) {
                         return [date(r.occurred),r.id,r.property_id,r.event,r.reason,r.attempts,r.seconds];
                     }));
-                table('Ожидание идентификаторов от TravelLine · объектов: '+d.waiting+' (до 10 примеров)',
-                    ['ID объекта CB','Попыток','Пар без идентификаторов','Категория / тариф (до 5 пар)'],d.samples.map(function(r) {
-                        return [r.property,r.attempts,r.count,r.pairs];
+                if(d.mapping) {
+                    var labels={waiting_tl:'Ожидание TL',incomplete_catalogue:'Неполный каталог',exhausted_retries:'Исчерпаны повторы',unknown:'Недостаточно данных'};
+                    var explanations={
+                        waiting_tl:'Нужные пары есть в нашем каталоге. Проверки TL продолжаются с интервалом.',
+                        incomplete_catalogue:'Часть пар недоступна в нашей выдаче. Требуется проверка или обновление каталога.',
+                        exhausted_retries:'Нужные пары есть в нашем каталоге, но лимит попыток достигнут. Это задание больше не повторяется.',
+                        unknown:'Сохранённых данных недостаточно для определения причины.'
+                    };
+                    var keys=['waiting_tl','incomplete_catalogue','exhausted_retries'];
+                    if(d.mapping.groups.unknown && Number(d.mapping.groups.unknown.objects)) keys.push('unknown');
+                    table('Незавершённые сопоставления',['Причина','Объектов','Пар без идентификаторов','Что происходит'],keys.map(function(key) {
+                        var group=d.mapping.groups[key];
+                        return [labels[key],group.objects,group.pairs,explanations[key]];
                     }));
+                    $('<p class="text-muted">').text('Причины определены по последним сохранённым ответам TL и текущему каталогу сайта. Это количество объектов, а не заданий в активной очереди. Неполный каталог показывается отдельно независимо от числа попыток. Лимит повторов: '+d.mapping.retryLimit+'.').appendTo(body);
+                    keys.forEach(function(key) {
+                        var group=d.mapping.groups[key];
+                        if(!Number(group.objects)) return;
+                        table(labels[key]+' · до 10 примеров',
+                            ['ID объекта CB','Попыток','Пар без идентификаторов','Из них отсутствуют в каталоге','Категория / тариф (до 5 пар)','Ответ сохранён, МСК'],
+                            group.samples.map(function(r) {return [r.property,r.attempts,r.count,r.missing,r.pairs,date(r.checkedAt)];}));
+                    });
+                } else {
+                    table('Незавершённые проверки сопоставлений · объектов: '+d.waiting+' (до 10 примеров)',
+                        ['ID объекта CB','Попыток','Пар без идентификаторов','Категория / тариф (до 5 пар)'],d.samples.map(function(r) {
+                            return [r.property,r.attempts,r.count,r.pairs];
+                        }));
+                }
                 table('Приём запросов цен и наличия · текущий и предыдущие 23 часа',
                     ['Начало часа, МСК','Результат','Запросов','Ожидание блокировки, ср. / макс. (мс)','Запись, ср. / макс. (мс)','Обработка, ср. / макс. (мс)'],d.updates.map(function(r) {
                         return [date(r.hour_start),Number(r.error_code)===0?'Принято':'Ошибка '+r.error_code,r.requests,

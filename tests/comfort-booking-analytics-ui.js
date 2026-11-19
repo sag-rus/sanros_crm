@@ -1,0 +1,21 @@
+const fs=require('fs'),assert=require('assert'),{JSDOM}=require('jsdom');
+const dom=new JSDOM('<div id="body"></div>',{url:'https://crm.example/',runScripts:'outside-only'}),w=dom.window;
+w.eval(fs.readFileSync(__dirname+'/../js/jquery-1.9.1.js','utf8'));
+const $=w.jQuery;
+w.select_menu=()=>{};w.comfort_booking_metrics=()=>{};
+const group=(n)=>({objects:n,pairs:n,samples:n?[{property:'<test>',attempts:9,count:1,missing:1,pairs:'20 / 30',checkedAt:100}]:[]});
+let data={now:100,queue:[],completed:[],incidents:[],updates:[],waiting:3,samples:[],
+    mapping:{retryLimit:9,groups:{waiting_tl:group(1),incomplete_catalogue:group(1),exhausted_retries:group(1),unknown:group(0)}}};
+$.ajax=()=>$.Deferred().resolve({success:true,data}).promise();
+const source=fs.readFileSync(__dirname+'/../modules/module-object.js','utf8');
+w.eval(source.slice(source.indexOf('function comfort_booking_analytics()')));
+w.comfort_booking_analytics();
+let text=$('#body').text();
+for(const label of ['Ожидание TL','Неполный каталог','Исчерпаны повторы','Это задание больше не повторяется']) assert(text.includes(label));
+assert(text.includes('<test>'));assert.strictEqual($('test').length,0,'technical fields are escaped');
+assert(!text.includes('Недостаточно данных'));
+data.mapping.groups.unknown=group(1);w.comfort_booking_analytics();
+assert($('#body').text().includes('Недостаточно данных'));
+delete data.mapping;w.comfort_booking_analytics();
+assert($('#body').text().includes('Незавершённые проверки сопоставлений'));
+console.log('Mapping analytics UI, escaped output and rolling deployment fallback passed.');
