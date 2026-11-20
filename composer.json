@@ -13,6 +13,15 @@
     "guzzlehttp/guzzle": "~6.0",
     "ext-json": "*"
   },
+  "scripts": {
+    "test": [
+      "@php -l core/document/contract.php",
+      "@php -l core/document/old_contract.php",
+      "@php -l core/document/contract_counterparty_accounts.php",
+      "@php -l tests/contract-counterparty-accounts.php",
+      "@php tests/contract-counterparty-accounts.php"
+    ]
+  },
   "config": {
     "optimize-autoloader": true
   }

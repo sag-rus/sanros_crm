@@ -63,6 +63,8 @@ function review_contract($connect, $type, $id){
 	$services_array = explode("_", $row["id_services"]);
 	$payer = $row["payer"];
 	$payers = $connect->getRow("SELECT * FROM payer WHERE id=?i", $payer);
+	require_once __DIR__.'/contract_counterparty_accounts.php';
+	$contract_counterparty_accounts = contract_counterparty_accounts($id);
 	$object = get_object($connect, $id_obj, "full_and_address");
 	$room = get_room($connect, $id_room, "full");
         if($cbDocument){
@@ -447,7 +449,11 @@ function review_contract($connect, $type, $id){
 					<strong>ИНН/КПП:</strong> <?php echo $payers["inn"]."/".$payers["kpp"]; ?><br />
 					<strong>Юридический адрес:</strong><br /><?php echo $payers["ur_address"]; ?><br />
 					<strong>Почтовый адрес:</strong><br /><?php echo $payers["address"]; ?><br />
-					<?php if ($id=='173658') {?>
+					<?php if($contract_counterparty_accounts){ ?>
+					<?php foreach($contract_counterparty_accounts as $account){ ?>
+					<strong><?php echo htmlspecialchars($account['label'], ENT_QUOTES, 'UTF-8'); ?>:</strong> <?php echo htmlspecialchars($account['number'], ENT_QUOTES, 'UTF-8'); ?><br />
+					<?php } ?>
+					<?php } elseif ($id=='173658') {?>
 					<strong>к/с:</strong> <?php echo $payers["rs"]; ?><br />
 					<strong>б/с:</strong> <?php echo $payers["ks"]; ?><br />
 					<?php } else {?>
