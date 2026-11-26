@@ -139,6 +139,18 @@
             var group=$('<label style="display:inline-block;margin:0 12px 12px 0;vertical-align:top"></label>').append(el('span',label).css('display','block'));
             var input=$('<input class="form-control">').attr('type',type).val(value === undefined ? '' : value); group.append(input);parent.append(group);return input;
         }
+        function documentFields(parent, values, guest) {
+            values=values||{};var inputs={};
+            [['birthDate','Дата рождения','date'],['passport','Паспорт','text'],['passportIssuedBy','Кем выдан','text'],['passportIssueDate','Дата выдачи','date']].concat(guest?[['birthCertificate','Свид. о рождении','text']]:[]).forEach(function(f){
+                inputs[f[0]]=field(parent,f[1],f[2],values[f[0]]).attr('data-cb-document',f[0]);
+                if(f[2]==='text')inputs[f[0]].attr('maxlength',f[0]==='passportIssuedBy'?500:100);
+            });return inputs;
+        }
+        function documentValues(inputs) {var result={};$.each(inputs,function(key,input){result[key]=input.val();});return result;}
+        function documentSummary(target, docs) {
+            function person(label, values) {var parts=[];$.each({birthDate:'Дата рождения',passport:'Паспорт',passportIssuedBy:'Кем выдан',passportIssueDate:'Дата выдачи',birthCertificate:'Свид. о рождении'},function(key,title){if(values&&values[key])parts.push(title+': '+(key==='birthDate'||key==='passportIssueDate'?displayDate(values[key]):values[key]));});if(parts.length)line(target,label,parts.join('; '));}
+            person('Заказчик',docs.customer);$.each(docs.guests||[],function(i,g){person('Гость '+(i+1),g);});
+        }
         function editor(modify) {
             if(poll)clearTimeout(poll);content.empty();var b=state.booking, selected=state.selection || {}, def=defaults.customer || {};
             var title=modify?'Изменение брони':'Новая бронь'; content.append(el('h4',title));
@@ -167,11 +179,13 @@
             var children=selectField(trip,'Дети',childOptions,modify?(selected.childrenAges||[]).length:0,'cb-child-count');
             var guestBox=$('<div></div>'),guestInputs=[],ageInputs=[],adultDraft=[],childDraft=[];
             content.append(boldLine('Данные гостей'),el('p','Для каждого ребёнка укажите возраст на дату заезда.','text-muted'),guestBox);
-            var initial=modify?b.roomStays[0].guests:[def],initialAdults=+adults.val();
+            content.append(el('p','Даты рождения и документы сохраняются только на сайте для договоров и ваучеров CRM. В TravelLine они не передаются.','text-muted'));
+            var docs=state.documents||{};
+            var initial=(modify?b.roomStays[0].guests:[def]).map(function(g,i){return $.extend({},g,{documents:(docs.guests||[])[i]||{}});}),initialAdults=+adults.val();
             initial.forEach(function(g,i){if(i<initialAdults)adultDraft[i]=$.extend({},g);else childDraft[i-initialAdults]=$.extend({},g,{age:(selected.childrenAges||[])[i-initialAdults]});});
             function ages(){return ageInputs.map(function(s){return s.val()===''?null:Number(s.val());});}
             function guests(){return guestInputs.map(function(g){return {lastName:g.fields[0].val(),firstName:g.fields[1].val(),middleName:g.fields[2].val()};});}
-            function saveGuests(){guestInputs.forEach(function(g){var d={lastName:g.fields[0].val(),firstName:g.fields[1].val(),middleName:g.fields[2].val()};if(g.child){d.age=g.age.val();childDraft[g.index]=d;}else adultDraft[g.index]=d;});}
+            function saveGuests(){guestInputs.forEach(function(g){var d={lastName:g.fields[0].val(),firstName:g.fields[1].val(),middleName:g.fields[2].val(),documents:documentValues(g.documents)};if(g.child){d.age=g.age.val();childDraft[g.index]=d;}else adultDraft[g.index]=d;});}
             function guestFields(){
                 guestBox.empty();guestInputs=[];ageInputs=[];
                 function row(child,i){
@@ -180,7 +194,8 @@
                     var record={child:child,index:i,fields:[]};
                     if(child){var opts=[{value:'',text:'Выберите возраст'}];for(var age=0;age<=17;age++)opts.push({value:age,text:age===0?'До 1 года':age+' '+(age===1?'год':(age<5?'года':'лет'))});
                         record.age=selectField(r,'Возраст на дату заезда',opts,g.age===undefined?'':g.age,'cb-child-age');ageInputs.push(record.age);record.age.on('change',clearOffers);}
-                    record.fields=[field(r,'Фамилия','text',g.lastName),field(r,'Имя','text',g.firstName),field(r,'Отчество','text',g.middleName)];guestInputs.push(record);
+                    record.fields=[field(r,'Фамилия','text',g.lastName),field(r,'Имя','text',g.firstName),field(r,'Отчество','text',g.middleName)];
+                    record.documents=documentFields(r,g.documents,true);guestInputs.push(record);
                 }
                 for(var i=0;i<+adults.val();i++)row(false,i);
                 for(var j=0;j<+children.val();j++)row(true,j);
@@ -191,11 +206,12 @@
             var customer=modify?b.customer:def, buyer=$('<div></div>');content.append(boldLine('Заказчик'),buyer);
             var surname=field(buyer,'Фамилия','text',customer.lastName),name=field(buyer,'Имя','text',customer.firstName),middle=field(buyer,'Отчество','text',customer.middleName);
             var phone=field(buyer,'Телефон','text',customer.phone),email=field(buyer,'E-mail','email',customer.email);
+            var buyerDocuments=documentFields(buyer,docs.customer,false);
             var offerActions=$('<div style="display:flex;align-items:flex-end;flex-wrap:wrap;gap:12px;margin-bottom:12px"></div>');content.append(offerActions);
             var comment=field(offerActions,'Комментарий для объекта','text',modify?b.guestComment:'');comment.parent().css('margin',0);
             var offerSelect=$('<select class="form-control" style="max-width:900px;margin:12px 0"></select>'),offerRules=$('<div></div>'),offers=[];
             function clearOffers(){offers=[];offerSelect.empty();offerRules.empty();}
-            function input(){var o=offers[+offerSelect.val()]||{};return {hotelId:hotelId,arrivalDate:arrival.val(),departureDate:departure.val(),adults:+adults.val(),childrenAges:ages(),roomId:o.roomId,rateId:o.rateId,guests:guests(),customer:{lastName:surname.val(),firstName:name.val(),middleName:middle.val(),phone:phone.val(),email:email.val()},comment:comment.val()};}
+            function input(){var o=offers[+offerSelect.val()]||{};return {hotelId:hotelId,arrivalDate:arrival.val(),departureDate:departure.val(),adults:+adults.val(),childrenAges:ages(),roomId:o.roomId,rateId:o.rateId,guests:guests(),documents:{customer:documentValues(buyerDocuments),guests:guestInputs.map(function(g){return documentValues(g.documents);})},customer:{lastName:surname.val(),firstName:name.val(),middleName:middle.val(),phone:phone.val(),email:email.val()},comment:comment.val()};}
             offerActions.append(button('Проверить цены и наличие','btn-primary',function(){if(!validAges())return;api('offers',{input:JSON.stringify(input())},function(d){clearOffers();offers=d.offers;offerSelect.append($('<option value="">Выберите номер и тариф</option>'));$.each(offers,function(i,o){offerSelect.append(el('option',o.room+' / '+o.rate+' — '+o.total+' RUB за весь период').val(i));});if(!offers.length)error('На выбранные даты и состав гостей нет подходящих предложений.');});}).css('height','34px'));content.append(offerSelect,offerRules);
             offerSelect.on('change',function(){offerRules.empty();if(offerSelect.val()!=='')list(offerRules,(offers[+offerSelect.val()]||{}).rules);});
             content.append(button('Проверить перед отправкой','btn-success',function(){if(!validAges())return;if(offerSelect.val()===null||offerSelect.val()===''||!offers.length){error('Сначала выберите доступный номер и тариф.');return;}prepare(modify?'modify':'create',input());}).css('margin-right','10px'),button('Назад','btn-default',render));
@@ -211,6 +227,7 @@
                 if(s.before){content.append(boldLine('Сейчас'));summary(content,s.before);}
                 if(s.after){content.append(boldLine('Будет передано'));summary(content,s.after);}
                 if(s.penaltyAmount!==undefined){line(content,'Бронь',s.number);line(content,'Штраф к передаче',s.penaltyAmount+' '+s.currency);line(content,'Штраф по сохранённому правилу',s.standardPenalty+' '+s.currency);line(content,'Причина',s.reason);}
+                if(s.documents){content.append(boldLine('Документы — только для сайта и CRM'));documentSummary(content,s.documents);}
                 list(content,s.rules);content.append(el('p','Расчёт действует 2 минуты. После отправки нужно дождаться подтверждения TravelLine.','text-muted'));
                 var confirmText=s.after?'Передать '+(operation==='create'?'новую бронь':'изменение брони')+' на '+s.after.total+' RUB?':'Отменить бронь '+s.number+' со штрафом '+s.penaltyAmount+' '+s.currency+'?';
                 var submit=button('Подтвердить и отправить',operation==='cancel'||operation==='waive'?'btn-danger':'btn-success',function(){if(!w.confirm(confirmText))return;commit();});

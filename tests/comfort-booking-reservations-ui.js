@@ -52,10 +52,13 @@ function ok(v,m){assert(v,m);checks++;}
  ok(history.find('p').filter(function(){return $(this).text()==='Номер: Room';}).length===1&&history.find('p').filter(function(){return $(this).text()==='Тариф: Rate';}).length===1,'room and rate on their own lines');
  ok(history.text().includes('Сотрудник: tester — Иван Петров')&&!history.text().includes('После операции'),'staff identity and creation entry');
  click('Изменить бронь');
- ok($('input[type=date]').length===2,'trip date controls');
+ ok($('input[type=date]').length===6,'trip, guest and customer date controls');
+ ok($('[data-cb-document=birthCertificate]').length===1,'birth certificate only for guests');
+ $('[data-cb-guest=adult-0] [data-cb-document=passport]').val('PRIVATE-PASSPORT');
  ok($('.cb-adult-count').val()==='1'&&$('.cb-child-count').val()==='0','explicit adult and child count selectors');
  $('.cb-child-count').val('1').trigger('change');
  ok($('.cb-child-age').length===1&&$('.cb-child-age').val()==='','new child requires age');
+ $('[data-cb-guest=child-0] [data-cb-document=birthCertificate]').val('PRIVATE-CERT');
  var beforeOffers=calls.filter(x=>x.action==='offers').length;
  click('Проверить цены и наличие');await wait();
  ok(calls.filter(x=>x.action==='offers').length===beforeOffers,'missing child age blocks offers');
@@ -68,6 +71,8 @@ function ok(v,m){assert(v,m);checks++;}
  ok($('.cb-child-age').val()==='0'&&$('[data-cb-guest=child-0] input').eq(1).val()==='Child name','restoring child preserves age zero and name');
  click('Проверить цены и наличие');await wait();
  var occupancy=JSON.parse(calls.filter(x=>x.action==='offers').slice(-1)[0].input);
+ ok(occupancy.documents.guests[0].passport==='PRIVATE-PASSPORT'&&occupancy.documents.guests[2].birthCertificate==='PRIVATE-CERT'&&!('birthCertificate' in occupancy.documents.customer),'documents retained across occupant controls and isolated from customer');
+ ok(!('passport' in occupancy.guests[0]),'channel person input separated from documents');
  ok(occupancy.adults===2&&occupancy.childrenAges[0]===0&&occupancy.guests.length===3&&occupancy.guests[2].firstName==='Child name','API receives ordered guests and numeric infant age');
  $('select').last().val('0').trigger('change');$('.cb-child-age').val('5').trigger('change');
  var beforePrepare=calls.filter(x=>x.action==='prepare').length;click('Проверить перед отправкой');await wait();

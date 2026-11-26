@@ -2,6 +2,7 @@
 require_once __DIR__.'/comfort-booking-reservations.php';
 require_once __DIR__.'/comfort-booking-objects.php';
 require_once __DIR__.'/comfort-booking-reward.php';
+require_once __DIR__.'/comfort-booking-documents.php';
 
 function cbr_is_request($connect, $id) {
     $r=$connect->getRow('SELECT id,id_obj,cb_submission_key FROM reckoning WHERE id=?i',(int)$id);

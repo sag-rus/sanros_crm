@@ -2,6 +2,12 @@
 
 function review_obmen($connect, $type = "PDF", $id, $for = ""){
 	global $directory, $session_login;
+    require_once dirname(__DIR__).'/comfort-booking-request-state.php';
+    if(!cbr_document_guard($connect,$id,$cbDocument))return;
+    if($cbDocument){
+        require_once __DIR__.'/comfort_booking_voucher.php';
+        return review_cb_voucher($type,(int)$id,$for,$cbDocument);
+    }
 
 	include_once($directory."/config.php");
 

@@ -2974,9 +2974,10 @@ function show_menu_document($connect){
     if($isCb){
         echo '<span class="hr_label">Документы<hr /></span>';
         try{cbr_document_data($connect,$id);}catch(Throwable $e){
-            echo '<p class="text-muted">Счет и договоры доступны после подтверждения текущей брони TravelLine и синхронизации заявки. Обновите данные брони.</p>';return;
+            echo '<p class="text-muted">Счет, договоры и ваучер доступны после подтверждения текущей брони TravelLine и синхронизации заявки. Обновите данные брони.</p>';return;
         }
         echo '<span onclick="show_bill('.$id.')">Счет</span>';
+        echo '<span onclick="show_obmen('.$id.')">Ваучер</span>';
         echo '<span onclick="show_contract('.$id.', 1)">Договор</span>';
         echo '<span onclick="show_contract('.$id.', 2)">Договор туристский</span>';
         return;

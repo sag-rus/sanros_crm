@@ -347,7 +347,9 @@ function save_contract($connect){
 }
 
 function show_obmen($connect){
-	$id = $_POST["id"];
+	$id = (int)$_POST["id"];
+    require_once __DIR__.'/comfort-booking-request-state.php';
+    if(!cbr_document_guard($connect,$id,$cbDocument))return;
 	$turist_mode = isset($_GET['turist_mode'])?(int)$_GET['turist_mode']:0;
 	$html_services_1 = "";
 	$html_services_2 = "";
@@ -369,13 +371,13 @@ function show_obmen($connect){
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
-				<h4 class="modal-title"><?php if($turist_mode) { ?>Туристическая путевка<?php } else {  ?>Обменная путевка<?php } ?> №<?=$id;?></h4>
+				<h4 class="modal-title"><?php if($cbDocument) { ?>Ваучер<?php } elseif($turist_mode) { ?>Туристическая путевка<?php } else {  ?>Обменная путевка<?php } ?> №<?=$id;?></h4>
 			</div>
 			<div class="modal-body form-horizontal">
 				<div class="form-group">
 					<label class="col-sm-4 control-label">Количество путевок</label>
 					<div class="col-sm-8">
-						<input type="text" class="form-control" id="dubl" value="1">
+						<input type="<?php echo $cbDocument ? 'number' : 'text'; ?>"<?php if($cbDocument) echo ' min="1" max="10"'; ?> class="form-control" id="dubl" value="1">
 					</div>
 				</div>
 				<!--
@@ -391,14 +393,14 @@ function show_obmen($connect){
 					<div class="col-sm-4">
 					</div>
 					<div class="col-sm-8">
-						<label class="control-label"><input type="checkbox" id="show-reduced" /> Уменьшенная путевка</label>
+						<label class="control-label"<?php if($cbDocument) echo ' style="display:none"'; ?>><input type="checkbox" id="show-reduced" /> Уменьшенная путевка</label>
 					</div>
 				</div>
                 <div class="form-group">
                     <div class="col-sm-4">
                     </div>
                     <div class="col-sm-8">
-                        <label class="control-label"><input type="checkbox" id="turist-mode" /> Туристическая путевка</label>
+                        <label class="control-label"<?php if($cbDocument) echo ' style="display:none"'; ?>><input type="checkbox" id="turist-mode" /> Туристическая путевка</label>
                     </div>
                 </div>
 				<!--

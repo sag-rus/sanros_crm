@@ -56,6 +56,7 @@ function review_contract($connect, $type, $id){
 	$services_array = explode("_", $row["id_services"]);
 	$payer = $row["payer"];
 	$payers = $connect->getRow("SELECT * FROM payer WHERE id=?i", $payer);
+    if ($cbDocument) $payers=cb_doc_payer($cbDocument,$payers);
 	require_once __DIR__.'/contract_counterparty_accounts.php';
 	$contract_counterparty_accounts = contract_counterparty_accounts($id);
 	$object = get_object($connect, $id_obj, "full_and_place");
@@ -232,7 +233,8 @@ function review_contract($connect, $type, $id){
 		<th style="width: 150px">№ документа</th>
 	</tr>
 	<?php
-		foreach($rest as $turists){
+		if ($cbDocument) echo cb_doc_guest_rows($cbDocument);
+        else foreach($rest as $turists){
 			if($turists){
 				$row = $connect->getRow("SELECT surname, name, otch, date, passport, telephone, email, date_pas, birth_certificate, output FROM klient WHERE id=?i", $turists);
 				$turist = $row["surname"]." ".$row["name"]." ".$row["otch"];
@@ -256,6 +258,7 @@ function review_contract($connect, $type, $id){
 	?>
 	</table><br />
 
+<?php if ($cbDocument) echo cb_doc_customer($cbDocument); ?>
 	<p class="head">2. Сведения о туроператоре</p>
 	<p>2.1. Туроператором, являющимся непосредственным исполнителем туристских услуг, входящих в турпродукт, поименованный в п. 1.1 настоящего Договора, является следующее юридическое лицо:<br />
 	полное и сокращенное наименования:<br />
@@ -402,7 +405,7 @@ function review_contract($connect, $type, $id){
 					if($payers["address"])
 						echo "<strong>АДРЕС:</strong> ".$payers["address"]."<br />";					
 					if($payers["passport"]){
-						echo "<strong>ПАСПОРТ:</strong> ".substr_replace($payers["passport"], " ", 4, 0)."<br />";
+						echo "<strong>ПАСПОРТ:</strong> ".($cbDocument ? $payers["passport"] : substr_replace($payers["passport"], " ", 4, 0))."<br />";
 					if($payers["output"])
 						echo "<strong>ВЫДАН:</strong> ".$payers["output"]."<br />";
 					if($payers["date_passport"])
