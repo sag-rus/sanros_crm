@@ -195,10 +195,12 @@ function review_schet($connect, $type = "PDF", $id, $for = ""){
 	if(isset($bonus) && $bonus > 0)
 		$itog_sum = $itog_sum - $bonus;
 	$prepay_sum = $connect->getOne("SELECT sum(sum) FROM payment WHERE schet=?i AND type=1", $id);
+    if($cbDocument){$ledger=cb_customer_payments($connect,$id);$prepay_sum=(float)$ledger['paid'];}
 	if($prepay_sum > 0){
 		$itog_sum-= $prepay_sum;
 		$prepay_sum = add_null($prepay_sum);
 	}
+	if($cbDocument)$itog_sum=max(0,$itog_sum);
 	$itog_sum = add_null(round($itog_sum, 2));
 	$sum3 = add_null($sum3);
 	$itog = add_null($itog);

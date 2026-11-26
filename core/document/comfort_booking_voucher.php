@@ -7,8 +7,14 @@ function cb_voucher_html($id, array $data, array $company) {
     $lines=['Объект'=>$data['hotel']['name']??'', 'Номер брони на сайте'=>$b['number'], 'Номер TravelLine'=>$data['externalNumber'],
         'Заезд'=>cb_doc_date($b['arrivalDate']).' '.($b['arrivalTime']??''),'Выезд'=>cb_doc_date($b['departureDate']).' '.($b['departureTime']??''),
         'Номер'=>$s['room'],'Тариф'=>$s['rate'],'Взрослые'=>$stay['adults'],'Дети'=>$stay['children'],
-        'Стоимость'=>$stay['total']['amountAfterTaxes'].' '.$b['currencyCode'],
-        'Предоплата'=>$b['paymentInfo']['prepayment']['value'].' '.$b['currencyCode'],'Оплата'=>$b['paymentMethodComment']??''];
+        'Стоимость'=>$stay['total']['amountAfterTaxes'].' '.$b['currencyCode']];
+    $payment=$data['crmPaymentSummary']??null;
+    if($payment){
+        $lines['Получено от клиента']=$payment['received'].' '.$b['currencyCode'];
+        if((float)$payment['refunded']>0)$lines['Возвращено клиенту']=$payment['refunded'].' '.$b['currencyCode'];
+        if((float)$payment['remaining']>0)$lines['Осталось получить от клиента']=$payment['remaining'].' '.$b['currencyCode'];
+        if((float)$payment['overpaid']>0)$lines['Переплата']=$payment['overpaid'].' '.$b['currencyCode'];
+    }else $lines['Предоплата, переданная TravelLine']=$b['paymentInfo']['prepayment']['value'].' '.$b['currencyCode'];
     foreach ($lines as $label=>$value) $html.='<p><strong>'.cb_doc_escape($label).':</strong> '.cb_doc_escape($value).'</p>';
     $html.='<h3>Гости</h3><table border="1" cellpadding="5" cellspacing="0"><tr><th style="width:180px">Фамилия Имя Отчество</th><th style="width:85px">Дата рождения</th><th style="width:340px">Документ</th></tr>'.cb_doc_guest_rows($data).'</table>';
     $html.=cb_doc_customer($data);

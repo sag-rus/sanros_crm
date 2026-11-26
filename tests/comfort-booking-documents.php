@@ -7,7 +7,9 @@ $guest=['firstName'=>'Ребёнок','lastName'=>'Тестовый'];
 $data=['booking'=>['number'=>'fixture','arrivalDate'=>'2026-12-15','departureDate'=>'2026-12-17','arrivalTime'=>'14:00','departureTime'=>'12:00','currencyCode'=>'RUB','customer'=>$person,'paymentInfo'=>['prepayment'=>['value'=>'0.00']],'paymentMethodComment'=>'Оплата при заезде','roomStays'=>[['adults'=>1,'children'=>1,'total'=>['amountAfterTaxes'=>'1600.00'],'guests'=>[$person,$guest]]]],'selection'=>['room'=>'Номер <test>','rate'=>'Основной'],'hotel'=>['name'=>'Тестовый отель'],'externalNumber'=>'TL-fixture',
 'documents'=>['customer'=>['birthDate'=>'1980-01-02','passport'=>'0000 000000','passportIssuedBy'=>'Тестовый орган','passportIssueDate'=>'2020-02-03','birthCertificate'=>'FORBIDDEN-CUSTOMER-CERT'],
 'guests'=>[['birthDate'=>'1980-01-02','passport'=>'1111 111111','passportIssuedBy'=>'Орган <test>','passportIssueDate'=>'2020-02-03'],['birthDate'=>'2019-01-02','birthCertificate'=>'I-ТЕСТ №000000']]]];
+$data['crmPaymentSummary']=['received'=>'600.00','refunded'=>'0.00','remaining'=>'1000.00','overpaid'=>'0.00'];
 $html=cb_voucher_html(999,$data,['Компания'=>'Тест']);
+docCheck(strpos($html,'Осталось получить от клиента')!==false&&strpos($html,'1000.00 RUB')!==false&&strpos($html,'Оплата при заезде')===false,'voucher uses live customer payment balance');
 foreach(['ВАУЧЕР','TL-fixture','15.12.2026','17.12.2026','02.01.1980','03.02.2020','I-ТЕСТ №000000','Тестовый орган','1111 111111','0000 000000'] as $text)docCheck(strpos($html,$text)!==false,'Missing '.$text);
 docCheck(strpos($html,'<test>')===false&&strpos($html,'&lt;test&gt;')!==false,'HTML escaping');
 docCheck(strpos($html,'FORBIDDEN-CUSTOMER-CERT')===false,'no certificate for customer');

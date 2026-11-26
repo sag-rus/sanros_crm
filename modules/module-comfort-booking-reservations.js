@@ -65,10 +65,25 @@
             line(target, 'Номер', s.room);
             line(target, 'Тариф', s.rate);
             line(target, 'Гости', s.adults + ' взрослых, ' + s.children + ' детей');
-            line(target, 'Стоимость', s.total + ' RUB'); line(target, 'Предоплата в СРМ', s.prepayment + ' RUB'); line(target, 'Оплата', s.payment);
+            line(target, 'Стоимость', s.total + ' RUB');
+            if (hideHotel) paymentSummary();
+            else line(target, 'Предоплата, переданная в TravelLine', s.prepayment + ' RUB');
             line(target, 'Заказчик', personName(s.customer || {}));
             $.each(s.guests || [], function (_, g) { line(target, 'Гость', personName(g) + (g.isChild ? ' (' + g.age + ' лет)' : '')); });
             if (s.comment) line(target, 'Комментарий', s.comment);
+        }
+        function paymentSummary() {
+            var p=caps.paymentSummary;
+            if (!p) { line(content,'Оплата клиентом','Не удалось получить актуальные платежи CRM. Обновите данные.'); return; }
+            var titles={unpaid:'Не оплачено',partial:'Оплачено частично',paid:'Оплачено полностью',overpaid:'Переплата',cancelled:'Бронь отменена'};
+            line(content,'Оплата клиентом',titles[p.state]||'Проверьте платежи');
+            line(content,'Получено от клиента',p.received+' RUB');
+            if(+p.refunded) line(content,'Возвращено клиенту',p.refunded+' RUB');
+            if(p.state!=='cancelled') {
+                if(+p.remaining) line(content,'Осталось получить от клиента',p.remaining+' RUB');
+                if(+p.overpaid) line(content,'Переплата',p.overpaid+' RUB');
+            }
+            if(+p.pending) line(content,'Ожидают подтверждения платежа',p.pending+' RUB');
         }
         function render() {
             content.empty(); if (poll) clearTimeout(poll);

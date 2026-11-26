@@ -4,6 +4,7 @@ const root=require('path').resolve(__dirname,'..');
 const dom=new JSDOM('<div id="info_turist"></div>',{url:'https://crm.example/CRM/',runScripts:'outside-only'});
 const w=dom.window;w.eval(fs.readFileSync(root+'/js/jquery-1.9.1.js','utf8'));const $=w.jQuery;
 let prepareFailure=null,calls=[],failCommit=true,confirmed=false,canWaive=false,cancelled=false,checks=0;
+let paymentSummary={state:'partial',received:'600.00',refunded:'0.00',pending:'100.00',remaining:'1400.00',overpaid:'0.00'};
 const person={firstName:'Test',lastName:'Guest',phone:'+70000000000'};
 const offer={roomId:10,rateId:20,room:'Room',rate:'Rate',total:'2000.00',rules:['First night penalty']};
 const summary={hotel:'Fixture',arrival:'2026-11-10',departure:'2026-11-12',room:'Room',rate:'Rate',adults:1,children:0,total:'2000.00',prepayment:'0.00',payment:'Cash',customer:person,guests:[person]};
@@ -14,7 +15,7 @@ const historyEvents=[
  {action:'travelline-error',created:1793914011,details:{status:'modified',error:{code:123,message:'Test error'}}},
  {action:'travelline-confirmed',created:1793914012,details:{status:'cancelled'}}
 ];
-function response(data){return {success:true,data,crmStatus:cancelled?{status:6,changed:true}:null,csrf:'x'.repeat(64),calendarCsrf:'c'.repeat(64),canEdit:true,canWaive,defaults:{hotelId:101,arrivalDate:summary.arrival,departureDate:summary.departure,customer:person}};}
+function response(data){return {success:true,data,paymentSummary,crmStatus:cancelled?{status:6,changed:true}:null,csrf:'x'.repeat(64),calendarCsrf:'c'.repeat(64),canEdit:true,canWaive,defaults:{hotelId:101,arrivalDate:summary.arrival,departureDate:summary.departure,customer:person}};}
 $.ajax=function(options){calls.push(options.data);const d=$.Deferred();setTimeout(()=>{
  const a=options.data.action;
  if(a==='detail')d.resolve(response(confirmed?{booking,selection:{room:'Room',rate:'Rate',adults:1},hotel:{name:'<img src=x onerror=alert(1)>',url:'https://санатории-россии.рф/fixture'},delivery:'confirmed',canChange:true,revision:'v',rules:[],history:historyEvents}:{booking:null,revision:'empty'}));
@@ -35,6 +36,12 @@ function ok(v,m){assert(v,m);checks++;}
  w.cbBookingMount(100);click('Открыть / обновить');await wait();
  ok(!$('button').filter(function(){return $(this).text()==='Подобрать номер и создать бронь';}).length,'creation disabled in CRM');
  confirmed=true;click('Открыть / обновить');await wait();
+ ok($('#info_turist').text().includes('Оплата клиентом: Оплачено частично')&&$('#info_turist').text().includes('Осталось получить от клиента: 1400.00 RUB'),'current CRM payments shown instead of stored booking prepayment');
+ ok(!$('#info_turist').text().includes('Оплата: Cash')&&!$('#info_turist').text().includes('Предоплата в СРМ'),'misleading payment comment and stale label absent');
+ for(const [state,title,remaining,overpaid] of [['unpaid','Не оплачено','2000.00','0.00'],['paid','Оплачено полностью','0.00','0.00'],['overpaid','Переплата','0.00','100.00']]){
+   paymentSummary={state,received:'2000.00',refunded:'0.00',pending:'0.00',remaining,overpaid};click('Открыть / обновить');await wait();
+   ok($('#info_turist').text().includes('Оплата клиентом: '+title),'payment state '+state);
+ }
  const hotelLink=$('#info_turist a[href$="/fixture"]');
  const calendar=hotelLink.parent('p').next('p').find('a');
  ok(calendar.text()==='Шахматка'&&!calls.some(x=>x.action==='calendar-ticket'),'calendar below hotel; ticket issued only on click');
@@ -103,7 +110,9 @@ function ok(v,m){assert(v,m);checks++;}
  prepareFailure=null;click('Открыть / обновить');await wait();
  canWaive=true;click('Открыть / обновить');await wait();ok($('button').filter(function(){return $(this).text()==='Отменить без штрафа';}).length===1,'admin waiver button');
  $('#info_turist').append('<span data-reckoning-status="1" class="label label-default">Новая заявка</span>');
+ paymentSummary={state:'cancelled',received:'600.00',refunded:'100.00',pending:'0.00',remaining:'1500.00',overpaid:'0.00'};
  cancelled=true;click('Открыть / обновить');await wait();
+ ok($('#info_turist').text().includes('Возвращено клиенту: 100.00 RUB')&&!$('#info_turist').text().includes('Осталось получить от клиента'),'cancelled booking has no collection demand');
  ok($('[data-reckoning-status]').attr('data-reckoning-status')==='6'&&$('[data-reckoning-status]').text()==='Аннулированная'&&$('[data-reckoning-status]').hasClass('label-danger'),'CRM cancellation status displayed immediately');
  $('#info_turist').empty();var before=calls.length;w.cbBookingMount(100,true);await wait();ok(calls.length===before+1&&calls[calls.length-1].action==='detail','CB panel opens automatically with read only request');
  let reloaded=null;w.view_schet=id=>{reloaded=id;};

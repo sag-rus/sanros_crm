@@ -176,12 +176,12 @@ function show_bill($connect){
 function save_bill($connect){
 	$id = $_POST["id"];
     require_once __DIR__.'/comfort-booking-request-state.php';
-    if(!cbr_document_guard($connect,$id))return;
+    if(!cbr_document_guard($connect,$id,$cbDocument))return;
 	$payer = $_POST["payer"];
-	$pay_on_place = $_POST["status_san"];
+	$pay_on_place = $_POST["status_san"]??null;
 	$row = $connect->getRow("SELECT id_obj, id_com, status, status_san, agency, payer, website, turist FROM reckoning WHERE id=?i", $id);
 	$status_san = $row["status_san"];
-	if($row["status"] == 2){
+	if(cb_invoice_status($row["status"],(bool)$cbDocument)!==(int)$row["status"]){
 		$connect->query("UPDATE reckoning SET status=3 WHERE id=?i", $id);
 		save_schet_to_history($connect, $id);
 	}

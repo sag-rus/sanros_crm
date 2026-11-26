@@ -16,19 +16,20 @@ try {
     if($operation==='waive'&&!in_array((int)$user['rights'],[5,6],true)){http_response_code(403);throw new RuntimeException('Отмена без штрафа доступна только администратору.');}
     if($action!=='detail'&&(int)$request['type']!==0)throw new RuntimeException('Бронирование доступно только из обычной туристической заявки.');
     // Only posted form values are untrusted. Identity, role, ownership and paid amount are read on the CRM server.
-    $q=$p->prepare("SELECT COALESCE(SUM(CASE WHEN type IN (1,2) THEN sum WHEN type=5 THEN -sum ELSE 0 END),0) FROM payment WHERE schet=? AND class='schet' AND status=1 AND pay_method<>4");$q->execute([$id]);$paid=number_format(max(0,(float)$q->fetchColumn()),2,'.','');
+    $payments=cb_customer_payments($p,$id);$paid=number_format(max(0,(float)$payments['paid']),2,'.','');
     $input=json_decode((string)($_POST['input']??'{}'),true);if(!is_array($input))throw new RuntimeException('Некорректные данные.');
     cbr_lock($p,$id);$locked=true;
     $data=cbr_request(['action'=>$action,'requestId'=>$id,'actor'=>(int)$user['id'],'actorRights'=>(int)$user['rights'],'paid'=>$paid,
         'operation'=>$operation,'revision'=>(string)($_POST['revision']??''),'token'=>(string)($_POST['token']??''),'search'=>(string)($_POST['search']??''),'input'=>$input]);
     $crmStatus=in_array($action,['detail','commit'],true)?cbr_sync_request($p,$id,$data):null;
+    $paymentSummary=!empty($data['booking'])?cb_payment_summary($p,$id,$data['booking']['roomStays'][0]['total']['amountAfterTaxes'],$data['booking']['status']==='cancelled'):null;
     if (!empty($data['history'])) $data['history'] = cbr_history_staff($p, $data['history']);
     $defaults=['hotelId'=>(int)$request['id_obj'],'arrivalDate'=>$request['date_z'],'departureDate'=>$request['date_v']];
     if($action==='detail'){
         $q=$p->prepare('SELECT name,surname,otch,telephone,email FROM klient WHERE id=?');$q->execute([$request['turist']]);$c=$q->fetch(PDO::FETCH_ASSOC)?:[];
         $defaults['customer']=['firstName'=>$c['name']??'','lastName'=>$c['surname']??'','middleName'=>$c['otch']??'','phone'=>$c['telephone']??'','email'=>$c['email']??''];
     }
-    echo json_encode(['success'=>true,'data'=>$data,'crmStatus'=>$crmStatus,'csrf'=>$csrf,'calendarCsrf'=>$calendarCsrf,'defaults'=>$defaults,'paid'=>$paid,
+    echo json_encode(['success'=>true,'data'=>$data,'crmStatus'=>$crmStatus,'csrf'=>$csrf,'calendarCsrf'=>$calendarCsrf,'defaults'=>$defaults,'paid'=>$paid,'paymentSummary'=>$paymentSummary,
         'canEdit'=>cbr_scope($user,$request,true)&&(int)$request['type']===0,'canWaive'=>in_array((int)$user['rights'],[5,6],true)],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
 } catch(Throwable $e) {
     if(http_response_code()===200)http_response_code($e instanceof DomainException?409:400);

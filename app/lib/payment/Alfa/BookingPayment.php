@@ -157,7 +157,7 @@ class BookingPayment {
       "bonus" => 0,
       "prepay" => 0
     );
-    $reck_properties = $connect->getRow("SELECT sum, id_dis, exclude_bank_commission FROM reckoning WHERE id=?i AND turist=?i AND (status=3 OR status=4) LIMIT 1", $booking, $turist);
+    $reck_properties = $connect->getRow("SELECT sum, id_dis, exclude_bank_commission, cb_submission_key FROM reckoning WHERE id=?i AND turist=?i AND (status=3 OR status=4) LIMIT 1", $booking, $turist);
     $answer["total"] = $reck_properties['sum'];
     if($answer["total"] > 0){
       if($type == "prepay"){
@@ -199,7 +199,12 @@ class BookingPayment {
         }
 
 
+        if(!empty($reck_properties['cb_submission_key'])) {
+          require_once dirname(__DIR__,4).'/core/comfort-booking-payments.php';
+          $ledger=\cb_customer_payments($connect,$booking);$answer['prepay']=(float)$ledger['paid'];
+        }
         $answer["to-pay-no-com"] = $answer["total"] - $answer["bonus"] - $answer["prepay"]-$dis;
+        if(!empty($reck_properties['cb_submission_key'])) $answer['to-pay-no-com']=max(0,$answer['to-pay-no-com']);
 
         if($answer['all_bonus_count'] >= 1 && $answer['reckonings_count'] > 0 && !$reck_properties['exclude_bank_commission']) {
           $com = $this->bankInfo['commission'] / 100;
@@ -259,7 +264,7 @@ class BookingPayment {
     $log = PHP_EOL."START registerPayment".PHP_EOL;
     file_put_contents('/var/www/html/CRM/alfalogs/alfa_deposit_log_'.date('Y-m-d').'.txt', date('d.m.Y H:i:s').' '.$log, FILE_APPEND);
 
-    $reck_properties = $connect->getRow("SELECT sum, id_dis, exclude_bank_commission, is_test, state_program, children_rest, far_east FROM reckoning WHERE id=?i AND turist=?i AND (status=3 OR status=4) LIMIT 1", $booking, $turist);
+    $reck_properties = $connect->getRow("SELECT sum, id_dis, exclude_bank_commission, is_test, state_program, children_rest, far_east, cb_submission_key FROM reckoning WHERE id=?i AND turist=?i AND (status=3 OR status=4) LIMIT 1", $booking, $turist);
 
     //$sum = $connect->getOne("SELECT sum FROM reckoning WHERE id=?i AND (status=3 OR status=4) AND turist=?i", $booking, $turist);
     $sum = $reck_properties['sum'];
@@ -303,6 +308,10 @@ class BookingPayment {
       $reckonings_count = $connect->getOne("SELECT COUNT(*) FROM `reckoning` WHERE `turist` = ?i AND `status` = 5", $turist);
 
 
+      if(!empty($reck_properties['cb_submission_key'])) {
+        require_once dirname(__DIR__,4).'/core/comfort-booking-payments.php';
+        $ledger=\cb_customer_payments($connect,$booking);$prepay=(float)$ledger['paid'];
+      }
       $sum_to_pay = $sum - $bonus - $prepay-$dis;
 
       //$log = "sum_to_pay1=".$sum_to_pay.PHP_EOL;
@@ -330,6 +339,7 @@ class BookingPayment {
           $sum_to_pay = $sum_prepay;
       }
 
+      if(!empty($reck_properties['cb_submission_key']) && $sum_to_pay<=0) return [];
       $object = $connect->getOne("SELECT id_obj FROM reckoning WHERE id=?i", $booking);
       $link = $this->link;
       $orderNumber = $booking."-".$count;

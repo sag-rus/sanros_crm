@@ -24,6 +24,11 @@ $p->exec('CREATE TABLE history_schet (date TEXT,time TEXT,id_schet INTEGER,id_us
 $p->exec("INSERT INTO reckoning VALUES(100,101,1,0,0,'2026-12-10','2026-12-11','1000.00',1,0,'1')");
 $p->exec("INSERT INTO position_reck VALUES(20,100,200,'300','1000.00',1,1,1,'2026-12-10',0,0,0)");
 $p->exec("INSERT INTO klient VALUES(1,'Existing','Adult','','2026-01-01',NULL,'keep-passport')");
+foreach(['agency','id_dis','id_com','commission_value'] as $column)$p->exec('ALTER TABLE reckoning ADD COLUMN '.$column.' INTEGER DEFAULT 0');
+$p->exec('CREATE TABLE payment (schet INTEGER,sum TEXT,status INTEGER DEFAULT 2,type INTEGER,pay_method INTEGER,class TEXT DEFAULT "schet")');
+$p->exec('CREATE TABLE bonus (schet INTEGER,sum TEXT)');
+$p->exec('CREATE TABLE discount (id INTEGER,value TEXT,type INTEGER)');
+$p->exec('CREATE TABLE commission (id INTEGER,value TEXT)');
 check(cbr_sync_request($p,100,$d)['changed'],'sync modified dates, room, price, occupants');
 $r=$p->query('SELECT * FROM reckoning')->fetch(PDO::FETCH_ASSOC);$pos=$p->query('SELECT * FROM position_reck')->fetch(PDO::FETCH_ASSOC);
 check($r['date_z']==='2026-12-14'&&$r['date_v']==='2026-12-17'&&$r['sum']==='4500.00','request dates and total');
@@ -48,6 +53,22 @@ check($p->query('SELECT surname FROM klient WHERE id=1')->fetchColumn()==='Exist
 check($p->query('SELECT rest FROM reckoning')->fetchColumn()==='3,2','updated guest attached');
 $d['booking']['roomStays'][0]['children']=0;array_pop($d['booking']['roomStays'][0]['guests']);cbr_sync_request($p,100,$d);
 check($p->query('SELECT rest FROM reckoning')->fetchColumn()==='3'&&(int)$p->query('SELECT number_turist FROM reckoning')->fetchColumn()===1,'removed guest detached but record retained');
+// Existing posted payments survive repricing; fully paid requests reopen for a top-up.
+$p->exec("UPDATE reckoning SET status=5");
+$p->exec("INSERT INTO payment(schet,sum,type,pay_method) VALUES(100,'4500.00',2,2)");
+$d['booking']['roomStays'][0]['total']['amountAfterTaxes']='5000.00';
+check(cbr_sync_request($p,100,$d)['status']===4,'price increase reopens fully paid request as partial');
+check((int)$p->query('SELECT status FROM reckoning')->fetchColumn()===4,'reopened payment status persisted');
+check((int)$p->query('SELECT COUNT(*) FROM payment')->fetchColumn()===1,'repricing never changes payment records');
+$d['booking']['roomStays'][0]['total']['amountAfterTaxes']='4500.00';
+check(cbr_sync_request($p,100,$d)['status']===5,'price decrease covered by existing payment');
+$d['booking']['roomStays'][0]['total']['amountAfterTaxes']='5000.00';cbr_sync_request($p,100,$d);
+$p->exec('UPDATE reckoning SET status=5');
+check(cbr_sync_request($p,100,$d)['status']===4,'late bank completion of an old amount cannot leave a higher priced booking fully paid');
+$p->exec("INSERT INTO payment(schet,sum,type,pay_method) VALUES(100,'500.00',2,7)");
+check(cbr_sync_request($p,100,$d)['status']===5,'posted balance payment restores paid status');
+$p->exec('UPDATE reckoning SET status=7');$d['booking']['roomStays'][0]['total']['amountAfterTaxes']='4600.00';
+check(cbr_sync_request($p,100,$d)['status']===7,'payment approval workflow is not overwritten');
 $x=$d;$x['booking']['roomStays'][0]['guests'][0]['firstName']='<script>alert(1)</script>';rejects(function()use($p,$x){cbr_sync_request($p,100,$x);},'markup rejected before copying to legacy CRM');
 $x=$d;$x['booking']['hotelId']='999';rejects(function()use($p,$x){cbr_sync_request($p,100,$x);},'hotel mismatch rejected');
 $x=$d;$x['booking']['departureDate']='2026-02-30';rejects(function()use($p,$x){cbr_sync_request($p,100,$x);},'invalid dates rejected');
@@ -59,8 +80,8 @@ require __DIR__.'/../core/status.php';
 require __DIR__.'/../core/reckoning.php';
 require __DIR__.'/../core/report/report.php';
 class CbActionFixture {
-    public $manager=0;
-    function getRow($sql,...$args){return ['id'=>100,'id_obj'=>101,'cb_submission_key'=>'fixture','status'=>1,'status_san'=>0,'active'=>0,'holding_sum'=>0,'date_z'=>'2026-12-14','agency'=>0,'turist'=>1,'status_agent'=>0,'id_user'=>$this->manager,'changes'=>0];}
+    public $manager=0;public $status=1;
+    function getRow($sql,...$args){return ['id'=>100,'id_obj'=>101,'cb_submission_key'=>'fixture','status'=>$this->status,'status_san'=>0,'active'=>0,'holding_sum'=>0,'date_z'=>'2026-12-14','agency'=>0,'turist'=>1,'status_agent'=>0,'id_user'=>$this->manager,'changes'=>0];}
     function getOne($sql,...$args){return 0;}
     function query($sql,...$args){throw new RuntimeException('Unexpected write: '.$sql);}
 }
@@ -72,5 +93,12 @@ foreach([0,7] as $manager){
     $connect->manager=$manager;ob_start();show_menu_bid($connect);$out=ob_get_clean();
     check(strpos($out,'reckoning_to_upsorted(')===false&&strpos($out,'delete_reckoning(')===false&&strpos($out,'review_cancel(')===false,'unsafe actions absent for assigned/unassigned CB request');
 }
+foreach([3,4,7] as $financialStatus) {
+    $connect->status=$financialStatus;$id_rights=6;ob_start();show_menu_bid($connect);$out=ob_get_clean();
+    check(strpos($out,'pay_schet(')!==false&&strpos($out,'prepay_schet(')!==false,'CB uses ordinary manual payment actions');
+}
+$connect->status=3;$id_rights=4;ob_start();show_menu_bid($connect);$out=ob_get_clean();
+check(strpos($out,'request_pay_schet(')!==false&&strpos($out,'onclick="pay_schet(')===false,'manager retains ordinary payment request permissions');
+$id_rights=6;
 $_POST=['id'=>'100','type'=>'cancel'];$out=update_mass_reckoning($connect);check(strpos($out,'обычная аннуляция недоступна')!==false,'mass cancellation cannot bypass CB cancellation');
 echo "$n request synchronization checks passed\n";

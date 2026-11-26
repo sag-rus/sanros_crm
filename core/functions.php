@@ -963,8 +963,13 @@ function save_certificate_to_history($connect, $id){
 }
 
 function get_sum_for_pay($connect, $id){
-	$row = $connect->getRow("SELECT sum, agency, id_com, id_dis, status FROM reckoning WHERE id=?i", $id);
+	$row = $connect->getRow("SELECT sum, agency, id_com, id_dis, status, cb_submission_key FROM reckoning WHERE id=?i", $id);
 	$sum = $row["sum"];
+    if(!empty($row['cb_submission_key'])){
+        require_once __DIR__.'/comfort-booking-payments.php';
+        $payment=cb_payment_summary($connect,$id,$sum);
+        return (float)$payment['remaining'];
+    }
 	$raz = 0;
 	if($row["agency"]){
 		$commis = ($connect->getOne("SELECT value FROM commission WHERE id=?i", $row["id_com"])) / 100;
