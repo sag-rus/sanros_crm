@@ -17,9 +17,14 @@ foreach(['contract.php','old_contract.php'] as $file){$code=file_get_contents(__
 foreach(['core/document/obmen.php','core/status.php'] as $file)docCheck(strpos(file_get_contents(__DIR__.'/../'.$file),'cbr_document_guard($connect,$id,$cbDocument)')!==false,'voucher guarded on dialog and download');
 if (($argv[1]??'')==='--pdf') {
     require __DIR__.'/../core/lib/html2PDF/html2pdf.class.php';
-    $pdf=new HTML2PDF('P','A4','en',array(0,0,0,0),'UTF-8');$pdf->WriteHTML($html);$bytes=$pdf->Output('fixture.pdf','S');
+    $pdf=new HTML2PDF('P','A4','en',array(0,0,0,0),'UTF-8');$pdf->setDefaultFont('dejavusans');$pdf->WriteHTML($html);$bytes=$pdf->Output('fixture.pdf','S');
     docCheck(substr($bytes,0,5)==='%PDF-','PDF generated');
     file_put_contents(sys_get_temp_dir().'/cb-document-fixture.pdf',$bytes);
+    $data['booking']['roomStays'][0]['guests']=array_fill(0,10,$person);
+    $data['documents']['guests']=array_fill(0,10,['birthDate'=>'1980-01-02','passport'=>'0000 000000','passportIssuedBy'=>str_repeat('Тестовый орган выдачи ',20),'passportIssueDate'=>'2020-02-03']);
+    $long=cb_voucher_html(999,$data,['Компания'=>'Тест','Телефон'=>'+70000000000','E-mail'=>'test@example.test','Сайт'=>'example.test']);
+    $pdf=new HTML2PDF('P','A4','en',array(0,0,0,0),'UTF-8');$pdf->setDefaultFont('dejavusans');$pdf->WriteHTML($long);
+    file_put_contents(sys_get_temp_dir().'/cb-document-long-fixture.pdf',$pdf->Output('fixture.pdf','S'));
     echo 'PDF fixture: '.strlen($bytes)." bytes\n";
 }
 echo "CRM document rendering checks passed\n";

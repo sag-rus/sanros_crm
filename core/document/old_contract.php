@@ -228,9 +228,9 @@ function review_contract($connect, $type, $id){
 	1.2. Туристы, совершающие путешествие на условиях настоящего Договора:</p>
 	<table border="1" cellpadding="5" cellspacing="0" width="100%">
 	<tr>
-		<th style="width: 300px">Фамилия имя отчество</th>
-		<th style="width: 150px">Дата рождения</th>
-		<th style="width: 150px">№ документа</th>
+		<th style="width: <?php echo $cbDocument ? 180 : 300; ?>px">Фамилия имя отчество</th>
+		<th style="width: <?php echo $cbDocument ? 85 : 150; ?>px">Дата рождения</th>
+		<th style="width: <?php echo $cbDocument ? 340 : 150; ?>px">№ документа</th>
 	</tr>
 	<?php
 		if ($cbDocument) echo cb_doc_guest_rows($cbDocument);

@@ -17,7 +17,7 @@ function cb_doc_guest_rows(array $data) {
     $html='';
     foreach ($data['booking']['roomStays'][0]['guests'] as $i=>$guest) {
         $doc=$data['documents']['guests'][$i]??[];
-        $html.='<tr><td>'.cb_doc_escape(cb_doc_name($guest)).'</td><td>'.cb_doc_escape(cb_doc_date($doc['birthDate']??'')).'</td><td>'.cb_doc_identity($doc).'</td></tr>';
+        $html.='<tr><td style="width:180px;vertical-align:top">'.cb_doc_escape(cb_doc_name($guest)).'</td><td style="width:85px;vertical-align:top">'.cb_doc_escape(cb_doc_date($doc['birthDate']??'')).'</td><td style="width:340px;vertical-align:top">'.cb_doc_identity($doc).'</td></tr>';
     }
     return $html;
 }
