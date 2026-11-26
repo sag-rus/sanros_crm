@@ -8,10 +8,10 @@
 
 ```
 php tools/backfill-comfort-booking-reward.php plan
-php tools/backfill-comfort-booking-reward.php --apply
+sudo php tools/backfill-comfort-booking-reward.php --apply
 php tools/backfill-comfort-booking-reward.php plan
 ```
 
-Миграция выбирает только позиции проживания заявок с непустым `cb_submission_key`, включая аннулированные. Дополнительные услуги исключены. Перед каждой записью берётся блокировка заявки, сохраняется файл с прежними ставками в приватном `/home/rustem/cb-reward-backup-*` и запись в истории заявки. Legacy MyISAM не поддерживает откат транзакцией: при частичном сбое повторный запуск меняет только оставшиеся ставки. Брони и API TravelLine не вызываются. Повторный план должен быть пустым.
+Миграция выбирает только позиции проживания заявок с непустым `cb_submission_key`, включая аннулированные. Дополнительные услуги исключены. Перед каждой записью берётся блокировка заявки, сохраняется файл с прежними ставками в приватном `/var/backups/cb-reward-backup-*` и запись в истории заявки. Legacy MyISAM не поддерживает откат транзакцией: при частичном сбое повторный запуск меняет только оставшиеся ставки. Брони и API TravelLine не вызываются. Повторный план должен быть пустым.
 
 Проверки: `php tests/comfort-booking-reward.php`, `php tests/comfort-booking-request-state.php`, `php tests/comfort-booking-site.php`.

@@ -15,7 +15,7 @@ foreach ($ids as $id) {
         if (!$rows) continue;
         if ($mode === '--apply') {
             if ($backup === null) {
-                $backup = '/home/rustem/cb-reward-backup-'.gmdate('Ymd-His').'-'.bin2hex(random_bytes(4));
+                $backup = '/var/backups/cb-reward-backup-'.gmdate('Ymd-His').'-'.bin2hex(random_bytes(4));
                 if (!mkdir($backup,0700)) throw new RuntimeException('Backup directory failed');
             }
             $path = $backup.'/'.(int)$id.'.json';
