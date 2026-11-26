@@ -18,11 +18,11 @@ $x['confirmation']['status']='modified';check(cbr_documents_ready($x),'current m
 $x['booking']['status']=$x['confirmation']['status']='cancelled';check(!cbr_documents_ready($x),'cancelled booking blocks documents');
 $p=new PDO('sqlite::memory:');$p->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
 $p->exec('CREATE TABLE reckoning (id INTEGER PRIMARY KEY,id_obj INTEGER,status INTEGER,status_san INTEGER,active INTEGER,date_z TEXT,date_v TEXT,sum TEXT,number_turist INTEGER,children_rest INTEGER,rest TEXT)');
-$p->exec('CREATE TABLE position_reck (id INTEGER PRIMARY KEY,schet INTEGER,id_room INTEGER,ratePlan TEXT,sum TEXT,number INTEGER,type INTEGER,days INTEGER,date_z TEXT,add_one_day INTEGER,id_service INTEGER)');
+$p->exec('CREATE TABLE position_reck (id INTEGER PRIMARY KEY,schet INTEGER,id_room INTEGER,ratePlan TEXT,sum TEXT,number INTEGER,type INTEGER,days INTEGER,date_z TEXT,add_one_day INTEGER,id_service INTEGER,reward TEXT DEFAULT 0)');
 $p->exec('CREATE TABLE klient (id INTEGER PRIMARY KEY AUTOINCREMENT,surname TEXT,name TEXT,otch TEXT,date_reg TEXT,original_data TEXT,passport TEXT)');
 $p->exec('CREATE TABLE history_schet (date TEXT,time TEXT,id_schet INTEGER,id_user INTEGER,new_status INTEGER,new_status_san INTEGER,note TEXT)');
 $p->exec("INSERT INTO reckoning VALUES(100,101,1,0,0,'2026-12-10','2026-12-11','1000.00',1,0,'1')");
-$p->exec("INSERT INTO position_reck VALUES(20,100,200,'300','1000.00',1,1,1,'2026-12-10',0,0)");
+$p->exec("INSERT INTO position_reck VALUES(20,100,200,'300','1000.00',1,1,1,'2026-12-10',0,0,0)");
 $p->exec("INSERT INTO klient VALUES(1,'Existing','Adult','','2026-01-01',NULL,'keep-passport')");
 check(cbr_sync_request($p,100,$d)['changed'],'sync modified dates, room, price, occupants');
 $r=$p->query('SELECT * FROM reckoning')->fetch(PDO::FETCH_ASSOC);$pos=$p->query('SELECT * FROM position_reck')->fetch(PDO::FETCH_ASSOC);
@@ -30,10 +30,15 @@ check($r['date_z']==='2026-12-14'&&$r['date_v']==='2026-12-17'&&$r['sum']==='450
 check((int)$r['number_turist']===2&&$r['rest']==='1,2','guest count and ordered guest links');
 check((int)$r['children_rest']===0,'unrelated children holiday flag preserved');
 check((int)$pos['id_room']===202&&$pos['ratePlan']==='303'&&(int)$pos['days']===3&&(int)$pos['type']===3&&(int)$pos['number']===1&&(int)$pos['add_one_day']===1&&$pos['sum']==='4500.00','invoice position is whole stay, not price per day or per person');
+check((float)$pos['reward']===12.0,'CB synchronization persists 12 percent');
 check($p->query('SELECT passport FROM klient WHERE id=1')->fetchColumn()==='keep-passport','existing guest passport retained');
 check((int)$p->query('SELECT id_user FROM history_schet')->fetchColumn()===7,'change audited');
+$p->exec("UPDATE position_reck SET reward='12.0'");
 check(!cbr_sync_request($p,100,$d)['changed'],'repeat sync idempotent');
 check((int)$p->query('SELECT COUNT(*) FROM klient')->fetchColumn()===2&&(int)$p->query('SELECT COUNT(*) FROM history_schet')->fetchColumn()===1,'repeat has no guest or audit duplicates');
+$p->exec('UPDATE position_reck SET reward=0');
+check(cbr_sync_request($p,100,$d)['changed'],'commission alone is repaired');
+check((float)$p->query('SELECT reward FROM position_reck')->fetchColumn()===12.0,'commission restored without price change');
 // A lost request update after a successful position update recovers without duplicate children.
 $p->exec("UPDATE reckoning SET rest='1',number_turist=1");check(cbr_sync_request($p,100,$d)['changed'],'partial legacy write recovered');
 check((int)$p->query('SELECT COUNT(*) FROM klient')->fetchColumn()===2,'recovery reuses created guest');
@@ -48,7 +53,7 @@ $x=$d;$x['booking']['hotelId']='999';rejects(function()use($p,$x){cbr_sync_reque
 $x=$d;$x['booking']['departureDate']='2026-02-30';rejects(function()use($p,$x){cbr_sync_request($p,100,$x);},'invalid dates rejected');
 $x=$d;$x['booking']['roomStays'][0]['adults']=2;rejects(function()use($p,$x){cbr_sync_request($p,100,$x);},'incomplete guests rejected');
 $x=$d;$x['booking']['roomStays'][]=$x['booking']['roomStays'][0];rejects(function()use($p,$x){cbr_sync_request($p,100,$x);},'unexpected multiple stays rejected');
-$p->exec("INSERT INTO position_reck VALUES(21,100,0,'','100.00',1,3,1,'2026-12-14',1,9)");rejects(function()use($p,$d){cbr_sync_request($p,100,$d);},'manual extra service preserved and flagged');
+$p->exec("INSERT INTO position_reck VALUES(21,100,0,'','100.00',1,3,1,'2026-12-14',1,9,0)");rejects(function()use($p,$d){cbr_sync_request($p,100,$d);},'manual extra service preserved and flagged');
 check((int)$p->query('SELECT COUNT(*) FROM position_reck')->fetchColumn()===2,'no deletion of extra service');
 require __DIR__.'/../core/status.php';
 require __DIR__.'/../core/reckoning.php';

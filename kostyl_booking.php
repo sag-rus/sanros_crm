@@ -133,7 +133,8 @@ $today = date("Y-m-d");
 $hash = md5(uniqid());
 $days = isset($data_booking->days)?(int)$data_booking->days:1;
 $date_z = isset($data_booking_JSON["date"])?date_change($data_booking_JSON["date"], "-", "."):date_change($today, "-", ".");
-$reward = get_reward_object($connect, $id_obj, $date_z);
+require_once __DIR__.'/core/comfort-booking-reward.php';
+$reward = cb_intake_reward($connect, $id_obj, $date_z);
 
 $source = select_index_source($booking_source);
 

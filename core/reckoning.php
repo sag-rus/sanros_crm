@@ -951,6 +951,8 @@ function update_position($connect){
       $note_history = "";
       $row = $connect->getRow("SELECT id_room, sum, number, note, type, days, reward, schet, date_z FROM position_reck WHERE id=?i", $id);
       $schet = $row["schet"];
+      require_once __DIR__.'/comfort-booking-reward.php';
+      if (!empty($row['id_room'])) $reward = cb_position_reward($connect, $schet, $reward);
 
       $services = $_POST["services"];
 

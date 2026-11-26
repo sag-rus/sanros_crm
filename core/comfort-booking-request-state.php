@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__.'/comfort-booking-reservations.php';
 require_once __DIR__.'/comfort-booking-objects.php';
+require_once __DIR__.'/comfort-booking-reward.php';
 
 function cbr_is_request($connect, $id) {
     $r=$connect->getRow('SELECT id,id_obj,cb_submission_key FROM reckoning WHERE id=?i',(int)$id);
@@ -64,16 +65,16 @@ function cbr_sync_request(PDO $p,$id,array $data) {
         $used[$found]=true;$rest[]=$found;
     }
     $target=['date_z'=>$b['arrivalDate'],'date_v'=>$b['departureDate'],'sum'=>number_format((float)$price,2,'.',''),'number_turist'=>$count,'rest'=>implode(',',$rest)];
-    $pt=['id_room'=>(int)$selection['roomId'],'ratePlan'=>(string)$selection['rateId'],'sum'=>$target['sum'],'number'=>1,'type'=>3,'days'=>(int)$arrival->diff($departure)->days,'date_z'=>$target['date_z'],'add_one_day'=>1];
+    $pt=['id_room'=>(int)$selection['roomId'],'ratePlan'=>(string)$selection['rateId'],'sum'=>$target['sum'],'number'=>1,'type'=>3,'days'=>(int)$arrival->diff($departure)->days,'date_z'=>$target['date_z'],'add_one_day'=>1,'reward'=>CB_REWARD_PERCENT];
     foreach($target as $k=>$v)if((string)$r[$k]!== (string)$v)$changed=true;
-    foreach($pt as $k=>$v)if((string)$position[$k]!== (string)$v)$changed=true;
+    foreach($pt as $k=>$v)if($k==='reward' ? (float)$position[$k] !== (float)$v : (string)$position[$k] !== (string)$v)$changed=true;
     if(!$changed)return ['status'=>(int)$r['status'],'changed'=>false];
     // Durable before-image first: legacy CRM tables are MyISAM (no transactional rollback).
     $actor=0;foreach($data['history']??[] as $h)if(in_array($h['action']??'',['create','modify'],true)){$actor=(int)($h['actor_id']??0);break;}
     $note='Синхронизация брони Comfort Booking №'.$b['number'].'. До изменения: '.json_encode(['request'=>array_intersect_key($r,$target),'position'=>$position],JSON_UNESCAPED_UNICODE);
     $now=new DateTimeImmutable('now',new DateTimeZone('Europe/Moscow'));
     $q=$p->prepare('INSERT INTO history_schet (date,time,id_schet,id_user,new_status,new_status_san,note) VALUES (?,?,?,?,?,?,?)');$q->execute([$now->format('Y-m-d'),$now->format('H:i:s'),$id,$actor,$r['status'],$r['status_san'],$note]);
-    $q=$p->prepare('UPDATE position_reck SET id_room=?,ratePlan=?,sum=?,number=?,type=?,days=?,date_z=?,add_one_day=? WHERE id=? AND schet=?');$q->execute(array_merge(array_values($pt),[$position['id'],$id]));
+    $q=$p->prepare('UPDATE position_reck SET id_room=?,ratePlan=?,sum=?,number=?,type=?,days=?,date_z=?,add_one_day=?,reward=? WHERE id=? AND schet=?');$q->execute(array_merge(array_values($pt),[$position['id'],$id]));
     $q=$p->prepare('UPDATE reckoning SET date_z=?,date_v=?,sum=?,number_turist=?,rest=? WHERE id=?');$q->execute(array_merge(array_values($target),[$id]));
     return ['status'=>(int)$r['status'],'changed'=>true];
 }
