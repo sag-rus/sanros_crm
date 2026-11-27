@@ -241,7 +241,7 @@
                 content.empty();content.append(el('h4','Проверьте перед отправкой'));var s=d.summary;
                 if(s.before){content.append(boldLine('Сейчас'));summary(content,s.before);}
                 if(s.after){content.append(boldLine('Будет передано'));summary(content,s.after);}
-                if(s.penaltyAmount!==undefined){line(content,'Бронь',s.number);line(content,'Штраф к передаче',s.penaltyAmount+' '+s.currency);line(content,'Штраф по сохранённому правилу',s.standardPenalty+' '+s.currency);line(content,'Причина',s.reason);}
+                if(s.penaltyAmount!==undefined){line(content,'Бронь',s.number);line(content,'Штраф к передаче',s.penaltyAmount+' '+s.currency);if(operation!=='waive')line(content,'Штраф по сохранённому правилу',s.standardPenalty+' '+s.currency);line(content,'Причина',s.reason);}
                 if(s.documents){content.append(boldLine('Документы — только для сайта и CRM'));documentSummary(content,s.documents);}
                 list(content,s.rules);content.append(el('p','Расчёт действует 2 минуты. После отправки нужно дождаться подтверждения TravelLine.','text-muted'));
                 var confirmText=s.after?'Передать '+(operation==='create'?'новую бронь':'изменение брони')+' на '+s.after.total+' RUB?':'Отменить бронь '+s.number+' со штрафом '+s.penaltyAmount+' '+s.currency+'?';
